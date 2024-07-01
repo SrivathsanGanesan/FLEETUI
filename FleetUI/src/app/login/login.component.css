@@ -33,10 +33,11 @@
     padding: 0px 0px 0px 0px;
 }
 /* Add this CSS for the red color radio button */
+/* Add this CSS for the red color radio button */
 input[type="radio"]:checked::before {
     content: '';
     display: inline-block;
-    width:10px;
+    width: 10px;
     height: 10px;
     background-color: #911515;
     border-radius: 50%;
