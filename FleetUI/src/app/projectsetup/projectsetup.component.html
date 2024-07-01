@@ -1,25 +1,28 @@
 <div class="Projectpage">
-<div class="LeftPanel" style="background: url('assets/bg.jpg') no-repeat center center/cover;">
-    <img src="../../assets/m1.png" alt="Motherson Logo" class="motherson-logo">
-    <div class="fms-box">
-      <p class="ProTitle">FMS</p>
-    </div>
-</div>
-
-<div class="RightPanel">
-    <p class="ProjTitle">PROJECT</p>    
-    <div class="details">
-    <div class="ProjectSetup">
-      <button class="CNPBtn">Create New Project</button>
-      <button class="IMFBtn">Import Project</button>
-      <button class="OEPBtn">Existing Project</button>
-    </div>    
-      <div class="LogoutBtncls">
-        <button class="LogoutBtn" [routerLink]="['']">LOGOUT</button>
+  <div class="LeftPanel" style="background: url('assets/bg.jpg') no-repeat center center/cover;">
+      <img src="../../assets/m1.png" alt="Motherson Logo" class="motherson-logo">
+      <div class="fms-box">
+          <p class="ProTitle">FMS</p>
       </div>
-    </div>
+  </div>
+
+  <div class="RightPanel">
+      <p class="ProjTitle">PROJECT</p>    
+      <div class="details">
+          <div class="ProjectSetup">
+              <button class="CNPBtn" (click)="showProjDiv1()">Create New Project</button>
+              <button class="IMFBtn" (click)="showProjDiv2()">Import Project</button>
+              <button class="OEPBtn" (click)="showProjDiv3()">Existing Project</button>
+          </div>    
+          <div class="ProjDiv1" *ngIf="isProjDiv1Visible">Create New Project</div> 
+          <div class="ProjDiv2" *ngIf="isProjDiv2Visible">Import Project</div> 
+          <div class="ProjDiv3" *ngIf="isProjDiv3Visible">Existing Project</div> 
+          <div class="LogoutBtncls">
+              <button class="LogoutBtn" [routerLink]="['']">LOGOUT</button>
+          </div>
+      </div>
   </div>
 
   <div class="LeftPanel2" style="background: url('../../assets/bg.jpg') no-repeat center center/cover;">
-</div>
+  </div>
 </div>

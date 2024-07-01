@@ -2,7 +2,10 @@
     font-family: Arial, Helvetica, sans-serif;
     height: 450px;
     width: 750px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;}
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    position: relative; /* Add this line */
+
+}
 .ProjTitle{
     font-size: 40px;
     font-weight: bolder;
@@ -70,7 +73,18 @@
     overflow: hidden;
 }
 .ProjectSetup{
-    display: grid;
+    display:grid ;
+}
+.ProjDiv1,.ProjDiv2,.ProjDiv3{
+    background-color: #0000005c;
+    height: 280px;
+    width: 250px;
+    border-radius: 10px;
+    position: absolute; /* Add this line */
+    top: 215px; /* Center vertically */
+    right: 40px; /* Adjust the position from the right */
+    transform: translateY(-50%); /* Center vertically */
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 .CNPBtn,.IMFBtn,.OEPBtn{
 height: 40px;
