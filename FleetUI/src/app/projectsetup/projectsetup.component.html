@@ -14,9 +14,23 @@
               <button class="IMFBtn" (click)="showProjDiv2()">Import Project</button>
               <button class="OEPBtn" (click)="showProjDiv3()">Existing Project</button>
           </div>    
-          <div class="ProjDiv1" *ngIf="isProjDiv1Visible">Create New Project</div> 
-          <div class="ProjDiv2" *ngIf="isProjDiv2Visible">Import Project</div> 
-          <div class="ProjDiv3" *ngIf="isProjDiv3Visible">Existing Project</div> 
+          <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
+            <input id="Sitename"><label for="Sitename">Site Name</label>
+            <input id="Projectname"><label for="Projectname">Project Name</label>
+            <button>Create</button>
+            <button (click)="showProjDiv1()">Back</button>
+          </div> 
+          <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
+            <img src="../../assets/icons/arrow-down-circle.svg" (click)="onIconClick()" class="Importicon">Import Project File
+            <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none;">
+            <button>Open</button>
+            <button (click)="showProjDiv2()">Back</button>
+          </div>
+          <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
+            <select></select>
+            <button>Open</button>
+            <button (click)="showProjDiv3()">Back</button>
+          </div> 
           <div class="LogoutBtncls">
               <button class="LogoutBtn" [routerLink]="['']">LOGOUT</button>
           </div>

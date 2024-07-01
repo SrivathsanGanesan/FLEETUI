@@ -27,4 +27,15 @@ showProjDiv3() {
   this.isProjDiv2Visible =false;
   this.isProjDiv1Visible =false;
 }
+onIconClick() {
+  const fileInput = document.getElementById('fileInput') as HTMLElement;
+  fileInput.click();
+}
+onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    console.log('File selected:', file.name);
+    // Handle the file upload logic here
+  }
+}
 }
