@@ -1,2 +1,11 @@
 node_modules/
+
+logs
 *.log
+
+# Angular
+dist
+/tmp
+/tmp/*
+/out-tsc
+/.angular
