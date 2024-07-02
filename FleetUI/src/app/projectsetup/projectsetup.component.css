@@ -119,3 +119,8 @@ color: #00000061;
 .BackBTN:hover,.OpenBTN:hover,.CreateBTN:hover{
     background-color: #852929;  
 }
+.Importicon{
+    width: 150px;
+    height: 100px;
+    
+}
