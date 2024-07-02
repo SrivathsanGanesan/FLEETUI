@@ -85,6 +85,9 @@
     right: 40px; /* Adjust the position from the right */
     transform: translateY(-50%); /* Center vertically */
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
 }
 .CNPBtn,.IMFBtn,.OEPBtn{
 height: 40px;
@@ -103,4 +106,16 @@ color: #00000061;
 .CNPBtn:hover,.IMFBtn:hover,.OEPBtn:hover{
     box-shadow: rgba(0, 0, 0, 0.36) 0px 1px 4px;
     color: #000000;
+}
+.BackBTN,.OpenBTN,.CreateBTN{
+    width: 75px;
+    padding: 10px;
+    background-color: #b71c1c;
+    border: none;
+    border-radius: 5px;
+    color: white;    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+.BackBTN:hover,.OpenBTN:hover,.CreateBTN:hover{
+    background-color: #852929;  
 }
