@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -9,9 +10,28 @@ export class LoginComponent {
   passwordFieldType = 'password';
   showPassword = false;
 
+  constructor(private router: Router) {} // Inject the Router service
+
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
     this.passwordFieldType = this.showPassword ? 'text' : 'password';
+  }
+
+  validateForm() {
+    const username = (document.getElementById('username') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement).value;
+    const userRole = document.querySelector('input[name="userRole"]:checked');
+
+    if (!username) {
+      alert('Enter Username');
+    } else if (!password) {
+      alert('Enter Password');
+    } else if (!userRole) {
+      alert('Select User Role');
+    } else {
+      // Navigate to the 'project_setup' route
+      this.router.navigate(['project_setup']);
+    }
   }
 
   focusedContainer: HTMLElement | null = null;
