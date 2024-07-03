@@ -35,7 +35,7 @@ const login = async (req, res) => {
       });
     return res
       .status(401) // Unauthorized
-      .json({ isUserExist: true, msg: "wrong password!" });
+      .json({ isUserExist: true, msg: "wrong password!", user: null });
   } catch (err) {
     console.log("err occ : ", err);
     return res.status(500).json({ operation: "login failed!", error: err });

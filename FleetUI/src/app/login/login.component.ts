@@ -1,10 +1,11 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { error } from 'node:console';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   passwordFieldType = 'password';
@@ -18,8 +19,10 @@ export class LoginComponent {
   }
 
   validateForm() {
-    const username = (document.getElementById('username') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
+    const username = (document.getElementById('username') as HTMLInputElement)
+      .value;
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
     const userRole = document.querySelector('input[name="userRole"]:checked');
 
     if (!username) {
@@ -30,7 +33,35 @@ export class LoginComponent {
       alert('Select User Role');
     } else {
       // Navigate to the 'project_setup' route
-      this.router.navigate(['project_setup']);
+
+      fetch('http://localhost:3000/auth/login', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user: {
+            name: username,
+            role: (
+              document.querySelector(
+                'input[name="userRole"]:checked'
+              ) as HTMLInputElement
+            ).value,
+            password: password,
+          },
+        }),
+      })
+        .then((res) => {
+          if (res.ok) this.router.navigate(['project_setup']);
+          else if (res.status == 401 || res.status == 404)
+            alert("wrong password! or user with this role doesn't exist");
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => console.error(err));
     }
   }
 
@@ -47,14 +78,6 @@ export class LoginComponent {
       input.focus();
     }
     this.focusedContainer = target;
-  }
-
-  getData() {
-    fetch('http://192.168.164.183:3000/dashboard/samp')
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(err => console.log(err));
-    console.log("fine!");
   }
 
   @HostListener('document:click', ['$event'])
