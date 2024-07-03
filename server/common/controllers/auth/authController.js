@@ -1,5 +1,6 @@
 var generator = require("generate-password");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const authRegisterModel = require("../../models/authRegisterSchema");
 
 const getRandomPassword = () => {
@@ -22,17 +23,26 @@ const login = async (req, res) => {
         msg: "user (or) role not found",
       });
     const isMatch = await bcrypt.compare(name + password, user[0].password);
-    if (isMatch)
-      return res.status(200).json({
-        isUserExist: true,
-        msg: "User found",
-        user: {
-          id: user[0]._id,
-          name: user[0].name,
-          role: user[0].role,
-          priority: user[0].priority,
-        },
-      });
+    if (isMatch) {
+      const token = jwt.sign(
+        { user: name, role: role },
+        process.env.JWT_SECRET_KEY
+      );
+      return res
+        .cookie("_token", token, { httpOnly: true })
+        .status(200)
+        .json({
+          isUserExist: true,
+          msg: "User found",
+          user: {
+            id: user[0]._id,
+            name: user[0].name,
+            role: user[0].role,
+            priority: user[0].priority,
+          },
+        });
+    }
+
     return res
       .status(401) // Unauthorized
       .json({ isUserExist: true, msg: "wrong password!", user: null });
