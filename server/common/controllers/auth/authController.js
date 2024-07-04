@@ -64,7 +64,7 @@ const register = async (req, res) => {
         name: name,
         password: hashhedPassword,
         role: role,
-        priority: role === "admin" ? 1 : role === "maintenance" ? 2 : 3,
+        priority: role === "Administrator" ? 1 : role === "Maintainer" ? 2 : 3,
       });
 
       const updatedDoc = await newData.save();
