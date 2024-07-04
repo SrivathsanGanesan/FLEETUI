@@ -1,5 +1,4 @@
 const app = require("./common/server_config");
-const dbConnection = require("./common/db_config");
 require("dotenv").config();
 
 // dashboard...

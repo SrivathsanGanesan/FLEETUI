@@ -1,17 +1,6 @@
-var generator = require("generate-password");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authRegisterModel = require("../../models/authRegisterSchema");
-
-const getRandomPassword = () => {
-  const randomPass = generator.generate({
-    length: 8,
-    symbols: false,
-    numbers: true,
-    strict: true,
-  });
-  return randomPass;
-};
 
 const login = async (req, res) => {
   const { name, role, password } = req.body.user;
@@ -29,9 +18,10 @@ const login = async (req, res) => {
         process.env.JWT_SECRET_KEY
       );
       return res
-        .cookie("_token", token, { httpOnly: true })
+        .cookie("_token", token, { httpOnly: true }) //sameSite: "Strict" only from the originated site..
         .status(200)
         .json({
+          token: token,
           isUserExist: true,
           msg: "User found",
           user: {
@@ -52,11 +42,21 @@ const login = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    res.clearCookie("_token");
+    res.clearCookie("_user");
+    res.status(200).json({ msg: "cookies deleted!", isCookieDeleted: true });
+  } catch (error) {
+    console.log("error in logout : ", error);
+    return res.status(500).json({ operation: "logout failed!", error: err });
+  }
+};
+
 const register = async (req, res) => {
   const { name, role, password } = req.body.user;
-  const randomPass = getRandomPassword();
   try {
-    const alterPass = name + randomPass;
+    const alterPass = name + password;
     const hashhedPassword = await bcrypt.hash(alterPass, 2);
     const doc = await authRegisterModel.findOne({ name: name, role: role });
     if (!doc) {
@@ -74,7 +74,7 @@ const register = async (req, res) => {
           name: updatedDoc.name,
           role: updatedDoc.role,
           id: updatedDoc._id,
-          password: randomPass,
+          password: password,
         },
       });
     }
@@ -89,4 +89,4 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { login, register };
+module.exports = { login, logout, register };

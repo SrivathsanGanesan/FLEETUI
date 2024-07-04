@@ -40,6 +40,7 @@ export class LoginComponent {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           user: {
             name: username,
@@ -59,7 +60,8 @@ export class LoginComponent {
           return res.json();
         })
         .then((data) => {
-          console.log(data);
+          console.log(data.token);
+          document.cookie = `_user=${JSON.stringify(data.user)};`;
         })
         .catch((err) => console.error(err));
     }

@@ -1,42 +1,65 @@
 <div class="Projectpage">
-  <div class="LeftPanel" style="background: url('assets/bg.jpg') no-repeat center center/cover;">
-      <img src="../../assets/m1.png" alt="Motherson Logo" class="motherson-logo">
-      <div class="fms-box">
-          <p class="ProTitle">FMS</p>
-      </div>
+  <div
+    class="LeftPanel"
+    style="background: url('assets/bg.jpg') no-repeat center center/cover"
+  >
+    <img
+      src="../../assets/m1.png"
+      alt="Motherson Logo"
+      class="motherson-logo"
+    />
+    <div class="fms-box">
+      <p class="ProTitle">FMS</p>
+    </div>
   </div>
 
   <div class="RightPanel">
-      <p class="ProjTitle">PROJECT</p>    
-      <div class="details">
-          <div class="ProjectSetup">
-              <button class="CNPBtn" (click)="showProjDiv1()">Create New Project</button>
-              <button class="IMFBtn" (click)="showProjDiv2()">Import Project</button>
-              <button class="OEPBtn" (click)="showProjDiv3()">Existing Project</button>
-          </div>    
-          <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
-            <input id="Sitename"><label for="Sitename">Site Name</label>
-            <input id="Projectname"><label for="Projectname">Project Name</label>
-            <button class="CreateBTN">CREATE</button>
-            <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
-          </div> 
-          <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
-            <img src="../../assets/icons/arrow-down-circle.svg" (click)="onIconClick()" class="Importicon">Import Project File
-            <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none;">
-            <button class="OpenBTN">OPEN</button>
-            <button (click)="showProjDiv2()" class="BackBTN">BACK</button>
-          </div>
-          <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
-            <select></select>
-            <button class="OpenBTN">OPEN</button>
-            <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
-          </div> 
-          <div class="LogoutBtncls">
-              <button class="LogoutBtn" [routerLink]="['']">LOGOUT</button>
-          </div>
+    <p class="ProjTitle">PROJECT</p>
+    <div class="details">
+      <div class="ProjectSetup">
+        <button class="CNPBtn" (click)="showProjDiv1()">
+          Create New Project
+        </button>
+        <button class="IMFBtn" (click)="showProjDiv2()">Import Project</button>
+        <button class="OEPBtn" (click)="showProjDiv3()">
+          Existing Project
+        </button>
       </div>
+      <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
+        <input id="Sitename" /><label for="Sitename">Site Name</label>
+        <input id="Projectname" /><label for="Projectname">Project Name</label>
+        <button class="CreateBTN">CREATE</button>
+        <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
+      </div>
+      <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
+        <img
+          src="../../assets/icons/arrow-down-circle.svg"
+          (click)="onIconClick()"
+          class="Importicon"
+        />Import Project File
+        <input
+          type="file"
+          id="fileInput"
+          (change)="onFileSelected($event)"
+          style="display: none"
+        />
+        <button class="OpenBTN">OPEN</button>
+        <button (click)="showProjDiv2()" class="BackBTN">BACK</button>
+      </div>
+      <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
+        <select></select>
+        <button class="OpenBTN">OPEN</button>
+        <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
+      </div>
+      <div class="LogoutBtncls">
+        <!-- [routerLink]="['']" -->
+        <button class="LogoutBtn" (click)="logout()">LOGOUT</button>
+      </div>
+    </div>
   </div>
 
-  <div class="LeftPanel2" style="background: url('../../assets/bg.jpg') no-repeat center center/cover;">
-  </div>
+  <div
+    class="LeftPanel2"
+    style="background: url('../../assets/bg.jpg') no-repeat center center/cover"
+  ></div>
 </div>
