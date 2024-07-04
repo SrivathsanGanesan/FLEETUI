@@ -60,8 +60,9 @@ export class LoginComponent {
           return res.json();
         })
         .then((data) => {
-          console.log(data.token);
-          document.cookie = `_user=${JSON.stringify(data.user)};`;
+          if (data.user)
+            document.cookie = `_user=${JSON.stringify(data.user)};`;
+          console.log(data.user);
         })
         .catch((err) => console.error(err));
     }

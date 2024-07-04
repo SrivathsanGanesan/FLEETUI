@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-projectsetup',
@@ -13,6 +14,7 @@ export class ProjectsetupComponent {
 
   // Method to show ProjDiv
   showProjDiv1() {
+    // console.log(JSON.parse(document.cookie.split('=')[1])); user state..
     this.isProjDiv1Visible = !this.isProjDiv1Visible;
     this.isProjDiv2Visible = false;
     this.isProjDiv3Visible = false;
@@ -42,6 +44,7 @@ export class ProjectsetupComponent {
       .then((res) => res.json())
       .then((data) => {
         console.log(data.isCookieDeleted);
+        if (data.isCookieDeleted) window.location.href = '/';
       })
       .catch((err) => console.log(err));
   }

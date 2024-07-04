@@ -10,6 +10,7 @@ const login = async (req, res) => {
       return res.status(404).json({
         isUserExist: false,
         msg: "user (or) role not found",
+        user: null,
       });
     const isMatch = await bcrypt.compare(name + password, user[0].password);
     if (isMatch) {
@@ -21,7 +22,6 @@ const login = async (req, res) => {
         .cookie("_token", token, { httpOnly: true }) //sameSite: "Strict" only from the originated site..
         .status(200)
         .json({
-          token: token,
           isUserExist: true,
           msg: "User found",
           user: {
