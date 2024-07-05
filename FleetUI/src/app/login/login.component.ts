@@ -32,7 +32,7 @@ export class LoginComponent {
     } else {
       // Navigate to the 'project_setup' route
 
-      fetch('http://192.168.164.183:3000/auth/login', {
+      fetch('http://localhost:3000/auth/login', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
