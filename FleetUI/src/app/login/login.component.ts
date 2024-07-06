@@ -19,8 +19,10 @@ export class LoginComponent {
   }
 
   validateForm() {
-    const username = (document.getElementById('username') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
+    const username = (document.getElementById('username') as HTMLInputElement)
+      .value;
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
     const userRole = document.querySelector('input[name="userRole"]:checked');
 
     if (!username) {
@@ -42,7 +44,11 @@ export class LoginComponent {
         body: JSON.stringify({
           user: {
             name: username,
-            role: (document.querySelector('input[name="userRole"]:checked') as HTMLInputElement).value,
+            role: (
+              document.querySelector(
+                'input[name="userRole"]:checked'
+              ) as HTMLInputElement
+            ).value,
             password: password,
           },
         }),
