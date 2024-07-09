@@ -44,6 +44,8 @@ export class ProjectsetupComponent {
       .then((res) => res.json())
       .then((data) => {
         console.log(data.isCookieDeleted);
+        document.cookie =
+          '_user=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'; // which sets the cookie expire date to the past (so it'll remove)
         if (data.isCookieDeleted) window.location.href = '/';
       })
       .catch((err) => console.log(err));
