@@ -4,20 +4,20 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthService {
-  private loggedIn = false;
+  private readonly loggedInKey = 'loggedIn';
 
   // Simulating user login
   login() {
-    this.loggedIn = true;
+    localStorage.setItem(this.loggedInKey, 'true');
   }
 
   // Simulating user logout
   logout() {
-    this.loggedIn = false;
+    localStorage.removeItem(this.loggedInKey);
   }
 
   // Checking if the user is logged in
   isLoggedIn(): boolean {
-    return this.loggedIn;
+    return localStorage.getItem(this.loggedInKey) === 'true';
   }
 }
