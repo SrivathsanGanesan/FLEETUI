@@ -38,7 +38,7 @@ export class ProjectsetupComponent {
   }
 
   logout() {
-    fetch('http://localhost:3000/auth/logout', {
+    fetch('http://192.168.11.183:3000/auth/logout', {
       credentials: 'include',
     })
       .then((res) => res.json())
