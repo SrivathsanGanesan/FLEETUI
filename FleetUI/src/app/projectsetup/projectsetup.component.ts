@@ -58,4 +58,14 @@ export class ProjectsetupComponent {
       // Handle the file upload logic here
     }
   }
+
+  isFocused: { [key: string]: boolean } = {};
+
+  onFocus(inputId: string) {
+    this.isFocused[inputId] = true;
+  }
+
+  onBlur(inputId: string) {
+    this.isFocused[inputId] = false;
+  } 
 }
