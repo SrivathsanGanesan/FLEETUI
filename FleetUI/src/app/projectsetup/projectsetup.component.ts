@@ -38,12 +38,14 @@ export class ProjectsetupComponent {
   }
 
   logout() {
-    fetch('http://localhost:3000/auth/logout', {
+    fetch('http://192.168.11.183:3000/auth/logout', {
       credentials: 'include',
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data.isCookieDeleted);
+        document.cookie =
+          '_user=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'; // which sets the cookie expire date to the past (so it'll remove)
         if (data.isCookieDeleted) window.location.href = '/';
       })
       .catch((err) => console.log(err));
