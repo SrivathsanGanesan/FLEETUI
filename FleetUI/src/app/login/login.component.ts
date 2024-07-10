@@ -13,7 +13,9 @@ export class LoginComponent {
   focusedContainer: HTMLElement | null = null;
   errorMessage: string | null = null;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) {
+    if (document.cookie === '') localStorage.clear(); // not advisable..
+  }
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
@@ -21,9 +23,15 @@ export class LoginComponent {
   }
 
   validateForm() {
-    const username = (document.getElementById('username') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
-    const userRole = (document.querySelector('input[name="userRole"]:checked') as HTMLInputElement)?.value;
+    const username = (document.getElementById('username') as HTMLInputElement)
+      .value;
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
+    const userRole = (
+      document.querySelector(
+        'input[name="userRole"]:checked'
+      ) as HTMLInputElement
+    )?.value;
 
     if (!username) {
       this.errorMessage = '*Enter Username';
@@ -61,7 +69,8 @@ export class LoginComponent {
           this.router.navigate(['project_setup']);
           return res.json();
         } else if (res.status === 401 || res.status === 404) {
-          this.errorMessage = "*Wrong password or user with this role doesn't exist";
+          this.errorMessage =
+            "*Wrong password or user with this role doesn't exist";
         }
         throw new Error('Login failed');
       })

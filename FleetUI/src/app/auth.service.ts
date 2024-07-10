@@ -27,7 +27,10 @@ export class AuthService {
   // Checking if the user is logged in
   isLoggedIn(): boolean {
     if (this.isLocalStorageAvailable()) {
-      return localStorage.getItem(this.loggedInKey) === 'true';
+      return (
+        localStorage.getItem(this.loggedInKey) === 'true' &&
+        document.cookie !== ''
+      );
     }
     return false;
   }
