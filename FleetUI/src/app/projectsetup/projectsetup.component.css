@@ -249,6 +249,7 @@ color: #00000061;
     border-bottom: 1px solid rgb(255, 255, 255);
     border-radius: 5px;
     color: white;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .ProjList option {
     background-color: rgb(150, 142, 142); /* Optional: to set background color for options */
