@@ -75,7 +75,35 @@
 .ProjectSetup{
     display:grid ;
 }
-.ProjDiv1,.ProjDiv2,.ProjDiv3{
+.ProjDiv1{
+    background-color: #0000005c;
+    height: 300px;
+    width: 250px;
+    border-radius: 10px;
+    position: absolute; /* Add this line */
+    top: 245px; /* Center vertically */
+    right: 25px; /* Adjust the position from the right */
+    transform: translateY(-50%); /* Center vertically */
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+.ProjDiv2{
+    background-color: #0000005c;
+    height: 300px;
+    width: 250px;
+    border-radius: 10px;
+    position: absolute; /* Add this line */
+    top: 245px; /* Center vertically */
+    right: 25px; /* Adjust the position from the right */
+    transform: translateY(-50%); /* Center vertically */
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    display: grid;
+    justify-content: center;
+    align-items: center; 
+}
+.ProjDiv3{
     background-color: #0000005c;
     height: 300px;
     width: 250px;
@@ -133,7 +161,7 @@ label.active {
    font-weight: bold;
 }
   
-.CNPBtn,.IMFBtn,.OEPBtn{
+.CNPBtn,.OEPBtn{
 height: 40px;
 width: 160px;
 background-color: transparent;
@@ -147,13 +175,39 @@ font-family: Arial, Helvetica, sans-serif;
 font-weight: bold;
 color: #00000061;
 }
+.IMFBtn{
+    height: 40px;
+    width: 160px;
+    background-color: transparent;
+    margin: 30px 0px 5px 25px;
+    padding: 5px 0px 5px 0px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: #00000061;    
+}
+.OEPBtn{
+    height: 40px;
+    width: 160px;
+    background-color: transparent;
+    margin: 30px 0px 5px 25px;
+    padding: 5px 0px 5px 0px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: #00000061;
+}
 .CNPBtn:hover,.IMFBtn:hover,.OEPBtn:hover{
     box-shadow: rgba(0, 0, 0, 0.36) 0px 1px 4px;
     color: #000000;
 }
-.ButtonSet{
-    display: inline;
-}
+
 .BackBTN,.OpenBTN,.CreateBTN{
     width: 75px;
     padding: 10px;
@@ -164,19 +218,38 @@ color: #00000061;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     margin-left: 10px;
 }
+
+.ImpBackBTN,.ImpOpenBTN{
+    width: 75px;
+    padding: 10px;
+    background-color: #b71c1c;
+    border: none;
+    border-radius: 5px;
+    color: white;    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin-left: 10px;
+}
+.ImpBackBTN:hover,.ImpOpenBTN:hover{
+    background-color: #852929;  
+}
+.ImpButtonSet{
+    margin-left: 15px; 
+}
 .BackBTN:hover,.OpenBTN:hover,.CreateBTN:hover{
     background-color: #852929;  
 }
 .Importicon{
     width: 200px;
     height: 100px;
+    margin:0px 0px 5px 0px; 
 }
 .ImpText{
-    padding-left: 20px;
+    padding-left: 10px;
     color: white;
     font-size: 20px;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
+    margin:0px 0px 5px 0px; 
 }
 .ProjList{
     height: 30px;
