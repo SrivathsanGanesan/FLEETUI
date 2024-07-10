@@ -10,8 +10,10 @@ import { AuthService } from '../auth.service';
 export class LoginComponent {
   passwordFieldType = 'password';
   showPassword = false;
+  focusedContainer: HTMLElement | null = null;
+  errorMessage: string | null = null;
 
-  constructor(private router: Router, private authService: AuthService) {} // Inject the Router and AuthService
+  constructor(private router: Router, private authService: AuthService) {}
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
@@ -19,61 +21,58 @@ export class LoginComponent {
   }
 
   validateForm() {
-    const username = (document.getElementById('username') as HTMLInputElement)
-      .value;
-    const password = (document.getElementById('password') as HTMLInputElement)
-      .value;
-    const userRole = document.querySelector('input[name="userRole"]:checked');
+    const username = (document.getElementById('username') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement).value;
+    const userRole = (document.querySelector('input[name="userRole"]:checked') as HTMLInputElement)?.value;
 
     if (!username) {
-      alert('Enter Username');
-    } else if (!password) {
-      alert('Enter Password');
-    } else if (!userRole) {
-      alert('Select User Role');
-    } else {
-      // Navigate to the 'project_setup' route
-
-      fetch('http://192.168.11.183:3000/auth/login', {
-        // IP
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          user: {
-            name: username,
-            role: (
-              document.querySelector(
-                'input[name="userRole"]:checked'
-              ) as HTMLInputElement
-            ).value,
-            password: password,
-          },
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            this.authService.login(); // Mark the user as logged in
-            this.router.navigate(['project_setup']);
-          } else if (res.status == 401 || res.status == 404) {
-            alert("wrong password! or user with this role doesn't exist");
-          }
-          return res.json();
-        })
-        .then((data) => {
-          if (data.user) {
-            document.cookie = `_user=${JSON.stringify(data.user)};`;
-          }
-          console.log(data.user);
-        })
-        .catch((err) => console.error(err));
+      this.errorMessage = '*Enter Username';
+      return;
     }
-  }
+    if (!password) {
+      this.errorMessage = '*Enter Password';
+      return;
+    }
+    if (!userRole) {
+      this.errorMessage = '*Select User Role';
+      return;
+    }
 
-  focusedContainer: HTMLElement | null = null;
+    this.errorMessage = null; // Clear any previous error messages
+
+    fetch('http://192.168.11.183:3000/auth/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        user: {
+          name: username,
+          role: userRole,
+          password: password,
+        },
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          this.authService.login(); // Mark the user as logged in
+          this.router.navigate(['project_setup']);
+          return res.json();
+        } else if (res.status === 401 || res.status === 404) {
+          this.errorMessage = "*Wrong password or user with this role doesn't exist";
+        }
+        throw new Error('Login failed');
+      })
+      .then((data) => {
+        if (data.user) {
+          document.cookie = `_user=${JSON.stringify(data.user)};`;
+        }
+        console.log(data.user);
+      })
+      .catch((err) => console.error(err));
+  }
 
   onContainerClick(event: Event) {
     const target = event.currentTarget as HTMLElement;

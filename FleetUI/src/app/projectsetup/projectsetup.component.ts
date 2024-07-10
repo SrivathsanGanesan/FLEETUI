@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-projectsetup',
   templateUrl: './projectsetup.component.html',
-  styleUrl: './projectsetup.component.css',
+  styleUrls: ['./projectsetup.component.css'],
 })
 export class ProjectsetupComponent {
-  // Property to control the visibility of ProjDiv
   isProjDiv1Visible: boolean = false;
   isProjDiv2Visible: boolean = false;
   isProjDiv3Visible: boolean = false;
 
-  // Method to show ProjDiv
+  constructor(private authService: AuthService, private router: Router) {}
+
   showProjDiv1() {
-    // console.log(JSON.parse(document.cookie.split('=')[1])); user state..
     this.isProjDiv1Visible = !this.isProjDiv1Visible;
     this.isProjDiv2Visible = false;
     this.isProjDiv3Visible = false;
@@ -46,7 +46,10 @@ export class ProjectsetupComponent {
         console.log(data.isCookieDeleted);
         document.cookie =
           '_user=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'; // which sets the cookie expire date to the past (so it'll remove)
-        if (data.isCookieDeleted) window.location.href = '/';
+        if (data.isCookieDeleted) {
+          this.authService.logout();
+          this.router.navigate(['/']);
+        }
       })
       .catch((err) => console.log(err));
   }
@@ -55,7 +58,16 @@ export class ProjectsetupComponent {
     const file = event.target.files[0];
     if (file) {
       console.log('File selected:', file.name);
-      // Handle the file upload logic here
     }
+  }
+
+  isFocused: { [key: string]: boolean } = {};
+
+  onFocus(inputId: string) {
+    this.isFocused[inputId] = true;
+  }
+
+  onBlur(inputId: string) {
+    this.isFocused[inputId] = false;
   }
 }

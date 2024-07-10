@@ -14,6 +14,7 @@
   </div>
   <div class="RightPanel">
     <p class="Title">LOGIN</p>
+    
     <div class="user-role-section">
       <p class="UserRole">User Role</p>
       <div class="user-role-container">
@@ -51,7 +52,8 @@
           class="toggle-password"
           (click)="togglePasswordVisibility()"
         />
-      </div>
+      </div>   
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>   
       <div class="LoginBtncls">
         <button class="LoginBtn" (click)="validateForm()">LOGIN</button>
       </div>

@@ -5,7 +5,7 @@ import { ProjectsetupComponent } from './projectsetup/projectsetup.component';
 import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: '', component: LoginComponent, canActivate: [AuthGuard] },
   {
     path: 'project_setup',
     component: ProjectsetupComponent,
