@@ -48,7 +48,7 @@ export class LoginComponent {
 
     this.errorMessage = null; // Clear any previous error messages
 
-    fetch('http://192.168.11.183:3000/auth/login', {
+    fetch('http://192.168.144.183:3000/auth/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

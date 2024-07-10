@@ -14,6 +14,7 @@ export class ProjectsetupComponent {
   sitename: string = '';
   projectname: string = '';
   isFocused: { [key: string]: boolean } = {};
+  selectedProject: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -41,7 +42,7 @@ export class ProjectsetupComponent {
   }
 
   logout() {
-    fetch('http://192.168.11.183:3000/auth/logout', {
+    fetch('http://192.168.144.183:3000/auth/logout', {
       credentials: 'include',
     })
       .then((res) => res.json())
@@ -70,5 +71,9 @@ export class ProjectsetupComponent {
 
   onBlur(inputId: string) {
     this.isFocused[inputId] = false;
+  }
+
+  onProjectChange(event: any) {
+    this.projectname = event.target.value;
   }
 }

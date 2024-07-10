@@ -58,9 +58,11 @@
         </div>
       </div>
       <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
-        <select class="ProjList">
+        <select class="ProjList" [(ngModel)]="selectedProject" (change)="onProjectChange($event)">
+          <option value="" disabled selected>Project List</option>
           <option value="Project_1">Project_1</option>
           <option value="Project_2">Project_2</option>
+          <option value="Project_3">Project_3</option>
         </select>
         <div class="ButtonSet">
         <button class="OpenBTN">OPEN</button>
