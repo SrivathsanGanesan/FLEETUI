@@ -27,18 +27,18 @@
       </div>
       <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
         <div class="input-container">
-          <input id="Sitename" class="Sitename" (focus)="onFocus('Sitename')" (blur)="onBlur('Sitename')" />
-          <label for="Sitename" [class.active]="isFocused['Sitename']">Site Name</label>
+          <input id="Sitename" class="Sitename" (focus)="onFocus('Sitename')" (blur)="onBlur('Sitename')" [(ngModel)]="sitename" />
+          <label for="Sitename" [class.active]="isFocused['Sitename'] || sitename">Site Name</label>
         </div>
         <div class="input-container">
-          <input id="Projectname" class="Projectname" (focus)="onFocus('Projectname')" (blur)="onBlur('Projectname')" />
-          <label for="Projectname" [class.active]="isFocused['Projectname']">Project Name</label>
+          <input id="Projectname" class="Projectname" (focus)="onFocus('Projectname')" (blur)="onBlur('Projectname')" [(ngModel)]="projectname" />
+          <label for="Projectname" [class.active]="isFocused['Projectname'] || projectname">Project Name</label>
         </div>
         <div class="ButtonSet">
           <button class="CreateBTN">CREATE</button>
           <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
         </div>
-      </div>      
+      </div>           
       <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
         <img
           src="../../assets/icons/arrow-down-circle.svg"
@@ -58,7 +58,10 @@
         </div>
       </div>
       <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
-        <select class="ProjList"></select>
+        <select class="ProjList">
+          <option value="Project_1">Project_1</option>
+          <option value="Project_2">Project_2</option>
+        </select>
         <div class="ButtonSet">
         <button class="OpenBTN">OPEN</button>
         <button (click)="showProjDiv3()" class="BackBTN">BACK</button>

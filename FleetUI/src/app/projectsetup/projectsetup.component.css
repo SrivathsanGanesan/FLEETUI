@@ -120,46 +120,37 @@
 .input-container {
     position: relative;
   }
-  .Sitename{
-    width: 100%;
+  
+  .Sitename, .Projectname {
+    width: 180px;
     height: 30px;
     background-color: transparent;
     border: none;
     border-bottom: 1px solid rgb(255, 255, 255);
     border-radius: 5px;
     outline: none;
-    font-size: 12px;
+    font-size: 20px;
+    color: white;
   }
   
-  .Projectname {
-    width: 100%;
-    height: 30px;
-    background-color: transparent;
-    border: none;
-    border-bottom: 1px solid rgb(255, 255, 255);
-    border-radius: 5px;
-    outline: none;
-    font-size: 12px;
+  label {
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    pointer-events: none;
+    transition: 0.2s ease all;
   }
   
- label {
-   position: absolute;
-   left: 10px;
-   top: 5px;
-   font-size: 16px;
-   color: rgb(255, 255, 255);
-   pointer-events: none;
-   transition: 0.2s ease all;
- }
-  
-input:focus + label,
-label.active {
-   top: -15px;
-   left: 0px;
-   font-size: 12px;
-   color: #911515;
-   font-weight: bold;
-}
+  input:focus + label,
+  label.active {
+    top: -15px;
+    left: 0px;
+    font-size: 12px;
+    color: #911515;
+    font-weight: bold;
+  }  
   
 .CNPBtn,.OEPBtn{
 height: 40px;
@@ -227,7 +218,7 @@ color: #00000061;
     border-radius: 5px;
     color: white;    
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    margin-left: 10px;
+    margin-left: 20px;
 }
 .ImpBackBTN:hover,.ImpOpenBTN:hover{
     background-color: #852929;  

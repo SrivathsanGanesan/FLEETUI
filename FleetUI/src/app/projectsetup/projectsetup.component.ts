@@ -11,6 +11,9 @@ export class ProjectsetupComponent {
   isProjDiv1Visible: boolean = false;
   isProjDiv2Visible: boolean = false;
   isProjDiv3Visible: boolean = false;
+  sitename: string = '';
+  projectname: string = '';
+  isFocused: { [key: string]: boolean } = {};
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -60,8 +63,6 @@ export class ProjectsetupComponent {
       console.log('File selected:', file.name);
     }
   }
-
-  isFocused: { [key: string]: boolean } = {};
 
   onFocus(inputId: string) {
     this.isFocused[inputId] = true;
