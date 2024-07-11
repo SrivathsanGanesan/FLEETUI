@@ -17,15 +17,16 @@
     <p class="ProjTitle">PROJECT</p>
     <div class="details">
       <div class="ProjectSetup">
-        <button class="CNPBtn" (click)="showProjDiv1()">
+        <button class="CNPBtn" [class.active-button]="isProjDiv1Visible" (click)="showProjDiv1()">
           Create New Project
         </button>
-        <button class="IMFBtn" (click)="showProjDiv2()">
+        <button class="IMFBtn" [class.active-button]="isProjDiv2Visible" (click)="showProjDiv2()">
           Import Project
         </button>
-        <button class="OEPBtn" (click)="showProjDiv3()">
+        <button class="OEPBtn" [class.active-button]="isProjDiv3Visible" (click)="showProjDiv3()">
           Existing Project
         </button>
+        
       </div>
       <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
         <div class="input-container1">
