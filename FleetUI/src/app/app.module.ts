@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { ProjectsetupComponent } from './projectsetup/projectsetup.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,8 @@ import { ProjectsetupComponent } from './projectsetup/projectsetup.component';
   ],
   providers: [
     // provideClientHydration()
+  
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]
 })

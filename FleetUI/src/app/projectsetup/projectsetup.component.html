@@ -43,9 +43,11 @@
     </div>           
     
     <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
-        <img src="../../assets/icons/arrow-down-circle.svg" (click)="onIconClick()" class="Importicon" />
+      <div class="Impfile" (click)="onIconClick()">  
+      <img src="../../assets/icons/arrow-down-circle.svg"  class="Importicon" />
         <p class="ImpText">Import Project File</p>
         <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none" />
+      </div>
         <div class="ButtonSet">
             <button class="OpenBTN">OPEN</button>
             <button (click)="showProjDiv2()" class="BackBTN">BACK</button>
@@ -53,18 +55,18 @@
     </div>
     
     <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
-      <p>Select the Project </p>
-        <select class="ProjList" [(ngModel)]="selectedProject" (change)="onProjectChange($event)">
-            <option value="" disabled selected>Project List</option>
-            <option value="Project_1">Project_1</option>
-            <option value="Project_2">Project_2</option>
-            <option value="Project_3">Project_3</option>
-        </select>
-        <div class="ButtonSet">
-            <button class="OpenBTN">OPEN</button>
-            <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
-        </div>
-    </div>
+      <select class="ProjList" [(ngModel)]="selectedProject" (change)="onProjectChange($event)">
+          <option value="" disabled selected>Project List</option>
+          <option value="Project_1">Project_1</option>
+          <option value="Project_2">Project_2</option>
+          <option value="Project_3">Project_3</option>
+      </select>
+      <div class="ButtonSet">
+          <button class="OpenBTN">OPEN</button>
+          <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
+      </div>
+  </div>
+  
     
       <div class="LogoutBtncls">
         <!-- [routerLink]="['']" -->

@@ -91,7 +91,7 @@
     padding: 10px; /* Add padding to ensure consistent spacing inside the divs */
 }
 .ButtonSet {
-    display: flex;
+    display: flex;    
     justify-content: center;
     margin-top: 20px; /* Ensure there is enough space between elements and buttons */
 }
@@ -189,7 +189,6 @@ color: #00000061;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     margin-left: 10px;
 }
-
 .BackBTN:hover,
 .OpenBTN:hover,
 .CreateBTN:hover {
@@ -198,7 +197,9 @@ color: #00000061;
 .Importicon{
     width: 180px;
     height: 100px;
-    margin:0px 0px 5px 0px; 
+    margin:0px 0px 40px 0px; 
+    padding-left: 10px;
+
 }
 .ImpText{
     padding-left: 10px;
@@ -207,20 +208,28 @@ color: #00000061;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
     margin:0px 0px 5px 0px; 
+    cursor: default;
 }
-.ProjList{
+.ProjList {
     height: 40px;
-    background-color: transparent  ;
+    background-color: transparent;
     border: none;
     border-bottom: 2px solid rgb(255, 255, 255);
     border-radius: 5px;
     color: white;
     font-size: 20px;
     font-family: Arial, Helvetica, sans-serif;
+    margin:35px 0px 100px 0px;
 }
 .ProjList option {
-    background-color: rgb(150, 142, 142); /* Optional: to set background color for options */
-    color: white; /* Optional: to set text color for options */
+    background-color: rgb(150, 142, 142); /* Background color of options */
+    color: white; /* Text color of options */
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
+    font-size: 20px;
+    text-align: center;
+    border: none;
 }
+.ProjList option:hover {
+    background-color: #852929; /* Hover background color */
+}
+
