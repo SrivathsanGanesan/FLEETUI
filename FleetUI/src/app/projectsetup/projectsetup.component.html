@@ -12,7 +12,6 @@
       <p class="ProTitle">FMS</p>
     </div>
   </div>
-
   <div class="RightPanel">
     <p class="ProjTitle">PROJECT</p>
     <div class="details">
@@ -25,10 +24,9 @@
         </button>
         <button class="OEPBtn" [class.active-button]="isProjDiv3Visible" (click)="showProjDiv3()">
           Existing Project
-        </button>
-        
+        </button>        
       </div>
-      <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
+    <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
         <div class="input-container1">
             <input id="Sitename" class="Sitename" (focus)="onFocus('Sitename')" (blur)="onBlur('Sitename')" [(ngModel)]="sitename" />
             <label for="Sitename" [class.active]="isFocused['Sitename'] || sitename">Site Name</label>
@@ -41,8 +39,7 @@
             <button class="CreateBTN">CREATE</button>
             <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
         </div>
-    </div>           
-    
+    </div>  
     <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
       <div class="Impfile" (click)="onIconClick()">  
       <img src="../../assets/icons/arrow-down-circle.svg"  class="Importicon" />
@@ -54,7 +51,6 @@
             <button (click)="showProjDiv2()" class="BackBTN">BACK</button>
         </div>
     </div>
-    
     <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
       <select class="ProjList" [(ngModel)]="selectedProject" (change)="onProjectChange($event)">
           <option value="" disabled selected>Project List</option>
@@ -67,15 +63,12 @@
           <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
       </div>
   </div>
-  
-    
       <div class="LogoutBtncls">
         <!-- [routerLink]="['']" -->
         <button class="LogoutBtn" (click)="logout()">LOGOUT</button>
       </div>
     </div>
   </div>
-
   <div
     class="LeftPanel2"
     style="background: url('../../assets/bg.jpg') no-repeat center center/cover"
