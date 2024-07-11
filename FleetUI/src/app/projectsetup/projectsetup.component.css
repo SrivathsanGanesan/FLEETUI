@@ -11,7 +11,6 @@
     font-weight: bolder;
     margin: 40px 0px 10px 30px; /*TRBL*/
 }
-
 .LogoutBtn{
     width: 25%;
     padding: 15px;
@@ -54,7 +53,6 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 .fms-box p {
     font-size: 4rem;
     color: #b71c1c;
@@ -75,53 +73,37 @@
 .ProjectSetup{
     display:grid ;
 }
-.ProjDiv1{
+.ProjDiv1,
+.ProjDiv2,
+.ProjDiv3 {
     background-color: #0000005c;
     height: 300px;
     width: 250px;
     border-radius: 10px;
-    position: absolute; /* Add this line */
-    top: 245px; /* Center vertically */
-    right: 25px; /* Adjust the position from the right */
-    transform: translateY(-50%); /* Center vertically */
+    position: absolute;
+    top: 245px;
+    right: 25px;
+    transform: translateY(-50%);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     display: grid;
     justify-content: center;
     align-items: center;
+    padding: 10px; /* Add padding to ensure consistent spacing inside the divs */
 }
-.ProjDiv2{
-    background-color: #0000005c;
-    height: 300px;
-    width: 250px;
-    border-radius: 10px;
-    position: absolute; /* Add this line */
-    top: 245px; /* Center vertically */
-    right: 25px; /* Adjust the position from the right */
-    transform: translateY(-50%); /* Center vertically */
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-    display: grid;
+.ButtonSet {
+    display: flex;
     justify-content: center;
-    align-items: center; 
+    margin-top: 20px; /* Ensure there is enough space between elements and buttons */
 }
-.ProjDiv3{
-    background-color: #0000005c;
-    height: 300px;
-    width: 250px;
-    border-radius: 10px;
-    position: absolute; /* Add this line */
-    top: 245px; /* Center vertically */
-    right: 25px; /* Adjust the position from the right */
-    transform: translateY(-50%); /* Center vertically */
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-}
-.input-container {
+.input-container1 {
     position: relative;
-  }
-  
-  .Sitename, .Projectname {
+    margin: 40px 0px 10px 0px                
+ }  
+.input-container2{
+    position: relative;
+    margin: 0px 0px 20px 0px
+ }
+.Sitename,.Projectname {
     width: 180px;
     height: 30px;
     background-color: transparent;
@@ -131,9 +113,8 @@
     outline: none;
     font-size: 20px;
     color: white;
-  }
-  
-  label {
+ }  
+label {
     position: absolute;
     left: 10px;
     top: 5px;
@@ -141,17 +122,15 @@
     color: rgb(255, 255, 255);
     pointer-events: none;
     transition: 0.2s ease all;
-  }
-  
-  input:focus + label,
-  label.active {
+}  
+input:focus + label,
+label.active {
     top: -15px;
     left: 0px;
     font-size: 12px;
     color: #911515;
     font-weight: bold;
-  }  
-  
+}    
 .CNPBtn,.OEPBtn{
 height: 40px;
 width: 160px;
@@ -198,39 +177,26 @@ color: #00000061;
     box-shadow: rgba(0, 0, 0, 0.36) 0px 1px 4px;
     color: #000000;
 }
-
-.BackBTN,.OpenBTN,.CreateBTN{
+.BackBTN,
+.OpenBTN,
+.CreateBTN {
     width: 75px;
     padding: 10px;
     background-color: #b71c1c;
     border: none;
     border-radius: 5px;
-    color: white;    
+    color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     margin-left: 10px;
 }
 
-.ImpBackBTN,.ImpOpenBTN{
-    width: 75px;
-    padding: 10px;
-    background-color: #b71c1c;
-    border: none;
-    border-radius: 5px;
-    color: white;    
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    margin-left: 20px;
-}
-.ImpBackBTN:hover,.ImpOpenBTN:hover{
-    background-color: #852929;  
-}
-.ImpButtonSet{
-    margin-left: 15px; 
-}
-.BackBTN:hover,.OpenBTN:hover,.CreateBTN:hover{
-    background-color: #852929;  
+.BackBTN:hover,
+.OpenBTN:hover,
+.CreateBTN:hover {
+    background-color: #852929;
 }
 .Importicon{
-    width: 200px;
+    width: 180px;
     height: 100px;
     margin:0px 0px 5px 0px; 
 }
@@ -243,18 +209,18 @@ color: #00000061;
     margin:0px 0px 5px 0px; 
 }
 .ProjList{
-    height: 30px;
+    height: 40px;
     background-color: transparent  ;
     border: none;
-    border-bottom: 1px solid rgb(255, 255, 255);
+    border-bottom: 2px solid rgb(255, 255, 255);
     border-radius: 5px;
     color: white;
+    font-size: 20px;
     font-family: Arial, Helvetica, sans-serif;
 }
 .ProjList option {
     background-color: rgb(150, 142, 142); /* Optional: to set background color for options */
     color: white; /* Optional: to set text color for options */
-    text-align: center; /* Center align the text */
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
-  }
+}

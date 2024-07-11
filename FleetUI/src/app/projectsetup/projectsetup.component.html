@@ -20,55 +20,52 @@
         <button class="CNPBtn" (click)="showProjDiv1()">
           Create New Project
         </button>
-        <button class="IMFBtn" (click)="showProjDiv2()">Import Project</button>
+        <button class="IMFBtn" (click)="showProjDiv2()">
+          Import Project
+        </button>
         <button class="OEPBtn" (click)="showProjDiv3()">
           Existing Project
         </button>
       </div>
       <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
-        <div class="input-container">
-          <input id="Sitename" class="Sitename" (focus)="onFocus('Sitename')" (blur)="onBlur('Sitename')" [(ngModel)]="sitename" />
-          <label for="Sitename" [class.active]="isFocused['Sitename'] || sitename">Site Name</label>
+        <div class="input-container1">
+            <input id="Sitename" class="Sitename" (focus)="onFocus('Sitename')" (blur)="onBlur('Sitename')" [(ngModel)]="sitename" />
+            <label for="Sitename" [class.active]="isFocused['Sitename'] || sitename">Site Name</label>
         </div>
-        <div class="input-container">
-          <input id="Projectname" class="Projectname" (focus)="onFocus('Projectname')" (blur)="onBlur('Projectname')" [(ngModel)]="projectname" />
-          <label for="Projectname" [class.active]="isFocused['Projectname'] || projectname">Project Name</label>
+        <div class="input-container2">
+            <input id="Projectname" class="Projectname" (focus)="onFocus('Projectname')" (blur)="onBlur('Projectname')" [(ngModel)]="projectname" />
+            <label for="Projectname" [class.active]="isFocused['Projectname'] || projectname">Project Name</label>
         </div>
         <div class="ButtonSet">
-          <button class="CreateBTN">CREATE</button>
-          <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
+            <button class="CreateBTN">CREATE</button>
+            <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
         </div>
-      </div>           
-      <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
-        <img
-          src="../../assets/icons/arrow-down-circle.svg"
-          (click)="onIconClick()"
-          class="Importicon"
-        />
+    </div>           
+    
+    <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
+        <img src="../../assets/icons/arrow-down-circle.svg" (click)="onIconClick()" class="Importicon" />
         <p class="ImpText">Import Project File</p>
-        <input
-          type="file"
-          id="fileInput"
-          (change)="onFileSelected($event)"
-          style="display: none"
-        />
+        <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none" />
         <div class="ButtonSet">
-        <button class="ImpOpenBTN">OPEN</button>
-        <button (click)="showProjDiv2()" class="ImpBackBTN">BACK</button>
+            <button class="OpenBTN">OPEN</button>
+            <button (click)="showProjDiv2()" class="BackBTN">BACK</button>
         </div>
-      </div>
-      <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
+    </div>
+    
+    <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
+      <p>Select the Project </p>
         <select class="ProjList" [(ngModel)]="selectedProject" (change)="onProjectChange($event)">
-          <option value="" disabled selected>Project List</option>
-          <option value="Project_1">Project_1</option>
-          <option value="Project_2">Project_2</option>
-          <option value="Project_3">Project_3</option>
+            <option value="" disabled selected>Project List</option>
+            <option value="Project_1">Project_1</option>
+            <option value="Project_2">Project_2</option>
+            <option value="Project_3">Project_3</option>
         </select>
         <div class="ButtonSet">
-        <button class="OpenBTN">OPEN</button>
-        <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
-      </div>
-      </div>
+            <button class="OpenBTN">OPEN</button>
+            <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
+        </div>
+    </div>
+    
       <div class="LogoutBtncls">
         <!-- [routerLink]="['']" -->
         <button class="LogoutBtn" (click)="logout()">LOGOUT</button>
