@@ -24,8 +24,7 @@ export class AuthGuard implements CanActivate {
 
   checkLogin(url: string): boolean {
     if (this.authService.isLoggedIn()) {
-      if (url === '/') {
-        // User is logged in and trying to navigate to the login page, redirect them to project setup
+      if (url === '/') {        
         this.router.navigate(['/project_setup']);
         return false;
       }
@@ -33,7 +32,6 @@ export class AuthGuard implements CanActivate {
     }
 
     if (url === '/project_setup') {
-      // User is not logged in and trying to access project setup, redirect them to login page
       this.router.navigate(['/']);
       return false;
     }
