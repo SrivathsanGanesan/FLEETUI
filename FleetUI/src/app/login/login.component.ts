@@ -48,7 +48,7 @@ export class LoginComponent {
 
     this.errorMessage = null; // Clear any previous error messages
 
-    fetch('http://192.168.144.183:3000/auth/login', {
+    fetch('http://localhost:3000/auth/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -65,8 +65,7 @@ export class LoginComponent {
     })
       .then((res) => {
         if (res.ok) {
-          this.authService.login(); // Mark the user as logged in
-          this.router.navigate(['project_setup']);
+          // this.authService.login(); // Mark the user as logged in
           return res.json();
         } else if (res.status === 401 || res.status === 404) {
           this.errorMessage =
@@ -76,6 +75,8 @@ export class LoginComponent {
       })
       .then((data) => {
         if (data.user) {
+          this.router.navigate(['project_setup']);
+          this.authService.login(`_user=${JSON.stringify(data.user)};`);
           document.cookie = `_user=${JSON.stringify(data.user)};`;
         }
         console.log(data.user);

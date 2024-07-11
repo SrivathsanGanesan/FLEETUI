@@ -6,32 +6,26 @@ import { Injectable } from '@angular/core';
 export class AuthService {
   private readonly loggedInKey = 'loggedIn';
 
-  private isLocalStorageAvailable(): boolean {
-    return typeof localStorage !== 'undefined';
+  private isCookieEmpty(): boolean {
+    return document.cookie === '';
   }
 
   // Simulating user login
-  login() {
-    if (this.isLocalStorageAvailable()) {
-      localStorage.setItem(this.loggedInKey, 'true');
-    }
+  login(user: string) {
+    if (this.isCookieEmpty()) document.cookie = user;
   }
 
   // Simulating user logout
   logout() {
-    if (this.isLocalStorageAvailable()) {
-      localStorage.removeItem(this.loggedInKey);
+    if (!this.isCookieEmpty()) {
+      document.cookie = '_user=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
+      return;
     }
   }
 
   // Checking if the user is logged in
   isLoggedIn(): boolean {
-    if (this.isLocalStorageAvailable()) {
-      return (
-        localStorage.getItem(this.loggedInKey) === 'true' &&
-        document.cookie !== ''
-      );
-    }
+    if (document.cookie !== '') return true;
     return false;
   }
 }
