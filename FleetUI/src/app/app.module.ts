@@ -15,8 +15,7 @@ import { ProjectsetupComponent } from './projectsetup/projectsetup.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule  
-    
+    FormsModule   
   ],
   providers: [
     // provideClientHydration()
