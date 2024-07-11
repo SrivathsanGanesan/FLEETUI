@@ -78,11 +78,11 @@
 .ProjDiv3 {
     background-color: #0000005c;
     height: 300px;
-    width: 250px;
+    width: 240px;
     border-radius: 10px;
     position: absolute;
-    top: 245px;
-    right: 25px;
+    top: 220px;
+    right: 30px;
     transform: translateY(-50%);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     display: grid;
@@ -189,7 +189,6 @@ color: #00000061;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     margin-left: 10px;
 }
-
 .BackBTN:hover,
 .OpenBTN:hover,
 .CreateBTN:hover {
@@ -226,11 +225,9 @@ color: #00000061;
     background-color: rgb(150, 142, 142); /* Background color of options */
     color: white; /* Text color of options */
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
+    font-size: 15px;
     text-align: center;
     border: none;
 }
-.ProjList option:hover {
-    background-color: #852929; /* Hover background color */
-}
+
 
