@@ -32,17 +32,20 @@ export class LoginComponent {
         'input[name="userRole"]:checked'
       ) as HTMLInputElement
     )?.value;
-
-    if (!username) {
-      this.errorMessage = '*Enter Username';
+    if (!username && !password && !userRole) {
+      this.errorMessage = '*Enter Username, Password and Select User Role';
       return;
     }
-    if (!password) {
-      this.errorMessage = '*Enter Password';
+    if (!username && !password) {
+      this.errorMessage = '*Enter Username and Password';
       return;
     }
-    if (!userRole) {
-      this.errorMessage = '*Select User Role';
+    if (!password && !userRole) {
+      this.errorMessage = '*Enter Password and Select User Role';
+      return;
+    }
+    if (!userRole && !username) {
+      this.errorMessage = '*Select User Role and Enter Username';
       return;
     }
 
