@@ -190,20 +190,17 @@ input[type="radio"]::before {
     right: 10px;
     width: 130px;
 }
-
 .fms-box {
     background-color: white;
     padding: 50px 30px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 .fms-box p {
     font-size: 4rem;
     color: #b71c1c;
     margin: 0;
 }
-
 .Loginpage{ 
     display: flex;
     width: 1000px;
