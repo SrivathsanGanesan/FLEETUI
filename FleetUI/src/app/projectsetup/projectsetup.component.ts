@@ -15,6 +15,7 @@ export class ProjectsetupComponent {
   projectname: string = '';
   isFocused: { [key: string]: boolean } = {};
   selectedProject: string = '';
+  selectedFileName: string = 'Import Project File';
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -27,6 +28,9 @@ export class ProjectsetupComponent {
       this.projectname = '';
       this.isFocused = {};
     }  
+    if (!this.isProjDiv2Visible){
+      this.selectedFileName = "Import Project File";
+    }
   }
 
   showProjDiv2() {
@@ -38,6 +42,9 @@ export class ProjectsetupComponent {
       this.projectname = '';
       this.isFocused = {};
     } 
+    if (!this.isProjDiv2Visible){
+      this.selectedFileName = "Import Project File";
+    }
   }
 
   showProjDiv3() {
@@ -48,6 +55,9 @@ export class ProjectsetupComponent {
       this.sitename = '';
       this.projectname = '';
       this.isFocused = {};
+    }
+    if (!this.isProjDiv2Visible){
+      this.selectedFileName = "Import Project File";
     } 
   }
 
@@ -72,11 +82,11 @@ export class ProjectsetupComponent {
       })
       .catch((err) => console.log(err));
   }
-
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       console.log('File selected:', file.name);
+      this.selectedFileName = file.name; // Update the variable with the file name
     }
   }
 

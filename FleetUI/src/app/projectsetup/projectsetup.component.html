@@ -43,7 +43,7 @@
     <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
       <div class="Impfile" (click)="onIconClick()">  
       <img src="../../assets/icons/arrow-down-circle.svg"  class="Importicon" />
-        <p class="ImpText">Import Project File</p>
+      <p class="ImpText">{{ selectedFileName }}</p>
         <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none" />
       </div>
         <div class="ButtonSet">
