@@ -32,6 +32,7 @@
       </div>
     </div>
     <div class="details">
+      <div>
       <div class="inputUScontainer" (click)="onContainerClick($event)">
         <input id="username" type="text" required placeholder=" " />
         <label for="username">Username</label>
@@ -53,6 +54,7 @@
           (click)="togglePasswordVisibility()"
         />
       </div>   
+    </div>
       <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>   
       <div class="LoginBtncls">
         <button class="LoginBtn" (click)="validateForm()">LOGIN</button>

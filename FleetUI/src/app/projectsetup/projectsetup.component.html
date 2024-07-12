@@ -26,7 +26,7 @@
           Existing Project
         </button>        
       </div>
-      <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
+    <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
         <div class="input-container1">
             <input id="Sitename" class="Sitename" (focus)="onFocus('Sitename')" (blur)="onBlur('Sitename')" [(ngModel)]="sitename" />
             <label for="Sitename" [class.active]="isFocused['Sitename'] || sitename">Site Name</label>
