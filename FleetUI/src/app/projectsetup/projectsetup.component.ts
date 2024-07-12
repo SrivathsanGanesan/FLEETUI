@@ -22,18 +22,33 @@ export class ProjectsetupComponent {
     this.isProjDiv1Visible = !this.isProjDiv1Visible;
     this.isProjDiv2Visible = false;
     this.isProjDiv3Visible = false;
+    if (!this.isProjDiv1Visible) {
+      this.sitename = '';
+      this.projectname = '';
+      this.isFocused = {};
+    }  
   }
 
   showProjDiv2() {
     this.isProjDiv2Visible = !this.isProjDiv2Visible;
     this.isProjDiv1Visible = false;
     this.isProjDiv3Visible = false;
+    if (!this.isProjDiv1Visible) {
+      this.sitename = '';
+      this.projectname = '';
+      this.isFocused = {};
+    } 
   }
 
   showProjDiv3() {
     this.isProjDiv3Visible = !this.isProjDiv3Visible;
     this.isProjDiv2Visible = false;
     this.isProjDiv1Visible = false;
+    if (!this.isProjDiv1Visible) {
+      this.sitename = '';
+      this.projectname = '';
+      this.isFocused = {};
+    } 
   }
 
   onIconClick() {

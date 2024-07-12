@@ -9,7 +9,7 @@
 .ProjTitle{
     font-size: 40px;
     font-weight: bolder;
-    margin: 40px 0px 10px 30px; /*TRBL*/
+    margin: 40px 0px 20px 30px; /*TRBL*/
 }
 .LogoutBtn{
     width: 25%;
@@ -21,7 +21,7 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-    margin: 50px 0px 10px 30px;
+    margin: 50px 0px 0px 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 .LogoutBtn:hover{
@@ -229,5 +229,6 @@ color: #00000061;
     text-align: center;
     border: none;
 }
-
-
+.Sitename:focus, .Projectname:focus {
+    border-bottom-color: #911515; /* Change to red on focus */
+}
