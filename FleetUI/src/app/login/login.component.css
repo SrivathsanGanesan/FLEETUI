@@ -10,7 +10,7 @@
 }
 .UserRole{
     background-color: #00000000;
-    color: #0000003f;
+    color: #000000;
     border: none;
     font-weight: bolder;
     border-radius: 5px;
@@ -18,10 +18,7 @@
     padding: 7px 10px 7px 10px;
     font-size: 15px;
 }
-.UserRole:hover{
-    color: #000000;
-    cursor: pointer;
-}
+
 .user-role-section{
     display: inline-flex;
 }
@@ -29,7 +26,7 @@
     padding:0px 5px 0px 5px;
 }
 .user-role-container {
-    margin:28px 0px 0px 0px ;
+    margin:31px 0px 0px 0px ;
     padding: 0px 0px 0px 0px;
 }
 input[type="radio"]:checked::before {
@@ -79,11 +76,12 @@ input[type="radio"]::before {
     left: 15px;
     font-size: 0.75rem;
     color: #b71c1c;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .inputPScontainer {
     position: relative;
     margin: 25px 0;
-    width: 10%;
+    width: 10%;    
 }
 .inputUScontainer {
     position: relative;
@@ -98,7 +96,7 @@ input[type="radio"]::before {
     width: 110%;
     height: 10px;
     border: none;
-    border-bottom: 2px solid #000000;
+    border-bottom: 2.5px solid #b71c1c;
     background-color: transparent;
     font-size: 1.25rem;
     color: #000000;
@@ -117,7 +115,7 @@ input[type="radio"]::before {
     width: calc(11 0% - 0px); /* Adjust width to accommodate the icon */
     height: 10px;
     border: none;
-    border-bottom: 2px solid #000000;
+    border-bottom: 2.5px solid #b71c1c;
     background-color: transparent;
     font-size: 1.25rem;
     color: #000000;
@@ -127,16 +125,15 @@ input[type="radio"]::before {
 }
 .inputUScontainer label, .inputPScontainer label{   
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 15px;
     transform: translateY(-50%);
     transition: all 0.3s ease;
-    font-size: 1rem;
-    color: #65616181;
+    font-size: 0.75rem;
+    color: #911515;
     pointer-events: none;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
-    font-size: 20px;
     padding: 5px 2px 15px 5px;
 }
 .toggle-password {
@@ -167,9 +164,7 @@ input[type="radio"]::before {
     margin: 0px 0px 10px 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
-.LoginBtn:hover{
-    background-color: #852929;    
-}
+
 .LeftPanel{   
     width: 50%;
     display: flex;
