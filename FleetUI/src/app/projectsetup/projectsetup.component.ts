@@ -14,6 +14,7 @@ export class ProjectsetupComponent {
   isProjDiv3Visible: boolean = false;
   sitename: string = '';
   projectname: string = '';
+  projectname1: string = '';
   isFocused: { [key: string]: boolean } = {};
   selectedProject: string = '';
   selectedFileName: string = 'Import Project File';
@@ -38,6 +39,9 @@ export class ProjectsetupComponent {
     if (!this.isProjDiv2Visible){
       this.selectedFileName = "Import Project File";
     }
+    if (!this.isProjDiv3Visible){
+      this.selectedProject ='';
+    }
   }
 
   showProjDiv2() {
@@ -52,6 +56,9 @@ export class ProjectsetupComponent {
     } 
     if (!this.isProjDiv2Visible){
       this.selectedFileName = "Import Project File";
+    }
+    if (!this.isProjDiv3Visible){
+      this.selectedProject ='';
     }
   }
 
@@ -68,6 +75,9 @@ export class ProjectsetupComponent {
     if (!this.isProjDiv2Visible){
       this.selectedFileName = "Import Project File";
     } 
+    if (!this.isProjDiv3Visible){
+      this.selectedProject ='';
+    }
   }
 
   onIconClick() {
@@ -107,7 +117,7 @@ export class ProjectsetupComponent {
   }
 
   onProjectChange(event: any) {
-    this.projectname = event.target.value;
+    this.projectname1 = event.target.value;
   }
 
   createProject() {
