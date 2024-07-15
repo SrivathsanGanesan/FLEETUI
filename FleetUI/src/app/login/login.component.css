@@ -90,13 +90,13 @@ input[type="radio"]::before {
 }
 .inputUScontainer input:focus,
 .inputPScontainer input:focus {
-    border-bottom: 2px solid #b71c1c;
+    border-bottom: 2px solid #911515;
 }
 .inputUScontainer input, .inputPScontainer input{
     width: 110%;
     height: 10px;
     border: none;
-    border-bottom: 2.5px solid #b71c1c;
+    border-bottom: 2.5px solid #911515;
     background-color: transparent;
     font-size: 1rem;
     color: #000000;
@@ -115,7 +115,7 @@ input[type="radio"]::before {
     width: calc(11 0% - 0px); /* Adjust width to accommodate the icon */
     height: 10px;
     border: none;
-    border-bottom: 2.5px solid #b71c1c;
+    border-bottom: 2.5px solid #911515;
     background-color: transparent;
     font-size: 1rem;
     color: #000000;
@@ -154,7 +154,7 @@ input[type="radio"]::before {
 .LoginBtn{
     width: 25%;
     padding: 15px;
-    background-color: #b71c1c;
+    background-color: #911515;
     border: none;
     border-radius: 5px;
     color: white;
@@ -193,7 +193,7 @@ input[type="radio"]::before {
 }
 .fms-box p {
     font-size: 4rem;
-    color: #b71c1c;
+    color: #911515;
     margin: 0;
 }
 .Loginpage{ 
