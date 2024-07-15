@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const dashboardConnection = mongoose.createConnection( process.env.MONGO_DASHBOARD_URI,
-  {
-    // serverSelectionTimeoutMS: 30000,
-  }
+const dashboardConnection = mongoose.createConnection(
+  process.env.MONGO_DASHBOARD_URI
 );
-
-const userManagementConnection = mongoose.createConnection( process.env.MONGO_USERMANAGEMENT_URI );
+const userManagementConnection = mongoose.createConnection(
+  process.env.MONGO_USERMANAGEMENT_URI
+);
+const projectConnection = mongoose.createConnection(
+  process.env.MONGO_PROJECT_URI
+);
 
 const isConnect = (dbConnection) => {
   dbConnection.on("connected", () => {
@@ -25,5 +27,10 @@ const isConnect = (dbConnection) => {
 
 isConnect(dashboardConnection);
 isConnect(userManagementConnection);
+isConnect(projectConnection);
 
-module.exports = { dashboardConnection, userManagementConnection };
+module.exports = {
+  dashboardConnection,
+  userManagementConnection,
+  projectConnection,
+};

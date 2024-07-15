@@ -1,4 +1,5 @@
 const { Schema, model, mongoose } = require("mongoose");
+
 const zoneSchema = new Schema(
   {
     zoneId: { type: String, required: true },

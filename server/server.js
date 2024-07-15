@@ -15,6 +15,10 @@ app.use("/dashboard/uptime", dashboardUptimeRouter);
 const authRouter = require("./common/routes/authRouter");
 app.use("/auth", authRouter);
 
+//creat project..
+const projectRouter = require("./fleetcore/routes/projectRouter");
+app.use("/create-new-project", projectRouter);
+
 app.listen(process.env.PORT, (err) => {
   err
     ? console.log("error while connecting : ", err)

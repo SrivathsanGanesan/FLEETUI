@@ -90,7 +90,7 @@ export class LoginComponent {
         if (data.user) {
           this.router.navigate(['project_setup']);
           this.authService.login(`_user=${JSON.stringify(data.user)};`);
-          document.cookie = `_user=${JSON.stringify(data.user)};`;
+          // document.cookie = `_user=${JSON.stringify(data.user)};`;
         }
         console.log(data.user);
       })
