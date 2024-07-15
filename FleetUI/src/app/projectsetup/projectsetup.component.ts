@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
+
 @Component({
   selector: 'app-projectsetup',
   templateUrl: './projectsetup.component.html',
@@ -18,7 +19,9 @@ export class ProjectsetupComponent {
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router,
+  constructor(
+    private authService: AuthService,
+    private router: Router,
     private projectService: ProjectService
   ) {}
 
@@ -79,8 +82,6 @@ export class ProjectsetupComponent {
       .then((res) => res.json())
       .then((data) => {
         console.log(data.isCookieDeleted);
-        // document.cookie =
-        //   '_user=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'; // which sets the cookie expire date to the past (so it'll remove)
         if (data.isCookieDeleted) {
           this.authService.logout();
           this.router.navigate(['/']);
@@ -88,6 +89,7 @@ export class ProjectsetupComponent {
       })
       .catch((err) => console.log(err));
   }
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -107,22 +109,14 @@ export class ProjectsetupComponent {
   onProjectChange(event: any) {
     this.projectname = event.target.value;
   }
+
   createProject() {
     if (this.sitename && this.projectname) {
-      // Logic to handle project creation
-      console.log('Creating project with:', this.sitename, this.projectname);
+      console.log('Sitename :', this.sitename , 'Projectname :',this.projectname);
       this.projectService.setProjectCreated(true);
-      // Navigate to dashboard
       this.router.navigate(['/dashboard']);
-    } 
-    if(!this.sitename){
-      this.errorMessage = '*Please fill Site Name.'
-    }
-    if(!this.projectname){
-      this.errorMessage = '*Please fill Project Name.'
-    }
-    if(!this.projectname && !this.projectname){
-      this.errorMessage = '*Please fill in both the fields.';
+    } else {
+      this.errorMessage = '*Please fill in both Site Name and Project Name.';
     }
   }
 }

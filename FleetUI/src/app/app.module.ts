@@ -7,11 +7,14 @@ import { LoginComponent } from './login/login.component';
 import { ProjectsetupComponent } from './projectsetup/projectsetup.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { SidenavbarComponent } from './sidenavbar/sidenavbar.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    SidenavbarComponent,
+    DashboardComponent,
     ProjectsetupComponent
   ],
   imports: [
