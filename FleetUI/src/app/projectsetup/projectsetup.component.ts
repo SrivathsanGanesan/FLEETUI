@@ -16,6 +16,7 @@ export class ProjectsetupComponent {
   isFocused: { [key: string]: boolean } = {};
   selectedProject: string = '';
   selectedFileName: string = 'Import Project File';
+  errorMessage: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -27,6 +28,7 @@ export class ProjectsetupComponent {
       this.sitename = '';
       this.projectname = '';
       this.isFocused = {};
+      this.errorMessage = '';
     }  
     if (!this.isProjDiv2Visible){
       this.selectedFileName = "Import Project File";
@@ -41,6 +43,7 @@ export class ProjectsetupComponent {
       this.sitename = '';
       this.projectname = '';
       this.isFocused = {};
+      this.errorMessage = '';
     } 
     if (!this.isProjDiv2Visible){
       this.selectedFileName = "Import Project File";
@@ -55,6 +58,7 @@ export class ProjectsetupComponent {
       this.sitename = '';
       this.projectname = '';
       this.isFocused = {};
+      this.errorMessage = '';
     }
     if (!this.isProjDiv2Visible){
       this.selectedFileName = "Import Project File";
@@ -100,5 +104,22 @@ export class ProjectsetupComponent {
 
   onProjectChange(event: any) {
     this.projectname = event.target.value;
+  }
+  createProject() {
+    if (this.sitename && this.projectname) {
+      // Logic to handle project creation
+      console.log('Creating project with:', this.sitename, this.projectname);
+      // Navigate to dashboard
+      this.router.navigate(['/dashboard']);
+    } 
+    if(!this.sitename){
+      this.errorMessage = '*Please fill Site Name.'
+    }
+    if(!this.projectname){
+      this.errorMessage = '*Please fill Project Name.'
+    }
+    if(!this.projectname && !this.projectname){
+      this.errorMessage = '*Please fill in both the fields.';
+    }
   }
 }

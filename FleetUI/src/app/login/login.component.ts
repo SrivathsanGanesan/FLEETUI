@@ -48,9 +48,19 @@ export class LoginComponent {
       this.errorMessage = '*Select User Role and Enter Username';
       return;
     }
-
+    if (!userRole ) {
+      this.errorMessage = '*Select User Role ';
+      return;
+    }
+    if (!username) {
+      this.errorMessage = '*Enter Username';
+      return;
+    }
+    if (!password) {
+      this.errorMessage = '*Enter Password ';
+      return;
+    }
     this.errorMessage = null; // Clear any previous error messages
-
     fetch('http://localhost:3000/auth/login', {
       method: 'POST',
       headers: {

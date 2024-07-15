@@ -26,20 +26,36 @@
           Existing Project
         </button>        
       </div>
-    <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
+      <div class="ProjDiv1" *ngIf="isProjDiv1Visible">
         <div class="input-container1">
-            <input id="Sitename" class="Sitename" (focus)="onFocus('Sitename')" (blur)="onBlur('Sitename')" [(ngModel)]="sitename" />
-            <label for="Sitename" [class.active]="isFocused['Sitename'] || sitename">Site Name</label>
+          <input
+            id="Sitename"
+            class="Sitename"
+            (focus)="onFocus('Sitename')"
+            (blur)="onBlur('Sitename')"
+            [(ngModel)]="sitename"
+          />
+          <label for="Sitename" [class.active]="isFocused['Sitename'] || sitename">Site Name</label>
         </div>
         <div class="input-container2">
-            <input id="Projectname" class="Projectname" (focus)="onFocus('Projectname')" (blur)="onBlur('Projectname')" [(ngModel)]="projectname" />
-            <label for="Projectname" [class.active]="isFocused['Projectname'] || projectname">Project Name</label>
+          <input
+            id="Projectname"
+            class="Projectname"
+            (focus)="onFocus('Projectname')"
+            (blur)="onBlur('Projectname')"
+            [(ngModel)]="projectname"
+          />
+          <label for="Projectname" [class.active]="isFocused['Projectname'] || projectname">Project Name</label>
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
         </div>
         <div class="ButtonSet">
-            <button class="CreateBTN">CREATE</button>
-            <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
+          <button class="CreateBTN" (click)="createProject()">CREATE</button>
+          <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
         </div>
-    </div>    
+      </div>
+        
     <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
       <div class="Impfile" (click)="onIconClick()">  
       <img src="../../assets/icons/arrow-down-circle.svg"  class="Importicon" />
