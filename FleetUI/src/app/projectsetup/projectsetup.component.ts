@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-
+import { ProjectService } from '../services/project.service';
 @Component({
   selector: 'app-projectsetup',
   templateUrl: './projectsetup.component.html',
@@ -18,7 +18,9 @@ export class ProjectsetupComponent {
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router,
+    private projectService: ProjectService
+  ) {}
 
   showProjDiv1() {
     this.isProjDiv1Visible = !this.isProjDiv1Visible;
@@ -109,6 +111,7 @@ export class ProjectsetupComponent {
     if (this.sitename && this.projectname) {
       // Logic to handle project creation
       console.log('Creating project with:', this.sitename, this.projectname);
+      this.projectService.setProjectCreated(true);
       // Navigate to dashboard
       this.router.navigate(['/dashboard']);
     } 
