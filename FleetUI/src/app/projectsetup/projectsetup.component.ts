@@ -112,11 +112,22 @@ export class ProjectsetupComponent {
 
   createProject() {
     if (this.sitename && this.projectname) {
+      // Logic to handle project creation
+      console.log('Creating project with:', this.sitename, this.projectname);
       console.log('Sitename :', this.sitename , 'Projectname :',this.projectname);
       this.projectService.setProjectCreated(true);
+      // Navigate to dashboard
       this.router.navigate(['/dashboard']);
-    } else {
-      this.errorMessage = '*Please fill in both fields';
+    } 
+    if(!this.sitename){
+      this.errorMessage = '*Please fill Site Name.'
+    }
+    if(!this.projectname){
+      this.errorMessage = '*Please fill Project Name.'
+    }
+    if(!this.projectname && !this.projectname){
+      this.errorMessage = '*Please fill in both the fields.';
+    
     }
   }
 }
