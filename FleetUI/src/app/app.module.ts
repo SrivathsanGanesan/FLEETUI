@@ -14,7 +14,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     AppComponent,
     LoginComponent,
     SidenavbarComponent,
-    DashboardComponent,
+    DashboardComponent,    
     ProjectsetupComponent
   ],
   imports: [
