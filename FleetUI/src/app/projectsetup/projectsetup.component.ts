@@ -116,7 +116,7 @@ export class ProjectsetupComponent {
       this.projectService.setProjectCreated(true);
       this.router.navigate(['/dashboard']);
     } else {
-      this.errorMessage = '*Please fill in both Site Name and Project Name.';
+      this.errorMessage = '*Please fill in both fields';
     }
   }
 }

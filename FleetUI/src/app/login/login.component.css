@@ -208,3 +208,11 @@ input[type="radio"]::before {
     font-size: 45px;
     font-weight: bold;
 }   
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #ffffff; /* Optional: Match the body background color */
+    margin: 0px;
+}

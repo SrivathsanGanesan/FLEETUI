@@ -240,3 +240,10 @@ color: #00000061;
     font-weight: bold;
     margin: 0px;
 }
+.Project-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #ffffff; /* Optional: Match the body background color */
+}

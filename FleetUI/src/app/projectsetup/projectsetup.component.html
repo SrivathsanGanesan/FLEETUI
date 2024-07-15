@@ -1,3 +1,4 @@
+<div class="Project-container">
 <div class="Projectpage">
   <div
     class="LeftPanel"
@@ -55,30 +56,29 @@
           <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
         </div>
       </div>
-        
-    <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
-      <div class="Impfile" (click)="onIconClick()">  
-      <img src="../../assets/icons/arrow-down-circle.svg"  class="Importicon" />
-      <p class="ImpText">{{ selectedFileName }}</p>
-        <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none" />
+      <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
+        <div class="Impfile" (click)="onIconClick()">  
+        <img src="../../assets/icons/arrow-down-circle.svg"  class="Importicon" />
+        <p class="ImpText">{{ selectedFileName }}</p>
+          <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none" />
+        </div>
+          <div class="ButtonSet">
+              <button class="OpenBTN">OPEN</button>
+              <button (click)="showProjDiv2()" class="BackBTN">BACK</button>
+          </div>
       </div>
+      <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
+        <select class="ProjList" [(ngModel)]="selectedProject" (change)="onProjectChange($event)">
+            <option value="" disabled selected>Project List</option>
+            <option value="Project_1">Project_1</option>
+            <option value="Project_2">Project_2</option>
+            <option value="Project_3">Project_3</option>
+        </select>
         <div class="ButtonSet">
             <button class="OpenBTN">OPEN</button>
-            <button (click)="showProjDiv2()" class="BackBTN">BACK</button>
+            <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
         </div>
-    </div>
-    <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
-      <select class="ProjList" [(ngModel)]="selectedProject" (change)="onProjectChange($event)">
-          <option value="" disabled selected>Project List</option>
-          <option value="Project_1">Project_1</option>
-          <option value="Project_2">Project_2</option>
-          <option value="Project_3">Project_3</option>
-      </select>
-      <div class="ButtonSet">
-          <button class="OpenBTN">OPEN</button>
-          <button (click)="showProjDiv3()" class="BackBTN">BACK</button>
       </div>
-  </div>
       <div class="LogoutBtncls">
         <!-- [routerLink]="['']" -->
         <button class="LogoutBtn" (click)="logout()">LOGOUT</button>
@@ -89,4 +89,5 @@
     class="LeftPanel2"
     style="background: url('../../assets/bg.jpg') no-repeat center center/cover"
   ></div>
+</div>
 </div>
