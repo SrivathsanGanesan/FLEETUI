@@ -1,15 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatisticsComponent } from './statistics.component';
+import { AppRoutingModule } from '../app-routing.module';
 
 
 
 @NgModule({
   declarations: [
-    StatisticsComponent
+    
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    AppRoutingModule
   ]
 })
 export class StatisticsModule { }
