@@ -124,7 +124,7 @@ label {
 }  
 input:focus + label,
 label.active {
-    top: -15px;
+    top: -23px;
     left: 0px;
     font-size: 12px;
     color: #911515;
