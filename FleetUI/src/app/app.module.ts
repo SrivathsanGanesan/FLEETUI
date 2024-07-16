@@ -9,13 +9,19 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidenavbarComponent } from './sidenavbar/sidenavbar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { StatisticsComponent } from './statistics/statistics.component';
+import { ConfigurationComponent } from './configuration/configuration.component';
+import { UserlogsComponent } from './userlogs/userlogs.component';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SidenavbarComponent,
     DashboardComponent,    
-    ProjectsetupComponent
+    ProjectsetupComponent,
+    ConfigurationComponent,
+    UserlogsComponent,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,

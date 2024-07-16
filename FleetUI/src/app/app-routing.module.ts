@@ -7,18 +7,22 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectGuard } from './guards/project.guard';
+import { UserlogsComponent } from './userlogs/userlogs.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [AuthGuard], data: { animation: 'LoginPage' } },
   {
     path: 'project_setup',
     component: ProjectsetupComponent,
-    canActivate: [AuthGuard],
-    data: { animation: 'ProjectSetupPage' }
+    canActivate: [AuthGuard]
   },
   {
     path: 'statistics',
     component: StatisticsComponent,
+  },
+  {
+    path: 'userlogs',
+    component: UserlogsComponent,
   },
   {
     path: 'configuration',

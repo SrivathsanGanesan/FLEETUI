@@ -2,7 +2,8 @@
     font-family: Arial, Helvetica, sans-serif;
     height: 450px;
     width: 750px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;}
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
 .Title{
     font-size: 40px;
     font-weight: bolder;
@@ -18,7 +19,6 @@
     padding: 7px 10px 7px 10px;
     font-size: 15px;
 }
-
 .user-role-section{
     display: inline-flex;
 }
@@ -29,18 +29,6 @@
     margin:31px 0px 0px 0px ;
     padding: 0px 0px 0px 0px;
 }
-input[type="radio"]:checked::before {
-    content: '';
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    background-color: #911515;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
 input[type="radio"] {
     appearance: none;
     width: 15px;
@@ -50,18 +38,12 @@ input[type="radio"] {
     position: relative;
     cursor: pointer;
 }
-input[type="radio"]::before {
-    content: '';
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    background-color: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+
+input[type="radio"]:checked {
+    background-color: #911515;
+    border: 1px solid #911515;
 }
+
 .details{
     padding: 10px 2px 10px 2px;
     margin: 0px 0px 10px 15px;
@@ -106,7 +88,7 @@ input[type="radio"]::before {
     position: relative;
     margin: 20px 0;
     width: 80%;
-  }
+}
 .inputUScontainer input{
     margin: 10px 0px 10px 15px;    
     padding: 5px 2px 15px 2px;
@@ -150,7 +132,7 @@ input[type="radio"]::before {
     font-size: 12px;
     font-weight: bold;
     margin: 0px 0px 10px 15px;
-  }  
+}
 .LoginBtn{
     width: 25%;
     padding: 15px;
@@ -164,7 +146,6 @@ input[type="radio"]::before {
     margin: 0px 0px 10px 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
-
 .LeftPanel{   
     width: 50%;
     display: flex;
