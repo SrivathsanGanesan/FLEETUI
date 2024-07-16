@@ -6,7 +6,7 @@ import { SidenavbarComponent } from './sidenavbar.component';
 
 @NgModule({
   declarations: [
-    SidenavbarComponent
+    
   ],
   imports: [
     CommonModule
