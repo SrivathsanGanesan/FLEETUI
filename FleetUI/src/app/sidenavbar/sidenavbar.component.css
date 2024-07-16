@@ -5,6 +5,7 @@
     position: absolute;
     top: 0px;
     transition: width 0.3s ease;
+    overflow: hidden; /* To hide the labels when not hovered */
 }
 
 .sidebar:hover {
@@ -28,24 +29,35 @@
     margin: 5px 0px 10px 15px;
 }
 
-.Dlogo, .Slogo, .Llogo, .Clogo, .Ulogo {
-    padding-top: 20px;
-    display: block;
+.icon {
+    display: flex;
+    align-items: center;
+    padding-top: 30px;
     transition: margin-left 0.3s ease;
-    margin-left: 0;
 }
 
-.sidebar:hover .Dlogo, 
-.sidebar:hover .Slogo, 
-.sidebar:hover .Llogo, 
-.sidebar:hover .Clogo, 
-.sidebar:hover .Ulogo {
-    margin-left: 0px;
+.icon img {
+    margin-right: 10px;
 }
 
-.Outlogo {
-    padding-top: 300px;
-    margin: 0px 0px 0px 15px;
+.icon .label {
+    display: none;
+    white-space: nowrap; /* Prevents text from wrapping */
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.sidebar:hover .icon .label {
+    display: block;
+    opacity: 1;
+    font-size: 0.95rem;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #ffffff;
+}
+
+.Outlogo {    
+    margin: 250px 0px 0px 15px;
 }
 
 .Nlogo {
