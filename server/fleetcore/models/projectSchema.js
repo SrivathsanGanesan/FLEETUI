@@ -28,4 +28,6 @@ const projectModel = projectConnection.model(
   "projectDets"
 );
 
-module.exports = { projectModel };
+const siteModel = projectConnection.model("sites", siteSchema);
+
+module.exports = { projectModel, siteModel };
