@@ -12,6 +12,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { UserlogsComponent } from './userlogs/userlogs.component';
+import { UsermanagementComponent } from './usermanagement/usermanagement.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,6 +21,7 @@ import { UserlogsComponent } from './userlogs/userlogs.component';
     DashboardComponent,    
     ProjectsetupComponent,
     ConfigurationComponent,
+    UsermanagementComponent,
     UserlogsComponent,
     StatisticsComponent
   ],

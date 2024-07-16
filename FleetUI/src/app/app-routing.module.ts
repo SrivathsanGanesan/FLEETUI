@@ -8,6 +8,7 @@ import { ConfigurationComponent } from './configuration/configuration.component'
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectGuard } from './guards/project.guard';
 import { UserlogsComponent } from './userlogs/userlogs.component';
+import { UsermanagementComponent } from './usermanagement/usermanagement.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [AuthGuard], data: { animation: 'LoginPage' } },
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: 'configuration',
     component: ConfigurationComponent,
+  },
+  {
+    path: 'usermanagement',
+    component: UsermanagementComponent,
   },
   {
     path: 'dashboard',
