@@ -14,8 +14,7 @@ const routes: Routes = [
   {
     path: 'project_setup',
     component: ProjectsetupComponent,
-    canActivate: [AuthGuard],
-    data: { animation: 'ProjectSetupPage' }
+    canActivate: [AuthGuard]
   },
   {
     path: 'statistics',
