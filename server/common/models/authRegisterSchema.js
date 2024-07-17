@@ -15,6 +15,7 @@ const authRegisterSchema = new Schema(
     role: {
       type: String,
       required: [true, "user role is required!"],
+      enum: ["User", "Maintainer", "Administrator"],
       trim: true,
     },
     priority: {

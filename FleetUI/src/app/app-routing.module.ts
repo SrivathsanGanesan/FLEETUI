@@ -11,11 +11,21 @@ import { UserlogsComponent } from './userlogs/userlogs.component';
 import { UsermanagementComponent } from './usermanagement/usermanagement.component';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent, canActivate: [AuthGuard], data: { animation: 'LoginPage' } },
+  {
+    path: '',
+    component: LoginComponent,
+    canActivate: [AuthGuard],
+    data: { animation: 'LoginPage' },
+  },
   {
     path: 'project_setup',
     component: ProjectsetupComponent,
+<<<<<<< Updated upstream
     canActivate: [AuthGuard]
+=======
+    canActivate: [AuthGuard],
+    data: { animation: 'ProjectSetupPage' },
+>>>>>>> Stashed changes
   },
   {
     path: 'statistics',
@@ -37,7 +47,7 @@ const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard, ProjectGuard], // Protect the dashboard with both AuthGuard and ProjectGuard
-  }
+  },
 ];
 
 @NgModule({

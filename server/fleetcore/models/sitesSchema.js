@@ -1,11 +1,31 @@
 const { Schema, model, mongoose } = require("mongoose");
+const { projectConnection } = require("../../common/db_config");
+
+const mapSchema = new Schema(
+  {
+    mapName: {
+      type: String,
+      required: true,
+    },
+    img: {
+      type: String,
+      default: "www.google.com/image",
+    },
+    tasks: {
+      type: [],
+      default: ["task_1", "task_2"],
+    },
+  },
+  { versionKey: false }
+);
+
+const mapModel = projectConnection.model("map", mapSchema, "map");
 
 const projMapSchema = new Schema(
   {
     mapId: {
-      // reference Id of the Map model
       type: Schema.Types.ObjectId,
-      ref: "Map",
+      ref: "mapModel",
       required: true,
     },
     mapName: {
@@ -45,4 +65,4 @@ const roboProjSchema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
-module.exports = { siteSchema, roboProjSchema, projMapSchema };
+module.exports = { siteSchema, roboProjSchema, projMapSchema, mapModel };
