@@ -4,7 +4,7 @@
     background-color: #FF7373;
     position: absolute;
     top: 0px;
-    transition: width 0.3s ease;
+    transition: width 0.2s ease-in-out;
     overflow: hidden; /* To hide the labels when not hovered */
 }
 
@@ -59,35 +59,41 @@
 }
 
 .icons {
-    margin: 5px 0px 10px 15px;
+    margin: 5px 0px 0px 15px;
+    width: 180px;
 }
 
-.icon {
+.icon1,.icon2,.icon3,.icon4,.icon5 {
     display: flex;
     align-items: center;
-    padding-top: 30px;
+    padding: 30px 0px 10px 0px;
     transition: margin-left 0.3s ease;
     cursor: pointer;
 }
 
-.icon img {
+.icon1:hover,.icon2:hover,.icon3:hover,.icon4:hover,.icon5:hover{
+    border-bottom: 1px solid white;
+    border-radius: 10px;
+}
+
+.icon1 img,.icon2 img,.icon3 img,.icon4 img,.icon5 img,.logout-icon img {
     margin-right: 10px;
 }
 
-.icon .label {
+.icons .label {
     display: none;
     white-space: nowrap; /* Prevents text from wrapping */
     transition: opacity 0.3s ease;
     opacity: 0;
 }
 
-.sidebar:hover .icon .label {
+.sidebar:hover .icons .label {
     display: block;
     opacity: 1;
     font-size: 0.95rem;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
-    color: #ffffff;
+    color: #ffffff;    
 }
 
 .Outlogo {    
@@ -97,13 +103,10 @@
 .Nlogo {
     margin: 10px 5px 5px 1200px; /* Adjust margin as needed */
 }
-
-.Llogo {
-    margin: 10px 5px 5px 0; /* Adjust margin as needed */
-}
-
 .logout-icon {
-    margin: 250px 0px 0px 15px;
+    margin: 230px 0px 0px 15px;
     display: flex;
-    align-items: center;
+    align-items: center;    
+    width: 180px;
 }
+
