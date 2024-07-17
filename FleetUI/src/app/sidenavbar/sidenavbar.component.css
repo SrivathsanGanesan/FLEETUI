@@ -9,7 +9,7 @@
 }
 
 .sidebar:hover {
-    width: 300px;
+    width: 220px;
 }
 
 .topbar {
@@ -26,7 +26,7 @@
 }
 
 .icons {
-    margin: 5px 0px 10px 10px;
+    margin: 5px 0px 10px 15px;
 }
 
 .icon {
