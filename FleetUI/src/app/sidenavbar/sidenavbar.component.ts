@@ -6,7 +6,7 @@ import { ProjectService } from '../services/project.service';
 @Component({
   selector: 'app-sidenavbar',
   templateUrl: './sidenavbar.component.html',
-  styleUrl: './sidenavbar.component.css',
+  styleUrl: './sidenavbar.component.css'
 })
 export class SidenavbarComponent {
   constructor(
