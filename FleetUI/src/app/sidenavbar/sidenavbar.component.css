@@ -112,11 +112,15 @@
     margin: 10px 5px 5px 1200px; /* Adjust margin as needed */
 }
 .logout-icon {
-    margin: 230px 0px 0px 15px;
+    margin: 230px 0px 0px 20px;
     display: flex;
     align-items: center;    
-    width: 180px;
+    width: 100px;
     margin-bottom: 20px;
     cursor: pointer;
+    padding: 10px 0px 10px 0px ;
 }
-
+.logout-icon:hover{
+    background-color: #911515;
+    border-radius: 10px;
+}
