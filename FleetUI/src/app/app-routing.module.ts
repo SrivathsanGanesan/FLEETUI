@@ -20,12 +20,7 @@ const routes: Routes = [
   {
     path: 'project_setup',
     component: ProjectsetupComponent,
-<<<<<<< Updated upstream
-    canActivate: [AuthGuard]
-=======
     canActivate: [AuthGuard],
-    data: { animation: 'ProjectSetupPage' },
->>>>>>> Stashed changes
   },
   {
     path: 'statistics',
