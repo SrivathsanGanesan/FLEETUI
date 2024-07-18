@@ -2,16 +2,14 @@ const { Schema, model, mongoose } = require("mongoose");
 
 const zoneSchema = new Schema(
   {
-    zoneId: { type: String, required: true },
     zoneName: { type: String, required: true, trim: true },
     zoneCoordinates: [{ x: Number, y: Number, _id: false }],
   },
-  { _id: false }
+  { versionKey: false }
 );
 
 const roboSchema = new Schema( // want to add Ip of robo.. WIP
   {
-    roboId: { type: String, unique: true, required: true },
     roboName: { type: String, required: true },
     type: { type: String, default: "AGV" },
     status: { type: String, required: true, default: "idle" },
@@ -27,7 +25,7 @@ const roboSchema = new Schema( // want to add Ip of robo.. WIP
       default: [],
     },
   },
-  { timestamps: true, _id: false, strict: false }
+  { timestamps: true, strict: false }
 );
 
 module.exports = { roboSchema, zoneSchema };

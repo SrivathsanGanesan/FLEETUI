@@ -1,56 +1,46 @@
-const Map = require("./../models/mapSchema");
+const { Map } = require("./../models/mapSchema");
 const { roboSchema, zoneSchema } = require("./../models/roboSchema");
+const {
+  projectModel,
+  siteModel,
+} = require("../../fleetcore/models/projectSchema");
 
-const samp_map = new Map({
-  mapId: "map123",
-  mapName: "mapOfRobis",
-  imgUrl: "https://picsum.photos/200",
-  zones: [
+const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
+  const proj = await projectModel.findOneAndUpdate(
     {
-      zoneId: "zone312",
-      zoneName: "restricted",
-      zoneCoordinates: [
-        {
-          x: 0,
-          y: 0,
-        },
-        {
-          x: 1,
-          y: 0,
-        },
-        {
-          x: 1,
-          y: 1,
-        },
-        {
-          x: 0,
-          y: 1,
-        },
-      ],
+      projectName: projectName,
+      "sites.siteName": siteName,
     },
-  ],
-  robots: [
     {
-      roboId: "Mir2531",
-      roboName: "Mir4234",
-      batteryStatus: 78,
-      roboTask: ["pick screws", "drop screws"],
-    },
-  ],
-});
+      $push: {
+        "sites.$.maps": {
+          // '$' positional operator, from array it matches the query condition..
+          mapId: MapId,
+          mapName: mapName,
+        },
+      },
+    }
+  );
+  return proj;
+};
 
 const mapInsert = async (req, res) => {
+  const mapData = JSON.parse(req.body.mapData);
   try {
-    const mapData = JSON.parse(req.body.mapData);
     mapData.imgUrl = `localhost:3000/dashboard/${req.file.originalname}`;
-    const { mapId, mapName, imgUrl, zones, robots } = mapData;
+    const { projectName, siteName, mapName, imgUrl, zones, robots } = mapData;
 
-    // Check if map already Exists.
-    const map = await Map.exists({ mapId: mapId });
-    if (map) return res.json({ exits: true, msg: "data_id already exits" });
+    const map = await Map.exists({ mapName: mapName });
+    if (map) return res.json({ exits: true, msg: "name already exits" });
 
-    // Create a new map.
-    await new Map({ mapId, mapName, imgUrl, zones, robots }).save();
+    const newMap = await new Map({ mapName, imgUrl, zones, robots }).save();
+    const MapId = newMap._id;
+    const proj = await insertMapId({ MapId, mapName, projectName, siteName });
+    if (!proj)
+      return res.status(400).json({
+        succeded: false,
+        msg: "project name or site name not exists!",
+      });
     res.status(201).json({ exits: false, msg: "data inserted!" });
   } catch (err) {
     console.log("err occs : ", err);
