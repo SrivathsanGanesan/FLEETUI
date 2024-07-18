@@ -1,7 +1,13 @@
 const { Robo } = require("../models/mapSchema");
 
 const createRobo = async (req, res, next) => {
-  
+  const { roboName, batteryStatus, roboTask } = req.body;
+  const doc = await new Robo({
+    roboName: roboName,
+    batteryStatus,
+    roboTask,
+  }).save();
+  res.json(doc);
 };
 
 // Count part of Agv..

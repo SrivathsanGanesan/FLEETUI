@@ -10,7 +10,7 @@ const zoneSchema = new Schema(
 
 const roboSchema = new Schema( // want to add Ip of robo.. WIP
   {
-    roboName: { type: String, required: true },
+    roboName: { type: String, required: true, unique: true },
     type: { type: String, default: "AGV" },
     status: { type: String, required: true, default: "idle" },
     location: {
@@ -25,7 +25,7 @@ const roboSchema = new Schema( // want to add Ip of robo.. WIP
       default: [],
     },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false, versionKey: false }
 );
 
 module.exports = { roboSchema, zoneSchema };

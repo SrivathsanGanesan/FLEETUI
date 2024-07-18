@@ -20,6 +20,10 @@ app.use("/auth", authRouter);
 const projectRouter = require("./fleetcore/routes/projectRouter");
 app.use("/create-new-project", projectRouter);
 
+// robot router..
+const roboSpecificationRouter = require("./application/routes/roboSpecificationRouter");
+app.use("/robo-configuration", roboSpecificationRouter);
+
 app.listen(process.env.PORT, (err) => {
   err
     ? console.log("error while connecting : ", err)

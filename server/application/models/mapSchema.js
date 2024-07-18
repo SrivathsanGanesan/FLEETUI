@@ -8,6 +8,7 @@ const mapSchema = new Schema(
       type: String,
       required: [true, "map_Name is required!"],
       trim: true,
+      unique: true,
     },
     imgUrl: { type: String, default: "" },
     zones: {
