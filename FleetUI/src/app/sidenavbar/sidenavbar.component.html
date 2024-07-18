@@ -1,29 +1,30 @@
 <div class="topbar">
-  <div class="TopbarContents">
-    <img
-      src="../../assets/icons/Notification_icon.svg"
-      routerLink="/notification"
-      class="Nlogo"
-    />
-    <img
-      src="../../assets/icons/Lan_icon.svg"
-      routerLink="/language"
-      class="Llogo"
-    />
-    <div class="Profile">
-      <img
-        src="../../assets/icons/Profile_icon.svg"
-        alt="profile pic"
-        routerLink="/profile"
-        class="PPicon"
-      />
-      <div class="profile-info">
-        <p class="username">Username</p>
-        <p class="userrole">Userrole</p>
+        <div class="TopbarContents">
+          <img
+            src="../../assets/icons/Notification_icon.svg"
+            routerLink="/notification"
+            class="Nlogo"
+          />
+          <img
+            src="../../assets/icons/Lan_icon.svg"
+            routerLink="/language"
+            class="Llogo"
+          />
+          <div class="Profile">
+            <img
+              src="../../assets/icons/Profile_icon.svg"
+              alt="profile pic"
+              routerLink="/profile"
+              class="PPicon"
+            />
+            <div class="profile-info">
+              <p class="username">{{ username }}</p>
+              <p class="userrole">{{ userrole }}</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
+      
 <div class="sidebar">
   <img src="../../assets/Motherson_logo.svg" class="Logo" />
   <div class="icons">

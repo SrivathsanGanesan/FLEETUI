@@ -4,28 +4,44 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly loggedInKey = 'loggedIn';
+  private user: { name: string; role: string } | null = null;
 
   private isCookieEmpty(): boolean {
     return document.cookie === '';
   }
 
   // Simulating user login
-  login(user: string) {
-    if (this.isCookieEmpty()) document.cookie = user;
+  login(user: { name: string; role: string }) {
+    if (this.isCookieEmpty()) {
+      document.cookie = `_user=${JSON.stringify(user)};`;
+      this.user = user;
+    }
   }
 
   // Simulating user logout
   logout() {
     if (!this.isCookieEmpty()) {
       document.cookie = '_user=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
-      return;
+      this.user = null;
     }
   }
 
   // Checking if the user is logged in
   isLoggedIn(): boolean {
-    if (document.cookie !== '') return true;
-    return false;
+    return document.cookie !== '';
+  }
+
+  // Getting the user data
+  getUser(): { name: string; role: string } | null {
+    if (!this.user && !this.isCookieEmpty()) {
+      const cookieValue = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('_user='))
+        ?.split('=')[1];
+      if (cookieValue) {
+        this.user = JSON.parse(cookieValue);
+      }
+    }
+    return this.user;
   }
 }

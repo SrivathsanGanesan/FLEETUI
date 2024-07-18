@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
@@ -6,14 +6,25 @@ import { ProjectService } from '../services/project.service';
 @Component({
   selector: 'app-sidenavbar',
   templateUrl: './sidenavbar.component.html',
-  styleUrl: './sidenavbar.component.css'
+  styleUrls: ['./sidenavbar.component.css']
 })
-export class SidenavbarComponent {
+export class SidenavbarComponent implements OnInit {
+  username: string | null = null;
+  userrole: string | null = null;
+
   constructor(
     private authService: AuthService,
     private router: Router,
     private projectService: ProjectService
   ) {}
+
+  ngOnInit() {
+    const user = this.authService.getUser();
+    if (user) {
+      this.username = user.name;
+      this.userrole = user.role;
+    }
+  }
 
   logout() {
     fetch('http://localhost:3000/auth/logout', {
@@ -21,7 +32,6 @@ export class SidenavbarComponent {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.isCookieDeleted);
         if (data.isCookieDeleted) {
           this.authService.logout();
           this.router.navigate(['/']);

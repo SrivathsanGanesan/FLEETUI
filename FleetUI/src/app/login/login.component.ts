@@ -23,15 +23,9 @@ export class LoginComponent {
   }
 
   validateForm() {
-    const username = (document.getElementById('username') as HTMLInputElement)
-      .value;
-    const password = (document.getElementById('password') as HTMLInputElement)
-      .value;
-    const userRole = (
-      document.querySelector(
-        'input[name="userRole"]:checked'
-      ) as HTMLInputElement
-    )?.value;
+    const username = (document.getElementById('username') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement).value;
+    const userRole = (document.querySelector('input[name="userRole"]:checked') as HTMLInputElement)?.value;
     if (!username && !password && !userRole) {
       this.errorMessage = '*Enter Username, Password and Select User Role';
       return;
@@ -48,7 +42,7 @@ export class LoginComponent {
       this.errorMessage = '*Select User Role and Enter Username';
       return;
     }
-    if (!userRole ) {
+    if (!userRole) {
       this.errorMessage = '*Select User Role ';
       return;
     }
@@ -78,21 +72,17 @@ export class LoginComponent {
     })
       .then((res) => {
         if (res.ok) {
-          // this.authService.login(); // Mark the user as logged in
           return res.json();
         } else if (res.status === 401 || res.status === 404) {
-          this.errorMessage =
-            "*Wrong password or user with this role doesn't exist";
+          this.errorMessage = "*Wrong password or user with this role doesn't exist";
         }
         throw new Error('Login failed');
       })
       .then((data) => {
         if (data.user) {
+          this.authService.login({ name: data.user.name, role: data.user.role });
           this.router.navigate(['project_setup']);
-          this.authService.login(`_user=${JSON.stringify(data.user)};`);
-          // document.cookie = `_user=${JSON.stringify(data.user)};`;
         }
-        console.log(data.user);
       })
       .catch((err) => console.error(err));
   }
