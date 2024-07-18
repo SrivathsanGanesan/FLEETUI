@@ -1,5 +1,6 @@
 const { projectModel, siteModel } = require("../../models/projectSchema");
-const { mapModel } = require("../../models/sitesSchema");
+const { mapModel } = require("../../../application/models/mapSchema");
+const { dumMapModel } = require("../../models/mapSchema");
 
 const createProject = async (req, res, next) => {
   const { projectName, siteName, mapName } = req.body.project;
@@ -30,7 +31,7 @@ module.exports = { createProject };
     model: "map",
   });
   const site = proj.sites.id("66962f64e1738e1f002d3122");
-  const doc = new mapModel({ mapName: mapName });
+  const doc = new dumMapModel({ mapName: mapName });
   doc.save();
   site.maps.push({ mapId: doc._id, mapName: "mape2" });
   proj.save();

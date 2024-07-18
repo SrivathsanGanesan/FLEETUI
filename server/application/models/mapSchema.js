@@ -20,6 +20,6 @@ const mapSchema = new Schema( // yet to add proj_id, WIP
   },
   { timestamps: true, versionKey: false }
 );
-const mapModel = dashboardConnection.model("mapData", mapSchema, "mapData");
+const dumMapModel = dashboardConnection.model("mapData", mapSchema, "mapData");
 
-module.exports = mapModel;
+module.exports = dumMapModel;

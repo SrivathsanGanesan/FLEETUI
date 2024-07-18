@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
 
   checkLogin(url: string): boolean {
     if (this.authService.isLoggedIn()) {
-      if (url === '/') {        
+      if (url === '/') {
         this.router.navigate(['/project_setup']);
         return false;
       }
