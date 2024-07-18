@@ -23,7 +23,6 @@
     display: flex;
     justify-content: flex-end; /* Align items to the right */
     align-items: center; /* Center items vertically */
-     /* Adjust the padding as needed */
 }
 
 .TopbarContents {
@@ -63,7 +62,7 @@
 .Logo {
     height: 45px;
     margin: 15px 0px 0px 0px;
-    border-radius: 50px;
+    border-radius: 60px;
 }
 
 .icons {
@@ -112,15 +111,17 @@
     margin: 10px 5px 5px 1200px; /* Adjust margin as needed */
 }
 .logout-icon {
-    margin: 230px 0px 0px 20px;
+    margin: auto 0 20px 10px; /* Center vertically and add bottom margin */
     display: flex;
-    align-items: center;    
-    width: 100px;
-    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    padding: 10px 0;
     cursor: pointer;
-    padding: 10px 0px 10px 0px ;
+    transition: margin 0.3s ease;
 }
-.logout-icon:hover{
+
+.logout-icon:hover {
     background-color: #911515;
     border-radius: 10px;
 }
