@@ -35,18 +35,17 @@
     font-weight: bold;
 }
 .topbar img {
-    height: 30px; /* Adjust height as needed */
     margin: 0 10px;
 }
 
 .Profile {
     display: flex;
     align-items: center;
-    padding-right: 20px;
+    padding-right: 40px;
 }
 
 .Profile img {    
-    margin-right: 10px;
+    margin-right: 2px;
 }
 
 .profile-info {
@@ -57,6 +56,7 @@
 .profile-info p {
     margin: 0;
     font-size: 0.75rem;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .Logo {
@@ -82,31 +82,26 @@
     border-bottom: 1px solid white;
     border-radius: 10px;
 }
-
 .icon1 img,.icon2 img,.icon3 img,.icon4 img,.icon5 img,.logout-icon img {
     margin-right: 10px;
 }
-
 .icons .label {
     display: none;
     white-space: nowrap; /* Prevents text from wrapping */
     transition: opacity 0.3s ease;
-    opacity: 0;
+    opacity: 0; 
 }
-
 .sidebar:hover .icons .label {
     display: block;
     opacity: 1;
-    font-size: 0.95rem;
-    font-weight: bold;
+    font-size: 0.90rem;
+    font-weight: bolder;
     font-family: Arial, Helvetica, sans-serif;
     color: #ffffff;    
 }
-
 .Outlogo {    
     margin: 0;
 }
-
 .Nlogo {
     margin: 10px 5px 5px 1200px; /* Adjust margin as needed */
 }
