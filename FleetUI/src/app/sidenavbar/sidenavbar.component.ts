@@ -11,7 +11,8 @@ import { ProjectService } from '../services/project.service';
 export class SidenavbarComponent implements OnInit {
   username: string | null = null;
   userrole: string | null = null;
-
+  showNotificationPopup = false; // Property to track popup visibility
+  showProfilePopup = false;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -26,6 +27,12 @@ export class SidenavbarComponent implements OnInit {
     }
   }
 
+  toggleNotificationPopup() {
+    this.showNotificationPopup = !this.showNotificationPopup;
+  }
+  toggleProfilePopup(){
+    this.showProfilePopup=!this.showProfilePopup;
+  }
   logout() {
     fetch('http://localhost:3000/auth/logout', {
       credentials: 'include',

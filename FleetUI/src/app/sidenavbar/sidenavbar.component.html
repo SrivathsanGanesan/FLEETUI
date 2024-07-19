@@ -3,6 +3,7 @@
           <img
             src="../../assets/icons/Notification_icon.svg"
             routerLink="/notification"
+            (click)="toggleNotificationPopup()"
             class="Nlogo"
           />
           <img
@@ -16,11 +17,14 @@
               alt="profile pic"
               routerLink="/profile"
               class="PPicon"
+              (click)="toggleProfilePopup()"
             />
             <div class="profile-info">
               <p class="username">{{ username }}</p>
               <p class="userrole">{{ userrole }}</p>
+              
             </div>
+            
           </div>
         </div>
       </div>
@@ -61,4 +65,12 @@
     <img src="../../assets/icons/Logout_icon.svg" class="Outlogo" />
     <span class="label">Logout</span>
   </div>
+</div>
+<div class="notification-popup" *ngIf="showNotificationPopup">
+  <!-- Your notification content here -->
+  <p>No new notifications</p>
+</div>
+<div class="Profile-popup" *ngIf="showProfilePopup">
+  <!-- Your notification content here -->
+  <p>Hi,{{ username }}</p>
 </div>
