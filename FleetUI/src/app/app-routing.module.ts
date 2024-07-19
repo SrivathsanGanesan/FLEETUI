@@ -27,7 +27,7 @@ const routes: Routes = [
     component: StatisticsComponent,
   },
   {
-    path: 'userlogs',
+    path: 'Reports',
     component: UserlogsComponent,
   },
   {

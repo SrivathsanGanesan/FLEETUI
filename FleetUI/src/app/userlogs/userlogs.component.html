@@ -1,7 +1,76 @@
 <div class="container">
     <app-sidenavbar></app-sidenavbar>
     <div class="mainContent">
-      <p>logs works</p>
+      <div class="container mx-auto p-10">
+        <div class="flex justify-center mb-4">
+          <button id="taskButton" class="px-4 py-2 bg-blue-500 text-white rounded mx-2">Task</button>
+          <button id="robotButton" class="px-4 py-2 bg-blue-500 text-white rounded mx-2">Robot</button>
+          <button id="fleetButton" class="px-4 py-2 bg-blue-500 text-white rounded mx-2">Fleet</button>
+        </div>
+     
+        <div class="flex justify-center mb-4">
+          <input id="searchBar" class="px-4 py-2 border rounded w-full max-w-md" type="text" placeholder="Search...">
+        </div>
+     
+        <div id="taskTable" class="tableContainer">
+          <table class="min-w-full mx-auto bg-white border border-gray-200 rounded shadow-md">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Task ID</th>
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">1</td>
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">Task One Description</td>
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">Pending</td>
+              </tr>
+              <!-- More rows can be added here -->
+            </tbody>
+          </table>
+        </div>
+     
+        <div id="robotTable" class="tableContainer hidden">
+          <table class="min-w-full mx-auto bg-white border border-gray-200 rounded shadow-md">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Robot ID</th>
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Model</th>
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">101</td>
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">Robot Model X</td>
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">Active</td>
+              </tr>
+              <!-- More rows can be added here -->
+            </tbody>
+          </table>
+        </div>
+     
+        <div id="fleetTable" class="tableContainer hidden">
+          <table class="min-w-full mx-auto bg-white border border-gray-200 rounded shadow-md">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Fleet ID</th>
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-sm leading-4 font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">501</td>
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">Fleet Alpha</td>
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">Operational</td>
+              </tr>
+              <!-- More rows can be added here -->
+            </tbody>
+          </table>
+        </div>
     </div>
   </div>
   
