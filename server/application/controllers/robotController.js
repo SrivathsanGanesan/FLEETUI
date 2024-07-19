@@ -1,13 +1,50 @@
 const { Robo } = require("../models/mapSchema");
+const { projectModel } = require("../../fleetcore/models/projectSchema");
 
+const insertRoboId = async ({ roboId, projectName }) => {
+  const proj = await projectModel.findOneAndUpdate(
+    { projectName: projectName },
+    {
+      $push: { robots: { roboId } },
+    }
+  );
+  return proj;
+};
+
+// Insert new Robo..
 const createRobo = async (req, res, next) => {
-  const { roboName, batteryStatus, roboTask } = req.body;
-  const doc = await new Robo({
-    roboName: roboName,
-    batteryStatus,
-    roboTask,
-  }).save();
-  res.json(doc);
+  const { projectName, roboName, ipAdd, macAdd, batteryStatus, roboTask } =
+    req.body;
+  try {
+    const doc = await Robo.exists({ roboName: roboName });
+    const doc2 = await projectModel.exists({ projectName });
+    if (!doc2)
+      return res.status(400).json({
+        exists: false,
+        msg: "invadlid project name or name not doesn't exists!",
+      });
+    if (doc)
+      return res
+        .status(400)
+        .json({ exists: true, msg: "robo name already exists!" });
+    const robo = await new Robo({
+      roboName,
+      ipAdd,
+      macAdd,
+      batteryStatus,
+      roboTask,
+    }).save();
+    const roboId = robo._id;
+    const resultDoc = await insertRoboId({ roboId, projectName });
+    if (!resultDoc)
+      return res
+        .status(400)
+        .json({ succeded: false, msg: "project name not exists!" });
+    return res.status(201).json({ exits: false, msg: "data inserted!" });
+  } catch (err) {
+    console.log("err occs : ", err);
+    res.status(500).json({ msg: "error occured while inserting!" });
+  }
 };
 
 // Count part of Agv..

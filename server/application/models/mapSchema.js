@@ -2,6 +2,22 @@ const { Schema, model, mongoose } = require("mongoose");
 const { roboSchema, zoneSchema } = require("./roboSchema");
 const { dashboardConnection } = require("../../common/db_config");
 
+const roboProjSchema = new Schema(
+  {
+    roboId: {
+      type: Schema.Types.ObjectId,
+      ref: "Robo",
+      required: true,
+    },
+    name: {
+      type: String,
+      required: [true, "name of the robo required!"],
+      trim: true,
+    },
+  },
+  { timestamps: true, versionKey: false, _id: false }
+);
+
 const mapSchema = new Schema(
   {
     mapName: {
@@ -16,7 +32,7 @@ const mapSchema = new Schema(
       default: [],
     },
     robots: {
-      type: [roboSchema],
+      type: [roboProjSchema],
       default: [],
     },
   },

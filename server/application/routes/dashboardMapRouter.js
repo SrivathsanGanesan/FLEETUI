@@ -25,7 +25,7 @@ const upload = multer({ storage: storage });
 
 dashboardMapRouter.post("/", upload.single("mapImg"), mapInsert);
 dashboardMapRouter.get("/:mapId", mapGet);
-dashboardMapRouter.put("/:mapId/robots", newRoboInMap);
+dashboardMapRouter.put("/:mapName/robots", newRoboInMap);
 dashboardMapRouter.delete("/:mapId/robots/:roboId", deleteRoboInMap);
 dashboardMapRouter.delete("/:mapId", deleteMap);
 dashboardMapRouter.delete("/:mapId/delete_img", delMapImg);

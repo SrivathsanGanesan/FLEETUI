@@ -43,7 +43,7 @@ const roboProjSchema = new Schema(
       trim: true,
     },
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true, versionKey: false, _id: false }
 );
 
 module.exports = { siteSchema, roboProjSchema, projMapSchema };
