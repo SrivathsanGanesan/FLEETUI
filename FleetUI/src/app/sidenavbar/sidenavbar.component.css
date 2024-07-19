@@ -21,10 +21,10 @@
     background-color: white;
     border: 1px solid #ffffff;
     box-shadow: 0px 0.25px 6px #FF7373;
-    padding: 10px;
+    padding:0px 10px 0px 10px  ;
     border-radius: 10px;
     font-family: Arial, Helvetica, sans-serif;
-    z-index: 1000; /* Ensure it is on top */
+    z-index: 1000; /* Ensure it is on top */ 
   }  
   .Profile-popup {
     position: absolute;
@@ -33,7 +33,7 @@
     background-color: white;
     border: 1px solid #ffffff;
     box-shadow: 0px 0.25px 6px #FF7373;
-    padding: 10px;
+    padding:0px 10px 0px 10px  ;  
     border-radius: 10px;
     font-family: Arial, Helvetica, sans-serif;
     z-index: 1000; /* Ensure it is on top */
