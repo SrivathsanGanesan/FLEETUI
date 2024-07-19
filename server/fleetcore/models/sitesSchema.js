@@ -1,12 +1,12 @@
 const { Schema, model, mongoose } = require("mongoose");
 const { projectConnection } = require("../../common/db_config");
-const dumMapModel = require("./mapSchema");
+const { Map, Robo } = require("../../application/models/mapSchema");
 
 const projMapSchema = new Schema(
   {
     mapId: {
       type: Schema.Types.ObjectId,
-      ref: "dumMapModel",
+      ref: "Map",
       required: true,
     },
     mapName: {
@@ -34,7 +34,7 @@ const roboProjSchema = new Schema(
   {
     roboId: {
       type: Schema.Types.ObjectId,
-      ref: "Robots",
+      ref: "Robo",
       required: true,
     },
     name: {

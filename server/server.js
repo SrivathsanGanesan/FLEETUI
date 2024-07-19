@@ -1,5 +1,6 @@
 const app = require("./common/server_config");
 require("dotenv").config();
+const path = require("path");
 
 // dashboard...
 const dashboardMapRouter = require("./application/routes/dashboardMapRouter");
@@ -18,6 +19,10 @@ app.use("/auth", authRouter);
 //creat project..
 const projectRouter = require("./fleetcore/routes/projectRouter");
 app.use("/create-new-project", projectRouter);
+
+// robot router..
+const roboSpecificationRouter = require("./application/routes/roboSpecificationRouter");
+app.use("/robo-configuration", roboSpecificationRouter);
 
 app.listen(process.env.PORT, (err) => {
   err

@@ -1,6 +1,4 @@
 const { projectModel, siteModel } = require("../../models/projectSchema");
-const { mapModel } = require("../../../application/models/mapSchema");
-const { dumMapModel } = require("../../models/mapSchema");
 
 const createProject = async (req, res, next) => {
   const { projectName, siteName, mapName } = req.body.project;
