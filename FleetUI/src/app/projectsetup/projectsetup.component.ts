@@ -199,12 +199,16 @@ export class ProjectsetupComponent {
       method: 'GET',
       credentials: 'include',
     })
-      .catch((res) => {
+      .then((res) => {
         if (res.ok) return res.json();
         else throw new Error('project not Found : ' + res.status);
       })
       .then((data) => {
-        console.log(data);
+        if (!data.exsists) {
+          console.error(data);
+          return;
+        }
+        console.log(data.project); //..
       })
       .catch((err) => console.log(err));
   }
