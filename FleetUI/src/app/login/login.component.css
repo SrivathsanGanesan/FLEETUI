@@ -40,8 +40,8 @@ input[type="radio"] {
 }
 
 input[type="radio"]:checked {
-    background-color: #911515;
-    border: 1px solid #911515;
+    background-color: #FF7373;
+    border: 1px solid #FF7373;
 }
 
 .details{
@@ -57,7 +57,7 @@ input[type="radio"]:checked {
     top: 0;
     left: 15px;
     font-size: 0.75rem;
-    color: #b71c1c;
+    color: #FF7373;
     font-family: Arial, Helvetica, sans-serif;
 }
 .inputPScontainer {
@@ -72,13 +72,13 @@ input[type="radio"]:checked {
 }
 .inputUScontainer input:focus,
 .inputPScontainer input:focus {
-    border-bottom: 2px solid #911515;
+    border-bottom: 2px solid #FF7373;
 }
 .inputUScontainer input, .inputPScontainer input{
     width: 110%;
     height: 10px;
     border: none;
-    border-bottom: 2.5px solid #911515;
+    border-bottom: 2.5px solid #FF7373;
     background-color: transparent;
     font-size: 1rem;
     color: #000000;
@@ -97,7 +97,7 @@ input[type="radio"]:checked {
     width: calc(11 0% - 0px); /* Adjust width to accommodate the icon */
     height: 10px;
     border: none;
-    border-bottom: 2.5px solid #911515;
+    border-bottom: 2.5px solid #FF7373;
     background-color: transparent;
     font-size: 1rem;
     color: #000000;
@@ -112,7 +112,7 @@ input[type="radio"]:checked {
     transform: translateY(-50%);
     transition: all 0.3s ease;
     font-size: 0.75rem;
-    color: #911515;
+    color: #FF7373;
     pointer-events: none;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
@@ -128,7 +128,7 @@ input[type="radio"]:checked {
     height: 24px; /* Adjust size as needed */
 }
 .error-message {
-    color: #911515;
+    color: #FF7373;
     font-size: 12px;
     font-weight: bold;
     margin: 0px 0px 10px 15px;
@@ -136,7 +136,7 @@ input[type="radio"]:checked {
 .LoginBtn{
     width: 25%;
     padding: 15px;
-    background-color: #911515;
+    background-color: #FF7373;
     border: none;
     border-radius: 5px;
     color: white;
