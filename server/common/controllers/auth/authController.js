@@ -5,14 +5,18 @@ const authRegisterModel = require("../../models/authRegisterSchema");
 const validateToken = async (req, res, next) => {
   const token = req.cookies._token;
   if (!token)
-    return res.status(401).json({ token: null, msg: "Access denied" });
+    return res.status(401).json({ tokenValid: null, msg: "Access denied" });
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
-    if (err) return res.status(403).json({ msg: "Invalid token", error: err });
-    // console.log(err, decoded);
-    req.user = decoded.user;
-    req.role = decoded.role;
+    // console.log(err, decoded)
+    if (!err) {
+      req.user = decoded.user;
+      req.role = decoded.role;
+      return next();
+    }
+    return res
+      .status(403)
+      .json({ tokenValid: false, msg: "Invalid token", error: err });
   });
-  next();
 };
 
 const login = async (req, res) => {
@@ -59,7 +63,9 @@ const logout = async (req, res) => {
   try {
     res.clearCookie("_token");
     res.clearCookie("_user");
-    res.status(200).json({ msg: "cookies deleted!", isCookieDeleted: true });
+    return res
+      .status(200)
+      .json({ msg: "cookies deleted!", isCookieDeleted: true });
   } catch (error) {
     console.log("error in logout : ", error);
     return res.status(500).json({ operation: "logout failed!", error: err });

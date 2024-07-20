@@ -18,7 +18,7 @@ app.use("/auth", authRouter);
 
 //creat project..
 const projectRouter = require("./fleetcore/routes/projectRouter");
-app.use("/create-new-project", projectRouter);
+app.use("/fleet-project", projectRouter);
 
 // robot router..
 const roboSpecificationRouter = require("./application/routes/roboSpecificationRouter");

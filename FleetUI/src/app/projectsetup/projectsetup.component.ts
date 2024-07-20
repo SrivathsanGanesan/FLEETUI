@@ -3,6 +3,11 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 
+interface Project {
+  _id: string;
+  projectName: string;
+}
+
 @Component({
   selector: 'app-projectsetup',
   templateUrl: './projectsetup.component.html',
@@ -13,18 +18,35 @@ export class ProjectsetupComponent {
   isProjDiv2Visible: boolean = false;
   isProjDiv3Visible: boolean = false;
   sitename: string = '';
+  project: Project = { _id: '', projectName: '' };
   projectname: string = '';
-  projectname1: string = '';
   isFocused: { [key: string]: boolean } = {};
   selectedProject: string = '';
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
+  productList: Project[] = [];
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private projectService: ProjectService
   ) {}
+
+  ngOnInit(): void {
+    fetch('http://localhost:3000/fleet-project/projects/project-list', {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        else throw new Error("Error : data doesn't attained " + res.status);
+      })
+      .then((data) => {
+        this.productList = data.projects;
+        // console.log(this.productList);
+      })
+      .catch((err) => console.log(err));
+  }
 
   showProjDiv1() {
     this.isProjDiv1Visible = !this.isProjDiv1Visible;
@@ -117,7 +139,7 @@ export class ProjectsetupComponent {
   }
 
   onProjectChange(event: any) {
-    this.projectname1 = event.target.value;
+    this.project = JSON.parse(event.target.value);
   }
 
   createProject() {
@@ -141,7 +163,7 @@ export class ProjectsetupComponent {
       return;
     }
 
-    fetch('http://localhost:3000/create-new-project/project', {
+    fetch('http://localhost:3000/fleet-project/project', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -155,13 +177,33 @@ export class ProjectsetupComponent {
       .then((res) => {
         if (res.status === 400) alert('project Name already exits');
         else if (res.status === 500) console.log('Error in server side');
+        else if (res.status === 403) {
+          alert('Toke Invalid');
+          return;
+        }
         return res.json();
       })
       .then((data) => {
         if (!data.exists) {
           this.projectService.setProjectCreated(true);
-          // this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard']);
         }
+        console.log(data);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  openProject() {
+    console.log('name : ', this.project._id, this.project.projectName);
+    fetch(`http://localhost:3000/fleet-project/${this.project._id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .catch((res) => {
+        if (res.ok) return res.json();
+        else throw new Error('project not Found : ' + res.status);
+      })
+      .then((data) => {
         console.log(data);
       })
       .catch((err) => console.log(err));
