@@ -19,13 +19,15 @@ export class ProjectsetupComponent {
   selectedProject: string = '';
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
-  productList: string[] = ['peak', 'clockTower', 'school', 'pochinok'];
+  productList: string[] = [];
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private projectService: ProjectService
   ) {}
+
+  ngOnInit(): void {}
 
   showProjDiv1() {
     this.isProjDiv1Visible = !this.isProjDiv1Visible;
@@ -170,5 +172,9 @@ export class ProjectsetupComponent {
         console.log(data);
       })
       .catch((err) => console.log(err));
+  }
+
+  openProject() {
+    console.log('name1 : ', this.projectname1);
   }
 }
