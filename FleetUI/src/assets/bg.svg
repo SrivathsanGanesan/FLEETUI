@@ -26,11 +26,14 @@
 <line x1="-0.347146" y1="81.6402" x2="84.6529" y2="-0.359849" stroke="black"/>
 <line x1="-0.209529" y1="29.546" x2="64.7905" y2="-0.453979" stroke="black"/>
 <line x1="163.763" y1="65.5595" x2="284.763" y2="0.559536" stroke="black"/>
-<path d="M13.5 236L360.5 33.5L171.5 63L287 1H391.5H480L318 103L247 210H227.5L185 217L120.5 227L13.5 236Z" fill="black" fill-opacity="0.2"/>
-<path d="M326.5 218.5L561.5 75.5L595 -1.5H627.5V157.5L527 167.5L473.5 289.5L382.5 500.5H165L54.5 493L175 314L326.5 218.5Z" fill="black" fill-opacity="0.2"/>
-<path d="M-2.5 26L58.5 2.5H220L-2.5 117L-9 99H-2.5V77V26Z" fill="black" fill-opacity="0.2"/>
-<path d="M407.5 451L625 441V500.5H582.5H520.5H437.5H382.5L407.5 451Z" fill="black" fill-opacity="0.2"/>
-<path d="M1 467H73L55.3 495.778H51.4L68.8 504H19H-14L1 467Z" fill="black" fill-opacity="0.2"/>
+<path d="M13.5 236L360.5 33.5L166.5 64L222.5 0L291 -6.5L392.5 -2H487L317 109.5L250 205.5L228.5 216.5L194 232L-1 326V252.5L13.5 236Z" fill="black" fill-opacity="0.3"/>
+<path d="M563 77L598 -1.5H627.5V157.5L525.5 169L473.5 289.5L383 504.5H46L175 314L563 77Z" fill="black" fill-opacity="0.3"/>
+<path d="M-0.5 79.5L85.5 -1.5H156H224L-2.5 117L-9 99H-2.5V77L-0.5 79.5Z" fill="black" fill-opacity="0.3"/>
+<path d="M0.5 156.098L94.5 143.5L0.5 250V156.098Z" fill="black" fill-opacity="0.3"/>
+<path d="M406.5 449.5L625 441V504H582.763H521.146H438.66H384L406.5 449.5Z" fill="black" fill-opacity="0.3"/>
+<path d="M1 467L69 468.5L55 488.5L50.5 496.5L46 504H19H-14L1 467Z" fill="black" fill-opacity="0.3"/>
+<path d="M0 -0.5H64.5L33 14.5L0 29.5V-0.5Z" fill="black" fill-opacity="0.3"/>
+<rect x="-2" width="629" height="504" fill="black" fill-opacity="0.15"/>
 </g>
 <defs>
 <filter id="filter0_d_1392_34106" x="379.078" y="-0.390625" width="222.922" height="512.391" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
