@@ -194,6 +194,18 @@ export class ProjectsetupComponent {
   }
 
   openProject() {
-    console.log('name : ', this.project);
+    console.log('name : ', this.project._id, this.project.projectName);
+    fetch(`http://localhost:3000/fleet-project/${this.project._id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .catch((res) => {
+        if (res.ok) return res.json();
+        else throw new Error('project not Found : ' + res.status);
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => console.log(err));
   }
 }
