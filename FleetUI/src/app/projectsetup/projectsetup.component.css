@@ -1,246 +1,250 @@
-.RightPanel{    
-    font-family: Arial, Helvetica, sans-serif;
-    height: 450px;
-    width: 750px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    position: relative; /* Add this line */
-
+.RightPanel {
+  font-family: Arial, Helvetica, sans-serif;
+  height: 450px;
+  width: 750px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  position: relative; /* Add this line */
 }
-.ProjTitle{
-    font-size: 40px;
-    font-weight: bolder;
-    margin: 40px 0px 20px 30px; /*TRBL*/
+.ProjTitle {
+  font-size: 40px;
+  font-weight: bolder;
+  margin: 40px 0px 20px 30px; /*TRBL*/
 }
-.LogoutBtn{
-    width: 25%;
-    padding: 15px;
-    background-color: #b71c1c;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-    margin: 50px 0px 0px 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+.LogoutBtn {
+  width: 25%;
+  padding: 15px;
+  background-color: #b71c1c;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin: 50px 0px 0px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
-.LeftPanel{   
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+.LeftPanel {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
-.LeftPanel2{
-    width: 8%;
-    display: flex;
+.LeftPanel2 {
+  width: 8%;
+  display: flex;
 }
 .motherson-logo {
-    position: absolute;
-    top: 20px;
-    right: 10px;
-    width: 130px;
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  width: 130px;
 }
 .fms-box {
-    background-color: white;
-    padding: 50px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 50px 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .fms-box p {
     font-size: 4rem;
     color: #FF7373;
     margin: 0;
 }
-.ProTitle{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 45px;
-    font-weight: bold;
+.ProTitle {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 45px;
+  font-weight: bold;
 }
-.Projectpage{ 
-    display: flex;
-    width: 1000px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-    border-radius: 20px;
-    overflow: hidden;
+.Projectpage {
+  display: flex;
+  width: 1000px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-radius: 20px;
+  overflow: hidden;
 }
-.ProjectSetup{
-    display:grid ;
+.ProjectSetup {
+  display: grid;
 }
 .ProjDiv1,
 .ProjDiv2,
 .ProjDiv3 {
-    background-color: #0000005c;
-    height: 300px;
-    width: 240px;
-    border-radius: 10px;
-    position: absolute;
-    top: 220px;
-    right: 30px;
-    transform: translateY(-50%);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 10px; /* Add padding to ensure consistent spacing inside the divs */
+  background-color: #0000005c;
+  height: 300px;
+  width: 240px;
+  border-radius: 10px;
+  position: absolute;
+  top: 220px;
+  right: 30px;
+  transform: translateY(-50%);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px; /* Add padding to ensure consistent spacing inside the divs */
 }
 .ButtonSet {
-    display: flex;    
-    justify-content: center;
-    margin-top: 20px; /* Ensure there is enough space between elements and buttons */
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Ensure there is enough space between elements and buttons */
 }
 .input-container1 {
-    position: relative;
-    margin: 40px 0px 10px 0px;
- }  
-.input-container2{
-    position: relative;
-    margin: 0px 0px 15px 0px
- }
-.Sitename,.Projectname {
-    width: 180px;
-    height: 30px;
-    background-color: transparent;
-    border: none;
-    border-bottom: 1px solid rgb(255, 255, 255);
-    border-radius: 5px;
-    outline: none;
-    font-size: 1rem;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif   ;
- }  
+  position: relative;
+  margin: 40px 0px 10px 0px;
+}
+.input-container2 {
+  position: relative;
+  margin: 0px 0px 15px 0px;
+}
+.Sitename,
+.Projectname {
+  width: 180px;
+  height: 30px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid rgb(255, 255, 255);
+  border-radius: 5px;
+  outline: none;
+  font-size: 1rem;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
 label {
-    position: absolute;
-    left: 10px;
-    top: 5px;
-    font-size: 16px;
-    color: rgb(255, 255, 255);
-    pointer-events: none;
-    transition: 0.2s ease all;
-}  
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  font-size: 16px;
+  color: rgb(255, 255, 255);
+  pointer-events: none;
+  transition: 0.2s ease all;
+}
 input:focus + label,
 label.active {
-    top: -23px;
-    left: 0px;
-    font-size: 12px;
-    color: #911515;
-    font-weight: bold;
-}    
-.CNPBtn,.OEPBtn{
-height: 40px;
-width: 160px;
-background-color: transparent;
-margin: 20px 0px 5px 25px;
-padding: 5px 0px 5px 0px;
-font-size: 15px;
-border-radius: 10px;
-border: none;
-font-size: 15px;
-font-family: Arial, Helvetica, sans-serif;
-font-weight: bold;
-color: #00000061;
+  top: -23px;
+  left: 0px;
+  font-size: 12px;
+  color: #911515;
+  font-weight: bold;
 }
-.IMFBtn{
-    height: 40px;
-    width: 160px;
-    background-color: transparent;
-    margin: 30px 0px 5px 25px;
-    padding: 5px 0px 5px 0px;
-    font-size: 15px;
-    border-radius: 10px;
-    border: none;
-    font-size: 15px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    color: #00000061;    
+.CNPBtn,
+.OEPBtn {
+  height: 40px;
+  width: 160px;
+  background-color: transparent;
+  margin: 20px 0px 5px 25px;
+  padding: 5px 0px 5px 0px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #00000061;
 }
-.OEPBtn{
-    height: 40px;
-    width: 160px;
-    background-color: transparent;
-    margin: 30px 0px 5px 25px;
-    padding: 5px 0px 5px 0px;
-    font-size: 15px;
-    border-radius: 10px;
-    border: none;
-    font-size: 15px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    color: #00000061;
+.IMFBtn {
+  height: 40px;
+  width: 160px;
+  background-color: transparent;
+  margin: 30px 0px 5px 25px;
+  padding: 5px 0px 5px 0px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #00000061;
 }
-.active-button,.CNPBtn:hover,.IMFBtn:hover,.OEPBtn:hover{
-    box-shadow: rgba(0, 0, 0, 0.36) 0px 1px 4px;
-    color: #000000;
+.OEPBtn {
+  height: 40px;
+  width: 160px;
+  background-color: transparent;
+  margin: 30px 0px 5px 25px;
+  padding: 5px 0px 5px 0px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #00000061;
+}
+.active-button,
+.CNPBtn:hover,
+.IMFBtn:hover,
+.OEPBtn:hover {
+  box-shadow: rgba(0, 0, 0, 0.36) 0px 1px 4px;
+  color: #000000;
 }
 .BackBTN,
 .OpenBTN,
 .CreateBTN {
-    width: 75px;
-    padding: 10px;
-    background-color: #b71c1c;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    margin-left: 10px;
+  width: 75px;
+  padding: 10px;
+  background-color: #b71c1c;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  margin-left: 10px;
 }
 .BackBTN:hover,
 .OpenBTN:hover,
 .CreateBTN:hover {
-    background-color: #852929;
+  background-color: #852929;
 }
-.Importicon{
-    width: 180px;
-    height: 100px;
-    margin:0px 0px 40px 0px; 
-    padding-left: 10px;
-
+.Importicon {
+  width: 180px;
+  height: 100px;
+  margin: 0px 0px 40px 0px;
+  padding-left: 10px;
 }
-.ImpText{
-    padding-left: 10px;
-    color: white;
-    font-size: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    margin:0px 0px 5px 0px; 
-    cursor: default;
+.ImpText {
+  padding-left: 10px;
+  color: white;
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  margin: 0px 0px 5px 0px;
+  cursor: default;
 }
 .ProjList {
-    height: 40px;
-    background-color: transparent;
-    border: none;
-    border-bottom: 2px solid rgb(255, 255, 255);
-    border-radius: 5px;
-    color: white;
-    font-size: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    margin:35px 0px 100px 0px;
+  height: 40px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid rgb(255, 255, 255);
+  border-radius: 5px;
+  color: white;
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 35px 0px 100px 0px;
 }
 .ProjList option {
-    background-color: rgb(150, 142, 142); /* Background color of options */
-    color: white; /* Text color of options */
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
-    text-align: center;
-    border: none;
+  background-color: rgb(150, 142, 142); /* Background color of options */
+  color: white; /* Text color of options */
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  text-align: center;
+  border: none;
 }
-.Sitename:focus, .Projectname:focus {
-    border-bottom-color: #911515; /* Change to red on focus */
+.Sitename:focus,
+.Projectname:focus {
+  border-bottom-color: #911515; /* Change to red on focus */
 }
-.error-message{
-    color: #911515;
-    font-size: 10px;
-    font-weight: bold;
-    margin: 0px;
+.error-message {
+  color: #911515;
+  font-size: 10px;
+  font-weight: bold;
+  margin: 0px;
 }
-.Project-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #ffffff; /* Optional: Match the body background color */
+.Project-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #ffffff; /* Optional: Match the body background color */
 }

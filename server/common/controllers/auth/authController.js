@@ -2,6 +2,19 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authRegisterModel = require("../../models/authRegisterSchema");
 
+const validateToken = async (req, res, next) => {
+  const token = req.cookies._token;
+  if (!token)
+    return res.status(401).json({ token: null, msg: "Access denied" });
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(403).json({ msg: "Invalid token", error: err });
+    // console.log(err, decoded);
+    req.user = decoded.user;
+    req.role = decoded.role;
+  });
+  next();
+};
+
 const login = async (req, res) => {
   const { name, role, password } = req.body.user;
   try {
@@ -89,4 +102,4 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { login, logout, register };
+module.exports = { login, logout, register, validateToken };

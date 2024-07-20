@@ -35,12 +35,12 @@ export class ProjectsetupComponent {
       this.projectname = '';
       this.isFocused = {};
       this.errorMessage = '';
-    }  
-    if (!this.isProjDiv2Visible){
-      this.selectedFileName = "Import Project File";
     }
-    if (!this.isProjDiv3Visible){
-      this.selectedProject ='';
+    if (!this.isProjDiv2Visible) {
+      this.selectedFileName = 'Import Project File';
+    }
+    if (!this.isProjDiv3Visible) {
+      this.selectedProject = '';
     }
   }
 
@@ -53,12 +53,12 @@ export class ProjectsetupComponent {
       this.projectname = '';
       this.isFocused = {};
       this.errorMessage = '';
-    } 
-    if (!this.isProjDiv2Visible){
-      this.selectedFileName = "Import Project File";
     }
-    if (!this.isProjDiv3Visible){
-      this.selectedProject ='';
+    if (!this.isProjDiv2Visible) {
+      this.selectedFileName = 'Import Project File';
+    }
+    if (!this.isProjDiv3Visible) {
+      this.selectedProject = '';
     }
   }
 
@@ -72,11 +72,11 @@ export class ProjectsetupComponent {
       this.isFocused = {};
       this.errorMessage = '';
     }
-    if (!this.isProjDiv2Visible){
-      this.selectedFileName = "Import Project File";
-    } 
-    if (!this.isProjDiv3Visible){
-      this.selectedProject ='';
+    if (!this.isProjDiv2Visible) {
+      this.selectedFileName = 'Import Project File';
+    }
+    if (!this.isProjDiv3Visible) {
+      this.selectedProject = '';
     }
   }
 
@@ -121,23 +121,49 @@ export class ProjectsetupComponent {
   }
 
   createProject() {
-    if (this.sitename && this.projectname) {
-      // Logic to handle project creation
-      console.log('Creating project with:', this.sitename, this.projectname);
-      console.log('Sitename :', this.sitename , 'Projectname :',this.projectname);
-      this.projectService.setProjectCreated(true);
-      // Navigate to dashboard
-      this.router.navigate(['/dashboard']);
-    } 
-    if(!this.sitename){
-      this.errorMessage = '*Please fill Site Name.'
+    // if (this.sitename && this.projectname) {
+    //   // Logic to handle project creation
+    //   console.log(this.sitename, this.projectname);
+    //   this.projectService.setProjectCreated(true);
+    //   // Navigate to dashboard
+    //   // this.router.navigate(['/dashboard']);
+    // }
+    if (!this.sitename) {
+      this.errorMessage = '*Please fill Site Name.';
+      return;
     }
-    if(!this.projectname){
-      this.errorMessage = '*Please fill Project Name.'
+    if (!this.projectname) {
+      this.errorMessage = '*Please fill Project Name.';
+      return;
     }
-    if(!this.projectname && !this.projectname){
+    if (!this.projectname && !this.projectname) {
       this.errorMessage = '*Please fill in both the fields.';
-    
+      return;
     }
+
+    fetch('http://localhost:3000/create-new-project/project', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        project: {
+          projectName: this.projectname,
+          siteName: this.sitename,
+        },
+      }),
+    })
+      .then((res) => {
+        if (res.status === 400) alert('project Name already exits');
+        else if (res.status === 500) console.log('Error in server side');
+        return res.json();
+      })
+      .then((data) => {
+        if (!data.exists) {
+          this.projectService.setProjectCreated(true);
+          // this.router.navigate(['/dashboard']);
+        }
+        console.log(data);
+      })
+      .catch((err) => console.log(err));
   }
 }
