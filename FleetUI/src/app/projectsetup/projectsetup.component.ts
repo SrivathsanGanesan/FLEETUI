@@ -32,7 +32,7 @@ export class ProjectsetupComponent {
     private projectService: ProjectService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void { // hook
     fetch('http://localhost:3000/fleet-project/projects/project-list', {
       method: 'GET',
       credentials: 'include',
@@ -193,23 +193,30 @@ export class ProjectsetupComponent {
       .catch((err) => console.log(err));
   }
 
-  openProject() {
-    console.log('name : ', this.project._id, this.project.projectName);
-    fetch(`http://localhost:3000/fleet-project/${this.project._id}`, {
-      method: 'GET',
-      credentials: 'include',
+openProject() {
+  console.log('name : ', this.project._id, this.project.projectName);
+  fetch(`http://localhost:3000/fleet-project/${this.project._id}`, {
+    method: 'GET',
+    credentials: 'include',
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Project not found: ' + res.status);
+      }
+      return res.json();
     })
-      .then((res) => {
-        if (res.ok) return res.json();
-        else throw new Error('project not Found : ' + res.status);
-      })
-      .then((data) => {
-        if (!data.exsists) {
-          console.error(data);
-          return;
-        }
-        console.log(data.project); //..
-      })
-      .catch((err) => console.log(err));
-  }
+    .then((data) => {
+      if (!data.exists) {
+        console.error('Project does not exist');
+        return;
+      }
+      console.log(data.project);
+      this.projectService.setSelectedProject(data.project);
+      this.projectService.setProjectCreated(true);
+      this.router.navigate(['/dashboard']);
+    })
+    .catch((err) => console.log(err));
+}
+
+  
 }
