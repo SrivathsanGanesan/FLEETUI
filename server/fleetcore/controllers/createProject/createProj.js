@@ -4,12 +4,15 @@ const createProject = async (req, res, next) => {
   const { projectName, siteName } = req.body.project;
   try {
     const doc = await projectModel.exists({ projectName: projectName });
-    if (doc)
-      return res.status(400).json({ exists: true, msg: "Name already exits" });
+    if (doc) {
+      return res.status(400).json({ exists: true, msg: "Name already exists" });
+    }
+
     const project = await new projectModel({
       projectName,
-      sites: [new siteModel({ siteName })],
+      sites: [{ siteName }],
     }).save();
+
     return res
       .status(200)
       .json({ project: project, exists: false, msg: "project created!" });
@@ -18,7 +21,6 @@ const createProject = async (req, res, next) => {
     return res.status(500).json({ error: err, msg: "request not attained!" });
   }
 };
-
 module.exports = { createProject };
 
 /* 

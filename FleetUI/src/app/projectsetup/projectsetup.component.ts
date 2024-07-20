@@ -19,6 +19,7 @@ export class ProjectsetupComponent {
   selectedProject: string = '';
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
+  productList: string[] = ['peak', 'clockTower', 'school', 'pochinok'];
 
   constructor(
     private authService: AuthService,
@@ -155,12 +156,16 @@ export class ProjectsetupComponent {
       .then((res) => {
         if (res.status === 400) alert('project Name already exits');
         else if (res.status === 500) console.log('Error in server side');
+        else if (res.status === 403) {
+          alert('Toke Invalid');
+          return;
+        }
         return res.json();
       })
       .then((data) => {
         if (!data.exists) {
           this.projectService.setProjectCreated(true);
-          // this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard']);
         }
         console.log(data);
       })
