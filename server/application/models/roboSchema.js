@@ -12,6 +12,8 @@ const roboSchema = new Schema( // want to add Ip of robo.. WIP
   {
     roboName: { type: String, required: true, unique: true },
     type: { type: String, default: "AGV" },
+    ipAdd: { type: String, default: "" },
+    macAdd: { type: String, default: "" },
     status: { type: String, required: true, default: "idle" },
     location: {
       type: [{ x: Number, y: Number, _id: false }],

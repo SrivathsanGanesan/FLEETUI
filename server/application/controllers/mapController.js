@@ -1,9 +1,5 @@
-const { Map } = require("./../models/mapSchema");
-const { roboSchema, zoneSchema } = require("./../models/roboSchema");
-const {
-  projectModel,
-  siteModel,
-} = require("../../fleetcore/models/projectSchema");
+const { Map, Robo } = require("./../models/mapSchema");
+const { projectModel } = require("../../fleetcore/models/projectSchema");
 
 const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   const proj = await projectModel.findOneAndUpdate(
@@ -33,7 +29,7 @@ const mapInsert = async (req, res) => {
     const map = await Map.exists({ mapName: mapName });
     if (map) return res.json({ exits: true, msg: "name already exits" });
 
-    const newMap = await new Map({ mapName, imgUrl, zones, robots }).save();
+    const newMap = await new Map({ mapName, imgUrl, zones }).save();
     const MapId = newMap._id;
     const proj = await insertMapId({ MapId, mapName, projectName, siteName });
     if (!proj)
@@ -62,20 +58,23 @@ const mapGet = async (req, res) => {
 };
 
 const newRoboInMap = async (req, res, next) => {
+  const { new_robo } = req.body;
   try {
-    const { new_robo } = req.body;
-    const mapId = req.params.mapId;
-    const doc = await Map.findOne({ mapId });
+    const mapName = req.params.mapName;
+    const doc = await Map.findOne({ mapName });
     if (!doc)
-      return res.status(400).json({ exits: false, msg: "mapId not exits" });
-    const isExists = doc.robots.some((robo) => robo.roboId === new_robo.roboId);
+      return res.status(400).json({ exits: false, msg: "map name not exits" });
+    const isExists = doc.robots.some(
+      (robo) => robo.roboName === new_robo.roboName
+    );
     if (isExists)
       return res.status(400).json({
         inserted: false,
         msg: "Robo (roboId) already exists!",
         updatedMap: doc,
       });
-    doc.robots = [...doc.robots, new_robo]; // doc.robots.push(new_robo)
+
+    doc.robots.push(new_robo); //doc.robots = [...doc.robots, new_robo];
     const updatedMap = await doc.save();
     return res.status(201).json({
       inserted: true,
@@ -97,13 +96,13 @@ const newRoboInMap = async (req, res, next) => {
 
 const deleteRoboInMap = async (req, res, next) => {
   try {
-    const doc = await Map.findOne({ mapId: req.params.mapId });
+    const doc = await Map.findOne({ mapName: req.params.mapName });
     if (!doc)
       return res
         .status(400)
         .json({ opt: "failed", msg: "mapId/mapname not exist!" });
     const ind = doc.robots.findIndex(
-      (robo) => robo.roboId === req.params.roboId
+      (robo) => robo.roboName === req.params.roboName
     );
     if (ind === -1)
       return res.status(400).json({ opt: "failed", msg: "robo not exist!" });
