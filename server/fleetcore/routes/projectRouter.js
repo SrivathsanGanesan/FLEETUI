@@ -4,6 +4,7 @@ const {
 } = require("../controllers/projectController/createProjController");
 const {
   getProject,
+  getProjectList,
 } = require("../controllers/projectController/getProjectController");
 const {
   validateToken,
@@ -11,6 +12,7 @@ const {
 
 const projectRouter = express.Router();
 projectRouter.post("/project", validateToken, createProject);
+projectRouter.get("/projects/project-list", validateToken, getProjectList);
 projectRouter.get("/:projectName", validateToken, getProject);
 
 module.exports = projectRouter;

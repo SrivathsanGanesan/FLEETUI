@@ -17,4 +17,14 @@ const getProject = async (req, res, next) => {
   }
 };
 
-module.exports = { getProject };
+const getProjectList = async (req, res, next) => {
+  try {
+    const doc = await projectModel.find({}).select("projectName");
+    res.status(200).json({ projects: doc, msg: "list sent!" });
+  } catch (error) {
+    console.log("err occ : ", error);
+    return res.status(500).json({ error: error, msg: "request not attained!" });
+  }
+};
+
+module.exports = { getProject, getProjectList };

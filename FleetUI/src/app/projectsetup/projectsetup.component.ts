@@ -3,6 +3,11 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 
+interface Project {
+  _id: string;
+  projectName: string;
+}
+
 @Component({
   selector: 'app-projectsetup',
   templateUrl: './projectsetup.component.html',
@@ -13,13 +18,13 @@ export class ProjectsetupComponent {
   isProjDiv2Visible: boolean = false;
   isProjDiv3Visible: boolean = false;
   sitename: string = '';
+  project: Project = { _id: '', projectName: '' };
   projectname: string = '';
-  projectname1: string = '';
   isFocused: { [key: string]: boolean } = {};
   selectedProject: string = '';
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
-  productList: string[] = [];
+  productList: Project[] = [];
 
   constructor(
     private authService: AuthService,
@@ -27,7 +32,21 @@ export class ProjectsetupComponent {
     private projectService: ProjectService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    fetch('http://localhost:3000/fleet-project/projects/project-list', {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        else throw new Error("Error : data doesn't attained " + res.status);
+      })
+      .then((data) => {
+        this.productList = data.projects;
+        // console.log(this.productList);
+      })
+      .catch((err) => console.log(err));
+  }
 
   showProjDiv1() {
     this.isProjDiv1Visible = !this.isProjDiv1Visible;
@@ -120,7 +139,7 @@ export class ProjectsetupComponent {
   }
 
   onProjectChange(event: any) {
-    this.projectname1 = event.target.value;
+    this.project = JSON.parse(event.target.value);
   }
 
   createProject() {
@@ -175,6 +194,6 @@ export class ProjectsetupComponent {
   }
 
   openProject() {
-    console.log('name1 : ', this.projectname1);
+    console.log('name : ', this.project);
   }
 }

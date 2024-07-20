@@ -102,8 +102,12 @@
             (change)="onProjectChange($event)"
           >
             <option value="" disabled selected>Project List</option>
-            <option *ngFor="let product of productList" value="{{ product }}">
-              {{ product }}
+            <option
+              *ngFor="let product of productList"
+              [value]="product | json"
+            >
+              <!-- | "product | json" angular pipe which converts object into a string -->
+              {{ product.projectName }}
             </option>
           </select>
           <div class="ButtonSet">
