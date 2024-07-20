@@ -14,7 +14,7 @@ const createProject = async (req, res, next) => {
     }).save();
 
     return res
-      .status(200)
+      .status(201)
       .json({ project: project, exists: false, msg: "project created!" });
   } catch (err) {
     console.log("err occ : ", err);

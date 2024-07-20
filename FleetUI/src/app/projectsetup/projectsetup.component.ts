@@ -144,7 +144,7 @@ export class ProjectsetupComponent {
       return;
     }
 
-    fetch('http://localhost:3000/create-new-project/project', {
+    fetch('http://localhost:3000/fleet-project/project', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
