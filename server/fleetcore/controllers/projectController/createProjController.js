@@ -1,4 +1,8 @@
 const { projectModel, siteModel } = require("../../models/projectSchema");
+const {
+  authRegisterModel,
+  userProjListschema,
+} = require("../../../common/models/authRegisterSchema");
 
 const createProject = async (req, res, next) => {
   const { projectName, siteName } = req.body.project;
@@ -12,10 +16,22 @@ const createProject = async (req, res, next) => {
       projectName,
       sites: [{ siteName }],
     }).save();
+    const user = await authRegisterModel.findOne({
+      name: req.user,
+      role: req.role,
+    });
+    user.projects.push({
+      projectId: project._id,
+      projectName: project.projectName,
+    });
+    const userdet = await user.save();
 
-    return res
-      .status(201)
-      .json({ project: project, exists: false, msg: "project created!" });
+    return res.status(201).json({
+      project: project,
+      exists: false,
+      userdet: userdet.projects,
+      msg: "project created!",
+    });
   } catch (err) {
     console.log("err occ : ", err);
     return res.status(500).json({ error: err, msg: "request not attained!" });
