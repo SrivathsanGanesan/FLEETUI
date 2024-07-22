@@ -54,3 +54,21 @@
     border-top-left-radius: 10px ;
     border-top-right-radius:10px;
   }
+  .FloorSelector select {
+    padding: 5px;
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    right:0;
+    margin: 30px 150px 0px 0px;
+    padding: 5px 30px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(199, 186, 186, 0.303);   
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+  }
+  .GraphAndCharts{
+    display: grid;
+  }
+  .chart1

@@ -1,4 +1,3 @@
-// dashboard.component.ts
 import { Component, AfterViewInit } from '@angular/core';
 
 @Component({
@@ -8,6 +7,8 @@ import { Component, AfterViewInit } from '@angular/core';
 })
 export class DashboardComponent implements AfterViewInit {
   ONBtn = false;
+  selectedFloor = 'Floor 1';
+  floors = ['Floor 1', 'Floor 2', 'Floor 3'];
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
@@ -27,7 +28,7 @@ export class DashboardComponent implements AfterViewInit {
 
     if (ctx) {
       const img = new Image();
-      img.src = '../../assets/maps/Map1.svg';
+      img.src = this.getFloorMap(this.selectedFloor);
 
       img.onload = () => {
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
@@ -35,5 +36,22 @@ export class DashboardComponent implements AfterViewInit {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       };
     }
+  }
+
+  getFloorMap(floor: string): string {
+    switch(floor) {
+      case 'Floor 1':
+        return '../../assets/maps/Map1.svg';
+      case 'Floor 2':
+        return '../../assets/maps/Map2.svg';
+      case 'Floor 3':
+        return '../../assets/maps/Map3.svg';
+      default:
+        return '../../assets/maps/Map1.svg';
+    }
+  }
+
+  onFloorChange(event: Event) {
+    this.loadCanvas();
   }
 }
