@@ -3,5 +3,33 @@
   <app-sidenavbar></app-sidenavbar>
   <div class="mainContent">
     <canvas id="myCanvas"></canvas>
+    <div class="ONBtn">
+      <img [src]="getOnBtnImage()" (click)="toggleONBtn()">
+    </div>
+    <div class="FloorSelector" *ngIf="ONBtn">
+      <select [(ngModel)]="selectedFloor" (change)="onFloorChange($event)" class="selector">
+        <option *ngFor="let floor of floors" [value]="floor">{{ floor }}</option>
+      </select>
+    </div>
+    <div class="CanvasOptions" *ngIf="ONBtn">
+      <span class="empty"></span>
+      <img src="../../assets/CanvasOptions/Expand.svg" class="Expand">
+      <img src="../../assets/CanvasOptions/Layout.svg" class="Layout">
+      <img src="../../assets/CanvasOptions/Save.svg" class="Save">
+      <img src="../../assets/CanvasOptions/Pointer.svg" class="Pointer">
+      <img src="../../assets/CanvasOptions/Zoom.svg" class="Zoom">
+      <img src="../../assets/CanvasOptions/ZoomOut.svg" class="ZoomOut">
+    </div>
+    <div class="GraphAndCharts">
+      <div class="Chart1">
+
+      </div>
+      <div class="Chart2">
+
+      </div>
+      <div class="Chart3">
+
+      </div>
+    </div>
   </div>
 </div>

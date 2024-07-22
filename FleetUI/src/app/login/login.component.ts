@@ -26,6 +26,7 @@ export class LoginComponent {
     const username = (document.getElementById('username') as HTMLInputElement).value;
     const password = (document.getElementById('password') as HTMLInputElement).value;
     const userRole = (document.querySelector('input[name="userRole"]:checked') as HTMLInputElement)?.value;
+    
     if (!username && !password && !userRole) {
       this.errorMessage = '*Enter Username, Password and Select User Role';
       return;
@@ -54,7 +55,9 @@ export class LoginComponent {
       this.errorMessage = '*Enter Password ';
       return;
     }
+    
     this.errorMessage = null; // Clear any previous error messages
+    
     fetch('http://localhost:3000/auth/login', {
       method: 'POST',
       headers: {
@@ -81,10 +84,18 @@ export class LoginComponent {
       .then((data) => {
         if (data.user) {
           this.authService.login({ name: data.user.name, role: data.user.role });
-          this.router.navigate(['project_setup']);
+          console.log(`User role: ${data.user.role}`); // Log user role
+          if (data.user.role === 'User') {
+            this.router.navigate(['dashboard']); // Navigate to dashboard for User role
+          } else {
+            this.router.navigate(['project_setup']); // Navigate to project setup for other roles
+          }
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        this.errorMessage = "Login failed. Please try again."; // General error message
+      });
   }
 
   onContainerClick(event: Event) {

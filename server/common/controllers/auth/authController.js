@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const authRegisterModel = require("../../models/authRegisterSchema");
+const { authRegisterModel } = require("../../models/authRegisterSchema");
 
 const validateToken = async (req, res, next) => {
   const token = req.cookies._token;
@@ -46,6 +46,7 @@ const login = async (req, res) => {
             name: user[0].name,
             role: user[0].role,
             priority: user[0].priority,
+            projects: user[0].projects,
           },
         });
     }
@@ -94,6 +95,7 @@ const register = async (req, res) => {
           role: updatedDoc.role,
           id: updatedDoc._id,
           password: password,
+          projects: updatedDoc.projects,
         },
       });
     }

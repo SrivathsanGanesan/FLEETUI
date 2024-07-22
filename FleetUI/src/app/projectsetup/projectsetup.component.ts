@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
+import { json } from 'stream/consumers';
 
 interface Project {
   _id: string;
@@ -32,7 +33,8 @@ export class ProjectsetupComponent {
     private projectService: ProjectService
   ) {}
 
-  ngOnInit(): void { // hook
+  ngOnInit(): void {
+    // hook
     fetch('http://localhost:3000/fleet-project/projects/project-list', {
       method: 'GET',
       credentials: 'include',
@@ -140,6 +142,8 @@ export class ProjectsetupComponent {
 
   onProjectChange(event: any) {
     this.project = JSON.parse(event.target.value);
+    if (!JSON.parse(event.target.value)._id)
+      this.project._id = JSON.parse(event.target.value).projectId;
   }
 
   createProject() {
@@ -193,30 +197,28 @@ export class ProjectsetupComponent {
       .catch((err) => console.log(err));
   }
 
-openProject() {
-  console.log('name : ', this.project._id, this.project.projectName);
-  fetch(`http://localhost:3000/fleet-project/${this.project._id}`, {
-    method: 'GET',
-    credentials: 'include',
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error('Project not found: ' + res.status);
-      }
-      return res.json();
+  openProject() {
+    console.log('name : ', this.project._id, this.project.projectName);
+    fetch(`http://localhost:3000/fleet-project/${this.project._id}`, {
+      method: 'GET',
+      credentials: 'include',
     })
-    .then((data) => {
-      if (!data.exists) {
-        console.error('Project does not exist');
-        return;
-      }
-      console.log(data.project);
-      this.projectService.setSelectedProject(data.project);
-      this.projectService.setProjectCreated(true);
-      this.router.navigate(['/dashboard']);
-    })
-    .catch((err) => console.log(err));
-}
-
-  
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Project not found: ' + res.status);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!data.exists) {
+          console.error('Project does not exist');
+          return;
+        }
+        console.log(data.project);
+        this.projectService.setSelectedProject(data.project);
+        this.projectService.setProjectCreated(true);
+        this.router.navigate(['/dashboard']);
+      })
+      .catch((err) => console.log(err));
+  }
 }
