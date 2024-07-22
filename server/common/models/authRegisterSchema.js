@@ -1,5 +1,18 @@
 const { Schema, model, mongoose } = require("mongoose");
 const { userManagementConnection } = require("../db_config");
+const { projectModel } = require("../../fleetcore/models/projectSchema");
+
+const userProjListschema = new Schema(
+  {
+    projectId: { type: Schema.Types.ObjectId, ref: "projectModel" },
+    projectName: {
+      type: String,
+      required: [true, "Project_name is required!"],
+      trim: true,
+    },
+  },
+  { _id: false, versionKey: false }
+);
 
 const authRegisterSchema = new Schema(
   {
@@ -24,6 +37,10 @@ const authRegisterSchema = new Schema(
       min: 1,
       max: 3,
     },
+    projects: {
+      type: [userProjListschema],
+      default: [],
+    },
   },
   { timestamps: true, versionKey: false }
 );
@@ -34,4 +51,4 @@ const authRegisterModel = userManagementConnection.model(
   "User"
 );
 
-module.exports = authRegisterModel;
+module.exports = { authRegisterModel, userProjListschema };

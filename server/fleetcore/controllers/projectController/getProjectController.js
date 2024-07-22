@@ -1,3 +1,6 @@
+const {
+  authRegisterModel,
+} = require("../../../common/models/authRegisterSchema");
 const { projectModel } = require("../../models/projectSchema");
 
 const getProject = async (req, res, next) => {
@@ -19,6 +22,22 @@ const getProject = async (req, res, next) => {
 
 const getProjectList = async (req, res, next) => {
   try {
+    if (req.role === "User")
+      return res.json({
+        projects: null,
+        msg: "User not permitted to access projects_list",
+      });
+    else if (req.role === "Maintainer") {
+      const userDoc = await authRegisterModel
+        .findOne({
+          name: req.user,
+          role: req.role,
+        })
+        .select({ projects: 1, _id: 0 });
+      return res
+        .status(200)
+        .json({ projects: userDoc.projects, msg: "list sent!" });
+    }
     const doc = await projectModel.find({}).select("projectName");
     res.status(200).json({ projects: doc, msg: "list sent!" });
   } catch (error) {
