@@ -23,24 +23,19 @@ export class AuthGuard implements CanActivate {
   }
 
   checkLogin(url: string): boolean {
-    const user = this.authService.getUser();
     if (this.authService.isLoggedIn()) {
       if (url === '/') {
-        if (user?.role === 'User') {
-          this.router.navigate(['/dashboard']);
-        } else {
-          this.router.navigate(['/project_setup']);
-        }
+        this.router.navigate(['/project_setup']);
         return false;
       }
       return true;
     }
-  
-    if (url === '/project_setup' || url === '/dashboard') {
+
+    if (url === '/project_setup') {
       this.router.navigate(['/']);
       return false;
     }
-  
+
     return true;
   }
 }
