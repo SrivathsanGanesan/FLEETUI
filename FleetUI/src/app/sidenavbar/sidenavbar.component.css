@@ -55,7 +55,10 @@
     top: 0;
     z-index: 1; /* Ensure it's above the canvas */
   }
-  
+.sidebar.enlarged .Logo {
+  content: url("../../assets/MothersonEN_logo.svg"); /* Path to your enlarged state logo */
+}
+
   .TopbarContents {
     display: flex;
     align-items: center;

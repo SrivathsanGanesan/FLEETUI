@@ -13,6 +13,7 @@ export class SidenavbarComponent implements OnInit {
   userrole: string | null = null;
   showNotificationPopup = false; // Property to track popup visibility
   showProfilePopup = false;
+  isSidebarEnlarged = false; // Property to track sidebar enlargement
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -32,6 +33,10 @@ export class SidenavbarComponent implements OnInit {
   }
   toggleProfilePopup(){
     this.showProfilePopup=!this.showProfilePopup;
+  }
+
+  toggleSidebar(isEnlarged: boolean) {
+    this.isSidebarEnlarged = isEnlarged;
   }
   logout() {
     fetch('http://localhost:3000/auth/logout', {
