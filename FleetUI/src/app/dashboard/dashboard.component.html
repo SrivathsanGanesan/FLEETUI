@@ -3,5 +3,8 @@
   <app-sidenavbar></app-sidenavbar>
   <div class="mainContent">
     <canvas id="myCanvas"></canvas>
+    <div class="ONBtn">
+      <img [src]="getOnBtnImage()" (click)="toggleONBtn()">
+    </div>
   </div>
 </div>

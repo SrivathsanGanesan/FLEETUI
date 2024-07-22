@@ -4,9 +4,19 @@ import { Component, AfterViewInit } from '@angular/core';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'] // Note the plural 'styleUrls'
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements AfterViewInit {
+  ONBtn = false;
+
+  toggleONBtn() {
+    this.ONBtn = !this.ONBtn;
+  }
+
+  getOnBtnImage(): string {
+    return this.ONBtn ? '../../assets/icons/off.svg' : '../../assets/icons/on.svg';
+  }
+
   ngAfterViewInit() {
     this.loadCanvas();
   }
@@ -17,7 +27,7 @@ export class DashboardComponent implements AfterViewInit {
 
     if (ctx) {
       const img = new Image();
-      img.src = '../../assets/maps/Map1.svg'; // Update this to the path of your image
+      img.src = '../../assets/maps/Map1.svg';
 
       img.onload = () => {
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
