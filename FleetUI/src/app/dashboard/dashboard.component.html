@@ -6,13 +6,14 @@
     <div class="ONBtn">
       <img [src]="getOnBtnImage()" (click)="toggleONBtn()">
     </div>
-    <div class="CanvasOptions">
+    <div class="CanvasOptions" *ngIf="ONBtn">
+      <span class="empty"></span>
       <img src="../../assets/CanvasOptions/Expand.svg" class="Expand">
       <img src="../../assets/CanvasOptions/Layout.svg" class="Layout">
       <img src="../../assets/CanvasOptions/Save.svg" class="Save">
-      <img src="../../assets/CanvasOptions/Expand.svg" class="Expand">
-      <img src="../../assets/CanvasOptions/Expand.svg" class="Expand">
-      <img src="../../assets/CanvasOptions/Expand.svg" class="Expand">
+      <img src="../../assets/CanvasOptions/Pointer.svg" class="Pointer">
+      <img src="../../assets/CanvasOptions/Zoom.svg" class="Zoom">
+      <img src="../../assets/CanvasOptions/ZoomOut.svg" class="ZoomOut">
     </div>
   </div>
 </div>
