@@ -81,7 +81,11 @@ export class LoginComponent {
       .then((data) => {
         if (data.user) {
           this.authService.login({ name: data.user.name, role: data.user.role });
-          this.router.navigate(['project_setup']);
+          if (data.user.role === 'User') {
+            this.router.navigate(['dashboard']); // Navigate to dashboard for User role
+          } else {
+            this.router.navigate(['project_setup']); // Navigate to project setup for other roles
+          }
         }
       })
       .catch((err) => console.error(err));
