@@ -6,6 +6,11 @@ const {
 
 const createProject = async (req, res, next) => {
   const { projectName, siteName } = req.body.project;
+  if (req.role === "User")
+    return res.status(403).json({
+      status: false,
+      msg: "User not permitted to access project creation",
+    });
   try {
     const doc = await projectModel.exists({ projectName: projectName });
     if (doc) {
