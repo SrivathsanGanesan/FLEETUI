@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 import { json } from 'stream/consumers';
+import { log } from 'node:console';
 
 interface Project {
   _id: string;
@@ -126,6 +127,10 @@ export class ProjectsetupComponent {
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
+    if (file.type !== 'application/zip') {
+      alert('file type not valid');
+      return;
+    }
     if (file) {
       console.log('File selected:', file.name);
       this.selectedFileName = file.name; // Update the variable with the file name
