@@ -125,6 +125,7 @@ export class ProjectsetupComponent {
       .catch((err) => console.log(err));
   }
 
+  // project file handling..
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file.type !== 'application/zip') {
