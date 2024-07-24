@@ -14,7 +14,7 @@ const Map = require("./../models/mapSchema");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "proj_assets/dashboardMap");
+    cb(null, "proj_assets/dashboardMap"); // cb(err, value);
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
