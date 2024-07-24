@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const {
+  extractProjFile,
   parseProjectFile,
 } = require("../controllers/fileController/projectFileController");
 const projectFileRouter = express.Router();
@@ -23,6 +24,7 @@ projectFileRouter.post(
   "/upload-project",
   validateToken,
   upload.single("projFile"),
+  extractProjFile,
   parseProjectFile
 );
 
