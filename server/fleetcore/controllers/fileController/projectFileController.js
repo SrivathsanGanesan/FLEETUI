@@ -1,4 +1,3 @@
-const { log } = require("console");
 const decompress = require("decompress");
 const fs = require("fs");
 const path = require("path");
