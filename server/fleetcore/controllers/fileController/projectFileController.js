@@ -1,6 +1,11 @@
 const decompress = require("decompress");
 const fs = require("fs");
 const path = require("path");
+const { Map, Robo } = require("../../../application/models/roboSchema");
+const { projectModel, siteModel } = require("../../models/projectSchema");
+const {
+  authRegisterModel,
+} = require("../../../common/models/authRegisterSchema");
 
 const extractProjFile = async (req, res, next) => {
   try {
@@ -22,6 +27,7 @@ const extractProjFile = async (req, res, next) => {
 };
 
 const parseProjectFile = async (req, res, next) => {
+  
   res.status(200).json({ extracted: true, msg: "file has been extracted!" });
 };
 

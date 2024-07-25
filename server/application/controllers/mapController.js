@@ -1,7 +1,12 @@
-const { Map, Robo } = require("./../models/mapSchema");
+const { Map, Robo } = require("../models/mapSchema");
 const { projectModel } = require("../../fleetcore/models/projectSchema");
 const fs = require("fs");
 const path = require("path");
+
+const clearImgAsset = async (req) => {
+  if (fs.existsSync(`proj_assets/dashboardMap/${req.file.filename}`))
+    fs.unlinkSync(`proj_assets/dashboardMap/${req.file.filename}`);
+};
 
 const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   const proj = await projectModel.findOneAndUpdate(
@@ -32,15 +37,7 @@ const mapInsert = async (req, res) => {
       "sites.siteName": siteName,
     });
     if (!doc) {
-      if (
-        fs.existsSync(
-          path.join("proj_assets/dashboardMap" + `/${req.file.originalname}`)
-        )
-      ) {
-        fs.unlinkSync(
-          path.join("proj_assets/dashboardMap" + `/${req.file.originalname}`)
-        );
-      }
+      await clearImgAsset(req);
       return res.status(400).json({
         succeded: false,
         msg: "project name or site name not exists!",
@@ -58,13 +55,16 @@ const mapInsert = async (req, res) => {
     }).save();
     const MapId = newMap._id;
     const proj = await insertMapId({ MapId, mapName, projectName, siteName });
-    if (!proj)
+    if (!proj) {
+      await clearImgAsset(req);
       return res.status(400).json({
         succeded: false,
         msg: "operation failed while inserting ref Id of Map!",
       });
+    }
     res.status(201).json({ exits: false, msg: "data inserted!" });
   } catch (err) {
+    await clearImgAsset(req);
     console.log("err occs : ", err);
     res.status(500).json({ msg: "error occured while inserting!" });
   }
