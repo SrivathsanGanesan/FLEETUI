@@ -22,7 +22,7 @@ const extractProjFile = async (req, res, next) => {
 };
 
 const parseProjectFile = async (req, res, next) => {
-  res.send("here we go");
+  res.status(200).json({ extracted: true, msg: "file has been extracted!" });
 };
 
 module.exports = { extractProjFile, parseProjectFile };

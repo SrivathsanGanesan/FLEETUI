@@ -46,12 +46,16 @@ const mapInsert = async (req, res) => {
         msg: "project name or site name not exists!",
       });
     }
-    mapData.imgUrl = `localhost:3000/dashboard/${req.file.originalname}`;
+    mapData.imgUrl = `localhost:3000/dashboard/${req.file.filename}`;
 
     const map = await Map.exists({ mapName: mapName });
     if (map) return res.json({ exits: true, msg: "name already exits" });
 
-    const newMap = await new Map({ mapName, imgUrl, zones }).save();
+    const newMap = await new Map({
+      mapName,
+      imgUrl: mapData.imgUrl,
+      zones,
+    }).save();
     const MapId = newMap._id;
     const proj = await insertMapId({ MapId, mapName, projectName, siteName });
     if (!proj)
