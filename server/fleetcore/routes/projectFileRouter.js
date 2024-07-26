@@ -29,6 +29,10 @@ projectFileRouter.post(
   parseProjectFile
 );
 
-projectFileRouter.get("/download-project/:project_name", createProjFile);
+projectFileRouter.get(
+  "/download-project/:project_name",
+  validateToken,
+  createProjFile
+);
 
 module.exports = projectFileRouter;
