@@ -8,7 +8,7 @@ const zoneSchema = new Schema(
   { versionKey: false }
 );
 
-const roboSchema = new Schema( // want to add Ip of robo.. WIP
+const roboSchema = new Schema(
   {
     roboName: { type: String, required: true, unique: true },
     type: { type: String, default: "AGV" },
