@@ -24,6 +24,7 @@
 }
 .User,.Maintainer,.Administrator{
     padding:0px 5px 0px 5px;
+    align-items: center;
 }
 .user-role-container {
     margin:31px 0px 0px 0px ;
@@ -31,17 +32,24 @@
 }
 input[type="radio"] {
     appearance: none;
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
     border: 1px solid #050505;
     border-radius: 50%;
     position: relative;
     cursor: pointer;
+    align-items: center;
+    justify-content: center;
 }
-
-input[type="radio"]:checked {
+input[type="radio"]:checked::before {
+    content: '';
+    width: 6px; /* Size of the inner circle */
+    height: 6px; /* Size of the inner circle */
     background-color: #FF7373;
-    border: 1px solid #FF7373;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
 }
 
 .details{

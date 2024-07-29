@@ -16,6 +16,8 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { UserlogsComponent } from './userlogs/userlogs.component';
 import { UsermanagementComponent } from './usermanagement/usermanagement.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { ChartsComponent } from './charts/charts.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,9 +28,11 @@ import { UsermanagementComponent } from './usermanagement/usermanagement.compone
     ConfigurationComponent,
     UsermanagementComponent,
     UserlogsComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    ChartsComponent
   ],
   imports: [
+    NgApexchartsModule,
     BrowserModule,
     AppRoutingModule,
     MatTableModule,
