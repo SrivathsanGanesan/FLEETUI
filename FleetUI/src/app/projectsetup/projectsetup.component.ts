@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 import { json } from 'stream/consumers';
+import { log } from 'node:console';
 
 interface Project {
   _id: string;
@@ -124,12 +125,27 @@ export class ProjectsetupComponent {
       .catch((err) => console.log(err));
   }
 
+  // project file handling..
   onFileSelected(event: any) {
     const file = event.target.files[0];
+    if (file.type !== 'application/zip') {
+      alert('file type not valid');
+      return;
+    }
     if (file) {
       console.log('File selected:', file.name);
       this.selectedFileName = file.name; // Update the variable with the file name
     }
+    const form = new FormData();
+    form.append('projFile', file);
+    fetch('http://localhost:3000/fleet-project-file/upload-project/', {
+      credentials: 'include',
+      method: 'POST',
+      body: form,
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
   }
 
   onFocus(inputId: string) {

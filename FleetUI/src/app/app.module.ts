@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,6 +31,9 @@ import { UsermanagementComponent } from './usermanagement/usermanagement.compone
   imports: [
     BrowserModule,
     AppRoutingModule,
+    MatTableModule,
+    MatButtonModule,
+    MatInputModule,
     BrowserAnimationsModule,
     FormsModule   
   ],

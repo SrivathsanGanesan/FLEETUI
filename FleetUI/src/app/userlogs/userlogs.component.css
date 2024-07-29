@@ -1,6 +1,46 @@
-.mainContent{
-    position: absolute;
-    top: 50px;
-    left: 70px;
-    z-index: -1;
-}
+/* Structure */
+/* User logs styles */
+
+table {
+    width: 100%;
+  }
+  /* Table Title */
+  .table-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #cdc715;
+    padding: 15px 20px;
+    font-weight: 600;
+    color: white;
+  }
+  .mat-mdc-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+  .custom-table {
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .mat-header-cell {
+    background-color: #3f51b5; /* Customize header color */
+    color: white;
+    font-weight: bold;
+  }
+  
+  .mat-cell {
+    background-color: #e8eaf6; /* Customize cell background color */
+    color: #3f51b5; /* Customize cell text color */
+  }
+  
+  .mat-row:hover {
+    background-color: #c5cae9; /* Customize hover color */
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  

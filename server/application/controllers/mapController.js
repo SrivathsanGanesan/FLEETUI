@@ -1,5 +1,12 @@
-const { Map, Robo } = require("./../models/mapSchema");
+const { Map, Robo } = require("../models/mapSchema");
 const { projectModel } = require("../../fleetcore/models/projectSchema");
+const fs = require("fs");
+const path = require("path");
+
+const clearImgAsset = (req) => {
+  if (fs.existsSync(`proj_assets/dashboardMap/${req.file.filename}`))
+    fs.unlinkSync(`proj_assets/dashboardMap/${req.file.filename}`);
+};
 
 const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   const proj = await projectModel.findOneAndUpdate(
@@ -19,26 +26,45 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   );
   return proj;
 };
+//..
 
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
   try {
-    mapData.imgUrl = `localhost:3000/dashboard/${req.file.originalname}`;
     const { projectName, siteName, mapName, imgUrl, zones, robots } = mapData;
-
-    const map = await Map.exists({ mapName: mapName });
-    if (map) return res.json({ exits: true, msg: "name already exits" });
-
-    const newMap = await new Map({ mapName, imgUrl, zones }).save();
-    const MapId = newMap._id;
-    const proj = await insertMapId({ MapId, mapName, projectName, siteName });
-    if (!proj)
+    const doc = await projectModel.exists({
+      projectName: projectName,
+      "sites.siteName": siteName,
+    });
+    if (!doc) {
+      clearImgAsset(req);
       return res.status(400).json({
         succeded: false,
         msg: "project name or site name not exists!",
       });
+    }
+    mapData.imgUrl = `localhost:3000/dashboard/${req.file.filename}`;
+
+    const map = await Map.exists({ mapName: mapName });
+    if (map) return res.json({ exits: true, msg: "name already exits" });
+
+    const newMap = await new Map({
+      mapName,
+      imgUrl: mapData.imgUrl,
+      zones,
+    }).save();
+    const MapId = newMap._id;
+    const proj = await insertMapId({ MapId, mapName, projectName, siteName });
+    if (!proj) {
+      clearImgAsset(req);
+      return res.status(400).json({
+        succeded: false,
+        msg: "operation failed while inserting ref Id of Map!",
+      });
+    }
     res.status(201).json({ exits: false, msg: "data inserted!" });
   } catch (err) {
+    clearImgAsset(req);
     console.log("err occs : ", err);
     res.status(500).json({ msg: "error occured while inserting!" });
   }
@@ -64,9 +90,7 @@ const newRoboInMap = async (req, res, next) => {
     const doc = await Map.findOne({ mapName });
     if (!doc)
       return res.status(400).json({ exits: false, msg: "map name not exits" });
-    const isExists = doc.robots.some(
-      (robo) => robo.roboName === new_robo.roboName
-    );
+    const isExists = doc.robots.some((robo) => robo.name === new_robo.name);
     if (isExists)
       return res.status(400).json({
         inserted: false,

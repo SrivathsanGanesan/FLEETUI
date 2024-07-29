@@ -6,7 +6,7 @@ const projMapSchema = new Schema(
   {
     mapId: {
       type: Schema.Types.ObjectId,
-      ref: "Map",
+      ref: Map,
       required: true,
     },
     mapName: {
@@ -34,7 +34,7 @@ const roboProjSchema = new Schema(
   {
     roboId: {
       type: Schema.Types.ObjectId,
-      ref: "Robo",
+      ref: Robo,
       required: true,
     },
     name: {
