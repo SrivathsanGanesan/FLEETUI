@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsermanagementComponent } from './usermanagement.component';
+import { SidenavbarComponent } from '../sidenavbar/sidenavbar.component';
 
 
 
@@ -9,7 +10,8 @@ import { UsermanagementComponent } from './usermanagement.component';
     
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    
   ]
 })
 export class UsermanagementModule { }
