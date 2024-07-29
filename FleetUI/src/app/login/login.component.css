@@ -134,7 +134,6 @@ input[type="radio"]:checked {
     margin: 0px 0px 10px 15px;
 }
 .LoginBtn{
-    width: 25%;
     padding: 15px;
     background-color: #FF7373;
     border: none;
