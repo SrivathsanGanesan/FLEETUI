@@ -33,7 +33,7 @@ projectFileRouter.post(
 projectFileRouter.get(
   "/download-project/:project_name",
   validateToken,
-  createProjFiles,
+  // createProjFiles,
   compressProjectFile
 );
 

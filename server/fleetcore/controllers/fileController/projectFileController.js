@@ -6,6 +6,7 @@ const { projectModel, siteModel } = require("../../models/projectSchema");
 const {
   authRegisterModel,
 } = require("../../../common/models/authRegisterSchema");
+const zl = require("zip-lib");
 
 const populateField = async ({ projectName, path, model, selectedField }) => {
   const doc = await projectModel
@@ -150,7 +151,19 @@ const createProjFiles = async (req, res, next) => {
 };
 
 const compressProjectFile = async (req, res, next) => {
-  res.send("good");
+  let target = path.resolve("proj_assets/tempDist");
+  let toZip = path.resolve(
+    `proj_assets/projectFile/${req.params.project_name}.zip`
+  );
+  zl.archiveFolder(target, toZip).then(
+    () => {
+      console.log("here I'm");
+    },
+    (err) => {
+      console.log("Err found while archiveing : ", err);
+    }
+  );
+  res.json("good");
 };
 
 module.exports = {
