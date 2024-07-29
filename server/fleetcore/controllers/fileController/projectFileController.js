@@ -107,7 +107,7 @@ const extractProjFile = async (req, res, next) => {
 //.. WIP
 const parseProjectFile = async (req, res, next) => {
   try {
-    return res.send("good");
+    return res.json("good");
   } catch (err) {
     console.log("error occ : ", err);
     res.status(500).json({ error: err, msg: "operation failed" });

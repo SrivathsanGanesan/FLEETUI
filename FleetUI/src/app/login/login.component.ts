@@ -23,10 +23,16 @@ export class LoginComponent {
   }
 
   validateForm() {
-    const username = (document.getElementById('username') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
-    const userRole = (document.querySelector('input[name="userRole"]:checked') as HTMLInputElement)?.value;
-    
+    const username = (document.getElementById('username') as HTMLInputElement)
+      .value;
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
+    const userRole = (
+      document.querySelector(
+        'input[name="userRole"]:checked'
+      ) as HTMLInputElement
+    )?.value;
+
     if (!username && !password && !userRole) {
       this.errorMessage = '*Enter Username, Password and Select User Role';
       return;
@@ -55,9 +61,9 @@ export class LoginComponent {
       this.errorMessage = '*Enter Password ';
       return;
     }
-    
+
     this.errorMessage = null; // Clear any previous error messages
-    
+
     fetch('http://localhost:3000/auth/login', {
       method: 'POST',
       headers: {
@@ -74,16 +80,22 @@ export class LoginComponent {
       }),
     })
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else if (res.status === 401 || res.status === 404) {
-          this.errorMessage = "*Wrong password or user with this role doesn't exist";
+        // if (res.ok) {
+        //   return res.json();
+        // } else
+        if (res.status === 404 || res.status === 401) {
+          this.errorMessage =
+            "*Wrong password or user with this role doesn't exist";
         }
-        throw new Error('Login failed');
+        return res.json();
+        // throw new Error('Login failed');
       })
       .then((data) => {
         if (data.user) {
-          this.authService.login({ name: data.user.name, role: data.user.role });
+          this.authService.login({
+            name: data.user.name,
+            role: data.user.role,
+          });
           console.log(`User role: ${data.user.role}`); // Log user role
           if (data.user.role === 'User') {
             this.router.navigate(['dashboard']); // Navigate to dashboard for User role
@@ -94,7 +106,7 @@ export class LoginComponent {
       })
       .catch((err) => {
         console.error(err);
-        this.errorMessage = "Login failed. Please try again."; // General error message
+        this.errorMessage = 'Login failed. Please try again.'; // General error message
       });
   }
 
