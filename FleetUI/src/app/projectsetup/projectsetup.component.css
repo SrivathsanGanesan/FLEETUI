@@ -73,11 +73,11 @@
 .ProjDiv2,
 .ProjDiv3 {
   background-color: #0000005c;
-  height: 300px;
-  width: 240px;
+  height: 250px;
+  width: 250px;
   border-radius: 10px;
   position: absolute;
-  top: 220px;
+  top: 230px;
   right: 30px;
   transform: translateY(-50%);
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
@@ -94,7 +94,7 @@
 }
 .input-container1 {
   position: relative;
-  margin: 40px 0px 10px 0px;
+  margin: 20px 0px 10px 0px;
 }
 .input-container2 {
   position: relative;
@@ -196,7 +196,7 @@ label.active {
 .Importicon {
   width: 180px;
   height: 100px;
-  margin: 0px 0px 40px 0px;
+  margin: 0px 0px 10px 0px;
   padding-left: 10px;
 }
 .ImpText {
@@ -204,8 +204,7 @@ label.active {
   color: white;
   font-size: 20px;
   font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  margin: 0px 0px 5px 0px;
+  margin: 0px 0px 0px 0px;
   cursor: default;
 }
 .ProjList {
@@ -217,7 +216,7 @@ label.active {
   color: white;
   font-size: 20px;
   font-family: Arial, Helvetica, sans-serif;
-  margin: 35px 0px 100px 0px;
+  margin: 15px 0px 100px 0px;
 }
 .ProjList option {
   background-color: rgb(150, 142, 142); /* Background color of options */
