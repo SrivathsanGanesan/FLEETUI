@@ -6,7 +6,6 @@ const { projectModel, siteModel } = require("../../models/projectSchema");
 const {
   authRegisterModel,
 } = require("../../../common/models/authRegisterSchema");
-// const packageName = require("../../../proj_assets/tempDist");
 
 const populateField = async ({ projectName, path, model, selectedField }) => {
   const doc = await projectModel
@@ -21,27 +20,43 @@ const populateField = async ({ projectName, path, model, selectedField }) => {
 };
 
 const initiateProjFile = ({ projDoc, imgUrlArr }) => {
+  let data = {};
   const filePath = path.resolve(
     __dirname,
     "../../../proj_assets/tempDist/projInfo.json"
   );
-  const data = JSON.parse(fs.readFileSync(filePath));
+  // const data = JSON.parse(fs.readFileSync(filePath));
   data.project = projDoc;
   data.img = imgUrlArr;
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
   return data;
 };
 
-// yet to do..
-const initiateMapFile = () => {};
+const initiateMapFile = ({ maps }) => {
+  let arr = [];
+  let data = {};
+  const filePath = path.resolve(
+    __dirname,
+    "../../../proj_assets/tempDist/mapInfo.json"
+  );
+  maps.forEach((mapArr) => {
+    mapArr.forEach((map) => {
+      arr.push(map.mapId);
+    });
+  });
+  // const data = JSON.parse(fs.readFileSync(filePath));
+  data.maps = arr;
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  return data;
+};
 
 const initiateRoboFile = ({ robos }) => {
+  let data = {};
   const filePath = path.resolve(
     __dirname,
     "../../../proj_assets/tempDist/roboInfo.json"
   );
-  const data = JSON.parse(fs.readFileSync(filePath));
-  console.log(data);
+  // const data = JSON.parse(fs.readFileSync(filePath));
   data.robos = robos;
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
   return data;
@@ -99,7 +114,7 @@ const parseProjectFile = async (req, res, next) => {
   }
 };
 
-const createProjFile = async (req, res, next) => {
+const createProjFiles = async (req, res, next) => {
   const projectName = req.params.project_name;
   try {
     const doc = await projectModel.exists({ projectName });
@@ -123,14 +138,24 @@ const createProjFile = async (req, res, next) => {
     const robos = roboDoc.robots.map((robo) => robo.roboId);
     const maps = mapDoc.sites.map((map) => map.maps);
     let imgUrlArr = parseImgUrl({ maps });
-    // copyImages({ imgUrlArr });
-    // const uptdMap = initiateProjFile({ projDoc, imgUrlArr });
-    // const uptdRobo = initiateRoboFile({ robos });
-    return res.json("good");
+    copyImages({ imgUrlArr });
+    const uptdProj = initiateProjFile({ projDoc, imgUrlArr });
+    const uptdRobo = initiateRoboFile({ robos });
+    const uptdMap = initiateMapFile({ maps });
+    next();
   } catch (err) {
     console.log("error occ : ", err);
     res.status(500).json({ error: err, msg: "operation failed" });
   }
 };
 
-module.exports = { extractProjFile, parseProjectFile, createProjFile };
+const compressProjectFile = async (req, res, next) => {
+  res.send("good");
+};
+
+module.exports = {
+  extractProjFile,
+  parseProjectFile,
+  createProjFiles,
+  compressProjectFile,
+};
