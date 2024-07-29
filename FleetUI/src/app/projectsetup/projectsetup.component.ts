@@ -170,16 +170,16 @@ export class ProjectsetupComponent {
     //   // Navigate to dashboard
     //   // this.router.navigate(['/dashboard']);
     // }
+    if (!this.projectname && !this.projectname) {
+      this.errorMessage = '*Please fill in both the fields.';
+      return;
+    }
     if (!this.sitename) {
       this.errorMessage = '*Please fill Site Name.';
       return;
     }
     if (!this.projectname) {
       this.errorMessage = '*Please fill Project Name.';
-      return;
-    }
-    if (!this.projectname && !this.projectname) {
-      this.errorMessage = '*Please fill in both the fields.';
       return;
     }
 

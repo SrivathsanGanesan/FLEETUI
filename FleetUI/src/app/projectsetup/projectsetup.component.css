@@ -72,15 +72,15 @@
 .ProjDiv1,
 .ProjDiv2,
 .ProjDiv3 {
-  background-color: #0000005c;
+  background-color: #f3bebe7e;
   height: 250px;
   width: 240px;
-  border-radius: 10px;
+  border-radius: 30px;
   position: absolute;
   top: 230px;
-  right: 30px;
+  right: 40px;
   transform: translateY(-50%);
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   display: grid;
   justify-content: center;
   align-items: center;
@@ -106,7 +106,7 @@
   height: 30px;
   background-color: transparent;
   border: none;
-  border-bottom: 1px solid rgb(255, 255, 255);
+  border-bottom: 1px solid #8d8585;
   border-radius: 5px;
   outline: none;
   font-size: 1rem;
@@ -118,7 +118,7 @@ label {
   left: 10px;
   top: 5px;
   font-size: 16px;
-  color: rgb(255, 255, 255);
+  color: rgb(141, 133, 133);
   pointer-events: none;
   transition: 0.2s ease all;
 }
@@ -138,8 +138,8 @@ label.active {
   margin: 20px 0px 5px 25px;
   padding: 5px 0px 5px 0px;
   font-size: 15px;
-  border-radius: 10px;
-  border: none;
+  border-radius: 20px;
+  border: 0.5px solid #00000061;
   font-size: 15px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
@@ -152,8 +152,8 @@ label.active {
   margin: 30px 0px 5px 25px;
   padding: 5px 0px 5px 0px;
   font-size: 15px;
-  border-radius: 10px;
-  border: none;
+  border-radius: 20px;
+  border: 0.5px solid #00000061;
   font-size: 15px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
@@ -166,8 +166,6 @@ label.active {
   margin: 30px 0px 5px 25px;
   padding: 5px 0px 5px 0px;
   font-size: 15px;
-  border-radius: 10px;
-  border: none;
   font-size: 15px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
@@ -183,16 +181,16 @@ label.active {
 .BackBTN,
 .OpenBTN,
 .CreateBTN {
-  width: 75px;
   padding: 10px;
   background-color: #FF7373;
   border: none;
   border-radius: 5px;
   color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  margin-left: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
+.BackBTN{
+  margin-left: 20px;
+}
 .Importicon {
   width: 180px;
   height: 100px;
@@ -201,28 +199,27 @@ label.active {
 }
 .ImpText {
   padding-left: 10px;
-  color: white;
+  color: #8d8585;
   font-size: 20px;
   font-family: Arial, Helvetica, sans-serif;
   margin: 0px 0px 0px 0px;
   cursor: default;
 }
 .ProjList {
-  height: 40px;
+  height: 20px;
   background-color: transparent;
   border: none;
-  border-bottom: 2px solid rgb(255, 255, 255);
   border-radius: 5px;
-  color: white;
-  font-size: 20px;
+  color: rgb(141, 133, 133);
+  font-size: 15px;
   font-family: Arial, Helvetica, sans-serif;
   margin: 10px 0px 100px 0px;
 }
 .ProjList option {
-  background-color: rgb(150, 142, 142); /* Background color of options */
-  color: white; /* Text color of options */
+  background-color: #ff73738f; /* Background color of options */
+  color: rgb(141, 133, 133);
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 15px;
+  font-size: 10px;
   text-align: center;
   border: none;
 }
@@ -231,7 +228,7 @@ label.active {
   border-bottom-color: #FF7373; /* Change to red on focus */
 }
 .error-message {
-  color: #ffffff;
+  color: #ff7373;
   font-size: 10px;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
