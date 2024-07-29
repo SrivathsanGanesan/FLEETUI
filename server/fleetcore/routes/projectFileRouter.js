@@ -3,7 +3,8 @@ const multer = require("multer");
 const {
   extractProjFile,
   parseProjectFile,
-  createProjFile,
+  createProjFiles,
+  compressProjectFile,
 } = require("../controllers/fileController/projectFileController");
 const projectFileRouter = express.Router();
 const {
@@ -32,7 +33,8 @@ projectFileRouter.post(
 projectFileRouter.get(
   "/download-project/:project_name",
   validateToken,
-  createProjFile
+  createProjFiles,
+  compressProjectFile
 );
 
 module.exports = projectFileRouter;
