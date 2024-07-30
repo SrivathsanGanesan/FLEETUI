@@ -1,17 +1,18 @@
 import { Component, ViewChild } from "@angular/core";
-import { ChartComponent as ApexChartComponent } from "ng-apexcharts";
-import { ApexNonAxisChartSeries, ApexResponsive, ApexChart, ApexFill, ApexStroke, ApexLegend, ApexPlotOptions } from "ng-apexcharts";
+
+import {
+  ApexNonAxisChartSeries,
+  ApexPlotOptions,
+  ApexChart,
+  ApexFill
+} from "ng-apexcharts";
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
-  responsive: ApexResponsive[];
-  labels: any;
-  colors: string[];
-  fill: ApexFill;
-  stroke: ApexStroke;
-  legend: ApexLegend;
+  labels: string[];
   plotOptions: ApexPlotOptions;
+  fill: ApexFill;
 };
 
 @Component({
@@ -20,68 +21,40 @@ export type ChartOptions = {
   styleUrls: ["./chart.component.css"]
 })
 export class ChartComponent {
-  @ViewChild("chart") chart!: ApexChartComponent;
-  public chartOptions: Partial<ChartOptions> | any;
+  @ViewChild("chart") chart!: ChartComponent;
+  public chartOptions: Partial<ChartOptions>;
 
   constructor() {
-    const totalRobots = 100;
-    const activeRobots = 64; // Update this value as needed
-
     this.chartOptions = {
-      series: [activeRobots, totalRobots - activeRobots],
+      series: [74, 55, 100],
       chart: {
-        type: "donut"
-      },
-      labels: ["Active Robots", "Inactive Robots"],
-      colors: ["#ff7373", "#7E7777"], // Active robots and inactive robots colors
-      
-      fill: {
-        colors: ["#ff7373", "#7E7777"],
-        type: 'solid' // Ensures the color fill is solid
-      },
-      
-      stroke: {
-        show: false
+        height: 275,
+        type: "radialBar"
       },
       plotOptions: {
-        pie: {
-          donut: {
-            labels: {
+        radialBar: {
+          dataLabels: {
+            name: {
+              fontSize: "20px"
+            },
+            value: {
+              fontSize: "12px"
+            },
+            total: {
               show: true,
-              total: {
-                show: true,
-                label: 'Total Robots',
-                formatter: () => totalRobots.toString(),
-                color: '#000000',
-                fontSize: '10px'
+              label: "Total",
+              fontSize: "12px",
+              formatter: function(w) {
+                return "100";
               }
-            },
-            dropShadow: {
-              enabled: true,
-              top: 2,
-              left: 2,
-              blur: 5,
-              opacity: 0.5
             }
           }
         }
       },
-      legend: {
-        show: false // Hide legend
-      },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              show: false // Hide legend for responsive too
-            }
-          }
-        }
-      ]
+      labels: ["Active Robots", "InActive Robots", "Total Robots"],
+      fill: {
+        colors: ["#ff7373", "#911515", "#FFFFFF"] // Custom colors for each segment
+      }
     };
   }
 }
