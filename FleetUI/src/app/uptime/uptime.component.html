@@ -1,11 +1,11 @@
-<!-- uptime.component.html -->
-<div id="chart">
+<div>
   <apx-chart
+    #chart
     [series]="chartOptions.series!"
     [chart]="chartOptions.chart!"
     [labels]="chartOptions.labels!"
     [plotOptions]="chartOptions.plotOptions!"
     [fill]="chartOptions.fill!"
-    [annotations]="chartOptions.annotations!">
+    [stroke]="chartOptions.stroke!">
   </apx-chart>
 </div>
