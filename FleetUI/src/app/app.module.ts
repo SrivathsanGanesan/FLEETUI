@@ -14,7 +14,7 @@ import { SidenavbarComponent } from './sidenavbar/sidenavbar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
-import { UserlogsComponent } from './userlogs/userlogs.component';
+import { Userlogscomponent } from './userlogs/userlogs.component';
 import { UsermanagementComponent } from './usermanagement/usermanagement.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 @NgModule({
@@ -26,7 +26,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     ProjectsetupComponent,
     ConfigurationComponent,
     UsermanagementComponent,
-    UserlogsComponent,
+    Userlogscomponent,
     StatisticsComponent
     
   ],
@@ -34,9 +34,6 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     
     BrowserModule,
     AppRoutingModule,
-    MatTableModule,
-    MatButtonModule,
-    MatInputModule,
     BrowserAnimationsModule,
     FormsModule   
   ],

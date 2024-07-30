@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserlogsComponent } from './userlogs.component';
+import { AppRoutingModule } from '../app-routing.module';
 
 
 

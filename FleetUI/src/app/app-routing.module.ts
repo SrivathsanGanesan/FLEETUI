@@ -7,7 +7,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectGuard } from './guards/project.guard';
-import { UserlogsComponent } from './userlogs/userlogs.component';
+import { Userlogscomponent } from './userlogs/userlogs.component';
 import { UsermanagementComponent } from './usermanagement/usermanagement.component';
 
 const routes: Routes = [
@@ -28,7 +28,7 @@ const routes: Routes = [
   },
   {
     path: 'Reports',
-    component: UserlogsComponent,
+    component: Userlogscomponent,
   },
   {
     path: 'configuration',
