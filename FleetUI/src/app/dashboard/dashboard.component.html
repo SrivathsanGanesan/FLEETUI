@@ -1,4 +1,3 @@
-<!-- dashboard.component.html -->
 <div class="container">
   <app-sidenavbar></app-sidenavbar>
   <div class="mainContent">
@@ -22,13 +21,21 @@
     </div>
     <div class="GraphAndCharts">
       <div class="Chart1">
-
+        <div class="T-Chart">
+        <app-throughput></app-throughput>
+      </div>
       </div>
       <div class="Chart2">
-
+        <p>Uptime</p>
+        <div class="U-Chart">
+        <app-uptime></app-uptime>
+      </div>
       </div>
       <div class="Chart3">
-
+        <p>Robots Status</p>
+        <div class="R-Chart">
+          <app-chart></app-chart>
+        </div>
       </div>
     </div>
   </div>
