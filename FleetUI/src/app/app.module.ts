@@ -30,8 +30,10 @@ import { ThroughputComponent } from './throughput/throughput.component';
     ConfigurationComponent,
     UsermanagementComponent,
     Userlogscomponent,
-    StatisticsComponent
-    
+    StatisticsComponent,
+    ChartComponent,
+    UptimeComponent,
+    ThroughputComponent
   ],
   imports: [
     NgApexchartsModule,
