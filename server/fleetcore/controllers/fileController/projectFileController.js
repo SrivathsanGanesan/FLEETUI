@@ -161,11 +161,12 @@ const compressProjectFile = async (req, res, next) => {
   );
   try {
     const output = fs.createWriteStream(toZip);
-    const archive = archiver("tar", { zlib: { level: 7 } });
+    const archive = archiver("zip", { zlib: { level: 9 } });
+    const files = fs.readdirSync(target);
 
     output.on("close", () => {
       console.log("zip gonna sent");
-      res.download(toZip, `${req.params.project_name}.zip`, (err) => {
+      res.download(toZip, `/${req.params.project_name}.zip`, (err) => {
         if (err) {
           console.log("Error while downloading to client : ", err);
           res.status(500).json({
@@ -176,10 +177,14 @@ const compressProjectFile = async (req, res, next) => {
       });
     });
     archive.on("error", (err) => {
-      throw err;
+      console.error("Archive error:", err);
+      return res.status(500).json({
+        archived: false,
+        msg: "Error creating zip archive, try again",
+      });
     });
     archive.pipe(output);
-    const files = fs.readdirSync(target);
+
     files.forEach((file) => {
       const filePath = path.join(target, file);
       archive.append(fs.createReadStream(filePath), {
@@ -193,6 +198,7 @@ const compressProjectFile = async (req, res, next) => {
         if (fs.existsSync(`${target}/${file}`))
           fs.unlinkSync(`${target}/${file}`);
       });
+      // fs.unlinkSync(toZip);
     }); // triggers the event, where the response completely sent to the client..
   } catch (error) {
     console.log("error occ : ", error);

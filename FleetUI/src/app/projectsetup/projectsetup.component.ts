@@ -113,24 +113,28 @@ export class ProjectsetupComponent {
 
   async logout() {
     const proj_name = 'project_2';
-    const response = await fetch(
-      'http://localhost:3000/fleet-project-file/download-project/project_2',
-      {
-        credentials: 'include',
+    try {
+      const response = await fetch(
+        'http://localhost:3000/fleet-project-file/download-project/project_2',
+        {
+          credentials: 'include',
+        }
+      );
+      if (!response.ok) alert('try once again');
+      else {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `${proj_name}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
       }
-    );
-    if (!response.ok) console.log('response is not ok!');
-    else {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = `${proj_name}.zip`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+    } catch (error) {
+      console.log('Err ra pans : ', error);
     }
 
     /* fetch('http://localhost:3000/auth/logout', {
