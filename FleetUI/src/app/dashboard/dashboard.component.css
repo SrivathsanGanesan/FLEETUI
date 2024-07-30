@@ -78,7 +78,7 @@ canvas {
   bottom: 20px;
   display: flex;
   justify-content: space-around;
-  padding: 0px 0px 0px 30px;
+  padding: 0px 0px 0px 50px;
   z-index: 0; /* Ensure it is above the canvas */
   gap: 20px; /* Adds space between the charts */
 }
