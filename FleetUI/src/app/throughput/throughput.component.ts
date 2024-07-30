@@ -23,6 +23,7 @@ export type ChartOptions = {
   legend: ApexLegend;
   subtitle: ApexTitleSubtitle;
   colors: string[];
+  styles:  string[];
 };
 
 @Component({
@@ -75,21 +76,46 @@ export class ThroughputComponent {
       },
       title: {
         text: "ThroughPut",
-        align: "left"
+        align: "left",
+        style: {
+          fontFamily: "Arial",
+          fontSize: "16px", // Adjust font size as needed
+          fontWeight: "bolder"
+        }
       },
       subtitle: {
         text: "Picks Per Day",
-        align: "left"
+        align: "left",
+        style: {
+          fontFamily: "Arial",
+          fontSize: "12px", // Adjust font size as needed
+          fontWeight: "normal"
+        }
       },
       labels: seriesData.monthDataSeries1.datestime,
       xaxis: {
-        type: "datetime"
+        type: "datetime",
+        labels: {
+          style: {
+            fontFamily: "Arial",
+            fontSize: "12px", // Adjust font size as needed
+            fontWeight: "normal"
+          }
+        }
       },
       yaxis: {
-        opposite: true
+        opposite: true,
+        labels: {
+          style: {
+            fontFamily: "Arial",
+            fontSize: "12px", // Adjust font size as needed
+            fontWeight: "normal"
+          }
+        }
       },
       legend: {
-        horizontalAlign: "left"
+        horizontalAlign: "left",
+        
       }
     };
   }

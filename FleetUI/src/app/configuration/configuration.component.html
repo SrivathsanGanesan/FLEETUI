@@ -1,7 +1,162 @@
 <div class="container">
-    <app-sidenavbar></app-sidenavbar>
-    <div class="mainContent">
-      <p>Configuration works</p>
+  <app-sidenavbar></app-sidenavbar>
+  <div class="mainContent">
+    <div class="header">
+      <h1>{{ currentTabTitle }}</h1>
+      <p>{{ currentTabSubtitle }}</p>
+      <button class="create-button">Create</button>
+    </div>
+    <div class="tabs">
+      <button class="tab-button" [class.active]="currentTab === 'environment'" (click)="setTab('environment')">Environment</button>
+      <button class="tab-button" [class.active]="currentTab === 'robot'" (click)="setTab('robot')">Robot</button>
+      <button class="tab-button" [class.active]="currentTab === 'fleet'" (click)="setTab('fleet')">Fleet</button>
+    </div>
+    <div *ngIf="currentTab === 'environment'">
+      <!-- Environment-specific content here -->
+      <div class="filters">
+        <input type="text" placeholder="Search For Something...">
+        <button class="filter-button">Filter</button>
+        <div class="date-picker">
+          <input type="date">
+          <input type="date">
+        </div>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>S.NO</th>
+            <th>Task ID</th>
+            <th>CONDITION</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>LOCATION</th>
+            <th>Last created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01</td>
+            <td>T001</td>
+            <td>Working Active</td>
+            <td>Available</td>
+            <td>HMIL CLR PLR</td>
+            <td>MATE III - IN</td>
+            <td>24 MAY 2024, 11:15 A.M</td>
+          </tr>
+          <tr>
+            <td>02</td>
+            <td>T002</td>
+            <td>Need Maintenance</td>
+            <td>Shipping</td>
+            <td>HMIL CLR PLR</td>
+            <td>MATE III - OUT</td>
+            <td>24 MAY 2024, 11:15 A.M</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <button class="prev-button">&lt;</button>
+        <span>Page 01 | 30</span>
+        <button class="next-button">&gt;</button>
+      </div>
+    </div>
+    <div *ngIf="currentTab === 'robot'">
+      <!-- Robot-specific content here -->
+      <div class="filters">
+        <input type="text" placeholder="Search For Something...">
+        <button class="filter-button">Filter</button>
+        <div class="date-picker">
+          <input type="date">
+          <input type="date">
+        </div>
+      </div>
+      <h2>Active Robots</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>S.NO</th>
+            <th>Task ID</th>
+            <th>CONDITION</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>LOCATION</th>
+            <th>Last created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01</td>
+            <td>T001</td>
+            <td>Working Active</td>
+            <td>Available</td>
+            <td>HMIL CLR PLR</td>
+            <td>MATE III - IN</td>
+            <td>24 MAY 2024, 11:15 A.M</td>
+          </tr>
+          <tr>
+            <td>02</td>
+            <td>T002</td>
+            <td>Need Maintenance</td>
+            <td>Shipping</td>
+            <td>HMIL CLR PLR</td>
+            <td>MATE III - OUT</td>
+            <td>24 MAY 2024, 11:15 A.M</td>
+          </tr>
+        </tbody>
+      </table>
+      <h2>Add selected robots</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>S.NO</th>
+            <th>Task ID</th>
+            <th>CONDITION</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>LOCATION</th>
+            <th>Last created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01</td>
+            <td>T001</td>
+            <td>Working Active</td>
+            <td>Available</td>
+            <td>HMIL CLR PLR</td>
+            <td>MATE III - IN</td>
+            <td>24 MAY 2024, 11:15 A.M</td>
+          </tr>
+          <tr>
+            <td>02</td>
+            <td>T002</td>
+            <td>Need Maintenance</td>
+            <td>Shipping</td>
+            <td>HMIL CLR PLR</td>
+            <td>MATE III - OUT</td>
+            <td>24 MAY 2024, 11:15 A.M</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <button class="prev-button">&lt;</button>
+        <span>Page 01 | 30</span>
+        <button class="next-button">&gt;</button>
+      </div>
+    </div>
+    <div *ngIf="currentTab === 'fleet'">
+      <!-- Fleet-specific content here -->
+      <ul class="tab-menu">
+        <li [class.active]="fleetTab === 'general'" (click)="setFleetTab('general')">General</li>
+        <li [class.active]="fleetTab === 'plannar'" (click)="setFleetTab('plannar')">Plannar</li>
+        <li [class.active]="fleetTab === 'task'" (click)="setFleetTab('task')">Task</li>
+        <li [class.active]="fleetTab === 'battery'" (click)="setFleetTab('battery')">Battery</li>
+        <li [class.active]="fleetTab === 'communication'" (click)="setFleetTab('communication')">Communication</li>
+      </ul>
+      <div *ngIf="fleetTab === 'general'">
+        <h2>Edit the Fleet Parameters</h2>
+      </div>
+      <!-- Add content for other fleet tabs as needed -->
     </div>
   </div>
-  
+</div>

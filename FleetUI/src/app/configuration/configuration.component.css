@@ -1,6 +1,116 @@
-.mainContent{
-    position: absolute;
-    top: 50px;
-    left: 70px;
-    z-index: -1;
+
+.container {
+  display: flex;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 60px 10px 10px 70px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.create-button {
+  background-color: #ff7373;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.tabs {
+  display: flex;
+  margin: 20px 0;
+}
+
+.tab-button {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.tab-button.active {
+  background-color: #ff7373;
+  color: white;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filters input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.filter-button {
+  padding: 10px 20px;
+  margin-right: 10px;
+}
+
+.date-picker input[type="date"] {
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #ff7373;
+  color: white;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.prev-button,
+.next-button {
+  background-color: #ff7373;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.tab-menu {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.tab-menu li {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.tab-menu li.active {
+  border-bottom: 2px solid #ff7373;
+  color: #ff7373;
 }
