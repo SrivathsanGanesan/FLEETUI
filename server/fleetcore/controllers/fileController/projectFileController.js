@@ -127,13 +127,6 @@ const createProjFiles = async (req, res, next) => {
       return res
         .status(400)
         .json({ exist: false, msg: "project (project name) not found!" });
-    let target = path.resolve("proj_assets/tempDist/");
-    const files = fs.readdirSync(target);
-    files.forEach((file) => {
-      if (fs.existsSync(`${target}/${file}`))
-        fs.unlinkSync(`${target}/${file}`);
-    });
-
     const roboDoc = await populateField({
       projectName: projectName,
       path: "robots.roboId",
@@ -172,7 +165,6 @@ const compressProjectFile = async (req, res, next) => {
 
     output.on("close", () => {
       console.log("zip gonna sent");
-      return res.json({ msg: "stock illa poda" });
       res.download(toZip, `${req.params.project_name}.zip`, (err) => {
         if (err) {
           console.log("Error while downloading to client : ", err);
@@ -195,6 +187,13 @@ const compressProjectFile = async (req, res, next) => {
       });
     });
     archive.finalize();
+
+    res.on("finish", () => {
+      files.forEach((file) => {
+        if (fs.existsSync(`${target}/${file}`))
+          fs.unlinkSync(`${target}/${file}`);
+      });
+    }); // triggers the event, where the response completely sent to the client..
   } catch (error) {
     console.log("error occ : ", error);
     res.status(500).json({ error: error, msg: "operation failed" });
