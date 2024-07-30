@@ -4,6 +4,7 @@ import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 import { json } from 'stream/consumers';
 import { log } from 'node:console';
+import { response } from 'express';
 
 interface Project {
   _id: string;
@@ -110,18 +111,28 @@ export class ProjectsetupComponent {
     fileInput.click();
   }
 
-  logout() {
-    fetch(
+  async logout() {
+    const proj_name = 'project_2';
+    const response = await fetch(
       'http://localhost:3000/fleet-project-file/download-project/project_2',
       {
         credentials: 'include',
       }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => console.log(err));
+    );
+    if (!response.ok) console.log('response is not ok!');
+    else {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `${proj_name}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+
     /* fetch('http://localhost:3000/auth/logout', {
       credentials: 'include',
     })
