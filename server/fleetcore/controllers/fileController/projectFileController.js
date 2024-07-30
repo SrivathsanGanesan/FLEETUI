@@ -6,7 +6,7 @@ const { projectModel, siteModel } = require("../../models/projectSchema");
 const {
   authRegisterModel,
 } = require("../../../common/models/authRegisterSchema");
-const zl = require("zip-lib");
+const archiver = require("archiver");
 
 const populateField = async ({ projectName, path, model, selectedField }) => {
   const doc = await projectModel
@@ -20,7 +20,7 @@ const populateField = async ({ projectName, path, model, selectedField }) => {
   return doc;
 };
 
-const initiateProjFile = ({ projDoc, imgUrlArr }) => {
+const initiateProjFile = async ({ projDoc, imgUrlArr }) => {
   let data = {};
   const filePath = path.resolve(
     __dirname,
@@ -33,7 +33,7 @@ const initiateProjFile = ({ projDoc, imgUrlArr }) => {
   return data;
 };
 
-const initiateMapFile = ({ maps }) => {
+const initiateMapFile = async ({ maps }) => {
   let arr = [];
   let data = {};
   const filePath = path.resolve(
@@ -51,7 +51,7 @@ const initiateMapFile = ({ maps }) => {
   return data;
 };
 
-const initiateRoboFile = ({ robos }) => {
+const initiateRoboFile = async ({ robos }) => {
   let data = {};
   const filePath = path.resolve(
     __dirname,
@@ -63,7 +63,7 @@ const initiateRoboFile = ({ robos }) => {
   return data;
 };
 
-const parseImgUrl = ({ maps }) => {
+const parseImgUrl = async ({ maps }) => {
   let arr = [];
   maps.forEach((map) => {
     map.forEach((element) => {
@@ -74,7 +74,7 @@ const parseImgUrl = ({ maps }) => {
   return arr;
 };
 
-const copyImages = ({ imgUrlArr }) => {
+const copyImages = async ({ imgUrlArr }) => {
   const sourcePath = path.resolve(
     __dirname,
     "../../../proj_assets/dashboardMap"
@@ -138,11 +138,11 @@ const createProjFiles = async (req, res, next) => {
     const projDoc = await projectModel.findOne({ projectName });
     const robos = roboDoc.robots.map((robo) => robo.roboId);
     const maps = mapDoc.sites.map((map) => map.maps);
-    let imgUrlArr = parseImgUrl({ maps });
-    copyImages({ imgUrlArr });
-    const uptdProj = initiateProjFile({ projDoc, imgUrlArr });
-    const uptdRobo = initiateRoboFile({ robos });
-    const uptdMap = initiateMapFile({ maps });
+    let imgUrlArr = await parseImgUrl({ maps });
+    await copyImages({ imgUrlArr });
+    const uptdProj = await initiateProjFile({ projDoc, imgUrlArr });
+    const uptdRobo = await initiateRoboFile({ robos });
+    const uptdMap = await initiateMapFile({ maps });
     next();
   } catch (err) {
     console.log("error occ : ", err);
@@ -151,19 +151,50 @@ const createProjFiles = async (req, res, next) => {
 };
 
 const compressProjectFile = async (req, res, next) => {
-  let target = path.resolve("proj_assets/tempDist");
+  let target = path.resolve("proj_assets/tempDist/");
   let toZip = path.resolve(
     `proj_assets/projectFile/${req.params.project_name}.zip`
   );
-  zl.archiveFolder(target, toZip).then(
-    () => {
-      console.log("here I'm");
-    },
-    (err) => {
-      console.log("Err found while archiveing : ", err);
-    }
-  );
-  res.json("good");
+  try {
+    const output = fs.createWriteStream(toZip);
+    const archive = archiver("zip", { zlib: { level: 9 } });
+    output.on("close", () => {
+      res.download(toZip);
+    });
+    archive.on("error", (err) => {
+      throw err;
+    });
+    archive.pipe(output);
+    const files = fs.readdirSync(target);
+    files.forEach((file) => {
+      const filePath = path.join(target, file);
+      archive.append(fs.createReadStream(filePath), {
+        name: path.basename(file),
+      });
+    });
+    archive.finalize();
+    output.on("close", () => {
+      if (!fs.existsSync(path.join(toZip, `${req.params.project_name}.zip`)))
+        return res
+          .status(500)
+          .json({ downloaded: false, msg: "zip file not found!" });
+      res.download(toZip, `${req.params.project_name}.zip`, (err) => {
+        if (err) {
+          console.log("Error while downloading to client : ", err);
+          res
+            .status(500)
+            .json({ downloaded: false, msg: "Error downloading file" });
+        }
+      });
+      files.forEach((file) => {
+        if (fs.existsSync(`${target}/${file}`))
+          fs.unlinkSync(`${target}/${file}`);
+      });
+    });
+  } catch (error) {
+    console.log("error occ : ", error);
+    res.status(500).json({ error: error, msg: "operation failed" });
+  }
 };
 
 module.exports = {
