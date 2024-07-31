@@ -5,8 +5,7 @@ import {
   ApexPlotOptions,
   ApexChart,
   ApexFill,
-  ChartComponent,
-  ApexStroke
+  ChartComponent
 } from "ng-apexcharts";
 
 export type ChartOptions = {
@@ -15,7 +14,6 @@ export type ChartOptions = {
   labels: string[];
   plotOptions: ApexPlotOptions;
   fill: ApexFill;
-  stroke: ApexStroke;
 };
 
 @Component({
@@ -29,43 +27,73 @@ export class UptimeComponent {
 
   constructor() {
     this.chartOptions = {
-      series: [67],
+      series: [76],
       chart: {
-        height: 400,
+        width: 280,
+        height: 450,
         type: "radialBar",
-        offsetY: -10
+        offsetY: -5,
+        offsetX: -30
       },
       plotOptions: {
         radialBar: {
-          startAngle: -125,
-          endAngle: 125,
+          startAngle: -90,
+          endAngle: 90,
+          hollow: {
+            size: "70%"  // Adjust the hollow size to reduce the bar width
+          },
+          track: {            
+            background: "#e7e7e7",
+            strokeWidth: "70%",
+            margin: 2, // margin is in pixels
+            dropShadow: {
+              enabled: true,
+              top: 3,
+              left: 0,
+              opacity: 0.31,
+              blur: 2
+            }
+          },
           dataLabels: {
             name: {
-              fontSize: "16px",
-              color: '#ff7373',
-              offsetY: 120,
+              show: true,
+              offsetY: 35,
+              fontSize: "12px",
+              color:"#ff7373"
             },
             value: {
-              offsetY: 76,
-              fontSize: "30px",
-              color: undefined,
-              formatter: function(val) {
-                return val + "%";
-              }
+              offsetY: -5,
+              fontSize: "32px",
+              color:"#ff7373"
             }
           }
         }
       },
       fill: {
-        type: "solid",
-        colors: ['#ff7373'] // Solid color
+        type: "gradient",
+        gradient: {
+          shade: "light",
+          shadeIntensity: 0.4,
+          gradientToColors: ["#FFB3B3"],
+          inverseColors: false,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100],
+          colorStops: [
+            {
+              offset: 0,
+              color: "#FFB3B3",
+              opacity: 1
+            },
+            {
+              offset: 100,
+              color: "#D30000",
+              opacity: 1
+            }
+          ]
+        }
       },
-      stroke: {
-        dashArray: 3, // Remove dash for solid stroke
-        colors: ['#ff7373'], // Stroke color
-        width: -30 // Increase stroke width
-      },
-      labels: ["Percent"]
+      labels: ["Average Time"]
     };
   }
 }

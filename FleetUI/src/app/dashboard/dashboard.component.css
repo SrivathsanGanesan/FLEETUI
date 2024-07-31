@@ -80,13 +80,14 @@ canvas {
   justify-content: space-around;
   padding: 0px 0px 0px 50px;
   z-index: 0; /* Ensure it is above the canvas */
-  gap: 20px; /* Adds space between the charts */
+  gap: 30px; /* Adds space between the charts */
+  
 }
 
 .Chart1, .Chart2, .Chart3 {
   background-color: rgb(255, 255, 255);
-  height: 300px; /* Adjust height as needed */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  height: 250px; /* Adjust height as needed */
+  box-shadow: 0 2px 4px #ff7373;
   border-radius: 10px;
 }
 
@@ -95,14 +96,17 @@ canvas {
 }
 
 .Chart2 p{
-  padding: 10px 0px 30px 10px;
+  padding: 20px 0px 0px 20px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
-.Chart3 p{
-  padding: 10px 0px 0px 10px;
+.Chart3 p{  
+  padding: 20px 0px 0px 20px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
+}
+.Chart3{
+  width: 220px;
 }
 .R-Chart {  
   display: flex;
@@ -113,7 +117,9 @@ canvas {
   padding: 10px 0px;
 }
 .Chart2{
-  width: 200px;
+  width: 220px;
 }
-
+.T-Chart{
+  width: 600px;
+}
 

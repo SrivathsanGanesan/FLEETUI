@@ -8,7 +8,7 @@ import { Component, AfterViewInit } from '@angular/core';
 export class DashboardComponent implements AfterViewInit {
   ONBtn = false;
   selectedFloor = 'Floor 1';
-  floors = ['Floor 1', 'Floor 2', 'Floor 3'];
+  floors = ['Floor 1', 'Floor 2', 'Floor 3', 'Floor 4'];
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
@@ -46,6 +46,8 @@ export class DashboardComponent implements AfterViewInit {
         return '../../assets/maps/Map2.svg';
       case 'Floor 3':
         return '../../assets/maps/Map3.svg';
+        case 'Floor 4':
+          return '../../assets/maps/Map4.svg';
       default:
         return '../../assets/maps/Map1.svg';
     }

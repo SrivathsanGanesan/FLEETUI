@@ -1,16 +1,18 @@
 <!-- throughput.component.html -->
-<div id="chart">
-    <apx-chart
-      [series]="chartOptions.series!"
-      [chart]="chartOptions.chart!"
-      [xaxis]="chartOptions.xaxis!"
-      [stroke]="chartOptions.stroke!"
-      [dataLabels]="chartOptions.dataLabels!"
-      [yaxis]="chartOptions.yaxis!"
-      [title]="chartOptions.title!"
-      [labels]="chartOptions.labels!"
-      [legend]="chartOptions.legend!"
-      [subtitle]="chartOptions.subtitle!">
-    </apx-chart>
+<div id="chart" class="chart-container">
+  <apx-chart
+    [series]="chartOptions.series!"
+    [chart]="chartOptions.chart!"
+    [xaxis]="chartOptions.xaxis!"
+    [stroke]="chartOptions.stroke!"
+    [dataLabels]="chartOptions.dataLabels!"
+    [yaxis]="chartOptions.yaxis!"
+    [title]="chartOptions.title!"
+    [labels]="chartOptions.labels!"
+    [legend]="chartOptions.legend!"
+    [subtitle]="chartOptions.subtitle!">
+  </apx-chart>
+  <div class="average-percentage">
+   {{ averagePercentage.toFixed(2) }}%
   </div>
-  
+</div>

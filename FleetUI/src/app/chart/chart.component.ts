@@ -4,7 +4,8 @@ import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
   ApexChart,
-  ApexFill
+  ApexFill,
+  ApexStroke
 } from "ng-apexcharts";
 
 export type ChartOptions = {
@@ -13,6 +14,7 @@ export type ChartOptions = {
   labels: string[];
   plotOptions: ApexPlotOptions;
   fill: ApexFill;
+  stroke: ApexStroke;
 };
 
 @Component({
@@ -26,35 +28,96 @@ export class ChartComponent {
 
   constructor() {
     this.chartOptions = {
-      series: [74, 55, 100],
+      series: [65],
       chart: {
-        height: 275,
-        type: "radialBar"
+        width:250,
+        height: 250,
+        type: "radialBar",
+        toolbar: {
+          show: false
+        }
       },
       plotOptions: {
         radialBar: {
+          offsetY: -15,
+          startAngle: -200,
+          endAngle: 200,
+          hollow: {
+            margin: 1,
+            size: "70%",
+            background: "#fff",
+            image: undefined,
+            position: "front",
+            // dropShadow: {
+            //   enabled: true,
+            //   top: 5,
+            //   left: 0,
+            //   blur: 4,
+            //   opacity: 0.24
+            // }
+          },
+          track: {
+            background: "#ffe5e5",
+            strokeWidth: "70%",
+            margin: -8, // margin is in pixels
+            // dropShadow: {
+            //   enabled: true,
+            //   top: -3,
+            //   left: 0,
+            //   blur: 4,
+            //   opacity: 0.35
+            // }
+          },
+
           dataLabels: {
+            show: true,
             name: {
-              fontSize: "20px"
+              offsetY: 30,
+              show: true,
+              color: "#FF7373",
+              fontSize: "10px"
             },
             value: {
-              fontSize: "12px"
-            },
-            total: {
-              show: true,
-              label: "Total",
-              fontSize: "12px",
-              formatter: function(w) {
-                return "100";
-              }
+              formatter: function(val) {
+                return parseInt(val.toString(), 10).toString();
+              },
+              offsetY: -15,
+              color: "#FF7373",
+              fontSize: "40px",
+              show: true
             }
           }
         }
       },
-      labels: ["Active Robots", "InActive Robots", "Total Robots"],
       fill: {
-        colors: ["#ff7373", "#911515", "#FFFFFF"] // Custom colors for each segment
-      }
+        type: "gradient",
+        gradient: {
+          shade: "dark",
+          type: "vertical",
+          shadeIntensity: 0.5,
+          gradientToColors: ["#FFFFFF"],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100],
+          colorStops: [
+            {
+              offset: 0,
+              color: "#FFB3B3",
+              opacity: 1
+            },
+            {
+              offset: 80,
+              color: "#D30000",
+              opacity: 1
+            }
+          ]
+        }
+      },
+      stroke: {
+        lineCap: "round"
+      },
+      labels: ["Active Robots"]
     };
   }
 }
