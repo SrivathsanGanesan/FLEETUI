@@ -2,6 +2,8 @@ const decompress = require("decompress");
 const fs = require("fs");
 const path = require("path");
 const { copyImages } = require("./fileExportController");
+const { projectModel } = require("../../models/projectSchema");
+const { exit } = require("process");
 
 const validateExtractedFile = async ({ target }) => {
   let fileArr = ["/mapInfo.json", "/projInfo.json", "/roboInfo.json"];
@@ -12,6 +14,7 @@ const validateExtractedFile = async ({ target }) => {
   });
   return true;
 };
+
 //..
 
 const extractProjFile = async (req, res, next) => {
@@ -33,21 +36,30 @@ const extractProjFile = async (req, res, next) => {
   }
 };
 
-//.. WIP
 const parseProjectFile = async (req, res, next) => {
   const target = path.resolve("./proj_assets/projectFile/");
   const isDirValidate = validateExtractedFile({ target });
   if (!isDirValidate)
     return res.status(400).json({ isZipValidate: false, msg: "Files missing" });
   try {
-    const data = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
-    if (data.img.length)
+    const { project, img } = JSON.parse(
+      fs.readFileSync(target + "/projInfo.json")
+    );
+    const data = await projectModel.exists({
+      projectName: project.projectName,
+    });
+    if (data)
+      return res.status(400).json({
+        exist: true,
+        msg: "project with this name already exists, you can't insert into database",
+      });
+    if (img.length)
       copyImages({
         imgUrlArr: data.img,
         src: "projectFile",
         dest: "dashboardMap",
       });
-    // restroreMaps();
+    // restoreRobots();
     return res.json("good");
   } catch (err) {
     console.log("error occ : ", err);
