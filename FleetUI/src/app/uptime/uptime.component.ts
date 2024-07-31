@@ -46,13 +46,13 @@ export class UptimeComponent {
             background: "#e7e7e7",
             strokeWidth: "70%",
             margin: 2, // margin is in pixels
-            dropShadow: {
-              enabled: true,
-              top: 3,
-              left: 0,
-              opacity: 0.31,
-              blur: 2
-            }
+            // dropShadow: {
+            //   enabled: true,
+            //   top: 3,
+            //   left: 0,
+            //   opacity: 0.31,
+            //   blur: 2
+            // }
           },
           dataLabels: {
             name: {

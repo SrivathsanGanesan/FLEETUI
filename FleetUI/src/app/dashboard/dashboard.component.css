@@ -26,6 +26,7 @@ canvas {
   right: 0;
   padding: 20px 30px 0px 0px;
   filter: drop-shadow(5px 2px 2px rgba(130, 126, 126, 0.404));
+  cursor: pointer;
 }
 
 .CanvasOptions {
@@ -40,13 +41,15 @@ canvas {
   border-radius: 10px;
   justify-items: center;
   filter: drop-shadow(5px 2px 2px rgba(130, 126, 126, 0.404));
+  cursor: pointer;
 }
 
-.Expand, .Layout, .Save, .Pointer, .Zoom, .ZoomOut {
+.Expand, .Layout, .Save, .Pointer, .Zoom, .ZoomOut,.Capture {
   padding: 10px 0px;
+  cursor: pointer;
 }
 
-.Expand:hover, .Layout:hover, .Save:hover, .Pointer:hover, .Zoom:hover, .ZoomOut:hover {
+.Expand:hover, .Layout:hover, .Save:hover, .Pointer:hover, .Zoom:hover, .ZoomOut:hover ,.Capture:hover{
   filter: drop-shadow(3px 2px 2px #ff7373);
 }
 
@@ -71,6 +74,7 @@ canvas {
   background-color: rgba(199, 186, 186, 0.303);
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .GraphAndCharts {
@@ -78,19 +82,21 @@ canvas {
   bottom: 20px;
   display: flex;
   justify-content: space-around;
-  padding: 0px 0px 0px 50px;
+  padding: 0px 0px 30px 50px;
   z-index: 0; /* Ensure it is above the canvas */
-  gap: 30px; /* Adds space between the charts */
+  gap: 20px; /* Adds space between the charts */
   
 }
 
 .Chart1, .Chart2, .Chart3 {
-  background-color: rgb(255, 255, 255);
+  background-color: rgba(255, 255, 255, 0.442);
   height: 250px; /* Adjust height as needed */
   box-shadow: 0 2px 4px #ff7373;
   border-radius: 10px;
 }
-
+.Chart1:hover, .Chart2:hover, .Chart3:hover{
+  background-color: rgb(255, 255, 255);
+} 
 .Chart1 {
   width: 600px;
 }
