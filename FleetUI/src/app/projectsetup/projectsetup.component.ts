@@ -126,7 +126,7 @@ export class ProjectsetupComponent {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = `${proj_name}.zip`;
+        a.download = `project_2.zip`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
