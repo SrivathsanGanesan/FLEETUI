@@ -25,8 +25,8 @@ const upload = multer({ storage: storage });
 projectFileRouter.post(
   "/upload-project",
   validateToken,
-  upload.single("projFile"),
-  extractProjFile,
+  // upload.single("projFile"),
+  // extractProjFile,
   parseProjectFile
 );
 

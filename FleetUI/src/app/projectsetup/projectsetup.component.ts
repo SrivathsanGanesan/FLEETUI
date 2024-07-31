@@ -112,8 +112,7 @@ export class ProjectsetupComponent {
   }
 
   async logout() {
-    const proj_name = 'project_2';
-    try {
+    /* try {
       const response = await fetch(
         'http://localhost:3000/fleet-project-file/download-project/project_2',
         {
@@ -135,9 +134,9 @@ export class ProjectsetupComponent {
       }
     } catch (error) {
       console.log('Err ra pans : ', error);
-    }
+    } */
 
-    /* fetch('http://localhost:3000/auth/logout', {
+    fetch('http://localhost:3000/auth/logout', {
       credentials: 'include',
     })
       .then((res) => res.json())
@@ -148,7 +147,7 @@ export class ProjectsetupComponent {
           this.router.navigate(['/']);
         }
       })
-      .catch((err) => console.log(err)); */
+      .catch((err) => console.log(err));
   }
 
   // project file handling..

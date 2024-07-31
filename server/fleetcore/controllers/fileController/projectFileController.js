@@ -78,15 +78,22 @@ const parseImgUrl = ({ maps }) => {
   );
 };
 
-const copyImages = async ({ imgUrlArr }) => {
-  const sourcePath = path.resolve(
-    __dirname,
-    "../../../proj_assets/dashboardMap"
-  );
-  const destPath = path.resolve(__dirname, "../../../proj_assets/tempDist");
+const copyImages = async ({ imgUrlArr, src, dest }) => {
+  const sourcePath = path.resolve(__dirname, `../../../proj_assets/${src}`);
+  const destPath = path.resolve(__dirname, `../../../proj_assets/${dest}`);
   imgUrlArr.forEach((img) => {
     fs.copyFileSync(`${sourcePath}/${img}`, `${destPath}/${img}`);
   });
+};
+
+const validateExtractedFile = async ({ target }) => {
+  let fileArr = ["/mapInfo.json", "/projInfo.json", "/roboInfo.json"];
+  const files = fs.readdirSync(target);
+  if (files.length < 3) return false;
+  fileArr.forEach((file) => {
+    if (!fs.existsSync(target + file)) return false;
+  });
+  return true;
 };
 //..
 
@@ -111,7 +118,19 @@ const extractProjFile = async (req, res, next) => {
 
 //.. WIP
 const parseProjectFile = async (req, res, next) => {
+  const target = path.resolve("./proj_assets/projectFile/");
+  const isDirValidate = validateExtractedFile({ target });
+  if (!isDirValidate)
+    return res.status(400).json({ isZipValidate: false, msg: "Files missing" });
   try {
+    const data = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
+    if (data.img.length)
+      copyImages({
+        imgUrlArr: data.img,
+        src: "projectFile",
+        dest: "dashboardMap",
+      });
+    
     return res.json("good");
   } catch (err) {
     console.log("error occ : ", err);
@@ -143,7 +162,7 @@ const createProjFiles = async (req, res, next) => {
     const robos = roboDoc.robots.map((robo) => robo.roboId);
     const maps = mapDoc.sites.map((map) => map.maps);
     let imgUrlArr = parseImgUrl({ maps });
-    await copyImages({ imgUrlArr });
+    await copyImages({ imgUrlArr, src: "dashboardMap", dest: "tempDist" });
     await initiateProjFile({ projDoc, imgUrlArr });
     await initiateRoboFile({ robos });
     await initiateMapFile({ maps });
@@ -168,11 +187,18 @@ const compressProjectFile = async (req, res, next) => {
       console.log("zip gonna sent");
       res.download(toZip, `/${req.params.project_name}.zip`, (err) => {
         if (err) {
-          console.log("Error while downloading to client : ", err);
+          console.log("Error while downloading : ", err);
           res.status(500).json({
             downloaded: false,
             msg: "Error downloading file, try again",
           });
+        } else {
+          console.log("zip has been sent");
+          files.forEach((file) => {
+            if (fs.existsSync(`${target}/${file}`))
+              fs.unlinkSync(`${target}/${file}`);
+          });
+          fs.unlinkSync(toZip);
         }
       });
     });
@@ -193,13 +219,13 @@ const compressProjectFile = async (req, res, next) => {
     });
     archive.finalize();
 
-    res.on("finish", () => {
+    /* res.on("finish", () => {
       files.forEach((file) => {
         if (fs.existsSync(`${target}/${file}`))
           fs.unlinkSync(`${target}/${file}`);
       });
-      // fs.unlinkSync(toZip);
-    }); // triggers the event, where the response completely sent to the client..
+      fs.unlinkSync(toZip);
+    }); // triggers the event, where the response completely sent to the client.. */
   } catch (error) {
     console.log("error occ : ", error);
     res.status(500).json({ error: error, msg: "operation failed" });
