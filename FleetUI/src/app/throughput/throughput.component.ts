@@ -60,7 +60,7 @@ export class ThroughputComponent {
         {
           name: "Picks",
           data: seriesData.hourlyDataSeries1.picks,
-          color: "#ff7373" // Set the color here
+          color: "#FF3333" // Set the color here
         }
       ],
       chart: {

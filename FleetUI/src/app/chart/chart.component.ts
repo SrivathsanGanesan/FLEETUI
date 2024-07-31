@@ -74,7 +74,7 @@ export class ChartComponent {
             name: {
               offsetY: 30,
               show: true,
-              color: "#FF7373",
+              color: "#FF3333",
               fontSize: "10px"
             },
             value: {
@@ -82,7 +82,7 @@ export class ChartComponent {
                 return parseInt(val.toString(), 10).toString();
               },
               offsetY: -15,
-              color: "#FF7373",
+              color: "#FF3333",
               fontSize: "40px",
               show: true
             }
@@ -94,7 +94,7 @@ export class ChartComponent {
         gradient: {
           shade: "dark",
           type: "vertical",
-          shadeIntensity: 0.5,
+          shadeIntensity: 0.1,
           gradientToColors: ["#FFFFFF"],
           inverseColors: true,
           opacityFrom: 1,
@@ -108,7 +108,7 @@ export class ChartComponent {
             },
             {
               offset: 80,
-              color: "#D30000",
+              color: "#FF3333",
               opacity: 1
             }
           ]

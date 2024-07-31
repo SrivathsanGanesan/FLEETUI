@@ -59,12 +59,12 @@ export class UptimeComponent {
               show: true,
               offsetY: 35,
               fontSize: "12px",
-              color:"#ff7373"
+              color:"#FF3333"
             },
             value: {
               offsetY: -5,
               fontSize: "32px",
-              color:"#ff7373"
+              color:"#FF3333"
             }
           }
         }
@@ -87,7 +87,7 @@ export class UptimeComponent {
             },
             {
               offset: 100,
-              color: "#D30000",
+              color: "#FF3333",
               opacity: 1
             }
           ]
