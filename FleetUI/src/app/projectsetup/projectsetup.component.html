@@ -67,13 +67,18 @@
               [class.active]="isFocused['Projectname'] || projectname"
               >Project Name</label
             >
+          
           </div>
-          <div *ngIf="errorMessage" class="error-message">
-            {{ errorMessage }}
-          </div>
-          <div class="ButtonSet">
+         
+          <div>
+            
+            <p *ngIf="errorMessage" class="error-message">
+              {{ errorMessage }}
+            </p>
+            <div class="ButtonSet">
             <button class="CreateBTN" (click)="createProject()">CREATE</button>
             <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
+          </div>
           </div>
         </div>
         <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
