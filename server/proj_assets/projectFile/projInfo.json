@@ -1,7 +1,7 @@
 {
   "project": {
     "_id": "669e27f46d07913165284add",
-    "projectName": "project_2",
+    "projectName": "altered_name",
     "sites": [
       {
         "siteName": "MATEUNIT1",
@@ -44,5 +44,8 @@
     "createdAt": "2024-07-22T09:35:48.767Z",
     "updatedAt": "2024-07-26T03:54:16.594Z"
   },
-  "img": ["1721909542360-map_4.png", "1721965888836-map_1.png"]
+  "img": [
+    "1721909542360-map_4.png",
+    "1721965888836-map_1.png"
+  ]
 }
