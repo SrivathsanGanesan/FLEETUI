@@ -80,7 +80,7 @@ const parseImgUrl = ({ maps }) => {
 const copyImages = async ({ imgUrlArr, src, dest }) => {
   const sourcePath = path.resolve(__dirname, `../../../proj_assets/${src}`);
   const destPath = path.resolve(__dirname, `../../../proj_assets/${dest}`);
-  imgUrlArr.forEach((img) => {
+  imgUrlArr?.forEach((img) => {
     fs.copyFileSync(`${sourcePath}/${img}`, `${destPath}/${img}`);
   });
 };

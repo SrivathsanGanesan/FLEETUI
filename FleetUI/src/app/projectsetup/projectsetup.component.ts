@@ -170,8 +170,14 @@ export class ProjectsetupComponent {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.exist) alert(data.msg);
-        else console.log(data);
+        if (data.idExist) {
+          let renamedProj = prompt(
+            'project with this name already exists, would you like to rename?'
+          );
+          console.log(renamedProj);
+        } else if (!data.idExist && data.nameExist) {
+          alert('Sry, project (with this id) already exist');
+        } else console.log(data);
       })
       .catch((err) => console.log(err));
   }
