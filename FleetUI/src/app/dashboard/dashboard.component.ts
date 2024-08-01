@@ -8,7 +8,7 @@ import { Component, AfterViewInit } from '@angular/core';
 export class DashboardComponent implements AfterViewInit {
   ONBtn = false;
   selectedFloor = 'Floor 1';
-  floors = ['Floor 1', 'Floor 2', 'Floor 3', 'Floor 4'];
+  floors = ['Floor 1'];
   zoomLevel = 1.1; // Initial zoom level
   isPanning = false; // Track panning state
   lastX = 0; // Last x coordinate for panning
@@ -61,12 +61,12 @@ export class DashboardComponent implements AfterViewInit {
     switch (floor) {
       case 'Floor 1':
         return '../../assets/maps/Map1.svg';
-      case 'Floor 2':
-        return '../../assets/maps/Map2.svg';
-      case 'Floor 3':
-        return '../../assets/maps/Map3.svg';
-      case 'Floor 4':
-        return '../../assets/maps/Map4.svg';
+      // case 'Floor 2':
+      //   return '../../assets/maps/Map2.svg';
+      // case 'Floor 3':
+      //   return '../../assets/maps/Map3.svg';
+      // case 'Floor 4':
+      //   return '../../assets/maps/Map4.svg';
       default:
         return '../../assets/maps/Map1.svg';
     }

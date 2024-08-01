@@ -6,11 +6,11 @@
       <img [src]="getOnBtnImage()" (click)="toggleONBtn()">
     </div>
     <div class="FloorSelector" *ngIf="ONBtn">
-      <select [(ngModel)]="selectedFloor" (change)="onFloorChange($event)" class="selector">
+      <!-- <select [(ngModel)]="selectedFloor" (change)="onFloorChange($event)" class="selector">
         <option *ngFor="let floor of floors" [value]="floor">{{ floor }}</option>
-      </select>
+      </select> -->
     </div>
-    <div class="CanvasOptions" *ngIf="ONBtn">
+    <div class="CanvasOptions" >
       <span class="empty"></span>
       <img src="../../assets/CanvasOptions/Zoom.svg" class="Zoom" (click)="zoomIn()">
       <img src="../../assets/CanvasOptions/ZoomOut.svg" class="ZoomOut" (click)="zoomOut()">
