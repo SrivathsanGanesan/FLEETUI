@@ -169,7 +169,10 @@ export class ProjectsetupComponent {
       body: form,
     })
       .then((res) => res.json())
-      .then((data) => console.log(data))
+      .then((data) => {
+        if (data.exist) alert(data.msg);
+        else console.log(data);
+      })
       .catch((err) => console.log(err));
   }
 
