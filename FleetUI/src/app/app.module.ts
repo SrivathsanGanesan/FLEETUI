@@ -17,6 +17,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartComponent } from './chart/chart.component';
 import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +32,7 @@ import { ThroughputComponent } from './throughput/throughput.component';
     ChartComponent,
     UptimeComponent,
     ThroughputComponent
+
   ],
   imports: [
     NgApexchartsModule,

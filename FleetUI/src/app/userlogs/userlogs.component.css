@@ -1,12 +1,47 @@
 .mainContent {
   position: absolute;
-  top: 50px;
+  top: 30px;
   left: 70px;
   width: calc(100% - 70px); /* Adjusts width considering the left margin */
   padding: 16px;
   overflow: hidden; /* Prevents scrolling within this section */
   box-sizing: border-box; /* Ensures padding is included in width calculation */
   background-color: white; /* Ensures it’s distinct from the sidebar */
+}
+
+/* Header section styles */
+.header-section {
+  margin-bottom: 20px; /* Space between header and buttons */
+}
+
+.header-title {
+  font-size: 36px; /* Font size for the header */
+  font-weight: bold;
+  color: #DA2127; /* Red color for the header */
+  margin: 0; /* No margin */
+}
+
+.subheader-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px; /* Space between subheader and table */
+}
+
+.subheader-text {
+  font-size: 15px;
+  color: #333;
+}
+
+.subheader-icon {
+  width: 13px;
+  height: 13px;
+  
+}
+
+.table-container {
+  margin-top: 10px;
+  max-height: 23.5rem; /* Adjust based on row height */
+  overflow-y: auto; /* Ensures there's space between the subheader and the table */
 }
 
 table {
@@ -21,22 +56,25 @@ table {
 }
  
 th, td {
-  border: 1px solid #e5e7eb; /* Tailwind's gray-200 */
-  
+  border: 1px solid #ffffff; /* Tailwind's gray-200 */
   padding: 5px;
-  height: 40px;
+  height: 30px;
 }
  
 th {
   background-color: #FFCDCD; /* Tailwind's gray-50 */
-  font-weight: bold;
-  padding: 12px;
+  padding: 10px 20px; /* Padding for size */
+  color: #5f5e5e;
+  font-size: 13px;
   border-bottom: 1px solid #ddd;
-
-  
 }
- 
-tr:hover {background-color: #f2f2f2;}
+table td {
+  font-size: 13px;
+}
+
+tr:hover {
+  background-color: #f2f2f2;
+}
  
 tr:nth-child(even) {
   background-color: #FFF1F1;
@@ -51,106 +89,41 @@ tr:nth-child(even) {
 }
  
 /* General button styling */
+/* Default button styles */
+/* Default button styles */
+.button-container {
+  margin-top: 10px; /* Ensures there's space between the subheader and the table */
+}
+
 .button {
-  flex: 1;
-  border-radius: 0.5rem; /* Rounded corners */
-  
-  border: 1px solid;
-  padding: 0.75rem; /* Adjust padding as needed */
-  font-weight: bold;
-  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-}
- 
-/* Button 1 styling */
-.button-1 {
-  /* Rectangle 40406 */
-width: 185px;
-height: 50px;
-color: #ffffff; /* Dark gray */
-
-background: #DA2127;
-border: 1px solid #D30000;
-border-radius: 5px;
-
-/* Inside auto layout */
-flex: none;
-order: 0;
-flex-grow: 0;
-z-index: 0;
-
-}
- 
-.button-1:hover {
-  background-color: #ef4444; /* Lighter red */
-  border-color: #991b1b; /* Slightly darker red */
-}
- 
-/* Button 2 styling */
-.button-2 {
-  /* Rectangle 40406 */
-width: 200px;
-height: 50px;
-background: #FFFFFF;
-border: 1px solid #8B8B8B;
-border-radius: 5px;
-/* Inside auto layout */
-flex: none;
-order: 1;
-flex-grow: 0;
-z-index: 1;
-
-}
- 
-.button-2:hover {
-  background-color: #DA2127; /* Light gray */
-  border-color: #9ca3af; /* Medium gray */
-  color: #ffffff;
-}
- 
-/* Button 3 styling */
-.button-3 {
-/* Rectangle 40405 */
-
-width: 200px;
-height: 50px;
-
-background: #FFFFFF;
-border: 1px solid #8B8B8B;
-border-radius: 5px;
-
-/* Inside auto layout */
-flex: none;
-order: 2;
-flex-grow: 0;
-z-index: 2;
-
-}
- 
-.button-3:hover {
-  background-color: #DA2127; /* Light gray */
-  border-color: #9ca3af; /* Medium gray */
-  color: #ffffff;
- 
+  background-color: #FFFFFF; /* White background for inactive buttons */
+  color: #000000; /* Black text color */
+  width: 180x;
+  height: 45px;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc; /* Border for buttons */
+  padding: 10px 20px; /* Padding for size */
+  font-size: 20px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin-right: 20px; /* Gap between buttons */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
 }
 
-.button-frame {
-  box-sizing: border-box;
-
-  /* Auto layout */
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
-  padding: 0px;
-  gap: 0px;
-  width: 692px;
-  height: 56px;
-  border: 1px solid #E5E4E4;
-  border-radius: 5px;
+.button:last-child {
+  margin-right: 0; /* Remove right margin for the last button */
+}
+/* Active button styles */
+.active-button {
+  background-color: #ff3333; /* Red background for active button */
+  color: #FFFFFF; /* White text color */
+  transform: scale(1.05); /* Slightly enlarge button */
+}
+.transition-active {
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
 }
 
 .export-button {
-  position: absolute;
+
   bottom: 10px; /* Distance from the bottom of the container */
   right: 10px; /* Distance from the right of the container */
   padding: 10px 20px; /* Adjust padding as needed */
@@ -161,8 +134,142 @@ z-index: 2;
   cursor: pointer; /* Pointer cursor on hover */
 }
 
+
+/* Container for the search bar and date filter */
+
+/* Date filter dropdown styling */
+
+
+.export-button-container {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  
+}
+
+.export-button {
+  padding: 10px 20px;
+  background-color: #DF3C3C;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 .export-button:hover {
-  background-color: #0056b3; /* Darker background on hover */
+  background-color: #ff3333; /* Bright red on hover */
+}
+/* Buttons in the export popup */
+.popup-content button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #dedede; /* Dark red background */
+  color: #212121; /* White text */
+  cursor: pointer;
+}
+
+.popup-content button:hover {
+  background-color: #ff3333; /* Bright red on hover */
+  color: #fdfdfd;
+
+}
+
+/* Close button with a distinct color */
+.close-popup {
+  background-color: #ff6666; /* Lighter red for close button */
+}
+
+.close-popup:hover {
+  background-color: #ff3333; /* Bright red on hover */
+}
+
+/* Export popup background */
+.export-popup {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(151, 151, 151, 0.215); /* Red overlay */
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  max-width: 300px;
+  margin: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+/* seach bar */
+.search-bar {
+  position: absolute;
+  right: 100px;
+  width: 200px;
+  padding: 8px 12px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  transition: width 0.4s ease-in-out, background-color 0.4s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar:focus {
+  width: 250px;
+  background-color: #fff;
+  border-color: #ff3333;
+}
+
+.date-filter {
+  position: absolute;
+  right: 20px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.date-filter:focus {
+  border-color: #ff3333;
+}
+
+.search-bar,
+.date-filter {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.search-bar, .date-filter, input[type="date"] {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar:focus, .date-filter:focus, input[type="date"]:focus {
+  outline: none;
+  box-shadow: 0px 0px 0px 2px #3b82f6; /* Blue ring on focus */
 }
 
 
@@ -171,24 +278,3 @@ z-index: 2;
 
 
 
-
-
-
-
-
-/* Category table */
-
-/* Auto layout */
-/* display: flex;
-flex-direction: column;
-align-items: flex-start;
-padding: 0px;
-gap: 10px;
-isolation: isolate;
-
-position: absolute;
-width: 1288px;
-height: 577px;
-left: 119px;
-top: 337px;
- */
