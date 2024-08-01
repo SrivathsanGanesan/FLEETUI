@@ -5,13 +5,8 @@
     <div class="ONBtn">
       <img [src]="getOnBtnImage()" (click)="toggleONBtn()">
     </div>
-    <div class="FloorSelector" *ngIf="ONBtn">
-      <!-- <select [(ngModel)]="selectedFloor" (change)="onFloorChange($event)" class="selector">
-        <option *ngFor="let floor of floors" [value]="floor">{{ floor }}</option>
-      </select> -->
-    </div>
-    <div class="CanvasOptions" >
-      <span class="empty"></span>
+    <div class="FloorSelector" *ngIf="ONBtn"></div>
+    <div class="CanvasOptions">
       <img src="../../assets/CanvasOptions/Zoom.svg" class="Zoom" (click)="zoomIn()">
       <img src="../../assets/CanvasOptions/ZoomOut.svg" class="ZoomOut" (click)="zoomOut()">
       <img src="../../assets/CanvasOptions/Pan.svg" class="Expand" (click)="togglePan()">
@@ -21,11 +16,7 @@
       <img src="../../assets/CanvasOptions/Pointer.svg" class="Pointer">
     </div>
     <div class="GraphAndCharts">
-      <div class="Chart1">
-        <div class="T-Chart">
-          <app-throughput></app-throughput>
-        </div>
-      </div>
+      <div class="Chart2_Chart3">
       <div class="Chart2">
         <p>Uptime</p>
         <div class="U-Chart">
@@ -38,6 +29,13 @@
           <app-chart></app-chart>
         </div>
       </div>
+    </div>
+      <div class="Chart1">
+        <div class="T-Chart">
+          <app-throughput></app-throughput>
+        </div>
+      </div>
+      
     </div>
   </div>
 </div>

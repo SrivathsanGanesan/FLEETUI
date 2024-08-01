@@ -65,8 +65,8 @@ export class ThroughputComponent {
       ],
       chart: {
         type: "area",
-        height: 235,
-        width: 595,
+        height: 225,
+        width: 430,
         zoom: {
           enabled: false
         }
