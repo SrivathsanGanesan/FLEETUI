@@ -152,11 +152,7 @@ export class ProjectsetupComponent {
       .catch((err) => console.log(err));
   }
 
-  async renameProjFile(from: FormData, renamedProj: any) {
-    fetch('');
-  }
-
-  async sendZip(form: FormData, renamedProj: any) {
+  async sendZip(form: FormData) {
     fetch('http://localhost:3000/fleet-project-file/upload-project/', {
       credentials: 'include',
       method: 'POST',
@@ -171,8 +167,19 @@ export class ProjectsetupComponent {
           this.renamedProj = prompt(
             'project with this name already exists, would you like to rename?'
           );
-          // this.renameProjFile(form, renamedProj);
-          console.log(this.renamedProj);
+          if (this.renamedProj !== null || this.renamedProj !== '') {
+            this.isRenamed = true;
+            form.delete('projRename');
+            form.append(
+              'projRename',
+              JSON.stringify({
+                isRenamed: this.isRenamed,
+                alterName: this.renamedProj,
+              })
+            );
+            this.sendZip(form);
+            return;
+          }
         }
       })
       .catch((err) => console.log(err));
@@ -197,7 +204,7 @@ export class ProjectsetupComponent {
     const form = new FormData();
     form.append('projFile', file);
     form.append('projRename', JSON.stringify(projRename));
-    this.sendZip(form, this.renamedProj);
+    this.sendZip(form);
   }
 
   onFocus(inputId: string) {
