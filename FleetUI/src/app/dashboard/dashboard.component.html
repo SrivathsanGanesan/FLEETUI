@@ -14,9 +14,9 @@
       <img src="../../assets/CanvasOptions/Save.svg" class="Save" (click)="startRecording()">
       <img src="../../assets/CanvasOptions/Pointer.svg" class="Stop" (click)="stopRecording()"> 
       <!-- <!-- <img src="../../assets/CanvasOptions/Layout.svg" class="Layout"> -->
-      <img src="../../assets/CanvasOptions/Dashboard.svg" class="Pointer">
+      <img src="../../assets/CanvasOptions/Dashboard.svg" class="Pointer" (click)="toggleDashboard()">
     </div>
-    <div class="GraphAndCharts">
+    <div class="GraphAndCharts" *ngIf="showDashboard">
       <div class="Chart2_Chart3">
       <div class="Chart2">
         <p>Uptime</p>

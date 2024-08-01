@@ -8,6 +8,7 @@ import html2canvas from 'html2canvas';
 })
 export class DashboardComponent implements AfterViewInit {
   ONBtn = false;
+  showDashboard = false; // Property to manage dashboard visibility
   selectedFloor = 'Floor 1';
   floors = ['Floor 1'];
   zoomLevel = 1.1; // Initial zoom level
@@ -183,5 +184,9 @@ export class DashboardComponent implements AfterViewInit {
       this.mediaRecorder.stop();
       this.recording = false;
     }
+  }
+
+  toggleDashboard() {
+    this.showDashboard = !this.showDashboard;
   }
 }
