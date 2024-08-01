@@ -27,10 +27,13 @@ export class ChartComponent {
   public chartOptions: Partial<ChartOptions>;
 
   constructor() {
+    const totalRobots = 100; // Define the total number of robots
+    const activeRobots = 65; // Define the active robots
+
     this.chartOptions = {
-      series: [65],
+      series: [activeRobots],
       chart: {
-        width:250,
+        width: 250,
         height: 250,
         type: "radialBar",
         toolbar: {
@@ -48,42 +51,27 @@ export class ChartComponent {
             background: "#fff",
             image: undefined,
             position: "front",
-            // dropShadow: {
-            //   enabled: true,
-            //   top: 5,
-            //   left: 0,
-            //   blur: 4,
-            //   opacity: 0.24
-            // }
           },
           track: {
             background: "#ffe5e5",
             strokeWidth: "70%",
-            margin: -8, // margin is in pixels
-            // dropShadow: {
-            //   enabled: true,
-            //   top: -3,
-            //   left: 0,
-            //   blur: 4,
-            //   opacity: 0.35
-            // }
+            margin: -8,
           },
-
           dataLabels: {
             show: true,
             name: {
               offsetY: 30,
               show: true,
-              color: "#FF3333",
+              color: "#FF7373",
               fontSize: "10px"
             },
             value: {
               formatter: function(val) {
-                return parseInt(val.toString(), 10).toString();
+                return `${activeRobots}/${totalRobots}`;
               },
-              offsetY: -15,
+              offsetY: -5,
               color: "#FF3333",
-              fontSize: "40px",
+              fontSize: "30px",
               show: true
             }
           }
@@ -117,7 +105,7 @@ export class ChartComponent {
       stroke: {
         lineCap: "round"
       },
-      labels: ["Active Robots"]
+      labels: [""]
     };
   }
 }

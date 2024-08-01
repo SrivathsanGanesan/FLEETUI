@@ -52,21 +52,23 @@ export class ThroughputComponent {
         ]
       }
     };
+
     const totalPicks = seriesData.hourlyDataSeries1.picks.reduce((acc, val) => acc + val, 0);
     const numberOfDataPoints = seriesData.hourlyDataSeries1.picks.length;
     this.averagePercentage = totalPicks / numberOfDataPoints;
+
     this.chartOptions = {
       series: [
         {
           name: "Picks",
           data: seriesData.hourlyDataSeries1.picks,
-          color: "#FF3333" // Set the color here
+          color: "#ff7373", // Using preferred color
         }
       ],
       chart: {
         type: "area",
-        height: 225,
-        width: 430,
+        height: 225, // Set height
+        width: 440,  // Set width
         zoom: {
           enabled: false
         }
@@ -75,7 +77,7 @@ export class ThroughputComponent {
         enabled: false
       },
       stroke: {
-        curve: "smooth" // Consider changing to 'smooth' for a different look
+        curve: "smooth"
       },
       title: {
         text: "ThroughPut",
@@ -83,7 +85,7 @@ export class ThroughputComponent {
         style: {
           fontFamily: "Arial, Helvetica, sans-serif",
           fontWeight: "bold",
-          fontSize: "18px" // Adjust size as needed
+          fontSize: "18px"
         }
       },
       subtitle: {
@@ -92,42 +94,41 @@ export class ThroughputComponent {
         style: {
           fontFamily: "Arial, Helvetica, sans-serif",
           fontWeight: "bold",
-          fontSize: "10px" // Adjust size as needed
+          fontSize: "10px"
         }
       },
       labels: seriesData.hourlyDataSeries1.datestime,
       xaxis: {
         type: "datetime",
-        tickAmount: 10, // Adjust the number of ticks displayed
+        tickAmount: 10,
         labels: {
-          format: "HH:mm" // Format for hourly display
+          format: "HH:mm"
         },
-        title: {
-          // text: "Time",
-          // style: {
-          //   fontFamily: "Arial, Helvetica, sans-serif",
-          //   fontWeight: "bold",
-          //   fontSize: "10px"
-          // }
-        }
+        // title: {
+        //   text: "Time",
+        //   style: {
+        //     fontFamily: "Arial, Helvetica, sans-serif",
+        //     fontWeight: "bold",
+        //     fontSize: "10px"
+        //   }
+        // }
       },
       yaxis: {
         opposite: true,
-        title: {
-          // text: "Picks",
-          // style: {
-          //   fontFamily: "Arial, Helvetica, sans-serif",
-          //   fontWeight: "bold",
-          //   fontSize: "10px"
-          // }
-        }
+        // title: {
+        //   text: "Picks",
+        //   style: {
+        //     fontFamily: "Arial, Helvetica, sans-serif",
+        //     fontWeight: "bold",
+        //     fontSize: "10px"
+        //   }
+        // }
       },
-      
       legend: {
         horizontalAlign: "left",
         fontFamily: "Arial, Helvetica, sans-serif",
         fontWeight: "bold",
-        fontSize: "8px" // Adjust size as needed
+        fontSize: "8px"
       }
     };
   }

@@ -1,4 +1,5 @@
 import { Component, AfterViewInit } from '@angular/core';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,10 @@ export class DashboardComponent implements AfterViewInit {
   lastY = 0; // Last y coordinate for panning
   offsetX = 0; // Current offset x
   offsetY = 0; // Current offset y
+
+  mediaRecorder!: MediaRecorder; // Use definite assignment assertion
+  chunks: Blob[] = [];
+  recording = false;
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
@@ -125,18 +130,58 @@ export class DashboardComponent implements AfterViewInit {
     this.isPanning = !this.isPanning;
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
+
   captureCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const dataUrl = canvas.toDataURL('image/png');
-    
-    // Create a link element
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = 'canvas_capture.png';
-    
-    // Append the link to the document and trigger the download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    html2canvas(document.body).then(canvas => {
+      const dataUrl = canvas.toDataURL('image/png');
+      
+      // Create a link element
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'page_capture.png';
+      
+      // Append the link to the document and trigger the download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  }
+
+  async startRecording() {
+    this.recording = true;
+    const canvas = await html2canvas(document.body);
+    const stream = canvas.captureStream(30); // 30 FPS
+
+    this.mediaRecorder = new MediaRecorder(stream);
+
+    this.mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        this.chunks.push(event.data);
+      }
+    };
+
+    this.mediaRecorder.onstop = () => {
+      const blob = new Blob(this.chunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+
+      // Create a link element to download the video
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'page_recording.webm';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      this.chunks = []; // Clear the chunks for the next recording
+    };
+
+    this.mediaRecorder.start();
+  }
+
+  stopRecording() {
+    if (this.mediaRecorder && this.recording) {
+      this.mediaRecorder.stop();
+      this.recording = false;
+    }
   }
 }

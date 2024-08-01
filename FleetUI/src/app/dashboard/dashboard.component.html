@@ -11,9 +11,10 @@
       <img src="../../assets/CanvasOptions/ZoomOut.svg" class="ZoomOut" (click)="zoomOut()">
       <img src="../../assets/CanvasOptions/Pan.svg" class="Expand" (click)="togglePan()">
       <img src="../../assets/CanvasOptions/Capture.svg" class="Capture" (click)="captureCanvas()">
-      <img src="../../assets/CanvasOptions/Save.svg" class="Save">
-      <img src="../../assets/CanvasOptions/Layout.svg" class="Layout">
-      <img src="../../assets/CanvasOptions/Pointer.svg" class="Pointer">
+      <img src="../../assets/CanvasOptions/Save.svg" class="Save" (click)="startRecording()">
+      <img src="../../assets/CanvasOptions/Pointer.svg" class="Stop" (click)="stopRecording()"> 
+      <!-- <!-- <img src="../../assets/CanvasOptions/Layout.svg" class="Layout"> -->
+      <img src="../../assets/CanvasOptions/Dashboard.svg" class="Pointer">
     </div>
     <div class="GraphAndCharts">
       <div class="Chart2_Chart3">
@@ -30,10 +31,8 @@
         </div>
       </div>
     </div>
-      <div class="Chart1">
-        <div class="T-Chart">
-          <app-throughput></app-throughput>
-        </div>
+      <div class="Chart1">       
+          <app-throughput></app-throughput>        
       </div>
       
     </div>
