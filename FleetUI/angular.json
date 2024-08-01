@@ -42,7 +42,11 @@
               "src/styles.css"
             ],
             "scripts": [
+<<<<<<< Updated upstream
               
+=======
+
+>>>>>>> Stashed changes
             ],
             "server": "src/main.server.ts",
             "prerender": true,
@@ -108,7 +112,11 @@
               "src/styles.css"
             ],
             "scripts": [
+<<<<<<< Updated upstream
               
+=======
+             
+>>>>>>> Stashed changes
             ]
           }
         }
