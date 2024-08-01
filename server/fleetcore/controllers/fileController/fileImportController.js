@@ -3,7 +3,6 @@ const fs = require("fs");
 const path = require("path");
 const { copyImages } = require("./fileExportController");
 const { projectModel } = require("../../models/projectSchema");
-const { exit } = require("process");
 
 const validateExtractedFile = async ({ target }) => {
   let fileArr = ["/mapInfo.json", "/projInfo.json", "/roboInfo.json"];
@@ -14,7 +13,6 @@ const validateExtractedFile = async ({ target }) => {
   });
   return true;
 };
-
 //..
 
 const extractProjFile = async (req, res, next) => {
@@ -45,17 +43,23 @@ const parseProjectFile = async (req, res, next) => {
     const { project, img } = JSON.parse(
       fs.readFileSync(target + "/projInfo.json")
     );
-    const data = await projectModel.exists({
-      projectName: project.projectName,
-    });
+    const { _id, projectName } = project;
+    const doc = await projectModel.findById(_id);
+    if (doc)
+      return res.status(400).json({
+        idExist: true,
+        msg: "Seems project already exists!(project with this Id already exist)",
+      });
+    const data = await projectModel.exists({ projectName: projectName });
     if (data)
       return res.status(400).json({
-        exist: true,
+        idExist: false,
+        nameExist: true,
         msg: "project with this name already exists, you can't insert into database",
       });
     if (img.length)
       copyImages({
-        imgUrlArr: data.img,
+        imgUrlArr: img,
         src: "projectFile",
         dest: "dashboardMap",
       });
