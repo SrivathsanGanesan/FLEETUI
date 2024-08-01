@@ -226,7 +226,7 @@ label.active {
 .Projectname:focus {
   border-bottom-color: #FF7373; /* Change to red on focus */
 }
-.error-message {
+.error-message,.error-message1  {
   color: #ff7373;
   font-size: 10px;
   font-weight: bold;
