@@ -13,6 +13,19 @@ const validateExtractedFile = async ({ target }) => {
   });
   return true;
 };
+
+const renameProjFile = async ({ target, alterName }) => {
+  let doc = await projectModel.exists({ projectName: alterName });
+  if (doc)
+    return res.status(409).json({
+      idExist: false,
+      nameExist: true,
+      msg: "project with this name already exists, you can't insert into database",
+    });
+  const data = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
+  data.project.projectName = alterName;
+  fs.writeFileSync(target + "/projInfo.json", JSON.stringify(data, null, 2));
+};
 //..
 
 const extractProjFile = async (req, res, next) => {
@@ -35,24 +48,31 @@ const extractProjFile = async (req, res, next) => {
 };
 
 const parseProjectFile = async (req, res, next) => {
+  // const { isRenamed, alterName } = JSON.parse(req.body.projRename);
+  let isRenamed = false;
+  let alterName = "altered_name";
   const target = path.resolve("./proj_assets/projectFile/");
+
   const isDirValidate = validateExtractedFile({ target });
   if (!isDirValidate)
     return res.status(400).json({ isZipValidate: false, msg: "Files missing" });
+
   try {
+    if (isRenamed) await renameProjFile({ target, alterName });
+
     const { project, img } = JSON.parse(
       fs.readFileSync(target + "/projInfo.json")
     );
     const { _id, projectName } = project;
-    const doc = await projectModel.findById(_id);
+    const doc = await projectModel.findById("669e27f46d07913165284ad3"); // _id : 669e27f46d07913165284ad3
     if (doc)
-      return res.status(400).json({
+      return res.status(409).json({
         idExist: true,
         msg: "Seems project already exists!(project with this Id already exist)",
       });
     const data = await projectModel.exists({ projectName: projectName });
     if (data)
-      return res.status(400).json({
+      return res.status(409).json({
         idExist: false,
         nameExist: true,
         msg: "project with this name already exists, you can't insert into database",
@@ -72,3 +92,5 @@ const parseProjectFile = async (req, res, next) => {
 };
 
 module.exports = { extractProjFile, parseProjectFile };
+
+// 409 - conflict

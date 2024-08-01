@@ -28,6 +28,8 @@ export class ProjectsetupComponent {
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
   productList: Project[] = [];
+  renamedProj: any;
+  isRenamed: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -150,6 +152,39 @@ export class ProjectsetupComponent {
       .catch((err) => console.log(err));
   }
 
+  async sendZip(form: FormData) {
+    fetch('http://localhost:3000/fleet-project-file/upload-project/', {
+      credentials: 'include',
+      method: 'POST',
+      body: form,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.idExist) {
+          alert('Sry, project (with this id) already exist');
+        } else if (!data.idExist && data.nameExist) {
+          this.renamedProj = prompt(
+            'project with this name already exists, would you like to rename?'
+          );
+          if (this.renamedProj !== null || this.renamedProj !== '') {
+            this.isRenamed = true;
+            form.delete('projRename');
+            form.append(
+              'projRename',
+              JSON.stringify({
+                isRenamed: this.isRenamed,
+                alterName: this.renamedProj,
+              })
+            );
+            this.sendZip(form);
+            return;
+          }
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
   // project file handling..
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -161,25 +196,15 @@ export class ProjectsetupComponent {
       console.log('File selected:', file.name);
       this.selectedFileName = file.name; // Update the variable with the file name
     }
+    this.renamedProj = '';
+    let projRename = {
+      isRenamed: this.isRenamed, // false
+      alterName: this.renamedProj, // ""
+    };
     const form = new FormData();
     form.append('projFile', file);
-    fetch('http://localhost:3000/fleet-project-file/upload-project/', {
-      credentials: 'include',
-      method: 'POST',
-      body: form,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.idExist) {
-          let renamedProj = prompt(
-            'project with this name already exists, would you like to rename?'
-          );
-          console.log(renamedProj);
-        } else if (!data.idExist && data.nameExist) {
-          alert('Sry, project (with this id) already exist');
-        } else console.log(data);
-      })
-      .catch((err) => console.log(err));
+    form.append('projRename', JSON.stringify(projRename));
+    this.sendZip(form);
   }
 
   onFocus(inputId: string) {
