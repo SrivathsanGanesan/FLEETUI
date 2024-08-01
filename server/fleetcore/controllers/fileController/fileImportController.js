@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { copyImages } = require("./fileExportController");
 const { projectModel } = require("../../models/projectSchema");
+const { Map, Robo } = require("../../../application/models/mapSchema");
 
 const validateExtractedFile = async ({ target }) => {
   let fileArr = ["/mapInfo.json", "/projInfo.json", "/roboInfo.json"];
@@ -25,6 +26,22 @@ const renameProjFile = async ({ target, alterName }) => {
   const data = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
   data.project.projectName = alterName;
   fs.writeFileSync(target + "/projInfo.json", JSON.stringify(data, null, 2));
+};
+
+const clearFiles = ({ target }) => {
+  const files = fs.readdirSync(target);
+  files.forEach((file) => {
+    if (fs.existsSync(`${target}/${file}`)) fs.unlinkSync(`${target}/${file}`);
+  });
+};
+
+const restoreRobots = async ({ target }) => {
+  let { robos } = JSON.parse(fs.readFileSync(target + "/roboInfo.json"));
+  robos.forEach(async (robo) => {
+    const doc = await Robo.exists({ roboName: robo.roboName });
+    if (doc) return [true, "robo with this name already exist in your DB"];
+  });
+  // return res.json(robos);
 };
 //..
 
@@ -49,9 +66,11 @@ const extractProjFile = async (req, res, next) => {
 
 const parseProjectFile = async (req, res, next) => {
   // const { isRenamed, alterName } = JSON.parse(req.body.projRename);
-  let isRenamed = false;
+  let isRenamed = true;
   let alterName = "altered_name";
   const target = path.resolve("./proj_assets/projectFile/");
+  let arr1 = restoreRobots({ target });
+  if (arr1[0]) return res.status(409).json({ conflicts: true, msg: arr1[1] });
 
   const isDirValidate = validateExtractedFile({ target });
   if (!isDirValidate)
@@ -65,25 +84,32 @@ const parseProjectFile = async (req, res, next) => {
     );
     const { _id, projectName } = project;
     const doc = await projectModel.findById("669e27f46d07913165284ad3"); // _id : 669e27f46d07913165284ad3
-    if (doc)
+    if (doc) {
+      clearFiles({ target });
       return res.status(409).json({
-        idExist: true,
+        isExist: true,
         msg: "Seems project already exists!(project with this Id already exist)",
       });
+    }
     const data = await projectModel.exists({ projectName: projectName });
-    if (data)
+    if (data) {
+      clearFiles({ target });
       return res.status(409).json({
-        idExist: false,
+        isExist: false,
         nameExist: true,
         msg: "project with this name already exists, you can't insert into database",
       });
+    }
     if (img.length)
       copyImages({
         imgUrlArr: img,
         src: "projectFile",
         dest: "dashboardMap",
       });
-    // restoreRobots();
+
+    // restoreRobots({ target });
+    // restoreMaps({ target });
+    // restoreProject({ target });
     return res.json("good");
   } catch (err) {
     console.log("error occ : ", err);
