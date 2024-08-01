@@ -1,9 +1,9 @@
 const { Robo } = require("../models/mapSchema");
 const { projectModel } = require("../../fleetcore/models/projectSchema");
 
-const insertRoboId = async ({ roboId, projectName }) => {
+const insertRoboId = async ({ roboId, roboName, projectName }) => {
   const proj = await projectModel.findOneAndUpdate(
-    { projectName: projectName },
+    { projectName: projectName }, // wanna add robo name.. to the ref
     {
       $push: { robots: { roboId } },
     }
@@ -35,7 +35,7 @@ const createRobo = async (req, res, next) => {
       roboTask,
     }).save();
     const roboId = robo._id;
-    const resultDoc = await insertRoboId({ roboId, projectName });
+    const resultDoc = await insertRoboId({ roboId, roboName, projectName });
     if (!resultDoc)
       return res
         .status(400)

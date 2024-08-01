@@ -28,6 +28,8 @@ export class ProjectsetupComponent {
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
   productList: Project[] = [];
+  renamedProj: any;
+  isRenamed: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -112,8 +114,7 @@ export class ProjectsetupComponent {
   }
 
   async logout() {
-    const proj_name = 'project_2';
-    try {
+    /* try {
       const response = await fetch(
         'http://localhost:3000/fleet-project-file/download-project/project_2',
         {
@@ -127,7 +128,7 @@ export class ProjectsetupComponent {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = `${proj_name}.zip`;
+        a.download = `project_2.zip`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -135,9 +136,9 @@ export class ProjectsetupComponent {
       }
     } catch (error) {
       console.log('Err ra pans : ', error);
-    }
+    } */
 
-    /* fetch('http://localhost:3000/auth/logout', {
+    fetch('http://localhost:3000/auth/logout', {
       credentials: 'include',
     })
       .then((res) => res.json())
@@ -148,7 +149,40 @@ export class ProjectsetupComponent {
           this.router.navigate(['/']);
         }
       })
-      .catch((err) => console.log(err)); */
+      .catch((err) => console.log(err));
+  }
+
+  async sendZip(form: FormData) {
+    fetch('http://localhost:3000/fleet-project-file/upload-project/', {
+      credentials: 'include',
+      method: 'POST',
+      body: form,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.idExist) {
+          alert('Sry, project (with this id) already exist');
+        } else if (!data.idExist && data.nameExist) {
+          this.renamedProj = prompt(
+            'project with this name already exists, would you like to rename?'
+          );
+          if (this.renamedProj !== null || this.renamedProj !== '') {
+            this.isRenamed = true;
+            form.delete('projRename');
+            form.append(
+              'projRename',
+              JSON.stringify({
+                isRenamed: this.isRenamed,
+                alterName: this.renamedProj,
+              })
+            );
+            this.sendZip(form);
+            return;
+          }
+        }
+      })
+      .catch((err) => console.log(err));
   }
 
   // project file handling..
@@ -162,16 +196,15 @@ export class ProjectsetupComponent {
       console.log('File selected:', file.name);
       this.selectedFileName = file.name; // Update the variable with the file name
     }
+    this.renamedProj = '';
+    let projRename = {
+      isRenamed: this.isRenamed, // false
+      alterName: this.renamedProj, // ""
+    };
     const form = new FormData();
     form.append('projFile', file);
-    fetch('http://localhost:3000/fleet-project-file/upload-project/', {
-      credentials: 'include',
-      method: 'POST',
-      body: form,
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+    form.append('projRename', JSON.stringify(projRename));
+    this.sendZip(form);
   }
 
   onFocus(inputId: string) {
@@ -196,16 +229,17 @@ export class ProjectsetupComponent {
     //   // Navigate to dashboard
     //   // this.router.navigate(['/dashboard']);
     // }
-    if (!this.projectname && !this.projectname) {
+    if (!this.projectname && !this.sitename) {
       this.errorMessage = '*Please fill in both the fields.';
+      return;
+    }
+    
+    if (!this.projectname ) {
+      this.errorMessage = '*Please fill Project Name.';
       return;
     }
     if (!this.sitename) {
       this.errorMessage = '*Please fill Site Name.';
-      return;
-    }
-    if (!this.projectname) {
-      this.errorMessage = '*Please fill Project Name.';
       return;
     }
 

@@ -68,14 +68,20 @@
               >Project Name</label
             >
           </div>
-          <div *ngIf="errorMessage" class="error-message">
-            {{ errorMessage }}
-          </div>
-          <div class="ButtonSet">
-            <button class="CreateBTN" (click)="createProject()">CREATE</button>
-            <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
+          <div>
+            <ng-container *ngIf="errorMessage; else placeholder">
+              <p class="error-message">{{ errorMessage }}</p>
+            </ng-container>
+            <ng-template #placeholder>
+              <p></p>
+            </ng-template>
+            <div class="ButtonSet">
+              <button class="CreateBTN" (click)="createProject()">CREATE</button>
+              <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
+            </div>
           </div>
         </div>
+        
         <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
           <div class="Impfile" (click)="onIconClick()">
             <img

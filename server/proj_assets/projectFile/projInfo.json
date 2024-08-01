@@ -1,0 +1,51 @@
+{
+  "project": {
+    "_id": "669e27f46d07913165284add",
+    "projectName": "altered_name",
+    "sites": [
+      {
+        "siteName": "MATEUNIT1",
+        "_id": "669e27f46d07913165284ade",
+        "maps": [
+          {
+            "mapId": "66a24126715fd347d82331ef",
+            "mapName": "mapOfBermuda",
+            "createdAt": "2024-07-25T12:12:22.386Z",
+            "updatedAt": "2024-07-25T12:12:22.386Z"
+          },
+          {
+            "mapId": "66a31d402c86193999128081",
+            "mapName": "mapOfKalahari",
+            "createdAt": "2024-07-26T03:51:28.855Z",
+            "updatedAt": "2024-07-26T03:51:28.855Z"
+          }
+        ],
+        "createdAt": "2024-07-22T09:35:48.767Z",
+        "updatedAt": "2024-07-22T09:35:48.767Z"
+      }
+    ],
+    "robots": [
+      {
+        "roboId": "66a31ddb2c86193999128088",
+        "createdAt": "2024-07-26T03:54:03.996Z",
+        "updatedAt": "2024-07-26T03:54:03.996Z"
+      },
+      {
+        "roboId": "66a31de42c8619399912808e",
+        "createdAt": "2024-07-26T03:54:12.081Z",
+        "updatedAt": "2024-07-26T03:54:12.081Z"
+      },
+      {
+        "roboId": "66a31de82c86193999128094",
+        "createdAt": "2024-07-26T03:54:16.594Z",
+        "updatedAt": "2024-07-26T03:54:16.594Z"
+      }
+    ],
+    "createdAt": "2024-07-22T09:35:48.767Z",
+    "updatedAt": "2024-07-26T03:54:16.594Z"
+  },
+  "img": [
+    "1721909542360-map_4.png",
+    "1721965888836-map_1.png"
+  ]
+}

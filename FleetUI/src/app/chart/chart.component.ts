@@ -1,17 +1,20 @@
 import { Component, ViewChild } from "@angular/core";
-import { ChartComponent as ApexChartComponent } from "ng-apexcharts";
-import { ApexNonAxisChartSeries, ApexResponsive, ApexChart, ApexFill, ApexStroke, ApexLegend, ApexPlotOptions } from "ng-apexcharts";
+
+import {
+  ApexNonAxisChartSeries,
+  ApexPlotOptions,
+  ApexChart,
+  ApexFill,
+  ApexStroke
+} from "ng-apexcharts";
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
-  responsive: ApexResponsive[];
-  labels: any;
-  colors: string[];
+  labels: string[];
+  plotOptions: ApexPlotOptions;
   fill: ApexFill;
   stroke: ApexStroke;
-  legend: ApexLegend;
-  plotOptions: ApexPlotOptions;
 };
 
 @Component({
@@ -20,68 +23,89 @@ export type ChartOptions = {
   styleUrls: ["./chart.component.css"]
 })
 export class ChartComponent {
-  @ViewChild("chart") chart!: ApexChartComponent;
-  public chartOptions: Partial<ChartOptions> | any;
+  @ViewChild("chart") chart!: ChartComponent;
+  public chartOptions: Partial<ChartOptions>;
 
   constructor() {
-    const totalRobots = 100;
-    const activeRobots = 64; // Update this value as needed
+    const totalRobots = 100; // Define the total number of robots
+    const activeRobots = 65; // Define the active robots
 
     this.chartOptions = {
-      series: [activeRobots, totalRobots - activeRobots],
+      series: [activeRobots],
       chart: {
-        type: "donut"
-      },
-      labels: ["Active Robots", "Inactive Robots"],
-      colors: ["#ff7373", "#7E7777"], // Active robots and inactive robots colors
-      
-      fill: {
-        colors: ["#ff7373", "#7E7777"],
-        type: 'solid' // Ensures the color fill is solid
-      },
-      
-      stroke: {
-        show: false
+        width: 250,
+        height: 250,
+        type: "radialBar",
+        toolbar: {
+          show: false
+        }
       },
       plotOptions: {
-        pie: {
-          donut: {
-            labels: {
+        radialBar: {
+          offsetY: -15,
+          startAngle: -200,
+          endAngle: 200,
+          hollow: {
+            margin: 1,
+            size: "70%",
+            background: "#fff",
+            image: undefined,
+            position: "front",
+          },
+          track: {
+            background: "#ffe5e5",
+            strokeWidth: "70%",
+            margin: -8,
+          },
+          dataLabels: {
+            show: true,
+            name: {
+              offsetY: 30,
               show: true,
-              total: {
-                show: true,
-                label: 'Total Robots',
-                formatter: () => totalRobots.toString(),
-                color: '#000000',
-                fontSize: '10px'
-              }
+              color: "#FF7373",
+              fontSize: "10px"
             },
-            dropShadow: {
-              enabled: true,
-              top: 2,
-              left: 2,
-              blur: 5,
-              opacity: 0.5
+            value: {
+              formatter: function(val) {
+                return `${activeRobots}/${totalRobots}`;
+              },
+              offsetY: -5,
+              color: "#FF3333",
+              fontSize: "30px",
+              show: true
             }
           }
         }
       },
-      legend: {
-        show: false // Hide legend
-      },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
+      fill: {
+        type: "gradient",
+        gradient: {
+          shade: "dark",
+          type: "vertical",
+          shadeIntensity: 0.1,
+          gradientToColors: ["#FFFFFF"],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100],
+          colorStops: [
+            {
+              offset: 0,
+              color: "#FFB3B3",
+              opacity: 1
             },
-            legend: {
-              show: false // Hide legend for responsive too
+            {
+              offset: 80,
+              color: "#FF3333",
+              opacity: 1
             }
-          }
+          ]
         }
-      ]
+      },
+      stroke: {
+        lineCap: "round"
+      },
+      labels: [""]
     };
   }
 }

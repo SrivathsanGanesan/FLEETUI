@@ -23,7 +23,6 @@ export type ChartOptions = {
   legend: ApexLegend;
   subtitle: ApexTitleSubtitle;
   colors: string[];
-  styles:  string[];
 };
 
 @Component({
@@ -34,36 +33,42 @@ export type ChartOptions = {
 export class ThroughputComponent {
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
+  public averagePercentage: number = 0;
 
   constructor() {
     const seriesData = {
-      monthDataSeries1: {
-        picks: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+      hourlyDataSeries1: {
+        picks: [110, 91, 55, 101, 129, 122, 69, 91, 148],
         datestime: [
-          "2018-09-19T00:00:00.000Z",
-          "2018-09-20T00:00:00.000Z",
-          "2018-09-21T00:00:00.000Z",
-          "2018-09-22T00:00:00.000Z",
-          "2018-09-23T00:00:00.000Z",
-          "2018-09-24T00:00:00.000Z",
-          "2018-09-25T00:00:00.000Z",
-          "2018-09-26T00:00:00.000Z",
-          "2018-09-27T00:00:00.000Z"
+          "2024-09-18T00:00:00.000Z",
+          "2024-09-18T01:00:00.000Z",
+          "2024-09-18T02:00:00.000Z",
+          "2024-09-18T03:00:00.000Z",
+          "2024-09-18T04:00:00.000Z",
+          "2024-09-18T05:00:00.000Z",
+          "2024-09-18T06:00:00.000Z",
+          "2024-09-18T07:00:00.000Z",
+          "2024-09-18T08:00:00.000Z"
         ]
       }
     };
+
+    const totalPicks = seriesData.hourlyDataSeries1.picks.reduce((acc, val) => acc + val, 0);
+    const numberOfDataPoints = seriesData.hourlyDataSeries1.picks.length;
+    this.averagePercentage = totalPicks / numberOfDataPoints;
 
     this.chartOptions = {
       series: [
         {
           name: "Picks",
-          data: seriesData.monthDataSeries1.picks,
-          color: "#ff7373" // Set the color here
+          data: seriesData.hourlyDataSeries1.picks,
+          color: "#ff7373", // Using preferred color
         }
       ],
       chart: {
         type: "area",
-        height: 280,
+        height: 225, // Set height
+        width: 440,  // Set width
         zoom: {
           enabled: false
         }
@@ -72,50 +77,58 @@ export class ThroughputComponent {
         enabled: false
       },
       stroke: {
-        curve: "straight"
+        curve: "smooth"
       },
       title: {
         text: "ThroughPut",
         align: "left",
         style: {
-          fontFamily: "Arial",
-          fontSize: "16px", // Adjust font size as needed
-          fontWeight: "bolder"
+          fontFamily: "Arial, Helvetica, sans-serif",
+          fontWeight: "bold",
+          fontSize: "18px"
         }
       },
       subtitle: {
-        text: "Picks Per Day",
+        text: "Picks Per Hour",
         align: "left",
         style: {
-          fontFamily: "Arial",
-          fontSize: "12px", // Adjust font size as needed
-          fontWeight: "normal"
+          fontFamily: "Arial, Helvetica, sans-serif",
+          fontWeight: "bold",
+          fontSize: "10px"
         }
       },
-      labels: seriesData.monthDataSeries1.datestime,
+      labels: seriesData.hourlyDataSeries1.datestime,
       xaxis: {
         type: "datetime",
+        tickAmount: 10,
         labels: {
-          style: {
-            fontFamily: "Arial",
-            fontSize: "12px", // Adjust font size as needed
-            fontWeight: "normal"
-          }
-        }
+          format: "HH:mm"
+        },
+        // title: {
+        //   text: "Time",
+        //   style: {
+        //     fontFamily: "Arial, Helvetica, sans-serif",
+        //     fontWeight: "bold",
+        //     fontSize: "10px"
+        //   }
+        // }
       },
       yaxis: {
         opposite: true,
-        labels: {
-          style: {
-            fontFamily: "Arial",
-            fontSize: "12px", // Adjust font size as needed
-            fontWeight: "normal"
-          }
-        }
+        // title: {
+        //   text: "Picks",
+        //   style: {
+        //     fontFamily: "Arial, Helvetica, sans-serif",
+        //     fontWeight: "bold",
+        //     fontSize: "10px"
+        //   }
+        // }
       },
       legend: {
         horizontalAlign: "left",
-        
+        fontFamily: "Arial, Helvetica, sans-serif",
+        fontWeight: "bold",
+        fontSize: "8px"
       }
     };
   }
