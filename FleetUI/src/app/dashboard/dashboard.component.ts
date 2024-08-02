@@ -1,5 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import html2canvas from 'html2canvas';
+import RecordRTC, { invokeSaveAsDialog } from 'recordrtc';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,9 +19,8 @@ export class DashboardComponent implements AfterViewInit {
   offsetX = 0; // Current offset x
   offsetY = 0; // Current offset y
 
-  mediaRecorder!: MediaRecorder; // Use definite assignment assertion
-  chunks: Blob[] = [];
   recording = false;
+  private recorder: any;
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
@@ -67,12 +67,6 @@ export class DashboardComponent implements AfterViewInit {
     switch (floor) {
       case 'Floor 1':
         return '../../assets/maps/Map1.svg';
-      // case 'Floor 2':
-      //   return '../../assets/maps/Map2.svg';
-      // case 'Floor 3':
-      //   return '../../assets/maps/Map3.svg';
-      // case 'Floor 4':
-      //   return '../../assets/maps/Map4.svg';
       default:
         return '../../assets/maps/Map1.svg';
     }
@@ -148,45 +142,44 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
-  async startRecording() {
-    this.recording = true;
-    const canvas = await html2canvas(document.body);
-    const stream = canvas.captureStream(30); // 30 FPS
-
-    this.mediaRecorder = new MediaRecorder(stream);
-
-    this.mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        this.chunks.push(event.data);
-      }
-    };
-
-    this.mediaRecorder.onstop = () => {
-      const blob = new Blob(this.chunks, { type: 'video/webm' });
-      const url = URL.createObjectURL(blob);
-
-      // Create a link element to download the video
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'page_recording.webm';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      this.chunks = []; // Clear the chunks for the next recording
-    };
-
-    this.mediaRecorder.start();
+  toggleDashboard() {
+    this.showDashboard = !this.showDashboard;
   }
 
-  stopRecording() {
-    if (this.mediaRecorder && this.recording) {
-      this.mediaRecorder.stop();
+  toggleRecording() {
+    this.recording = !this.recording;
+    if (this.recording) {
+      this.startRecording();
+    } else {
+      this.stopRecording();
+    }
+  }
+
+  async startRecording() {
+    try {
+      const displayMediaOptions: MediaStreamConstraints = {
+        video: {
+          //@ts-ignore
+          mediaSource: 'screen'
+        }
+      };
+
+      const stream = await (navigator.mediaDevices as any).getDisplayMedia(displayMediaOptions);
+      this.recorder = new RecordRTC(stream, {
+        type: 'video',
+        mimeType: 'video/webm'
+      });
+      this.recorder.startRecording();
+    } catch (error) {
+      console.error('Error starting screen recording:', error);
       this.recording = false;
     }
   }
 
-  toggleDashboard() {
-    this.showDashboard = !this.showDashboard;
+  stopRecording() {
+    this.recorder.stopRecording(() => {
+      const blob = this.recorder.getBlob();
+      invokeSaveAsDialog(blob);
+    });
   }
 }
