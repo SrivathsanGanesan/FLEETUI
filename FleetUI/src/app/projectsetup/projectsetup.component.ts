@@ -128,7 +128,7 @@ export class ProjectsetupComponent {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = `project_2.zip`;
+        a.download = `project.zip`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -137,7 +137,6 @@ export class ProjectsetupComponent {
     } catch (error) {
       console.log('Err ra pans : ', error);
     } */
-
     fetch('http://localhost:3000/auth/logout', {
       credentials: 'include',
     })
