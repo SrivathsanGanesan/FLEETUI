@@ -153,16 +153,19 @@ export class DashboardComponent implements AfterViewInit {
 
   async startRecording() {
     try {
-      this.stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: {
+          displaySurface: 'application' // This may help to limit to the application window
+        },
         audio: false
       });
 
-      this.recorder = new RecordRTC(this.stream, {
+      this.recorder = new RecordRTC(stream, {
         type: 'video',
-        mimeType: 'video/mp4'
+        mimeType: 'video/webm'
       });
       this.recorder.startRecording();
+      this.stream = stream; // Store the stream reference
     } catch (error) {
       console.error('Error starting screen recording:', error);
       this.recording = false;
@@ -173,7 +176,8 @@ export class DashboardComponent implements AfterViewInit {
     if (this.recorder) {
       this.recorder.stopRecording(() => {
         const blob = this.recorder.getBlob();
-        this.invokeSaveAsDialog(blob, 'recording.mp4');
+        const mp4Blob = new Blob([blob], { type: 'video/mp4' });
+        this.invokeSaveAsDialog(mp4Blob, 'recording.mp4');
       });
     }
 

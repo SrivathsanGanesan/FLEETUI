@@ -33,7 +33,7 @@ export class ChartComponent {
     this.chartOptions = {
       series: [activeRobots],
       chart: {
-        width: 250,
+        width: 230,
         height: 250,
         type: "radialBar",
         toolbar: {
@@ -42,12 +42,12 @@ export class ChartComponent {
       },
       plotOptions: {
         radialBar: {
-          offsetY: -15,
+          offsetY: -25,
           startAngle: -200,
           endAngle: 200,
           hollow: {
             margin: 1,
-            size: "70%",
+            size: "60%",
             background: "#fff",
             image: undefined,
             position: "front",
@@ -55,14 +55,14 @@ export class ChartComponent {
           track: {
             background: "#ffe5e5",
             strokeWidth: "70%",
-            margin: -8,
+            margin: -5,
           },
           dataLabels: {
             show: true,
             name: {
-              offsetY: 30,
+              offsetY: 95,
               show: true,
-              color: "#FF7373",
+              color: "#FF3333",
               fontSize: "10px"
             },
             value: {
@@ -71,7 +71,7 @@ export class ChartComponent {
               },
               offsetY: -5,
               color: "#FF3333",
-              fontSize: "30px",
+              fontSize: "25px",
               show: true
             }
           }
@@ -105,7 +105,7 @@ export class ChartComponent {
       stroke: {
         lineCap: "round"
       },
-      labels: [""]
+      labels: ["Number of Active Robots"]
     };
   }
 }
