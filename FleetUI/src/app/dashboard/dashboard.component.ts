@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import html2canvas from 'html2canvas';
-import RecordRTC, { invokeSaveAsDialog } from 'recordrtc';
+import RecordRTC from 'recordrtc';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,18 +9,19 @@ import RecordRTC, { invokeSaveAsDialog } from 'recordrtc';
 })
 export class DashboardComponent implements AfterViewInit {
   ONBtn = false;
-  showDashboard = false; // Property to manage dashboard visibility
+  showDashboard = false;
   selectedFloor = 'Floor 1';
   floors = ['Floor 1'];
-  zoomLevel = 1.1; // Initial zoom level
-  isPanning = false; // Track panning state
-  lastX = 0; // Last x coordinate for panning
-  lastY = 0; // Last y coordinate for panning
-  offsetX = 0; // Current offset x
-  offsetY = 0; // Current offset y
+  zoomLevel = 1.1;
+  isPanning = false;
+  lastX = 0;
+  lastY = 0;
+  offsetX = 0;
+  offsetY = 0;
 
   recording = false;
   private recorder: any;
+  private stream: MediaStream | null = null; // Store the MediaStream here
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
@@ -92,7 +93,7 @@ export class DashboardComponent implements AfterViewInit {
       this.lastY = event.clientY;
       document.addEventListener('mousemove', this.panMove);
       document.addEventListener('mouseup', this.panEnd);
-      document.body.style.cursor = 'grabbing'; // Change cursor to grabbing
+      document.body.style.cursor = 'grabbing';
     }
   }
 
@@ -103,7 +104,6 @@ export class DashboardComponent implements AfterViewInit {
       this.lastX = event.clientX;
       this.lastY = event.clientY;
 
-      // Adjust the offsets by the amount moved, considering the zoom level
       this.offsetX += deltaX / this.zoomLevel;
       this.offsetY += deltaY / this.zoomLevel;
 
@@ -115,9 +115,9 @@ export class DashboardComponent implements AfterViewInit {
     document.removeEventListener('mousemove', this.panMove);
     document.removeEventListener('mouseup', this.panEnd);
     if (this.isPanning) {
-      document.body.style.cursor = 'grab'; // Reset cursor to grab if panning is still enabled
+      document.body.style.cursor = 'grab';
     } else {
-      document.body.style.cursor = 'default'; // Reset cursor to default if panning is disabled
+      document.body.style.cursor = 'default';
     }
   };
 
@@ -129,13 +129,9 @@ export class DashboardComponent implements AfterViewInit {
   captureCanvas() {
     html2canvas(document.body).then(canvas => {
       const dataUrl = canvas.toDataURL('image/png');
-      
-      // Create a link element
       const link = document.createElement('a');
       link.href = dataUrl;
       link.download = 'page_capture.png';
-      
-      // Append the link to the document and trigger the download
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -157,17 +153,14 @@ export class DashboardComponent implements AfterViewInit {
 
   async startRecording() {
     try {
-      const displayMediaOptions: MediaStreamConstraints = {
-        video: {
-          //@ts-ignore
-          mediaSource: 'screen'
-        }
-      };
+      this.stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: false
+      });
 
-      const stream = await (navigator.mediaDevices as any).getDisplayMedia(displayMediaOptions);
-      this.recorder = new RecordRTC(stream, {
+      this.recorder = new RecordRTC(this.stream, {
         type: 'video',
-        mimeType: 'video/webm'
+        mimeType: 'video/mp4'
       });
       this.recorder.startRecording();
     } catch (error) {
@@ -177,9 +170,24 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   stopRecording() {
-    this.recorder.stopRecording(() => {
-      const blob = this.recorder.getBlob();
-      invokeSaveAsDialog(blob);
-    });
+    if (this.recorder) {
+      this.recorder.stopRecording(() => {
+        const blob = this.recorder.getBlob();
+        this.invokeSaveAsDialog(blob, 'recording.mp4');
+      });
+    }
+
+    // Stop all tracks in the stream to stop sharing
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => track.stop());
+      this.stream = null; // Clear the stream reference
+    }
+  }
+
+  invokeSaveAsDialog(blob: Blob, fileName: string) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
   }
 }
