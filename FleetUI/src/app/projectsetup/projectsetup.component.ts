@@ -114,29 +114,29 @@ export class ProjectsetupComponent {
   }
 
   async logout() {
-    /* try {
-      const response = await fetch(
-        'http://localhost:3000/fleet-project-file/download-project/project_2',
-        {
-          credentials: 'include',
-        }
-      );
-      if (!response.ok) alert('try once again');
-      else {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = `project.zip`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      }
-    } catch (error) {
-      console.log('Err ra pans : ', error);
-    } */
+    // try {
+    //   const response = await fetch(
+    //     'http://localhost:3000/fleet-project-file/download-project/project_1',
+    //     {
+    //       credentials: 'include',
+    //     }
+    //   );
+    //   if (!response.ok) alert('try once again');
+    //   else {
+    //     const blob = await response.blob();
+    //     const url = window.URL.createObjectURL(blob);
+    //     const a = document.createElement('a');
+    //     a.style.display = 'none';
+    //     a.href = url;
+    //     a.download = `project_1.zip`;
+    //     document.body.appendChild(a);
+    //     a.click();
+    //     window.URL.revokeObjectURL(url);
+    //     document.body.removeChild(a);
+    //   }
+    // } catch (error) {
+    //   console.log('Err ra pans : ', error);
+    // } 
     fetch('http://localhost:3000/auth/logout', {
       credentials: 'include',
     })

@@ -69,15 +69,18 @@ const isMapConflict = async ({ target }) => {
 };
 
 const restoreRobots = async ({ target }) => {
-  const { robos } = JSON.parse(fs.readFileSync(target + "/roboInfo.json"));
+  const { robos } = JSON.parse(fs.readFileSync(target + "/roboInfo.json",'utf-8'));
   // const doc = await Robo.insertMany(robos);
   for (const robo of robos) {
-    await new Robo(robo).save();
+    console.log(robo);
+    await new Robo({_id:robo._id, roboName:robo.roboName, type : robo.type, ipAdd:robo.ipAdd, macAdd:robo.macAdd,
+      status:robo.status,batteryStatus:robo.batteryStatus,roboTask:robo.roboTask,error:robo.error,location:robo.location,createdAt:robo.createdAt,updatedAt:robo.updatedAt
+    }).save();
   }
 };
 
 const restoreMaps = async ({ target }) => {
-  const { maps } = JSON.parse(fs.readFileSync(target + "/mapInfo.json"));
+  const { maps } = JSON.parse(fs.readFileSync(target + "/mapInfo.json",'utf-8'));
   // const doc = await Robo.insertMany(maps);
   for (const map of maps) {
     await new Map(map).save();
@@ -85,7 +88,7 @@ const restoreMaps = async ({ target }) => {
 };
 
 const restoreProject = async ({ target }) => {
-  const { project } = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
+  const { project } = JSON.parse(fs.readFileSync(target + "/projInfo.json",'utf-8'));
   const doc = new projectModel(project).save();
   return doc;
 };
@@ -210,7 +213,7 @@ const parseProjectFile = async (req, res, next) => {
   } catch (err) {
     console.log("error occ : ", err);
     await clearInsertedData();
-    clearFiles();
+    clearFiles({target});
     if (err.code === 11000) {
       return res.status(500).json({
         error: err.message,
