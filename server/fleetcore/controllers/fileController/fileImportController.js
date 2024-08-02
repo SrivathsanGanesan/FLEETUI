@@ -4,6 +4,9 @@ const path = require("path");
 const { copyImages } = require("./fileExportController");
 const { projectModel } = require("../../models/projectSchema");
 const { Map, Robo } = require("../../../application/models/mapSchema");
+const {
+  authRegisterModel,
+} = require("../../../common/models/authRegisterSchema");
 
 const validateExtractedFile = async ({ target }) => {
   let fileArr = ["/mapInfo.json", "/projInfo.json", "/roboInfo.json"];
@@ -35,17 +38,95 @@ const clearFiles = ({ target }) => {
   });
 };
 
-const restoreRobots = async ({ target }) => {
+const isRoboConflict = async ({ target }) => {
   let { robos } = JSON.parse(fs.readFileSync(target + "/roboInfo.json"));
-  robos.forEach(async (robo) => {
+
+  for (const robo of robos) {
     const doc = await Robo.exists({ roboName: robo.roboName });
-    if (doc) return [true, "robo with this name already exist in your DB"];
+    if (doc)
+      return [
+        true,
+        "robo with this name already exist in your DB,try modifying at concerned project",
+      ];
+  }
+
+  return [false, ""];
+};
+
+const isMapConflict = async ({ target }) => {
+  let { maps } = JSON.parse(fs.readFileSync(target + "/mapInfo.json"));
+
+  for (const map of maps) {
+    const doc = await Map.exists({ mapName: map.mapName });
+    if (doc)
+      return [
+        true,
+        "Map with this name already exist in your DB, try modifying at concerned project",
+      ];
+  }
+
+  return [false, ""];
+};
+
+const restoreRobots = async ({ target }) => {
+  const { robos } = JSON.parse(fs.readFileSync(target + "/roboInfo.json"));
+  // const doc = await Robo.insertMany(robos);
+  for (const robo of robos) {
+    await new Robo(robo).save();
+  }
+};
+
+const restoreMaps = async ({ target }) => {
+  const { maps } = JSON.parse(fs.readFileSync(target + "/mapInfo.json"));
+  // const doc = await Robo.insertMany(maps);
+  for (const map of maps) {
+    await new Map(map).save();
+  }
+};
+
+const restoreProject = async ({ target }) => {
+  const { project } = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
+  const doc = new projectModel(project).save();
+  return doc;
+};
+
+const clearInsertedData = async () => {
+  const target = path.resolve("./proj_assets/projectFile/");
+  const { robos } = JSON.parse(fs.readFileSync(target + "/roboInfo.json"));
+  const { maps } = JSON.parse(fs.readFileSync(target + "/mapInfo.json"));
+  const { project } = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
+  for (const robo of robos) {
+    let doc = await Robo.exists({ _id: robo._id });
+    if (doc) await Robo.deleteOne({ _id: robo._id });
+  }
+  for (const map of maps) {
+    let doc = await Map.exists({ _id: map._id });
+    if (doc) await Map.deleteOne({ _id: map._id });
+  }
+  // let doc = await projectModel.exists({ _id: project._id });
+  // if (doc) await projectModel.deleteOne({ _id: project._id });
+};
+
+const saveToUser = async ({ req, project }) => {
+  let user = await authRegisterModel.findOne({
+    name: req.user,
+    role: req.role,
   });
-  // return res.json(robos);
+  user.projects.push({
+    projectId: project._id,
+    projectName: project.projectName,
+  });
+  const userdet = await user.save();
+  return userdet;
 };
 //..
 
 const extractProjFile = async (req, res, next) => {
+  if (req.role === "User")
+    return res.status(403).json({
+      status: false,
+      msg: "User not permitted to access project creation",
+    });
   try {
     const absPath = path.resolve("./proj_assets/projectFile"); // returns absolute path of the given file or folder! (helps to find a file)
     const destDirName = path.basename(
@@ -65,12 +146,10 @@ const extractProjFile = async (req, res, next) => {
 };
 
 const parseProjectFile = async (req, res, next) => {
-  // const { isRenamed, alterName } = JSON.parse(req.body.projRename);
-  let isRenamed = true;
-  let alterName = "altered_name";
+  const { isRenamed, alterName } = JSON.parse(req.body.projRename);
+  // let isRenamed = true;
+  // let alterName = "altered_name";
   const target = path.resolve("./proj_assets/projectFile/");
-  let arr1 = restoreRobots({ target });
-  if (arr1[0]) return res.status(409).json({ conflicts: true, msg: arr1[1] });
 
   const isDirValidate = validateExtractedFile({ target });
   if (!isDirValidate)
@@ -83,7 +162,7 @@ const parseProjectFile = async (req, res, next) => {
       fs.readFileSync(target + "/projInfo.json")
     );
     const { _id, projectName } = project;
-    const doc = await projectModel.findById("669e27f46d07913165284ad3"); // _id : 669e27f46d07913165284ad3
+    const doc = await projectModel.findById(_id); // _id : 669e27f46d07913165284ad3
     if (doc) {
       clearFiles({ target });
       return res.status(409).json({
@@ -100,6 +179,12 @@ const parseProjectFile = async (req, res, next) => {
         msg: "project with this name already exists, you can't insert into database",
       });
     }
+
+    let res1 = await isRoboConflict({ target });
+    let res2 = await isMapConflict({ target });
+    if (res1[0]) return res.status(409).json({ conflicts: true, msg: res1[1] });
+    if (res2[0]) return res.status(409).json({ conflicts: true, msg: res2[1] });
+
     if (img.length)
       copyImages({
         imgUrlArr: img,
@@ -107,13 +192,30 @@ const parseProjectFile = async (req, res, next) => {
         dest: "dashboardMap",
       });
 
-    // restoreRobots({ target });
-    // restoreMaps({ target });
-    // restoreProject({ target });
-    return res.json("good");
+    await restoreRobots({ target });
+    await restoreMaps({ target });
+    await restoreProject({ target });
+    let userDet = await saveToUser({ req, project });
+    return res.status(200).json({
+      err: null,
+      conflicts: null,
+      user: userDet,
+      msg: "project Inserted!",
+    });
   } catch (err) {
     console.log("error occ : ", err);
-    res.status(500).json({ error: err, msg: "operation failed" });
+    clearInsertedData();
+    if (err.code === 11000) {
+      return res.status(500).json({
+        error: err.message,
+        msg: "Trying to insert duplicate data to DB",
+      });
+    }
+    res.status(500).json({
+      error: err,
+      msg: "Internal server Error ( operation failed )",
+      errMsg: err.message,
+    });
   }
 };
 
