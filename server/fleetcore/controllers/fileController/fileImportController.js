@@ -112,10 +112,7 @@ const saveToUser = async ({ req, project }) => {
     name: req.user,
     role: req.role,
   });
-  if (!user) {
-    clearInsertedData();
-    return res.status(500).json({ err: true, msg: "userNot found!" });
-  }
+  if (!user) return null;
   user.projects.push({
     projectId: project._id,
     projectName: project.projectName,
@@ -200,6 +197,10 @@ const parseProjectFile = async (req, res, next) => {
     await restoreMaps({ target });
     await restoreProject({ target });
     let userDet = await saveToUser({ req, project });
+    if (!userDet) {
+      clearInsertedData();
+      return res.status(500).json({ err: true, msg: "userNot found!" });
+    }
     return res.status(200).json({
       err: null,
       conflicts: null,
@@ -208,7 +209,8 @@ const parseProjectFile = async (req, res, next) => {
     });
   } catch (err) {
     console.log("error occ : ", err);
-    clearInsertedData();
+    await clearInsertedData();
+    clearFiles();
     if (err.code === 11000) {
       return res.status(500).json({
         error: err.message,
@@ -224,5 +226,3 @@ const parseProjectFile = async (req, res, next) => {
 };
 
 module.exports = { extractProjFile, parseProjectFile };
-
-// 409 - conflict
