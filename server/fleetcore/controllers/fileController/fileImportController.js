@@ -108,10 +108,14 @@ const clearInsertedData = async () => {
 };
 
 const saveToUser = async ({ req, project }) => {
-  let user = await authRegisterModel.findOne({
+  let user = await authRegisterModel.exists({
     name: req.user,
     role: req.role,
   });
+  if (!user) {
+    clearInsertedData();
+    return res.status(500).json({ err: true, msg: "userNot found!" });
+  }
   user.projects.push({
     projectId: project._id,
     projectName: project.projectName,

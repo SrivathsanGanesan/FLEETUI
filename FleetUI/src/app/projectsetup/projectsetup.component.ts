@@ -233,8 +233,8 @@ export class ProjectsetupComponent {
       this.errorMessage = '*Please fill in both the fields.';
       return;
     }
-    
-    if (!this.projectname ) {
+
+    if (!this.projectname) {
       this.errorMessage = '*Please fill Project Name.';
       return;
     }
