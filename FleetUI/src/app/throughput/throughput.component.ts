@@ -94,7 +94,8 @@ export class ThroughputComponent {
         style: {
           fontFamily: "Arial, Helvetica, sans-serif",
           fontWeight: "bold",
-          fontSize: "10px"
+          fontSize: "10px",
+          color: "#FF3333"
         }
       },
       labels: seriesData.hourlyDataSeries1.datestime,

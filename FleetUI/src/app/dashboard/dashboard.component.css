@@ -51,15 +51,15 @@ canvas {
 }
 
 .Expand:hover, .Layout:hover, .Save:hover, .Pointer:hover, .Zoom:hover, .ZoomOut:hover, .Capture:hover {
-  filter: drop-shadow(0 2px 2px #ff737365);
+  filter: drop-shadow(0 2px 2px #ff0d0d3c);
 }
 
 .empty {
   background-color: #ff7373;
-  height: 20px;
-  width: 100%;
+  width: 15px;
+  height: 50px;
   border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 .FloorSelector select {
