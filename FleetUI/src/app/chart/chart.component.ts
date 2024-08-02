@@ -60,7 +60,7 @@ export class ChartComponent {
           dataLabels: {
             show: true,
             name: {
-              offsetY: 95,
+              offsetY: 85,
               show: true,
               color: "#FF3333",
               fontSize: "10px"

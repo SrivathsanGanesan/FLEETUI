@@ -31,7 +31,7 @@ canvas {
 .CanvasOptions {
   position: absolute;
   bottom: 5% ;
-  left: 15%; /* Center horizontally */
+  left: 17%; /* Center horizontally */
   transform: translateX(-50%);
   display: flex;
   width: auto;
