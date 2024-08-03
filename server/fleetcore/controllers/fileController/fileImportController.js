@@ -184,7 +184,7 @@ const parseProjectFile = async (req, res, next) => {
       fs.readFileSync(target + "/projInfo.json")
     );
     const { _id, projectName } = project;
-    const doc = await projectModel.findById(_id); // _id : 669e27f46d07913165284ad3
+    const doc = await projectModel.findById(_id);
     if (doc) {
       clearFiles({ target });
       return res.status(409).json({
@@ -239,8 +239,8 @@ const parseProjectFile = async (req, res, next) => {
     }
 
     console.log("error occ : ", err);
-    clearFiles({ target });
     await clearInsertedData({ target });
+    clearFiles({ target });
     if (err.code === 11000) {
       return res.status(500).json({
         error: err.message,

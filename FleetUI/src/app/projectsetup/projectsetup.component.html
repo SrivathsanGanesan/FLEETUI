@@ -76,12 +76,14 @@
               <p></p>
             </ng-template>
             <div class="ButtonSet">
-              <button class="CreateBTN" (click)="createProject()">CREATE</button>
+              <button class="CreateBTN" (click)="createProject()">
+                CREATE
+              </button>
               <button (click)="showProjDiv1()" class="BackBTN">BACK</button>
             </div>
           </div>
         </div>
-        
+
         <div class="ProjDiv2" *ngIf="isProjDiv2Visible">
           <div class="Impfile" (click)="onIconClick()">
             <img
@@ -98,7 +100,7 @@
             />
           </div>
           <div class="ButtonSet">
-            <button class="OpenBTN">OPEN</button>
+            <button class="OpenBTN" (click)="importFile()">OPEN</button>
             <button (click)="showProjDiv2()" class="BackBTN">BACK</button>
           </div>
         </div>

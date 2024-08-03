@@ -28,6 +28,7 @@ export class ProjectsetupComponent {
   selectedFileName: string = 'Import Project File';
   errorMessage: string = '';
   productList: Project[] = [];
+  selectedFile: File | null = null;
   renamedProj: any;
   isRenamed: boolean = false;
 
@@ -136,7 +137,7 @@ export class ProjectsetupComponent {
     //   }
     // } catch (error) {
     //   console.log('Err ra pans : ', error);
-    // } 
+    // }
     fetch('http://localhost:3000/auth/logout', {
       credentials: 'include',
     })
@@ -184,6 +185,23 @@ export class ProjectsetupComponent {
       .catch((err) => console.log(err));
   }
 
+  importFile() {
+    // let fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    // if (fileInput) fileInput.click();
+    if (!this.selectedFile) {
+      alert('No file selected');
+      return;
+    }
+    const projRename = {
+      isRenamed: this.isRenamed, // false
+      alterName: this.renamedProj, // ""
+    };
+    const form = new FormData();
+    form.append('projFile', this.selectedFile);
+    form.append('projRename', JSON.stringify(projRename));
+    this.sendZip(form);
+  }
+
   // project file handling..
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -200,10 +218,7 @@ export class ProjectsetupComponent {
       isRenamed: this.isRenamed, // false
       alterName: this.renamedProj, // ""
     };
-    const form = new FormData();
-    form.append('projFile', file);
-    form.append('projRename', JSON.stringify(projRename));
-    this.sendZip(form);
+    this.selectedFile = file;
   }
 
   onFocus(inputId: string) {
