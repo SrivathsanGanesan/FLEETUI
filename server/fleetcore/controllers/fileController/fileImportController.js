@@ -91,13 +91,11 @@ const restoreProject = async ({ target }) => {
   const { project } = JSON.parse(
     fs.readFileSync(target + "/projInfo.json", "utf-8")
   );
-  console.log(project);
   const doc = await new projectModel(project).save();
   return doc;
 };
 
-const clearInsertedData = async () => {
-  const target = path.resolve("./proj_assets/projectFile/");
+const clearInsertedData = async ({ target }) => {
   const { robos } = JSON.parse(fs.readFileSync(target + "/roboInfo.json"));
   const { maps } = JSON.parse(fs.readFileSync(target + "/mapInfo.json"));
   const { project } = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
@@ -109,8 +107,8 @@ const clearInsertedData = async () => {
     let doc = await Map.exists({ _id: map._id });
     if (doc) await Map.deleteOne({ _id: map._id });
   }
-  // let doc = await projectModel.exists({ _id: project._id });
-  // if (doc) await projectModel.deleteOne({ _id: project._id });
+  let doc = await projectModel.exists({ _id: project._id });
+  if (doc) await projectModel.deleteOne({ _id: project._id });
 };
 
 const saveToUser = async ({ req, project }) => {
@@ -119,12 +117,22 @@ const saveToUser = async ({ req, project }) => {
     role: req.role,
   });
   if (!user) return null;
+  user = await authRegisterModel.findOne({
+    name: req.user,
+    role: req.role,
+  });
   user.projects.push({
     projectId: project._id,
     projectName: project.projectName,
   });
   const userdet = await user.save();
-  return userdet;
+  let updtUser = await authRegisterModel
+    .findOne({
+      name: req.user,
+      role: req.role,
+    })
+    .select("-password");
+  return updtUser;
 };
 //..
 
@@ -152,16 +160,18 @@ const extractProjFile = async (req, res, next) => {
   }
 };
 
+const clearCopiedImg = ({ target, img }) => {
+  const dest = path.resolve("./proj_assets/dashboardMap");
+  for (let image of img) {
+    if (fs.existsSync(dest + `/${image}`)) fs.unlinkSync(dest + `/${image}`);
+  }
+};
+
 const parseProjectFile = async (req, res, next) => {
-  // const { isRenamed, alterName } = JSON.parse(req.body.projRename);
+  const { isRenamed, alterName } = JSON.parse(req.body.projRename);
+  // let isRenamed = false;
+  // let alterName = "altered_name";
   const target = path.resolve("./proj_assets/projectFile/");
-  // await restoreRobots({ target });
-  // await restoreMaps({ target });
-  await restoreProject({ target });
-  return res.send("over");
-  let isRenamed = false;
-  let alterName = "altered_name";
-  // const target = path.resolve("./proj_assets/projectFile/");
 
   const isDirValidate = validateExtractedFile({ target });
   if (!isDirValidate)
@@ -207,9 +217,11 @@ const parseProjectFile = async (req, res, next) => {
     await restoreRobots({ target });
     await restoreMaps({ target });
     await restoreProject({ target });
+    clearFiles({ target });
     let userDet = await saveToUser({ req, project });
     if (!userDet) {
-      clearInsertedData();
+      clearCopiedImg({ target, img });
+      clearInsertedData({ target });
       return res.status(500).json({ err: true, msg: "userNot found!" });
     }
     return res.status(200).json({
@@ -220,7 +232,8 @@ const parseProjectFile = async (req, res, next) => {
     });
   } catch (err) {
     console.log("error occ : ", err);
-    await clearInsertedData();
+    clearCopiedImg({ target, img });
+    await clearInsertedData({ target });
     clearFiles({ target });
     if (err.code === 11000) {
       return res.status(500).json({
