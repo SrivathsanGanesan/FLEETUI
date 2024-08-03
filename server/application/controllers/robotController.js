@@ -5,7 +5,7 @@ const insertRoboId = async ({ roboId, roboName, projectName }) => {
   const proj = await projectModel.findOneAndUpdate(
     { projectName: projectName }, // wanna add robo name.. to the ref
     {
-      $push: { robots: { roboId } },
+      $push: { robots: { roboId, name: roboName } },
     }
   );
   return proj;

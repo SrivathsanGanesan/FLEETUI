@@ -25,7 +25,7 @@ const siteSchema = new Schema(
       required: [true, "site name reqiured"],
       trime: true,
     },
-    maps: [{ type: projMapSchema, default: [] }],
+    maps: { type: [projMapSchema], default: [] },
   },
   { timestamps: true, versionKey: false }
 );

@@ -72,10 +72,8 @@ const restoreRobots = async ({ target }) => {
   const { robos } = JSON.parse(
     fs.readFileSync(target + "/roboInfo.json", "utf-8")
   );
-  // const doc = await Robo.insertMany(robos);
   for (const robo of robos) {
-    console.log(robo);
-    await new Robo({ robo }).save();
+    await new Robo(robo).save();
   }
 };
 
@@ -93,7 +91,8 @@ const restoreProject = async ({ target }) => {
   const { project } = JSON.parse(
     fs.readFileSync(target + "/projInfo.json", "utf-8")
   );
-  const doc = new projectModel(project).save();
+  console.log(project);
+  const doc = await new projectModel(project).save();
   return doc;
 };
 
@@ -154,10 +153,15 @@ const extractProjFile = async (req, res, next) => {
 };
 
 const parseProjectFile = async (req, res, next) => {
-  const { isRenamed, alterName } = JSON.parse(req.body.projRename);
-  // let isRenamed = true;
-  // let alterName = "altered_name";
+  // const { isRenamed, alterName } = JSON.parse(req.body.projRename);
   const target = path.resolve("./proj_assets/projectFile/");
+  // await restoreRobots({ target });
+  // await restoreMaps({ target });
+  await restoreProject({ target });
+  return res.send("over");
+  let isRenamed = false;
+  let alterName = "altered_name";
+  // const target = path.resolve("./proj_assets/projectFile/");
 
   const isDirValidate = validateExtractedFile({ target });
   if (!isDirValidate)

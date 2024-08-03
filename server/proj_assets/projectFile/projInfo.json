@@ -1,0 +1,46 @@
+{
+  "project": {
+    "_id": "66adaea615326e194e01f733",
+    "projectName": "project_7",
+    "sites": [
+      {
+        "siteName": "MATEUNIT1",
+        "_id": "66adaea615326e194e01f734",
+        "maps": [
+          {
+            "mapId": "66adaf61e5a15246e9a4d832",
+            "mapName": "mapOfPeak",
+            "createdAt": "2024-08-03T04:17:37.782Z",
+            "updatedAt": "2024-08-03T04:17:37.782Z"
+          },
+          {
+            "mapId": "66adaf8de5a15246e9a4d839",
+            "mapName": "peakClock",
+            "createdAt": "2024-08-03T04:18:21.626Z",
+            "updatedAt": "2024-08-03T04:18:21.626Z"
+          }
+        ],
+        "createdAt": "2024-08-03T04:14:30.963Z",
+        "updatedAt": "2024-08-03T04:14:30.963Z"
+      }
+    ],
+    "robots": [
+      {
+        "roboId": "66adafade5a15246e9a4d840",
+        "createdAt": "2024-08-03T04:18:53.625Z",
+        "updatedAt": "2024-08-03T04:18:53.625Z"
+      },
+      {
+        "roboId": "66adafbfe5a15246e9a4d846",
+        "createdAt": "2024-08-03T04:19:11.476Z",
+        "updatedAt": "2024-08-03T04:19:11.476Z"
+      }
+    ],
+    "createdAt": "2024-08-03T04:14:30.965Z",
+    "updatedAt": "2024-08-03T04:19:11.476Z"
+  },
+  "img": [
+    "1722658657753-map_1.png",
+    "1722658701606-map_2.png"
+  ]
+}
