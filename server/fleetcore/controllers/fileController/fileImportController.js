@@ -18,7 +18,7 @@ const validateExtractedFile = async ({ target }) => {
   return true;
 };
 
-const renameProjFile = async ({ target, alterName }) => {
+const renameProjFile = async ({ res, target, alterName }) => {
   let doc = await projectModel.exists({ projectName: alterName });
   if (doc)
     return res.status(409).json({
@@ -178,7 +178,7 @@ const parseProjectFile = async (req, res, next) => {
     return res.status(400).json({ isZipValidate: false, msg: "Files missing" });
 
   try {
-    if (isRenamed) await renameProjFile({ target, alterName });
+    if (isRenamed) await renameProjFile({ res, target, alterName });
 
     const { project, img } = JSON.parse(
       fs.readFileSync(target + "/projInfo.json")
@@ -231,10 +231,16 @@ const parseProjectFile = async (req, res, next) => {
       msg: "project Inserted!",
     });
   } catch (err) {
+    if (fs.existsSync(target + "/projInfo.json")) {
+      const { project, img } = JSON.parse(
+        fs.readFileSync(target + "/projInfo.json")
+      );
+      clearCopiedImg({ target, img });
+    }
+
     console.log("error occ : ", err);
-    clearCopiedImg({ target, img });
-    await clearInsertedData({ target });
     clearFiles({ target });
+    await clearInsertedData({ target });
     if (err.code === 11000) {
       return res.status(500).json({
         error: err.message,
