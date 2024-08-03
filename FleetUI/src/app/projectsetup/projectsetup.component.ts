@@ -116,7 +116,7 @@ export class ProjectsetupComponent {
   async logout() {
     // try {
     //   const response = await fetch(
-    //     'http://localhost:3000/fleet-project-file/download-project/project_1',
+    //     'http://localhost:3000/fleet-project-file/download-project/project_7',
     //     {
     //       credentials: 'include',
     //     }
@@ -128,7 +128,7 @@ export class ProjectsetupComponent {
     //     const a = document.createElement('a');
     //     a.style.display = 'none';
     //     a.href = url;
-    //     a.download = `project_1.zip`;
+    //     a.download = `project_7.zip`;
     //     document.body.appendChild(a);
     //     a.click();
     //     window.URL.revokeObjectURL(url);

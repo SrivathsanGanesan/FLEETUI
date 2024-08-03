@@ -73,8 +73,7 @@ const restoreRobots = async ({ target }) => {
   // const doc = await Robo.insertMany(robos);
   for (const robo of robos) {
     console.log(robo);
-    await new Robo({_id:robo._id, roboName:robo.roboName, type : robo.type, ipAdd:robo.ipAdd, macAdd:robo.macAdd,
-      status:robo.status,batteryStatus:robo.batteryStatus,roboTask:robo.roboTask,error:robo.error,location:robo.location,createdAt:robo.createdAt,updatedAt:robo.updatedAt
+    await new Robo({robo
     }).save();
   }
 };
