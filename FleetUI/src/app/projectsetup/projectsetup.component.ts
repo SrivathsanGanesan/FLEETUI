@@ -1,10 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
-import { json } from 'stream/consumers';
-import { log } from 'node:console';
-import { response } from 'express';
+import { Form } from '@angular/forms';
 
 interface Project {
   _id: string;
@@ -29,6 +27,7 @@ export class ProjectsetupComponent {
   errorMessage: string = '';
   productList: Project[] = [];
   selectedFile: File | null = null;
+  form: FormData | null = null;
   renamedProj: any;
   isRenamed: boolean = false;
 
@@ -146,46 +145,54 @@ export class ProjectsetupComponent {
         console.log(data.isCookieDeleted);
         if (data.isCookieDeleted) {
           this.authService.logout();
+          this.projectService.clearProjectData();
           this.router.navigate(['/']);
         }
       })
       .catch((err) => console.log(err));
   }
 
-  async sendZip(form: FormData) {
-    this.router.navigate(['/dashboard']);
-    return;
+  async sendZip() {
     fetch('http://localhost:3000/fleet-project-file/upload-project/', {
       credentials: 'include',
       method: 'POST',
-      body: form,
+      body: this.form,
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data.isExist) {
+        if (data.idExist) {
           alert('Sry, project (with this id) already exist');
-        } else if (!data.isExist && data.nameExist) {
+          this.projectService.clearProjectData();
+        } else if (!data.idExist && data.nameExist) {
           this.renamedProj = prompt(
             'project with this name already exists, would you like to rename?'
           );
           if (this.renamedProj !== null || this.renamedProj !== '') {
             this.isRenamed = true;
-            form.delete('projRename');
-            form.append(
+            this.form?.delete('projRename');
+            this.form?.delete('projFile');
+            this.form?.append(
               'projRename',
               JSON.stringify({
                 isRenamed: this.isRenamed,
                 alterName: this.renamedProj,
               })
             );
-            this.sendZip(form);
+            if (this.selectedFile)
+              this.form?.append('projFile', this.selectedFile);
+            else if (!this.selectedFile) {
+              alert('no file selected, submit again');
+              return;
+            }
+            this.sendZip();
             return;
           }
         } else if (!data.err && !data.conflicts && data.user) {
           console.log(data.user);
           console.log(data.project);
           this.router.navigate(['/dashboard']);
+          return;
         }
       })
       .catch((err) => console.log(err));
@@ -202,10 +209,10 @@ export class ProjectsetupComponent {
       isRenamed: this.isRenamed, // false
       alterName: this.renamedProj, // ""
     };
-    const form = new FormData();
-    form.append('projFile', this.selectedFile);
-    form.append('projRename', JSON.stringify(projRename));
-    this.sendZip(form);
+    this.form = new FormData();
+    this.form.append('projFile', this.selectedFile);
+    this.form.append('projRename', JSON.stringify(projRename));
+    this.sendZip();
   }
 
   // project file handling..
@@ -227,6 +234,8 @@ export class ProjectsetupComponent {
       isRenamed: this.isRenamed, // false
       alterName: this.renamedProj, // ""
     };
+    this.projectService.setProjectCreated(true); //
+    this.projectService.setSelectedProject(file.name); //
     this.selectedFile = file;
   }
 
@@ -297,7 +306,11 @@ export class ProjectsetupComponent {
   }
 
   openProject() {
-    console.log('name : ', this.project._id, this.project.projectName);
+    // console.log('name : ', this.project._id, this.project.projectName);
+    if (this.project._id === '' && this.project.projectName === '') {
+      alert('no project selected');
+      return;
+    }
     fetch(`http://localhost:3000/fleet-project/${this.project._id}`, {
       method: 'GET',
       credentials: 'include',
