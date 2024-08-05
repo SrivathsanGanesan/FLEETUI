@@ -161,17 +161,20 @@ export class ProjectsetupComponent {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data.idExist) {
+        if (data.error) {
+          alert('Try submitting file again');
+          return;
+        } else if (data.idExist) {
           alert('Sry, project (with this id) already exist');
           this.projectService.clearProjectData();
         } else if (!data.idExist && data.nameExist) {
           this.renamedProj = prompt(
             'project with this name already exists, would you like to rename?'
           );
-          if (this.renamedProj !== null || this.renamedProj !== '') {
+          if (this.renamedProj !== null && this.renamedProj !== '') {
             this.isRenamed = true;
-            this.form?.delete('projRename');
             this.form?.delete('projFile');
+            this.form?.delete('projRename');
             this.form?.append(
               'projRename',
               JSON.stringify({
@@ -198,7 +201,7 @@ export class ProjectsetupComponent {
       .catch((err) => console.log(err));
   }
 
-  importFile() {
+  async importFile() {
     // let fileInput = document.getElementById('fileInput') as HTMLInputElement;
     // if (fileInput) fileInput.click();
     if (!this.selectedFile) {
@@ -212,7 +215,7 @@ export class ProjectsetupComponent {
     this.form = new FormData();
     this.form.append('projFile', this.selectedFile);
     this.form.append('projRename', JSON.stringify(projRename));
-    this.sendZip();
+    await this.sendZip();
   }
 
   // project file handling..
@@ -254,13 +257,6 @@ export class ProjectsetupComponent {
   }
 
   createProject() {
-    // if (this.sitename && this.projectname) {
-    //   // Logic to handle project creation
-    //   console.log(this.sitename, this.projectname);
-    //   this.projectService.setProjectCreated(true);
-    //   // Navigate to dashboard
-    //   // this.router.navigate(['/dashboard']);
-    // }
     if (!this.projectname && !this.sitename) {
       this.errorMessage = '*Please fill in both the fields.';
       return;
@@ -316,14 +312,16 @@ export class ProjectsetupComponent {
       credentials: 'include',
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error('Project not found: ' + res.status);
-        }
+        // if (!res.ok) {
+        //   throw new Error('Project not found: ' + res.status);
+        // }
         return res.json();
       })
       .then((data) => {
+        // console.log(this.project._id, this.project.projectName);
+        // return;
         if (!data.exists) {
-          console.error('Project does not exist');
+          alert('Project does not exist on DB, try deleting it from the user');
           return;
         }
         console.log(data.project);

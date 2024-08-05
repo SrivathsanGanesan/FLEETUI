@@ -28,7 +28,11 @@ export class AuthService {
 
   // Checking if the user is logged in
   isLoggedIn(): boolean {
-    return document.cookie !== '';
+    const cookieValue = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('_user='))
+      ?.split('=')[1];
+    return cookieValue !== undefined && cookieValue !== '';
   }
 
   // Getting the user data

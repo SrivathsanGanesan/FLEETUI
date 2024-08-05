@@ -173,10 +173,12 @@ const extractProjFile = async (req, res, next) => {
     await decompress(absPath + `/${req.file.originalname}`, absPath); // absPath + `/${destDirName}` [ alter ]
     if (fs.existsSync(absPath + `/${req.file.originalname}`))
       fs.unlinkSync(absPath + `/${req.file.originalname}`);
-    next();
+    return next();
   } catch (err) {
     console.log("error occ : ", err);
-    res.status(500).json({ error: err, msg: "operation failed" });
+    res
+      .status(500)
+      .json({ error: err, msg: "Internal server Error, operation failed" });
   }
 };
 
@@ -186,7 +188,7 @@ const parseProjectFile = async (req, res, next) => {
   // let alterName = "altered_name";
   const target = path.resolve("./proj_assets/projectFile/");
 
-  const isDirValidate = validateExtractedFile({ target });
+  const isDirValidate = await validateExtractedFile({ target });
   if (!isDirValidate)
     return res.status(400).json({ isZipValidate: false, msg: "Files missing" });
 
@@ -260,12 +262,12 @@ const parseProjectFile = async (req, res, next) => {
     const isDirValidate = await validateExtractedFile({ target });
     if (isDirValidate) await clearInsertedData({ target });
     clearFiles({ target });
-    if (err.code === 11000) {
+    if (err.code === 11000)
       return res.status(500).json({
         error: err.message,
         msg: "Trying to insert duplicate data to DB",
       });
-    }
+
     res.status(500).json({
       error: err,
       msg: "Internal server Error ( operation failed )",
