@@ -209,8 +209,10 @@ export class ProjectsetupComponent {
   // project file handling..
   onFileSelected(event: any) {
     const file = event.target.files[0];
-    console.log(file.type);
-    if (file.type !== 'application/zip' && file.type !== 'application/x-zip-compressed') {
+    if (
+      file.type !== 'application/zip' &&
+      file.type !== 'application/x-zip-compressed'
+    ) {
       alert('file type not valid');
       return;
     }

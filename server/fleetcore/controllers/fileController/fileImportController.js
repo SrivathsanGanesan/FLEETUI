@@ -239,7 +239,6 @@ const parseProjectFile = async (req, res, next) => {
       );
       clearCopiedImg({ target, img });
     }
-
     console.log("error occ : ", err);
     await clearInsertedData({ target });
     clearFiles({ target });
