@@ -127,8 +127,6 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   captureCanvas() {
-    window.scrollTo(0, 0); // Ensure the viewport is at the top
-    const canvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
     html2canvas(document.body).then(canvas => {
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');

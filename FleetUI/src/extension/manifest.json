@@ -1,0 +1,15 @@
+{
+    "manifest_version": 2,
+    "name": "Tab Capture Extension",
+    "version": "1.0",
+    "permissions": [
+      "tabCapture",
+      "activeTab",
+      "storage"
+    ],
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    }
+  }
+  

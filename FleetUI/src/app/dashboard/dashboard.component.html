@@ -12,7 +12,7 @@
       <img src="../../assets/CanvasOptions/ZoomOut.svg" class="ZoomOut" (click)="zoomOut()">
       <img src="../../assets/CanvasOptions/Pan.svg" class="Expand" (click)="togglePan()">
       <img src="../../assets/CanvasOptions/Capture.svg" class="Capture" (click)="captureCanvas()">
-      <img [src]="recording ? '../../assets/CanvasOptions/StopRecord.svg' : '../../assets/CanvasOptions/Record.svg'" class="Save" (click)="toggleRecording()">
+      <img [src]="recording ? '../../assets/CanvasOptions/StopRecord.svg' : '../../assets/CanvasOptions/Record.svg'" class="Save" (click)="toggleRecording()" >
       <img src="../../assets/CanvasOptions/Dashboard.svg" class="Pointer" (click)="toggleDashboard()">
     </div>
     <div class="GraphAndCharts" *ngIf="showDashboard">
