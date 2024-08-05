@@ -153,6 +153,9 @@ export class ProjectsetupComponent {
   }
 
   async sendZip(form: FormData) {
+    this.router.navigate(['/dashboard']);
+    console.log('hey man');
+    return;
     fetch('http://localhost:3000/fleet-project-file/upload-project/', {
       credentials: 'include',
       method: 'POST',
@@ -161,9 +164,9 @@ export class ProjectsetupComponent {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data.idExist) {
+        if (data.isExist) {
           alert('Sry, project (with this id) already exist');
-        } else if (!data.idExist && data.nameExist) {
+        } else if (!data.isExist && data.nameExist) {
           this.renamedProj = prompt(
             'project with this name already exists, would you like to rename?'
           );
@@ -180,6 +183,9 @@ export class ProjectsetupComponent {
             this.sendZip(form);
             return;
           }
+        } else if (!data.err && !data.conflicts && data.user) {
+          console.log(data.user);
+          this.router.navigate(['/dashboard']);
         }
       })
       .catch((err) => console.log(err));
