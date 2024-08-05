@@ -153,6 +153,8 @@ export class ProjectsetupComponent {
   }
 
   async sendZip(form: FormData) {
+    this.router.navigate(['/dashboard']);
+    return;
     fetch('http://localhost:3000/fleet-project-file/upload-project/', {
       credentials: 'include',
       method: 'POST',

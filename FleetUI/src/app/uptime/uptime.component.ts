@@ -1,5 +1,4 @@
 import { Component, ViewChild } from "@angular/core";
-
 import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
@@ -29,14 +28,15 @@ export class UptimeComponent {
     this.chartOptions = {
       series: [76],
       chart: {
-        width: 280,
-        height: 450,
+        width: 280, // Increased width
+        height: 320, // Increased height
         type: "radialBar",
-        offsetY: -5,
-        offsetX: -30
+
       },
       plotOptions: {
         radialBar: {
+          offsetY: -15,
+          offsetX: -20,
           startAngle: -90,
           endAngle: 90,
           hollow: {
@@ -45,25 +45,18 @@ export class UptimeComponent {
           track: {            
             background: "#e7e7e7",
             strokeWidth: "70%",
-            margin: 2, // margin is in pixels
-            // dropShadow: {
-            //   enabled: true,
-            //   top: 3,
-            //   left: 0,
-            //   opacity: 0.31,
-            //   blur: 2
-            // }
+            margin: 1 // margin is in pixels
           },
           dataLabels: {
             name: {
               show: true,
-              offsetY: 35,
-              fontSize: "12px",
+              offsetY: 45, // Adjusted to fit the larger chart size
+              fontSize: "16px", // Increased font size
               color:"#FF3333"
             },
             value: {
-              offsetY: -5,
-              fontSize: "32px",
+              offsetY: 0, // Adjusted to fit the larger chart size
+              fontSize: "40px", // Increased font size
               color:"#FF3333"
             }
           }

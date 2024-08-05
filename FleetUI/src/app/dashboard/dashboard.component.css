@@ -89,7 +89,8 @@ canvas {
 }
 
 .Chart1, .Chart2, .Chart3 {
-  background-color: rgba(255, 255, 255, 0.442);
+  background-color: rgba(182, 45, 45, 0.442);
+  /* background-color: rgba(255, 255, 255, 0.442); */
   height: 240px; /* Adjust height as needed */
   box-shadow: 0 2px 4px #ff7373;
   border-radius: 10px;
@@ -100,10 +101,11 @@ canvas {
 }
 .Chart2_Chart3{
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 .Chart1 {
   width: 440px;
+  padding: 10px 0px 0px 0px;
 }
 
 .Chart2 p {
@@ -127,13 +129,10 @@ canvas {
   align-items: center;
   justify-content: center;
 }
-.Chart1{
-  padding: 10px 0px 0px 0px;
+.Chart2{
+  width: 230px;
 }
-.Chart2 {
-  width: 220px;
-}
-
 .T-Chart {
   width: 600px;
 }
+
