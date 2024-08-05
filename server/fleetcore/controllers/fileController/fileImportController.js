@@ -224,10 +224,12 @@ const parseProjectFile = async (req, res, next) => {
       clearInsertedData({ target });
       return res.status(500).json({ err: true, msg: "userNot found!" });
     }
+    const projDoc = await projectModel.find({ projectName: projectName });
     return res.status(200).json({
       err: null,
       conflicts: null,
       user: userDet,
+      project: projDoc,
       msg: "project Inserted!",
     });
   } catch (err) {
