@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProjectService {
   private projectCreatedKey = 'projectCreated';
@@ -23,5 +23,10 @@ export class ProjectService {
   getSelectedProject() {
     const storedProject = localStorage.getItem(this.selectedProjectKey);
     return storedProject ? JSON.parse(storedProject) : null;
+  }
+
+  clearProjectData() {
+    localStorage.removeItem(this.projectCreatedKey);
+    localStorage.removeItem(this.selectedProjectKey);
   }
 }

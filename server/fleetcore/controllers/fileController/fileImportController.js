@@ -12,9 +12,9 @@ const validateExtractedFile = async ({ target }) => {
   let fileArr = ["/mapInfo.json", "/projInfo.json", "/roboInfo.json"];
   const files = fs.readdirSync(target);
   if (files.length < 3) return false;
-  fileArr.forEach((file) => {
+  for (const file of fileArr) {
     if (!fs.existsSync(target + file)) return false;
-  });
+  }
   return true;
 };
 
@@ -33,9 +33,16 @@ const renameProjFile = async ({ res, target, alterName }) => {
 
 const clearFiles = ({ target }) => {
   const files = fs.readdirSync(target);
-  files.forEach((file) => {
+  for (const file of files) {
     if (fs.existsSync(`${target}/${file}`)) fs.unlinkSync(`${target}/${file}`);
-  });
+  }
+};
+
+const clearCopiedImg = ({ target, img }) => {
+  const dest = path.resolve("./proj_assets/dashboardMap");
+  for (let image of img) {
+    if (fs.existsSync(dest + `/${image}`)) fs.unlinkSync(dest + `/${image}`);
+  }
 };
 
 const isRoboConflict = async ({ target }) => {
@@ -134,6 +141,19 @@ const saveToUser = async ({ req, project }) => {
     .select("-password");
   return updtUser;
 };
+
+const handleError = async (res, target, img, err, msg) => {
+  if (img.length) clearCopiedImg({ target, img });
+  await clearInsertedData({ target });
+  clearFiles({ target });
+  res.status(500).json({ error: err, msg: msg, errMsg: err.message });
+};
+
+const handleConflict = (res, target, img, msg) => {
+  clearCopiedImg({ target, img });
+  clearFiles({ target });
+  res.status(409).json({ conflicts: true, msg: msg });
+};
 //..
 
 const extractProjFile = async (req, res, next) => {
@@ -160,13 +180,6 @@ const extractProjFile = async (req, res, next) => {
   }
 };
 
-const clearCopiedImg = ({ target, img }) => {
-  const dest = path.resolve("./proj_assets/dashboardMap");
-  for (let image of img) {
-    if (fs.existsSync(dest + `/${image}`)) fs.unlinkSync(dest + `/${image}`);
-  }
-};
-
 const parseProjectFile = async (req, res, next) => {
   const { isRenamed, alterName } = JSON.parse(req.body.projRename);
   // let isRenamed = false;
@@ -188,7 +201,7 @@ const parseProjectFile = async (req, res, next) => {
     if (doc) {
       clearFiles({ target });
       return res.status(409).json({
-        isExist: true,
+        idExist: true,
         msg: "Seems project already exists!(project with this Id already exist)",
       });
     }
@@ -196,7 +209,7 @@ const parseProjectFile = async (req, res, next) => {
     if (data) {
       clearFiles({ target });
       return res.status(409).json({
-        isExist: false,
+        idExist: false,
         nameExist: true,
         msg: "project with this name already exists, you can't insert into database",
       });
@@ -204,8 +217,8 @@ const parseProjectFile = async (req, res, next) => {
 
     let res1 = await isRoboConflict({ target });
     let res2 = await isMapConflict({ target });
-    if (res1[0]) return res.status(409).json({ conflicts: true, msg: res1[1] });
-    if (res2[0]) return res.status(409).json({ conflicts: true, msg: res2[1] });
+    if (res1[0]) return handleConflict(res, target, img, res1[1]);
+    if (res2[0]) return handleConflict(res, target, img, res2[1]);
 
     if (img.length)
       copyImages({
@@ -217,14 +230,18 @@ const parseProjectFile = async (req, res, next) => {
     await restoreRobots({ target });
     await restoreMaps({ target });
     await restoreProject({ target });
-    clearFiles({ target });
     let userDet = await saveToUser({ req, project });
-    if (!userDet) {
-      clearCopiedImg({ target, img });
-      clearInsertedData({ target });
-      return res.status(500).json({ err: true, msg: "userNot found!" });
-    }
+    if (!userDet)
+      return handleError(
+        res,
+        target,
+        img,
+        new Error("User not found"),
+        "User not found!"
+      );
+
     const projDoc = await projectModel.find({ projectName: projectName });
+    clearFiles({ target });
     return res.status(200).json({
       err: null,
       conflicts: null,
@@ -240,7 +257,8 @@ const parseProjectFile = async (req, res, next) => {
       clearCopiedImg({ target, img });
     }
     console.log("error occ : ", err);
-    await clearInsertedData({ target });
+    const isDirValidate = await validateExtractedFile({ target });
+    if (isDirValidate) await clearInsertedData({ target });
     clearFiles({ target });
     if (err.code === 11000) {
       return res.status(500).json({
