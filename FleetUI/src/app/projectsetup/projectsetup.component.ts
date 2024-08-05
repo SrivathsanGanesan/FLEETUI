@@ -153,9 +153,6 @@ export class ProjectsetupComponent {
   }
 
   async sendZip(form: FormData) {
-    this.router.navigate(['/dashboard']);
-    console.log('hey man');
-    return;
     fetch('http://localhost:3000/fleet-project-file/upload-project/', {
       credentials: 'include',
       method: 'POST',
@@ -185,6 +182,7 @@ export class ProjectsetupComponent {
           }
         } else if (!data.err && !data.conflicts && data.user) {
           console.log(data.user);
+          console.log(data.project);
           this.router.navigate(['/dashboard']);
         }
       })
@@ -211,7 +209,8 @@ export class ProjectsetupComponent {
   // project file handling..
   onFileSelected(event: any) {
     const file = event.target.files[0];
-    if (file.type !== 'application/zip') {
+    console.log(file.type);
+    if (file.type !== 'application/zip' && file.type !== 'application/x-zip-compressed') {
       alert('file type not valid');
       return;
     }
