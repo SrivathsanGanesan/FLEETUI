@@ -1,6 +1,113 @@
-.mainContent{
+.mainContent {
     position: absolute;
-    top: 50px;
+    top: 30px;
     left: 70px;
-    z-index: -1;
-}
+    width: calc(100% - 70px); /* Adjusts width considering the left margin */
+    padding: 16px;
+    overflow: hidden; /* Prevents scrolling within this section */
+    box-sizing: border-box; /* Ensures padding is included in width calculation */
+    background-color: white; /* Ensures it’s distinct from the sidebar */
+  }
+  .header-section {
+    margin-bottom: 20px; /* Space between header and buttons */
+  }
+  
+  .header-title {
+    font-size: 36px; /* Font size for the header */
+    font-weight: bold;
+    color: #DA2127; /* Red color for the header */
+    margin: 0; /* No margin */
+  }
+  
+  .subheader-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* Space between subheader and table */
+  }
+  
+  .subheader-text {
+    font-size: 15px;
+    color: #333;
+  }
+  
+  .subheader-icon {
+    width: 13px;
+    height: 13px;
+    
+  }
+ 
+  
+  select, input[type="text"] {
+    border: 1px solid #e5e7eb;
+  }
+  
+  button {
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #dc2626;
+  }
+  
+  .grid {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .grid > div {
+    flex: 1;
+    margin: 0 0.5rem;
+    background-color: #fff;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    transition: box-shadow 0.3s;
+  }
+  
+  .grid > div:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 768px) {
+    .grid {
+      flex-direction: column;
+    }
+  
+    .grid > div {
+      margin-bottom: 1rem;
+    }
+  }
+  .card-container {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    gap: 1rem; /* Space between cards */
+  }
+  
+  .card {
+    background-color: #D30000; /* Red background for the card */
+    color: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    min-width: 250px; /* Minimum width for the cards */
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .card:hover {
+    transform: scale(1.05); /* Zoom effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .card-image {
+    width: 100%;
+    height: auto;
+    border-radius: 0.375rem; /* Rounded corners for images */
+  }
+  
