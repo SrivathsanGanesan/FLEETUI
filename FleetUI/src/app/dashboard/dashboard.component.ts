@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import html2canvas from 'html2canvas';
-import RecordRTC from 'recordrtc';
+declare const chrome: any;
 
 @Component({
   selector: 'app-dashboard',
@@ -152,33 +152,34 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async startRecording() {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: {
-          displaySurface: 'application' // This may help to limit to the application window
-        },
-        audio: false
-      });
-
-      this.recorder = new RecordRTC(stream, {
-        type: 'video',
-        mimeType: 'video/webm'
-      });
-      this.recorder.startRecording();
-      this.stream = stream; // Store the stream reference
-    } catch (error) {
-      console.error('Error starting screen recording:', error);
-      this.recording = false;
+    if (chrome && chrome.tabCapture) {
+      try {
+        chrome.tabCapture.capture({ audio: false, video: true }, (stream: MediaStream) => {
+          if (stream) {
+            this.recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            this.recorder.ondataavailable = (event: BlobEvent) => {
+              const blob = new Blob([event.data], { type: 'video/webm' });
+              this.invokeSaveAsDialog(blob, 'recording.webm');
+            };
+            this.recorder.start();
+            this.stream = stream; // Store the stream reference
+          } else {
+            console.error('Failed to capture tab');
+            this.recording = false;
+          }
+        });
+      } catch (error) {
+        console.error('Error starting tab recording:', error);
+        this.recording = false;
+      }
+    } else {
+      console.error('Chrome tab capture API is not available.');
     }
   }
 
   stopRecording() {
     if (this.recorder) {
-      this.recorder.stopRecording(() => {
-        const blob = this.recorder.getBlob();
-        const mp4Blob = new Blob([blob], { type: 'video/mp4' });
-        this.invokeSaveAsDialog(mp4Blob, 'recording.mp4');
-      });
+      this.recorder.stop();
     }
 
     // Stop all tracks in the stream to stop sharing

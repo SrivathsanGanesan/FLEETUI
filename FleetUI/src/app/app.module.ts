@@ -17,6 +17,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartComponent } from './chart/chart.component';
 import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
+import { NgxCaptureModule } from 'ngx-capture';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ThroughputComponent } from './throughput/throughput.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    NgxCaptureModule,
     FormsModule   
   ],
   providers: [
