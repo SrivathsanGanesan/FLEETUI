@@ -10,6 +10,18 @@ import { Component, OnInit } from '@angular/core';
 })
  
 export class Userlogscomponent {
+togglePopup() {
+throw new Error('Method not implemented.');
+}
+exportAsPDF() {
+throw new Error('Method not implemented.');
+}
+exportAsExcel() {
+throw new Error('Method not implemented.');
+}
+exportAsCSV() {
+throw new Error('Method not implemented.');
+}
 
 onTabChange(arg0: string) {
 throw new Error('Method not implemented.');
@@ -21,8 +33,6 @@ throw new Error('Method not implemented.');
   isTransitioning: boolean = false;
   activeButton: string = 'task'; // Default active button
   activeHeader: string = 'Task reports'; // Default header
- 
-
  
 
   isSameMonth(itemDate: Date, arg1: Date) {

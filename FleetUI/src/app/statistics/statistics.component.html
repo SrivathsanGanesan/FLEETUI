@@ -1,6 +1,87 @@
-<div class="container">
-    <app-sidenavbar></app-sidenavbar>
-    <div class="mainContent">
-      <p>Statistics works</p>
+<div class="flex h-screen">
+  <app-sidenavbar class="fixed top-0 left-0 h-full"></app-sidenavbar>
+  <div class="flex-grow ml-64 p-8 h-screen overflow-hidden">
+    <div class="mainContent flex flex-col h-full justify-center items-center">
+      <!-- Header section -->
+      <div class="header-section">
+        <h1 class="header-title">Robot Details</h1>
+        <div class="subheader-container">
+          <div class="subheader-text">Create and edit task reports</div>
+          <img src="../../assets/icons/i-icon.svg" alt="Icon" class="subheader-icon">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between mt-4">
+        <div class="flex items-center">
+          <select class="p-2 border rounded">
+            <option>All</option>
+            <!-- Add more options as needed -->
+          </select>
+          <div class="relative ml-4">
+            <input
+              type="text"
+              placeholder="Search For Something..."
+              class="p-2 border rounded w-64"
+            />
+            <button class="absolute right-2 top-1/2 transform -translate-y-1/2">
+              <svg
+                class="w-6 h-6 text-white bg-red-500 rounded-full p-1"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 2a8 8 0 105.293 14.293l4.029 4.03a1 1 0 001.415-1.414l-4.03-4.03A8 8 0 0010 2zM8 9a2 2 0 114 0 2 2 0 01-4 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div>
+          <button class="bg-red-500 text-white px-4 py-2 rounded mr-2">+ Add Robots</button>
+          <button class="bg-gray-200 text-black px-4 py-2 rounded mr-2">Edit</button>
+          <button class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+        </div>
+      </div>
+
+      <div class="card-container mt-8">
+        <div class="card">
+          <h2 class="text-xl font-bold">Forklift AGV</h2>
+          <img src="path/to/image1.jpg" alt="Forklift AGV" class="card-image">
+          <p>2000 kg <br /> Rated capacity</p>
+          <p>2.7m/s (5.21mph) <br /> Maximum speed</p>
+          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
+        </div>
+        <div class="card">
+          <h2 class="text-xl font-bold">Forklift AGV</h2>
+          <img src="path/to/image2.jpg" alt="Forklift AGV" class="card-image">
+          <p>4000 kg <br /> Rated capacity</p>
+          <p>2.0m/s (4.47mph) <br /> Maximum speed</p>
+          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
+        </div>
+        <div class="card">
+          <h2 class="text-xl font-bold">Autonomous tank</h2>
+          <img src="path/to/image3.jpg" alt="Autonomous tank" class="card-image">
+          <p>4000 kg <br /> Rated capacity</p>
+          <p>2.0m/s (4.47mph) <br /> Maximum speed</p>
+          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
+        </div>
+        <div class="card">
+          <h2 class="text-xl font-bold">Autonomous tank</h2>
+          <img src="path/to/image4.jpg" alt="Autonomous tank" class="card-image">
+          <p>4000 kg <br /> Rated capacity</p>
+          <p>2.0m/s (4.47mph) <br /> Maximum speed</p>
+          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
+        </div>
+        <div class="card">
+          <h2 class="text-xl font-bold">Autonomous tank</h2>
+          <img src="path/to/image5.jpg" alt="Autonomous tank" class="card-image">
+          <p>4000 kg <br /> Rated capacity</p>
+          <p>2.0m/s (4.47mph) <br /> Maximum speed</p>
+          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
+        </div>
+      </div>
     </div>
   </div>
+</div>

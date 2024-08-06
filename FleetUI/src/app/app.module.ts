@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -19,6 +19,7 @@ import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
 import { NgxCaptureModule } from 'ngx-capture';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,14 +35,21 @@ import { NgxCaptureModule } from 'ngx-capture';
     UptimeComponent,
     ThroughputComponent
 
+
   ],
   imports: [
     NgApexchartsModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+<<<<<<< Updated upstream
     NgxCaptureModule,
     FormsModule   
+=======
+    FormsModule,
+    BrowserModule
+
+>>>>>>> Stashed changes
   ],
   providers: [
     // provideClientHydration()
