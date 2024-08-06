@@ -15,11 +15,10 @@ export class AuthService {
 
   // Simulating user login
   login(user: { name: string; role: string }) {
-    // if (this.isCookieEmpty()) {
-    this.cookieService.set('_user', JSON.stringify(user));
-    // document.cookie = `_user=${JSON.stringify(user)};`;
-    this.user = user;
-    // }
+    if (this.isCookieEmpty()) {
+      this.cookieService.set('_user', JSON.stringify(user));
+      this.user = user;
+    }
   }
 
   // Simulating user logout
@@ -33,10 +32,6 @@ export class AuthService {
 
   // Checking if the user is logged in
   isLoggedIn(): boolean {
-    // const cookieValue = document.cookie
-    //   .split('; ')
-    //   .find((row) => row.startsWith('_user='))
-    //   ?.split('=')[1];
     const cookieValue = this.cookieService.get('_user');
     return cookieValue !== undefined && cookieValue !== '';
   }
@@ -44,10 +39,6 @@ export class AuthService {
   // Getting the user data
   getUser(): { name: string; role: string } | null {
     if (!this.user && !this.isCookieEmpty()) {
-      // const cookieValue = document.cookie
-      //   .split('; ')
-      //   .find((row) => row.startsWith('_user='))
-      //   ?.split('=')[1];
       const cookieValue = this.cookieService.get('_user');
       if (cookieValue) {
         this.user = JSON.parse(cookieValue);
