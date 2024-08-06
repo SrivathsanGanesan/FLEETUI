@@ -2,7 +2,6 @@ import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
-import { Form } from '@angular/forms';
 
 interface Project {
   _id: string;
@@ -315,7 +314,7 @@ export class ProjectsetupComponent {
         console.log(data.project);
         this.projectService.setSelectedProject(data.project);
         this.projectService.setProjectCreated(true);
-        this.router.navigate(['/dashboard']);
+        // this.router.navigate(['/dashboard']);
       })
       .catch((err) => console.log(err));
   }

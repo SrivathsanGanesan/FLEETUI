@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,11 @@ export class LoginComponent {
   focusedContainer: HTMLElement | null = null;
   errorMessage: string | null = null;
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private cookieService: CookieService
+  ) {
     if (document.cookie === '') localStorage.clear(); // not advisable..
   }
 
@@ -91,6 +96,7 @@ export class LoginComponent {
         // throw new Error('Login failed');
       })
       .then((data) => {
+        console.log(data);
         if (data.user) {
           this.authService.login({
             name: data.user.name,
