@@ -40,10 +40,12 @@ canvas {
   justify-content: center;
   cursor: pointer;
   padding: 0 0px;
-  box-shadow: 0 2px 4px #ff7373;
+  box-shadow: 0 3px 6px #ff7373;
 }
 .CanvasOptions:hover{
   background-color: rgb(255, 255, 255);
+  box-shadow: 0 3px 6px #ff7373;
+
 }
 .Expand, .Layout, .Save, .Pointer, .Zoom, .ZoomOut, .Capture {
   padding: 0px 10px;
@@ -91,8 +93,8 @@ canvas {
 .Chart1, .Chart2, .Chart3 {  
   background-color: rgba(255, 255, 255, 0.442);
   height: 240px; /* Adjust height as needed */
-  box-shadow: 0 2px 4px #ff7373;
-  border-radius: 10px;
+  box-shadow: 0 3px 6px #ff7373;
+  border-radius: 20px;
 }
 
 .Chart1:hover, .Chart2:hover, .Chart3:hover {
