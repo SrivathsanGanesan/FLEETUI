@@ -188,13 +188,11 @@ const parseProjectFile = async (req, res, next) => {
   // let alterName = "altered_name";
   const target = path.resolve("./proj_assets/projectFile/");
   let responseSent = false;
-  // console.log(responseSent);
 
   const sendResponse = (status, body) => {
     if (!responseSent) {
-      responseSent = true;
       res.status(status).json(body);
-      // res.end();
+      responseSent = true;
     }
   };
 
