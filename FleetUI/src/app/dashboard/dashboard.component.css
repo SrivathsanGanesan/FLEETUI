@@ -40,13 +40,18 @@ canvas {
   justify-content: center;
   cursor: pointer;
   padding: 0 0px;
+  border: 0.5px solid #ff7373;
   box-shadow: 0 3px 6px #ff7373;
+  /* box-shadow: 0 3px 6px #ff7373; */
 }
 .CanvasOptions:hover{
   background-color: rgb(255, 255, 255);
   box-shadow: 0 3px 6px #ff7373;
-
 }
+#element-id-to-capture {
+  box-shadow: 0 3px 6px #ff7373;
+}
+
 .Expand, .Layout, .Save, .Pointer, .Zoom, .ZoomOut, .Capture {
   padding: 0px 10px;
   cursor: pointer;
@@ -95,6 +100,7 @@ canvas {
   height: 240px; /* Adjust height as needed */
   box-shadow: 0 3px 6px #ff7373;
   border-radius: 20px;
+  border: 0.5px solid #ff7373;
 }
 
 .Chart1:hover, .Chart2:hover, .Chart3:hover {
