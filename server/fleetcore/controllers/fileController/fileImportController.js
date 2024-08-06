@@ -173,10 +173,10 @@ const extractProjFile = async (req, res, next) => {
     await decompress(absPath + `/${req.file.originalname}`, absPath); // absPath + `/${destDirName}` [ alter ]
     if (fs.existsSync(absPath + `/${req.file.originalname}`))
       fs.unlinkSync(absPath + `/${req.file.originalname}`);
-    return next();
+    next();
   } catch (err) {
     console.log("error occ : ", err);
-    res
+    return res
       .status(500)
       .json({ error: err, msg: "Internal server Error, operation failed" });
   }
@@ -187,10 +187,20 @@ const parseProjectFile = async (req, res, next) => {
   // let isRenamed = false;
   // let alterName = "altered_name";
   const target = path.resolve("./proj_assets/projectFile/");
+  let responseSent = false;
+  // console.log(responseSent);
+
+  const sendResponse = (status, body) => {
+    if (!responseSent) {
+      responseSent = true;
+      res.status(status).json(body);
+      // res.end();
+    }
+  };
 
   const isDirValidate = await validateExtractedFile({ target });
   if (!isDirValidate)
-    return res.status(400).json({ isZipValidate: false, msg: "Files missing" });
+    return sendResponse(400, { isZipValidate: false, msg: "Files missing" });
 
   try {
     if (isRenamed) await renameProjFile({ res, target, alterName });
@@ -202,19 +212,21 @@ const parseProjectFile = async (req, res, next) => {
     const doc = await projectModel.findById(_id);
     if (doc) {
       clearFiles({ target });
-      return res.status(409).json({
+      sendResponse(409, {
         idExist: true,
         msg: "Seems project already exists!(project with this Id already exist)",
       });
+      return;
     }
     const data = await projectModel.exists({ projectName: projectName });
     if (data) {
       clearFiles({ target });
-      return res.status(409).json({
+      sendResponse(409, {
         idExist: false,
         nameExist: true,
         msg: "project with this name already exists, you can't insert into database",
       });
+      return;
     }
 
     let res1 = await isRoboConflict({ target });
@@ -244,7 +256,7 @@ const parseProjectFile = async (req, res, next) => {
 
     const projDoc = await projectModel.find({ projectName: projectName });
     clearFiles({ target });
-    return res.status(200).json({
+    return sendResponse(200, {
       err: null,
       conflicts: null,
       user: userDet,
@@ -263,12 +275,12 @@ const parseProjectFile = async (req, res, next) => {
     if (isDirValidate) await clearInsertedData({ target });
     clearFiles({ target });
     if (err.code === 11000)
-      return res.status(500).json({
+      return sendResponse(500, {
         error: err.message,
         msg: "Trying to insert duplicate data to DB",
       });
 
-    res.status(500).json({
+    sendResponse(500, {
       error: err,
       msg: "Internal server Error ( operation failed )",
       errMsg: err.message,

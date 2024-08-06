@@ -153,57 +153,37 @@ export class ProjectsetupComponent {
   }
 
   async sendZip() {
-    fetch('http://localhost:3000/fleet-project-file/upload-project/', {
-      credentials: 'include',
-      method: 'POST',
-      body: this.form,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data.error) {
-          alert('Try submitting file again');
-          return;
-        } else if (data.idExist) {
-          alert('Sry, project (with this id) already exist');
-          this.projectService.clearProjectData();
-        } else if (!data.idExist && data.nameExist) {
-          this.renamedProj = prompt(
-            'project with this name already exists, would you like to rename?'
-          );
-          if (this.renamedProj !== null && this.renamedProj !== '') {
-            this.isRenamed = true;
-            this.form?.delete('projFile');
-            this.form?.delete('projRename');
-            this.form?.append(
-              'projRename',
-              JSON.stringify({
-                isRenamed: this.isRenamed,
-                alterName: this.renamedProj,
-              })
-            );
-            if (this.selectedFile)
-              this.form?.append('projFile', this.selectedFile);
-            else if (!this.selectedFile) {
-              alert('no file selected, submit again');
-              return;
-            }
-            this.sendZip();
-            return;
-          }
-        } else if (!data.err && !data.conflicts && data.user) {
-          console.log(data.user);
-          console.log(data.project);
-          this.router.navigate(['/dashboard']);
-          return;
+    try {
+      let response = await fetch(
+        'http://localhost:3000/fleet-project-file/upload-project/',
+        {
+          credentials: 'include',
+          method: 'POST',
+          body: this.form,
         }
-      })
-      .catch((err) => console.log(err));
+      );
+      let data = await response.json(); // console.log(data)
+      if (data.error) {
+        alert('Try submitting file again');
+        return;
+      } else if (data.idExist) {
+        alert('Sry, project (with this id) already exist');
+        this.projectService.clearProjectData();
+      } else if (!data.idExist && data.nameExist) {
+        return true;
+      } else if (!data.err && !data.conflicts && data.user) {
+        console.log(data.user);
+        console.log(data.project);
+        this.router.navigate(['/dashboard']);
+      }
+      return false;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
   async importFile() {
-    // let fileInput = document.getElementById('fileInput') as HTMLInputElement;
-    // if (fileInput) fileInput.click();
     if (!this.selectedFile) {
       alert('No file selected');
       return;
@@ -215,7 +195,14 @@ export class ProjectsetupComponent {
     this.form = new FormData();
     this.form.append('projFile', this.selectedFile);
     this.form.append('projRename', JSON.stringify(projRename));
-    await this.sendZip();
+    const isConflict = await this.sendZip();
+    if (isConflict) {
+      this.renamedProj = prompt(
+        'project with this name already exists, would you like to rename?'
+      );
+      if (this.renamedProj === null && this.renamedProj === '') return;
+      this.isRenamed = true;
+    }
   }
 
   // project file handling..
