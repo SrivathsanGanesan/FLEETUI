@@ -42,14 +42,9 @@ import { NgxCaptureModule } from 'ngx-capture';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-<<<<<<< Updated upstream
-    NgxCaptureModule,
-    FormsModule   
-=======
     FormsModule,
     BrowserModule
 
->>>>>>> Stashed changes
   ],
   providers: [
     // provideClientHydration()

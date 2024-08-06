@@ -48,8 +48,8 @@ export class ProjectsetupComponent {
         else throw new Error("Error : data doesn't attained " + res.status);
       })
       .then((data) => {
+        console.log(data.user + ' : ' + data.msg);
         this.productList = data.projects;
-        // console.log(this.productList);
       })
       .catch((err) => console.log(err));
   }
@@ -162,7 +162,8 @@ export class ProjectsetupComponent {
           body: this.form,
         }
       );
-      let data = await response.json(); // console.log(data)
+      let data = await response.json();
+      if (data.conflicts) alert(data.msg);
       if (data.error) {
         alert('Try submitting file again');
         return;
