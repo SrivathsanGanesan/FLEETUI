@@ -1,0 +1,48 @@
+{
+  "robos": [
+    {
+      "_id": "66adafade5a15246e9a4d840",
+      "roboName": "roboCop",
+      "type": "AGV",
+      "ipAdd": "192.188.0.1",
+      "macAdd": "9C:35:5B:56:4C:D7",
+      "status": "idle",
+      "location": [
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "batteryStatus": 80,
+      "roboTask": [
+        "pick screws",
+        "drop down"
+      ],
+      "error": [],
+      "createdAt": "2024-08-03T04:18:53.623Z",
+      "updatedAt": "2024-08-03T04:18:53.623Z"
+    },
+    {
+      "_id": "66adafbfe5a15246e9a4d846",
+      "roboName": "terminator",
+      "type": "AGV",
+      "ipAdd": "192.188.0.1",
+      "macAdd": "9C:35:5B:56:4C:D7",
+      "status": "idle",
+      "location": [
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "batteryStatus": 80,
+      "roboTask": [
+        "pick screws",
+        "drop down"
+      ],
+      "error": [],
+      "createdAt": "2024-08-03T04:19:11.473Z",
+      "updatedAt": "2024-08-03T04:19:11.473Z"
+    }
+  ]
+}

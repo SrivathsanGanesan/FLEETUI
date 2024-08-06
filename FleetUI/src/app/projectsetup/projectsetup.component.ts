@@ -2,6 +2,7 @@ import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
+import { CookieService } from 'ngx-cookie-service';
 
 interface Project {
   _id: string;
@@ -33,7 +34,8 @@ export class ProjectsetupComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
