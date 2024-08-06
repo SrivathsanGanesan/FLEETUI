@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
+// import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root',
@@ -7,7 +7,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class AuthService {
   private user: { name: string; role: string } | null = null;
 
-  constructor(private cookieService: CookieService) {}
+  // constructor(private cookieService: CookieService) {}
 
   private isCookieEmpty(): boolean {
     return document.cookie === '';

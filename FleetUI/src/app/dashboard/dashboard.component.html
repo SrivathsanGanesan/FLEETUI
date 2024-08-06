@@ -17,10 +17,18 @@
     </div>
     <div class="GraphAndCharts" *ngIf="showDashboard">
       <div class="Chart2_Chart3">
-        <div class="Chart2">
-          <p>Uptime</p>
-          <div class="U-Chart">
-            <app-uptime></app-uptime>
+        <div class="Chart2-container">
+          <div class="Chart2" [ngClass]="{ 'blurred': ONBtn }">
+            <p>Uptime</p>
+            <div class="U-Chart">
+              <app-uptime></app-uptime>
+            </div>
+          </div>
+          <!-- Blur layer and loading indicator for Chart2 -->
+          <div class="chart2-blur-layer" *ngIf="ONBtn">
+            <div class="spinner-container">
+              <div class="spinner"></div>
+            </div>
           </div>
         </div>
         <div class="Chart3">

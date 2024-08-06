@@ -314,7 +314,7 @@ export class ProjectsetupComponent {
         console.log(data.project);
         this.projectService.setSelectedProject(data.project);
         this.projectService.setProjectCreated(true);
-        // this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']);
       })
       .catch((err) => console.log(err));
   }

@@ -19,6 +19,9 @@ export class DashboardComponent implements AfterViewInit {
   offsetX = 0;
   offsetY = 0;
 
+  showChart2 = true; // Controls blur effect for Chart2
+  showChart3 = true;
+
   recording = false;
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
