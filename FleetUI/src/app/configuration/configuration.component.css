@@ -267,7 +267,15 @@ tr:nth-child(even) {
   gap: 0.3rem; /* Space between date inputs */
   align-items: center;
 }
-
+.ASR-button{
+  padding: 10px 20px;
+  background-color: #ff3333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px 0px;
+}
 .date-input {
   padding: 0.5rem;
   border-radius: 0.5rem;

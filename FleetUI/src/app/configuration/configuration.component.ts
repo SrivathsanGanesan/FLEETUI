@@ -81,6 +81,7 @@ export class ConfigurationComponent {
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
+  
     showTable(table: string) {
       this.currentTable = table;
     }

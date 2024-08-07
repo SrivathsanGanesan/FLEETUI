@@ -87,6 +87,7 @@
       <div class="table-container">
         <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
           <div class="overflow-y-auto max-h-[32rem] w-full">
+            
             <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'task'">
               <thead class="bg-gray-50">
                 <tr>
@@ -122,7 +123,7 @@
                 </tr>
               </tbody>
             </table>
-            <button *ngIf="currentTable === 'robot'">Add Selected Robots</button>
+            <button class="ASR-button" *ngIf="currentTable === 'robot'">Add Selected Robots</button>
             <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'robot'">
               <thead class="bg-gray-50">
                 <tr>
@@ -139,31 +140,42 @@
                 </tr>
               </tbody>
             </table>
-
-            
             <div *ngIf="currentTab === 'fleet'">
-              <!-- Fleet-specific content here -->
-              <ul class="tab-menu" *ngIf="currentTab === 'fleet'">
+              <ul class="tab-menu">
                 <li [class.active]="fleetTab === 'general'" (click)="setFleetTab('general')">General</li>
                 <li [class.active]="fleetTab === 'plannar'" (click)="setFleetTab('plannar')">Plannar</li>
                 <li [class.active]="fleetTab === 'task'" (click)="setFleetTab('task')">Task</li>
                 <li [class.active]="fleetTab === 'battery'" (click)="setFleetTab('battery')">Battery</li>
                 <li [class.active]="fleetTab === 'communication'" (click)="setFleetTab('communication')">Communication</li>
               </ul>
-
+            
               <div *ngIf="fleetTab === 'general'">
                 <h2>Edit the Fleet Parameters</h2>
+                <!-- Add content for the General tab -->
               </div>
-              <!-- Add content for other fleet tabs as needed -->
-            </div>
-        
-          </div>
-        </div>
-      </div>
+              <div *ngIf="fleetTab === 'plannar'">
+                <h2>Plannar Settings</h2>
+                <!-- Add content for the Plannar tab -->
+              </div>
+              <div *ngIf="fleetTab === 'task'">
+                <h2>Task Management</h2>
+                <!-- Add content for the Task tab -->
+              </div>
+              <div *ngIf="fleetTab === 'battery'">
+                <h2>Battery Information</h2>
+                <!-- Add content for the Battery tab -->
+              </div>
+              <div *ngIf="fleetTab === 'communication'">
+                <h2>Communication Settings</h2>
+                <!-- Add content for the Communication tab -->
+              </div>
+            </div>       
+            
+            
 
       <!-- Export -->
       <div class="export-button-container">
-        <button class="export-button" (click)="showPopup()">Export</button>
+        <button class="export-button" (click)="showPopup()">Create</button>
         <div *ngIf="isPopupVisible" class="export-popup">
           <div class="popup-content">
             <div class="close-icon-container">
