@@ -102,7 +102,10 @@
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <img src="../../assets/ConfigurationOptions/Edit.svg" alt="Edit" (click)="editItem(item)" class="icon"/>
+                    <img src="../../assets/ConfigurationOptions/Delete.svg" alt="Delete" (click)="deleteItem(item)" class="icon"/>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -119,7 +122,10 @@
                 <tr *ngFor="let item of robotData">
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <img src="../../assets/ConfigurationOptions/Edit.svg" alt="Edit" (click)="editItem(item)" class="icon"/>
+                    <img src="../../assets/ConfigurationOptions/Delete.svg" alt="Delete" (click)="deleteItem(item)" class="icon"/>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -136,7 +142,10 @@
                 <tr *ngFor="let item of robotData">
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <img src="../../assets/ConfigurationOptions/Add.svg" alt="Add" (click)="addItem(item)" class="icon"/>
+                    <img src="../../assets/ConfigurationOptions/Block.svg" alt="Block" (click)="blockItem(item)" class="icon"/>
+                  </td>
                 </tr>
               </tbody>
             </table>
