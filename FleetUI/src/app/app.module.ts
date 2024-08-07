@@ -44,7 +44,6 @@ import { NgxCaptureModule } from 'ngx-capture';
     BrowserAnimationsModule,
     FormsModule,
     BrowserModule
-
   ],
   providers: [
     // provideClientHydration()
