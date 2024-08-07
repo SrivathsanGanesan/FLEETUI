@@ -141,54 +141,204 @@ canvas {
 }
 .T-Chart {
   width: 600px;
-}.Chart2-container {
+}
+.Chart2-container,.Chart3-container,.Chart1-container {
   position: relative;
 }
 
-.chart2-blur-layer {
+.chart3-blur-layer,.chart2-blur-layer,.chart1-blur-layer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
-  backdrop-filter: blur(10px); /* Apply blur effect */
+  background: rgba(255, 255, 255, 0.192); /* Semi-transparent white background */
+  /* backdrop-filter: blur(5px);  */
   display: flex;
+  border-radius: 20px;
   align-items: center;
   justify-content: center;
   z-index: 10; /* Ensure it is on top of Chart2 */
-}
-
-.spinner-container {
-  width: 150px;
-  height: 150px;
+}/* From Uiverse.io by alexruix */ 
+.loader {
+  width: 48px;
+  height: 48px;
+  margin: auto;
   position: relative;
-  margin: 30px auto;
-  overflow: hidden;
 }
 
-.spinner {
+.loader:before {
+  content: '';
+  width: 48px;
+  height: 5px;
+  background: #f0808050;
   position: absolute;
-  width: calc(100% - 9.9px);
-  height: calc(100% - 9.9px);
-  border: 5px solid transparent;
+  top: 60px;
+  left: 0;
   border-radius: 50%;
-  border-top-color: #ff7373; /* Adjust the color to match your theme */
-  animation: spin 1.5s cubic-bezier(0.17, 0.49, 0.96, 0.79) infinite; /* Adjust the duration to your preference */
+  animation: shadow324 0.5s linear infinite;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
+.loader:after {
+  content: '';
+  width: 100%;
+  height: 100%;
+  background: #ff7373;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  animation: jump7456 0.5s linear infinite;
+}
+
+@keyframes jump7456 {
+  15% {
+    border-bottom-right-radius: 3px;
   }
-  to {
+
+  25% {
+    transform: translateY(9px) rotate(22.5deg);
+  }
+
+  50% {
+    transform: translateY(18px) scale(1, .9) rotate(45deg);
+    border-bottom-right-radius: 40px;
+  }
+
+  75% {
+    transform: translateY(9px) rotate(67.5deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(90deg);
+  }
+}
+
+@keyframes shadow324 {
+
+  0%,
+    100% {
+    transform: scale(1, 1);
+  }
+
+  50% {
+    transform: scale(1.2, 1);
+  }
+}
+.blurred {
+  filter: blur(5px);
+}
+/* From Uiverse.io by Ali-Tahmazi99 */ 
+.loading {
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+
+.d1 , .d2 {
+  border: 5px solid #ff7373;
+  border-radius: 50px;
+}
+
+.loading .d1 {
+  width: 55px;
+  height: 55px;
+  position: absolute;
+  border-left-color: transparent;
+  animation: load161 1s linear infinite;
+}
+
+.loading .d2 {
+  width: 40px;
+  height: 40px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  margin: 7.5px;
+  animation: load2812 1.5s linear infinite;
+}
+
+@keyframes load161 {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
     transform: rotate(360deg);
   }
 }
 
-/* Apply blur to Chart2 */
-.blurred {
-  filter: blur(5px);
+@keyframes load2812 {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+/* From Uiverse.io by vikramsinghnegi */ 
+.loader-spanne-20 {
+  position: relative;
+  width: 100px;
+  height: 30px;
+  padding: 0;
+}
+.loader-spanne-20 > span {
+  position: absolute;
+  right: 0;
+  width: 3px;
+  height: 30px;
+  background-color: #ff7373;
+  display: block;
+  border-radius: 3px;
+  transform-origin: 50% 100%;
+  animation: move 2.8s linear infinite;
+}
+.loader-spanne-20 > span:nth-child(1) {
+  animation-delay: -0.4s;
+}
+.loader-spanne-20 > span:nth-child(2) {
+  animation-delay: -0.8s;
+}
+.loader-spanne-20 > span:nth-child(3) {
+  animation-delay: -1.2s;
+}
+.loader-spanne-20 > span:nth-child(4) {
+  animation-delay: -1.6s;
+}
+.loader-spanne-20 > span:nth-child(5) {
+  animation-delay: -2s;
+}
+.loader-spanne-20 > span:nth-child(6) {
+  animation-delay: -2.4s;
+}
+.loader-spanne-20 > span:nth-child(7) {
+  animation-delay: -2.8s;
+}
+@keyframes move {
+  0% {
+    opacity: 0;
+    transform: translateX(0px) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(-40px) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50px) rotate(22deg);
+  }
+  85% {
+    opacity: 1;
+    transform: translateX(-85px) rotate(60deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100px) rotate(65deg);
+  }
 }
 
 
