@@ -40,8 +40,6 @@ export class ProjectsetupComponent {
 
   ngOnInit(): void {
     // hook
-    let user = this.authService.getUser()?.role;
-    console.log(user);
 
     fetch('http://localhost:3000/fleet-project/projects/project-list', {
       method: 'GET',
