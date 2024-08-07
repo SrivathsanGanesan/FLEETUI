@@ -155,9 +155,7 @@
     margin: auto 0 20px 10px; /* Center vertically and add bottom margin */
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 90%;
-    padding: 10px 0;
+    padding: 10px 0 10px 10px;
     cursor: pointer;
     transition: margin 0.5s ease;
   }
