@@ -16,9 +16,9 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
-    // private cookieService: CookieService
-  ) {
+    private authService: AuthService
+  ) // private cookieService: CookieService
+  {
     if (document.cookie === '') localStorage.clear(); // not advisable..
   }
 
@@ -96,7 +96,7 @@ export class LoginComponent {
         // throw new Error('Login failed');
       })
       .then((data) => {
-        console.log(data);
+        console.log(data.user);
         if (data.user) {
           this.authService.login({
             name: data.user.name,

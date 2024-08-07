@@ -5,7 +5,7 @@ import {
   RouterStateSnapshot,
   Router,
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, endWith } from 'rxjs';
 import { ProjectService } from '../services/project.service';
 
 @Injectable({
@@ -23,8 +23,10 @@ export class ProjectGuard implements CanActivate {
   }
 
   checkProjectExist(url: string): boolean {
-    if (this.projectService.isProjectCreated()) {
-      if (url === '/project_setup') {
+    const isCreated = this.projectService.isProjectCreated();
+
+    if (isCreated) {
+      if (url !== '/dashboard') {
         this.router.navigate(['/dashboard']);
         return false;
       }
@@ -32,8 +34,9 @@ export class ProjectGuard implements CanActivate {
     } else {
       if (url !== '/project_setup') {
         this.router.navigate(['/project_setup']);
+        return false;
       }
-      return false;
+      return true;
     }
   }
 }

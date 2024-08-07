@@ -6,8 +6,8 @@ import path from 'path';
   providedIn: 'root',
 })
 export class ProjectService {
-  private projectCreatedKey = 'projectCreated';
-  private selectedProjectKey = 'selectedProject';
+  private projectCreatedKey = 'is-project-setted';
+  private selectedProjectKey = 'project-data';
 
   constructor(private cookieService: CookieService) {}
 

@@ -40,6 +40,8 @@ export class ProjectsetupComponent {
 
   ngOnInit(): void {
     // hook
+    let pDet = this.cookieService.get('project-data');
+    console.log(pDet);
 
     fetch('http://localhost:3000/fleet-project/projects/project-list', {
       method: 'GET',

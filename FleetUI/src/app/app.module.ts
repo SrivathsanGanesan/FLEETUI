@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  provideClientHydration,
+} from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,13 +22,12 @@ import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
 import { NgxCaptureModule } from 'ngx-capture';
 
-
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SidenavbarComponent,
-    DashboardComponent,    
+    DashboardComponent,
     ProjectsetupComponent,
     ConfigurationComponent,
     UsermanagementComponent,
@@ -33,9 +35,7 @@ import { NgxCaptureModule } from 'ngx-capture';
     StatisticsComponent,
     ChartComponent,
     UptimeComponent,
-    ThroughputComponent
-
-
+    ThroughputComponent,
   ],
   imports: [
     NgApexchartsModule,
@@ -43,13 +43,13 @@ import { NgxCaptureModule } from 'ngx-capture';
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
-    BrowserModule
+    BrowserModule,
   ],
   providers: [
     // provideClientHydration()
-  
-    provideAnimationsAsync()
+
+    provideAnimationsAsync(),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
