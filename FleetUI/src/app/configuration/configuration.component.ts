@@ -1,19 +1,20 @@
+import { Component, ElementRef, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ExportService } from '../export.service';
-import { Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.css']
 })
-export class ConfigurationComponent {
+export class ConfigurationComponent implements AfterViewInit {
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false }) uploadedCanvas!: ElementRef<HTMLCanvasElement>;
 
   fleetTab: string = 'general';
   filteredData: any;
   originalData: any;
   searchQuery: string = '';
-  isPopupVisible: boolean | undefined;
+  isPopupVisible: boolean = false;
   isTransitioning: boolean = false;
   activeButton: string = 'Environment'; // Default active button
   activeHeader: string = 'Environment'; // Default header
@@ -22,13 +23,13 @@ export class ConfigurationComponent {
   imageWidth = 0; // Initialize imageWidth with a default value
   imageUploaded: boolean = false; // To track if an image is uploaded
   imageFile: File | null = null; // Store the uploaded image file
+  isImageOpened: boolean = false; // Track if the image is opened in the canvas
   currentTable = 'Environment';
   currentTab: any;
 
-  // Your task data
   EnvData = [
-    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5,2024. 14:00:17' },
-    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 6,2024. 14:00:17' }
+    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
+    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 6, 2024. 14:00:17' }
   ];
   robotData = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
@@ -39,41 +40,58 @@ export class ConfigurationComponent {
     { column1: '192.168.XX.XX', column2: ' ' }
   ];
 
-  constructor(private exportService: ExportService) {}
+  constructor(private exportService: ExportService, private cdRef: ChangeDetectorRef) {}
 
-  triggerFileInput(fileInput: HTMLInputElement) {
-    fileInput.click();
+  ngAfterViewInit() {
+    // Any initialization that requires the view to be fully loaded can go here.
+  }
+
+  triggerFileInput() {
+    this.fileInput.nativeElement.click();
   }
 
   onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement | null;
+    const input = event.target as HTMLInputElement;
     if (input && input.files && input.files.length > 0) {
       this.imageFile = input.files[0];
       this.chosenImageName = this.imageFile.name;
     }
   }
 
-  openImage(): void {
-    if (this.imageFile && this.imageHeight && this.imageWidth) {
+  openImage() {
+    if (this.imageFile) {
+      this.isImageOpened = true;
+      this.cdRef.detectChanges(); // Ensure view updates before drawing the image
+  
+      const canvas = this.uploadedCanvas?.nativeElement;
+      if (!canvas) {
+        console.error('Canvas element not found');
+        return;
+      }
+  
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        console.error('Failed to get canvas context');
+        return;
+      }
+  
+      // Set fixed canvas dimensions
+      canvas.width = 1400; // Fixed width
+      canvas.height = 600; // Fixed height
+  
       const reader = new FileReader();
-      reader.onload = (event: ProgressEvent<FileReader>) => {
+      reader.onload = (e: any) => {
         const img = new Image();
-        img.src = event.target?.result as string;
         img.onload = () => {
-          const canvas = this.uploadedCanvas.nativeElement;
-          canvas.width = this.imageWidth;
-          canvas.height = this.imageHeight;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, this.imageWidth, this.imageHeight);
-            this.imageUploaded = true;
-            this.closePopup();
-          }
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(this.imageFile);
     }
   }
+  
 
   setActiveButton(button: string) {
     this.activeButton = button;
@@ -82,7 +100,7 @@ export class ConfigurationComponent {
       this.activeButton = button;
       this.activeHeader = this.getHeader(button);
       this.isTransitioning = false;
-
+ 
       // Set the current table and tab based on the button
       if (button === 'fleet') {
         this.currentTable = 'fleet';
@@ -93,19 +111,15 @@ export class ConfigurationComponent {
       }
     }, 200); // 200ms matches the CSS transition duration
   }
-
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
-
   showTable(table: string) {
     this.currentTable = table;
   }
-
   setCurrentTable(table: string) {
     this.currentTable = table;
   }
-
   getCurrentTableData() {
     switch (this.currentTable) {
       case 'Environment':
@@ -116,25 +130,7 @@ export class ConfigurationComponent {
         return [];
     }
   }
-
-  exportData(format: string) {
-    const data = this.getCurrentTableData();
-    switch (format) {
-      case 'csv':
-        this.exportService.exportToCSV(data, `${this.currentTable}DataExport`);
-        break;
-      case 'excel':
-        this.exportService.exportToExcel(data, `${this.currentTable}DataExport`);
-        break;
-      case 'pdf':
-        this.exportService.exportToPDF(data, `${this.currentTable}DataExport`);
-        break;
-      default:
-        console.error('Invalid export format');
-    }
-    this.closePopup(); // Close the popup after export
-  }
-
+ 
   getHeader(button: string): string {
     switch (button) {
       case 'Environment':
@@ -154,23 +150,27 @@ export class ConfigurationComponent {
 
   closePopup() {
     this.isPopupVisible = false;
+    this.isImageOpened = false;
+    this.chosenImageName = '';
+    this.imageHeight = 0;
+    this.imageWidth = 0;
   }
 
   onSearch(event: Event): void {
-    const inputElement = event.target as HTMLInputElement | null;
+    const inputElement = event.target as HTMLInputElement;
     const query = inputElement?.value || '';
     // Implement your search logic here
   }
 
   onDateFilterChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement | null;
+    const selectElement = event.target as HTMLSelectElement;
     const filter = selectElement?.value || '';
     // Implement your date filter logic here
   }
 
   onDateChange(event: Event): void {
-    const startDateElement = document.getElementById('start-date') as HTMLInputElement | null;
-    const endDateElement = document.getElementById('end-date') as HTMLInputElement | null;
+    const startDateElement = document.getElementById('start-date') as HTMLInputElement;
+    const endDateElement = document.getElementById('end-date') as HTMLInputElement;
 
     const startDate = startDateElement?.value || '';
     const endDate = endDateElement?.value || '';
@@ -180,25 +180,17 @@ export class ConfigurationComponent {
 
   editItem(item: any) {
     console.log('Edit item:', item);
-    // Implement your edit logic here
   }
 
   deleteItem(item: any) {
     console.log('Delete item:', item);
-    // Implement your delete logic here
   }
 
   addItem(item: any) {
     console.log('Add item:', item);
-    // Implement your add logic here
   }
 
   blockItem(item: any) {
     console.log('Block item:', item);
-    // Implement your block logic here
   }
-}
-
-function onDateFilterChange(event: Event | undefined, Event: { new(type: string, eventInitDict?: EventInit): Event; prototype: Event; readonly NONE: 0; readonly CAPTURING_PHASE: 1; readonly AT_TARGET: 2; readonly BUBBLING_PHASE: 3; }) {
-  throw new Error('Function not implemented.');
 }
