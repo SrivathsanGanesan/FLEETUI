@@ -115,23 +115,24 @@ tr:nth-child(even) {
 }
 
 /* Export Button Container */
-.export-button-container {
+.Create-button-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 50px;
+  right: 50px;
 }
 
-.export-button {
-  padding: 10px 20px;
+.Create-button {
+  padding: 10px;
   background-color: #ff3333;
   color: #fff;
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
   cursor: pointer;
 }
-
-/* Export Popup Styles */
-.export-popup {
+.Create-popup {
   display: flex;
   position: fixed;
   top: 0;
@@ -139,52 +140,39 @@ tr:nth-child(even) {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4.1px);
+  backdrop-filter: blur(5px);
   justify-content: center;
   align-items: center;
 }
 
 .popup-content {
-  font-size: 36px;
-  font-weight: bold;
-  color: #DA2127;
+  position: relative; /* Add this */
+  color: #FF7373;
   padding: 40px;
-  background: #fff;
-  border-radius: 8px;
+  width: 300px;
+  background: #ffffffaa;
+  border-radius: 20px;
   text-align: center;
   max-width: 500px;
   margin: auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
-.popup-content button {
-  display: block;
-  margin: 10px auto;
-  padding: 10px 20px;
+.Image{
+  font-size: 20px;
+  filter: drop-shadow(0px 2px 4px rgba(239, 227, 227, 0.471));
+}
+.image-upload{
+  filter: drop-shadow(0px 2px 4px rgba(239, 227, 227, 0.471));
+}
+.close-button {
+  position: absolute; /* Add this */
+  top: 10px; /* Adjust as needed */
+  right: 10px; 
+  font-size: 20px;
+  border-radius: 20px;
   border: none;
-  border-radius: 4px;
-  background-color: #dedede;
-  color: #212121;
-  cursor: pointer;
-  width: 200px; /* Set a fixed width for all buttons */
-  text-align: center;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
-.popup-content button:hover {
-  background-color: #ff3333;
-  color: #fdfdfd;
-}
-
-.close-popup {
-  background-color: #ff6666;
-}
-
-.close-popup:hover {
-  background-color: #ff3333;
-}
-
-/* Main container for the search bar and filters */
 /* Main container for search bar and date filters */
 .search-date-container {
   position: absolute;
@@ -306,4 +294,7 @@ tr:nth-child(even) {
 .tab-menu li.active {
   border-bottom: 2px solid #ff7373;
   color: #ff7373;
+}
+.icon{
+  padding-right:10px ;
 }

@@ -139,7 +139,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of robotData">
+                <tr *ngFor="let item of selectedrobotData">
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
@@ -179,26 +179,27 @@
                 <!-- Add content for the Communication tab -->
               </div>
             </div>       
+            <div class="Create-button-container">
+              <button class="Create-button" *ngIf="activeButton === 'task'" (click)="showPopup()">Create</button>
+              <div *ngIf="isPopupVisible" class="Create-popup">
+                <div class="popup-content">
+                  <button class="close-button" (click)="closePopup()">&times;</button>
+                  <div class="image-proportion">
+                    <img src="../../assets/ConfigurationOptions/Map.svg" class="image-upload" (click)="triggerFileInput(fileInput)">
+                    <h2 class="Image">{{ chosenImageName || 'Choose Image' }}</h2>
+                    <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;">
+                    <div *ngIf="chosenImageName">
+                      <label for="imageHeight">Enter Height: </label>
+                      <input id="imageHeight" type="number" class="" [(ngModel)]="imageHeight">
+                      <label for="imageWidth">Enter Width: </label>
+                      <input id="imageWidth" type="number" [(ngModel)]="imageWidth">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             
             
-
-      <!-- Export -->
-      <div class="export-button-container">
-        <button class="export-button" (click)="showPopup()">Create</button>
-        <div *ngIf="isPopupVisible" class="export-popup">
-          <div class="popup-content">
-            <div class="close-icon-container">
-              <button class="close-icon" (click)="closePopup()">&times;</button>
-            </div>
-            <h3>Select Format</h3>
-            <div class="button-container">
-              <button (click)="exportData('csv')">Export as CSV</button>
-              <button (click)="exportData('excel')">Export as Excel</button>
-              <button (click)="exportData('pdf')">Export as PDF</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>

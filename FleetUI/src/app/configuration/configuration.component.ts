@@ -15,22 +15,39 @@ export class ConfigurationComponent {
   isTransitioning: boolean = false;
   activeButton: string = 'task'; // Default active button
   activeHeader: string = 'Environment'; // Default header
+  chosenImageName = ''; // Initialize chosenImageName with an empty string
+  imageHeight = 0; // Initialize imageHeight with a default value
+  imageWidth = 0; // Initialize imageWidth with a default value
   
   currentTable = 'task';
   currentTab: any;
 
   // Your task data
   EnvData = [
-    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3' },
-    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3' }
+    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5,2024. 14:00:17' },
+    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 6,2024. 14:00:17' }
   ];
 
   // Your robot data
   robotData = [
-    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3' },
-    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3' }
+    { column1: 'Robot 1', column2: '192.168.XX.XX' },
+    { column1: 'Robot 2', column2: '192.168.XX.XX' }
   ];
+  selectedrobotData = [
+    { column1: '192.168.XX.XX', column2: ' ' },
+    { column1: '192.168.XX.XX', column2: ' ' }
+  ];
+  triggerFileInput(fileInput: HTMLInputElement) {
+    fileInput.click();
+  }
 
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.chosenImageName = file.name;
+    }
+  }
   constructor(private exportService: ExportService) {}
 
   setActiveButton(button: string) {
