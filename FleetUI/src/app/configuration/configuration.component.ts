@@ -50,6 +50,11 @@ export class ConfigurationComponent implements AfterViewInit {
     this.fileInput.nativeElement.click();
   }
 
+  calibrateCoordinates() {
+    // Add your calibration logic here
+    console.log("Calibrate Coordinates button clicked!");
+  }
+
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input && input.files && input.files.length > 0) {
@@ -92,6 +97,40 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
   
+  isCalibrationLayerVisible = false;
+
+  showCalibrationLayer() {
+    this.isCalibrationLayerVisible = true;
+  }
+
+  hideCalibrationLayer() {
+    this.isCalibrationLayerVisible = false;
+  }
+
+  // Add methods for each button's functionality
+  addNode() {
+    console.log("Add Node clicked");
+  }
+
+  connectivity() {
+    console.log("Connectivity clicked");
+  }
+
+  zones() {
+    console.log("Zones clicked");
+  }
+
+  addAssets() {
+    console.log("Add Assets clicked");
+  }
+
+  addRobots() {
+    console.log("Add Robots clicked");
+  }
+
+  removeRobots() {
+    console.log("Remove Robots clicked");
+  }
 
   setActiveButton(button: string) {
     this.activeButton = button;

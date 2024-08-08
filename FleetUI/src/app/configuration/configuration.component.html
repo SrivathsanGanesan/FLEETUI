@@ -186,18 +186,42 @@
                     </div>
                     <input type="file" accept="image/*" #fileInput (change)="onFileSelected($event)" style="display: none;">
                     <div *ngIf="chosenImageName" class="Details">
-                      <label for="imageHeight">Enter Height: </label>
+                      <label for="Mapname">Map Name :</label>
+                      <input id="Mapname" type="string" class="Mapname" >
+                      <br>
+                      <label for="Sitename">Site Name : </label>
+                      <input id="Sitename" type="string" class="Sitename" >
+                      <br>
+                      <label for="imageHeight">Enter Height : </label>
                       <input id="imageHeight" type="number" class="imageHeight" [(ngModel)]="imageHeight">
                       <br>
-                      <label for="imageWidth">Enter Width: </label>
+                      <label for="imageWidth">Enter Width : </label>
                       <input id="imageWidth" type="number" class="imageWidth" [(ngModel)]="imageWidth">
                       <br>
-                      <button class="Open-button" (click)="openImage()">Open</button>
+                      <button class="Open-button" (click)="openImage()">Open Environment</button>
                     </div>
                   </div>
-                  <div *ngIf="isImageOpened">
+                  <div class="Map-settings" *ngIf="isImageOpened">
                     <canvas #uploadedCanvas></canvas>
+                  
+                    <!-- Calibrate Coordinates Button -->
+                    <button class="calibrate-button" *ngIf="!isCalibrationLayerVisible" (click)="showCalibrationLayer()">
+                      Calibrate Coordinates
+                    </button>
+                  
+                    <!-- Calibration Options Layer -->
+                    <div class="calibration-layer" *ngIf="isCalibrationLayerVisible">
+                      <button (click)="addNode()">Add Node</button>
+                      <button (click)="connectivity()">Connectivity</button>
+                      <button (click)="zones()">Zones</button>
+                      <button (click)="addAssets()">Add Assets</button>
+                      <button (click)="addRobots()">Add Robots</button>
+                      <button (click)="removeRobots()">Remove Robots</button>
+                      <button (click)="hideCalibrationLayer()">Back</button>
+                    </div>
                   </div>
+                  
+                  
                 </div>
               </div>
             </div>
