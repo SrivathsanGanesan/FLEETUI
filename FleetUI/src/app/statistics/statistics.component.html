@@ -39,49 +39,55 @@
           </div>
         </div>
         <div>
-          <button class="bg-red-500 text-white px-4 py-2 rounded mr-2">+ Add Robots</button>
+          <button (click)="togglePopup()" class="bg-red-500 text-white px-4 py-2 rounded mr-2">+ Add Robots</button>
           <button class="bg-gray-200 text-black px-4 py-2 rounded mr-2">Edit</button>
           <button class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
         </div>
       </div>
 
       <div class="card-container mt-8">
-        <div class="card">
-          <h2 class="text-xl font-bold">Forklift AGV</h2>
-          <img src="path/to/image1.jpg" alt="Forklift AGV" class="card-image">
-          <p>2000 kg <br /> Rated capacity</p>
-          <p>2.7m/s (5.21mph) <br /> Maximum speed</p>
-          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
-        </div>
-        <div class="card">
-          <h2 class="text-xl font-bold">Forklift AGV</h2>
-          <img src="path/to/image2.jpg" alt="Forklift AGV" class="card-image">
-          <p>4000 kg <br /> Rated capacity</p>
-          <p>2.0m/s (4.47mph) <br /> Maximum speed</p>
-          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
-        </div>
-        <div class="card">
-          <h2 class="text-xl font-bold">Autonomous tank</h2>
-          <img src="path/to/image3.jpg" alt="Autonomous tank" class="card-image">
-          <p>4000 kg <br /> Rated capacity</p>
-          <p>2.0m/s (4.47mph) <br /> Maximum speed</p>
-          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
-        </div>
-        <div class="card">
-          <h2 class="text-xl font-bold">Autonomous tank</h2>
-          <img src="path/to/image4.jpg" alt="Autonomous tank" class="card-image">
-          <p>4000 kg <br /> Rated capacity</p>
-          <p>2.0m/s (4.47mph) <br /> Maximum speed</p>
-          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
-        </div>
-        <div class="card">
-          <h2 class="text-xl font-bold">Autonomous tank</h2>
-          <img src="path/to/image5.jpg" alt="Autonomous tank" class="card-image">
-          <p>4000 kg <br /> Rated capacity</p>
-          <p>2.0m/s (4.47mph) <br /> Maximum speed</p>
-          <p>+- 10mm/+-0.5’ <br /> Stacking accuracy</p>
+        <div *ngFor="let robot of robots; let i = index; trackBy: trackByIndex"
+             [ngClass]="{ 'highlighted-card': i === centerIndex, 'blurred-card': i !== centerIndex }"
+             class="card">
+          <h2 class="text-xl font-bold">{{ robot.name }}</h2>
+          <img [src]="robot.imageUrl" alt="{{ robot.name }}" class="card-image">
+          <p>{{ robot.capacity }} <br /> Rated capacity</p>
+          <p>{{ robot.speed }} <br /> Maximum speed</p>
+          <p>{{ robot.accuracy }} <br /> Stacking accuracy</p>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div *ngIf="showPopup" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
+  <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+    <h2 class="text-2xl font-bold mb-4">Add Robot</h2>
+    <form (ngSubmit)="addRobot()">
+      <div class="mb-4">
+        <label for="name" class="block text-gray-700">Name</label>
+        <input type="text" id="name" [(ngModel)]="newRobot.name" name="name" class="w-full p-2 border rounded">
+      </div>
+      <div class="mb-4">
+        <label for="imageUrl" class="block text-gray-700">Image URL</label>
+        <input type="text" id="imageUrl" [(ngModel)]="newRobot.imageUrl" name="imageUrl" class="w-full p-2 border rounded">
+      </div>
+      <div class="mb-4">
+        <label for="capacity" class="block text-gray-700">Rated capacity</label>
+        <input type="text" id="capacity" [(ngModel)]="newRobot.capacity" name="capacity" class="w-full p-2 border rounded">
+      </div>
+      <div class="mb-4">
+        <label for="speed" class="block text-gray-700">Maximum speed</label>
+        <input type="text" id="speed" [(ngModel)]="newRobot.speed" name="speed" class="w-full p-2 border rounded">
+      </div>
+      <div class="mb-4">
+        <label for="accuracy" class="block text-gray-700">Stacking accuracy</label>
+        <input type="text" id="accuracy" [(ngModel)]="newRobot.accuracy" name="accuracy" class="w-full p-2 border rounded">
+      </div>
+      <div class="flex justify-end">
+        <button type="button" (click)="togglePopup()" class="bg-gray-300 text-black px-4 py-2 rounded mr-2">Cancel</button>
+        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Add</button>
+      </div>
+    </form>
   </div>
 </div>
