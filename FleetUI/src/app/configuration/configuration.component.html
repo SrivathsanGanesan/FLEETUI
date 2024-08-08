@@ -202,15 +202,14 @@
                     </div>
                   </div>
                   <div class="Map-settings" *ngIf="isImageOpened">
-                    <canvas #uploadedCanvas></canvas>
-                  
+                    <canvas #uploadedCanvas></canvas>                  
                     <!-- Calibrate Coordinates Button -->
                     <button class="calibrate-button" *ngIf="!isCalibrationLayerVisible" (click)="showCalibrationLayer()">
-                      Calibrate Coordinates
+                      Options
                     </button>
-                  
                     <!-- Calibration Options Layer -->
                     <div class="calibration-layer" *ngIf="isCalibrationLayerVisible">
+                      <button (click)="calibrateCoordinates()">Calibrate Coordinates</button>
                       <button (click)="addNode()">Add Node</button>
                       <button (click)="connectivity()">Connectivity</button>
                       <button (click)="zones()">Zones</button>
@@ -219,8 +218,7 @@
                       <button (click)="removeRobots()">Remove Robots</button>
                       <button (click)="hideCalibrationLayer()">Back</button>
                     </div>
-                  </div>
-                  
+                  </div>                  
                   
                 </div>
               </div>
