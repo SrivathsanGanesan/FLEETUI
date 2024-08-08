@@ -71,12 +71,11 @@ const mapInsert = async (req, res) => {
 };
 
 const mapGet = async (req, res) => {
+  const isExists = await Map.exists({ mapName: req.params.mapName });
   try {
-    const data = await Map.find({ mapId: req.params.mapId });
-    if (data == null) {
-      res.send(404).json({ msg: "Map not found!" });
-    }
-    res.json(data);
+    if (!isExists) return res.status(404).json({ msg: "Map not found!" });
+    let map = await Map.findOne({ mapName: req.params.mapName });
+    return res.status(200).json({ map: map, isExists: true, msg: "Map sent!" });
   } catch (err) {
     console.log("err occ : ", err);
     res.status(500).json({ error: err, msg: "request not attained!" });
