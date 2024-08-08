@@ -119,18 +119,28 @@ tr:nth-child(even) {
   position: fixed;
   bottom: 50px;
   right: 50px;
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
 }
 
 .Create-button {
   padding: 10px;
   background-color: #ff3333;
-  color: #fff;
-  font-size: 20px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
+  color: #fff;  
+  font-size: 15px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
+}
+.Open-button {
+  padding: 10px;
+  background-color: #ff3333;
+  color: #fff;  
+  font-size: 20px;
+  border: none;
+  border-radius: 20px;
+  margin-top: 10px;
 }
 .Create-popup {
   display: flex;
@@ -157,6 +167,18 @@ tr:nth-child(even) {
   margin: auto;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+.imageHeight,.imageWidth{
+  background-color: transparent;
+  font-size: 15px;
+  border: none;
+  border-bottom: 2px solid #FF7373;
+  border-radius: 5px;
+  width: 60px; 
+  padding: 2px; 
+  margin-bottom: 10px;
+  text-align: center;
+}
+
 .Image{
   font-size: 20px;
   filter: drop-shadow(0px 2px 4px rgba(239, 227, 227, 0.471));

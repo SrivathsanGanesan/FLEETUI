@@ -1,5 +1,5 @@
 import { ExportService } from '../export.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-configuration',
@@ -7,19 +7,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./configuration.component.css']
 })
 export class ConfigurationComponent {
+  @ViewChild('uploadedCanvas', { static: false }) uploadedCanvas!: ElementRef<HTMLCanvasElement>;
+
   fleetTab: string = 'general';
   filteredData: any;
   originalData: any;
   searchQuery: string = '';
   isPopupVisible: boolean | undefined;
   isTransitioning: boolean = false;
-  activeButton: string = 'task'; // Default active button
+  activeButton: string = 'Environment'; // Default active button
   activeHeader: string = 'Environment'; // Default header
   chosenImageName = ''; // Initialize chosenImageName with an empty string
   imageHeight = 0; // Initialize imageHeight with a default value
   imageWidth = 0; // Initialize imageWidth with a default value
-  
-  currentTable = 'task';
+  imageUploaded: boolean = false; // To track if an image is uploaded
+  imageFile: File | null = null; // Store the uploaded image file
+  currentTable = 'Environment';
   currentTab: any;
 
   // Your task data
@@ -27,8 +30,6 @@ export class ConfigurationComponent {
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5,2024. 14:00:17' },
     { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 6,2024. 14:00:17' }
   ];
-
-  // Your robot data
   robotData = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' }
@@ -37,18 +38,42 @@ export class ConfigurationComponent {
     { column1: '192.168.XX.XX', column2: ' ' },
     { column1: '192.168.XX.XX', column2: ' ' }
   ];
+
+  constructor(private exportService: ExportService) {}
+
   triggerFileInput(fileInput: HTMLInputElement) {
     fileInput.click();
   }
 
   onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      this.chosenImageName = file.name;
+    const input = event.target as HTMLInputElement | null;
+    if (input && input.files && input.files.length > 0) {
+      this.imageFile = input.files[0];
+      this.chosenImageName = this.imageFile.name;
     }
   }
-  constructor(private exportService: ExportService) {}
+
+  openImage(): void {
+    if (this.imageFile && this.imageHeight && this.imageWidth) {
+      const reader = new FileReader();
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = this.uploadedCanvas.nativeElement;
+          canvas.width = this.imageWidth;
+          canvas.height = this.imageHeight;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, this.imageWidth, this.imageHeight);
+            this.imageUploaded = true;
+            this.closePopup();
+          }
+        };
+      };
+      reader.readAsDataURL(this.imageFile);
+    }
+  }
 
   setActiveButton(button: string) {
     this.activeButton = button;
@@ -57,7 +82,7 @@ export class ConfigurationComponent {
       this.activeButton = button;
       this.activeHeader = this.getHeader(button);
       this.isTransitioning = false;
-  
+
       // Set the current table and tab based on the button
       if (button === 'fleet') {
         this.currentTable = 'fleet';
@@ -83,7 +108,7 @@ export class ConfigurationComponent {
 
   getCurrentTableData() {
     switch (this.currentTable) {
-      case 'task':
+      case 'Environment':
         return this.EnvData;
       case 'robot':
         return this.robotData;
@@ -112,7 +137,7 @@ export class ConfigurationComponent {
 
   getHeader(button: string): string {
     switch (button) {
-      case 'task':
+      case 'Environment':
         return 'Environment';
       case 'robot':
         return 'Robot';
@@ -132,23 +157,23 @@ export class ConfigurationComponent {
   }
 
   onSearch(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const query = inputElement.value;
+    const inputElement = event.target as HTMLInputElement | null;
+    const query = inputElement?.value || '';
     // Implement your search logic here
   }
 
   onDateFilterChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const filter = selectElement.value;
+    const selectElement = event.target as HTMLSelectElement | null;
+    const filter = selectElement?.value || '';
     // Implement your date filter logic here
   }
 
   onDateChange(event: Event): void {
-    const startDateElement = document.getElementById('start-date') as HTMLInputElement;
-    const endDateElement = document.getElementById('end-date') as HTMLInputElement;
+    const startDateElement = document.getElementById('start-date') as HTMLInputElement | null;
+    const endDateElement = document.getElementById('end-date') as HTMLInputElement | null;
 
-    const startDate = startDateElement.value;
-    const endDate = endDateElement.value;
+    const startDate = startDateElement?.value || '';
+    const endDate = endDateElement?.value || '';
 
     // Implement your date range filtering logic here
   }
