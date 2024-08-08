@@ -35,7 +35,7 @@ export class ProjectService {
   }
 
   clearProjectData() {
-    this.cookieService.delete('project-data');
-    this.cookieService.delete('is-project-setted');
+    this.cookieService.delete('project-data', '/');
+    this.cookieService.delete('is-project-setted', '/');
   }
 }
