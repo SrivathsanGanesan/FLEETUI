@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 // import { CookieService } from 'ngx-cookie-service';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService // private cookieService: CookieService
+    private authService: AuthService,
+    private projectService: ProjectService // private cookieService: CookieService
   ) {
     if (document.cookie === '') localStorage.clear(); // not advisable..
   }
@@ -95,25 +97,32 @@ export class LoginComponent {
         // throw new Error('Login failed');
       })
       .then((data) => {
-        console.log(data.user);
+        // console.log(data.user.projects);
         if (data.user) {
+          if (data.user.role === 'User') {
+            if (!data.project) {
+              alert('No project has been assigned to this user.');
+              return;
+            }
+            this.authService.login({
+              name: data.user.name,
+              role: data.user.role,
+            });
+            this.projectService.setSelectedProject(data.project);
+            this.projectService.setProjectCreated(true);
+            this.router.navigate(['dashboard']);
+            return;
+          }
           this.authService.login({
             name: data.user.name,
             role: data.user.role,
           });
-          console.log(`User role: ${data.user.role}`); // Log user role
-          if (data.user.role === 'User') {
-            console.log('here');
-            this.router.navigate(['dashboard']); // Navigate to dashboard for User role
-          } else {
-            console.log('there');
-            this.router.navigate(['project_setup']); // Navigate to project setup for other roles
-          }
+          this.router.navigate(['project_setup']);
         }
       })
       .catch((err) => {
         console.error(err);
-        this.errorMessage = 'Login failed. Please try again.'; // General error message
+        this.errorMessage = 'Login failed. Please try again.';
       });
   }
 
