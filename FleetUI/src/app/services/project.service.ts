@@ -27,19 +27,15 @@ export class ProjectService {
     this.cookieService.set('project-data', JSON.stringify(project), {
       path: '/',
     });
-    // localStorage.setItem(this.selectedProjectKey, JSON.stringify(project));
   }
 
   getSelectedProject() {
     const storedProject = this.cookieService.get('project-data');
-    // const storedProject = localStorage.getItem(this.selectedProjectKey);
     return storedProject ? JSON.parse(storedProject) : null;
   }
 
   clearProjectData() {
     this.cookieService.delete('project-data');
     this.cookieService.delete('is-project-setted');
-    // localStorage.removeItem(this.projectCreatedKey);
-    // localStorage.removeItem(this.selectedProjectKey);
   }
 }

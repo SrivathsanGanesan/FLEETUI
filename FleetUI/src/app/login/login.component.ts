@@ -16,9 +16,8 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
-  ) // private cookieService: CookieService
-  {
+    private authService: AuthService // private cookieService: CookieService
+  ) {
     if (document.cookie === '') localStorage.clear(); // not advisable..
   }
 
@@ -104,8 +103,10 @@ export class LoginComponent {
           });
           console.log(`User role: ${data.user.role}`); // Log user role
           if (data.user.role === 'User') {
+            console.log('here');
             this.router.navigate(['dashboard']); // Navigate to dashboard for User role
           } else {
+            console.log('there');
             this.router.navigate(['project_setup']); // Navigate to project setup for other roles
           }
         }
