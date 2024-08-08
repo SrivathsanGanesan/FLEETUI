@@ -26,17 +26,16 @@ export class ProjectGuard implements CanActivate {
     const isCreated = this.projectService.isProjectCreated();
 
     if (isCreated) {
-      if (url !== '/dashboard') {
+      if (url === '/project_setup') {
         this.router.navigate(['/dashboard']);
         return false;
       }
       return true;
-    } else {
-      if (url !== '/project_setup') {
-        this.router.navigate(['/project_setup']);
-        return false;
-      }
-      return true;
     }
+    if (url !== '/project_setup') {
+      this.router.navigate(['/project_setup']);
+      return false;
+    }
+    return true;
   }
 }

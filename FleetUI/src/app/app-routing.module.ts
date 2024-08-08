@@ -25,27 +25,27 @@ const routes: Routes = [
   {
     path: 'statistics',
     component: StatisticsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ProjectGuard],
   },
   {
     path: 'Reports',
     component: Userlogscomponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ProjectGuard],
   },
   {
     path: 'configuration',
     component: ConfigurationComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ProjectGuard],
   },
   {
     path: 'usermanagement',
     component: UsermanagementComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ProjectGuard],
   },
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard,ProjectGuard], // Ensure both guards are here
+    canActivate: [AuthGuard, ProjectGuard], // Ensure both guards are here
   },
 ];
 
