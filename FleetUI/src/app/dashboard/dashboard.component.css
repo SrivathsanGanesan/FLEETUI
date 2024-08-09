@@ -7,7 +7,9 @@
   visibility: visible;
   opacity: 1;
 }
-
+app-sidenavbar{
+  z-index: 10;
+}
 
 .mainContent {
   flex-grow: 1;
@@ -46,7 +48,7 @@ canvas {
   cursor: pointer;
   padding: 0 0px;
   box-shadow: 0 3px 6px #ff7373;
-  z-index: 10; /* Ensure it stays above other elements */
+  z-index: 5; /* Ensure it stays above other elements */
 }
 
 .tooltip {
