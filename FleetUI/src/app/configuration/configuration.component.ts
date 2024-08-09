@@ -62,7 +62,16 @@ export class ConfigurationComponent implements AfterViewInit {
       this.chosenImageName = this.imageFile.name;
     }
   }
-
+  addSingleNode() {
+    console.log("Single Node clicked");
+    // Add your logic for adding a single node here
+  }
+  
+  addMultiNode() {
+    console.log("Multi Node clicked");
+    // Add your logic for adding multiple nodes here
+  }
+  
   openImage() {
     if (this.imageFile) {
       this.isImageOpened = true;
