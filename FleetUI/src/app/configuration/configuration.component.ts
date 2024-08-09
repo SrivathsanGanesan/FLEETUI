@@ -40,7 +40,9 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: '192.168.XX.XX', column2: ' ' }
   ];
 
-  constructor(private exportService: ExportService, private cdRef: ChangeDetectorRef) {}
+  constructor(private exportService: ExportService, private cdRef: ChangeDetectorRef) {
+    this.iconImage.src = '../../assets/ConfigurationOptions/point.svg';
+  }
 
   ngAfterViewInit() {
     // Any initialization that requires the view to be fully loaded can go here.
@@ -62,10 +64,7 @@ export class ConfigurationComponent implements AfterViewInit {
       this.chosenImageName = this.imageFile.name;
     }
   }
-  addSingleNode() {
-    console.log("Single Node clicked");
-    // Add your logic for adding a single node here
-  }
+
   
   addMultiNode() {
     console.log("Multi Node clicked");
@@ -76,18 +75,18 @@ export class ConfigurationComponent implements AfterViewInit {
     if (this.imageFile) {
       this.isImageOpened = true;
       this.cdRef.detectChanges();
-  
+
       const canvas = this.uploadedCanvas?.nativeElement;
       const ctx = canvas.getContext('2d');
-  
+
       if (!canvas || !ctx) {
         console.error('Canvas or context not found');
         return;
       }
-  
+
       canvas.width = 1400;
       canvas.height = 600;
-  
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const img = new Image();
@@ -102,6 +101,36 @@ export class ConfigurationComponent implements AfterViewInit {
       this.addEnvironmentData(); // Add data to the table when the image is opened
     }
   }
+  iconImage = new Image(); // Image for plotting nodes
+  isSingleNodeMode = false; // To track if Single Node mode is active
+  addSingleNode() {
+    console.log("Single Node clicked");
+    this.isSingleNodeMode = true; // Enable single node mode
+    const canvas = this.uploadedCanvas?.nativeElement;
+    if (canvas) {
+      canvas.addEventListener('click', this.plotSingleNode.bind(this));
+    }
+  }
+
+  plotSingleNode(event: MouseEvent) {
+    if (!this.isSingleNodeMode) return;
+
+    const canvas = this.uploadedCanvas?.nativeElement;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Draw the icon at the clicked position
+    ctx.drawImage(this.iconImage, x, y, 20, 20); // Adjust the width and height as needed
+
+    // Disable single node mode after plotting
+    this.isSingleNodeMode = false;
+    canvas.removeEventListener('click', this.plotSingleNode.bind(this));
+  }
+
   mapName: string = ''; // To store the Map Name input value
   siteName: string = ''; // To store the Site Name input value
   addEnvironmentData() {

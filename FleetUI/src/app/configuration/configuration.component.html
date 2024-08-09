@@ -201,7 +201,9 @@
                     </div>
                   </div>
                   <div class="Map-settings" *ngIf="isImageOpened">
-                    <canvas #uploadedCanvas></canvas>                  
+                    <div class="canvas-container">
+                      <canvas #uploadedCanvas></canvas>
+                    </div>
                     <!-- Calibrate Coordinates Button -->
                     <button class="calibrate-button" *ngIf="!isCalibrationLayerVisible" (click)="showCalibrationLayer()">
                       Options
@@ -216,19 +218,39 @@
                         </div>
                       </div>
                       <button (click)="calibrateCoordinates()">Calibrate Coordinates</button>
-                      <button (click)="connectivity()">Connectivity</button>
-                      <button (click)="zones()">Zones</button>
-                      <button (click)="addAssets()">Add Assets</button>
+                      <div class="dropdown">
+                        <button class="dropdown-button" (click)="connectivity()">Connectivity</button>
+                        <div class="dropdown-content">
+                          <button (click)="addSingleNode()">Uni-Directional</button>
+                          <button (click)="addMultiNode()">Bi-Directional</button>
+                        </div>
+                      </div>
+                      <div class="dropdown">
+                        <button class="dropdown-button" (click)="zones()">Zones</button>
+                        <div class="dropdown-content">
+                          <button (click)="addSingleNode()">High Speed Zone</button>
+                          <button (click)="addSingleNode()">Medium Speed Zone</button>
+                          <button (click)="addMultiNode()">Low Speed zone</button>
+                        </div>
+                      </div>
+                      <div class="dropdown">
+                        <button class="dropdown-button" (click)="addAssets()">Add Assets</button>
+                        <div class="dropdown-content">
+                          <button (click)="addSingleNode()">Docking Station</button>
+                          <button (click)="addSingleNode()">Charging Station</button>
+                          <button (click)="addMultiNode()">Picking Station</button>
+                        </div>
+                      </div>
                       <button (click)="addRobots()">Add Robots</button>
                       <button (click)="removeRobots()">Remove Robots</button>
                       <button (click)="saveMap()">Save</button>
                       <button (click)="hideCalibrationLayer()">Back</button>
                     </div>
                   </div>                  
-                  
                 </div>
               </div>
-            </div>              
+            </div>
+                       
             
     </div>
   </div>
