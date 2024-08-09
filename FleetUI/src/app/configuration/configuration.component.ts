@@ -1,15 +1,22 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.css']
+  styleUrls: ['./configuration.component.css'],
 })
 export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('uploadedCanvas', { static: false }) uploadedCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('uploadedCanvas', { static: false })
+  uploadedCanvas!: ElementRef<HTMLCanvasElement>;
 
   fleetTab: string = 'general';
   filteredData: any;
@@ -29,18 +36,21 @@ export class ConfigurationComponent implements AfterViewInit {
   currentTab: any;
 
   EnvData = [
-    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' }
+    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
   ];
   robotData = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
-    { column1: 'Robot 2', column2: '192.168.XX.XX' }
+    { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
   selectedrobotData = [
     { column1: '192.168.XX.XX', column2: ' ' },
-    { column1: '192.168.XX.XX', column2: ' ' }
+    { column1: '192.168.XX.XX', column2: ' ' },
   ];
 
-  constructor(private exportService: ExportService, private cdRef: ChangeDetectorRef) {
+  constructor(
+    private exportService: ExportService,
+    private cdRef: ChangeDetectorRef
+  ) {
     this.iconImage.src = '../../assets/ConfigurationOptions/point.svg';
   }
 
@@ -54,7 +64,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
   calibrateCoordinates() {
     // Add your calibration logic here
-    console.log("Calibrate Coordinates button clicked!");
+    console.log('Calibrate Coordinates button clicked!');
   }
 
   onFileSelected(event: Event) {
@@ -65,13 +75,17 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
 
-  
   addMultiNode() {
-    console.log("Multi Node clicked");
+    console.log('Multi Node clicked');
     // Add your logic for adding multiple nodes here
   }
-  
+
   openImage() {
+    if (this.mapName === '' && this.siteName === '') {
+      alert('Map name and site name required!');
+      return;
+    }
+
     if (this.imageFile) {
       this.isImageOpened = true;
       this.cdRef.detectChanges();
@@ -104,7 +118,7 @@ export class ConfigurationComponent implements AfterViewInit {
   iconImage = new Image(); // Image for plotting nodes
   isSingleNodeMode = false; // To track if Single Node mode is active
   addSingleNode() {
-    console.log("Single Node clicked");
+    console.log('Single Node clicked');
     this.isSingleNodeMode = true; // Enable single node mode
     const canvas = this.uploadedCanvas?.nativeElement;
     if (canvas) {
@@ -133,14 +147,18 @@ export class ConfigurationComponent implements AfterViewInit {
 
   mapName: string = ''; // To store the Map Name input value
   siteName: string = ''; // To store the Site Name input value
+
   addEnvironmentData() {
     const currentTime = new Date();
-    const formattedTime = formatDate(currentTime, 'MMM d, yyyy. HH:mm:ss', 'en-US');
-
+    const formattedTime = formatDate(
+      currentTime,
+      'MMM d, yyyy. HH:mm:ss',
+      'en-US'
+    );
     this.EnvData.push({
       column1: this.mapName,
       column2: this.siteName,
-      column3: formattedTime
+      column3: formattedTime,
     });
   }
 
@@ -153,32 +171,34 @@ export class ConfigurationComponent implements AfterViewInit {
   hideCalibrationLayer() {
     this.isCalibrationLayerVisible = false;
   }
-  saveMap(){
-    console.log("Map Saved");
+  saveMap() {
+    // here we go..
+    console.log(this.mapName, this.siteName);
+    console.log('Map Saved');
   }
   // Add methods for each button's functionality
   addNode() {
-    console.log("Add Node clicked");
+    console.log('Add Node clicked');
   }
 
   connectivity() {
-    console.log("Connectivity clicked");
+    console.log('Connectivity clicked');
   }
 
   zones() {
-    console.log("Zones clicked");
+    console.log('Zones clicked');
   }
 
   addAssets() {
-    console.log("Add Assets clicked");
+    console.log('Add Assets clicked');
   }
 
   addRobots() {
-    console.log("Add Robots clicked");
+    console.log('Add Robots clicked');
   }
 
   removeRobots() {
-    console.log("Remove Robots clicked");
+    console.log('Remove Robots clicked');
   }
 
   setActiveButton(button: string) {
@@ -188,7 +208,7 @@ export class ConfigurationComponent implements AfterViewInit {
       this.activeButton = button;
       this.activeHeader = this.getHeader(button);
       this.isTransitioning = false;
- 
+
       // Set the current table and tab based on the button
       if (button === 'fleet') {
         this.currentTable = 'fleet';
@@ -218,7 +238,7 @@ export class ConfigurationComponent implements AfterViewInit {
         return [];
     }
   }
- 
+
   getHeader(button: string): string {
     switch (button) {
       case 'Environment':
@@ -257,8 +277,12 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   onDateChange(event: Event): void {
-    const startDateElement = document.getElementById('start-date') as HTMLInputElement;
-    const endDateElement = document.getElementById('end-date') as HTMLInputElement;
+    const startDateElement = document.getElementById(
+      'start-date'
+    ) as HTMLInputElement;
+    const endDateElement = document.getElementById(
+      'end-date'
+    ) as HTMLInputElement;
 
     const startDate = startDateElement?.value || '';
     const endDate = endDateElement?.value || '';
@@ -271,7 +295,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   deleteItem(item: any) {
-    const index = this.EnvData.findIndex(envItem => envItem === item);
+    const index = this.EnvData.findIndex((envItem) => envItem === item);
     if (index !== -1) {
       this.EnvData.splice(index, 1);
     }
