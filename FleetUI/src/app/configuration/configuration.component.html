@@ -120,8 +120,7 @@
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <img src="../../assets/ConfigurationOptions/Edit.svg" alt="Edit" (click)="editItem(item)" class="icon"/>
-                    <img src="../../assets/ConfigurationOptions/Delete.svg" alt="Delete" (click)="deleteItem(item)" class="icon"/>
-                  </td>
+                    <img src="../../assets/ConfigurationOptions/Delete.svg" alt="Delete" (click)="deleteItem(item)" class="icon" />                  </td>
                 </tr>
               </tbody>
             </table>
@@ -187,10 +186,10 @@
                     <input type="file" accept="image/*" #fileInput (change)="onFileSelected($event)" style="display: none;">
                     <div *ngIf="chosenImageName" class="Details">
                       <label for="Mapname">Map Name :</label>
-                      <input id="Mapname" type="string" class="Mapname" >
+                      <input id="Mapname" type="text" class="Mapname" [(ngModel)]="mapName">
                       <br>
                       <label for="Sitename">Site Name : </label>
-                      <input id="Sitename" type="string" class="Sitename" >
+                      <input id="Sitename" type="text" class="Sitename" [(ngModel)]="siteName">
                       <br>
                       <label for="imageHeight">Enter Height : </label>
                       <input id="imageHeight" type="number" class="imageHeight" [(ngModel)]="imageHeight">
@@ -223,9 +222,7 @@
                   
                 </div>
               </div>
-            </div>
-              
-            
+            </div>              
             
     </div>
   </div>

@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ExportService } from '../export.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-configuration',
@@ -28,8 +29,7 @@ export class ConfigurationComponent implements AfterViewInit {
   currentTab: any;
 
   EnvData = [
-    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
-    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 6, 2024. 14:00:17' }
+    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' }
   ];
   robotData = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
@@ -66,23 +66,18 @@ export class ConfigurationComponent implements AfterViewInit {
   openImage() {
     if (this.imageFile) {
       this.isImageOpened = true;
-      this.cdRef.detectChanges(); // Ensure view updates before drawing the image
+      this.cdRef.detectChanges();
   
       const canvas = this.uploadedCanvas?.nativeElement;
-      if (!canvas) {
-        console.error('Canvas element not found');
-        return;
-      }
-  
       const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        console.error('Failed to get canvas context');
+  
+      if (!canvas || !ctx) {
+        console.error('Canvas or context not found');
         return;
       }
   
-      // Set fixed canvas dimensions
-      canvas.width = 1400; // Fixed width
-      canvas.height = 600; // Fixed height
+      canvas.width = 1400;
+      canvas.height = 600;
   
       const reader = new FileReader();
       reader.onload = (e: any) => {
@@ -94,9 +89,23 @@ export class ConfigurationComponent implements AfterViewInit {
         img.src = e.target.result;
       };
       reader.readAsDataURL(this.imageFile);
+
+      this.addEnvironmentData(); // Add data to the table when the image is opened
     }
   }
-  
+  mapName: string = ''; // To store the Map Name input value
+  siteName: string = ''; // To store the Site Name input value
+  addEnvironmentData() {
+    const currentTime = new Date();
+    const formattedTime = formatDate(currentTime, 'MMM d, yyyy. HH:mm:ss', 'en-US');
+
+    this.EnvData.push({
+      column1: this.mapName,
+      column2: this.siteName,
+      column3: formattedTime
+    });
+  }
+
   isCalibrationLayerVisible = false;
 
   showCalibrationLayer() {
@@ -224,7 +233,10 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   deleteItem(item: any) {
-    console.log('Delete item:', item);
+    const index = this.EnvData.findIndex(envItem => envItem === item);
+    if (index !== -1) {
+      this.EnvData.splice(index, 1);
+    }
   }
 
   addItem(item: any) {
