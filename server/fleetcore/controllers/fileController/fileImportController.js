@@ -191,9 +191,10 @@ const parseProjectFile = async (req, res, next) => {
 
   const sendResponse = (status, body) => {
     if (!responseSent) {
-      res.status(status).json(body);
       responseSent = true;
+      res.status(status).json(body);
     }
+    return;
   };
 
   const isDirValidate = await validateExtractedFile({ target });
@@ -210,21 +211,19 @@ const parseProjectFile = async (req, res, next) => {
     const doc = await projectModel.findById(_id);
     if (doc) {
       clearFiles({ target });
-      sendResponse(409, {
+      return sendResponse(409, {
         idExist: true,
         msg: "Seems project already exists!(project with this Id already exist)",
       });
-      return;
     }
     const data = await projectModel.exists({ projectName: projectName });
     if (data) {
       clearFiles({ target });
-      sendResponse(409, {
+      return sendResponse(409, {
         idExist: false,
         nameExist: true,
         msg: "project with this name already exists, you can't insert into database",
       });
-      return;
     }
 
     let res1 = await isRoboConflict({ target });
