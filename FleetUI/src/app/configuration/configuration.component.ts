@@ -106,7 +106,9 @@ export class ConfigurationComponent implements AfterViewInit {
   hideCalibrationLayer() {
     this.isCalibrationLayerVisible = false;
   }
-
+  saveMap(){
+    console.log("Map Saved");
+  }
   // Add methods for each button's functionality
   addNode() {
     console.log("Add Node clicked");
