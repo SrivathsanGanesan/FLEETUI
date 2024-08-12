@@ -17,6 +17,7 @@ export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('overlayLayer') overlayLayer!: ElementRef<HTMLDivElement>;
 
   fleetTab: string = 'general';
   filteredData: any;
@@ -34,6 +35,7 @@ export class ConfigurationComponent implements AfterViewInit {
   isImageOpened: boolean = false; // Track if the image is opened in the canvas
   currentTable = 'Environment';
   currentTab: any;
+  
 
   EnvData = [
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
