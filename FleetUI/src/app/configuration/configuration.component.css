@@ -113,6 +113,23 @@ tr:nth-child(even) {
 .transition-active {
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
+.overlay-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  pointer-events: none; /* This allows interactions with elements below the overlay */
+}
+
+.canvas-container {
+  position: relative;
+}
+.node {
+  cursor: pointer;
+  transition: border 0.2s;
+}
 
 /* Export Button Container */
 .Create-button-container {
@@ -443,4 +460,8 @@ canvas {
 
 .calibration-layer button:hover {
   background-color: #5b5b5e96;
+}
+.node.selected {
+  border: 2px solid rgb(3, 1, 1);
+  border-radius: 40%;
 }

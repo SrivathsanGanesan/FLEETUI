@@ -191,10 +191,10 @@
                       <label for="Sitename">Site Name : </label>
                       <input id="Sitename" type="text" class="Sitename" [(ngModel)]="siteName">
                       <br>
-                      <label for="imageHeight">Enter Height : </label>
+                      <label for="imageHeight">Enter Height (meters): </label>
                       <input id="imageHeight" type="number" class="imageHeight" [(ngModel)]="imageHeight">
                       <br>
-                      <label for="imageWidth">Enter Width : </label>
+                      <label for="imageWidth">Enter Width (meters): </label>
                       <input id="imageWidth" type="number" class="imageWidth" [(ngModel)]="imageWidth">
                       <br>
                       <button class="Open-button" (click)="openImage()">Open Environment</button>
@@ -204,10 +204,12 @@
                     <div class="canvas-container">
                       <canvas #uploadedCanvas></canvas>
                     </div>
+                  
                     <!-- Calibrate Coordinates Button -->
                     <button class="calibrate-button" *ngIf="!isCalibrationLayerVisible" (click)="showCalibrationLayer()">
                       Options
                     </button>
+                  
                     <!-- Calibration Options Layer -->
                     <div class="calibration-layer" *ngIf="isCalibrationLayerVisible">                      
                       <div class="dropdown">
@@ -231,7 +233,7 @@
                         <div class="dropdown-content">
                           <button (click)="addSingleNode()">High Speed Zone</button>
                           <button (click)="addSingleNode()">Medium Speed Zone</button>
-                          <button (click)="addMultiNode()">Low Speed zone</button>
+                          <button (click)="addMultiNode()">Low Speed Zone</button>
                         </div>
                       </div>
                       <div class="dropdown">
@@ -247,7 +249,8 @@
                       <button (click)="saveMap()">Save</button>
                       <button (click)="hideCalibrationLayer()">Back</button>
                     </div>
-                  </div>                  
+                  </div>
+                                  
                 </div>
               </div>
             </div>
