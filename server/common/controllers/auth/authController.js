@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { authRegisterModel } = require("../../models/authRegisterSchema");
+const { projectModel } = require("../../../fleetcore/models/projectSchema");
 
 const validateToken = async (req, res, next) => {
   const token = req.cookies._token;
@@ -31,6 +32,24 @@ const login = async (req, res) => {
       });
     const isMatch = await bcrypt.compare(name + password, user[0].password);
     if (isMatch) {
+      let project = null;
+      if (role === "User") {
+        if (!user[0].projects.length)
+          return res.status(200).json({
+            isUserExist: true,
+            msg: "User found",
+            user: {
+              id: user[0]._id,
+              name: user[0].name,
+              role: user[0].role,
+              priority: user[0].priority,
+              projects: user[0].projects,
+            },
+            project: project,
+          });
+        project = await projectModel.findById(user[0].projects[0].projectId);
+      }
+
       const token = jwt.sign(
         { user: name, role: role },
         process.env.JWT_SECRET_KEY
@@ -48,6 +67,7 @@ const login = async (req, res) => {
             priority: user[0].priority,
             projects: user[0].projects,
           },
+          project: project,
         });
     }
 

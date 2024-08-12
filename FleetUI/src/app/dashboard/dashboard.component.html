@@ -8,13 +8,33 @@
     <div class="FloorSelector" *ngIf="ONBtn"></div>
     <div class="CanvasOptions">
       <span class="empty"></span>
-      <img src="../../assets/CanvasOptions/Zoom.svg" class="Zoom" (click)="zoomIn()">
-      <img src="../../assets/CanvasOptions/ZoomOut.svg" class="ZoomOut" (click)="zoomOut()">
-      <img src="../../assets/CanvasOptions/Pan.svg" class="Expand" (click)="togglePan()">
-      <img src="../../assets/CanvasOptions/Capture.svg" class="Capture" (click)="captureCanvas()">
-      <img [src]="recording ? '../../assets/CanvasOptions/StopRecord.svg' : '../../assets/CanvasOptions/Record.svg'" class="Save" (click)="toggleRecording()">
-      <img src="../../assets/CanvasOptions/Dashboard.svg" class="Pointer" (click)="toggleDashboard()">
+      <div class="tooltip">
+        <img src="../../assets/CanvasOptions/Zoom.svg" class="Zoom" (click)="zoomIn()">
+        <span class="tooltiptext">Zoom In</span>
+      </div>
+      <div class="tooltip">
+        <img src="../../assets/CanvasOptions/ZoomOut.svg" class="ZoomOut" (click)="zoomOut()">
+        <span class="tooltiptext">Zoom Out</span>
+      </div>
+      <div class="tooltip">
+        <img src="../../assets/CanvasOptions/Pan.svg" class="Expand" (click)="togglePan()">
+        <span class="tooltiptext">Pan</span>
+      </div>
+      <div class="tooltip">
+        <img src="../../assets/CanvasOptions/Capture.svg" class="Capture" (click)="captureCanvas()">
+        <span class="tooltiptext">Capture</span>
+      </div>
+      <div class="tooltip">
+        <img [src]="recording ? '../../assets/CanvasOptions/StopRecord.svg' : '../../assets/CanvasOptions/Record.svg'" class="Save" (click)="toggleRecording()">
+        <span class="tooltiptext">{{ recording ? 'Stop Recording' : 'Start Recording' }}</span>
+      </div>
+      <div class="tooltip">
+        <img src="../../assets/CanvasOptions/Dashboard.svg" class="Pointer" (click)="toggleDashboard()">
+        <span class="tooltiptext">Dashboard</span>
+      </div>
     </div>
+    
+    
     <div class="GraphAndCharts" *ngIf="showDashboard">
       <div class="Chart2_Chart3">
         <div class="Chart2-container">

@@ -179,6 +179,8 @@ export class ProjectsetupComponent {
       } else if (!data.err && !data.conflicts && data.user) {
         console.log(data.user);
         console.log(data.project);
+        this.projectService.setProjectCreated(true); //
+        this.projectService.setSelectedProject(data.project); //
         this.router.navigate(['/dashboard']);
       }
       return false;
@@ -229,8 +231,8 @@ export class ProjectsetupComponent {
       isRenamed: this.isRenamed, // false
       alterName: this.renamedProj, // ""
     };
-    this.projectService.setProjectCreated(true); //
-    this.projectService.setSelectedProject(file.name); //
+    // this.projectService.setProjectCreated(true); //
+    // this.projectService.setSelectedProject(file.name); //
     this.selectedFile = file;
   }
 
@@ -285,7 +287,8 @@ export class ProjectsetupComponent {
       })
       .then((data) => {
         if (!data.exists) {
-          this.projectService.setProjectCreated(true);
+          this.projectService.setProjectCreated(true); //
+          this.projectService.setSelectedProject(data.project); //
           this.router.navigate(['/dashboard']);
         }
         console.log(data);
