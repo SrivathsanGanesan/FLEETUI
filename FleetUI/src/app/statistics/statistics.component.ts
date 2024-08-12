@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 
 interface Robot {
+  id: number;
   name: string;
   imageUrl: string;
   capacity: string;
   speed: string;
   accuracy: string;
+  status: string;     // Add status property
+  battery: string;    // Add battery percentage property
 }
 
 @Component({
@@ -16,55 +19,144 @@ interface Robot {
 export class StatisticsComponent {
   robots: Robot[] = [
     {
+      id: 1,
       name: 'Forklift AGV',
-      imageUrl: 'path/to/image1.jpg',
+      imageUrl: "../../assets/robot images/robot_image1.svg",
       capacity: '2000 kg',
       speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’'
+      accuracy: '± 10mm/±0.5’',
+      status: 'Active',
+      battery: '80%'
     },
     {
+      id: 2,
       name: 'Forklift AGV',
-      imageUrl: 'path/to/image2.jpg',
-      capacity: '4000 kg',
-      speed: '2.0m/s (4.47mph)',
-      accuracy: '± 10mm/±0.5’'
+      imageUrl: "../../assets/robot images/robot_image1.svg",
+      capacity: '2000 kg',
+      speed: '2.7m/s (5.21mph)',
+      accuracy: '± 10mm/±0.5’',
+      status: 'Inactive',
+      battery: '50%'
     },
     {
-      name: 'Autonomous tank',
-      imageUrl: 'path/to/image3.jpg',
-      capacity: '4000 kg',
-      speed: '2.0m/s (4.47mph)',
-      accuracy: '± 10mm/±0.5’'
+      id: 3,
+      name: 'Forklift AGV',
+      imageUrl: "../../assets/robot images/robot_image1.svg",
+      capacity: '2000 kg',
+      speed: '2.7m/s (5.21mph)',
+      accuracy: '± 10mm/±0.5’',
+      status: 'Active',
+      battery: '90%'
     },
     {
-      name: 'Autonomous tank',
-      imageUrl: 'path/to/image4.jpg',
-      capacity: '4000 kg',
-      speed: '2.0m/s (4.47mph)',
-      accuracy: '± 10mm/±0.5’'
+      id: 4,
+      name: 'Forklift AGV',
+      imageUrl: "../../assets/robot images/robot_image1.svg",
+      capacity: '2000 kg',
+      speed: '2.7m/s (5.21mph)',
+      accuracy: '± 10mm/±0.5’',
+      status: 'Active',
+      battery: '80%'
     },
     {
-      name: 'Autonomous tank',
-      imageUrl: 'path/to/image5.jpg',
-      capacity: '4000 kg',
-      speed: '2.0m/s (4.47mph)',
-      accuracy: '± 10mm/±0.5’'
+      id: 5,
+      name: 'Forklift AGV',
+      imageUrl: "../../assets/robot images/robot_image1.svg",
+      capacity: '2000 kg',
+      speed: '2.7m/s (5.21mph)',
+      accuracy: '± 10mm/±0.5’',
+      status: 'Inactive',
+      battery: '50%'
+    },
+    {
+      id: 6,
+      name: 'Forklift AGV',
+      imageUrl: "../../assets/robot images/robot_image1.svg",
+      capacity: '2000 kg',
+      speed: '2.7m/s (5.21mph)',
+      accuracy: '± 10mm/±0.5’',
+      status: 'Active',
+      battery: '80%'
+    },
+    {
+      id: 7,
+      name: 'Forklift AGV',
+      imageUrl: "../../assets/robot images/robot_image1.svg",
+      capacity: '2000 kg',
+      speed: '2.7m/s (5.21mph)',
+      accuracy: '± 10mm/±0.5’',
+      status: 'Inactive',
+      battery: '50%'
     }
+    // Add more robots with status and battery information...
   ];
 
   showPopup = false;
-  newRobot: Robot = { name: '', imageUrl: '', capacity: '', speed: '', accuracy: '' };
-  centerIndex = Math.floor(this.robots.length / 2);
+  isEditPopupOpen = false;
+  menuOpenIndex: number | null = null;
+
+  newRobot: Robot = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%' };
+  editRobotData = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%' };
+  editIndex: number | null = null;
+  centerIndex: any;
 
   togglePopup() {
     this.showPopup = !this.showPopup;
   }
 
+  toggleMenu(index: number) {
+    if (this.menuOpenIndex === index) {
+      this.menuOpenIndex = null;
+    } else {
+      this.menuOpenIndex = index;
+    }
+  }
+
+  closeMenu() {
+    this.menuOpenIndex = null;
+  }
+
   addRobot() {
-    this.robots.push({ ...this.newRobot });
-    this.newRobot = { name: '', imageUrl: '', capacity: '', speed: '', accuracy: '' };
-    this.togglePopup();
-    this.centerIndex = Math.floor(this.robots.length / 2); // Update centerIndex after adding a new robot
+    if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.capacity && this.newRobot.speed && this.newRobot.accuracy) {
+      this.newRobot.id = this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
+      this.robots.push({ ...this.newRobot });
+      this.newRobot = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%' };
+      this.togglePopup();
+    } else {
+      alert('Please fill out all fields.');
+    }
+  }
+
+  editRobot(index: number) {
+    this.isEditPopupOpen = true;
+    this.editIndex = index;
+    this.editRobotData = { ...this.robots[index] };
+    this.menuOpenIndex = null;
+  }
+
+  saveRobot() {
+    if (this.editIndex !== null) {
+      this.robots[this.editIndex] = { ...this.editRobotData };
+      this.closeEditPopup();
+    }
+  }
+
+  closeEditPopup() {
+    this.isEditPopupOpen = false;
+    this.editIndex = null;
+    this.editRobotData = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%' };
+  }
+
+  deleteRobot(index: number) {
+    this.robots.splice(index, 1);
+    this.updateRobotIds();
+    this.menuOpenIndex = null;
+  }
+
+  updateRobotIds() {
+    this.robots.forEach((robot, index) => {
+      robot.id = index + 1;
+    });
   }
 
   trackByIndex(index: number, obj: any): any {
