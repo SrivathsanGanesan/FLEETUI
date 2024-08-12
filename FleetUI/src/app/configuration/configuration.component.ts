@@ -135,6 +135,9 @@ export class ConfigurationComponent implements AfterViewInit {
       this.addEnvironmentData(); // Add data to the table when the image is opened
     }
   }
+  deleteNode(){
+    console.log("node deleted")
+  }
   iconImage = new Image(); // Image for plotting nodes
   isSingleNodeMode = false; // To track if Single Node mode is active
   addSingleNode() {
