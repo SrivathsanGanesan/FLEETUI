@@ -2,7 +2,7 @@ import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
-import { Form } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service';
 
 interface Project {
   _id: string;
@@ -34,11 +34,15 @@ export class ProjectsetupComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
     // hook
+    let pDet = this.cookieService.get('project-data');
+    console.log(pDet);
+
     fetch('http://localhost:3000/fleet-project/projects/project-list', {
       method: 'GET',
       credentials: 'include',

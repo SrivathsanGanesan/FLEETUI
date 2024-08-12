@@ -1,0 +1,81 @@
+{
+  "maps": [
+    {
+      "_id": "66adaf61e5a15246e9a4d832",
+      "mapName": "mapOfPeak",
+      "imgUrl": "localhost:3000/dashboard/1722658657753-map_1.png",
+      "zones": [
+        {
+          "zoneName": "docking",
+          "zoneCoordinates": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1,
+              "y": 0
+            },
+            {
+              "x": 1,
+              "y": 1
+            },
+            {
+              "x": 0,
+              "y": 1
+            }
+          ],
+          "_id": "66adaf61e5a15246e9a4d833"
+        }
+      ],
+      "robots": [
+        {
+          "roboId": "66adafbfe5a15246e9a4d846",
+          "name": "terminator",
+          "createdAt": "2024-08-03T04:20:10.960Z",
+          "updatedAt": "2024-08-03T04:20:10.960Z"
+        },
+        {
+          "roboId": "66adafade5a15246e9a4d840",
+          "name": "roboCop",
+          "createdAt": "2024-08-03T04:20:33.664Z",
+          "updatedAt": "2024-08-03T04:20:33.664Z"
+        }
+      ],
+      "createdAt": "2024-08-03T04:17:37.777Z",
+      "updatedAt": "2024-08-03T04:17:37.777Z"
+    },
+    {
+      "_id": "66adaf8de5a15246e9a4d839",
+      "mapName": "peakClock",
+      "imgUrl": "localhost:3000/dashboard/1722658701606-map_2.png",
+      "zones": [
+        {
+          "zoneName": "recharging",
+          "zoneCoordinates": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1,
+              "y": 0
+            },
+            {
+              "x": 1,
+              "y": 1
+            },
+            {
+              "x": 0,
+              "y": 1
+            }
+          ],
+          "_id": "66adaf8de5a15246e9a4d83a"
+        }
+      ],
+      "robots": [],
+      "createdAt": "2024-08-03T04:18:21.621Z",
+      "updatedAt": "2024-08-03T04:18:21.621Z"
+    }
+  ]
+}

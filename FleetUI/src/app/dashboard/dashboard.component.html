@@ -17,22 +17,47 @@
     </div>
     <div class="GraphAndCharts" *ngIf="showDashboard">
       <div class="Chart2_Chart3">
-        <div class="Chart2">
-          <p>Uptime</p>
-          <div class="U-Chart">
-            <app-uptime></app-uptime>
+        <div class="Chart2-container">
+          <div class="Chart2" [ngClass]="{ 'blurred': ONBtn }">
+            <p>Uptime</p>
+            <div class="U-Chart">
+              <app-uptime></app-uptime>
+            </div>
+          </div>
+          <div class="chart2-blur-layer" *ngIf="ONBtn">            
+            <div class="loading">
+              <div class="d1"></div>
+              <div class="d2"></div>
+          </div>            
           </div>
         </div>
-        <div class="Chart3">
+        <div class="Chart3-container">
+        <div class="Chart3" [ngClass]="{ 'blurred': ONBtn }">
           <p>Robot</p>
           <div class="R-Chart">
             <app-chart></app-chart>
-          </div>
+          </div>          
+        </div>
+        <div class="chart3-blur-layer" *ngIf="ONBtn"> 
+          <div class="loading">
+            <div class="d1"></div>
+            <div class="d2"></div>
+        </div>
+          
         </div>
       </div>
-      <div class="Chart1">
+      </div>
+      <div class="Chart1-container">
+      <div class="Chart1" [ngClass]="{ 'blurred': ONBtn }">
         <app-throughput></app-throughput>
       </div>
+      <div class="chart1-blur-layer" *ngIf="ONBtn">            
+        <div class="loading">
+            <div class="d1"></div>
+            <div class="d2"></div>
+        </div>
+      </div>                
+    </div>
     </div>
   </div>
 </div>

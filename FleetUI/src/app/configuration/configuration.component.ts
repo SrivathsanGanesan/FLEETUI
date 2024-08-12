@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ExportService } from '../export.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-configuration',
@@ -6,28 +7,156 @@ import { Component } from '@angular/core';
   styleUrls: ['./configuration.component.css']
 })
 export class ConfigurationComponent {
-  currentTab: string = 'environment';
-  currentTabTitle: string = 'Environment';
-  currentTabSubtitle: string = 'Create and edit reports';
+  fleetTab: string = 'general';
+  filteredData: any;
+  originalData: any;
+  searchQuery: string = '';
+  isPopupVisible: boolean | undefined;
+  isTransitioning: boolean = false;
+  activeButton: string = 'task'; // Default active button
+  activeHeader: string = 'Environment'; // Default header
+  
+  currentTable = 'task';
+  currentTab: any;
 
-  fleetTab: string = 'general'; // For fleet sub-tabs
+  // Your task data
+  EnvData = [
+    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3' },
+    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3' }
+  ];
 
-  setTab(tab: string): void {
-    this.currentTab = tab;
-    if (tab === 'environment') {
-      this.currentTabTitle = 'Environment';
-      this.currentTabSubtitle = 'Create and edit reports';
-    } else if (tab === 'robot') {
-      this.currentTabTitle = 'Robots';
-      this.currentTabSubtitle = 'Create and edit task reports';
-    } else if (tab === 'fleet') {
-      this.currentTabTitle = 'Fleet';
-      this.currentTabSubtitle = 'Manage fleet';
-      this.setFleetTab('general'); // Reset to 'general' sub-tab when switching to Fleet tab
-    }
+  // Your robot data
+  robotData = [
+    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3' },
+    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3' }
+  ];
+
+  constructor(private exportService: ExportService) {}
+
+  setActiveButton(button: string) {
+    this.activeButton = button;
+    this.isTransitioning = true;
+    setTimeout(() => {
+      this.activeButton = button;
+      this.activeHeader = this.getHeader(button);
+      this.isTransitioning = false;
+  
+      // Set the current table and tab based on the button
+      if (button === 'fleet') {
+        this.currentTable = 'fleet';
+        this.currentTab = 'fleet';
+      } else {
+        this.currentTable = button;
+        this.currentTab = button;
+      }
+    }, 200); // 200ms matches the CSS transition duration
   }
 
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
+
+  showTable(table: string) {
+    this.currentTable = table;
+  }
+
+  setCurrentTable(table: string) {
+    this.currentTable = table;
+  }
+
+  getCurrentTableData() {
+    switch (this.currentTable) {
+      case 'task':
+        return this.EnvData;
+      case 'robot':
+        return this.robotData;
+      default:
+        return [];
+    }
+  }
+
+  exportData(format: string) {
+    const data = this.getCurrentTableData();
+    switch (format) {
+      case 'csv':
+        this.exportService.exportToCSV(data, `${this.currentTable}DataExport`);
+        break;
+      case 'excel':
+        this.exportService.exportToExcel(data, `${this.currentTable}DataExport`);
+        break;
+      case 'pdf':
+        this.exportService.exportToPDF(data, `${this.currentTable}DataExport`);
+        break;
+      default:
+        console.error('Invalid export format');
+    }
+    this.closePopup(); // Close the popup after export
+  }
+
+  getHeader(button: string): string {
+    switch (button) {
+      case 'task':
+        return 'Environment';
+      case 'robot':
+        return 'Robot';
+      case 'fleet':
+        return 'Fleet';
+      default:
+        return 'Environment';
+    }
+  }
+
+  showPopup() {
+    this.isPopupVisible = true;
+  }
+
+  closePopup() {
+    this.isPopupVisible = false;
+  }
+
+  onSearch(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const query = inputElement.value;
+    // Implement your search logic here
+  }
+
+  onDateFilterChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const filter = selectElement.value;
+    // Implement your date filter logic here
+  }
+
+  onDateChange(event: Event): void {
+    const startDateElement = document.getElementById('start-date') as HTMLInputElement;
+    const endDateElement = document.getElementById('end-date') as HTMLInputElement;
+
+    const startDate = startDateElement.value;
+    const endDate = endDateElement.value;
+
+    // Implement your date range filtering logic here
+  }
+
+  editItem(item: any) {
+    console.log('Edit item:', item);
+    // Implement your edit logic here
+  }
+
+  deleteItem(item: any) {
+    console.log('Delete item:', item);
+    // Implement your delete logic here
+  }
+
+  addItem(item: any) {
+    console.log('Add item:', item);
+    // Implement your add logic here
+  }
+
+  blockItem(item: any) {
+    console.log('Block item:', item);
+    // Implement your block logic here
+  }
+}
+
+function onDateFilterChange(event: Event | undefined, Event: { new(type: string, eventInitDict?: EventInit): Event; prototype: Event; readonly NONE: 0; readonly CAPTURING_PHASE: 1; readonly AT_TARGET: 2; readonly BUBBLING_PHASE: 3; }) {
+  throw new Error('Function not implemented.');
 }

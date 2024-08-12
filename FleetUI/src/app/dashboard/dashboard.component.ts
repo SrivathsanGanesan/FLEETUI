@@ -1,8 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
-import domtoimage from 'dom-to-image';
-import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,6 +18,9 @@ export class DashboardComponent implements AfterViewInit {
   lastY = 0;
   offsetX = 0;
   offsetY = 0;
+
+  showChart2 = true; // Controls blur effect for Chart2
+  showChart3 = true;
 
   recording = false;
   private recorder: any;
@@ -135,37 +136,23 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   captureCanvas() {
-    const options = {
-      logging: true, // Enable logging for debugging
-      useCORS: true, // Enable CORS to load images from different origins
-      scale: 2, // Increase the scale for better quality
-      allowTaint: true, // Allow tainted canvases
-      backgroundColor: null, // Ensure the background is transparent
-      width: document.documentElement.scrollWidth, // Capture the full width of the page
-      height: document.documentElement.scrollHeight, // Capture the full height of the page
-    };
-  
-    // Select the element with class 'container' and cast it to HTMLElement
-    const elementToCapture = document.querySelector('.container') as HTMLElement;
-  
-    if (elementToCapture) {
-      html2canvas(elementToCapture, options).then((canvas) => {
-        const dataUrl = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = 'page_capture.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }).catch(error => {
-        console.error('Error capturing the canvas:', error);
-      });
-    } else {
-      console.error('Element to capture not found');
+    const element = document.getElementsByClassName('container')[0];
+    if (element) {
+      domtoimage
+        .toPng(element)
+        .then((dataUrl: string) => {
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = 'page_capture.png';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch((error: Error) => {
+          console.error('Error capturing page:', error);
+        });
     }
   }
-  
-  
 
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;

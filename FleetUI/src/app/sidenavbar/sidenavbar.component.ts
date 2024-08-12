@@ -6,7 +6,7 @@ import { ProjectService } from '../services/project.service';
 @Component({
   selector: 'app-sidenavbar',
   templateUrl: './sidenavbar.component.html',
-  styleUrls: ['./sidenavbar.component.css']
+  styleUrls: ['./sidenavbar.component.css'],
 })
 export class SidenavbarComponent implements OnInit {
   username: string | null = null;
@@ -31,8 +31,8 @@ export class SidenavbarComponent implements OnInit {
   toggleNotificationPopup() {
     this.showNotificationPopup = !this.showNotificationPopup;
   }
-  toggleProfilePopup(){
-    this.showProfilePopup=!this.showProfilePopup;
+  toggleProfilePopup() {
+    this.showProfilePopup = !this.showProfilePopup;
   }
 
   toggleSidebar(isEnlarged: boolean) {
@@ -46,6 +46,7 @@ export class SidenavbarComponent implements OnInit {
       .then((data) => {
         if (data.isCookieDeleted) {
           this.authService.logout();
+          this.projectService.clearProjectData();
           this.router.navigate(['/']);
         }
       })
