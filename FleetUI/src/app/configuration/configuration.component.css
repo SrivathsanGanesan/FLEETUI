@@ -113,15 +113,7 @@ tr:nth-child(even) {
 .transition-active {
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
-.overlay-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: transparent;
-  pointer-events: none; /* This allows interactions with elements below the overlay */
-}
+
 
 .canvas-container {
   position: relative;
@@ -189,32 +181,38 @@ tr:nth-child(even) {
 }
 /* Style for the canvas container */
 .canvas-container {
-  width: 100%; /* Full width */
-  height: 100%; /* Set a specific height */
-  overflow: auto; /* Enable scrolling */
-  position: relative; /* Position relative for absolute positioning of canvas */
+  position: relative;
 }
-
-/* Ensure canvas fits the container */
-canvas {
-  display: block; /* Remove default inline-block spacing */
-  width: 100%; /* Full width of the container */
-  height: auto; /* Maintain aspect ratio */
+.calibration-layer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #c0b3b372;
+  padding: 10px;
+  gap: 10px;
+  border-radius: 8px;
+  z-index: 1;
 }
-#transparentLayer {
+.transparent-layer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: transparent;
-  z-index: 10;
-  pointer-events: none; /* Initially disable interactions */
+  /* background-color: transparent; */
+  background-color: #5b5b5e41;
+  z-index: 1;
 }
 .Image{
   font-size: 30px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
+  z-index: 1;
 }
 
 .close-button {
@@ -224,7 +222,7 @@ canvas {
   font-size: 20px;
   border-radius: 20px;
   border: none;
-  z-index: 1;
+  z-index: 2;
 }
 .Details  input{
   border: none;
@@ -433,20 +431,7 @@ canvas {
   background-color: #5b5b5e58;
 }
 
-.calibration-layer {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  background-color: #c0b3b372;
-  padding: 10px;
-  gap: 10px;
-  border-radius: 8px;
-}
+
 
 .calibration-layer button {
   margin: 5px 0;
@@ -456,6 +441,7 @@ canvas {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  
 }
 
 .calibration-layer button:hover {

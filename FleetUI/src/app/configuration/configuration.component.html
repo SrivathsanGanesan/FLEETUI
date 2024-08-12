@@ -202,8 +202,10 @@
                   </div>
                   <div class="Map-settings" *ngIf="isImageOpened">
                     <div class="canvas-container">
-                      <canvas #uploadedCanvas></canvas>
+                      <canvas #uploadedCanvas (dblclick)="handleLayerClick($event)"></canvas>
+                      <div class="transparent-layer" *ngIf="isCalibrationLayerVisible" (click)="handleLayerClick($event)"></div>
                     </div>
+                    
                   
                     <!-- Calibrate Coordinates Button -->
                     <button class="calibrate-button" *ngIf="!isCalibrationLayerVisible" (click)="showCalibrationLayer()">
@@ -215,8 +217,8 @@
                       <div class="dropdown">
                         <button class="dropdown-button">Add Node</button>
                         <div class="dropdown-content">
-                          <button (click)="addSingleNode()">Single Node</button>
-                          <button (click)="addMultiNode()">Multi Node</button>
+                          <button (click)="setNodeMode('single')">Single Node</button>
+                          <button (click)="setNodeMode('multi')">Multi Node</button>
                         </div>
                       </div>
                       <button (click)="deleteNode()">Delete Node</button>
@@ -224,24 +226,24 @@
                       <div class="dropdown">
                         <button class="dropdown-button" (click)="connectivity()">Connectivity</button>
                         <div class="dropdown-content">
-                          <button (click)="addSingleNode()">Uni-Directional</button>
-                          <button (click)="addMultiNode()">Bi-Directional</button>
+                          <button>Uni-Directional</button>
+                          <button>Bi-Directional</button>
                         </div>
                       </div>
                       <div class="dropdown">
                         <button class="dropdown-button" (click)="zones()">Zones</button>
                         <div class="dropdown-content">
-                          <button (click)="addSingleNode()">High Speed Zone</button>
-                          <button (click)="addSingleNode()">Medium Speed Zone</button>
-                          <button (click)="addMultiNode()">Low Speed Zone</button>
+                          <button >High Speed Zone</button>
+                          <button >Medium Speed Zone</button>
+                          <button >Low Speed Zone</button>
                         </div>
                       </div>
                       <div class="dropdown">
                         <button class="dropdown-button" (click)="addAssets()">Add Assets</button>
                         <div class="dropdown-content">
-                          <button (click)="addSingleNode()">Docking Station</button>
-                          <button (click)="addSingleNode()">Charging Station</button>
-                          <button (click)="addMultiNode()">Picking Station</button>
+                          <button >Docking Station</button>
+                          <button >Charging Station</button>
+                          <button>Picking Station</button>
                         </div>
                       </div>
                       <button (click)="addRobots()">Add Robots</button>
@@ -250,11 +252,9 @@
                       <button (click)="hideCalibrationLayer()">Back</button>
                     </div>
                   </div>
-                                  
                 </div>
               </div>
-            </div>
-                       
+            </div>        
             
     </div>
   </div>
