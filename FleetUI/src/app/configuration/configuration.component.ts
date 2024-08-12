@@ -74,12 +74,32 @@ export class ConfigurationComponent implements AfterViewInit {
       this.chosenImageName = this.imageFile.name;
     }
   }
-
+  isMultiNodeMode = false; // Track Multi Node mode
   addMultiNode() {
-    console.log('Multi Node clicked');
-    // Add your logic for adding multiple nodes here
+    console.log("Multi Node clicked");
+    this.isMultiNodeMode = !this.isMultiNodeMode; // Toggle multi node mode
+    this.isSingleNodeMode = false; // Disable single node mode if active
+    const canvas = this.uploadedCanvas?.nativeElement;
+    if (this.isMultiNodeMode) {
+      canvas.addEventListener('click', this.plotMultiNode.bind(this));
+    } else {
+      canvas.removeEventListener('click', this.plotMultiNode.bind(this));
+    }
   }
+  plotMultiNode(event: MouseEvent) {
+    if (!this.isMultiNodeMode) return;
 
+    const canvas = this.uploadedCanvas?.nativeElement;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Draw the icon at the clicked position
+    ctx.drawImage(this.iconImage, x, y, 20, 20); // Adjust the width and height as needed
+  }
   openImage() {
     if (this.mapName === '' && this.siteName === '') {
       alert('Map name and site name required!');
