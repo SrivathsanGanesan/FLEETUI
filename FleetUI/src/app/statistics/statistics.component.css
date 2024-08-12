@@ -1,113 +1,335 @@
+/* Main Content Styling */
+/* Main Content Styling */
 .mainContent {
-    position: absolute;
-    top: 30px;
-    left: 70px;
-    width: calc(100% - 70px); /* Adjusts width considering the left margin */
-    padding: 16px;
-    overflow: hidden; /* Prevents scrolling within this section */
-    box-sizing: border-box; /* Ensures padding is included in width calculation */
-    background-color: white; /* Ensures it’s distinct from the sidebar */
-  }
-  .header-section {
-    margin-bottom: 20px; /* Space between header and buttons */
-  }
+  position: absolute;
+  top: 30px;
+  left: 70px;
+  width: calc(100% - 70px);
+  padding: 16px;
+  overflow: hidden;
+  box-sizing: border-box;
+  background-color: white;
+}
+/* Header section styles */
+.header-section {
+  margin-bottom: 20px;
+}
+
+.header-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #DA2127;
+  margin: 0;
+}
+
+.subheader-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.subheader-text {
+  font-size: 16px;
+  color: #333;
+}
+
+.subheader-icon {
+  width: 13px;
+  height: 13px;
+}
+
+/* Search Bar and Date Filters */
+.search-date-container {
+  position: absolute;
+  top: 30px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Search Bar Styling */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 360px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 3px solid #FF7373;
+  border-radius: 0.375rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-input:focus {
+  border-color: #ff4d4d;
+  box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+}
+
+.search-button {
+  position: absolute;
+  right: 0;
+  padding: 0.75rem 1rem;
+  border: none;
+  background-color: #FF7373;
+  color: #fff;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.search-button:hover {
+  background-color: #ff4d4d;
+  box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+}
+
+
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.edit-button, .delete-button {
+  padding: 0.75rem 1.5rem;
   
-  .header-title {
-    font-size: 36px; /* Font size for the header */
-    font-weight: bold;
-    color: #DA2127; /* Red color for the header */
-    margin: 0; /* No margin */
-  }
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  background-color: #FF7373;
+  color: #fff;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.edit-button:hover, .delete-button:hover {
+  background-color: #ff4d4d;
+  box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+}
+
+/* Card Container */
+.card-container-wrapper {
+  margin-top: 1rem;
+  overflow-y: auto;
+}
+
+.card-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: scroll;
+  padding: 1rem;
+}
+
+.card {
+
+  flex: 0 0 auto;
+  background-color: white;
+  padding: 1rem;
   
-  .subheader-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px; /* Space between subheader and table */
-  }
+  border-radius: 0.5rem;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card-image {
+  width: 50%;
+  height: fixed;
+  border-radius: 0.5rem;
+}
+.card-content p {
+  margin: 8px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #555;
+}
+
+
+/* Popup Styles */
+.popup-overlay {
+  z-index: 1000; /* Ensure the popup has a high z-index */
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  position: fixed; /* Ensure it's fixed to the viewport */
+  top: 0; /* Align it to the top */
+  left: 0; /* Align it to the left */
+  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  display: flex; /* Use flexbox for centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.popup {
+  background-color: #ffffff;
+  padding: 2rem; /* Adjust padding as needed */
+  border-radius: 0.5rem; /* Adjust border-radius as needed */
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  width: 100%;
+}
+
+.popup h2 {
+  margin-top: 0;
+  font-size: 2.5rem; /* Adjust font size as needed */
+  font-weight: bold;
+  color: #ee1b1b; 
+}
+
+.popup form {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup form .mb-4 {
+  margin-bottom: 1rem;
+}
+
+.popup form .mb-4 label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.popup form .mb-4 input {
+  border-color: #a5a5a5; /* Change border color on focus */
+  box-shadow: 0 0 0 2px rgba(120, 120, 120, 0.2); /* Add shadow on focus */
+  outline: none; /* Remove default focus outline */
+}
+
+.popup form .flex {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.popup form button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s; 
+}
+
+.popup form button:hover {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  background-color: #ea1c1c; /* Light background color on hover */
+  transform: scale(1.05);
+}
+.popup form button:active {
+  transform: scale(1); /* Reset scale on click */
+}
+
+
+/* menu */
+.menu-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 28px;
   
-  .subheader-text {
-    font-size: 15px;
-    color: #333;
-  }
   
-  .subheader-icon {
-    width: 13px;
-    height: 13px;
-    
-  }
- 
-  
-  select, input[type="text"] {
-    border: 1px solid #e5e7eb;
-  }
-  
-  button {
-    transition: background-color 0.3s;
-  }
-  
-  button:hover {
-    background-color: #dc2626;
-  }
-  
-  .grid {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .grid > div {
-    flex: 1;
-    margin: 0 0.5rem;
-    background-color: #fff;
-    padding: 1rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    transition: box-shadow 0.3s;
-  }
-  
-  .grid > div:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    margin: 0 auto;
-  }
-  
-  @media (max-width: 768px) {
-    .grid {
-      flex-direction: column;
-    }
-  
-    .grid > div {
-      margin-bottom: 1rem;
-    }
-  }
-  .card-container {
-    display: flex;
-    overflow-x: auto; /* Enable horizontal scrolling */
-    gap: 1rem; /* Space between cards */
-  }
-  
-  .card {
-    background-color: #D30000; /* Red background for the card */
-    color: white;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    min-width: 250px; /* Minimum width for the cards */
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  
-  .card:hover {
-    transform: scale(1.05); /* Zoom effect on hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  }
-  
-  .card-image {
-    width: 100%;
-    height: auto;
-    border-radius: 0.375rem; /* Rounded corners for images */
-  }
-  
+}
+
+/* CSS for the popup menu */
+.popup-menu {
+  position: absolute;
+  top: 35px;
+  right: 10px;
+  background-color: #DA2127;
+  border: 1px solid #DA2127;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none; /* Initially hidden */
+}
+
+/* CSS to display the popup menu when visible */
+.popup-menu.show {
+  display: block;
+}
+
+/* CSS for the menu options */
+.popup-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.popup-menu ul li {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+}
+
+.popup-menu ul li:last-child {
+  border-bottom: none;
+}
+
+.popup-menu ul li:hover {
+  background-color: #ff6666;
+}
+
+
+
+.card-right {
+  position: absolute;
+  right: 10px;
+  top: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.id-status {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.id-text {
+  font-size: 18px; /* Different pixel size for the ID number */
+  margin-right: 10px;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+
+.status-indicator.active {
+  background-color: green;
+}
+
+.status-indicator.inactive {
+  background-color: red;
+}
+
+.status-indicator.error {
+  background-color: yellow;
+}
+
+.robot-battery {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.robot-battery::before {
+  /* content: url('path-to-your-battery-icon.svg');  */
+  margin-right: 5px;
+}
