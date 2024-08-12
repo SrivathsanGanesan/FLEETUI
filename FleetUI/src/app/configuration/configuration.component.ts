@@ -38,6 +38,8 @@ export class ConfigurationComponent implements AfterViewInit {
   imageWidth: number = 0;  // Width in meters
   pixelsPerMeter: number = 0; // Pixels per meter
   private backgroundImage: HTMLImageElement | null = null;
+  isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
+  connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
   EnvData = [
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
   ];
@@ -65,37 +67,135 @@ export class ConfigurationComponent implements AfterViewInit {
     this.nodeMode = mode;
     this.modeSelected = true; // Mark that a mode has been selected
   }
+  drawConnectivity() {
+    const canvas = this.uploadedCanvas?.nativeElement;
+    const ctx = canvas?.getContext('2d');
+
+    if (!canvas || !ctx) return;
+
+    const [start, end] = this.connectivityPoints;
+    if (start && end) {
+      // Draw a line between the two points
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.lineTo(end.x, end.y);
+
+      // Set line style
+      ctx.strokeStyle = 'orange';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Draw arrow or other indication if needed
+      // (optional, for visualization)
+    }
+  }
+  connectivity() {
+    this.isConnectivityModeActive = true; // Enable connectivity mode
+    this.connectivityPoints = []; // Clear previous points
+    console.log('Connectivity mode activated. Select two points.');
+  }
+  connectivityMode: 'none' | 'bi-directional' | 'uni-directional' = 'none';
+  firstPoint: { x: number; y: number } | null = null;
+  secondPoint: { x: number; y: number } | null = null;
 
   handleLayerClick(event: MouseEvent) {
-    if (!this.modeSelected) {
-        alert('Please select a node mode first.');
-        return;
-    }
-
     const canvas = this.uploadedCanvas?.nativeElement;
     const rect = canvas?.getBoundingClientRect();
     const x = event.clientX - (rect?.left ?? 0);
     const y = event.clientY - (rect?.top ?? 0);
 
-    const clickedNode = this.nodes.find(node => {
+    if (this.connectivityMode === 'none') {
+      if (!this.modeSelected) {
+        alert('Please select a node mode first.');
+        return;
+      }
+
+      const clickedNode = this.nodes.find(node => {
         const distance = Math.sqrt((node.x - x) ** 2 + (node.y - y) ** 2);
-        return distance <= 5; // Adjust this threshold as needed
-    });
+        return distance <= 5;
+      });
 
-    if (clickedNode) {
+      if (clickedNode) {
         this.selectedNode = clickedNode;
+        this.redrawCanvas();
         console.log(`Node selected: ID ${clickedNode.id}`);
-    } else {
-        this.selectedNode = null;
-        if (this.nodeMode === 'single') {
-            this.addSingleNode(event);
+      } else {
+        if (this.nodeMode === 'single' && this.nodes.length === 0) {
+          this.addSingleNode(event);
         } else if (this.nodeMode === 'multi') {
-            this.addMultiNode(event);
+          this.addMultiNode(event);
         }
-    }
+      }
 
-    this.redrawCanvas();
-}
+      if (this.nodes.length > 0) {
+        this.redrawCanvas();
+      }
+    } else {
+      if (!this.firstPoint) {
+        this.firstPoint = { x, y };
+        this.redrawCanvas();
+      } else if (!this.secondPoint) {
+        this.secondPoint = { x, y };
+        this.redrawCanvas();
+        this.drawLineBetweenPoints();
+        this.firstPoint = null;
+        this.secondPoint = null;
+        this.connectivityMode = 'none';
+      }
+    }
+  }
+  drawLineBetweenPoints() {
+    const canvas = this.uploadedCanvas?.nativeElement;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx || !this.firstPoint || !this.secondPoint) return;
+  
+    const x1 = this.firstPoint.x;
+    const y1 = this.firstPoint.y;
+    const x2 = this.secondPoint.x;
+    const y2 = this.secondPoint.y;
+  
+    // Draw the line
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = 'green';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  
+    // Determine the direction of the arrows
+    const arrowLength = 10;
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+  
+    if (this.connectivityMode === 'uni-directional') {
+      // Draw the arrow at the end point
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+    } else if (this.connectivityMode === 'bi-directional') {
+      // Draw the arrow at the end point (bi-directional)
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+  
+      // Draw the arrow at the start point
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x1 + arrowLength * Math.cos(angle - Math.PI / 6), y1 + arrowLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x1 + arrowLength * Math.cos(angle + Math.PI / 6), y1 + arrowLength * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+    }
+  }
+  
 
 deleteNode() {
     if (this.selectedNode) {
@@ -122,14 +222,13 @@ addSingleNode(event: MouseEvent) {
 
   console.log(`Coordinates: (${relativeX.toFixed(2)}, ${relativeY.toFixed(2)}) meters`);
 
-  if (this.nodes.length > 0) {
-      
-  } else {
-      this.nodes.push({ x, y, id: this.nodeIdCounter++ }); // Add a new node if none exist
+  // If a single node is already placed, do not add more nodes
+  if (this.nodes.length === 0 || (this.nodeMode === 'single' && this.nodes.length === 0)) {
+    this.nodes.push({ x, y, id: this.nodeIdCounter++ });
+    this.redrawCanvas();
   }
-
-  this.redrawCanvas();
 }
+
 
 addMultiNode(event: MouseEvent) {
   const canvas = this.uploadedCanvas?.nativeElement;
@@ -283,9 +382,7 @@ redrawCanvas() {
     console.log('Add Node clicked');
   }
 
-  connectivity() {
-    console.log('Connectivity clicked');
-  }
+
 
   zones() {
     console.log('Zones clicked');

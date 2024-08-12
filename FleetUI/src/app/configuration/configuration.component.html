@@ -226,8 +226,8 @@
                       <div class="dropdown">
                         <button class="dropdown-button" (click)="connectivity()">Connectivity</button>
                         <div class="dropdown-content">
-                          <button>Uni-Directional</button>
-                          <button>Bi-Directional</button>
+                          <button (click)="connectivityMode = 'uni-directional'">Uni-Directional</button>
+                          <button (click)="connectivityMode = 'bi-directional'">Bi-Directional</button>
                         </div>
                       </div>
                       <div class="dropdown">
