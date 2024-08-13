@@ -58,6 +58,7 @@ export class ConfigurationComponent implements AfterViewInit {
     private dialog: MatDialog,
     private exportService: ExportService,
     private cdRef: ChangeDetectorRef
+    
   ) {
     // this.iconImage.src = '../../assets/ConfigurationOptions/point.svg';
   }
@@ -79,6 +80,7 @@ export class ConfigurationComponent implements AfterViewInit {
   closeRobotParametersPopup() {
     this.showRobotParametersPopup = false;
   }  
+  
   drawConnectivity() {
     const canvas = this.uploadedCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
@@ -103,10 +105,11 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   isRobotPopupVisible: boolean = false;
   robots = [
-    { id: 1, name: 'Robot A', status: 'Active' },
-    { id: 2, name: 'Robot B', status: 'Inactive' },
-    // Add more robot data here
-  ];  
+    { id: 1, name: 'Robot A', color: 'red' },
+    { id: 2, name: 'Robot B', color: 'green' },
+    // Add more robots with colors here
+  ];
+  selectedRobots: any[] = [];
   showRobotPopup() {
     this.isRobotPopupVisible = true;
   }

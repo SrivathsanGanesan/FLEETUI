@@ -13,7 +13,16 @@ export class RobotPopupComponent {
   closePopup() {
     this.close.emit();
   }
+  selectedRobots: any[] = [];
 
+  onRobotSelect(robot: any, event: any) {
+    if (event.target.checked) {
+      this.selectedRobots.push(robot);
+    } else {
+      this.selectedRobots = this.selectedRobots.filter(r => r.id !== robot.id);
+    }
+  }
+  
   addSelectedRobots() {
     const selectedRobots = this.robots.filter(robot => robot.selected);
     console.log('Selected Robots:', selectedRobots);
