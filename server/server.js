@@ -28,6 +28,10 @@ app.use("/robo-configuration", roboSpecificationRouter);
 const projectFileRouter = require("./fleetcore/routes/projectFileRouter");
 app.use("/fleet-project-file", projectFileRouter);
 
+// configuration..
+const configurationRouter = require("./fleetcore/routes/configurationRouter");
+app.use("/fleet-config", configurationRouter);
+
 app.listen(process.env.PORT, (err) => {
   err
     ? console.log("error while connecting : ", err)
