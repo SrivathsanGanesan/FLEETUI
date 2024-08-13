@@ -21,6 +21,9 @@ import { ChartComponent } from './chart/chart.component';
 import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
 import { NgxCaptureModule } from 'ngx-capture';
+import { RobotsComponent } from './robots/robots.component';
+
+
 
 @NgModule({
   declarations: [
@@ -33,6 +36,7 @@ import { NgxCaptureModule } from 'ngx-capture';
     UsermanagementComponent,
     Userlogscomponent,
     StatisticsComponent,
+    RobotsComponent,
     ChartComponent,
     UptimeComponent,
     ThroughputComponent,
