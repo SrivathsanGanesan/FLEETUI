@@ -56,9 +56,9 @@ const login = async (req, res) => {
       );
       return res
         .cookie("_token", token, {
-          httpOnly: true,
-          sameSite: "None",
-          secure: true, //.. over https
+          httpOnly: true, //cookie cannot be accessed via JavaScript
+          sameSite: "None", //.. None => Strict when prod
+          secure: true, //.. 0 | 1
         }) //sameSite: "Strict" only from the originated site..
         .status(200)
         .json({
