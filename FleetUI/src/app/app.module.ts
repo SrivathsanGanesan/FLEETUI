@@ -23,6 +23,7 @@ import { ThroughputComponent } from './throughput/throughput.component';
 import { IPScannerComponent } from './ipscanner/ipscanner.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-parameters-popup.component';
+import { RobotPopupComponent } from './robot-popup/robot-popup.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-pa
     ThroughputComponent,
     IPScannerComponent,
     RobotParametersPopupComponent,
+    RobotPopupComponent,
     
   ],
   imports: [

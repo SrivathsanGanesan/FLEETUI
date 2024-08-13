@@ -101,6 +101,19 @@ export class ConfigurationComponent implements AfterViewInit {
       // (optional, for visualization)
     }
   }
+  isRobotPopupVisible: boolean = false;
+  robots = [
+    { id: 1, name: 'Robot A', status: 'Active' },
+    { id: 2, name: 'Robot B', status: 'Inactive' },
+    // Add more robot data here
+  ];  
+  showRobotPopup() {
+    this.isRobotPopupVisible = true;
+  }
+
+  closeRobotPopup() {
+    this.isRobotPopupVisible = false;
+  }
   showIPScannerPopup = false;
 
   openIPScanner() {

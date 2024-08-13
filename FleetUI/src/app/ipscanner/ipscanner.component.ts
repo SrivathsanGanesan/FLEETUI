@@ -9,8 +9,8 @@ export class IPScannerComponent {
   @Output() close = new EventEmitter<void>();
 
   ipScanData = [
-    { ip: '195.80.116.170', mac: '195.80.116.180', ping: '[n/a]', Status: 'online'},
-    { ip: '195.80.116.140', mac: '195.80.116.150', ping: '[n/a]', Status: 'Offline'},
+    { ip: '195.80.116.170', mac: '00:00:00:00:00:00', ping: '[n/a]', Status: 'Offline'},
+    { ip: '195.80.116.140', mac: 'B4-45-06-55-A9-47', ping: '[n/a]', Status: 'Online'},
   ];
   showIPScannerPopup = false;
 

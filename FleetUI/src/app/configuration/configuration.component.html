@@ -257,7 +257,14 @@
                           <button>Picking Station</button>
                         </div>
                       </div>
-                      <button (click)="addRobots()">Add Robots</button>
+                      <button (click)="showRobotPopup()">Add Robots</button>
+
+                      <app-robot-popup
+                      [isVisible]="isRobotPopupVisible"
+                      [robots]="robots"
+                      
+                      (close)="closeRobotPopup()"
+                      ></app-robot-popup>                      
                       <button (click)="removeRobots()">Remove Robots</button>
                       <button (click)="saveMap()">Save</button>
                       <button (click)="hideCalibrationLayer()">Back</button>
