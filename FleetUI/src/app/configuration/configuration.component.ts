@@ -8,6 +8,7 @@ import {
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
 
+
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
@@ -89,6 +90,16 @@ export class ConfigurationComponent implements AfterViewInit {
       // (optional, for visualization)
     }
   }
+  showIPScannerPopup = false;
+
+  openIPScanner() {
+    this.showIPScannerPopup = true;
+  }
+
+  closeIPScanner() {
+    this.showIPScannerPopup = false;
+  }
+  
   connectivity() {
     this.isConnectivityModeActive = true; // Enable connectivity mode
     this.connectivityPoints = []; // Clear previous points

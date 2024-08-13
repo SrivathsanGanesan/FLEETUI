@@ -125,6 +125,13 @@
               </tbody>
             </table>
             <button class="ASR-button" *ngIf="currentTable === 'robot'">Add Selected Robots</button>
+            <!-- Add this in your main component HTML -->
+            <button class="IP-Scan" *ngIf="currentTable === 'robot'" (click)="openIPScanner()">IP Scan</button>
+
+            <div class="popup-overlay" *ngIf="showIPScannerPopup">
+              <app-ipscanner *ngIf="showIPScannerPopup" (close)="closeIPScanner()"></app-ipscanner>
+            </div>
+
             <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'robot'">
               <thead class="bg-gray-50">
                 <tr>

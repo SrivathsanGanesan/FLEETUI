@@ -20,7 +20,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartComponent } from './chart/chart.component';
 import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
-import { NgxCaptureModule } from 'ngx-capture';
+import { IPScannerComponent } from './ipscanner/ipscanner.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +36,8 @@ import { NgxCaptureModule } from 'ngx-capture';
     ChartComponent,
     UptimeComponent,
     ThroughputComponent,
+    IPScannerComponent,
+    
   ],
   imports: [
     NgApexchartsModule,
