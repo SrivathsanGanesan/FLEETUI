@@ -20,19 +20,19 @@
     <thead>
       <tr>
         <th>IP</th>
-        <th>Ping</th>
+        <th>MAC</th>
         <!-- <th>Hostname</th> -->
-        <th>Ports [4+]</th>
-        <th>Web detect</th>
+        <th>Ping</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let item of ipScanData">
         <td>{{ item.ip }}</td>
-        <td>{{ item.ping }}</td>
+        <td>{{ item.mac }}</td>
         <!-- <td>{{ item.hostname }}</td> -->
-        <td>{{ item.ports }}</td>
-        <td>{{ item.webDetect }}</td>
+        <td>{{ item.ping }}</td>
+        <td>{{ item.Status }}</td>
       </tr>
     </tbody>
   </table>

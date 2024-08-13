@@ -7,7 +7,8 @@ import {
 } from '@angular/core';
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
-
+import { MatDialog } from '@angular/material/dialog';
+import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
 
 @Component({
   selector: 'app-configuration',
@@ -54,6 +55,7 @@ export class ConfigurationComponent implements AfterViewInit {
   ];
 
   constructor(
+    private dialog: MatDialog,
     private exportService: ExportService,
     private cdRef: ChangeDetectorRef
   ) {
@@ -68,6 +70,15 @@ export class ConfigurationComponent implements AfterViewInit {
     this.nodeMode = mode;
     this.modeSelected = true; // Mark that a mode has been selected
   }
+  showRobotParametersPopup = false;
+
+  openRobotParametersPopup() {
+    this.showRobotParametersPopup = true;
+  }
+
+  closeRobotParametersPopup() {
+    this.showRobotParametersPopup = false;
+  }  
   drawConnectivity() {
     const canvas = this.uploadedCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');

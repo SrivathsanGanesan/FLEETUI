@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@angular/cdk": "^18.1.4",
+    "@angular/material": "^18.1.4",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "papaparse": "^5.4.1",

@@ -21,6 +21,8 @@ import { ChartComponent } from './chart/chart.component';
 import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
 import { IPScannerComponent } from './ipscanner/ipscanner.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-parameters-popup.component';
 
 @NgModule({
   declarations: [
@@ -37,15 +39,18 @@ import { IPScannerComponent } from './ipscanner/ipscanner.component';
     UptimeComponent,
     ThroughputComponent,
     IPScannerComponent,
+    RobotParametersPopupComponent,
     
   ],
   imports: [
     NgApexchartsModule,
     BrowserModule,
     AppRoutingModule,
+    MatTabsModule,
     BrowserAnimationsModule,
     FormsModule,
     BrowserModule,
+    
   ],
   providers: [
     // provideClientHydration()
