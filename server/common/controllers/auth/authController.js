@@ -55,7 +55,11 @@ const login = async (req, res) => {
         process.env.JWT_SECRET_KEY
       );
       return res
-        .cookie("_token", token, { httpOnly: true }) //sameSite: "Strict" only from the originated site..
+        .cookie("_token", token, {
+          httpOnly: true,
+          sameSite: "None",
+          secure: true, //.. over https
+        }) //sameSite: "Strict" only from the originated site..
         .status(200)
         .json({
           isUserExist: true,
