@@ -23,16 +23,19 @@ const scanIp = async (req, res, next) => {
       size: 32,
       timeout: null,
     });
-    arr.push({
-      host: poll.host,
-      ip_address: poll.ip_address,
-      status: poll.status,
-      time: poll.res_avg,
+    arp.getMAC(ip, (err, mac) => {
+      if (!err) {
+        arr.push(mac);
+        console.log(mac);
+      }
     });
+    // arr.push({
+    //   host: poll.host,
+    //   ip_address: poll.ip_address,
+    //   status: poll.status,
+    //   time: poll.res_avg,
+    // });
   }
-  arp.getMAC("192.168.249.248", function (err, mac) {
-    if (!err) console.log(mac);
-  });
 
   res.json(arr);
 };
