@@ -9,20 +9,18 @@ const eventStreamHeader = {
   Connection: "keep-alive",
 };
 
+const getMacAddress = (ip) => {
+  return new Promise((resolve, reject) => {
+    arp.getMAC(ip, (err, mac) => {
+      if (err) reject(err);
+      else resolve(mac);
+    });
+  });
+};
+
 const scanIp = async (req, res, next) => {
   let arr = [];
   const ipv4Range = getIPRange("192.168.249.3-192.168.249.248");
-  const macPromises = ipv4Range.map((ip) => {
-    return new Promise((resolve, reject) => {
-      arp.getMAC(ip, (err, mac) => {
-        if (err) {
-          reject(err); // Reject promise on error
-        } else {
-          resolve(mac); // Resolve promise with MAC address
-        }
-      });
-    });
-  });
 
   const ipRange = [
     "192.168.249.3",
@@ -32,19 +30,25 @@ const scanIp = async (req, res, next) => {
   ]; // Add your IP range
   res.writeHead(200, eventStreamHeader);
   for (let ip of ipRange) {
-    const poll = await netScan.poll(ip, {
-      //192.168.249.183
-      repeat: null,
-      size: 32,
-      timeout: null,
-    });
-    const netPoll = JSON.stringify({
-      host: poll.host,
-      ip_address: poll.ip_address,
-      status: poll.status,
-      time: poll.res_avg,
-    });
-    res.write(`data: ${netPoll}\n\n`);
+    try {
+      const poll = await netScan.poll(ip, {
+        //192.168.249.183
+        repeat: null,
+        size: 32,
+        timeout: null,
+      });
+      const mac = await getMacAddress(ip);
+      const netPoll = JSON.stringify({
+        host: poll.host,
+        ip_address: poll.ip_address,
+        mac_address: mac,
+        status: poll.status,
+        time: poll.res_avg,
+      });
+      res.write(`data: ${netPoll}\n\n`);
+    } catch (error) {
+      res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+    }
   }
   const macAddresses = await Promise.all(macPromises);
   console.log(macAddresses);
