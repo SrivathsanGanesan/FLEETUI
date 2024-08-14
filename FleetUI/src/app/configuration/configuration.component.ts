@@ -117,6 +117,30 @@ export class ConfigurationComponent implements AfterViewInit {
   closeRobotPopup() {
     this.isRobotPopupVisible = false;
   }
+  handleRobotAddition(robot: any) {
+    this.selectedRobots.push(robot);
+    this.drawRobotOnCanvas(robot);
+  }
+
+  drawRobotOnCanvas(robot: any) {
+    const canvas = this.uploadedCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Example position to place the robot on the canvas
+    const x = canvas.width / 2;
+    const y = canvas.height / 2;
+
+    ctx.fillStyle = robot.color;
+    ctx.fillRect(x - 5, y - 5, 20, 20); // Draw a small square of 10x10 pixels
+  }
+
+  // Add the addRobotsToCanvas function here
+  addRobotsToCanvas(selectedRobots: any[]) {
+    selectedRobots.forEach(robot => {
+      this.drawRobotOnCanvas(robot);
+    });
+  }
   showIPScannerPopup = false;
 
   openIPScanner() {

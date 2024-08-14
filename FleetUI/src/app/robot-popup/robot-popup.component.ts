@@ -9,23 +9,17 @@ export class RobotPopupComponent {
   @Input() isVisible: boolean = false;
   @Input() robots: any[] = [];
   @Output() close = new EventEmitter<void>();
+  @Output() addRobot = new EventEmitter<any[]>(); // Emit an array of selected robots
 
   closePopup() {
     this.close.emit();
   }
-  selectedRobots: any[] = [];
 
-  onRobotSelect(robot: any, event: any) {
-    if (event.target.checked) {
-      this.selectedRobots.push(robot);
-    } else {
-      this.selectedRobots = this.selectedRobots.filter(r => r.id !== robot.id);
-    }
-  }
-  
   addSelectedRobots() {
     const selectedRobots = this.robots.filter(robot => robot.selected);
-    console.log('Selected Robots:', selectedRobots);
-    this.close.emit();  // Close the popup after adding robots
+    if (selectedRobots.length > 0) {
+      this.addRobot.emit(selectedRobots); // Emit all selected robots
+      this.close.emit();
+    }
   }
 }

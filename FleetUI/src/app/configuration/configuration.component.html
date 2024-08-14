@@ -263,6 +263,7 @@
                       [isVisible]="isRobotPopupVisible"
                       [robots]="robots"
                       (close)="closeRobotPopup()"
+                      (addRobot)="handleRobotAddition($event)">
                       ></app-robot-popup>                      
                       <button (click)="removeRobots()">Remove Robots</button>
                       <button (click)="saveMap()">Save</button>
@@ -272,7 +273,6 @@
                 </div>
               </div>
             </div>        
-            
     </div>
   </div>
 </div>
