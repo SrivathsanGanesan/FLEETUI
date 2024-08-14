@@ -338,3 +338,19 @@ app-operation-pie {
 .date-label {
   color: #333;
 }
+
+.area-chart-container {
+  width: 100%;
+  max-width: 700px; /* Adjust according to your design */
+ 
+  margin-top: 5px; /* Space between search filter and area chart */
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Optional box-shadow for aesthetics */
+  border-radius: 8px;
+  padding: 0px;
+}
+
+.area-chart-container:hover {
+  box-shadow: 8px 8px 20px 8px rgba(0, 0, 0, 0.1);
+
+}
