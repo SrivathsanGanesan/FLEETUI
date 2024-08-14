@@ -105,9 +105,9 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   isRobotPopupVisible: boolean = false;
   robots = [
-    { id: 1, name: 'Robot A', color: 'red' },
-    { id: 2, name: 'Robot B', color: 'green' },
-    // Add more robots with colors here
+    { id: 1, name: 'Robot A', color: 'red', imageUrl: 'assets/robots/robotA.svg' },
+    { id: 2, name: 'Robot B', color: 'green', imageUrl: 'assets/robots/robotB.svg' },
+    // Add more robots with their respective image URLs here
   ];
   selectedRobots: any[] = [];
   showRobotPopup() {
@@ -117,23 +117,52 @@ export class ConfigurationComponent implements AfterViewInit {
   closeRobotPopup() {
     this.isRobotPopupVisible = false;
   }
-  handleRobotAddition(robot: any) {
-    this.selectedRobots.push(robot);
-    this.drawRobotOnCanvas(robot);
+
+  handleRobotAddition(selectedRobot: any) {
+    console.log('Selected robot:', selectedRobot);
+    if (selectedRobot && selectedRobot.imageUrl) {
+      console.log('Adding robot:', selectedRobot);
+      this.drawRobotOnCanvas(selectedRobot);
+    } else {
+      console.error('Robot imageUrl is undefined:', selectedRobot);
+    }
+  }
+  
+ 
+drawRobotOnCanvas(robot: any) {
+  if (!robot || !robot.imageUrl) {
+      console.error('Invalid robot object:', robot);
+      return;
   }
 
-  drawRobotOnCanvas(robot: any) {
-    const canvas = this.uploadedCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  const canvas = this.uploadedCanvas.nativeElement;
+  const ctx = canvas.getContext('2d');
 
-    // Example position to place the robot on the canvas
-    const x = canvas.width / 2;
-    const y = canvas.height / 2;
-
-    ctx.fillStyle = robot.color;
-    ctx.fillRect(x - 5, y - 5, 20, 20); // Draw a small square of 10x10 pixels
+  if (!ctx) {
+      console.error('Canvas context not found');
+      return;
   }
+
+  const img = new Image();
+  img.src = robot.imageUrl;
+
+  const x = canvas.width / 2;
+  const y = canvas.height / 2;
+
+  img.onload = () => {
+      ctx.drawImage(img, x - 20, y - 20, 40, 40);
+      console.log(`Robot ${robot.name} placed on the canvas at (${x}, ${y})`);
+  };
+
+  img.onerror = () => {
+      console.error(`Failed to load robot image: ${robot.imageUrl}`);
+  };
+
+  if (img.complete) {
+      ctx.drawImage(img, x - 20, y - 20, 40, 40);
+      console.log(`Robot ${robot.name} placed on the canvas at (${x}, ${y})`);
+  }
+}
 
   // Add the addRobotsToCanvas function here
   addRobotsToCanvas(selectedRobots: any[]) {
