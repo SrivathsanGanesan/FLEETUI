@@ -169,23 +169,24 @@ app-operation-pie {
 .search-filter-container {
   display: flex;
   flex-direction: column;
-  width:600px;
-  gap: 15px;
+  width:530px;
+  gap: 5px;
   padding: 10px;
   background-color: #f7f7f7;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 .search-box {
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
+  border: 0px solid #ccc;
   border-radius: 25px;
   overflow: hidden;
-  transition: box-shadow 0.3s;
   background-color: #ffffff;
+  width: 100%;
+  max-width: 600px; /* Adjust as needed */
 }
+
 
 .search-box input {
   border: none;
@@ -193,8 +194,8 @@ app-operation-pie {
   outline: none;
   width: 100%; /* Take full width */
   font-size: 14px;
+  border-radius: 25px 0 0 25px; /* Matching the radius of the search box */
 }
-
 .search-box input::placeholder {
   color: #aaa;
 }
@@ -211,7 +212,10 @@ app-operation-pie {
   border-radius: 0 25px 25px 0;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
-
+.search-btn img {
+  width: 40px; /* Adjust size as needed */
+  height: 24px; /* Adjust size as needed */
+}
 .search-btn:hover {
   background-color: #e64e4e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -271,7 +275,7 @@ app-operation-pie {
 
 .filter-options {
   display: flex;
-  gap: 5px;
+  gap: 0px;
 }
 
 .filter-options button {
@@ -281,6 +285,7 @@ app-operation-pie {
   background-color: #ffffff;
   cursor: pointer;
   font-size: 14px;
+  color: #333;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
@@ -295,26 +300,9 @@ app-operation-pie {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.filter-btn {
-  padding: 8px 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #ffffff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-  transition: background-color 0.3s, box-shadow 0.3s;
-}
 
-.filter-btn:hover {
-  background-color: #ececec;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.date-range {
-  padding: 8px 15px;
+/* .date-inputs {
+  padding: 4px 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #ffffff;
@@ -324,6 +312,29 @@ app-operation-pie {
   font-size: 14px;
 }
 
-.date-range i {
+.date-inputs i {
   color: #666;
+} */
+
+
+.date-inputs {
+  display: flex;
+  gap: 0.3rem; /* Space between date inputs */
+  align-items: center;
+}
+
+.date-input {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.date-input:focus {
+  outline: none;
+  box-shadow: 0px 0px 0px 2px #D30000;
+}
+
+.date-label {
+  color: #333;
 }

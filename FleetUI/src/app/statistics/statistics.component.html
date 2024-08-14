@@ -3,6 +3,7 @@
   <div class="mainContent">
     <!-- <app-chart1></app-chart1> -->
     
+
      <!-- Header section -->
      <div class="header-section mb-4">
       <h1 class="header-title">Operation</h1>
@@ -10,49 +11,44 @@
         <div class="subheader-text">Create and edit task reports</div>
         <img src="../../assets/icons/i-icon.svg" alt="Icon" class="subheader-icon">
       </div>
+
       <!-- search container -->
       <div class="search-filter-container">
         <!-- Search Bar -->
         <div class="search-box">
           <input type="text" placeholder="Search For Something..." />
           <button class="search-btn">
-            <img src="../../assets/icons/search.jpeg" alt="Search" />
+            <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
           </button>
         </div>
+        <!-- area chart -->
+        <div class="area-chart-container">
+          <app-area-chart></app-area-chart>
+      </div>
+      <!--  -->
       
         <!-- Options Container -->
         <div class="options-container">
-          <div class="dropdown">
-            <button class="dropbtn">All &#9662;</button>
-            <div class="dropdown-content">
-              <a href="#">Option 1</a>
-              <a href="#">Option 2</a>
-              <a href="#">Option 3</a>
-            </div>
-          </div>
-      
+               
           <div class="filter-options">
             <button [class.active]="activeFilter === 'today'" (click)="setActiveFilter('today')">Today</button>
             <button [class.active]="activeFilter === 'week'" (click)="setActiveFilter('week')">Week</button>
             <button [class.active]="activeFilter === 'month'" (click)="setActiveFilter('month')">Month</button>
           </div>
       
-          <button class="filter-btn">
-            <i class="fa fa-filter"></i> Filter
-          </button>
+         
       
-          <div class="date-range">
-            8 Dec 2022 - 6 Jan 2023 <i class="fa fa-calendar"></i>
+          <div class="date-inputs">
+            <label for="start-date" class="date-label"></label>
+            <input type="date" id="start-date" (change)="onDateChange($event)" class="date-input">
+      
+            <label for="end-date" class="date-label"></label>
+            <input type="date" id="end-date" (change)="onDateChange($event)" class="date-input">
           </div>
         </div>
       </div>
-      
-      
+         
       <!--  -->
-
-      <div class="Chart1" [ngClass]="{ 'blurred': ONBtn }">
-        <app-throughput></app-throughput> 
-      </div>
 
       <div class="tasks-table">
         <table>
