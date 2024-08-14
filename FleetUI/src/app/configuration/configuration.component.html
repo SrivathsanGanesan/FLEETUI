@@ -124,18 +124,7 @@
                 </tr>
               </tbody>
             </table>
-            <button class="ASR-button" *ngIf="currentTable === 'robot'" (click)="openRobotParametersPopup()">Add Selected Robots</button>
-
-            <div class="popup-overlay" *ngIf="showRobotParametersPopup">
-              <app-robot-parameters-popup (close)="closeRobotParametersPopup()"></app-robot-parameters-popup>
-            </div>
-                        <!-- Add this in your main component HTML -->
-            <button class="IP-Scan" *ngIf="currentTable === 'robot'" (click)="openIPScanner()">IP Scan</button>
-
-            <div class="popup-overlay" *ngIf="showIPScannerPopup">
-              <app-ipscanner *ngIf="showIPScannerPopup" (close)="closeIPScanner()"></app-ipscanner>
-            </div>
-
+            <button class="ASR-button" *ngIf="currentTable === 'robot'">Add Selected Robots</button>
             <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'robot'">
               <thead class="bg-gray-50">
                 <tr>
@@ -202,10 +191,10 @@
                       <label for="Sitename">Site Name : </label>
                       <input id="Sitename" type="text" class="Sitename" [(ngModel)]="siteName">
                       <br>
-                      <label for="imageHeight">Enter Height (meters): </label>
+                      <label for="imageHeight">Enter Height : </label>
                       <input id="imageHeight" type="number" class="imageHeight" [(ngModel)]="imageHeight">
                       <br>
-                      <label for="imageWidth">Enter Width (meters): </label>
+                      <label for="imageWidth">Enter Width : </label>
                       <input id="imageWidth" type="number" class="imageWidth" [(ngModel)]="imageWidth">
                       <br>
                       <button class="Open-button" (click)="openImage()">Open Environment</button>
@@ -213,23 +202,19 @@
                   </div>
                   <div class="Map-settings" *ngIf="isImageOpened">
                     <div class="canvas-container">
-                      <canvas #uploadedCanvas (dblclick)="handleLayerClick($event)"></canvas>
-                      <div class="transparent-layer" *ngIf="isCalibrationLayerVisible" (click)="handleLayerClick($event)"></div>
+                      <canvas #uploadedCanvas></canvas>
                     </div>
-                    
-                  
                     <!-- Calibrate Coordinates Button -->
                     <button class="calibrate-button" *ngIf="!isCalibrationLayerVisible" (click)="showCalibrationLayer()">
                       Options
                     </button>
-                  
                     <!-- Calibration Options Layer -->
                     <div class="calibration-layer" *ngIf="isCalibrationLayerVisible">                      
                       <div class="dropdown">
                         <button class="dropdown-button">Add Node</button>
                         <div class="dropdown-content">
-                          <button (click)="setNodeMode('single')">Single Node</button>
-                          <button (click)="setNodeMode('multi')">Multi Node</button>
+                          <button (click)="addSingleNode()">Single Node</button>
+                          <button (click)="addMultiNode()">Multi Node</button>
                         </div>
                       </div>
                       <button (click)="deleteNode()">Delete Node</button>
@@ -237,42 +222,37 @@
                       <div class="dropdown">
                         <button class="dropdown-button" (click)="connectivity()">Connectivity</button>
                         <div class="dropdown-content">
-                          <button (click)="connectivityMode = 'uni-directional'">Uni-Directional</button>
-                          <button (click)="connectivityMode = 'bi-directional'">Bi-Directional</button>
+                          <button (click)="addSingleNode()">Uni-Directional</button>
+                          <button (click)="addMultiNode()">Bi-Directional</button>
                         </div>
                       </div>
                       <div class="dropdown">
                         <button class="dropdown-button" (click)="zones()">Zones</button>
                         <div class="dropdown-content">
-                          <button >High Speed Zone</button>
-                          <button >Medium Speed Zone</button>
-                          <button >Low Speed Zone</button>
+                          <button (click)="addSingleNode()">High Speed Zone</button>
+                          <button (click)="addSingleNode()">Medium Speed Zone</button>
+                          <button (click)="addMultiNode()">Low Speed zone</button>
                         </div>
                       </div>
                       <div class="dropdown">
                         <button class="dropdown-button" (click)="addAssets()">Add Assets</button>
                         <div class="dropdown-content">
-                          <button >Docking Station</button>
-                          <button >Charging Station</button>
-                          <button>Picking Station</button>
+                          <button (click)="addSingleNode()">Docking Station</button>
+                          <button (click)="addSingleNode()">Charging Station</button>
+                          <button (click)="addMultiNode()">Picking Station</button>
                         </div>
                       </div>
-                      <button (click)="showRobotPopup()">Add Robots</button>
-
-                      <app-robot-popup
-                      [isVisible]="isRobotPopupVisible"
-                      [robots]="robots"
-                      (close)="closeRobotPopup()"
-                      (addRobot)="handleRobotAddition($event)">
-                      ></app-robot-popup>                      
+                      <button (click)="addRobots()">Add Robots</button>
                       <button (click)="removeRobots()">Remove Robots</button>
                       <button (click)="saveMap()">Save</button>
                       <button (click)="hideCalibrationLayer()">Back</button>
                     </div>
-                  </div>
+                  </div>                  
                 </div>
               </div>
-            </div>        
+            </div>
+                       
+            
     </div>
   </div>
 </div>

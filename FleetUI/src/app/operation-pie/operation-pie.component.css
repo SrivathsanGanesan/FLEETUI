@@ -1,0 +1,164 @@
+.activities-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow for emphasis */
+    margin-top: 5px;
+    width: 300px; /* Adjust width as needed */
+    height:150 ;
+   
+    position: relative;
+
+}
+
+.activities-header {
+    display: flex;
+    justify-content: space-between; /* Ensures the header and date picker are spaced apart */
+    align-items: center; /* Vertically aligns the header content */
+    margin-bottom: 10px;
+    gap: 10px; /* Add some space between the elements */
+}
+
+.activities-header h3 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 18px;
+    color: #666666;
+    white-space: nowrap; /* Prevents the title from wrapping */
+}
+
+.activities-header p, .activities-header span {
+    margin: 0;
+    font-size: 16px;
+    color: #000000;
+    white-space: nowrap; /* Prevents the text from wrapping */
+}
+
+.date-picker {
+    display: flex;
+    justify-content: flex-end; /* Aligns the button to the right */
+    align-items: center; /* Ensures vertical alignment */
+}
+
+.date-picker button {
+    background-color: #7854f7;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: auto; /* Pushes the button to the right */
+}
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background-color: #7854f7;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.dropdown-menu {
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 5px 0;
+    z-index: 1;
+    right: 0;
+    min-width: 100px;
+    border-radius: 4px;
+}
+
+.dropdown-menu button {
+    background-color: transparent;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+    background-color: #ddd;
+}
+.activities-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.donut-chart {
+    position: relative;
+    width: 150px; /* Adjust as needed */
+    height: 150px; /* Adjust as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.activities-info {
+    text-align: right;
+}
+
+.info-percentage {
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.info-percentage.positive {
+    color: #00c853; /* Green color */
+}
+
+.info-percentage span {
+    font-size: 14px;
+}
+
+.info-text {
+    font-size: 12px;
+    color: #888888;
+    margin-top: 5px;
+}
+
+.legend {
+    margin-top: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+
+.legend-color.completed {
+    background-color: #ff5252; /* Red color */
+}
+
+.legend-color.inprogress {
+    background-color: #f48fb1; /* Light red color */
+}
+
+.operation-pie {
+    position: absolute;
+    right: 20px; /* Position 20px from the right */
+    top: 50%; /* Position at the vertical center */
+    transform: translateY(-50%); /* Adjust to truly center vertically */
+    width: 300px; /* Adjust the size of the pie chart container */
+    
+  }
