@@ -44,10 +44,36 @@ export class ConfigurationComponent implements AfterViewInit {
   isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
   
-  EnvData = [
+  EnvData:any[] = [
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
+    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 5, 2024. 14:00:17' },
+    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 5, 2024. 14:00:17' }
   ];
-  robotData = [
+  ngOnChanges() {
+    this.filterData();
+  }
+
+  searchTerm: string = '';
+  filteredEnvData: any[] = [];
+  filteredRobotData: any[] = [];
+  filterData() {
+    const term = this.searchTerm.toLowerCase();
+  
+    if (this.currentTable === 'Environment') {
+      this.filteredEnvData = this.EnvData.filter(item =>
+        item.column1.toLowerCase().includes(term) ||
+        item.column2.toLowerCase().includes(term) ||
+        item.column3.toLowerCase().includes(term)
+      );
+    } else if (this.currentTable === 'robot') {
+      this.filteredRobotData = this.robotData.filter(item =>
+        item.column1.toLowerCase().includes(term) ||
+        item.column2.toLowerCase().includes(term)
+      );
+    }
+  }
+  
+  robotData:any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
@@ -143,8 +169,14 @@ export class ConfigurationComponent implements AfterViewInit {
   private selectedRobotIndex: number | null = null;
   private offsetX: number = 0;
   private offsetY: number = 0;
+  searchTermChanged() {
+    this.filterData();
+  }
   ngOnInit() {
-    
+    this.filteredEnvData = this.EnvData;
+    this.filteredRobotData = this.robotData;
+    this.searchTerm = '';
+    this.searchTermChanged();
     // Initialize the robot image when the component loads
     this.robotImage = new Image();
     this.robotImage.src = '../../assets/robots/robotA.svg'; // Replace with your image path
@@ -639,11 +671,7 @@ redrawCanvas() {
     this.imageWidth = 0;
   }
 
-  onSearch(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const query = inputElement?.value || '';
-    // Implement your search logic here
-  }
+
 
   onDateFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;

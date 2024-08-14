@@ -13,7 +13,7 @@
       <div class="search-date-container">
         <!-- Search Bar -->
         <div class="search-container">
-          <input type="text" placeholder="Search..." class="search-input"/>
+          <input type="text" placeholder="Search..." class="search-input" [(ngModel)]="searchTerm" (ngModelChange)="searchTermChanged()"/>
           <button class="search-button">
             <svg
               width="18"
@@ -94,7 +94,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of EnvData">
+                <tr *ngFor="let item of filteredEnvData">
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
@@ -115,7 +115,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of robotData">
+                <tr *ngFor="let item of filteredRobotData">
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
