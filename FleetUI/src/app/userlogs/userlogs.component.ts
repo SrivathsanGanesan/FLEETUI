@@ -178,6 +178,5 @@ currentTab: any;
 function onDateFilterChange(event: Event | undefined, Event: { new(type: string, eventInitDict?: EventInit): Event; prototype: Event; readonly NONE: 0; readonly CAPTURING_PHASE: 1; readonly AT_TARGET: 2; readonly BUBBLING_PHASE: 3; }) {
   throw new Error('Function not implemented.');
 
-
  
 }

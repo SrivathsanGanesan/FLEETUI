@@ -3,10 +3,12 @@ import {
   ElementRef,
   ViewChild,
   AfterViewInit,
-  ChangeDetectorRef,
+  ChangeDetectorRef
 } from '@angular/core';
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
 
 @Component({
   selector: 'app-configuration',
@@ -15,9 +17,12 @@ import { formatDate } from '@angular/common';
 })
 export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('uploadedCanvas', { static: false })
-  uploadedCanvas!: ElementRef<HTMLCanvasElement>;
-
+  @ViewChild('uploadedCanvas', { static: false }) uploadedCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('overlayLayer', { static: false }) overlayLayer!: ElementRef;
+  
+  nodes: Array<{ x: number; y: number; id: number }> = [];
+  selectedNode: { x: number; y: number; id: number } | null = null;
+  nodeIdCounter: number = 0; // Counter to generate unique IDs for each node
   fleetTab: string = 'general';
   filteredData: any;
   originalData: any;
@@ -26,19 +31,49 @@ export class ConfigurationComponent implements AfterViewInit {
   isTransitioning: boolean = false;
   activeButton: string = 'Environment'; // Default active button
   activeHeader: string = 'Environment'; // Default header
-  chosenImageName = ''; // Initialize chosenImageName with an empty string
-  imageHeight = 0; // Initialize imageHeight with a default value
-  imageWidth = 0; // Initialize imageWidth with a default value
+  chosenImageName = ''; // Initialize chosenImageName with an empty string 
   imageUploaded: boolean = false; // To track if an image is uploaded
   imageFile: File | null = null; // Store the uploaded image file
   isImageOpened: boolean = false; // Track if the image is opened in the canvas
   currentTable = 'Environment';
   currentTab: any;
-
-  EnvData = [
+  imageHeight: number = 0; // Height in meters
+  imageWidth: number = 0;  // Width in meters
+  pixelsPerMeter: number = 0; // Pixels per meter
+  private backgroundImage: HTMLImageElement | null = null;
+  isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
+  connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
+  
+  EnvData:any[] = [
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
+    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 5, 2024. 14:00:17' },
+    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 5, 2024. 14:00:17' }
   ];
-  robotData = [
+  ngOnChanges() {
+    this.filterData();
+  }
+
+  searchTerm: string = '';
+  filteredEnvData: any[] = [];
+  filteredRobotData: any[] = [];
+  filterData() {
+    const term = this.searchTerm.toLowerCase();
+  
+    if (this.currentTable === 'Environment') {
+      this.filteredEnvData = this.EnvData.filter(item =>
+        item.column1.toLowerCase().includes(term) ||
+        item.column2.toLowerCase().includes(term) ||
+        item.column3.toLowerCase().includes(term)
+      );
+    } else if (this.currentTable === 'robot') {
+      this.filteredRobotData = this.robotData.filter(item =>
+        item.column1.toLowerCase().includes(term) ||
+        item.column2.toLowerCase().includes(term)
+      );
+    }
+  }
+  
+  robotData:any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
@@ -48,15 +83,415 @@ export class ConfigurationComponent implements AfterViewInit {
   ];
 
   constructor(
+    private dialog: MatDialog,
     private exportService: ExportService,
     private cdRef: ChangeDetectorRef
+    
   ) {
-    this.iconImage.src = '../../assets/ConfigurationOptions/point.svg';
+    // this.iconImage.src = '../../assets/ConfigurationOptions/point.svg';
+  }
+  ngAfterViewInit() {
+    const canvas = this.uploadedCanvas?.nativeElement;
+  if (canvas) {
+    canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
+    canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+    canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
+  }
+   }
+
+  nodeMode: 'single' | 'multi' = 'single'; // Node mode (single or multi)
+  modeSelected: boolean = false; // Flag to track if a node mode has been selected
+  // Set the node mode (single or multi)
+  setNodeMode(mode: 'single' | 'multi') {
+    this.nodeMode = mode;
+    this.modeSelected = true; // Mark that a mode has been selected
+  }
+  showRobotParametersPopup = false;
+
+  openRobotParametersPopup() {
+    this.showRobotParametersPopup = true;
   }
 
-  ngAfterViewInit() {
-    // Any initialization that requires the view to be fully loaded can go here.
+  closeRobotParametersPopup() {
+    this.showRobotParametersPopup = false;
+  }  
+  
+  drawConnectivity() {
+    const canvas = this.uploadedCanvas?.nativeElement;
+    const ctx = canvas?.getContext('2d');
+
+    if (!canvas || !ctx) return;
+
+    const [start, end] = this.connectivityPoints;
+    if (start && end) {
+      // Draw a line between the two points
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.lineTo(end.x, end.y);
+
+      // Set line style
+      ctx.strokeStyle = 'orange';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Draw arrow or other indication if needed
+      // (optional, for visualization)
+    }
   }
+  isRobotPopupVisible: boolean = false;
+  
+  robots = [
+    { id: 1, name: 'Robot A'},
+    { id: 2, name: 'Robot B'}
+  ]; 
+  
+  
+  selectedRobots: any[] = [];
+  showRobotPopup() {
+    this.isRobotPopupVisible = true;
+  }
+
+  closeRobotPopup() {
+    this.isRobotPopupVisible = false;
+  }
+
+  handleRobotAddition(selectedRobots: any[]) {
+    if (selectedRobots.length > 0) {
+        this.addRobotsToCanvas(selectedRobots);
+    } else {
+        console.error('No robots selected.');
+    }
+}
+
+  robotPositions: { x: number; y: number }[] = [];
+  
+  private robotImage: HTMLImageElement | null = null;
+  private selectedRobotIndex: number | null = null;
+  private offsetX: number = 0;
+  private offsetY: number = 0;
+  searchTermChanged() {
+    this.filterData();
+  }
+  ngOnInit() {
+    this.filteredEnvData = this.EnvData;
+    this.filteredRobotData = this.robotData;
+    this.searchTerm = '';
+    this.searchTermChanged();
+    // Initialize the robot image when the component loads
+    this.robotImage = new Image();
+    this.robotImage.src = '../../assets/robots/robotA.svg'; // Replace with your image path
+  
+    // Optionally, you can also handle image loading errors
+    this.robotImage.onerror = () => {
+      console.error('Failed to load robot image.');
+      this.robotImage = null; // Set to null or handle accordingly
+    };
+    // Add mouse event listeners
+    if (this.uploadedCanvas) {
+      
+    
+  const canvas = this.uploadedCanvas.nativeElement;
+  canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
+  canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+  canvas.addEventListener('mouseup', this.onMouseUp.bind(this));}
+  }
+  onMouseDown(event: MouseEvent) {
+    const canvas = this.uploadedCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+  
+    // Check if the click is within the bounds of any robot
+    this.selectedRobotIndex = this.robotPositions.findIndex(pos => {
+      const robotWidth = this.robotImage?.naturalWidth || 40;
+      const robotHeight = this.robotImage?.naturalHeight || 40;
+  
+      return x >= pos.x && x <= pos.x + robotWidth && y >= pos.y && y <= pos.y + robotHeight;
+    });
+  
+    if (this.selectedRobotIndex !== null && this.selectedRobotIndex !== -1) {
+      // Store the offset within the robot
+      const pos = this.robotPositions[this.selectedRobotIndex];
+      this.offsetX = x - pos.x;
+      this.offsetY = y - pos.y;
+    }
+  }
+  
+  onMouseMove(event: MouseEvent) {
+    if (this.selectedRobotIndex === null) return;
+  
+    const canvas = this.uploadedCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+  
+    // Update the position of the selected robot
+    const pos = this.robotPositions[this.selectedRobotIndex];
+    pos.x = x - this.offsetX;
+    pos.y = y - this.offsetY;
+  
+    // Redraw the canvas to reflect the new position
+    this.redrawCanvas();
+  }
+  
+  onMouseUp(event: MouseEvent) {
+    this.selectedRobotIndex = null; // Deselect the robot
+  }
+  
+drawRobotOnLayer(robot: any) {
+  if (!robot) {
+      console.error('Invalid robot object:', robot);
+      return;
+  }
+
+  const layer = document.querySelector('.transparent-layer') as HTMLElement;
+  
+  if (!layer) {
+      console.error('Transparent layer not found');
+      return;
+  }
+
+  // Create an image element for the robot
+  const robotImage = document.createElement('img');
+  robotImage.src = this.robotImage?.src || '../../assets/robots/robotA.svg'; // Use your default image if needed
+  robotImage.style.position = 'absolute';
+  robotImage.style.width = '30px'; // Adjust as needed
+  robotImage.style.height = '30px'; // Adjust as needed
+  
+  // Generate random position within the layer's dimensions
+  const layerWidth = layer.clientWidth;
+  const layerHeight = layer.clientHeight;
+  const robotWidth = parseInt(robotImage.style.width, 10);
+  const robotHeight = parseInt(robotImage.style.height, 10);
+
+  const randomX = Math.random() * (layerWidth - robotWidth);
+  const randomY = Math.random() * (layerHeight - robotHeight);
+
+  robotImage.style.left = `${randomX}px`;
+  robotImage.style.top = `${randomY}px`;
+
+  // Append the robot image to the transparent layer
+  layer.appendChild(robotImage);
+  console.log(`Robot ${robot.name} placed on the transparent layer at (${randomX}, ${randomY})`);
+}
+
+  // Add the addRobotsToCanvas function here
+// Add the addRobotsToCanvas function here
+addRobotsToCanvas(selectedRobots: any[]) {
+  selectedRobots.forEach(robot => {
+      this.drawRobotOnLayer(robot);
+  });
+}
+
+  showIPScannerPopup = false;
+
+  openIPScanner() {
+    this.showIPScannerPopup = true;
+  }
+
+  closeIPScanner() {
+    this.showIPScannerPopup = false;
+  }
+  
+  connectivity() {
+    this.isConnectivityModeActive = true; // Enable connectivity mode
+    this.connectivityPoints = []; // Clear previous points
+    console.log('Connectivity mode activated. Select two points.');
+  }
+  connectivityMode: 'none' | 'bi-directional' | 'uni-directional' = 'none';
+  firstPoint: { x: number; y: number } | null = null;
+  secondPoint: { x: number; y: number } | null = null;
+
+  handleLayerClick(event: MouseEvent) {
+    const canvas = this.uploadedCanvas?.nativeElement;
+    const rect = canvas?.getBoundingClientRect();
+    const x = event.clientX - (rect?.left ?? 0);
+    const y = event.clientY - (rect?.top ?? 0);
+
+    if (this.connectivityMode === 'none') {
+      if (!this.modeSelected) {
+        alert('Please select a node mode first.');
+        return;
+      }
+
+      const clickedNode = this.nodes.find(node => {
+        const distance = Math.sqrt((node.x - x) ** 2 + (node.y - y) ** 2);
+        return distance <= 5;
+      });
+
+      if (clickedNode) {
+        this.selectedNode = clickedNode;
+        this.redrawCanvas();
+        console.log(`Node selected: ID ${clickedNode.id}`);
+      } else {
+        if (this.nodeMode === 'single' && this.nodes.length === 0) {
+          this.addSingleNode(event);
+        } else if (this.nodeMode === 'multi') {
+          this.addMultiNode(event);
+        }
+      }
+
+      if (this.nodes.length > 0) {
+        this.redrawCanvas();
+      }
+    } else {
+      if (!this.firstPoint) {
+        this.firstPoint = { x, y };
+        this.redrawCanvas();
+      } else if (!this.secondPoint) {
+        this.secondPoint = { x, y };
+        this.redrawCanvas();
+        this.drawLineBetweenPoints();
+        this.firstPoint = null;
+        this.secondPoint = null;
+        this.connectivityMode = 'none';
+      }
+    }
+  }
+  drawLineBetweenPoints() {
+    const canvas = this.uploadedCanvas?.nativeElement;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx || !this.firstPoint || !this.secondPoint) return;
+  
+    const x1 = this.firstPoint.x;
+    const y1 = this.firstPoint.y;
+    const x2 = this.secondPoint.x;
+    const y2 = this.secondPoint.y;
+  
+    // Draw the line
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = 'green';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  
+    // Determine the direction of the arrows
+    const arrowLength = 10;
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+  
+    if (this.connectivityMode === 'uni-directional') {
+      // Draw the arrow at the end point
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+    } else if (this.connectivityMode === 'bi-directional') {
+      // Draw the arrow at the end point (bi-directional)
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+  
+      // Draw the arrow at the start point
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x1 + arrowLength * Math.cos(angle - Math.PI / 6), y1 + arrowLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x1 + arrowLength * Math.cos(angle + Math.PI / 6), y1 + arrowLength * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+    }
+  }
+  
+
+deleteNode() {
+    if (this.selectedNode) {
+        this.nodes = this.nodes.filter(node => node.id !== this.selectedNode!.id);
+        this.selectedNode = null;
+        this.redrawCanvas();
+    } else {
+        alert('No node selected for deletion.');
+    }
+}
+
+addSingleNode(event: MouseEvent) {
+  const canvas = this.uploadedCanvas?.nativeElement;
+  const rect = canvas?.getBoundingClientRect();
+  const x = event.clientX - (rect?.left ?? 0);
+  const y = event.clientY - (rect?.top ?? 0);
+
+  // Calculate coordinates relative to the center
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+
+  const relativeX = (x - centerX) / this.pixelsPerMeter;
+  const relativeY = -(y - centerY) / this.pixelsPerMeter; // Y is inverted
+
+  console.log(`Coordinates: (${relativeX.toFixed(2)}, ${relativeY.toFixed(2)}) meters`);
+
+  // If a single node is already placed, do not add more nodes
+  if (this.nodes.length === 0 || (this.nodeMode === 'single' && this.nodes.length === 0)) {
+    this.nodes.push({ x, y, id: this.nodeIdCounter++ });
+    this.redrawCanvas();
+  }
+}
+
+
+addMultiNode(event: MouseEvent) {
+  const canvas = this.uploadedCanvas?.nativeElement;
+  const rect = canvas?.getBoundingClientRect();
+  const x = event.clientX - (rect?.left ?? 0);
+  const y = event.clientY - (rect?.top ?? 0);
+
+  // Calculate coordinates relative to the center
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+
+  const relativeX = (x - centerX) / this.pixelsPerMeter;
+  const relativeY = -(y - centerY) / this.pixelsPerMeter; // Y is inverted
+
+  console.log(`Coordinates: (${relativeX.toFixed(2)}, ${relativeY.toFixed(2)}) meters`);
+
+  this.nodes.push({ x, y, id: this.nodeIdCounter++ });
+  this.redrawCanvas();
+}
+calculatePixelsPerMeter() {
+  const canvas = this.uploadedCanvas?.nativeElement;
+  if (canvas) {
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      // Calculate pixels per meter based on the image dimensions
+      const pixelsPerMeterX = canvasWidth / this.imageWidth;
+      const pixelsPerMeterY = canvasHeight / this.imageHeight;
+
+      // Average pixels per meter (if the image is not square)
+      this.pixelsPerMeter = (pixelsPerMeterX + pixelsPerMeterY) / 2;
+
+      console.log('Pixels per meter:', this.pixelsPerMeter);
+  }
+}
+
+redrawCanvas() {
+  const canvas = this.uploadedCanvas?.nativeElement;
+  const ctx = canvas?.getContext('2d');
+
+  if (!canvas || !ctx) return;
+
+  // Clear only the nodes, not the entire canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Redraw the background image if it exists
+  if (this.backgroundImage) {
+    ctx.drawImage(this.backgroundImage, 0, 0, canvas.width, canvas.height);
+  }
+
+  // Draw nodes
+  this.nodes.forEach(node => {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = node === this.selectedNode ? 'blue' : 'red'; // Highlight selected node
+      ctx.fill();
+      ctx.stroke();
+  });
+}
 
   triggerFileInput() {
     this.fileInput.nativeElement.click();
@@ -74,32 +509,7 @@ export class ConfigurationComponent implements AfterViewInit {
       this.chosenImageName = this.imageFile.name;
     }
   }
-  isMultiNodeMode = false; // Track Multi Node mode
-  addMultiNode() {
-    console.log("Multi Node clicked");
-    this.isMultiNodeMode = !this.isMultiNodeMode; // Toggle multi node mode
-    this.isSingleNodeMode = false; // Disable single node mode if active
-    const canvas = this.uploadedCanvas?.nativeElement;
-    if (this.isMultiNodeMode) {
-      canvas.addEventListener('click', this.plotMultiNode.bind(this));
-    } else {
-      canvas.removeEventListener('click', this.plotMultiNode.bind(this));
-    }
-  }
-  plotMultiNode(event: MouseEvent) {
-    if (!this.isMultiNodeMode) return;
 
-    const canvas = this.uploadedCanvas?.nativeElement;
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    // Draw the icon at the clicked position
-    ctx.drawImage(this.iconImage, x, y, 20, 20); // Adjust the width and height as needed
-  }
   openImage() {
     if (this.mapName === '' && this.siteName === '') {
       alert('Map name and site name required!');
@@ -125,7 +535,9 @@ export class ConfigurationComponent implements AfterViewInit {
       reader.onload = (e: any) => {
         const img = new Image();
         img.onload = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // Store the image in the backgroundImage property
+          this.backgroundImage = img;
+          // Draw the image on the canvas
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
         img.src = e.target.result;
@@ -134,38 +546,6 @@ export class ConfigurationComponent implements AfterViewInit {
 
       this.addEnvironmentData(); // Add data to the table when the image is opened
     }
-  }
-  deleteNode(){
-    console.log("node deleted")
-  }
-  iconImage = new Image(); // Image for plotting nodes
-  isSingleNodeMode = false; // To track if Single Node mode is active
-  addSingleNode() {
-    console.log('Single Node clicked');
-    this.isSingleNodeMode = true; // Enable single node mode
-    const canvas = this.uploadedCanvas?.nativeElement;
-    if (canvas) {
-      canvas.addEventListener('click', this.plotSingleNode.bind(this));
-    }
-  }
-
-  plotSingleNode(event: MouseEvent) {
-    if (!this.isSingleNodeMode) return;
-
-    const canvas = this.uploadedCanvas?.nativeElement;
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    // Draw the icon at the clicked position
-    ctx.drawImage(this.iconImage, x, y, 20, 20); // Adjust the width and height as needed
-
-    // Disable single node mode after plotting
-    this.isSingleNodeMode = false;
-    canvas.removeEventListener('click', this.plotSingleNode.bind(this));
   }
 
   mapName: string = ''; // To store the Map Name input value
@@ -194,19 +574,19 @@ export class ConfigurationComponent implements AfterViewInit {
   hideCalibrationLayer() {
     this.isCalibrationLayerVisible = false;
   }
+
   saveMap() {
     // here we go..
     console.log(this.mapName, this.siteName);
     console.log('Map Saved');
   }
+
   // Add methods for each button's functionality
   addNode() {
     console.log('Add Node clicked');
   }
 
-  connectivity() {
-    console.log('Connectivity clicked');
-  }
+
 
   zones() {
     console.log('Zones clicked');
@@ -242,15 +622,19 @@ export class ConfigurationComponent implements AfterViewInit {
       }
     }, 200); // 200ms matches the CSS transition duration
   }
+
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
+
   showTable(table: string) {
     this.currentTable = table;
   }
+
   setCurrentTable(table: string) {
     this.currentTable = table;
   }
+
   getCurrentTableData() {
     switch (this.currentTable) {
       case 'Environment':
@@ -287,11 +671,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.imageWidth = 0;
   }
 
-  onSearch(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const query = inputElement?.value || '';
-    // Implement your search logic here
-  }
+
 
   onDateFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;

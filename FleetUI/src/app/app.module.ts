@@ -20,14 +20,10 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartComponent } from './chart/chart.component';
 import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
-import { NgxCaptureModule } from 'ngx-capture';
-import { RobotsComponent } from './robots/robots.component';
-import { OperationPieComponent } from './operation-pie/operation-pie.component';
-import { Chart1Component } from './chart1/chart1.component';
-import { LineChartComponent } from './line-chart/line-chart.component';
-import { AreaChartComponent } from './area-chart/area-chart.component';
-
-
+import { IPScannerComponent } from './ipscanner/ipscanner.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-parameters-popup.component';
+import { RobotPopupComponent } from './robot-popup/robot-popup.component';
 
 @NgModule({
   declarations: [
@@ -40,19 +36,19 @@ import { AreaChartComponent } from './area-chart/area-chart.component';
     UsermanagementComponent,
     Userlogscomponent,
     StatisticsComponent,
-    RobotsComponent,
     ChartComponent,
     UptimeComponent,
     ThroughputComponent,
-    OperationPieComponent,
-    Chart1Component,
-    LineChartComponent,
-    AreaChartComponent,
+    IPScannerComponent,
+    RobotParametersPopupComponent,
+    RobotPopupComponent,
+    
   ],
   imports: [
     NgApexchartsModule,
     BrowserModule,
     AppRoutingModule,
+    MatTabsModule,
     BrowserAnimationsModule,
     FormsModule,
     BrowserModule,

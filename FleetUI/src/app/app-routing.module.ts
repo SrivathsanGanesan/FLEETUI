@@ -9,7 +9,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectGuard } from './guards/project.guard';
 import { Userlogscomponent } from './userlogs/userlogs.component';
 import { UsermanagementComponent } from './usermanagement/usermanagement.component';
-import { RobotsComponent } from './robots/robots.component';
 
 const routes: Routes = [
   {
@@ -26,11 +25,6 @@ const routes: Routes = [
   {
     path: 'statistics',
     component: StatisticsComponent,
-    canActivate: [AuthGuard, ProjectGuard],
-  },
-  {
-    path: 'robots',
-    component: RobotsComponent,
     canActivate: [AuthGuard, ProjectGuard],
   },
   {
