@@ -19,6 +19,7 @@ export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false }) uploadedCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayLayer', { static: false }) overlayLayer!: ElementRef;
+  
   nodes: Array<{ x: number; y: number; id: number }> = [];
   selectedNode: { x: number; y: number; id: number } | null = null;
   nodeIdCounter: number = 0; // Counter to generate unique IDs for each node
@@ -42,6 +43,7 @@ export class ConfigurationComponent implements AfterViewInit {
   private backgroundImage: HTMLImageElement | null = null;
   isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
+  
   EnvData = [
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
   ];
@@ -62,7 +64,14 @@ export class ConfigurationComponent implements AfterViewInit {
   ) {
     // this.iconImage.src = '../../assets/ConfigurationOptions/point.svg';
   }
-  ngAfterViewInit() { }
+  ngAfterViewInit() {
+    const canvas = this.uploadedCanvas?.nativeElement;
+  if (canvas) {
+    canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
+    canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+    canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
+  }
+   }
 
   nodeMode: 'single' | 'multi' = 'single'; // Node mode (single or multi)
   modeSelected: boolean = false; // Flag to track if a node mode has been selected
@@ -104,11 +113,13 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
   isRobotPopupVisible: boolean = false;
+  
   robots = [
-    { id: 1, name: 'Robot A', color: 'red', imageUrl: 'assets/robots/robotA.svg' },
-    { id: 2, name: 'Robot B', color: 'green', imageUrl: 'assets/robots/robotB.svg' },
-    // Add more robots with their respective image URLs here
-  ];
+    { id: 1, name: 'Robot A'},
+    { id: 2, name: 'Robot B'}
+  ]; 
+  
+  
   selectedRobots: any[] = [];
   showRobotPopup() {
     this.isRobotPopupVisible = true;
@@ -118,58 +129,128 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isRobotPopupVisible = false;
   }
 
-  handleRobotAddition(selectedRobot: any) {
-    console.log('Selected robot:', selectedRobot);
-    if (selectedRobot && selectedRobot.imageUrl) {
-      console.log('Adding robot:', selectedRobot);
-      this.drawRobotOnCanvas(selectedRobot);
+  handleRobotAddition(selectedRobots: any[]) {
+    if (selectedRobots.length > 0) {
+        this.addRobotsToCanvas(selectedRobots);
     } else {
-      console.error('Robot imageUrl is undefined:', selectedRobot);
+        console.error('No robots selected.');
+    }
+}
+
+  robotPositions: { x: number; y: number }[] = [];
+  
+  private robotImage: HTMLImageElement | null = null;
+  private selectedRobotIndex: number | null = null;
+  private offsetX: number = 0;
+  private offsetY: number = 0;
+  ngOnInit() {
+    
+    // Initialize the robot image when the component loads
+    this.robotImage = new Image();
+    this.robotImage.src = '../../assets/robots/robotA.svg'; // Replace with your image path
+  
+    // Optionally, you can also handle image loading errors
+    this.robotImage.onerror = () => {
+      console.error('Failed to load robot image.');
+      this.robotImage = null; // Set to null or handle accordingly
+    };
+    // Add mouse event listeners
+    if (this.uploadedCanvas) {
+      
+    
+  const canvas = this.uploadedCanvas.nativeElement;
+  canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
+  canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+  canvas.addEventListener('mouseup', this.onMouseUp.bind(this));}
+  }
+  onMouseDown(event: MouseEvent) {
+    const canvas = this.uploadedCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+  
+    // Check if the click is within the bounds of any robot
+    this.selectedRobotIndex = this.robotPositions.findIndex(pos => {
+      const robotWidth = this.robotImage?.naturalWidth || 40;
+      const robotHeight = this.robotImage?.naturalHeight || 40;
+  
+      return x >= pos.x && x <= pos.x + robotWidth && y >= pos.y && y <= pos.y + robotHeight;
+    });
+  
+    if (this.selectedRobotIndex !== null && this.selectedRobotIndex !== -1) {
+      // Store the offset within the robot
+      const pos = this.robotPositions[this.selectedRobotIndex];
+      this.offsetX = x - pos.x;
+      this.offsetY = y - pos.y;
     }
   }
   
- 
-drawRobotOnCanvas(robot: any) {
-  if (!robot || !robot.imageUrl) {
+  onMouseMove(event: MouseEvent) {
+    if (this.selectedRobotIndex === null) return;
+  
+    const canvas = this.uploadedCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+  
+    // Update the position of the selected robot
+    const pos = this.robotPositions[this.selectedRobotIndex];
+    pos.x = x - this.offsetX;
+    pos.y = y - this.offsetY;
+  
+    // Redraw the canvas to reflect the new position
+    this.redrawCanvas();
+  }
+  
+  onMouseUp(event: MouseEvent) {
+    this.selectedRobotIndex = null; // Deselect the robot
+  }
+  
+drawRobotOnLayer(robot: any) {
+  if (!robot) {
       console.error('Invalid robot object:', robot);
       return;
   }
 
-  const canvas = this.uploadedCanvas.nativeElement;
-  const ctx = canvas.getContext('2d');
-
-  if (!ctx) {
-      console.error('Canvas context not found');
+  const layer = document.querySelector('.transparent-layer') as HTMLElement;
+  
+  if (!layer) {
+      console.error('Transparent layer not found');
       return;
   }
 
-  const img = new Image();
-  img.src = robot.imageUrl;
+  // Create an image element for the robot
+  const robotImage = document.createElement('img');
+  robotImage.src = this.robotImage?.src || '../../assets/robots/robotA.svg'; // Use your default image if needed
+  robotImage.style.position = 'absolute';
+  robotImage.style.width = '30px'; // Adjust as needed
+  robotImage.style.height = '30px'; // Adjust as needed
+  
+  // Generate random position within the layer's dimensions
+  const layerWidth = layer.clientWidth;
+  const layerHeight = layer.clientHeight;
+  const robotWidth = parseInt(robotImage.style.width, 10);
+  const robotHeight = parseInt(robotImage.style.height, 10);
 
-  const x = canvas.width / 2;
-  const y = canvas.height / 2;
+  const randomX = Math.random() * (layerWidth - robotWidth);
+  const randomY = Math.random() * (layerHeight - robotHeight);
 
-  img.onload = () => {
-      ctx.drawImage(img, x - 20, y - 20, 40, 40);
-      console.log(`Robot ${robot.name} placed on the canvas at (${x}, ${y})`);
-  };
+  robotImage.style.left = `${randomX}px`;
+  robotImage.style.top = `${randomY}px`;
 
-  img.onerror = () => {
-      console.error(`Failed to load robot image: ${robot.imageUrl}`);
-  };
-
-  if (img.complete) {
-      ctx.drawImage(img, x - 20, y - 20, 40, 40);
-      console.log(`Robot ${robot.name} placed on the canvas at (${x}, ${y})`);
-  }
+  // Append the robot image to the transparent layer
+  layer.appendChild(robotImage);
+  console.log(`Robot ${robot.name} placed on the transparent layer at (${randomX}, ${randomY})`);
 }
 
   // Add the addRobotsToCanvas function here
-  addRobotsToCanvas(selectedRobots: any[]) {
-    selectedRobots.forEach(robot => {
-      this.drawRobotOnCanvas(robot);
-    });
-  }
+// Add the addRobotsToCanvas function here
+addRobotsToCanvas(selectedRobots: any[]) {
+  selectedRobots.forEach(robot => {
+      this.drawRobotOnLayer(robot);
+  });
+}
+
   showIPScannerPopup = false;
 
   openIPScanner() {

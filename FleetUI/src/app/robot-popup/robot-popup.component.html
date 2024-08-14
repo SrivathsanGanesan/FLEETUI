@@ -6,15 +6,15 @@
           <th>Select</th>
           <th>ID</th>
           <th>Name</th>
-          <!-- <th>Status</th> -->
+          <th>Color</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let robot of robots">
-          <td><input type="checkbox" [(ngModel)]="robot.selected"></td>
-          <td>{{ robot.id }}</td>
-          <td>{{ robot.name }}</td>
-          <!-- <td>{{ robot.status }}</td> -->
+        <tr *ngFor="let robots of robots">
+          <td><input type="checkbox" [(ngModel)]="robots.selected"></td>
+          <td>{{ robots.id }}</td>
+          <td>{{ robots.name }}</td>
+          <td>{{ robots.color }}</td>
         </tr>
       </tbody>
     </table>

@@ -1,9 +1,8 @@
-<svg width="26" height="19" viewBox="0 0 26 19" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect x="0.5" y="0.5" width="25" height="18" rx="3.5" fill="#9F9F9F"/>
-<rect x="0.5" y="0.5" width="25" height="18" rx="3.5" stroke="#6C6C6C"/>
-<circle cx="4" cy="9.5" r="2" fill="#898989" stroke="#DB4444"/>
-<rect x="8" y="15" width="11" height="10" transform="rotate(-90 8 15)" fill="url(#pattern0_1153_1410)"/>
-<line x1="20.5" x2="20.5" y2="19" stroke="#DA2127"/>
+<svg width="26" height="15" viewBox="0 0 26 15" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="0.5" y="0.5" width="25" height="14" rx="3.5" fill="white"/>
+<rect x="0.5" y="0.5" width="25" height="14" rx="3.5" stroke="#6C6C6C"/>
+<circle cx="4" cy="7.5" r="2" fill="#898989"/>
+<rect x="8" y="13" width="11" height="10" transform="rotate(-90 8 13)" fill="url(#pattern0_1153_1410)"/>
 <defs>
 <pattern id="pattern0_1153_1410" patternContentUnits="objectBoundingBox" width="1" height="1">
 <use xlink:href="#image0_1153_1410" transform="matrix(0.005 0 0 0.0055 0 -0.05)"/>
