@@ -45,9 +45,9 @@ export class ConfigurationComponent implements AfterViewInit {
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
   
   EnvData:any[] = [
-    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
-    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 5, 2024. 14:00:17' },
-    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 5, 2024. 14:00:17' }
+    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 4, 2024. 14:00:17' },
+    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 15, 2024. 14:00:17' },
+    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' }
   ];
   ngOnChanges() {
     this.filterData();
@@ -58,13 +58,17 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredRobotData: any[] = [];
   filterData() {
     const term = this.searchTerm.toLowerCase();
-  
+
     if (this.currentTable === 'Environment') {
-      this.filteredEnvData = this.EnvData.filter(item =>
-        item.column1.toLowerCase().includes(term) ||
-        item.column2.toLowerCase().includes(term) ||
-        item.column3.toLowerCase().includes(term)
-      );
+      this.filteredEnvData = this.EnvData.filter(item => {
+        const date = new Date(item.column3);
+        const withinDateRange = (!this.startDate || date >= this.startDate) &&
+                                (!this.endDate || date <= this.endDate);
+
+        return (item.column1.toLowerCase().includes(term) ||
+                item.column2.toLowerCase().includes(term) ||
+                item.column3.toLowerCase().includes(term)) && withinDateRange;
+      });
     } else if (this.currentTable === 'robot') {
       this.filteredRobotData = this.robotData.filter(item =>
         item.column1.toLowerCase().includes(term) ||
@@ -72,7 +76,6 @@ export class ConfigurationComponent implements AfterViewInit {
       );
     }
   }
-  
   robotData:any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
@@ -85,10 +88,17 @@ export class ConfigurationComponent implements AfterViewInit {
   constructor(
     private dialog: MatDialog,
     private exportService: ExportService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    
+
     
   ) {
     // this.iconImage.src = '../../assets/ConfigurationOptions/point.svg';
+  }
+  loadData() {
+    // Fetch or initialize data here
+    this.EnvData = []; // Replace with actual data fetching
+    this.filterData(); // Initial filter application
   }
   ngAfterViewInit() {
     const canvas = this.uploadedCanvas?.nativeElement;
@@ -307,32 +317,36 @@ addRobotsToCanvas(selectedRobots: any[]) {
     const rect = canvas?.getBoundingClientRect();
     const x = event.clientX - (rect?.left ?? 0);
     const y = event.clientY - (rect?.top ?? 0);
-
+  
     if (this.connectivityMode === 'none') {
       if (!this.modeSelected) {
         alert('Please select a node mode first.');
         return;
       }
-
+  
       const clickedNode = this.nodes.find(node => {
         const distance = Math.sqrt((node.x - x) ** 2 + (node.y - y) ** 2);
         return distance <= 5;
       });
-
+  
       if (clickedNode) {
+        // Node selection logic
         this.selectedNode = clickedNode;
         this.redrawCanvas();
         console.log(`Node selected: ID ${clickedNode.id}`);
       } else {
-        if (this.nodeMode === 'single' && this.nodes.length === 0) {
-          this.addSingleNode(event);
+        if (this.nodeMode === 'single') {
+          this.addSingleNode(event); // Plot the new single node
         } else if (this.nodeMode === 'multi') {
-          this.addMultiNode(event);
+            this.addMultiNode(event);
+          
+        } else {
+          console.error('Invalid node mode. Expected "single" or "multi", but got:', this.nodeMode);
         }
-      }
-
-      if (this.nodes.length > 0) {
-        this.redrawCanvas();
+  
+        if (this.nodes.length > 0) {
+          this.redrawCanvas();
+        }
       }
     } else {
       if (!this.firstPoint) {
@@ -348,6 +362,7 @@ addRobotsToCanvas(selectedRobots: any[]) {
       }
     }
   }
+  
   drawLineBetweenPoints() {
     const canvas = this.uploadedCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
@@ -410,7 +425,15 @@ deleteNode() {
         alert('No node selected for deletion.');
     }
 }
+private hasPlottedSingleNode = false;
+// Method to switch to single node mode
+switchToSingleNodeMode() {
+  this.nodeMode = 'single';  // Set mode to single
+  this.hasPlottedSingleNode = false; // Reset flag for single node mode
+  console.log('Switched to single node mode.');
+}
 
+// Method to handle node plotting
 addSingleNode(event: MouseEvent) {
   const canvas = this.uploadedCanvas?.nativeElement;
   const rect = canvas?.getBoundingClientRect();
@@ -426,14 +449,20 @@ addSingleNode(event: MouseEvent) {
 
   console.log(`Coordinates: (${relativeX.toFixed(2)}, ${relativeY.toFixed(2)}) meters`);
 
-  // If a single node is already placed, do not add more nodes
-  if (this.nodes.length === 0 || (this.nodeMode === 'single' && this.nodes.length === 0)) {
+  if (this.nodeMode === 'single') {
+    if (!this.hasPlottedSingleNode) {
+      // Add a new node if no single node has been plotted yet
+      this.nodes.push({ x, y, id: this.nodeIdCounter++ });
+      this.hasPlottedSingleNode = true; // Set flag to true to prevent further nodes
+    }
+  } else {
+    // In multi-node mode, add new nodes
     this.nodes.push({ x, y, id: this.nodeIdCounter++ });
-    this.redrawCanvas();
+    this.hasPlottedSingleNode = false; // Reset flag for multi-node mode
   }
+
+  this.redrawCanvas();
 }
-
-
 addMultiNode(event: MouseEvent) {
   const canvas = this.uploadedCanvas?.nativeElement;
   const rect = canvas?.getBoundingClientRect();
@@ -511,8 +540,8 @@ redrawCanvas() {
   }
 
   openImage() {
-    if (this.mapName === '' && this.siteName === '') {
-      alert('Map name and site name required!');
+    if (this.mapName === '' || this.siteName === '') {
+      alert('Map name and Site name required!');
       return;
     }
 
@@ -548,21 +577,20 @@ redrawCanvas() {
     }
   }
 
+
   mapName: string = ''; // To store the Map Name input value
   siteName: string = ''; // To store the Site Name input value
 
   addEnvironmentData() {
-    const currentTime = new Date();
-    const formattedTime = formatDate(
-      currentTime,
-      'MMM d, yyyy. HH:mm:ss',
-      'en-US'
-    );
-    this.EnvData.push({
+    const newEntry = {
       column1: this.mapName,
       column2: this.siteName,
-      column3: formattedTime,
-    });
+      column3: formatDate(new Date(), 'MMM d, yyyy. HH:mm:ss', 'en-US')
+    };
+
+    this.EnvData.push(newEntry);
+    this.filteredEnvData = [...this.EnvData];
+    this.closePopup(); // Close the popup after adding the entry
   }
 
   isCalibrationLayerVisible = false;
@@ -678,31 +706,36 @@ redrawCanvas() {
     const filter = selectElement?.value || '';
     // Implement your date filter logic here
   }
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+  onDateChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const id = input.id;
+    const value = input.value;
+    
+    if (id === 'start-date') {
+      this.startDate = value ? new Date(value) : null;
+    } else if (id === 'end-date') {
+      this.endDate = value ? new Date(value) : null;
+    }
 
-  onDateChange(event: Event): void {
-    const startDateElement = document.getElementById(
-      'start-date'
-    ) as HTMLInputElement;
-    const endDateElement = document.getElementById(
-      'end-date'
-    ) as HTMLInputElement;
-
-    const startDate = startDateElement?.value || '';
-    const endDate = endDateElement?.value || '';
-
-    // Implement your date range filtering logic here
+    this.filterData(); // Apply filters whenever the date changes
   }
-
   editItem(item: any) {
     console.log('Edit item:', item);
   }
 
   deleteItem(item: any) {
-    const index = this.EnvData.findIndex((envItem) => envItem === item);
+    // Find the index of the item to be deleted
+    const index = this.EnvData.indexOf(item);
+    
+    // Remove the item if found
     if (index !== -1) {
       this.EnvData.splice(index, 1);
+      this.filterData(); // Reapply filters after deletion
     }
   }
+  
 
   addItem(item: any) {
     console.log('Add item:', item);

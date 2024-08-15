@@ -31,20 +31,21 @@
         </div>
       
         <!-- Date Filter and Date Inputs -->
-        <div class="date-filters">
-          <select (change)="onDateFilterChange($event)" class="date-filter">
+        <div class="date-filters" *ngIf="currentTable === 'Environment'">
+          <!-- <select (change)="onDateFilterChange($event)" class="date-filter">
             <option value="day">Day</option>
             <option value="week">Week</option>
             <option value="month">Month</option>
-          </select>
+          </select> -->
       
-          <div class="date-inputs">
-            <label for="start-date" class="date-label"></label>
+          <div class="date-inputs" >
+            <label for="start-date" class="date-label">Start Date:</label>
             <input type="date" id="start-date" (change)="onDateChange($event)" class="date-input">
-      
-            <label for="end-date" class="date-label"></label>
+          
+            <label for="end-date" class="date-label">End Date:</label>
             <input type="date" id="end-date" (change)="onDateChange($event)" class="date-input">
           </div>
+          
         </div>
       </div>
       
@@ -94,7 +95,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of filteredEnvData">
+                <tr *ngFor="let item of filteredEnvData ">
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
@@ -184,6 +185,8 @@
                 <h2>Communication Settings</h2>
               </div>
             </div>       
+
+            
             <div class="Create-button-container">
               <button class="Create-button" *ngIf="activeButton === 'Environment'" (click)="showPopup()">Create</button>
               <div *ngIf="isPopupVisible" class="Create-popup">
