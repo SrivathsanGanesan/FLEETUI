@@ -25,20 +25,6 @@ export class IPScannerComponent {
   EndIP: string = '0.0.0.0';
   ipScanData: Poll[] = [];
 
-  // ipScanData = [
-  //   {
-  //     ip: '195.80.116.170',
-  //     mac: '00:00:00:00:00:00',
-  //     ping: '[n/a]',
-  //     Status: 'Offline',
-  //   },
-  //   {
-  //     ip: '195.80.116.140',
-  //     mac: 'B4-45-06-55-A9-47',
-  //     ping: '[n/a]',
-  //     Status: 'Online',
-  //   },
-  // ];
   showIPScannerPopup = false;
 
   openIPScanner() {

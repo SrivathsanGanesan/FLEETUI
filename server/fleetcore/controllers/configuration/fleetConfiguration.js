@@ -42,7 +42,6 @@ const scanIp = async (req, res) => {
         let mac = "";
         if (poll.status === "online") mac = await getMacAddress(ip);
         const netPoll = JSON.stringify({
-          // host: poll.host,
           ip_address: poll.ip_address,
           mac_address: mac === undefined ? "undefined" : mac,
           status: poll.status,
@@ -60,7 +59,6 @@ const scanIp = async (req, res) => {
     console.error("Error occurred in SSE :", error);
     res.status(500).send("Internal Server Error");
   }
-
   // res.json(arr);
 };
 
