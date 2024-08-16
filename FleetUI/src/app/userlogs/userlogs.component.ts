@@ -10,6 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
  
 export class Userlogscomponent {
+activeFilter: any;
 togglePopup() {
 throw new Error('Method not implemented.');
 }
@@ -26,8 +27,7 @@ throw new Error('Method not implemented.');
 onTabChange(arg0: string) {
 throw new Error('Method not implemented.');
 }
-  filteredData: any;
-  originalData: any;
+
   searchQuery: string = '';
   isPopupVisible: boolean | undefined;
   isTransitioning: boolean = false;
@@ -35,16 +35,6 @@ throw new Error('Method not implemented.');
   activeHeader: string = 'Task reports'; // Default header
  
 
-  isSameMonth(itemDate: Date, arg1: Date) {
-    throw new Error('Method not implemented.');
-  }
-  isSameWeek(itemDate: Date, arg1: Date) {
-    throw new Error('Method not implemented.');
-  }
-  isSameDay(itemDate: Date, arg1: Date) {
-    throw new Error('Method not implemented.');
-  }
- 
   setActiveButton(button: string) {
     this.activeButton = button;
     this.isTransitioning = true;
@@ -151,6 +141,13 @@ currentTab: any;
     this.isPopupVisible = false;
   
   }
+  ONBtn: any;
+  
+
+  setActiveFilter(filter: string) {
+    this.activeFilter = filter;
+
+  }
 
   onSearch(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
@@ -172,12 +169,7 @@ currentTab: any;
     const endDate = endDateElement.value;
 
     // Implement your date range filtering logic here
-  }
 }
-
-function onDateFilterChange(event: Event | undefined, Event: { new(type: string, eventInitDict?: EventInit): Event; prototype: Event; readonly NONE: 0; readonly CAPTURING_PHASE: 1; readonly AT_TARGET: 2; readonly BUBBLING_PHASE: 3; }) {
-  throw new Error('Function not implemented.');
-
 
  
 }

@@ -145,7 +145,7 @@
   .card {
     position: relative;
     flex: 0 0 auto;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     padding: 1rem;
    
     border-radius: 0.5rem;

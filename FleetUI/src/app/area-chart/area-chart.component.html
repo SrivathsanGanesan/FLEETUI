@@ -1,28 +1,10 @@
-
-    <div class="area-chart-container">
-        <div class="chart-header">
-          <div class="header-title">
-            <h2>Tasks 2024</h2>
-            <span class="header-metrics">
-              <span>$12.7k</span>
-              <span class="metric-increase">+1.3% vs Last Year</span>
-            </span>
-          </div>
-          <div class="chart-controls">
-            <button>Daily</button>
-            <button>Weekly</button>
-            <button class="active">Annually</button>
-          </div>
-        </div>
-        <div id="chart">
-            <apx-chart
-        [series]="chartOptions.series"
-        [chart]="chartOptions.chart"
-        [xaxis]="chartOptions.xaxis"
-        [fill]="chartOptions.fill"
-        [dataLabels]="chartOptions.dataLabels">
-        </apx-chart>
-          <!-- Your chart code here -->
-        </div>
-      </div>
-      
+<div id="chart">
+    <apx-chart
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [xaxis]="chartOptions.xaxis"
+      [fill]="chartOptions.fill"
+      [dataLabels]="chartOptions.dataLabels">
+    </apx-chart>
+  </div>
+  
