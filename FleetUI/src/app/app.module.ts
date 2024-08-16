@@ -29,8 +29,7 @@ import { AreaChartComponent } from './area-chart/area-chart.component';
 import { rootCertificates } from 'tls';
 import { RobotPopupComponent } from './robot-popup/robot-popup.component';
 import { IPScannerComponent } from './ipscanner/ipscanner.component';
-
-
+import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-parameters-popup.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +42,7 @@ import { IPScannerComponent } from './ipscanner/ipscanner.component';
     UsermanagementComponent,
     RobotPopupComponent,
     RobotsComponent,
+    RobotParametersPopupComponent,
     IPScannerComponent,
     Userlogscomponent,
     StatisticsComponent,
@@ -62,7 +62,6 @@ import { IPScannerComponent } from './ipscanner/ipscanner.component';
     BrowserAnimationsModule,
     FormsModule,
     BrowserModule,
-    
   ],
   providers: [
     // provideClientHydration()

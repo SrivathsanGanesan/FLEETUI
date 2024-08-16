@@ -17,7 +17,13 @@
       <div class="search-date-container">
         <!-- Search Bar -->
         <div class="search-container">
-          <input type="text" placeholder="Search..." class="search-input" />
+          <input
+            type="text"
+            placeholder="Search..."
+            class="search-input"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="searchTermChanged()"
+          />
           <button class="search-button">
             <svg
               width="18"
@@ -35,15 +41,15 @@
         </div>
 
         <!-- Date Filter and Date Inputs -->
-        <div class="date-filters">
-          <select (change)="onDateFilterChange($event)" class="date-filter">
+        <div class="date-filters" *ngIf="currentTable === 'Environment'">
+          <!-- <select (change)="onDateFilterChange($event)" class="date-filter">
             <option value="day">Day</option>
             <option value="week">Week</option>
             <option value="month">Month</option>
-          </select>
+          </select> -->
 
           <div class="date-inputs">
-            <label for="start-date" class="date-label"></label>
+            <label for="start-date" class="date-label">Start Date:</label>
             <input
               type="date"
               id="start-date"
@@ -51,7 +57,7 @@
               class="date-input"
             />
 
-            <label for="end-date" class="date-label"></label>
+            <label for="end-date" class="date-label">End Date:</label>
             <input
               type="date"
               id="end-date"
@@ -137,7 +143,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of EnvData">
+                <tr *ngFor="let item of filteredEnvData">
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.column1 }}
                   </td>
@@ -189,7 +195,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of robotData">
+                <tr *ngFor="let item of filteredRobotData">
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.column1 }}
                   </td>
@@ -222,9 +228,9 @@
             </button>
 
             <div class="popup-overlay" *ngIf="showRobotParametersPopup">
-              <!-- <app-robot-parameters-popup
+              <app-robot-parameters-popup
                 (close)="closeRobotParametersPopup()"
-              ></app-robot-parameters-popup> -->
+              ></app-robot-parameters-popup>
             </div>
             <!-- Add this in your main component HTML -->
             <button
@@ -344,6 +350,7 @@
                 <h2>Communication Settings</h2>
               </div>
             </div>
+
             <div class="Create-button-container">
               <button
                 class="Create-button"
@@ -415,11 +422,16 @@
                         #uploadedCanvas
                         (dblclick)="handleLayerClick($event)"
                       ></canvas>
-                      <div
+                      <canvas
+                        #transparentCanvas
                         class="transparent-layer"
                         *ngIf="isCalibrationLayerVisible"
-                        (click)="handleLayerClick($event)"
-                      ></div>
+                        (mousedown)="onZoneMouseDown($event)"
+                        (mousemove)="onZoneMouseMove($event)"
+                        (mouseup)="onZoneMouseUp($event)"
+                      >
+                      </canvas>
+                      <!-- <div class="transparent-layer" *ngIf="isCalibrationLayerVisible" (click)="handleLayerClick($event)"></div>      -->
                     </div>
 
                     <!-- Calibrate Coordinates Button -->
@@ -448,9 +460,7 @@
                         </div>
                       </div>
                       <button (click)="deleteNode()">Delete Node</button>
-                      <button (click)="calibrateCoordinates()">
-                        Calibrate Coordinates
-                      </button>
+                      <!-- <button (click)="calibrateCoordinates()">Calibrate Coordinates</button> -->
                       <div class="dropdown">
                         <button
                           class="dropdown-button"
@@ -474,9 +484,15 @@
                           Zones
                         </button>
                         <div class="dropdown-content">
-                          <button>High Speed Zone</button>
-                          <button>Medium Speed Zone</button>
-                          <button>Low Speed Zone</button>
+                          <button (click)="setZoneType('high')">
+                            High Speed Zone
+                          </button>
+                          <button (click)="setZoneType('medium')">
+                            Medium Speed Zone
+                          </button>
+                          <button (click)="setZoneType('low')">
+                            Low Speed Zone
+                          </button>
                         </div>
                       </div>
                       <div class="dropdown">
