@@ -1,7 +1,12 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { error } from 'console';
 
+interface Poll {
+  ip: string;
+  mac: string;
+  ping: string;
+  Status: string;
+}
 @Component({
   selector: 'app-ipscanner',
   templateUrl: './ipscanner.component.html',
@@ -9,24 +14,26 @@ import { error } from 'console';
 })
 export class IPScannerComponent {
   @Output() close = new EventEmitter<void>();
+  constructor() {}
   eventSource!: EventSource;
   startIP: string = '0.0.0.0';
   EndIP: string = '0.0.0.0';
+  ipScanData: Poll[] = [];
 
-  ipScanData = [
-    {
-      ip: '195.80.116.170',
-      mac: '00:00:00:00:00:00',
-      ping: '[n/a]',
-      Status: 'Offline',
-    },
-    {
-      ip: '195.80.116.140',
-      mac: 'B4-45-06-55-A9-47',
-      ping: '[n/a]',
-      Status: 'Online',
-    },
-  ];
+  // ipScanData = [
+  //   {
+  //     ip: '195.80.116.170',
+  //     mac: '00:00:00:00:00:00',
+  //     ping: '[n/a]',
+  //     Status: 'Offline',
+  //   },
+  //   {
+  //     ip: '195.80.116.140',
+  //     mac: 'B4-45-06-55-A9-47',
+  //     ping: '[n/a]',
+  //     Status: 'Online',
+  //   },
+  // ];
   showIPScannerPopup = false;
 
   openIPScanner() {
@@ -46,36 +53,38 @@ export class IPScannerComponent {
     const ipv4Regex =
       /^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     if (!ipv4Regex.test(this.startIP) || !ipv4Regex.test(this.EndIP)) {
-      alert('not valid IP Try again');
+      alert('not valid IP. Try again');
       return;
     }
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-config/scan-ip`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ip: { startIP: this.startIP, endIP: this.EndIP },
-        }),
+
+    const URL = `http://${environment.API_URL}:${environment.PORT}/fleet-config/scan-ip/${this.startIP}-${this.EndIP}`;
+
+    if (this.eventSource) this.eventSource.close();
+
+    this.eventSource = new EventSource(URL);
+    this.eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        let poll: Poll = {
+          ip: data.ip_address,
+          mac:
+            data.mac_address === '' || data.mac_address === 'undefined'
+              ? '00:00:00:00:00:00'
+              : data.mac_address,
+          ping: data.time,
+          Status: data.status,
+        };
+        this.ipScanData.push(poll);
+        console.log(data);
+      } catch (error) {
+        console.error('Error parsing SSE data:', error);
       }
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok');
+    };
 
-        this.eventSource = new EventSource(
-          `http://${environment.API_URL}:${environment.PORT}/fleet-config/scan-ip`
-        );
-        this.eventSource.onmessage = (event: any) => {
-          const data = JSON.parse(event.data);
-          console.log('here we go : ', event);
-        };
-
-        this.eventSource.onerror = (error: any) => {
-          console.error('SSE error:', error);
-          this.eventSource.close();
-        };
-      })
-      .catch((err) => console.log('err occ : ', err));
+    this.eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      this.eventSource.close();
+    };
   }
   stopScanning() {
     this.eventSource.close();
