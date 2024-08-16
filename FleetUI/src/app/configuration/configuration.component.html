@@ -421,20 +421,15 @@
                       <canvas
                         #uploadedCanvas
                         (dblclick)="handleLayerClick($event)"
-                      ></canvas>
-                      <canvas
-                        #transparentCanvas
-                        class="transparent-layer"
-                        *ngIf="isCalibrationLayerVisible"
-                        (mousedown)="onZoneMouseDown($event)"
-                        (mousemove)="onZoneMouseMove($event)"
-                        (mouseup)="onZoneMouseUp($event)"
                       >
                       </canvas>
-                      <!-- <div class="transparent-layer" *ngIf="isCalibrationLayerVisible" (click)="handleLayerClick($event)"></div>      -->
-                    </div>
-
-                    <!-- Calibrate Coordinates Button -->
+                      <canvas
+                       #overlayCanvas
+                       class="transparent-layer"
+                       *ngIf="isCalibrationLayerVisible"
+                       (click)="handleLayerClick($event)">
+                      </canvas>
+                     </div>
                     <button
                       class="calibrate-button"
                       *ngIf="!isCalibrationLayerVisible"
