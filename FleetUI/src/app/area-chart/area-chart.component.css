@@ -1,90 +1,9 @@
-#chart {
-    max-width: 900px;
-    margin: 10px auto;
-    background-color: #f6f3f3; /* Set your desired background color */
-  }
-
-  .apexcharts-area-series .apexcharts-area {
-    stroke: #FF0000 !important;
-  }
-  
+/* #chart {
+  max-width: 900px;
+  margin-top: 15px;
+  background-color: #f6f3f3;
+  padding: 0;
  
-  
-.area-chart-container {
-  flex: 1; /* Takes up available space */
-  max-width: 100%; /* Ensure it uses full width */
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  border-radius: 8px;
-  padding: 8px 12px; /* Further reduce padding */
-  display: flex;
-  flex-direction: column;
+  border-radius: 10px;
 }
-
-.area-chart-container h2 {
-  margin: 0; /* Remove all margin */
-  padding: 0 0 8px 0; /* Remove top padding, reduce bottom padding */
-  font-size: 14px; /* Compact font size */
-  font-weight: 600; /* Slightly bold */
-  color: #333; /* Text color */
-}
-
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px; /* Tight space between header and chart */
-}
-
-.chart-header .header-title {
-  font-size: 14px; /* Compact size */
-  font-weight: 600;
-  color: #333;
-}
-
-.chart-header .header-metrics {
-  font-size: 16px; /* Slightly reduced size for main metric */
-  font-weight: bold;
-  color: #000;
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Small space between metrics */
-}
-
-.header-metrics .metric-increase {
-  font-size: 12px; /* Smaller size for secondary text */
-  color: #4CAF50; /* Green color for increase */
-}
-
-.chart-controls {
-  display: flex;
-  gap: 5px; /* Small gap between buttons */
-}
-
-.chart-controls button {
-  font-size: 12px;
-  color: #fff;
-  background-color: #ccc;
-  border: none;
-  border-radius: 16px;
-  padding: 4px 8px; /* Small padding for compact buttons */
-  cursor: pointer;
-}
-
-.chart-controls button.active {
-  background-color: #6200EE; /* Active button color */
-}
-
-.chart-controls button:hover {
-  background-color: #555; /* Hover effect */
-}
-
-/* Additional adjustments for the chart */
-#chart {
-  height: 220px; /* Reduce the height of the chart */
-  width: 100%; /* Full width */
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margin */
-}
-
-  
+ */

@@ -1,5 +1,6 @@
 /* Parent container should still use flexbox for alignment */
 .parent-container {
+    
     display: flex;
     justify-content: flex-start; /* Align items to the start (left) */
     align-items: flex-start; /* Align items to the top */
@@ -13,7 +14,7 @@
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    margin-top: 20px;
+    margin-top: 5px;
     width: 400px; /* Increase width to 500px */
  
     height: 280px; /* Adjust height as needed */
