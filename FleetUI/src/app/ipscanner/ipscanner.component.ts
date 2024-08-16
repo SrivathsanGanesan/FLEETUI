@@ -1,4 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 import { environment } from '../../environments/environment.development';
 
 interface Poll {
@@ -14,7 +19,7 @@ interface Poll {
 })
 export class IPScannerComponent {
   @Output() close = new EventEmitter<void>();
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {} // need to rem in later..
   eventSource!: EventSource;
   startIP: string = '0.0.0.0';
   EndIP: string = '0.0.0.0';
@@ -40,6 +45,7 @@ export class IPScannerComponent {
     this.showIPScannerPopup = true;
   }
   startScanning() {
+    this.ipScanData = [];
     this.startIP = (
       document.getElementById('ipRangeFrom') as HTMLInputElement
     ).value;
@@ -75,7 +81,8 @@ export class IPScannerComponent {
           Status: data.status,
         };
         this.ipScanData.push(poll);
-        console.log(data);
+        this.cdr.detectChanges();
+        // console.log(data);
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
