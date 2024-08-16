@@ -52,62 +52,84 @@
     <!--  -->
      
 
-      <div class="tasks-table">
-        <table>
-          <thead>
-            <tr>
-              <th>s.no</th>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Battery</th>
-              <th>Robot location</th>
-              <th>Task</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Forklift</td>
-              <td>Completed</td>
-              <td>50%</td>
-              <td>86,75.92.01</td>
-              <td>Picked rack no 21</td>
-              <td>
-                <button>Edit</button>
-                <button>Delete</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>2</td>
-              <td>Forklift</td>
-              <td>Completed</td>
-              <td>95%</td>
-              <td>86,75.92.01</td>
-              <td>Picked rack no 21</td>
-              <td>
-                <button>Edit</button>
-                <button>Delete</button>
-              </td>
-            </tr>
-      
-            <tr>
-              <td>3</td>
-              <td>Forklift</td>
-              <td>Completed</td>
-              <td>80%</td>
-              <td>86,75.92.01</td>
-              <td>Picked rack no 21</td>
-              <td>
-                <button>Edit</button>
-                <button>Delete</button>
-              </td>
-            </tr>
-            <!-- Repeat for other rows -->
-          </tbody>
-        </table>
-      </div>
+    <div class="tasks-table">
+      <div class="table-header">
+      <h3>Task Statistics</h3>
+      <!-- <h4>Over 500 Tasks</h4> -->
+      <!-- <div class="new-task-btn">
+        <button>+ New Task</button>
+      </div> -->
+    </div>
+      <table>
+        <thead>
+          <tr>
+            <th>s.no</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Battery</th>
+            <th>Robot location</th>
+            <th>Task</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Forklift</td>
+            <td style="color: green;">Completed</td>
+            <td>
+              50%
+              <div class="battery-bar">
+                <div class="fill" style="width: 50%;"></div>
+              </div>
+            </td>
+            <td>86,75.92.01</td>
+            <td>Picked rack no 21</td>
+            <td>
+              <button>Edit</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+    
+          <tr>
+            <td>2</td>
+            <td>Pallet stacker</td>
+            <td style="color: #FF8C8C;">In progress</td>
+            <td>
+              27%
+              <div class="battery-bar">
+                <div class="fill" style="width: 27%; background-color: #FF8C8C;"></div>
+              </div>
+            </td>
+            <td>86,75.92.01</td>
+            <td>Charging</td>
+            <td>
+              <button>Edit</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+    
+          <tr>
+            <td>3</td>
+            <td>Counterbalance</td>
+            <td style="color: green;">Completed</td>
+            <td>
+              60%
+              <div class="battery-bar">
+                <div class="fill" style="width: 60%;"></div>
+              </div>
+            </td>
+            <td>86,75.92.01</td>
+            <td>Dropped rack 10</td>
+            <td>
+              <button>Edit</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
      <!-- Stat card 1 -->
       <div class="statistics-container">
         <div class="stat-card">

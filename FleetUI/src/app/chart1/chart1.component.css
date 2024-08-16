@@ -28,5 +28,6 @@
     font-size: 36px; /* Ensure the text is large enough */
     font-weight: bold;
     color: #000; /* Text color */
+    position: center;
   }
   

@@ -32,8 +32,8 @@ export class Chart1Component {
     this.chartOptions = {
       series: [percentage],
       chart: {
-        width: 250,
-        height: 250,
+        width: 300,
+        height: 300,
         type: "radialBar",
         toolbar: {
           show: false
@@ -70,10 +70,10 @@ export class Chart1Component {
               formatter: function(val) {
                 return `${val}%`;  // Display the percentage
               },
-              offsetY: 10,
+              offsetY: 12,
                 // Center the text vertically
               color: "#000000",
-              fontSize: "30px",
+              fontSize: "35px",
               fontWeight: "bold",  // Make the text bold
               show: true
             }

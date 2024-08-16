@@ -10,6 +10,7 @@ const eventStreamHeader = {
 };
 
 const getMacAddress = (ip) => {
+  if (ip === "") return;
   return new Promise((resolve, reject) => {
     arp.getMAC(ip, (err, mac) => {
       resolve(mac);
@@ -19,7 +20,7 @@ const getMacAddress = (ip) => {
 
 const scanIp = async (req, res, next) => {
   let arr = [];
-  const ipv4Range = getIPRange("192.168.36.90-192.168.36.183");
+  const ipv4Range = getIPRange("192.168.24.90-192.168.36.183");
 
   const ipRange = [
     "192.168.249.3",

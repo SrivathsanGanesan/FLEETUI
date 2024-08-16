@@ -1,43 +1,53 @@
+/* Parent container should still use flexbox for alignment */
+.parent-container {
+    display: flex;
+    justify-content: flex-start; /* Align items to the start (left) */
+    align-items: flex-start; /* Align items to the top */
+    padding: 20px; /* Add some padding around the container */
+}
+
+/* Adjust the width of activities-container */
 .activities-container {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow for emphasis */
-    margin-top: 5px;
-    width: 300px; /* Adjust width as needed */
-    height:150 ;
-   
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    width: 300px; /* Increase width to 500px */
+    /* max-width: 100%;  */
+    height: 250px; /* Adjust height as needed */
     position: relative;
-
+    margin-right: auto; /* Pushes the container to the left */
 }
 
+/* Other styles remain the same */
 .activities-header {
     display: flex;
-    justify-content: space-between; /* Ensures the header and date picker are spaced apart */
-    align-items: center; /* Vertically aligns the header content */
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
-    gap: 10px; /* Add some space between the elements */
+    gap: 10px;
 }
 
 .activities-header h3 {
     margin: 0;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 22px;
     color: #666666;
-    white-space: nowrap; /* Prevents the title from wrapping */
+    white-space: nowrap;
 }
 
 .activities-header p, .activities-header span {
     margin: 0;
-    font-size: 16px;
+    font-size: 18px;
     color: #000000;
-    white-space: nowrap; /* Prevents the text from wrapping */
+    white-space: nowrap;
 }
 
 .date-picker {
     display: flex;
-    justify-content: flex-end; /* Aligns the button to the right */
-    align-items: center; /* Ensures vertical alignment */
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .date-picker button {
@@ -47,8 +57,9 @@
     padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
-    margin-left: auto; /* Pushes the button to the right */
+    margin-left: auto;
 }
+
 .dropdown {
     position: relative;
     display: inline-block;
@@ -88,6 +99,7 @@
 .dropdown-menu button:hover {
     background-color: #ddd;
 }
+
 .activities-body {
     display: flex;
     justify-content: space-between;
@@ -96,8 +108,8 @@
 
 .donut-chart {
     position: relative;
-    width: 150px; /* Adjust as needed */
-    height: 150px; /* Adjust as needed */
+    width: 150px;
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -115,7 +127,7 @@
 }
 
 .info-percentage.positive {
-    color: #00c853; /* Green color */
+    color: #00c853;
 }
 
 .info-percentage span {
@@ -147,18 +159,18 @@
 }
 
 .legend-color.completed {
-    background-color: #ff5252; /* Red color */
+    background-color: #ff5252;
 }
 
 .legend-color.inprogress {
-    background-color: #f48fb1; /* Light red color */
+    background-color: #f48fb1;
 }
 
 .operation-pie {
     position: absolute;
-    right: 20px; /* Position 20px from the right */
-    top: 50%; /* Position at the vertical center */
-    transform: translateY(-50%); /* Adjust to truly center vertically */
-    width: 300px; /* Adjust the size of the pie chart container */
-    
-  }
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 150px;
+    height: 150px;
+}

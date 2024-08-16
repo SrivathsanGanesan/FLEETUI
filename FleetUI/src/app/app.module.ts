@@ -26,6 +26,9 @@ import { OperationPieComponent } from './operation-pie/operation-pie.component';
 import { Chart1Component } from './chart1/chart1.component';
 import { LineChartComponent } from './line-chart/line-chart.component';
 import { AreaChartComponent } from './area-chart/area-chart.component';
+import { rootCertificates } from 'tls';
+import { RobotPopupComponent } from './robot-popup/robot-popup.component';
+import { IPScannerComponent } from './ipscanner/ipscanner.component';
 
 
 
@@ -38,6 +41,9 @@ import { AreaChartComponent } from './area-chart/area-chart.component';
     ProjectsetupComponent,
     ConfigurationComponent,
     UsermanagementComponent,
+    RobotPopupComponent,
+    RobotsComponent,
+    IPScannerComponent,
     Userlogscomponent,
     StatisticsComponent,
     RobotsComponent,
