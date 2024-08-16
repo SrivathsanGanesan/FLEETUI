@@ -8,14 +8,15 @@
 
 /* Adjust the width of activities-container */
 .activities-container {
+    
     background-color: #ffffff;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-top: 20px;
-    width: 300px; /* Increase width to 500px */
-    /* max-width: 100%;  */
-    height: 250px; /* Adjust height as needed */
+    width: 400px; /* Increase width to 500px */
+ 
+    height: 280px; /* Adjust height as needed */
     position: relative;
     margin-right: auto; /* Pushes the container to the left */
 }
@@ -120,7 +121,7 @@
 }
 
 .info-percentage {
-    font-size: 14px;
+    font-size: 24px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -131,7 +132,7 @@
 }
 
 .info-percentage span {
-    font-size: 14px;
+    font-size: 24px;
 }
 
 .info-text {

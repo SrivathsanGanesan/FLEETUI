@@ -36,13 +36,14 @@ export class AreaChartComponent implements OnInit {
     this.chartOptions = {
       series: [{
         name: "Series 1",
-        data: [45, 52, 38, 45, 19, 23, 2]
+        data: [45, 52, 38, 45, 19, 23, 50]
+        
       }],
       chart: {
         height: 280,
-        type: "area"
+        type: "area",
+        background: "#FFFFFF" // Setting the background color to white
       },
-      
       xaxis: {
         categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
         labels: {
@@ -106,9 +107,11 @@ export class AreaChartComponent implements OnInit {
     };
   }
   
+  
 
   ngOnInit(): void {
     // Any additional logic can go here
+    
   }
 }
 setTimeout(() => {

@@ -32,8 +32,8 @@ export class Chart1Component {
     this.chartOptions = {
       series: [percentage],
       chart: {
-        width: 300,
-        height: 300,
+        width: 270,
+        height: 270,
         type: "radialBar",
         toolbar: {
           show: false

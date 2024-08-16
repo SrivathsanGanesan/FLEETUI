@@ -202,15 +202,7 @@ button {
   gap: 10px;
 }
 
-/* .stat-card {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  width: 220px;
-  height: 80px;
-  text-align: left;
-} */
+
 
 .stat-card {
   background-color: #ffffff;
@@ -243,28 +235,6 @@ h2 {
   font-size: 32px;
 }
 
-/* .stat-change {
-  font-size: 14px;
-  display: flex;
-  margin: 0px 0;
-  justify-content: left;
-  align-items: left;
-}
-
-.stat-change.positive {
-  color: #00c853; 
-}
-
-.stat-change.negative {
-  color: #d32f2f; 
-}
-
-.stat-change span {
-  font-size: 14px;
-} */
-
-
-
 .stat-chart {
   position: absolute; /* Absolutely position the SVG */
   right: 10px; /* Align it to the right with some padding */
@@ -277,14 +247,6 @@ h2 {
 .stat-chart svg {
   width: 100%; /* Make SVG fill the container */
   height: auto
-}
-
-/* activities container styles */
-app-operation-pie {
-  position: absolute; /* Position the Operation Pie component absolutely */
-  right: 40px; /* Align it to the right side */
-  top: calc(100% + 10px); /* Place it below the stat cards with a 20px margin */
-  width: 300px; /* Ensure it matches the intended width */
 }
 
 /* search container */
@@ -423,22 +385,6 @@ app-operation-pie {
 }
 
 
-/* .date-inputs {
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-}
-
-.date-inputs i {
-  color: #666;
-} */
-
-
 .date-inputs {
   display: flex;
   gap: 0.3rem; /* Space between date inputs */
@@ -462,17 +408,22 @@ app-operation-pie {
 }
 
 .area-chart-container {
-  width: 100%;
+  flex: 1; /* Takes up available space */
   max-width: 900px; /* Adjust according to your design */
- 
-  margin-top: 5px; /* Space between search filter and area chart */
   background-color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Optional box-shadow for aesthetics */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0px;
+  display: flex;
+  flex-direction: column;
 }
 
-.area-chart-container:hover {
-  box-shadow: 8px 8px 20px 8px rgba(0, 0, 0, 0.1);
 
+/* activities container styles */
+app-operation-pie {
+  display: flex;
+  position: absolute; /* Position the Operation Pie component absolutely */
+  right: 140px; /* Align it to the right side */
+  top: calc(100% + 10px); /* Place it below the stat cards with a 20px margin */
+  width: 300px; /* Ensure it matches the intended width */
 }
