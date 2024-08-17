@@ -1,4 +1,4 @@
-const { Schema, model, mongoose } = require("mongoose");
+const { Schema, model, mongoose, mongo } = require("mongoose");
 const { roboSchema, zoneSchema } = require("./roboSchema");
 const { dashboardConnection } = require("../../common/db_config");
 
@@ -18,6 +18,33 @@ const roboProjSchema = new Schema(
   { timestamps: true, versionKey: false, _id: false }
 );
 
+const nodeSchema = new Schema(
+  {
+    single_node: { type: Boolean, default: true },
+    multi_node: { type: Boolean, default: false },
+    pos: { type: [{ type: { x: Number, y: Number } }], default: [] },
+    others: { type: mongoose.Schema.Types.Mixed, default: null },
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+    _id: false,
+  }
+);
+
+const stationSchema = new Schema(
+  {
+    asset: { type: String, default: "" },
+    pos: { type: [{ type: { x: Number, y: Number } }], default: [] },
+    others: { type: mongoose.Schema.Types.Mixed, default: null },
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+    _id: false,
+  }
+);
+
 const mapSchema = new Schema(
   {
     mapName: {
@@ -26,9 +53,13 @@ const mapSchema = new Schema(
       trim: true,
       unique: true,
     },
-    height: { type: Number, default: 0 },
-    width: { type: Number, default: 0 },
+    heightInMeter: { type: Number, default: 0 },
+    widthInMeter: { type: Number, default: 0 },
     imgUrl: { type: String, default: "" },
+    ppm: { type: Number, default: 0.0 },
+    mpp: { type: Number, default: 0.0 },
+    nodes: { type: [nodeSchema], default: [] },
+    stations: { type: [stationSchema], default: [] },
     zones: {
       type: [zoneSchema],
       default: [],
