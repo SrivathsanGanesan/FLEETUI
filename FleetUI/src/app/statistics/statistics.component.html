@@ -5,11 +5,9 @@
     
 
      <!-- Header section -->
-     <div class="header-section mb-4">
-      <h1 class="header-title">Operation</h1>
-      <div class="subheader-container">
-        <div class="subheader-text">Create and edit task reports</div>
-        <img src="../../assets/icons/i-icon.svg" alt="Icon" class="subheader-icon">
+      <div class="header">
+        <button (click)="setView('operation')" [class.active]="currentView === 'operation'">Operation</button>
+        <button (click)="setView('robot')" [class.active]="currentView === 'robot'">Robot</button>
       </div>
 
       <div class="search-filter-container">
