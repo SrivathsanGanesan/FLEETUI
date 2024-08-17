@@ -350,174 +350,17 @@
                 <h2>Communication Settings</h2>
               </div>
             </div>
-
+            
             <div class="Create-button-container">
               <button
                 class="Create-button"
                 *ngIf="activeButton === 'Environment'"
-                (click)="showPopup()"
+                (click)="openImageUploadPopup()"
               >
                 Create
               </button>
-              <div *ngIf="isPopupVisible" class="Create-popup">
-                <div class="popup-content">
-                  <button class="close-button" (click)="closePopup()">
-                    &times;
-                  </button>
-                  <div *ngIf="!isImageOpened" class="image-proportion">
-                    <div class="image-upload" (click)="triggerFileInput()">
-                      <img src="../../assets/ConfigurationOptions/Map.svg" />
-                      <h2 class="Image">
-                        {{ chosenImageName || "Choose Image" }}
-                      </h2>
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      #fileInput
-                      (change)="onFileSelected($event)"
-                      style="display: none"
-                    />
-                    <div *ngIf="chosenImageName" class="Details">
-                      <label for="Mapname">Map Name :</label>
-                      <input
-                        id="Mapname"
-                        type="text"
-                        class="Mapname"
-                        [(ngModel)]="mapName"
-                      />
-                      <br />
-                      <label for="Sitename">Site Name : </label>
-                      <input
-                        id="Sitename"
-                        type="text"
-                        class="Sitename"
-                        [(ngModel)]="siteName"
-                      />
-                      <br />
-                      <label for="imageHeight">Enter Height (meters): </label>
-                      <input
-                        id="imageHeight"
-                        type="number"
-                        class="imageHeight"
-                        [(ngModel)]="imageHeight"
-                      />
-                      <br />
-                      <label for="imageWidth">Enter Width (meters): </label>
-                      <input
-                        id="imageWidth"
-                        type="number"
-                        class="imageWidth"
-                        [(ngModel)]="imageWidth"
-                      />
-                      <br />
-                      <button class="Open-button" (click)="openImage()">
-                        Open Environment
-                      </button>
-                    </div>
-                  </div>
-                  <div class="Map-settings" *ngIf="isImageOpened">
-                    <div class="canvas-container">
-                      <canvas
-                        #uploadedCanvas
-                        (dblclick)="handleLayerClick($event)"
-                      >
-                      </canvas>
-                      <canvas
-                       #overlayCanvas
-                       class="transparent-layer"
-                       *ngIf="isCalibrationLayerVisible"
-                       (click)="handleLayerClick($event)">
-                      </canvas>
-                     </div>
-                    <button
-                      class="calibrate-button"
-                      *ngIf="!isCalibrationLayerVisible"
-                      (click)="showCalibrationLayer()"
-                    >
-                      Options
-                    </button>
-
-                    <!-- Calibration Options Layer -->
-                    <div
-                      class="calibration-layer"
-                      *ngIf="isCalibrationLayerVisible"
-                    >
-                      <div class="dropdown">
-                        <button class="dropdown-button">Add Node</button>
-                        <div class="dropdown-content">
-                          <button (click)="setNodeMode('single')">
-                            Single Node
-                          </button>
-                          <button (click)="setNodeMode('multi')">
-                            Multi Node
-                          </button>
-                        </div>
-                      </div>
-                      <button (click)="deleteNode()">Delete Node</button>
-                      <!-- <button (click)="calibrateCoordinates()">Calibrate Coordinates</button> -->
-                      <div class="dropdown">
-                        <button
-                          class="dropdown-button"
-                          (click)="connectivity()"
-                        >
-                          Connectivity
-                        </button>
-                        <div class="dropdown-content">
-                          <button
-                            (click)="connectivityMode = 'uni-directional'"
-                          >
-                            Uni-Directional
-                          </button>
-                          <button (click)="connectivityMode = 'bi-directional'">
-                            Bi-Directional
-                          </button>
-                        </div>
-                      </div>
-                      <div class="dropdown">
-                        <button class="dropdown-button" (click)="zones()">
-                          Zones
-                        </button>
-                        <div class="dropdown-content">
-                          <button (click)="setZoneType('high')">
-                            High Speed Zone
-                          </button>
-                          <button (click)="setZoneType('medium')">
-                            Medium Speed Zone
-                          </button>
-                          <button (click)="setZoneType('low')">
-                            Low Speed Zone
-                          </button>
-                        </div>
-                      </div>
-                      <div class="dropdown">
-                        <button class="dropdown-button" (click)="addAssets()">
-                          Add Assets
-                        </button>
-                        <div class="dropdown-content">
-                          <button>Docking Station</button>
-                          <button>Charging Station</button>
-                          <button>Picking Station</button>
-                        </div>
-                      </div>
-                      <button (click)="showRobotPopup()">Add Robots</button>
-
-                      <app-robot-popup
-                        [isVisible]="isRobotPopupVisible"
-                        [robots]="robots"
-                        (close)="closeRobotPopup()"
-                        (addRobot)="handleRobotAddition($event)"
-                      >
-                        ></app-robot-popup
-                      >
-                      <button (click)="removeRobots()">Remove Robots</button>
-                      <button (click)="saveMap()">Save</button>
-                      <button (click)="hideCalibrationLayer()">Back</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
+            <app-envmap *ngIf="showImageUploadPopup" (closePopup)="closeImageUploadPopup()"> </app-envmap>
           </div>
         </div>
       </div>
