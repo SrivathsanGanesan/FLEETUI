@@ -26,6 +26,8 @@ const mapSchema = new Schema(
       trim: true,
       unique: true,
     },
+    height: { type: Number, default: 0 },
+    width: { type: Number, default: 0 },
     imgUrl: { type: String, default: "" },
     zones: {
       type: [zoneSchema],

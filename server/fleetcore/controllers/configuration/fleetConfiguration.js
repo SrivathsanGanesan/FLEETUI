@@ -57,7 +57,7 @@ const scanIp = async (req, res) => {
     // res.emit("close"); // res.end();
   } catch (error) {
     console.error("Error occurred in SSE :", error);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("Internal Server Error, might Ip range is so High!");
   }
   // res.json(arr);
 };
