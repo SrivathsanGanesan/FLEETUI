@@ -30,6 +30,7 @@ import { rootCertificates } from 'tls';
 import { RobotPopupComponent } from './robot-popup/robot-popup.component';
 import { IPScannerComponent } from './ipscanner/ipscanner.component';
 import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-parameters-popup.component';
+import { EnvmapComponent } from './envmap/envmap.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,8 @@ import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-pa
     Chart1Component,
     LineChartComponent,
     AreaChartComponent,
+    RobotPopupComponent,
+    EnvmapComponent
   ],
   imports: [
     NgApexchartsModule,

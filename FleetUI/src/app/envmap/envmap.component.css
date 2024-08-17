@@ -1,0 +1,224 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 25px 30px;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  overflow: auto; /* Enables vertical scrolling */
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 90vh; /* Ensure content doesn't exceed viewport height */
+  max-width: 1500px;
+  overflow: auto; /* Enables scrolling within the content */
+}
+
+h2 {
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.upload-image img {
+  width: 100px;
+  height: auto;
+  cursor: pointer;
+
+}
+
+.file-name {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.form-container {
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-container label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.form-container input {
+  width: 300px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.image-container {
+  margin-top: 20px;
+  position: relative;
+}
+
+canvas {
+  border: 1px solid #ccc;
+  width: 1400px;
+  height: 580px;
+}
+.plottinglayer{
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1400px;
+  height: 580px;
+  background-color: transparent;
+  /* background-color: #ffffff; */
+  z-index: 1;
+  pointer-events: none; /* Allows clicks to pass through to the underlying canvas */
+}
+.maplayer{
+  z-index: 1;
+}
+.close-btn {
+  position: absolute;
+  top: -35px;
+  right: 0px;
+  background-color: #a52828;
+  color: #fff;
+  font-size: 8px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+.options-container {
+  margin: 0px;
+  text-align: center;
+  position: absolute;
+  bottom: 10px;
+  left: 5px;
+  z-index: 10; /* Higher than the canvas */
+  pointer-events: auto; /* Allow interaction */
+}
+
+.options-container button {
+  padding: 0;
+  background-color: rgba(123, 110, 110, 0.238);
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.options-container button img {
+  width: 30px; /* Adjust width as needed */
+  height: auto; /* Keeps aspect ratio */
+}
+
+.options-container button:hover img {
+  opacity: 0.8; /* Slightly dim the image on hover */
+}
+
+.calibration-layer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #c0b3b372;
+  padding: 5px;
+  gap: 10px;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  z-index: 10; /* Higher than the canvas */
+  pointer-events: auto; /* Allow interaction */
+}
+
+.dropdown-button {
+  background-color: #ff7373;
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #cd2f2f54;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  bottom: 100%; /* Position the dropdown above the button */
+  left: 0; /* Aligns the dropdown with the left edge of the button */
+  margin-bottom: 0px; /* Adds space between the button and the dropdown */
+  z-index: 10;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content button {
+  background-color:transparent;
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  text-align: left;
+  border: none;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;  
+}
+
+.dropdown-content button:hover {
+  background-color: #b93636;
+}
+.close-btn:hover {
+  background-color: #601515a7;
+}
+
+button {
+  padding: 10px;
+  background-color: #ff3333;
+  color: #fff;
+  font-size: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #cc0000;
+}
