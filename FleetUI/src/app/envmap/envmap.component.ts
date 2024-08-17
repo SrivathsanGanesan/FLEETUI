@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { formatDate } from '@angular/common';
 interface Zone {
   type: 'high' | 'medium' | 'low';
   startX: number;
@@ -37,10 +38,12 @@ export class EnvmapComponent implements AfterViewInit {
   startY: number | null = null;  
   isOptionsMenuVisible = false;
   isCalibrationLayerVisible = false;
-  zones: Zone[] = [];
+
   currentZone: Zone | null = null;
   robotImages: { [key: string]: HTMLImageElement } = {};
   isRobotPopupVisible: boolean = false;
+  tableData: { mapName: string, siteName: string }[] = []; // Holds table data
+  private zones: { startX: number, startY: number, endX: number, endY: number }[] = [];
 
   
 
@@ -56,10 +59,10 @@ export class EnvmapComponent implements AfterViewInit {
      this.assetImages['picking'].src = 'assets/Asseticon/picking-station.svg';
 
      this.robotImages['robotA'] = new Image();
-    this.robotImages['robotA'].src = 'assets/robots/robotA.png';
+     this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
 
     this.robotImages['robotB'] = new Image();
-    this.robotImages['robotB'].src = 'assets/robots/robotB.png';
+    this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
   selectAsset(assetType: 'docking' | 'charging' | 'picking'): void {
     this.selectedAsset = assetType;
@@ -96,6 +99,8 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.mapName && this.siteName && this.imageSrc) {
       this.fileName = null;
       this.showImage = true;
+            // Add mapName and siteName to tableData
+
 
       const img = new Image();
       img.src = this.imageSrc;
@@ -170,7 +175,7 @@ export class EnvmapComponent implements AfterViewInit {
 
       if (this.plottingMode === 'single') {
         ctx!.beginPath();
-        ctx!.arc(x, y, 8, 0, 2 * Math.PI, false);
+        ctx!.arc(x, y, 5, 0, 2 * Math.PI, false);
         ctx!.fillStyle = 'red';
         ctx!.fill();
 
@@ -179,7 +184,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.isPlottingEnabled = false;
       } else if (this.plottingMode === 'multi') {
         ctx!.beginPath();
-        ctx!.arc(x, y, 8, 0, 2 * Math.PI, false);
+        ctx!.arc(x, y, 5, 0, 2 * Math.PI, false);
         ctx!.fillStyle = 'red';
         ctx!.fill();
 
@@ -306,7 +311,7 @@ export class EnvmapComponent implements AfterViewInit {
       const img = new Image();
       img.src = robot.image;
       img.onload = () => {
-        ctx.drawImage(img, x - img.width / 2, y - img.height / 2);
+        ctx.drawImage(img, x - img.width, y - img.height );
       };
     });
   }

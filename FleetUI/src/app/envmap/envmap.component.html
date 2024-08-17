@@ -74,7 +74,7 @@
             <button (click)="setPlottingMode('multi')">Multi Node</button>
           </div>
         </div>
-        <button >Delete Node</button>
+        <button>Delete Node</button>
         <div class="dropdown">
           <button class="dropdown-button">Connectivity</button>
           <div class="dropdown-content">
@@ -110,13 +110,9 @@
         
         <button >Remove Robots</button>
         <button >Save</button>
-        <button >Back</button>
+        <button (click)="toggleOptionsMenu()">Back</button>
       </div>
-      
-      
     </div>    
-
-
     <div class="button-container" *ngIf="!showImage">
       <button (click)="open()">Open</button>
       <button (click)="close()">Close</button>
