@@ -9,20 +9,23 @@
 
 /* Adjust the width of activities-container */
 .activities-container {
-    
     background-color: #ffffff;
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    margin-top: 5px;
-    width: 400px; /* Increase width to 500px */
- 
-    height: 280px; /* Adjust height as needed */
+    margin-top: 0px;
+    width: 420px;
+    height:290px;
     position: relative;
-    margin-right: auto; /* Pushes the container to the left */
+    margin-right: auto;
 }
 
-/* Other styles remain the same */
+.divider-line {
+    border: none;
+    border-top: 3px solid #e0e0e0;
+    margin: 20px 0; /* Adjust margin as needed */
+}
+
 .activities-header {
     display: flex;
     justify-content: space-between;
@@ -30,6 +33,9 @@
     margin-bottom: 10px;
     gap: 10px;
 }
+
+/* The rest of your CSS remains unchanged */
+
 
 .activities-header h3 {
     margin: 0;
@@ -41,7 +47,7 @@
 
 .activities-header p, .activities-header span {
     margin: 0;
-    font-size: 18px;
+    font-size: 28px;
     color: #000000;
     white-space: nowrap;
 }
@@ -106,6 +112,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 30px;
+    margin-left: 30px;
 }
 
 .donut-chart {
@@ -122,7 +130,7 @@
 }
 
 .info-percentage {
-    font-size: 24px;
+    font-size: 34px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -149,14 +157,15 @@
 .legend-item {
     display: flex;
     align-items: center;
+    font-size: 18px;
     margin-bottom: 5px;
 }
 
 .legend-color {
     display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
     border-radius: 50%;
 }
 
@@ -165,14 +174,14 @@
 }
 
 .legend-color.inprogress {
-    background-color: #f48fb1;
+    background-color: #FF8585;
 }
 
-.operation-pie {
+/* .operation-pie {
     position: absolute;
     left: 0;
     top: 50%;
     transform: translateY(-50%);
     width: 150px;
     height: 150px;
-}
+} */

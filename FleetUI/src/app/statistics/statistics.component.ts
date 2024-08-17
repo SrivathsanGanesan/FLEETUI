@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './statistics.component.css'
 })
 export class StatisticsComponent {
-  currentView: string = 'operation';  // Default view
+  currentView: string = 'operation';
 
   setView(view: string): void {
     this.currentView = view;
