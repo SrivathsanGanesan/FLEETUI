@@ -31,7 +31,6 @@ import { RobotPopupComponent } from './robot-popup/robot-popup.component';
 import { IPScannerComponent } from './ipscanner/ipscanner.component';
 import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-parameters-popup.component';
 import { EnvmapComponent } from './envmap/envmap.component';
-import { env } from 'process';
 
 @NgModule({
   declarations: [
@@ -57,6 +56,7 @@ import { env } from 'process';
     LineChartComponent,
     AreaChartComponent,
     RobotPopupComponent,
+    EnvmapComponent
     
   ],
   imports: [
