@@ -83,10 +83,12 @@
             <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'task'">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task Column 1</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task Column 2</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task Column 3</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task Column 4</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task ID</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task name</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
@@ -95,6 +97,8 @@
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column6 }}</td>
                 </tr>
               </tbody>
             </table>
@@ -102,10 +106,12 @@
             <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'robot'">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot Column 1</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot Column 2</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot Column 3</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot Column 4</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot ID </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot name</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Error code </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
@@ -114,6 +120,8 @@
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column6 }}</td>
                 </tr>
               </tbody>
             </table>
@@ -121,10 +129,12 @@
             <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'fleet'">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fleet Column 1</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fleet Column 2</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fleet Column 3</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fleet Column 4</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time 1</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Module name</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Error code</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                  
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
@@ -133,6 +143,8 @@
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
+                  
                 </tr>
               </tbody>
             </table>
