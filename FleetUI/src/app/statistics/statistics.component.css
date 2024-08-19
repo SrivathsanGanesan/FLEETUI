@@ -48,7 +48,7 @@
 .slider-buttons {
   position: relative;
   display: flex;
-  margin-top: 20px;
+  margin-top: 10px;
   width: 200px;
   height: 50px;
   gap: 5px; /* Add 'px' to ensure the gap is applied correctly */
@@ -100,7 +100,7 @@
   position: sticky;
   display: flex;
   flex-direction: column;
-  margin-top: 5px;
+  margin-top: 10px;
   width:530px;
   gap: 5px;
   padding: 5px;
@@ -369,7 +369,7 @@ h2 {
   position: sticky;
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  margin-top: 20px;
   max-width: 950px; 
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -385,6 +385,6 @@ app-operation-pie {
   display: flex;
   position: absolute; /* Position the Operation Pie component absolutely */
   right: 140px; /* Align it to the right side */
-  top: calc(100% + 10px); /* Place it below the stat cards with a 20px margin */
+  top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
   width: 300px; /* Ensure it matches the intended width */
 }

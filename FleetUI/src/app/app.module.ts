@@ -31,6 +31,12 @@ import { RobotPopupComponent } from './robot-popup/robot-popup.component';
 import { IPScannerComponent } from './ipscanner/ipscanner.component';
 import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-parameters-popup.component';
 import { EnvmapComponent } from './envmap/envmap.component';
+import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.component';
+import { RouterModule } from '@angular/router';
+import { ChartTimelineComponent } from './chart-timeline/chart-timeline.component';
+
+
+
 
 @NgModule({
   declarations: [
@@ -56,7 +62,13 @@ import { EnvmapComponent } from './envmap/envmap.component';
     LineChartComponent,
     AreaChartComponent,
     RobotPopupComponent,
-    EnvmapComponent
+    EnvmapComponent,
+    RobotDashboardComponent,
+    ChartTimelineComponent,
+    
+    
+    
+
     
   ],
   imports: [
@@ -66,6 +78,8 @@ import { EnvmapComponent } from './envmap/envmap.component';
     BrowserAnimationsModule,
     FormsModule,
     BrowserModule,
+    RouterModule.forRoot([]),
+    NgApexchartsModule
   ],
   providers: [
     // provideClientHydration()

@@ -58,14 +58,9 @@ const routes: Routes = [
   // { path: 'statistics/operation', component: StatisticsComponent },
   // { path: 'statistics/robot', component: RobotDashboardComponent },
   // { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' },
-  {
-    path: 'statistics', component: StatisticsComponent, children: [
-      { path: 'operation', component: StatisticsComponent },
-      { path: 'robot', component: RobotDashboardComponent },
-    ]
-  },
-  { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' }, // Redirect to Operation as default
-  { path: '**', redirectTo: '/statistics/operation' } // R
+  { path: 'statistics/operation', component: StatisticsComponent },
+  { path: 'statistics/robot', component: RobotDashboardComponent },
+  { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' },
 ];
 
 @NgModule({

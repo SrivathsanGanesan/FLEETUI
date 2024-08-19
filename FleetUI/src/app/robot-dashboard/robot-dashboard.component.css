@@ -1,11 +1,15 @@
 /* Container for the entire dashboard */
-.robot-dashboard-container {
-    padding: 20px;
-    background-color: #f5f5f5;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
+.mainContent {
+    position: absolute;
+    top: 30px;
+    left: 70px;
+    width: calc(100% - 70px);
+    padding: 16px;
+    overflow: hidden;
+    box-sizing: border-box;
+    background-color: white;
+  }
+
 
 /* Top section containing the search bar and filters */
 .search-filter-section {
@@ -149,4 +153,57 @@
     color: #555;
   }
 
+  
+.slider-buttons {
+    position: relative;
+    display: flex;
+    margin-top: 10px;
+    width: 200px;
+    height: 50px;
+    gap: 5px; /* Add 'px' to ensure the gap is applied correctly */
+    font-size: 28px;
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 3; /* Ensure buttons stay above the sidebar */
+  }
+  
+  .slider-buttons button {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: #333;
+    font-weight: bold;
+    z-index: 4; /* Ensure buttons are above the slider */
+  }
+  
+  .slider-buttons button.active {
+    color: white;
+  }
+  
+  .slider {
+    position: absolute;
+    width: 50%; /* Half of the container width */
+    height: 100%;
+    background-color: #DA2127; /* Active button color */
+    z-index: 1; /* Behind the buttons but above the sidebar */
+    transition: transform 0.3s ease; /* Smooth transition for the sliding effect */
+  }
+  
+  .slider.left {
+    transform: translateX(0);
+  }
+  
+  .slider.right {
+    transform: translateX(100%);
+  }
 /* Responsive Design */
+app-operation-pie {
+    position: fixed;
+    display: flex;
+    position: absolute; /* Position the Operation Pie component absolutely */
+    right: 140px; /* Align it to the right side */
+    top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
+    width: 300px; /* Ensure it matches the intended width */
+  }
