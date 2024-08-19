@@ -8,7 +8,6 @@ import {
   HostListener,
 } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { SharedDataService } from '../shared-data.service';
 interface Zone {
   type: 'high' | 'medium' | 'low';
   startX: number;
@@ -62,7 +61,7 @@ export class EnvmapComponent implements AfterViewInit {
     endY: number;
   }[] = [];
 
-  constructor(private sharedDataService: SharedDataService) {}
+  constructor() {}
 
   ngAfterViewInit(): void {
     // Preload asset images
@@ -144,7 +143,6 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   close(): void {
-    this.sharedDataService.updateEnvData([]);
     this.closePopup.emit();
   }
 
