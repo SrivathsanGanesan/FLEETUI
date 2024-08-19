@@ -6,7 +6,7 @@ import { EnvmapComponent } from './envmap.component';
 
 @NgModule({
   declarations: [
-    EnvmapComponent
+    
   ],
   imports: [
     CommonModule

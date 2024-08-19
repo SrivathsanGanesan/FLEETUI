@@ -1,159 +1,169 @@
 <div class="container" #screen>
   <app-sidenavbar></app-sidenavbar>
   <div class="mainContent">
-    <!-- <app-chart1></app-chart1> -->
-    
-
-     <!-- Header section -->
-      <div class="header">
-        <button (click)="setView('operation')" [class.active]="currentView === 'operation'">Operation</button>
-        <button (click)="setView('robot')" [class.active]="currentView === 'robot'">Robot</button>
-      </div>
-
-      <div class="search-filter-container">
-        <!-- Search Bar -->
-        <div class="search-box">
-          <input type="text" placeholder="Search For Something..." />
-          <button class="search-btn">
-            <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
-          </button>
+   <!-- Router outlet for displaying the appropriate view -->
+      
+        <div class="slider-buttons">
+          <button (click)="setView('operation')" [class.active]="currentView === 'operation'">Operation</button>
+          <button (click)="setView('robot')" [class.active]="currentView === 'robot'">Robot</button>
+          <div class="slider" [ngClass]="{'left': currentView === 'operation', 'right': currentView === 'robot'}"></div>
         </div>
-      </div>
+        
+        <!-- Router outlet for displaying the appropriate view -->
+        <!-- <router-outlet></router-outlet> -->
+        
+  
 
+        <div *ngIf="currentView === 'operation'">
+          <div class="search-filter-container">
+            <!-- Search Bar -->
+            <div class="search-box">
+              <input type="text" placeholder="Search For Something..." />
+              <button class="search-btn">
+                <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
+              </button>
+            </div>
+          </div>
+       
+             
+           <!-- area chart -->
+           <div class="area-chart-container">
+            <app-area-chart></app-area-chart>
+        </div>
+        <!--  -->
          
-       <!-- area chart -->
-       <div class="area-chart-container">
-        <app-area-chart></app-area-chart>
-    </div>
-    <!--  -->
-     
-
-    <div class="tasks-table">
-      <!-- <div class="table-header">
-      <h3>Task Statistics</h3> -->
-      <!-- <h4>Over 500 Tasks</h4> -->
-      <!-- <div class="new-task-btn">
-        <button>+ New Task</button>
-      </div> -->
-    <!-- </div> -->
-      <table>
-        <thead>
-          <tr>
-            <th>s.no</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Battery</th>
-            <th>Robot location</th>
-            <th>Task</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Forklift</td>
-            <td style="color: green;">Completed</td>
-            <td>
-              50%
-              <div class="battery-bar">
-                <div class="fill" style="width: 50%;"></div>
-              </div>
-            </td>
-            <td>86,75.92.01</td>
-            <td>Picked rack no 21</td>
-            <td>
-              <button>Edit</button>
-              <button>Delete</button>
-            </td>
-          </tr>
     
-          <tr>
-            <td>2</td>
-            <td>Pallet stacker</td>
-            <td style="color: #FF8C8C;">In progress</td>
-            <td>
-              27%
-              <div class="battery-bar">
-                <div class="fill" style="width: 27%; background-color: #FF8C8C;"></div>
-              </div>
-            </td>
-            <td>86,75.92.01</td>
-            <td>Charging</td>
-            <td>
-              <button>Edit</button>
-              <button>Delete</button>
-            </td>
-          </tr>
-    
-          <tr>
-            <td>3</td>
-            <td>Counterbalance</td>
-            <td style="color: green;">Completed</td>
-            <td>
-              60%
-              <div class="battery-bar">
-                <div class="fill" style="width: 60%;"></div>
-              </div>
-            </td>
-            <td>86,75.92.01</td>
-            <td>Dropped rack 10</td>
-            <td>
-              <button>Edit</button>
-              <button>Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    
-     <!-- Stat card 1 -->
-      <div class="statistics-container">
-        <div class="stat-card">
-          <div class="stat-title">Statistics</div>
-          <div class="stat-value">Completed</div>
-          <h2>214</h2>
-          <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
-          <div class="stat-chart">
-            <!-- Your SVG -->
-            <svg width="96" height="70" viewBox="0 0 96 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 68.5L14.5517 62.1133L18.5572 51.75L24.2989 56.5701L41.2568 1.5L50.8708 42.5917L60.0841 24.0342L73.0363 51.75L79.4456 43.3148L84.5196 46.5683L94 27.5288" stroke="#04CE00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-           
-          <!-- Stat card 2 -->
-        <div class="stat-card">
-          <div class="stat-title">Statistics</div>
-          <div class="stat-value">Inprogress</div>
-          <h2>127</h2>
-          <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
-          <div class="stat-chart">
-             <!-- <div class="stat-chart">
-            <app-line-chart [data]="[10, 20, 15, 25, 20, 30]"></app-line-chart>
+        <div class="tasks-table">
+          <!-- <div class="table-header">
+          <h3>Task Statistics</h3> -->
+          <!-- <h4>Over 500 Tasks</h4> -->
+          <!-- <div class="new-task-btn">
+            <button>+ New Task</button>
           </div> -->
-            <!-- Your SVG -->
-            <svg width="94" height="64" viewBox="0 0 94 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 62L12.8434 53.1705L16.964 37.117L22.8194 43.5385L41.2531 28.689L47.5423 2L57.5182 38.7224L72.2651 2L76.6024 45.3445L82.4579 27.0836L92 41.5318" stroke="#FF718B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-          </div>
+        <!-- </div> -->
+          <table>
+            <thead>
+              <tr>
+                <th>s.no</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Battery</th>
+                <th>Robot location</th>
+                <th>Task</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Forklift</td>
+                <td style="color: green;">Completed</td>
+                <td>
+                  50%
+                  <div class="battery-bar">
+                    <div class="fill" style="width: 50%;"></div>
+                  </div>
+                </td>
+                <td>86,75.92.01</td>
+                <td>Picked rack no 21</td>
+                <td>
+                  <button>Edit</button>
+                  <button>Delete</button>
+                </td>
+              </tr>
+        
+              <tr>
+                <td>2</td>
+                <td>Pallet stacker</td>
+                <td style="color: #FF8C8C;">In progress</td>
+                <td>
+                  27%
+                  <div class="battery-bar">
+                    <div class="fill" style="width: 27%; background-color: #FF8C8C;"></div>
+                  </div>
+                </td>
+                <td>86,75.92.01</td>
+                <td>Charging</td>
+                <td>
+                  <button>Edit</button>
+                  <button>Delete</button>
+                </td>
+              </tr>
+        
+              <tr>
+                <td>3</td>
+                <td>Counterbalance</td>
+                <td style="color: green;">Completed</td>
+                <td>
+                  60%
+                  <div class="battery-bar">
+                    <div class="fill" style="width: 60%;"></div>
+                  </div>
+                </td>
+                <td>86,75.92.01</td>
+                <td>Dropped rack 10</td>
+                <td>
+                  <button>Edit</button>
+                  <button>Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         
-        <!-- Stat card 3 -->
-        <div class="stat-card">
-          <div class="stat-title">Statistics</div>
-          <div class="stat-value">Charging</div>
-          <h2>40</h2>
-          <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
-          <div class="stat-chart">
-            <!-- Your SVG -->
-            <svg width="96" height="70" viewBox="0 0 96 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 68.5L14.5517 62.1133L18.5572 51.75L24.2989 56.5701L41.2568 1.5L50.8708 42.5917L60.0841 24.0342L73.0363 51.75L79.4456 43.3148L84.5196 46.5683L94 27.5288" stroke="#04CE00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+         <!-- Stat card 1 -->
+          <div class="statistics-container">
+            <div class="stat-card">
+              <div class="stat-title">Statistics</div>
+              <div class="stat-value">Completed</div>
+              <h2>214</h2>
+              <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
+              <div class="stat-chart">
+                <!-- Your SVG -->
+                <svg width="96" height="70" viewBox="0 0 96 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 68.5L14.5517 62.1133L18.5572 51.75L24.2989 56.5701L41.2568 1.5L50.8708 42.5917L60.0841 24.0342L73.0363 51.75L79.4456 43.3148L84.5196 46.5683L94 27.5288" stroke="#04CE00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+               
+              <!-- Stat card 2 -->
+            <div class="stat-card">
+              <div class="stat-title">Statistics</div>
+              <div class="stat-value">Inprogress</div>
+              <h2>127</h2>
+              <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
+              <div class="stat-chart">
+                 <!-- <div class="stat-chart">
+                <app-line-chart [data]="[10, 20, 15, 25, 20, 30]"></app-line-chart>
+              </div> -->
+                <!-- Your SVG -->
+                <svg width="94" height="64" viewBox="0 0 94 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 62L12.8434 53.1705L16.964 37.117L22.8194 43.5385L41.2531 28.689L47.5423 2L57.5182 38.7224L72.2651 2L76.6024 45.3445L82.4579 27.0836L92 41.5318" stroke="#FF718B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+              </div>
+            </div>
+            
+            <!-- Stat card 3 -->
+            <div class="stat-card">
+              <div class="stat-title">Statistics</div>
+              <div class="stat-value">Charging</div>
+              <h2>40</h2>
+              <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
+              <div class="stat-chart">
+                <!-- Your SVG -->
+                <svg width="96" height="70" viewBox="0 0 96 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 68.5L14.5517 62.1133L18.5572 51.75L24.2989 56.5701L41.2568 1.5L50.8708 42.5917L60.0841 24.0342L73.0363 51.75L79.4456 43.3148L84.5196 46.5683L94 27.5288" stroke="#04CE00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <app-operation-pie></app-operation-pie>
           </div>
-        </div>
-        <app-operation-pie></app-operation-pie>
-      </div>
-      <!-- Activities container -->
-        
+
+          <!-- Your existing Operation content goes here -->
+          <!-- This part won't be hidden; it just won't be rendered when 'robot' is active -->
+        </div>   
+      <!-- Router outlet for displaying the appropriate view -->
+        <router-outlet></router-outlet>
+         
   </div>
 </div>

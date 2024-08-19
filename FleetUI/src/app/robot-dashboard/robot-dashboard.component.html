@@ -1,1 +1,93 @@
-<p>robot-dashboard works!</p>
+<div class="robot-dashboard-container">
+    <!-- Search and filter section -->
+    <div class="search-filter-section">
+      <input type="text" placeholder="Search For Something..." />
+      <button class="search-btn">
+        <img src="assets/icons/search-icon.png" alt="Search" />
+      </button>
+    </div>
+  
+    <!-- Stat card 1 -->
+    <div class="statistics-container">
+        <div class="stat-card">
+          <div class="stat-title">Statistics</div>
+          <div class="stat-value">Completed</div>
+          <h2>214</h2>
+          <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
+          <div class="stat-chart">
+            <!-- Your SVG -->
+            <svg width="96" height="70" viewBox="0 0 96 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 68.5L14.5517 62.1133L18.5572 51.75L24.2989 56.5701L41.2568 1.5L50.8708 42.5917L60.0841 24.0342L73.0363 51.75L79.4456 43.3148L84.5196 46.5683L94 27.5288" stroke="#04CE00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+           
+          <!-- Stat card 2 -->
+        <div class="stat-card">
+          <div class="stat-title">Statistics</div>
+          <div class="stat-value">Inprogress</div>
+          <h2>127</h2>
+          <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
+          <div class="stat-chart">
+             <!-- <div class="stat-chart">
+            <app-line-chart [data]="[10, 20, 15, 25, 20, 30]"></app-line-chart>
+          </div> -->
+            <!-- Your SVG -->
+            <svg width="94" height="64" viewBox="0 0 94 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 62L12.8434 53.1705L16.964 37.117L22.8194 43.5385L41.2531 28.689L47.5423 2L57.5182 38.7224L72.2651 2L76.6024 45.3445L82.4579 27.0836L92 41.5318" stroke="#FF718B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+          </div>
+        </div>
+        
+        <!-- Stat card 3 -->
+        <div class="stat-card">
+          <div class="stat-title">Statistics</div>
+          <div class="stat-value">Charging</div>
+          <h2>40</h2>
+          <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
+          <div class="stat-chart">
+            <!-- Your SVG -->
+            <svg width="96" height="70" viewBox="0 0 96 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 68.5L14.5517 62.1133L18.5572 51.75L24.2989 56.5701L41.2568 1.5L50.8708 42.5917L60.0841 24.0342L73.0363 51.75L79.4456 43.3148L84.5196 46.5683L94 27.5288" stroke="#04CE00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>  
+      </div>
+  
+    <!-- Robot Uptime Chart (Placeholder) -->
+    <div class="robot-uptime-chart">
+      <!-- Placeholder for the chart component -->
+      <h3>Robot Uptime</h3>
+      
+      <!-- Add your chart component here -->
+      <!-- <app-robot-uptime-chart></app-robot-uptime-chart> -->
+    </div>
+  
+    <!-- Robot Activity Table -->
+  <!-- Robot Activity Table -->
+<div class="robot-activity-section">
+    <div class="section-header">
+      <h3>Robot Activity</h3>
+      <button class="view-all-btn">View All</button>
+    </div>
+    <table class="activity-table">
+      <tr *ngFor="let activity of robotActivities">
+        <td>{{ activity.id }}</td>
+        <td>{{ activity.name }} - {{ activity.task }} - {{ activity.progress }}% - {{ activity.status }}</td>
+      </tr>
+    </table>
+  </div>
+  
+  <!-- Notifications Table -->
+  <div class="notifications-section">
+    <div class="section-header">
+      <h3>Notifications</h3>
+      <button class="view-all-btn">View All</button>
+    </div>
+    <table class="notifications-table">
+      <tr *ngFor="let notification of notifications">
+        <td>{{ notification.message }} - {{ notification.timestamp }}</td>
+      </tr>
+    </table>
+  </div>
+</div>

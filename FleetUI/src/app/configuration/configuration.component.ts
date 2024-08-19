@@ -3,12 +3,13 @@ import {
   ElementRef,
   ViewChild,
   AfterViewInit,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
+import { SharedDataService } from '../shared-data.service';
 
 @Component({
   selector: 'app-configuration',
@@ -17,9 +18,10 @@ import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-p
 })
 export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('uploadedCanvas', { static: false }) uploadedCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('uploadedCanvas', { static: false })
+  uploadedCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayLayer', { static: false }) overlayLayer!: ElementRef;
-  
+
   nodes: Array<{ x: number; y: number; id: number }> = [];
   selectedNode: { x: number; y: number; id: number } | null = null;
   nodeIdCounter: number = 0; // Counter to generate unique IDs for each node
@@ -31,24 +33,29 @@ export class ConfigurationComponent implements AfterViewInit {
   isTransitioning: boolean = false;
   activeButton: string = 'Environment'; // Default active button
   activeHeader: string = 'Environment'; // Default header
-  chosenImageName = ''; // Initialize chosenImageName with an empty string 
+  chosenImageName = ''; // Initialize chosenImageName with an empty string
   imageUploaded: boolean = false; // To track if an image is uploaded
   imageFile: File | null = null; // Store the uploaded image file
   isImageOpened: boolean = false; // Track if the image is opened in the canvas
   currentTable = 'Environment';
   currentTab: any;
   imageHeight: number = 0; // Height in meters
-  imageWidth: number = 0;  // Width in meters
+  imageWidth: number = 0; // Width in meters
   pixelsPerMeter: number = 0; // Pixels per meter
   private backgroundImage: HTMLImageElement | null = null;
   isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
-  
-  EnvData:any[] = [
+
+  EnvData: any[] = [
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 4, 2024. 14:00:17' },
     { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 15, 2024. 14:00:17' },
-    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' }
+    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' },
   ];
+
+  // Update EnvData in both the component and service
+  // this.EnvData.push([newEntry]);
+  // this.sharedDataService.updateEnvData([...this.EnvData]);
+
   ngOnChanges() {
     this.filterData();
   }
@@ -60,24 +67,28 @@ export class ConfigurationComponent implements AfterViewInit {
     const term = this.searchTerm.toLowerCase();
 
     if (this.currentTable === 'Environment') {
-      this.filteredEnvData = this.EnvData.filter(item => {
+      this.filteredEnvData = this.EnvData.filter((item) => {
         const date = new Date(item.column3);
-        const withinDateRange = (!this.startDate || date >= this.startDate) &&
-                                (!this.endDate || date <= this.endDate);
+        const withinDateRange =
+          (!this.startDate || date >= this.startDate) &&
+          (!this.endDate || date <= this.endDate);
 
-        return (item.column1.toLowerCase().includes(term) ||
-                item.column2.toLowerCase().includes(term) ||
-                item.column3.toLowerCase().includes(term)) && withinDateRange;
+        return (
+          (item.column1.toLowerCase().includes(term) ||
+            item.column2.toLowerCase().includes(term) ||
+            item.column3.toLowerCase().includes(term)) &&
+          withinDateRange
+        );
       });
     } else if (this.currentTable === 'robot') {
-      this.filteredRobotData = this.robotData.filter(item =>
-        item.column1.toLowerCase().includes(term) ||
-        item.column2.toLowerCase().includes(term)
+      this.filteredRobotData = this.robotData.filter(
+        (item) =>
+          item.column1.toLowerCase().includes(term) ||
+          item.column2.toLowerCase().includes(term)
       );
     }
   }
-  
-  robotData:any[] = [
+  robotData: any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
@@ -88,18 +99,15 @@ export class ConfigurationComponent implements AfterViewInit {
 
   constructor(
     private cdRef: ChangeDetectorRef,
-  ) {
-   
-  }
+    private sharedDataService: SharedDataService
+  ) {}
   loadData() {
     // Fetch or initialize data here
     this.EnvData = []; // Replace with actual data fetching
     this.filterData(); // Initial filter application
   }
-  
-  ngAfterViewInit() {
-    
-   }
+
+  ngAfterViewInit() {}
   drawConnectivity() {
     const canvas = this.uploadedCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
@@ -123,13 +131,12 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
   isRobotPopupVisible: boolean = false;
-  
+
   robots = [
-    { id: 1, name: 'Robot A'},
-    { id: 2, name: 'Robot B'}
-  ]; 
-  
-  
+    { id: 1, name: 'Robot A' },
+    { id: 2, name: 'Robot B' },
+  ];
+
   selectedRobots: any[] = [];
   showRobotPopup() {
     this.isRobotPopupVisible = true;
@@ -144,7 +151,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   closeRobotParametersPopup() {
     this.showRobotParametersPopup = false;
-  }  
+  }
   showImageUploadPopup = false;
   openImageUploadPopup(): void {
     this.showImageUploadPopup = true;
@@ -153,36 +160,34 @@ export class ConfigurationComponent implements AfterViewInit {
   closeImageUploadPopup(): void {
     this.showImageUploadPopup = false;
   }
-  updateMapDetails(event: { mapName: string, siteName: string }) {
+  updateMapDetails(event: { mapName: string; siteName: string }) {
     const { mapName, siteName } = event;
     if (mapName && siteName) {
       const newEntry = {
         mapName,
         siteName,
-        lastCreated: new Date().toLocaleDateString()
+        lastCreated: new Date().toLocaleDateString(),
       };
       this.filteredEnvData.push(newEntry);
     }
   }
-  
 
   searchTermChanged() {
     this.filterData();
   }
   ngOnInit() {
+    this.sharedDataService.updateEnvData(this.EnvData);
+    this.sharedDataService.updateEnvData(this.EnvData);
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
     this.searchTerm = '';
     this.searchTermChanged();
     // Initialize the robot image when the component loads
-    
-  
+
     // Optionally, you can also handle image loading errors
 
     // Add mouse event listeners
   }
-      
-    
 
   showIPScannerPopup = false;
 
@@ -193,7 +198,7 @@ export class ConfigurationComponent implements AfterViewInit {
   closeIPScanner() {
     this.showIPScannerPopup = false;
   }
-  
+
   connectivity() {
     this.isConnectivityModeActive = true; // Enable connectivity mode
     this.connectivityPoints = []; // Clear previous points
@@ -203,13 +208,11 @@ export class ConfigurationComponent implements AfterViewInit {
   firstPoint: { x: number; y: number } | null = null;
   secondPoint: { x: number; y: number } | null = null;
 
-
-
   addEnvironmentData() {
     const newEntry = {
       // column1: this.mapName,
       // column2: this.siteName,
-      column3: formatDate(new Date(), 'MMM d, yyyy. HH:mm:ss', 'en-US')
+      column3: formatDate(new Date(), 'MMM d, yyyy. HH:mm:ss', 'en-US'),
     };
 
     this.EnvData.push(newEntry);
@@ -236,8 +239,6 @@ export class ConfigurationComponent implements AfterViewInit {
   addNode() {
     console.log('Add Node clicked');
   }
-
-
 
   zones() {
     console.log('Zones clicked');
@@ -322,8 +323,6 @@ export class ConfigurationComponent implements AfterViewInit {
     this.imageWidth = 0;
   }
 
-
-
   onDateFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const filter = selectElement?.value || '';
@@ -335,7 +334,7 @@ export class ConfigurationComponent implements AfterViewInit {
     const input = event.target as HTMLInputElement;
     const id = input.id;
     const value = input.value;
-    
+
     if (id === 'start-date') {
       this.startDate = value ? new Date(value) : null;
     } else if (id === 'end-date') {
@@ -351,14 +350,13 @@ export class ConfigurationComponent implements AfterViewInit {
   deleteItem(item: any) {
     // Find the index of the item to be deleted
     const index = this.EnvData.indexOf(item);
-    
+
     // Remove the item if found
     if (index !== -1) {
       this.EnvData.splice(index, 1);
       this.filterData(); // Reapply filters after deletion
     }
   }
-  
 
   addItem(item: any) {
     console.log('Add item:', item);

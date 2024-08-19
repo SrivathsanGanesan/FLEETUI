@@ -31,11 +31,22 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
   try {
-    const { projectName, siteName, mapName, imgUrl, zones, robots } = mapData;
+    const {
+      projectName,
+      siteName,
+      mapName,
+      imgUrl,
+      zones,
+      robots = [],
+      nodes = [],
+      stations = [],
+    } = mapData;
     const doc = await projectModel.exists({
       projectName: projectName,
       "sites.siteName": siteName,
     });
+    console.log(doc);
+
     if (!doc) {
       clearImgAsset(req);
       return res.status(400).json({
@@ -52,6 +63,8 @@ const mapInsert = async (req, res) => {
       mapName,
       imgUrl: mapData.imgUrl,
       zones,
+      nodes,
+      stations,
     }).save();
     const MapId = newMap._id;
     const proj = await insertMapId({ MapId, mapName, projectName, siteName });

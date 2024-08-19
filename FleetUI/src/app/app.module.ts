@@ -57,6 +57,7 @@ import { EnvmapComponent } from './envmap/envmap.component';
     AreaChartComponent,
     RobotPopupComponent,
     EnvmapComponent
+    
   ],
   imports: [
     NgApexchartsModule,
