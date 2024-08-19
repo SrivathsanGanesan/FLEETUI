@@ -55,6 +55,7 @@ export class IPScannerComponent {
 
     this.eventSource = new EventSource(URL);
     this.eventSource.onmessage = (event) => {
+      // wanna add host..
       try {
         const data = JSON.parse(event.data);
         let poll: Poll = {

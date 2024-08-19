@@ -64,14 +64,8 @@ const mapSchema = new Schema(
     ppm: { type: Number, default: 0.0 },
     nodes: { type: [nodeSchema], default: [] },
     stations: { type: [stationSchema], default: [] },
-    zones: {
-      type: [zoneSchema],
-      default: [],
-    },
-    robots: {
-      type: [roboProjSchema],
-      default: [],
-    },
+    zones: { ctype: [zoneSchema], cdefault: [] },
+    robots: { type: [roboProjSchema], default: [] },
   },
   { timestamps: true, versionKey: false }
 );

@@ -22,28 +22,23 @@ const scanIp = async (req, res) => {
   const { startIp, endIp } = req.params;
   try {
     // let arr = [];
-    const ipv4Range = getIPRange(`${startIp}-${endIp}`); // "192.168.24.90-192.168.36.183"
+    const ipRange = getIPRange(`${startIp}-${endIp}`); // "192.168.24.90-192.168.36.183"
 
-    const ipRange = [
-      "192.168.249.3",
-      "192.168.249.183",
-      "192.168.249.248",
-      "142.250.182.46",
-    ]; // Add your IP range
     res.writeHead(200, eventStreamHeader);
-    for (let ip of ipv4Range) {
+    for (let ip of ipRange) {
       try {
         const poll = await netScan.poll(ip, {
-          //192.168.249.183
           repeat: null,
           size: 32,
           timeout: null,
         });
         let mac = "";
         if (poll.status === "online") mac = await getMacAddress(ip);
+
         const netPoll = JSON.stringify({
           ip_address: poll.ip_address,
           mac_address: mac === undefined ? "undefined" : mac,
+          host: poll.host,
           status: poll.status,
           time: poll.res_avg,
         });
@@ -54,21 +49,10 @@ const scanIp = async (req, res) => {
       }
     }
     res.end();
-    // res.emit("close"); // res.end();
   } catch (error) {
     console.error("Error occurred in SSE :", error);
     res.status(500).send("Internal Server Error, might Ip range is so High!");
   }
-  // res.json(arr);
 };
 
 module.exports = { scanIp };
-
-/* for (let ip of ipRange) {
-  ping.promise.probe(ip).then((res) => {
-    arr.push({ host: res.host, alive: res.alive, time: res.time });
-    console.log(
-      `${res.host}: ${res.alive ? "alive" : "dead"} time: ${res.time}ms`
-    );
-  });
-} */
