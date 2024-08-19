@@ -1,5 +1,8 @@
 const { Map, Robo } = require("../models/mapSchema");
-const { projectModel } = require("../../fleetcore/models/projectSchema");
+const {
+  projectModel,
+  siteModel,
+} = require("../../fleetcore/models/projectSchema");
 const fs = require("fs");
 const path = require("path");
 
@@ -41,23 +44,34 @@ const mapInsert = async (req, res) => {
       nodes = [],
       stations = [],
     } = mapData;
-    const doc = await projectModel.exists({
+    const projDoc = await projectModel.exists({
       projectName: projectName,
-      "sites.siteName": siteName,
+      // "sites.siteName": siteName,
     });
-    console.log(doc);
-
-    if (!doc) {
+    if (!projDoc) {
       clearImgAsset(req);
       return res.status(400).json({
         succeded: false,
-        msg: "project name or site name not exists!",
+        msg: "project name not exists!",
       });
     }
+    const siteDoc = await projectModel.exists({ "sites.siteName": siteName });
+    if (!siteDoc)
+      await projectModel.findOneAndUpdate(
+        {
+          projectName: projectName,
+        },
+        {
+          $push: {
+            sites: new siteModel({ siteName: siteName }),
+          },
+        }
+      );
+
     mapData.imgUrl = `localhost:3000/dashboard/${req.file.filename}`;
 
     const map = await Map.exists({ mapName: mapName });
-    if (map) return res.json({ exits: true, msg: "name already exits" });
+    if (map) return res.json({ exits: true, msg: "Map name already exits" });
 
     const newMap = await new Map({
       mapName,
