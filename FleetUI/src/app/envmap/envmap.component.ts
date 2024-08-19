@@ -196,56 +196,62 @@ export class EnvmapComponent implements AfterViewInit {
   singleNodes: { x: number, y: number }[] = [];
   multiNodes: { x: number, y: number }[] = [];
 
-  plotMultiNode(x: number, y: number): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d')!;
-    
-    // Ensure only two nodes are plotted
-    if (this.nodes.length >= 2) {
-      alert("Only two nodes can be plotted in multi-node mode.");
-      return;
-    }
-    
-    ctx.beginPath();
-    ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
-    ctx.fillStyle = 'green'; // Color for multi-nodes
-    ctx.fill();
+dialogPosition = { x: 0, y: 0 };
 
-    if (this.nodes.length === 0) {
-      this.firstNode = { x, y };
-    } else if (this.nodes.length === 1) {
-      this.secondNode = { x, y };
-      this.showIntermediateNodesDialog = true;
-      this.isPlottingEnabled = false; // Disable further plotting after two nodes
-    }
-    this.nodes.push({ x, y });
-  }
-  plotIntermediateNodes(): void {
-    if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
-      const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
-      const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
-
-      for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
-        const x = this.firstNode.x + i * dx;
-        const y = this.firstNode.y + i * dy;
-        this.nodes.push({ x, y });
-        const ctx = this.overlayCanvas.nativeElement.getContext('2d')!;
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'red';
-        ctx.fill();
-      }      
-    }
-    this.closeIntermediateNodesDialog();
-  }
-
-  closeIntermediateNodesDialog(): void {
-    this.showIntermediateNodesDialog = false;
-    this.firstNode = null;
-    this.secondNode = null;
-    this.numberOfIntermediateNodes = 0;    
+plotMultiNode(x: number, y: number): void {
+  const canvas = this.overlayCanvas.nativeElement;
+  const ctx = canvas.getContext('2d')!;
+  
+  // Ensure only two nodes are plotted
+  if (this.nodes.length >= 2) {
+    alert("Only two nodes can be plotted in multi-node mode.");
+    return;
   }
   
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+  ctx.fillStyle = 'green'; // Color for multi-nodes
+  ctx.fill();
+
+  if (this.nodes.length === 0) {
+    this.firstNode = { x, y };
+  } else if (this.nodes.length === 1) {
+    this.secondNode = { x, y };
+    this.showIntermediateNodesDialog = true;
+    this.isPlottingEnabled = false; // Disable further plotting after two nodes
+    
+    // Position the dialog near the second node
+    this.dialogPosition = { x: x + 10, y: y + 10 }; // Adjust offset as needed
+  }
+  this.nodes.push({ x, y });
+}
+
+plotIntermediateNodes(): void {
+  if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
+    const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
+    const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
+
+    for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
+      const x = this.firstNode.x + i * dx;
+      const y = this.firstNode.y + i * dy;
+      this.nodes.push({ x, y });
+      const ctx = this.overlayCanvas.nativeElement.getContext('2d')!;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+    }      
+  }
+  this.closeIntermediateNodesDialog();
+}
+
+closeIntermediateNodesDialog(): void {
+  this.showIntermediateNodesDialog = false;
+  this.firstNode = null;
+  this.secondNode = null;
+  this.numberOfIntermediateNodes = 0;    
+}
+
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     if (this.isDrawingZone && this.startX !== null && this.startY !== null && this.overlayCanvas && this.overlayCanvas.nativeElement) {

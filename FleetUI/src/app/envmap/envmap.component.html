@@ -16,7 +16,7 @@
     
     <!-- Display selected file name -->
     <div *ngIf="fileName && !showImage" class="file-name">{{ fileName }}</div>
-    
+    <div class="form-wrapper" *ngIf="fileName && !showImage">
     <!-- Form for additional details -->
     <div class="form-container" *ngIf="fileName && !showImage">
       <label for="mapName">Map Name</label>
@@ -36,7 +36,47 @@
         placeholder="Enter site name"
         (keyup.enter)="open()"
       />
+    </div>
+    <div class="separator"></div>
+    <div class="form1-container" *ngIf="fileName && !showImage">
+      <div class="Res">
+      <label for="resolution">Resolution</label>
+      <div class="Res1">
+      <input
+        type="number"
+        id="resolution"
+        placeholder="Enter Resolution"
+        (keyup.enter)="open()"
+      />
+      <p id="or">or</p>
+      <button class="OpenandLocate">Open and Locate</button><br>
+    </div>
+    </div>
+    <p>Origin</p>
+      <div class="origin-coor" style="display: flex; align-items: center; gap: 10px;">
+
+        <input
+          type="number"
+          id="X"
+          placeholder="X"
+          (keyup.enter)="open()"
+        />
+        <input
+          type="number"
+          id="Y"
+          placeholder="Y"
+          (keyup.enter)="open()"
+        />
+        <input
+        type="number"
+        id="θ"
+        placeholder="θ"
+        (keyup.enter)="open()"
+      />
+      </div>
       
+    </div>
+    </div>
       <!-- <label for="height">Enter Height (m)</label>
       <input
         type="number"
@@ -54,13 +94,13 @@
         placeholder="Enter width"
         (keyup.enter)="open()"
       /> -->
-    </div>
+    
 <!-- Intermediate Nodes Dialog -->
 
 
     <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
-      <div class="intermediate-nodes-dialog" *ngIf="showIntermediateNodesDialog">
+      <div class="intermediate-nodes-dialog" *ngIf="showIntermediateNodesDialog" >
         <div class="dialog-content">
           <h3>Enter Number of Nodes</h3>
           <input type="number" [(ngModel)]="numberOfIntermediateNodes" placeholder="Number of nodes" />
