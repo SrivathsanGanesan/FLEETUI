@@ -13,6 +13,7 @@ const roboSchema = new Schema(
     roboName: { type: String, required: true, unique: true },
     type: { type: String, default: "AGV" },
     ipAdd: { type: String, default: "" },
+    imgUrl: { type: String, default: "" },
     macAdd: { type: String, unique: true, default: "" }, // make it unique..
     status: { type: String, required: true, default: "idle" },
     location: {

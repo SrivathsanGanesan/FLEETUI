@@ -20,8 +20,14 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use(
-  "/dashboard",
+  "/dashboard", // virtual path, (just the placeholder for original path)
   express.static(path.join("proj_assets", "dashboardMap")) // "/dashboard/map_1.jpg"
+  // or express.static("proj_assets/dashboard")
+);
+
+app.use(
+  "/roboSpecification",
+  express.static(path.join("proj_assets/roboSpecification"))
 );
 
 module.exports = app;

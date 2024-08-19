@@ -14,10 +14,10 @@ const insertRoboId = async ({ roboId, roboName, projectName }) => {
 // Insert new Robo..
 const createRobo = async (req, res, next) => {
   const { projectName, roboName, ipAdd, macAdd, batteryStatus, roboTask } =
-    req.body;
+    JSON.parse(req.body.roboData);
   try {
     const doc = await Robo.exists({ roboName: roboName });
-    const doc2 = await projectModel.exists({ projectName });
+    const doc2 = await projectModel.exists({ projectName: projectName });
     if (!doc2)
       return res.status(400).json({
         exists: false,
@@ -31,6 +31,7 @@ const createRobo = async (req, res, next) => {
       roboName,
       ipAdd,
       macAdd,
+      imgUrl: `localhost:3000/roboSpecification/${req.file.filename}`,
       batteryStatus,
       roboTask,
     }).save();
