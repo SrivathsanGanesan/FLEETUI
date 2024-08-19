@@ -14,6 +14,15 @@
       <div class="slider" [ngClass]="{'left': currentView === 'operation', 'right': currentView === 'robot'}"></div>
     </div>
   
+    <div class="search-filter-container">
+      <!-- Search Bar -->
+      <div class="search-box">
+        <input type="text" placeholder="Search For Something..." />
+        <button class="search-btn">
+          <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
+        </button>
+      </div>
+    </div>
     <!-- Stat Cards Section -->
     <div class="statistics-container">
       <div class="stat-card">
@@ -52,6 +61,7 @@
             <!-- Robot Uptime Chart (Placeholder) -->
             <div class="robot-uptime-chart">
             <h3>Robot Uptime</h3>
+            <app-chart-timeline></app-chart-timeline>
             <!-- Add your chart component here -->
             <!-- <app-robot-uptime-chart></app-robot-uptime-chart> -->
             </div>
@@ -74,7 +84,7 @@
             </div>
         
             <!-- Notifications Table -->
-            <div class="notifications-section">
+          <div class="notifications-section">
             <div class="section-header">
                 <h3>Notifications</h3>
                 <button class="view-all-btn">View All</button>
@@ -87,7 +97,7 @@
             </table>
             </div>
         </div>
-        <app-chart-timeline></app-chart-timeline>
+        
 
     </div>
 </div>

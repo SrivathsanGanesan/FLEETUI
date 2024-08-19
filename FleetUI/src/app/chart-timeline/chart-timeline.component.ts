@@ -336,7 +336,7 @@ export class ChartTimelineComponent implements OnInit {
           }
         }],
         xaxis: [{
-          x: new Date('14 Nov 2012').getTime(),
+          x: new Date('14 Nov 2024').getTime(),
           borderColor: '#999',
           label: {
             text: 'Rally',

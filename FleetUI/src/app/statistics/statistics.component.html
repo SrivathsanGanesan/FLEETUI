@@ -8,11 +8,7 @@
           <button (click)="setView('robot')" [class.active]="currentView === 'robot'">Robot</button>
           <div class="slider" [ngClass]="{'left': currentView === 'operation', 'right': currentView === 'robot'}"></div>
         </div>
-        
-        <!-- Router outlet for displaying the appropriate view -->
-        <!-- <router-outlet></router-outlet> -->
-        
-  
+
 
         <div *ngIf="currentView === 'operation'">
           <div class="search-filter-container">

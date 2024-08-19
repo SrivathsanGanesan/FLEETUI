@@ -8,41 +8,14 @@
   box-sizing: border-box;
   background-color: white;
 }
-/* Header section styles */
-/* .header {
-  display: flex;
-  margin-top: 10px;
 
-  gap: 10px;
-  padding: 10px;
-  background-color: #ffffff;
-  
-}
-
-.header button {
-  padding: 10px 30px;
-  border: none;
-  font-size: 18px;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: #ccc;
-  color: white;
-}
-
-.header button.active {
-  background-color: #DA2127;
-}
-
-.header button:hover {
-  background-color: #555;
-} */
 
 .header {
   margin-top: 10px;
   padding: 0px;
   background-color: #ffffff;
-  z-index: 0; /* Ensure header stays above other elements */
-  position: relative; /* Ensure z-index takes effect */
+  z-index: 0; 
+  position: relative; 
 }
 
 .slider-buttons {
