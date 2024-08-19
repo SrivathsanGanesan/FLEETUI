@@ -10,7 +10,7 @@ export class SharedDataService {
     { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 15, 2024. 14:00:17' },
     { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' },
   ]);
-  envData$ = this.envDataSubject.asObservable();
+  envData = this.envDataSubject.asObservable();
   getEnvData() {
     return this.envDataSubject.getValue();
   }
