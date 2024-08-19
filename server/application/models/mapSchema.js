@@ -55,9 +55,13 @@ const mapSchema = new Schema(
     },
     heightInMeter: { type: Number, default: 0 },
     widthInMeter: { type: Number, default: 0 },
+    origin: {
+      type: { x: Number, y: Number, w: Number },
+      default: { x: 0, y: 0, w: 0 },
+    },
     imgUrl: { type: String, default: "" },
+    mpp: { type: Number, default: 0.0 }, // resolution
     ppm: { type: Number, default: 0.0 },
-    mpp: { type: Number, default: 0.0 },
     nodes: { type: [nodeSchema], default: [] },
     stations: { type: [stationSchema], default: [] },
     zones: {
