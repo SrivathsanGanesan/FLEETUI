@@ -20,17 +20,18 @@ const roboProjSchema = new Schema(
 
 const nodeSchema = new Schema(
   {
-    single_node: { type: Boolean, default: true },
-    multi_node: { type: Boolean, default: false },
+    //   single_node: { type: Boolean, default: true },
+    //   multi_node: { type: Boolean, default: false },
+    node_type: { type: String, default: "single", enum: ["single", "multi"] },
     pos: { type: [{ type: { x: Number, y: Number } }], default: [] },
     others: { type: mongoose.Schema.Types.Mixed, default: null },
   },
   {
-    timestamps: true,
     versionKey: false,
-    _id: false,
   }
 );
+
+const Node = dashboardConnection.model("nodes", nodeSchema, "nodes");
 
 const stationSchema = new Schema(
   {
@@ -39,7 +40,27 @@ const stationSchema = new Schema(
     others: { type: mongoose.Schema.Types.Mixed, default: null },
   },
   {
-    timestamps: true,
+    versionKey: false,
+  }
+);
+
+const edgeSchema = new Schema(
+  {
+    connectivity: {
+      type: String,
+      default: "uniDir",
+      enum: ["uniDir", "biDir"],
+    },
+    start_node: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Node",
+      // name: { type: String, default: "" },
+    },
+    end_node: { type: mongoose.Schema.Types.ObjectId, ref: "Node" },
+    others: { type: mongoose.Schema.Types.Mixed, default: null },
+  },
+  {
+    // timestamps: true,
     versionKey: false,
     _id: false,
   }
@@ -63,6 +84,7 @@ const mapSchema = new Schema(
     mpp: { type: Number, default: 0.0 }, // resolution
     ppm: { type: Number, default: 0.0 },
     nodes: { type: [nodeSchema], default: [] },
+    edges: { type: [edgeSchema], default: [] },
     stations: { type: [stationSchema], default: [] },
     zones: { ctype: [zoneSchema], cdefault: [] },
     robots: { type: [roboProjSchema], default: [] },
