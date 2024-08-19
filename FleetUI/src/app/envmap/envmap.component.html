@@ -37,7 +37,7 @@
         (keyup.enter)="open()"
       />
       
-      <label for="height">Enter Height (m)</label>
+      <!-- <label for="height">Enter Height (m)</label>
       <input
         type="number"
         id="height"
@@ -53,11 +53,21 @@
         [(ngModel)]="width"
         placeholder="Enter width"
         (keyup.enter)="open()"
-      />
+      /> -->
     </div>
+<!-- Intermediate Nodes Dialog -->
+
 
     <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
+      <div class="intermediate-nodes-dialog" *ngIf="showIntermediateNodesDialog">
+        <div class="dialog-content">
+          <h3>Enter Number of Nodes</h3>
+          <input type="number" [(ngModel)]="numberOfIntermediateNodes" placeholder="Number of nodes" />
+          <button (click)="plotIntermediateNodes()">Enter</button>
+          <button (click)="closeIntermediateNodesDialog()">Close</button>
+        </div>
+      </div>
       <canvas class="plottinglayer" #overlayCanvas></canvas> <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas> <!-- Image canvas -->
       <button class="close-btn" (click)="close()">X</button>
@@ -74,6 +84,7 @@
             <button (click)="setPlottingMode('multi')">Multi Node</button>
           </div>
         </div>
+        
         <button>Delete Node</button>
         <div class="dropdown">
           <button class="dropdown-button">Connectivity</button>

@@ -38,7 +38,10 @@ export class EnvmapComponent implements AfterViewInit {
   startY: number | null = null;  
   isOptionsMenuVisible = false;
   isCalibrationLayerVisible = false;
-
+  showIntermediateNodesDialog: boolean = false;
+  numberOfIntermediateNodes: number = 0;
+  firstNode: { x: number, y: number } | null = null;
+  secondNode: { x: number, y: number } | null = null;
   currentZone: Zone | null = null;
   robotImages: { [key: string]: HTMLImageElement } = {};
   isRobotPopupVisible: boolean = false;
@@ -151,44 +154,17 @@ export class EnvmapComponent implements AfterViewInit {
   }
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
-    if (this.selectedAsset && this.overlayCanvas && this.overlayCanvas.nativeElement) {
-      const canvas = this.overlayCanvas.nativeElement;
-      const rect = canvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-      const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-
-      const ctx = canvas.getContext('2d');
-      const img = this.assetImages[this.selectedAsset];
-
-      ctx!.drawImage(img, x - img.width / 2, y - img.height / 2);
-
-      // Reset the selected asset after placing it
-      this.selectedAsset = null;
-    }
     if (this.isPlottingEnabled && this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const canvas = this.overlayCanvas.nativeElement;
       const rect = canvas.getBoundingClientRect();
       const x = (event.clientX - rect.left) * (canvas.width / rect.width);
       const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-
       const ctx = canvas.getContext('2d');
 
       if (this.plottingMode === 'single') {
-        ctx!.beginPath();
-        ctx!.arc(x, y, 5, 0, 2 * Math.PI, false);
-        ctx!.fillStyle = 'red';
-        ctx!.fill();
-
-        this.nodes.push({ x, y });
-
-        this.isPlottingEnabled = false;
+        this.plotSingleNode(x, y);
       } else if (this.plottingMode === 'multi') {
-        ctx!.beginPath();
-        ctx!.arc(x, y, 5, 0, 2 * Math.PI, false);
-        ctx!.fillStyle = 'red';
-        ctx!.fill();
-
-        this.nodes.push({ x, y });
+        this.plotMultiNode(x, y);
       }
 
       if (this.connectivityMode) {
@@ -201,6 +177,65 @@ export class EnvmapComponent implements AfterViewInit {
       this.startY = event.clientY;
     }
   }
+  plotSingleNode(x: number, y: number): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+    ctx.fillStyle = 'blue'; // Color for single nodes
+    ctx.fill();
+
+    this.singleNodes.push({ x, y });
+    this.isPlottingEnabled = false; // Disable plotting after placing a single node
+  }
+  singleNodes: { x: number, y: number }[] = [];
+  multiNodes: { x: number, y: number }[] = [];
+  plotMultiNode(x: number, y: number): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+    ctx.fillStyle = 'green'; // Color for multi-nodes
+    ctx.fill();
+
+    if (this.nodes.length === 0) {
+      this.firstNode = { x, y };
+    } else if (this.nodes.length === 1) {
+      this.secondNode = { x, y };
+      this.showIntermediateNodesDialog = true;
+    }
+
+    this.nodes.push({ x, y });
+  }
+
+  plotIntermediateNodes(): void {
+    if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
+      const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
+      const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
+
+      for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
+        const x = this.firstNode.x + i * dx;
+        const y = this.firstNode.y + i * dy;
+        this.nodes.push({ x, y });
+        const ctx = this.overlayCanvas.nativeElement.getContext('2d')!;
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+      }
+      
+      this.drawConnections();
+    }
+    this.closeIntermediateNodesDialog();
+  }
+
+  closeIntermediateNodesDialog(): void {
+    this.showIntermediateNodesDialog = false;
+    this.firstNode = null;
+    this.secondNode = null;
+    this.numberOfIntermediateNodes = 0;
+  }
+  
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     if (this.isDrawingZone && this.startX !== null && this.startY !== null && this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -246,7 +281,7 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
 
     for (let i = 0; i < this.nodes.length - 1; i++) {
       const startNode = this.nodes[i];
