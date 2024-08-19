@@ -155,6 +155,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.secondNode = null;
     }
   }
+
   setConnectivityMode(mode: 'uni' | 'bi'): void {
     if (this.nodes.length < 2) {
       alert('Please plot at least two nodes before setting connectivity.');
@@ -163,6 +164,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.connectivityMode = mode;
     this.isPlottingEnabled = false;
   }
+
   setZoneColor(color: string): void {
     this.zoneColor = color;
     this.isDrawingZone = true;
