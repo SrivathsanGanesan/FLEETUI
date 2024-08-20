@@ -322,6 +322,20 @@ button {
   border-radius: 10px;
   cursor: pointer;
 }
+.save-btn, .clear-btn {
+  position: absolute;
+  bottom: 10px; /* Adjust as needed */
+  right: 70px; /* Adjust as needed */
+  background-color: #ff33335e;
+}
+
+.save-btn {
+  right: 10px; /* Position it to the right */
+}
+
+.clear-btn {
+  right: 80px; /* Position it to the left of the Save button */
+}
 .OpenandLocate{
   padding: 10px;
   background-color: #ff3333;

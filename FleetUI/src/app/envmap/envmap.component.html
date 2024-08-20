@@ -42,9 +42,10 @@
       <div class="Res">
       <label for="resolution">Resolution</label>
       <div class="Res1">
-      <input
+        <input
         type="number"
         id="resolution"
+        #resolutionInput
         placeholder="Enter Resolution"
         (keyup.enter)="open()"
       />
@@ -95,11 +96,13 @@
         (keyup.enter)="open()"
       /> -->
     
-<!-- Intermediate Nodes Dialog -->
+    <!-- Intermediate Nodes Dialog -->
     <div *ngIf="showImagePopup" class="image-popup-overlay">
       <div class="image-popup-content">
         <canvas #imagePopupCanvas width="1000" height="500"></canvas>
         <button class="close-btn" (click)="closeImagePopup()">X</button>
+        <button class="save-btn" (click)="saveCanvas()">Save</button>
+        <button class="clear-btn" (click)="clearCanvas()">Clear</button>
         <!-- Distance Input Dialog -->
         <div *ngIf="showDistanceDialog" class="distance-dialog-overlay">
           <div class="distance-dialog">
@@ -108,9 +111,9 @@
             <button (click)="confirmDistance()">Enter</button>
           </div>
         </div>
-
       </div>
     </div>
+
     <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
       <div class="intermediate-nodes-dialog" *ngIf="showIntermediateNodesDialog" >

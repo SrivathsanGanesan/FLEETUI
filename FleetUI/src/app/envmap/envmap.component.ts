@@ -28,6 +28,7 @@ export class EnvmapComponent implements AfterViewInit {
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('imagePopupCanvas', { static: false }) imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
 
   fileName: string | null = null;
   mapName: string = '';
@@ -183,8 +184,13 @@ export class EnvmapComponent implements AfterViewInit {
       console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
       
       if (distanceInPixels !== 0) {
-        const ratio =this.distanceBetweenPoints/ distanceInPixels;
+        const ratio = this.distanceBetweenPoints / distanceInPixels;
         console.log(`Resolution (meters per pixel): ${ratio.toFixed(2)}`);
+        
+        // Update the resolution input field
+        if (this.resolutionInput) {
+          this.resolutionInput.nativeElement.value = ratio.toFixed(2);
+        }
       } else {
         console.log('Distance in pixels is zero, cannot calculate ratio.');
       }
@@ -193,7 +199,37 @@ export class EnvmapComponent implements AfterViewInit {
       // Additional logic to use the distance can be added here
     }
   }
+
+  saveCanvas(): void {
+    const canvas = this.imagePopupCanvas.nativeElement;
+    // const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    // link.href = dataURL;
+    // link.download = 'canvas-image.png';
+    link.click();
+  }
+  clearCanvas(): void {
+    const canvas = this.imagePopupCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
   
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+  
+      // Clear points array and logs
+      this.points = [];
+      console.clear(); // Clear console logs
+  
+      // Redraw image if needed
+      const img = new Image();
+      img.src = this.imageSrc || '';
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+    }
+  }
+    
   
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
