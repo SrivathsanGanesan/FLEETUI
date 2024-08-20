@@ -9,7 +9,6 @@ import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
-import { SharedDataService } from '../shared-data.service';
 
 @Component({
   selector: 'app-configuration',
@@ -47,9 +46,9 @@ export class ConfigurationComponent implements AfterViewInit {
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
 
   EnvData: any[] = [
-    // { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 4, 2024. 14:00:17' },
-    // { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 15, 2024. 14:00:17' },
-    // { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' },
+    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 4, 2024. 14:00:17' },
+    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 15, 2024. 14:00:17' },
+    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' },
   ];
 
   // Update EnvData in both the component and service
@@ -97,10 +96,7 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: '192.168.XX.XX', column2: ' ' },
   ];
 
-  constructor(
-    private cdRef: ChangeDetectorRef,
-    private sharedDataService: SharedDataService
-  ) {}
+  constructor(private cdRef: ChangeDetectorRef) {}
   loadData() {
     // Fetch or initialize data here
     this.EnvData = []; // Replace with actual data fetching
@@ -176,10 +172,6 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
   ngOnInit() {
-    this.sharedDataService.envData.subscribe((data) => {
-      this.EnvData = data;
-    });
-    // this.sharedDataService.updateEnvData(this.EnvData);
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
     this.searchTerm = '';

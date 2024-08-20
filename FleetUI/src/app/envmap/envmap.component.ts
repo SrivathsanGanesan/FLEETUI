@@ -9,7 +9,7 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { SharedDataService } from '../shared-data.service';
+
 interface Zone {
   type: 'high' | 'medium' | 'low';
   startX: number;
@@ -68,8 +68,7 @@ export class EnvmapComponent implements AfterViewInit {
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
 
-  constructor(private sharedDataService: SharedDataService, private cdRef: ChangeDetectorRef) {}
-
+  constructor(private cdRef: ChangeDetectorRef) {}
   ngAfterViewInit(): void {
     // Preload asset images
     this.assetImages['docking'] = new Image();
@@ -184,7 +183,7 @@ export class EnvmapComponent implements AfterViewInit {
       console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
       
       if (distanceInPixels !== 0) {
-        const ratio = distanceInPixels / this.distanceBetweenPoints;
+        const ratio =this.distanceBetweenPoints/ distanceInPixels;
         console.log(`Resolution (meters per pixel): ${ratio.toFixed(2)}`);
       } else {
         console.log('Distance in pixels is zero, cannot calculate ratio.');
@@ -238,7 +237,6 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   close(): void {
-    this.sharedDataService.updateEnvData([]);
     this.closePopup.emit();
   }
 
