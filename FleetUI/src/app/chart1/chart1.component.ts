@@ -27,7 +27,7 @@ export class Chart1Component {
   public chartOptions: Partial<ChartOptions>;
 
   constructor() {
-    const percentage = 75; // Define the percentage to display
+    const percentage = 51; // Define the percentage to display
 
     this.chartOptions = {
       series: [percentage],

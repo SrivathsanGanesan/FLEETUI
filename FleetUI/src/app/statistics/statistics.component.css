@@ -311,7 +311,7 @@ button {
 .stat-title {
   font-size: 12px;
   color: #888888;
-  margin-bottom: -10px;
+  margin-top:-15px;
 }
 
 .stat-value {
@@ -361,3 +361,13 @@ app-operation-pie {
   top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
   width: 300px; /* Ensure it matches the intended width */
 }
+
+app-gradient-donut{
+  position: fixed;
+    display: flex;
+    position: absolute; /* Position the Operation Pie component absolutely */
+    right: 140px; /* Align it to the right side */
+    top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
+    width: 300px; /* Ensure it matches the intended width */
+
+ }

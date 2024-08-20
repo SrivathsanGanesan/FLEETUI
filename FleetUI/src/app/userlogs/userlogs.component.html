@@ -13,35 +13,32 @@
       </div>
 
       <!-- search container -->
-      <div class="search-filter-container">
-        <!-- Search Bar -->
-        <div class="search-box">
-          <input type="text" placeholder="Search For Something..." />
-          <button class="search-btn">
-            <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
-          </button>
-        </div>
-  
-        <!-- Options Container -->
-        <div class="options-container">
-               
-          <div class="filter-options">
-            
-
-            <button [class.active]="activeFilter === 'today'" (click)="activeFilter('today')">Today</button>
-            <button [class.active]="activeFilter === 'week'" (click)="activeFilter('week')">Week</button>
-            <button [class.active]="activeFilter === 'month'" (click)="activeFilter('month')">Month</button>
-          </div>
-           
-          <div class="date-inputs">
-            <label for="start-date" class="date-label"></label>
-            <input type="date" id="start-date" (change)="onDateChange($event)" class="date-input">
+          <div class="search-filter-container">
+            <!-- Search Bar -->
+            <div class="search-box">
+              <input type="text" placeholder="Search For Something..." />
+              <button class="search-btn">
+                <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
+              </button>
+            </div>
       
-            <label for="end-date" class="date-label"></label>
-            <input type="date" id="end-date" (change)="onDateChange($event)" class="date-input">
+            <!-- Options Container -->
+            <div class="options-container">
+              <div class="filter-options">
+                <button [class.active]="activeFilter === 'today'" (click)="setActiveFilter('today')">Today</button>
+                <button [class.active]="activeFilter === 'week'" (click)="setActiveFilter('week')">Week</button>
+                <button [class.active]="activeFilter === 'month'" (click)="setActiveFilter('month')">Month</button>
+              </div>
+            
+              <div class="date-inputs">
+                <label for="start-date" class="date-label"></label>
+                <input type="date" id="start-date" (change)="onDateChange($event)" class="date-input">
+            
+                <label for="end-date" class="date-label"></label>
+                <input type="date" id="end-date" (change)="onDateChange($event)" class="date-input">
+              </div>
+            </div>  
           </div>
-        </div>
-      </div>
        <!--  -->
 
       <!-- Buttons -->
