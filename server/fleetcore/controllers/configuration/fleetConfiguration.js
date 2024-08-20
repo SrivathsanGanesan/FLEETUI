@@ -35,7 +35,6 @@ const getHost = (ip) => {
 const scanIp = async (req, res) => {
   const { startIp, endIp } = req.params;
   try {
-    // let arr = [];
     const ipRange = getIPRange(`${startIp}-${endIp}`); // "192.168.24.90-192.168.36.183"
 
     res.writeHead(200, eventStreamHeader);
