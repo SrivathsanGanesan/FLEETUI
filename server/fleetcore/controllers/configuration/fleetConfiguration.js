@@ -24,8 +24,8 @@ const getHost = (ip) => {
   return new Promise((resolve, reject) => {
     dns.reverse(ip, (err, hostnames) => {
       // process of reverse DNS lookup (with PTR record)..
-      console.log(hostnames);
-      if (err) resolve(`hostname could not resolve`);
+      // if (err) resolve(`hostname could not resolve`);
+      if (err) resolve(err.hostname);
       if (!err && hostnames?.length !== 0) resolve(hostnames[0]);
       else if (hostnames?.length === 0) resolve(`No hostname found`);
     });
@@ -48,7 +48,7 @@ const scanIp = async (req, res) => {
         let mac = "";
         let hostName = "";
         if (poll.status === "online") mac = await getMacAddress(ip);
-        // hostName = await getHost(ip);
+        hostName = await getHost(ip);
 
         const netPoll = JSON.stringify({
           ip_address: poll.ip_address,
