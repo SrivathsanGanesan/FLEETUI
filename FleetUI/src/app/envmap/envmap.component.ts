@@ -6,6 +6,7 @@ import {
   ElementRef,
   AfterViewInit,
   HostListener,
+  ChangeDetectorRef
 } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { SharedDataService } from '../shared-data.service';
@@ -26,6 +27,7 @@ export class EnvmapComponent implements AfterViewInit {
   @Output() closePopup = new EventEmitter<void>();
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imagePopupCanvas', { static: false }) imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
 
   fileName: string | null = null;
   mapName: string = '';
@@ -55,14 +57,18 @@ export class EnvmapComponent implements AfterViewInit {
   robotImages: { [key: string]: HTMLImageElement } = {};
   isRobotPopupVisible: boolean = false;
   tableData: { mapName: string; siteName: string }[] = []; // Holds table data
+  private points: { x: number; y: number }[] = [];
   private zones: {
     startX: number;
     startY: number;
     endX: number;
     endY: number;
   }[] = [];
+  showImagePopup: boolean = false;
+  showDistanceDialog: boolean = false;
+  distanceBetweenPoints: number | null = null;
 
-  constructor(private sharedDataService: SharedDataService) {}
+  constructor(private sharedDataService: SharedDataService, private cdRef: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     // Preload asset images
@@ -80,6 +86,11 @@ export class EnvmapComponent implements AfterViewInit {
 
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
+  }
+
+
+  closeImagePopup(): void {
+    this.showImagePopup = false;
   }
   selectAsset(assetType: 'docking' | 'charging' | 'picking'): void {
     this.selectedAsset = assetType;
@@ -111,7 +122,90 @@ export class EnvmapComponent implements AfterViewInit {
       reader.readAsDataURL(file);
     }
   }
+  openImagePopup(): void {
+    if (this.imageSrc) {
+      this.showImagePopup = true;
+      this.cdRef.detectChanges();
+  
+      const canvas = this.imagePopupCanvas?.nativeElement;
+      if (!canvas) {
+        console.error("Canvas element not found");
+        return;
+      }
+  
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = this.imageSrc;
+  
+      img.onload = () => {
+        // Clear the points array
+        this.points = [];
+  
+        // Clear the canvas
+        ctx!.clearRect(0, 0, canvas.width, canvas.height);
+  
+        // Set canvas dimensions and draw the image
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+    } else {
+      alert('No image uploaded.');
+    }
+  }
+  private calculateDistance(point1: { x: number; y: number }, point2: { x: number; y: number }): number {
+    return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+  }
+  
+  @HostListener('click', ['$event'])
+  onImagePopupCanvasClick(event: MouseEvent): void {
+    if (!this.showImagePopup || !this.imagePopupCanvas) return;
 
+    const canvas = this.imagePopupCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+
+    if (this.points.length < 2) {
+      this.points.push({ x, y });
+      this.plotPointOnImagePopupCanvas(x, y);
+
+      if (this.points.length === 2) {
+        console.log('Two points plotted:', this.points);
+        const distance = this.calculateDistance(this.points[0], this.points[1]);
+        console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
+        this.showDistanceDialog = true;  // Show the distance input dialog
+      }
+    }
+  }
+  confirmDistance(): void {
+    if (this.distanceBetweenPoints !== null && this.distanceBetweenPoints !== 0) {
+      const distanceInPixels = this.calculateDistance(this.points[0], this.points[1]);
+      console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
+      
+      if (distanceInPixels !== 0) {
+        const ratio = distanceInPixels / this.distanceBetweenPoints;
+        console.log(`Resolution (meters per pixel): ${ratio.toFixed(2)}`);
+      } else {
+        console.log('Distance in pixels is zero, cannot calculate ratio.');
+      }
+      
+      this.showDistanceDialog = false;
+      // Additional logic to use the distance can be added here
+    }
+  }
+  
+  
+  private plotPointOnImagePopupCanvas(x: number, y: number): void {
+    const canvas = this.imagePopupCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
+
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+  }
+  
   open(): void {
     if (this.mapName && this.siteName && this.imageSrc) {
       this.fileName = null;

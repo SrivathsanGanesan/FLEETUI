@@ -49,7 +49,7 @@
         (keyup.enter)="open()"
       />
       <p id="or">or</p>
-      <button class="OpenandLocate">Open and Locate</button><br>
+      <button class="OpenandLocate" (click)="openImagePopup()">Open and Locate</button>
     </div>
     </div>
     <p>Origin</p>
@@ -67,12 +67,12 @@
           placeholder="Y"
           (keyup.enter)="open()"
         />
-        <input
+        <!-- <input
         type="number"
         id="θ"
         placeholder="θ"
         (keyup.enter)="open()"
-      />
+      /> -->
       </div>
       
     </div>
@@ -96,8 +96,21 @@
       /> -->
     
 <!-- Intermediate Nodes Dialog -->
+    <div *ngIf="showImagePopup" class="image-popup-overlay">
+      <div class="image-popup-content">
+        <canvas #imagePopupCanvas width="1000" height="500"></canvas>
+        <button class="close-btn" (click)="closeImagePopup()">X</button>
+        <!-- Distance Input Dialog -->
+        <div *ngIf="showDistanceDialog" class="distance-dialog-overlay">
+          <div class="distance-dialog">
+            <h3>Enter Distance Between Points</h3>
+            <input type="number" [(ngModel)]="distanceBetweenPoints" placeholder="Distance in meters" />
+            <button (click)="confirmDistance()">Enter</button>
+          </div>
+        </div>
 
-
+      </div>
+    </div>
     <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
       <div class="intermediate-nodes-dialog" *ngIf="showIntermediateNodesDialog" >
