@@ -72,7 +72,6 @@ export class IPScannerComponent {
         
         this.ipScanData.push(poll);
         this.cdr.detectChanges();
-        // console.log(data);
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }

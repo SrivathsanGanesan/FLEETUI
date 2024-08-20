@@ -48,7 +48,7 @@ const scanIp = async (req, res) => {
         let mac = "";
         let hostName = "";
         if (poll.status === "online") mac = await getMacAddress(ip);
-        hostName = await getHost(ip);
+        // hostName = await getHost(ip);
 
         const netPoll = JSON.stringify({
           ip_address: poll.ip_address,
