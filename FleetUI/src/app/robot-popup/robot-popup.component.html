@@ -1,0 +1,12 @@
+<div class="popup" *ngIf="isVisible">
+  <h3>Select Robots</h3>
+  <div *ngFor="let robot of availableRobots">
+    <label>
+      <input type="checkbox" [(ngModel)]="robot.selected" />
+      <img [src]="robot.image" [alt]="robot.name" class="robot-image" /> 
+      {{ robot.name }}
+    </label>
+  </div>
+  <button (click)="addSelectedRobots()">Place</button>
+  <button (click)="closePopup()">Close</button>
+</div>

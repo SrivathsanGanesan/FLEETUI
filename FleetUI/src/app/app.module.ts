@@ -22,6 +22,20 @@ import { UptimeComponent } from './uptime/uptime.component';
 import { ThroughputComponent } from './throughput/throughput.component';
 import { NgxCaptureModule } from 'ngx-capture';
 import { RobotsComponent } from './robots/robots.component';
+import { OperationPieComponent } from './operation-pie/operation-pie.component';
+import { Chart1Component } from './chart1/chart1.component';
+import { LineChartComponent } from './line-chart/line-chart.component';
+import { AreaChartComponent } from './area-chart/area-chart.component';
+import { rootCertificates } from 'tls';
+import { RobotPopupComponent } from './robot-popup/robot-popup.component';
+import { IPScannerComponent } from './ipscanner/ipscanner.component';
+import { RobotParametersPopupComponent } from './robot-parameters-popup/robot-parameters-popup.component';
+import { EnvmapComponent } from './envmap/envmap.component';
+import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.component';
+import { RouterModule } from '@angular/router';
+import { ChartTimelineComponent } from './chart-timeline/chart-timeline.component';
+import { GradientDonutComponent } from './gradient-donut/gradient-donut.component';
+
 
 
 
@@ -34,12 +48,30 @@ import { RobotsComponent } from './robots/robots.component';
     ProjectsetupComponent,
     ConfigurationComponent,
     UsermanagementComponent,
+    RobotPopupComponent,
+    RobotsComponent,
+    RobotParametersPopupComponent,
+    IPScannerComponent,
     Userlogscomponent,
     StatisticsComponent,
     RobotsComponent,
     ChartComponent,
     UptimeComponent,
     ThroughputComponent,
+    OperationPieComponent,
+    Chart1Component,
+    LineChartComponent,
+    AreaChartComponent,
+    RobotPopupComponent,
+    EnvmapComponent,
+    RobotDashboardComponent,
+    ChartTimelineComponent,
+    GradientDonutComponent,
+    
+    
+    
+
+    
   ],
   imports: [
     NgApexchartsModule,
@@ -48,6 +80,8 @@ import { RobotsComponent } from './robots/robots.component';
     BrowserAnimationsModule,
     FormsModule,
     BrowserModule,
+    RouterModule.forRoot([]),
+    NgApexchartsModule
   ],
   providers: [
     // provideClientHydration()

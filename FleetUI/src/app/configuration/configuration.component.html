@@ -5,15 +5,25 @@
       <div class="header-section">
         <h1 class="header-title">{{ activeHeader }}</h1>
         <div class="subheader-container">
-          <div class="subheader-text">Create and edit Configuration  </div>
-          <img src="../../assets/icons/i-icon.svg" alt="Icon" class="subheader-icon">
+          <div class="subheader-text">Create and edit Configuration</div>
+          <img
+            src="../../assets/icons/i-icon.svg"
+            alt="Icon"
+            class="subheader-icon"
+          />
         </div>
       </div>
 
       <div class="search-date-container">
         <!-- Search Bar -->
         <div class="search-container">
-          <input type="text" placeholder="Search..." class="search-input"/>
+          <input
+            type="text"
+            placeholder="Search..."
+            class="search-input"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="searchTermChanged()"
+          />
           <button class="search-button">
             <svg
               width="18"
@@ -29,33 +39,45 @@
             </svg>
           </button>
         </div>
-      
+
         <!-- Date Filter and Date Inputs -->
-        <div class="date-filters">
-          <select (change)="onDateFilterChange($event)" class="date-filter">
+        <div class="date-filters" *ngIf="currentTable === 'Environment'">
+          <!-- <select (change)="onDateFilterChange($event)" class="date-filter">
             <option value="day">Day</option>
             <option value="week">Week</option>
             <option value="month">Month</option>
-          </select>
-      
+          </select> -->
+
           <div class="date-inputs">
-            <label for="start-date" class="date-label"></label>
-            <input type="date" id="start-date" (change)="onDateChange($event)" class="date-input">
-      
-            <label for="end-date" class="date-label"></label>
-            <input type="date" id="end-date" (change)="onDateChange($event)" class="date-input">
+            <label for="start-date" class="date-label">Start Date:</label>
+            <input
+              type="date"
+              id="start-date"
+              (change)="onDateChange($event)"
+              class="date-input"
+            />
+
+            <label for="end-date" class="date-label">End Date:</label>
+            <input
+              type="date"
+              id="end-date"
+              (change)="onDateChange($event)"
+              class="date-input"
+            />
           </div>
         </div>
       </div>
-      
 
       <!-- Buttons -->
       <div class="button-container">
-        <div class="button-frame">  
+        <div class="button-frame">
           <div class="mb-4">
             <button
               class="button"
-              [ngClass]="{ 'active-button': activeButton === 'Environment', 'transition-active': isTransitioning }"
+              [ngClass]="{
+                'active-button': activeButton === 'Environment',
+                'transition-active': isTransitioning
+              }"
               (click)="showTable('Environment')"
               (click)="setActiveButton('Environment')"
             >
@@ -63,7 +85,10 @@
             </button>
             <button
               class="button"
-              [ngClass]="{ 'active-button': activeButton === 'robot', 'transition-active': isTransitioning }"
+              [ngClass]="{
+                'active-button': activeButton === 'robot',
+                'transition-active': isTransitioning
+              }"
               (click)="showTable('robot')"
               (click)="setActiveButton('robot')"
             >
@@ -71,7 +96,10 @@
             </button>
             <button
               class="button"
-              [ngClass]="{ 'active-button': activeButton === 'fleet', 'transition-active': isTransitioning }"              
+              [ngClass]="{
+                'active-button': activeButton === 'fleet',
+                'transition-active': isTransitioning
+              }"
               (click)="setActiveButton('fleet')"
             >
               Fleet
@@ -82,77 +110,226 @@
 
       <!-- Table -->
       <div class="table-container">
-        <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
+        <div
+          class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative"
+        >
           <div class="overflow-y-auto max-h-[32rem] w-full">
-            <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'Environment' && !imageUploaded">
+            <table
+              class="min-w-full divide-y divide-gray-200"
+              *ngIf="currentTable === 'Environment' && !imageUploaded"
+            >
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Map Name</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Site Name</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Created</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edit/Delete</th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Map Name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Site Name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Last Created
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Edit/Delete
+                  </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of EnvData">
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
+                <tr *ngFor="let item of filteredEnvData">
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <img src="../../assets/ConfigurationOptions/Edit.svg" alt="Edit" (click)="editItem(item)" class="icon" />
-                    <img src="../../assets/ConfigurationOptions/Delete.svg" alt="Delete" (click)="deleteItem(item)" class="icon" />
+                    {{ item.column1 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column2 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column3 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <img
+                      src="../../assets/ConfigurationOptions/Edit.svg"
+                      alt="Edit"
+                      (click)="editItem(item)"
+                      class="icon"
+                    />
+                    <img
+                      src="../../assets/ConfigurationOptions/Delete.svg"
+                      alt="Delete"
+                      (click)="deleteItem(item)"
+                      class="icon"
+                    />
                   </td>
                 </tr>
               </tbody>
             </table>
-           
-            <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'robot'">
+
+            <table
+              class="min-w-full divide-y divide-gray-200"
+              *ngIf="currentTable === 'robot'"
+            >
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot Name</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edit/Delete</th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Robot Name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    IP Address
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Edit/Delete
+                  </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of robotData">
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
+                <tr *ngFor="let item of filteredRobotData">
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <img src="../../assets/ConfigurationOptions/Edit.svg" alt="Edit" (click)="editItem(item)" class="icon"/>
-                    <img src="../../assets/ConfigurationOptions/Delete.svg" alt="Delete" (click)="deleteItem(item)" class="icon" />                  </td>
+                    {{ item.column1 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column2 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <img
+                      src="../../assets/ConfigurationOptions/Edit.svg"
+                      alt="Edit"
+                      (click)="editItem(item)"
+                      class="icon"
+                    />
+                    <img
+                      src="../../assets/ConfigurationOptions/Delete.svg"
+                      alt="Delete"
+                      (click)="deleteItem(item)"
+                      class="icon"
+                    />
+                  </td>
                 </tr>
               </tbody>
             </table>
-            <button class="ASR-button" *ngIf="currentTable === 'robot'">Add Selected Robots</button>
-            <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'robot'">
+            <button
+              class="ASR-button"
+              *ngIf="currentTable === 'robot'"
+              (click)="openRobotParametersPopup()"
+            >
+              Add Selected Robots
+            </button>
+
+            <div class="popup-overlay" *ngIf="showRobotParametersPopup">
+              <app-robot-parameters-popup
+                (close)="closeRobotParametersPopup()"
+              ></app-robot-parameters-popup>
+            </div>
+            <!-- Add this in your main component HTML -->
+            <button
+              class="IP-Scan"
+              *ngIf="currentTable === 'robot'"
+              (click)="openIPScanner()"
+            >
+              IP Scan
+            </button>
+
+            <div class="popup-overlay" *ngIf="showIPScannerPopup">
+              <app-ipscanner
+                *ngIf="showIPScannerPopup"
+                (close)="closeIPScanner()"
+              ></app-ipscanner>
+            </div>
+
+            <table
+              class="min-w-full divide-y divide-gray-200"
+              *ngIf="currentTable === 'robot'"
+            >
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Address</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mac Address</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Add/Block</th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    ID Address
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Mac Address
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Add/Block
+                  </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngFor="let item of selectedrobotData">
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <img src="../../assets/ConfigurationOptions/Add.svg" alt="Add" (click)="addItem(item)" class="icon"/>
-                    <img src="../../assets/ConfigurationOptions/Block.svg" alt="Block" (click)="blockItem(item)" class="icon"/>
+                    {{ item.column1 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column2 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <img
+                      src="../../assets/ConfigurationOptions/Add.svg"
+                      alt="Add"
+                      (click)="addItem(item)"
+                      class="icon"
+                    />
+                    <img
+                      src="../../assets/ConfigurationOptions/Block.svg"
+                      alt="Block"
+                      (click)="blockItem(item)"
+                      class="icon"
+                    />
                   </td>
                 </tr>
               </tbody>
             </table>
             <div *ngIf="currentTab === 'fleet'">
               <ul class="tab-menu">
-                <li [class.active]="fleetTab === 'general'" (click)="setFleetTab('general')">General</li>
-                <li [class.active]="fleetTab === 'plannar'" (click)="setFleetTab('plannar')">Plannar</li>
-                <li [class.active]="fleetTab === 'task'" (click)="setFleetTab('task')">Task</li>
-                <li [class.active]="fleetTab === 'battery'" (click)="setFleetTab('battery')">Battery</li>
-                <li [class.active]="fleetTab === 'communication'" (click)="setFleetTab('communication')">Communication</li>
+                <li
+                  [class.active]="fleetTab === 'general'"
+                  (click)="setFleetTab('general')"
+                >
+                  General
+                </li>
+                <li
+                  [class.active]="fleetTab === 'plannar'"
+                  (click)="setFleetTab('plannar')"
+                >
+                  Plannar
+                </li>
+                <li
+                  [class.active]="fleetTab === 'task'"
+                  (click)="setFleetTab('task')"
+                >
+                  Task
+                </li>
+                <li
+                  [class.active]="fleetTab === 'battery'"
+                  (click)="setFleetTab('battery')"
+                >
+                  Battery
+                </li>
+                <li
+                  [class.active]="fleetTab === 'communication'"
+                  (click)="setFleetTab('communication')"
+                >
+                  Communication
+                </li>
               </ul>
-            
+
               <div *ngIf="fleetTab === 'general'">
                 <h2>Edit the Fleet Parameters</h2>
                 <!-- Add content for the General tab -->
@@ -172,87 +349,21 @@
               <div *ngIf="fleetTab === 'communication'">
                 <h2>Communication Settings</h2>
               </div>
-            </div>       
-            <div class="Create-button-container">
-              <button class="Create-button" *ngIf="activeButton === 'Environment'" (click)="showPopup()">Create</button>
-              <div *ngIf="isPopupVisible" class="Create-popup">
-                <div class="popup-content">
-                  <button class="close-button" (click)="closePopup()">&times;</button>
-                  <div *ngIf="!isImageOpened" class="image-proportion">
-                    <div class="image-upload" (click)="triggerFileInput()">
-                      <img src="../../assets/ConfigurationOptions/Map.svg">
-                      <h2 class="Image">{{ chosenImageName || 'Choose Image' }}</h2>
-                    </div>
-                    <input type="file" accept="image/*" #fileInput (change)="onFileSelected($event)" style="display: none;">
-                    <div *ngIf="chosenImageName" class="Details">
-                      <label for="Mapname">Map Name :</label>
-                      <input id="Mapname" type="text" class="Mapname" [(ngModel)]="mapName">
-                      <br>
-                      <label for="Sitename">Site Name : </label>
-                      <input id="Sitename" type="text" class="Sitename" [(ngModel)]="siteName">
-                      <br>
-                      <label for="imageHeight">Enter Height : </label>
-                      <input id="imageHeight" type="number" class="imageHeight" [(ngModel)]="imageHeight">
-                      <br>
-                      <label for="imageWidth">Enter Width : </label>
-                      <input id="imageWidth" type="number" class="imageWidth" [(ngModel)]="imageWidth">
-                      <br>
-                      <button class="Open-button" (click)="openImage()">Open Environment</button>
-                    </div>
-                  </div>
-                  <div class="Map-settings" *ngIf="isImageOpened">
-                    <div class="canvas-container">
-                      <canvas #uploadedCanvas></canvas>
-                    </div>
-                    <!-- Calibrate Coordinates Button -->
-                    <button class="calibrate-button" *ngIf="!isCalibrationLayerVisible" (click)="showCalibrationLayer()">
-                      Options
-                    </button>
-                    <!-- Calibration Options Layer -->
-                    <div class="calibration-layer" *ngIf="isCalibrationLayerVisible">                      
-                      <div class="dropdown">
-                        <button class="dropdown-button">Add Node</button>
-                        <div class="dropdown-content">
-                          <button (click)="addSingleNode()">Single Node</button>
-                          <button (click)="addMultiNode()">Multi Node</button>
-                        </div>
-                      </div>
-                      <button (click)="deleteNode()">Delete Node</button>
-                      <button (click)="calibrateCoordinates()">Calibrate Coordinates</button>
-                      <div class="dropdown">
-                        <button class="dropdown-button" (click)="connectivity()">Connectivity</button>
-                        <div class="dropdown-content">
-                          <button (click)="addSingleNode()">Uni-Directional</button>
-                          <button (click)="addMultiNode()">Bi-Directional</button>
-                        </div>
-                      </div>
-                      <div class="dropdown">
-                        <button class="dropdown-button" (click)="zones()">Zones</button>
-                        <div class="dropdown-content">
-                          <button (click)="addSingleNode()">High Speed Zone</button>
-                          <button (click)="addSingleNode()">Medium Speed Zone</button>
-                          <button (click)="addMultiNode()">Low Speed zone</button>
-                        </div>
-                      </div>
-                      <div class="dropdown">
-                        <button class="dropdown-button" (click)="addAssets()">Add Assets</button>
-                        <div class="dropdown-content">
-                          <button (click)="addSingleNode()">Docking Station</button>
-                          <button (click)="addSingleNode()">Charging Station</button>
-                          <button (click)="addMultiNode()">Picking Station</button>
-                        </div>
-                      </div>
-                      <button (click)="addRobots()">Add Robots</button>
-                      <button (click)="removeRobots()">Remove Robots</button>
-                      <button (click)="saveMap()">Save</button>
-                      <button (click)="hideCalibrationLayer()">Back</button>
-                    </div>
-                  </div>                  
-                </div>
-              </div>
             </div>
-                       
             
+            <div class="Create-button-container">
+              <button
+                class="Create-button"
+                *ngIf="activeButton === 'Environment'"
+                (click)="openImageUploadPopup()"
+              >
+                Create
+              </button>
+            </div>
+            <app-envmap *ngIf="showImageUploadPopup" (closePopup)="closeImageUploadPopup()"> </app-envmap>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

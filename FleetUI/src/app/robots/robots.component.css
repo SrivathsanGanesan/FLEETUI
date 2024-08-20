@@ -136,8 +136,9 @@
   }
    
   .card-container {
+    
     display: flex;
-    gap: 1rem;
+    gap: 3rem;
     overflow-x: scroll;
     padding: 1rem;
   }
@@ -145,11 +146,11 @@
   .card {
     position: relative;
     flex: 0 0 auto;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     padding: 1rem;
    
     border-radius: 0.5rem;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s, box-shadow 0.3s;
   }
    
@@ -172,79 +173,110 @@
     color: #555;
   }
    
-   
-  /* Popup Styles */
-  .popup-overlay {
-    z-index: 1000; /* Ensure the popup has a high z-index */
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    position: fixed; /* Ensure it's fixed to the viewport */
-    top: 0; /* Align it to the top */
-    left: 0; /* Align it to the left */
-    width: 100vw; /* Full viewport width */
-    height: 100vh; /* Full viewport height */
-    display: flex; /* Use flexbox for centering */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-  }
-   
-  .popup {
-    background-color: #ffffff;
-    padding: 2rem; /* Adjust padding as needed */
-    border-radius: 0.5rem; /* Adjust border-radius as needed */
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-    max-width: 500px;
-    width: 100%;
-  }
-   
-  .popup h2 {
-    margin-top: 0;
-    font-size: 2.5rem; /* Adjust font size as needed */
-    font-weight: bold;
-    color: #ee1b1b;
-  }
-   
-  .popup form {
-    display: flex;
-    flex-direction: column;
-  }
-   
-  .popup form .mb-4 {
-    margin-bottom: 1rem;
-  }
-   
-  .popup form .mb-4 label {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-   
-  .popup form .mb-4 input {
-    border-color: #a5a5a5; /* Change border color on focus */
-    box-shadow: 0 0 0 2px rgba(120, 120, 120, 0.2); /* Add shadow on focus */
-    outline: none; /* Remove default focus outline */
-  }
-   
-  .popup form .flex {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-  }
-   
-  .popup form button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
-  }
-   
-  .popup form button:hover {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    background-color: #ea1c1c; /* Light background color on hover */
-    transform: scale(1.05);
-  }
-  .popup form button:active {
-    transform: scale(1); /* Reset scale on click */
-  }
+   /* Popup Overlay */
+.popup-overlay {
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup Container */
+.popup {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  width: 100%;
+}
+
+/* Popup Title */
+.popup h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem; /* Add bottom margin for spacing */
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ee1b1b;
+  text-align: center; /* Center the title */
+}
+
+/* Form Styling */
+.popup form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Add spacing between form elements */
+}
+
+/* Form Group Margin */
+.popup form .mb-4 {
+  margin-bottom: 1rem;
+}
+
+/* Label Styling */
+.popup form .mb-4 label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #333; /* Darker label color */
+}
+
+/* Input Styling */
+.popup form .mb-4 input {
+  width: 100%;
+  padding: 0.75rem; /* Add padding for better UX */
+  border: 1px solid #a5a5a5;
+  border-radius: 0.375rem;
+  box-shadow: 0 0 0 2px rgba(120, 120, 120, 0.2); /* Add shadow on focus */
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Input Focus State */
+.popup form .mb-4 input:focus {
+  border-color: #ee1b1b; /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(238, 27, 27, 0.3); /* Slight shadow on focus */
+}
+
+/* Form Button Container */
+.popup form .flex {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem; /* Space between buttons */
+  margin-top: 1.5rem; /* Add margin-top for spacing */
+}
+
+/* Button Styling */
+.popup form button {
+  padding: 0.75rem 1.5rem;
+  
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  background-color: #ee1b1b;
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+/* Button Hover State */
+.popup form button:hover {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  background-color: #ea1c1c; /* Lighten background color on hover */
+  transform: scale(1.05);
+}
+
+/* Button Active State */
+.popup form button:active {
+  transform: scale(1); /* Reset scale on click */
+}
+
    
    
   /* menu */

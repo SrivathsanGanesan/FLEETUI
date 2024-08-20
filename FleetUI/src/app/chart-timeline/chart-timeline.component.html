@@ -1,0 +1,21 @@
+<div id="chart-timeline">
+    <apx-chart
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [xaxis]="chartOptions.xaxis"
+      [dataLabels]="chartOptions.dataLabels"
+      [markers]="chartOptions.markers"
+      [tooltip]="chartOptions.tooltip"
+      [fill]="chartOptions.fill"
+      [annotations]="chartOptions.annotations">
+    </apx-chart>
+  </div>
+  
+  <div class="buttons">
+    <button id="one_month" (click)="zoomToPeriod('28 Jan 2013', '27 Feb 2013')">1M</button>
+    <button id="six_months" (click)="zoomToPeriod('27 Sep 2012', '27 Feb 2013')">6M</button>
+    <button id="one_year" (click)="zoomToPeriod('27 Feb 2012', '27 Feb 2013')">1Y</button>
+    <button id="ytd" (click)="zoomToPeriod('01 Jan 2013', '27 Feb 2013')">YTD</button>
+    <button id="all" (click)="zoomToPeriod('23 Jan 2012', '27 Feb 2013')">ALL</button>
+  </div>
+  

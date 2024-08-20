@@ -8,56 +8,270 @@
   box-sizing: border-box;
   background-color: white;
 }
-/* Header section styles */
-.header-section {
-  margin-bottom: 20px;
+
+
+.header {
+  margin-top: 10px;
+  padding: 0px;
+  background-color: #ffffff;
+  z-index: 0; 
+  position: relative; 
 }
- 
-.header-title {
-  font-size: 36px;
+
+.slider-buttons {
+  position: relative;
+  display: flex;
+  margin-top: 10px;
+  width: 200px;
+  height: 50px;
+  gap: 5px; /* Add 'px' to ensure the gap is applied correctly */
+  font-size: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 3; /* Ensure buttons stay above the sidebar */
+}
+
+.slider-buttons button {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  color: #333;
   font-weight: bold;
-  color: #DA2127;
-  margin: 0;
+  z-index: 4; /* Ensure buttons are above the slider */
 }
+
+.slider-buttons button.active {
+  color: white;
+}
+
+.slider {
+  position: absolute;
+  width: 50%; /* Half of the container width */
+  height: 100%;
+  background-color: #DA2127; /* Active button color */
+  z-index: 1; /* Behind the buttons but above the sidebar */
+  transition: transform 0.3s ease; /* Smooth transition for the sliding effect */
+}
+
+.slider.left {
+  transform: translateX(0);
+}
+
+.slider.right {
+  transform: translateX(100%);
+}
+
+.dashboard-content {
+  padding: 20px;
+  /* Add any additional styling for the content area */
+}
+
  
-.subheader-container {
+.search-filter-container {
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  width:530px;
+  gap: 5px;
+  padding: 5px;
+  background-color: #efefef;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.search-box {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  border: 0px solid #ccc;
+  border-radius: 25px;
+  overflow: hidden;
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 600px; /* Adjust as needed */
 }
  
-.subheader-text {
-  font-size: 16px;
-  color: #333;
+.search-box input {
+  border: none;
+  padding: 10px 15px;
+  outline: none;
+  width: 100%; /* Take full width */
+  font-size: 14px;
+  border-radius: 25px 0 0 25px; /* Matching the radius of the search box */
+}
+.search-box input::placeholder {
+  color: #aaa;
 }
  
-.subheader-icon {
-  width: 13px;
-  height: 13px;
+.search-btn {
+  
+  background-color: #ff5c5c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 25px 25px 0;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
+.search-btn img {
+  width: 40px; /* Adjust size as needed */
+  height: 24px; /* Adjust size as needed */
+}
+.search-btn:hover {
+  background-color: #e64e4e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 
 /* table stylings */
-.tasks-table {
-  margin-top: 20px;
+/* .tasks-table {
+  margin-top: 10px;
   background-color: #ffffff;
-  padding: 20px;
+  padding: 5px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+} */
 
-table {
+.tasks-table {
+  position: fixed;
   width: 100%;
   border-collapse: collapse;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 15px; /* Add margin to separate from the chart */
 }
 
-th, td {
+.tasks-table table {
+  width: 100%;
+  border-spacing: 0;
+}
+
+.tasks-table thead {
+  background-color: #FFD6D6;
+  color: #000;
+}
+
+.tasks-table thead th {
+  padding: 8px 10px; /* Reduced padding for tighter columns */
   text-align: left;
-  padding: 08px;
-  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+  font-size: 14px;
 }
 
-th {
-  background-color: #FFCDCD;
+.tasks-table tbody {
+  background-color: #FFF;
+}
+
+.tasks-table tbody tr {
+  border-bottom: 1px solid #eee;
+}
+
+.tasks-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.tasks-table tbody td {
+  padding: 8px 10px; /* Reduced padding for tighter columns */
+  text-align: left;
+  font-size: 14px;
+  color: #444;
+}
+
+.tasks-table tbody td:first-child {
+  font-weight: bold;
+}
+
+.tasks-table tbody td:nth-child(3) {
+  color: green; /* Status color - customize as needed */
+  font-weight: bold;
+}
+
+.tasks-table tbody td:nth-child(4) {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tasks-table tbody td:nth-child(4) .battery-bar {
+  width: 60px;
+  height: 8px;
+  background-color: #eee;
+  border-radius: 4px;
+  position: relative;
+}
+
+.tasks-table tbody td:nth-child(4) .battery-bar .fill {
+  height: 100%;
+  border-radius: 4px;
+  background-color: green; /* Battery fill color */
+}
+
+.tasks-table tbody td:last-child {
+  display: flex;
+  gap: 5px;
+}
+
+.tasks-table tbody td button {
+  padding: 4px 8px; /* Reduced padding for smaller buttons */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.tasks-table tbody td button:first-child {
+  background-color: #DA2127; /* Edit button color */
+  color: white;
+}
+
+.tasks-table tbody td button:last-child {
+  background-color: #DA2127; /* Delete button color */
+  color: white;
+}
+
+.tasks-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.tasks-table .new-task-btn {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.tasks-table .new-task-btn button {
+  padding: 10px 20px;
+  background-color: #FF8C8C; /* New Task button color */
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tasks-table .new-task-btn button:hover {
+  background-color: #ff6666;
+}
+
+.tasks-table h3 {
+  font-size: 24px; /* Adjusted font size */
+  font-weight: bold;
+  color: #5c5c5c;
+  margin: 0px 0 5px 0; /* Adjusted margin */
+  padding: 0px;
+}
+
+.tasks-table h4 {
+  font-size: 12px; /* Adjusted font size */
+  color: #999;
+  margin: 0 0 10px 0; /* Adjusted margin */
+  padding: 0;
 }
 
 button {
@@ -75,7 +289,7 @@ button {
   top: 20px;
   right: 20px;
   display: flex;
-  margin-top: 20px;
+  margin-top: 10px;
   gap: 20px;
 }
 
@@ -83,10 +297,11 @@ button {
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
-  width: 170px;
-  height: 150px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 200px;
+  height: 80px; /* Adjust height to fit content */
   text-align: left;
+  position: relative;
 }
 .stat-card:hover {
   transform: translateY(-10px);
@@ -96,7 +311,7 @@ button {
 .stat-title {
   font-size: 12px;
   color: #888888;
-  margin-bottom: 5px;
+  margin-top:-15px;
 }
 
 .stat-value {
@@ -105,31 +320,54 @@ button {
 }
 
 h2 {
-  margin: 10px 0;
+  margin: -10px 0;
   font-size: 32px;
 }
 
-.stat-change {
-  font-size: 14px;
-  display: flex;
-  justify-content: left;
-  align-items: left;
-}
-
-.stat-change.positive {
-  color: #00c853; /* Green color */
-}
-
-.stat-change.negative {
-  color: #d32f2f; /* Red color */
-}
-
-.stat-change span {
-  font-size: 14px;
-}
-
 .stat-chart {
-  margin-top: 10px;
-  height: 50px;
-  /* Add a background image or chart here */
+  position: absolute; /* Absolutely position the SVG */
+  right: 10px; /* Align it to the right with some padding */
+  top: 50%; /* Move to the vertical center */
+  transform: translateY(-50%); /* Adjust to perfectly center vertically */
+  width: 96px; /* Set width explicitly */
+  height: 70px; /* Set height explicitly */
 }
+
+.stat-chart svg {
+  width: 100%; /* Make SVG fill the container */
+  height: auto
+}
+
+.area-chart-container {
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  max-width: 950px; 
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+  flex-grow: 1; /* Ensures the chart container grows to fill available space */
+}
+
+/* activities container styles */
+app-operation-pie {
+  position: fixed;
+  display: flex;
+  position: absolute; /* Position the Operation Pie component absolutely */
+  right: 140px; /* Align it to the right side */
+  top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
+  width: 300px; /* Ensure it matches the intended width */
+}
+
+app-gradient-donut{
+  position: fixed;
+    display: flex;
+    position: absolute; /* Position the Operation Pie component absolutely */
+    right: 140px; /* Align it to the right side */
+    top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
+    width: 300px; /* Ensure it matches the intended width */
+
+ }

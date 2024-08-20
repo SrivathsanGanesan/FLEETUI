@@ -10,6 +10,7 @@ import { ProjectGuard } from './guards/project.guard';
 import { Userlogscomponent } from './userlogs/userlogs.component';
 import { UsermanagementComponent } from './usermanagement/usermanagement.component';
 import { RobotsComponent } from './robots/robots.component';
+import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.component';
 
 const routes: Routes = [
   {
@@ -53,6 +54,13 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard, ProjectGuard], // Ensure both guards are here
   },
+
+  // { path: 'statistics/operation', component: StatisticsComponent },
+  // { path: 'statistics/robot', component: RobotDashboardComponent },
+  // { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' },
+  { path: 'statistics/operation', component: StatisticsComponent },
+  { path: 'statistics/robot', component: RobotDashboardComponent },
+  { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' },
 ];
 
 @NgModule({

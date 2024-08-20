@@ -1,0 +1,187 @@
+<div class="popup-overlay">
+  <div class="popup-content">
+    <h2 *ngIf="!showImage">Select Map file</h2>
+
+    <!-- Image for file upload -->
+    <label for="fileInput" class="upload-image" *ngIf="!showImage">
+      <img src="../../assets/icons/arrow-down-circle.svg" alt="Upload" />
+      <input
+        type="file"
+        id="fileInput"
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        hidden
+      />
+    </label>
+    
+    <!-- Display selected file name -->
+    <div *ngIf="fileName && !showImage" class="file-name">{{ fileName }}</div>
+    <div class="form-wrapper" *ngIf="fileName && !showImage">
+    <!-- Form for additional details -->
+    <div class="form-container" *ngIf="fileName && !showImage">
+      <label for="mapName">Map Name</label>
+      <input
+        type="text"
+        id="mapName"
+        [(ngModel)]="mapName"
+        placeholder="Enter map name"
+        (keyup.enter)="open()"
+      />
+      
+      <label for="siteName">Site Name</label>
+      <input
+        type="text"
+        id="siteName"
+        [(ngModel)]="siteName"
+        placeholder="Enter site name"
+        (keyup.enter)="open()"
+      />
+    </div>
+    <div class="separator"></div>
+    <div class="form1-container" *ngIf="fileName && !showImage">
+      <div class="Res">
+      <label for="resolution">Resolution</label>
+      <div class="Res1">
+        <input
+        type="number"
+        id="resolution"
+        #resolutionInput
+        placeholder="Enter Resolution"
+        (keyup.enter)="open()"
+      />
+      <p id="or">or</p>
+      <button class="OpenandLocate" (click)="openImagePopup()">Open and Locate</button>
+    </div>
+    </div>
+    <p>Origin</p>
+      <div class="origin-coor" style="display: flex; align-items: center; gap: 10px;">
+
+        <input
+          type="number"
+          id="X"
+          placeholder="X"
+          (keyup.enter)="open()"
+        />
+        <input
+          type="number"
+          id="Y"
+          placeholder="Y"
+          (keyup.enter)="open()"
+        />
+        <!-- <input
+        type="number"
+        id="θ"
+        placeholder="θ"
+        (keyup.enter)="open()"
+      /> -->
+      </div>
+      
+    </div>
+    </div>
+      <!-- <label for="height">Enter Height (m)</label>
+      <input
+        type="number"
+        id="height"
+        [(ngModel)]="height"
+        placeholder="Enter height"
+        (keyup.enter)="open()"
+      />
+      
+      <label for="width">Enter Width (m)</label>
+      <input
+        type="number"
+        id="width"
+        [(ngModel)]="width"
+        placeholder="Enter width"
+        (keyup.enter)="open()"
+      /> -->
+    
+    <!-- Intermediate Nodes Dialog -->
+    <div *ngIf="showImagePopup" class="image-popup-overlay">
+      <div class="image-popup-content">
+        <canvas #imagePopupCanvas width="1000" height="500"></canvas>
+        <button class="close-btn" (click)="closeImagePopup()">X</button>
+        <button class="save-btn" (click)="saveCanvas()">Save</button>
+        <button class="clear-btn" (click)="clearCanvas()">Clear</button>
+        <!-- Distance Input Dialog -->
+        <div *ngIf="showDistanceDialog" class="distance-dialog-overlay">
+          <div class="distance-dialog">
+            <h3>Enter Distance Between Points</h3>
+            <input type="number" [(ngModel)]="distanceBetweenPoints" placeholder="Distance in meters" />
+            <button (click)="confirmDistance()">Enter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Canvas for displaying the image -->
+    <div class="image-container" *ngIf="showImage">
+      <div class="intermediate-nodes-dialog" *ngIf="showIntermediateNodesDialog" >
+        <div class="dialog-content">
+          <h3>Enter Number of Nodes</h3>
+          <input type="number" [(ngModel)]="numberOfIntermediateNodes" placeholder="Number of nodes" />
+          <button (click)="plotIntermediateNodes()">Enter</button>
+        </div>
+      </div>
+      <canvas class="plottinglayer" #overlayCanvas></canvas> <!-- Transparent canvas for plotting points -->
+      <canvas class="maplayer" #imageCanvas></canvas> <!-- Image canvas -->
+      <button class="close-btn" (click)="close()">X</button>
+      <div class="options-container">
+        <button (click)="toggleOptionsMenu()">
+          <img src="../../assets/icons/options-icon.svg" alt="Options" />
+        </button>
+      </div>
+      <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
+        <div class="dropdown">
+          <button class="dropdown-button">Add Node</button>
+          <div class="dropdown-content">
+            <button (click)="setPlottingMode('single')">Single Node</button>
+            <button (click)="setPlottingMode('multi')">Multi Node</button>
+          </div>
+        </div>
+        
+        <button>Delete Node</button>
+        <div class="dropdown">
+          <button class="dropdown-button">Connectivity</button>
+          <div class="dropdown-content">
+            <button (click)="setConnectivityMode('uni')">Uni-Directional</button>
+            <button (click)="setConnectivityMode('bi')">Bi-Directional</button>
+          </div>
+        </div>
+        
+        
+        <div class="dropdown">
+          <button class="dropdown-button">Zones</button>
+          <div class="dropdown-content">
+            <button (click)="setZoneColor('#cd2f2f54')">High Speed Zones</button>
+            <button (click)="setZoneColor('#2f79cd54')">Medium Speed Zones</button>
+            <button (click)="setZoneColor('#2b8f3e64')">Low Speed Zones</button>
+          </div>
+        </div>
+        
+        <div class="dropdown">
+          <button class="dropdown-button" >Add Assets</button>
+          <div class="dropdown-content">
+            <button (click)="selectAsset('docking')">Docking Station</button>
+            <button (click)="selectAsset('charging')">Charging Station</button>
+            <button (click)="selectAsset('picking')">Picking Station</button>
+          </div>
+        </div>
+        <button (click)="openRobotPopup()">Add Robots</button>
+        <app-robot-popup
+          [isVisible]="isRobotPopupVisible"
+          (close)="closeRobotPopup()"
+          (addRobot)="placeRobots($event)"
+        ></app-robot-popup>
+        
+        <button >Remove Robots</button>
+        <button >Save</button>
+        <button (click)="toggleOptionsMenu()">Back</button>
+      </div>
+    </div>    
+    <div class="button-container" *ngIf="!showImage">
+      <button (click)="open()">Open</button>
+      <button (click)="close()">Close</button>
+    </div>
+  </div>
+</div>

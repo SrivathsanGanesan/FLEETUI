@@ -197,81 +197,143 @@ tr:nth-child(even) {
 
 /* Main container for the search bar and filters */
 /* Main container for search bar and date filters */
-.search-date-container {
+
+.search-filter-container {
   position: absolute;
   top: 30px;
   right: 20px;
   display: flex;
   flex-direction: column;
   gap: 1rem; /* Space between search bar and date filters */
+  width:500px;
+  gap: 5px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-/* Search Bar Styling */
-.search-container {
-  position: relative;
+.search-box {
   display: flex;
   align-items: center;
-  width: 360px; /* Adjust width as needed */
-}
-
-.search-input {
+  border: 0px solid #ccc;
+  border-radius: 25px;
+  overflow: hidden;
+  background-color: #ffffff;
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 3px solid #FF7373;
-  border-radius: 0.375rem 0.375rem 0.375rem 0.375rem; /* Rounded corners on the left side */
-  outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  max-width: 500px; /* Adjust as needed */
 }
 
-.search-input:focus {
-  border-color: #ff4d4d;
-  box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
-}
-
-.search-button {
-  position: absolute;
-  right: 0;
-  padding: 0.75rem 1rem;
+.search-box input {
   border: none;
-  background-color: #FF7373;
+  padding: 10px 15px;
+  outline: none;
+  width: 100%; /* Take full width */
+  font-size: 14px;
+  border-radius: 25px 0 0 25px; /* Matching the radius of the search box */
+}
+.search-box input::placeholder {
+  color: #aaa;
+}
+
+.search-btn {
+  background-color: #ff5c5c;
   color: white;
-  border-radius: 0.375rem 0.375rem 0.375rem 0.375rem; /* Rounded corners on the right side */
+  border: none;
+  padding: 10px 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s, transform 0.3s;
+  border-radius: 0 25px 25px 0;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+.search-btn img {
+  width: 40px; /* Adjust size as needed */
+  height: 24px; /* Adjust size as needed */
+}
+.search-btn:hover {
+  background-color: #e64e4e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.search-button:hover {
-  background-color: #D30000;
-  transform: scale(1.05);
-}
-
-.search-button svg {
-  fill: white;
-}
-
-/* Date Filters Styling */
-.date-filters {
+.options-container {
   display: flex;
-  align-items: center; /* Align items horizontally */
-  gap: 1rem; /* Space between date filter and date inputs */
+  align-items: center;
+  gap: 10px;
 }
 
-.date-filter {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #fff;
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #ffffff;
   cursor: pointer;
-  transition: border-color 0.3s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.date-filter:focus {
-  border-color: #D30000;
+.dropbtn:hover {
+  background-color: #ececec;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 5px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.filter-options {
+  display: flex;
+  gap: 10px; /* Increased gap between buttons */
+}
+
+.filter-options button {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.filter-options button.active {
+  background-color: #ff5c5c;
+  color: white;
+  border: none;
+}
+
+.filter-options button:hover:not(.active) {
+  background-color: #ececec;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 
 .date-inputs {
   display: flex;

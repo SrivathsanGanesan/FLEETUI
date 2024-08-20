@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
 
 @Component({
   selector: 'app-configuration',
@@ -17,7 +19,11 @@ export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('overlayLayer', { static: false }) overlayLayer!: ElementRef;
 
+  nodes: Array<{ x: number; y: number; id: number }> = [];
+  selectedNode: { x: number; y: number; id: number } | null = null;
+  nodeIdCounter: number = 0; // Counter to generate unique IDs for each node
   fleetTab: string = 'general';
   filteredData: any;
   originalData: any;
@@ -27,18 +33,61 @@ export class ConfigurationComponent implements AfterViewInit {
   activeButton: string = 'Environment'; // Default active button
   activeHeader: string = 'Environment'; // Default header
   chosenImageName = ''; // Initialize chosenImageName with an empty string
-  imageHeight = 0; // Initialize imageHeight with a default value
-  imageWidth = 0; // Initialize imageWidth with a default value
   imageUploaded: boolean = false; // To track if an image is uploaded
   imageFile: File | null = null; // Store the uploaded image file
   isImageOpened: boolean = false; // Track if the image is opened in the canvas
   currentTable = 'Environment';
   currentTab: any;
+  imageHeight: number = 0; // Height in meters
+  imageWidth: number = 0; // Width in meters
+  pixelsPerMeter: number = 0; // Pixels per meter
+  private backgroundImage: HTMLImageElement | null = null;
+  isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
+  connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
 
-  EnvData = [
-    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 5, 2024. 14:00:17' },
+  EnvData: any[] = [
+    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 4, 2024. 14:00:17' },
+    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 15, 2024. 14:00:17' },
+    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' },
   ];
-  robotData = [
+
+  // Update EnvData in both the component and service
+  // this.EnvData.push([newEntry]);
+  // this.sharedDataService.updateEnvData([...this.EnvData]);
+
+  ngOnChanges() {
+    this.filterData();
+  }
+
+  searchTerm: string = '';
+  filteredEnvData: any[] = [];
+  filteredRobotData: any[] = [];
+  filterData() {
+    const term = this.searchTerm.toLowerCase();
+
+    if (this.currentTable === 'Environment') {
+      this.filteredEnvData = this.EnvData.filter((item) => {
+        const date = new Date(item.column3);
+        const withinDateRange =
+          (!this.startDate || date >= this.startDate) &&
+          (!this.endDate || date <= this.endDate);
+
+        return (
+          (item.column1.toLowerCase().includes(term) ||
+            item.column2.toLowerCase().includes(term) ||
+            item.column3.toLowerCase().includes(term)) &&
+          withinDateRange
+        );
+      });
+    } else if (this.currentTable === 'robot') {
+      this.filteredRobotData = this.robotData.filter(
+        (item) =>
+          item.column1.toLowerCase().includes(term) ||
+          item.column2.toLowerCase().includes(term)
+      );
+    }
+  }
+  robotData: any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
@@ -47,142 +96,121 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: '192.168.XX.XX', column2: ' ' },
   ];
 
-  constructor(
-    private exportService: ExportService,
-    private cdRef: ChangeDetectorRef
-  ) {
-    this.iconImage.src = '../../assets/ConfigurationOptions/point.svg';
+  constructor(private cdRef: ChangeDetectorRef) {}
+  loadData() {
+    // Fetch or initialize data here
+    this.EnvData = []; // Replace with actual data fetching
+    this.filterData(); // Initial filter application
   }
 
-  ngAfterViewInit() {
-    // Any initialization that requires the view to be fully loaded can go here.
-  }
-
-  triggerFileInput() {
-    this.fileInput.nativeElement.click();
-  }
-
-  calibrateCoordinates() {
-    // Add your calibration logic here
-    console.log('Calibrate Coordinates button clicked!');
-  }
-
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input && input.files && input.files.length > 0) {
-      this.imageFile = input.files[0];
-      this.chosenImageName = this.imageFile.name;
-    }
-  }
-  isMultiNodeMode = false; // Track Multi Node mode
-  addMultiNode() {
-    console.log("Multi Node clicked");
-    this.isMultiNodeMode = !this.isMultiNodeMode; // Toggle multi node mode
-    this.isSingleNodeMode = false; // Disable single node mode if active
-    const canvas = this.uploadedCanvas?.nativeElement;
-    if (this.isMultiNodeMode) {
-      canvas.addEventListener('click', this.plotMultiNode.bind(this));
-    } else {
-      canvas.removeEventListener('click', this.plotMultiNode.bind(this));
-    }
-  }
-  plotMultiNode(event: MouseEvent) {
-    if (!this.isMultiNodeMode) return;
-
+  ngAfterViewInit() {}
+  drawConnectivity() {
     const canvas = this.uploadedCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
+
     if (!canvas || !ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const [start, end] = this.connectivityPoints;
+    if (start && end) {
+      // Draw a line between the two points
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.lineTo(end.x, end.y);
 
-    // Draw the icon at the clicked position
-    ctx.drawImage(this.iconImage, x, y, 20, 20); // Adjust the width and height as needed
-  }
-  openImage() {
-    if (this.mapName === '' && this.siteName === '') {
-      alert('Map name and site name required!');
-      return;
+      // Set line style
+      ctx.strokeStyle = 'orange';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Draw arrow or other indication if needed
+      // (optional, for visualization)
     }
+  }
+  isRobotPopupVisible: boolean = false;
 
-    if (this.imageFile) {
-      this.isImageOpened = true;
-      this.cdRef.detectChanges();
+  robots = [
+    { id: 1, name: 'Robot A' },
+    { id: 2, name: 'Robot B' },
+  ];
 
-      const canvas = this.uploadedCanvas?.nativeElement;
-      const ctx = canvas.getContext('2d');
+  selectedRobots: any[] = [];
+  showRobotPopup() {
+    this.isRobotPopupVisible = true;
+  }
 
-      if (!canvas || !ctx) {
-        console.error('Canvas or context not found');
-        return;
-      }
+  closeRobotPopup() {
+    this.isRobotPopupVisible = false;
+  }
+  showRobotParametersPopup = false;
+  openRobotParametersPopup() {
+    this.showRobotParametersPopup = true;
+  }
+  closeRobotParametersPopup() {
+    this.showRobotParametersPopup = false;
+  }
+  showImageUploadPopup = false;
+  openImageUploadPopup(): void {
+    this.showImageUploadPopup = true;
+  }
 
-      canvas.width = 1400;
-      canvas.height = 600;
-
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const img = new Image();
-        img.onload = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        };
-        img.src = e.target.result;
+  closeImageUploadPopup(): void {
+    this.showImageUploadPopup = false;
+  }
+  updateMapDetails(event: { mapName: string; siteName: string }) {
+    const { mapName, siteName } = event;
+    if (mapName && siteName) {
+      const newEntry = {
+        mapName,
+        siteName,
+        lastCreated: new Date().toLocaleDateString(),
       };
-      reader.readAsDataURL(this.imageFile);
-
-      this.addEnvironmentData(); // Add data to the table when the image is opened
-    }
-  }
-  deleteNode(){
-    console.log("node deleted")
-  }
-  iconImage = new Image(); // Image for plotting nodes
-  isSingleNodeMode = false; // To track if Single Node mode is active
-  addSingleNode() {
-    console.log('Single Node clicked');
-    this.isSingleNodeMode = true; // Enable single node mode
-    const canvas = this.uploadedCanvas?.nativeElement;
-    if (canvas) {
-      canvas.addEventListener('click', this.plotSingleNode.bind(this));
+      this.filteredEnvData.push(newEntry);
     }
   }
 
-  plotSingleNode(event: MouseEvent) {
-    if (!this.isSingleNodeMode) return;
+  searchTermChanged() {
+    this.filterData();
+  }
+  ngOnInit() {
+    this.filteredEnvData = this.EnvData;
+    this.filteredRobotData = this.robotData;
+    this.searchTerm = '';
+    this.searchTermChanged();
+    // Initialize the robot image when the component loads
 
-    const canvas = this.uploadedCanvas?.nativeElement;
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
+    // Optionally, you can also handle image loading errors
 
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    // Draw the icon at the clicked position
-    ctx.drawImage(this.iconImage, x, y, 20, 20); // Adjust the width and height as needed
-
-    // Disable single node mode after plotting
-    this.isSingleNodeMode = false;
-    canvas.removeEventListener('click', this.plotSingleNode.bind(this));
+    // Add mouse event listeners
   }
 
-  mapName: string = ''; // To store the Map Name input value
-  siteName: string = ''; // To store the Site Name input value
+  showIPScannerPopup = false;
+
+  openIPScanner() {
+    this.showIPScannerPopup = true;
+  }
+
+  closeIPScanner() {
+    this.showIPScannerPopup = false;
+  }
+
+  connectivity() {
+    this.isConnectivityModeActive = true; // Enable connectivity mode
+    this.connectivityPoints = []; // Clear previous points
+    console.log('Connectivity mode activated. Select two points.');
+  }
+  connectivityMode: 'none' | 'bi-directional' | 'uni-directional' = 'none';
+  firstPoint: { x: number; y: number } | null = null;
+  secondPoint: { x: number; y: number } | null = null;
 
   addEnvironmentData() {
-    const currentTime = new Date();
-    const formattedTime = formatDate(
-      currentTime,
-      'MMM d, yyyy. HH:mm:ss',
-      'en-US'
-    );
-    this.EnvData.push({
-      column1: this.mapName,
-      column2: this.siteName,
-      column3: formattedTime,
-    });
+    const newEntry = {
+      // column1: this.mapName,
+      // column2: this.siteName,
+      column3: formatDate(new Date(), 'MMM d, yyyy. HH:mm:ss', 'en-US'),
+    };
+
+    this.EnvData.push(newEntry);
+    this.filteredEnvData = [...this.EnvData];
   }
 
   isCalibrationLayerVisible = false;
@@ -194,18 +222,16 @@ export class ConfigurationComponent implements AfterViewInit {
   hideCalibrationLayer() {
     this.isCalibrationLayerVisible = false;
   }
-  saveMap() {
-    // here we go..
-    console.log(this.mapName, this.siteName);
-    console.log('Map Saved');
-  }
+
+  // saveMap() {
+  //   // here we go..
+  //   console.log(this.mapName, this.siteName);
+  //   console.log('Map Saved');
+  // }
+
   // Add methods for each button's functionality
   addNode() {
     console.log('Add Node clicked');
-  }
-
-  connectivity() {
-    console.log('Connectivity clicked');
   }
 
   zones() {
@@ -242,15 +268,19 @@ export class ConfigurationComponent implements AfterViewInit {
       }
     }, 200); // 200ms matches the CSS transition duration
   }
+
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
+
   showTable(table: string) {
     this.currentTable = table;
   }
+
   setCurrentTable(table: string) {
     this.currentTable = table;
   }
+
   getCurrentTableData() {
     switch (this.currentTable) {
       case 'Environment':
@@ -287,40 +317,38 @@ export class ConfigurationComponent implements AfterViewInit {
     this.imageWidth = 0;
   }
 
-  onSearch(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const query = inputElement?.value || '';
-    // Implement your search logic here
-  }
-
   onDateFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const filter = selectElement?.value || '';
     // Implement your date filter logic here
   }
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+  onDateChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const id = input.id;
+    const value = input.value;
 
-  onDateChange(event: Event): void {
-    const startDateElement = document.getElementById(
-      'start-date'
-    ) as HTMLInputElement;
-    const endDateElement = document.getElementById(
-      'end-date'
-    ) as HTMLInputElement;
+    if (id === 'start-date') {
+      this.startDate = value ? new Date(value) : null;
+    } else if (id === 'end-date') {
+      this.endDate = value ? new Date(value) : null;
+    }
 
-    const startDate = startDateElement?.value || '';
-    const endDate = endDateElement?.value || '';
-
-    // Implement your date range filtering logic here
+    this.filterData(); // Apply filters whenever the date changes
   }
-
   editItem(item: any) {
     console.log('Edit item:', item);
   }
 
   deleteItem(item: any) {
-    const index = this.EnvData.findIndex((envItem) => envItem === item);
+    // Find the index of the item to be deleted
+    const index = this.EnvData.indexOf(item);
+
+    // Remove the item if found
     if (index !== -1) {
       this.EnvData.splice(index, 1);
+      this.filterData(); // Reapply filters after deletion
     }
   }
 
