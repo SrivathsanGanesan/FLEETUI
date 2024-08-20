@@ -1,5 +1,8 @@
 const { Map, Robo } = require("../models/mapSchema");
-const { projectModel } = require("../../fleetcore/models/projectSchema");
+const {
+  projectModel,
+  siteModel,
+} = require("../../fleetcore/models/projectSchema");
 const fs = require("fs");
 const path = require("path");
 
@@ -31,27 +34,51 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
   try {
-    const { projectName, siteName, mapName, imgUrl, zones, robots } = mapData;
-    const doc = await projectModel.exists({
+    const {
+      projectName,
+      siteName,
+      mapName,
+      imgUrl,
+      zones,
+      robots = [],
+      nodes = [],
+      stations = [],
+    } = mapData;
+    const projDoc = await projectModel.exists({
       projectName: projectName,
-      "sites.siteName": siteName,
+      // "sites.siteName": siteName,
     });
-    if (!doc) {
+    if (!projDoc) {
       clearImgAsset(req);
       return res.status(400).json({
         succeded: false,
-        msg: "project name or site name not exists!",
+        msg: "project name not exists!",
       });
     }
+    const siteDoc = await projectModel.exists({ "sites.siteName": siteName });
+    if (!siteDoc)
+      await projectModel.findOneAndUpdate(
+        {
+          projectName: projectName,
+        },
+        {
+          $push: {
+            sites: new siteModel({ siteName: siteName }),
+          },
+        }
+      );
+
     mapData.imgUrl = `localhost:3000/dashboard/${req.file.filename}`;
 
     const map = await Map.exists({ mapName: mapName });
-    if (map) return res.json({ exits: true, msg: "name already exits" });
+    if (map) return res.json({ exits: true, msg: "Map name already exits" });
 
     const newMap = await new Map({
       mapName,
       imgUrl: mapData.imgUrl,
       zones,
+      nodes,
+      stations,
     }).save();
     const MapId = newMap._id;
     const proj = await insertMapId({ MapId, mapName, projectName, siteName });

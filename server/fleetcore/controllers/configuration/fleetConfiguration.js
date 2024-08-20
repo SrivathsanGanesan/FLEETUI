@@ -1,49 +1,73 @@
 const { getIPRange } = require("get-ip-range");
 const NetworkScanner = require("network-scanner-js");
-// const nmap = require("libnmap");
 const netScan = new NetworkScanner();
 const arp = require("node-arp");
-const ping = require("ping"); //..
-const ipRangeCheck = require("ip-range-check"); //..
+const dns = require("dns");
 
-const scanIp = async (req, res, next) => {
-  let arr = [];
-  const ipv4Range = getIPRange("52.95.110.0-52.95.110.200");
+const eventStreamHeader = {
+  "Content-Type": "text/event-stream",
+  "Cache-Control": "no-cache",
+  Connection: "keep-alive",
+};
 
-  const ipRange = [
-    "192.168.249.3",
-    "192.168.249.183",
-    "192.168.249.248",
-    "142.250.182.46",
-  ]; // Add your IP range
-  for (let ip of ipRange) {
-    const poll = await netScan.poll(ip, {
-      //192.168.249.183
-      repeat: null,
-      size: 32,
-      timeout: null,
+const getMacAddress = (ip) => {
+  if (ip === "") return;
+  return new Promise((resolve, reject) => {
+    arp.getMAC(ip, (err, mac) => {
+      resolve(mac);
     });
-    arr.push({
-      host: poll.host,
-      ip_address: poll.ip_address,
-      status: poll.status,
-      time: poll.res_avg,
-    });
-  }
-  arp.getMAC("192.168.249.248", function (err, mac) {
-    if (!err) console.log(mac);
   });
+};
 
-  res.json(arr);
+const getHost = (ip) => {
+  if (ip === "") return;
+  return new Promise((resolve, reject) => {
+    dns.reverse(ip, (err, hostnames) => {
+      // process of reverse DNS lookup (with PTR record)..
+      // if (err) resolve(`hostname could not resolve`);
+      if (err) resolve(err.hostname);
+      if (!err && hostnames?.length !== 0) resolve(hostnames[0]);
+      else if (hostnames?.length === 0) resolve(`No hostname found`);
+    });
+  });
+};
+
+const scanIp = async (req, res) => {
+  const { startIp, endIp } = req.params;
+  try {
+    const ipRange = getIPRange(`${startIp}-${endIp}`); // "192.168.24.90-192.168.36.183"
+
+    res.writeHead(200, eventStreamHeader);
+    for (let ip of ipRange) {
+      try {
+        const poll = await netScan.poll(ip, {
+          repeat: null,
+          size: 32,
+          timeout: null,
+        });
+        let mac = "";
+        let hostName = "";
+        if (poll.status === "online") mac = await getMacAddress(ip);
+        hostName = await getHost(ip);
+
+        const netPoll = JSON.stringify({
+          ip_address: poll.ip_address,
+          mac_address: mac === undefined ? "undefined" : mac,
+          host: hostName,
+          status: poll.status,
+          time: poll.res_avg,
+        });
+        // console.log(netPoll);
+        res.write(`data: ${netPoll}\n\n`);
+      } catch (error) {
+        res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+      }
+    }
+    res.end();
+  } catch (error) {
+    console.error("Error occurred in SSE :", error);
+    res.status(500).send("Internal Server Error, might Ip range is so High!");
+  }
 };
 
 module.exports = { scanIp };
-
-/* for (let ip of ipRange) {
-  ping.promise.probe(ip).then((res) => {
-    arr.push({ host: res.host, alive: res.alive, time: res.time });
-    console.log(
-      `${res.host}: ${res.alive ? "alive" : "dead"} time: ${res.time}ms`
-    );
-  });
-} */
