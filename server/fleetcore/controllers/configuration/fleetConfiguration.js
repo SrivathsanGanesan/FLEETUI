@@ -35,7 +35,6 @@ const getHost = (ip) => {
 const scanIp = async (req, res) => {
   const { startIp, endIp } = req.params;
   try {
-    // let arr = [];
     const ipRange = getIPRange(`${startIp}-${endIp}`); // "192.168.24.90-192.168.36.183"
 
     res.writeHead(200, eventStreamHeader);
@@ -49,7 +48,7 @@ const scanIp = async (req, res) => {
         let mac = "";
         let hostName = "";
         if (poll.status === "online") mac = await getMacAddress(ip);
-        // hostName = await getHost(ip);
+        hostName = await getHost(ip);
 
         const netPoll = JSON.stringify({
           ip_address: poll.ip_address,
