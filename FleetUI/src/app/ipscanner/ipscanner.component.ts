@@ -9,6 +9,7 @@ import { environment } from '../../environments/environment.development';
 interface Poll {
   ip: string;
   mac: string;
+  host: string;
   ping: string;
   Status: string;
 }
@@ -64,6 +65,7 @@ export class IPScannerComponent {
             data.mac_address === '' || data.mac_address === 'undefined'
               ? '00:00:00:00:00:00'
               : data.mac_address,
+          host: data.host,
           ping: data.time,
           Status: data.status,
         };
