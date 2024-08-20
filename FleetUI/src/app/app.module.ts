@@ -34,6 +34,7 @@ import { EnvmapComponent } from './envmap/envmap.component';
 import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.component';
 import { RouterModule } from '@angular/router';
 import { ChartTimelineComponent } from './chart-timeline/chart-timeline.component';
+import { GradientDonutComponent } from './gradient-donut/gradient-donut.component';
 
 
 
@@ -65,6 +66,7 @@ import { ChartTimelineComponent } from './chart-timeline/chart-timeline.componen
     EnvmapComponent,
     RobotDashboardComponent,
     ChartTimelineComponent,
+    GradientDonutComponent,
     
     
     

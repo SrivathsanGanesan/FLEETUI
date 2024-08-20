@@ -1,0 +1,23 @@
+#chart {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+  }
+  
+  .apexcharts-legend {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .apexcharts-title-text {
+    font-size: 18px;
+    color: #333;
+  }
+  
+  @media (max-width: 480px) {
+    #chart {
+      width: 100%;
+      padding: 10px;
+    }
+  }
+  

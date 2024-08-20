@@ -17,7 +17,7 @@
     z-index: 0; 
     position: relative; 
   }
-  
+
   .slider-buttons {
     position: relative;
     display: flex;
@@ -28,7 +28,8 @@
     font-size: 28px;
     border-radius: 6px;
     overflow: hidden;
-    z-index: 3; /* Ensure buttons stay above the sidebar */
+    /* z-index: 3;  */
+    /* Ensure buttons stay above the sidebar */
   }
   
   .slider-buttons button {
@@ -122,68 +123,64 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+
 .statistics-container {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    margin-top: 10px;
-    gap: 20px;
-  }
-  
-  .stat-card {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 200px;
-    height: 80px; /* Adjust height to fit content */
-    text-align: left;
-    position: relative;
-  }
-  .stat-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .stat-title {
-    font-size: 12px;
-    color: #888888;
-    margin-bottom: -10px;
-  }
-  
-  .stat-value {
-    font-size: 16px;
-    font-weight: 600;
-  }
-  
-  h2 {
-    margin: -10px 0;
-    font-size: 32px;
-  }
-  
-  .stat-chart {
-    position: absolute; /* Absolutely position the SVG */
-    right: 10px; /* Align it to the right with some padding */
-    top: 50%; /* Move to the vertical center */
-    transform: translateY(-50%); /* Adjust to perfectly center vertically */
-    width: 96px; /* Set width explicitly */
-    height: 70px; /* Set height explicitly */
-  }
-  
-  .stat-chart svg {
-    width: 100%; /* Make SVG fill the container */
-    height: auto
-  }
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  margin-top: 10px;
+  gap: 20px;
+}
+
+.stat-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 200px;
+  height: 80px; /* Adjust height to fit content */
+  text-align: left;
+  position: relative;
+}
+.stat-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.stat-title {
+  font-size: 12px;
+  color: #888888;
+  margin-top:-15px;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+h2 {
+  margin: -10px 0;
+  font-size: 32px;
+}
+
+.stat-chart {
+  position: absolute; /* Absolutely position the SVG */
+  right: 10px; /* Align it to the right with some padding */
+  top: 50%; /* Move to the vertical center */
+  transform: translateY(-50%); /* Adjust to perfectly center vertically */
+  width: 96px; /* Set width explicitly */
+  height: 70px; /* Set height explicitly */
+}
+
+.stat-chart svg {
+  width: 100%; /* Make SVG fill the container */
+  height: auto
+}
   
 
 /* Robot Uptime Chart */
-.robot-uptime-chart {
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
+
 
 /* Robot Activity Table */
 .tables-section {
@@ -255,11 +252,11 @@ app-operation-pie {
   }
 
   .robot-uptime-chart{
-    position: sticky;
+    /* position: sticky; */
     display: flex;
     flex-direction: column;
     margin-top: 20px;
-    max-width: 950px; 
+    max-width: 900px; 
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
@@ -267,3 +264,4 @@ app-operation-pie {
     width: 100%;
     flex-grow: 1; /* Ensures the chart container grows to fill available space */
   }
+ 
