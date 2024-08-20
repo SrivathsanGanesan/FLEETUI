@@ -56,7 +56,6 @@ export class IPScannerComponent {
 
     this.eventSource = new EventSource(URL);
     this.eventSource.onmessage = (event) => {
-      // wanna add host..
       try {
         const data = JSON.parse(event.data);
         let poll: Poll = {
@@ -69,6 +68,8 @@ export class IPScannerComponent {
           ping: data.time,
           Status: data.status,
         };
+        console.log(poll);
+        
         this.ipScanData.push(poll);
         this.cdr.detectChanges();
         // console.log(data);
