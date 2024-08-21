@@ -17,7 +17,7 @@ interface Poll {
   host: string;
   ping: string;
   Status: string;
-  hostname: string;
+  // hostname: string;
 }
 @Component({
   selector: 'app-configuration',
@@ -175,11 +175,11 @@ export class ConfigurationComponent implements AfterViewInit {
               : data.mac_address,
           host: data.host,
           ping: data.time,
-          hostname:data.hostname,
+          // hostname:data.hostname,
           Status: data.status,
         };
-        console.log(poll);
-        
+        // console.log(poll);
+
         this.ipScanData.push(poll);
         this.cdr.detectChanges();
       } catch (error) {
@@ -196,7 +196,6 @@ export class ConfigurationComponent implements AfterViewInit {
     this.eventSource.close();
     return;
   }
-
 
   robots = [
     { id: 1, name: 'Robot A' },

@@ -12,7 +12,7 @@ interface Poll {
   host: string;
   ping: string;
   Status: string;
-  hostname: string;
+  // hostname: string;
 }
 @Component({
   selector: 'app-ipscanner',
@@ -67,11 +67,11 @@ export class IPScannerComponent {
               : data.mac_address,
           host: data.host,
           ping: data.time,
-          hostname:data.hostname,
           Status: data.status,
+          // hostname: data.host,
         };
-        console.log(poll);
-        
+        console.log('here');
+
         this.ipScanData.push(poll);
         this.cdr.detectChanges();
       } catch (error) {
