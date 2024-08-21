@@ -2,14 +2,15 @@
   <app-sidenavbar></app-sidenavbar>
   <div class="mainContent">
    <!-- Router outlet for displaying the appropriate view -->
-      
-        <div class="slider-buttons">
-          <button (click)="setView('operation')" [class.active]="currentView === 'operation'">Operation</button>
-          <button (click)="setView('robot')" [class.active]="currentView === 'robot'">Robot</button>
-          <div class="slider" [ngClass]="{'left': currentView === 'operation', 'right': currentView === 'robot'}"></div>
-        </div>
-
-
+        <!-- Slider button -->
+          <div class="slider-buttons-container">
+            <div class="slider-buttons">
+              <button (click)="setView('operation')" [class.active]="currentView === 'operation'">Operation</button>
+              <button (click)="setView('robot')" [class.active]="currentView === 'robot'">Robot</button>
+              <div class="slider" [ngClass]="{'left': currentView === 'operation', 'right': currentView === 'robot'}"></div>
+            </div>
+          </div>
+  
         <div *ngIf="currentView === 'operation'">
           <div class="search-filter-container">
             <!-- Search Bar -->
@@ -19,24 +20,17 @@
                 <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
               </button>
             </div>
-          </div>
-       
-             
+          </div>         
            <!-- area chart -->
            <div class="area-chart-container">
             <app-area-chart></app-area-chart>
         </div>
         <!--  -->
-         
-    
+        
         <div class="tasks-table">
           <!-- <div class="table-header">
-          <h3>Task Statistics</h3> -->
-          <!-- <h4>Over 500 Tasks</h4> -->
-          <!-- <div class="new-task-btn">
-            <button>+ New Task</button>   
-          </div> -->
-        <!-- </div> -->
+          <h3>Task Statistics</h3>          
+        </div> -->
           <table>
             <thead>
               <tr>
@@ -153,7 +147,10 @@
               </div>
             </div>
             <!-- <app-operation-pie></app-operation-pie> -->
-            <app-gradient-donut></app-gradient-donut>
+            <app-gradient-donut
+            [series]="[410, 142, 340, 590]" 
+            [labels]="['Approved', 'Pending', 'Under review', 'Rejected']">
+          </app-gradient-donut>
           </div>
 
           <!-- Your existing Operation content goes here -->

@@ -39,39 +39,45 @@
         </div>
    
         <!-- Card Container -->
-        <div class="card-container-wrapper mt-4">
-          <div class="card-container">
-            <div *ngFor="let robot of robots; let i = index; trackBy: trackByIndex"
-                [ngClass]="{ 'highlighted-card': i === centerIndex, 'blurred-card': i !== centerIndex }"
-                class="card">
-              <h2 class="card-header">{{ robot.name }}</h2>
-              <div class="menu-icon" (click)="toggleMenu(i)">
-                &#x22EE; <!-- HTML code for vertical ellipsis -->
-              </div>
-              <div class="card-id-status">
-                <strong>ID: {{ robot.id }}</strong> <!-- Display ID -->
-                <span class="robot-status">{{ robot.status }}</span> <!-- Display Status -->
-                <span class="robot-battery">{{ robot.battery }}</span> <!-- Display Battery Percentage -->
-              </div>
-                           
-              <!-- Popup menu for edit/delete -->
-              <div class="popup-menu" [class.show]="menuOpenIndex === i">
-                <ul>
-                  <li (click)="editRobot(i)" style="color: white;">Edit</li>
-                  <li (click)="deleteRobot(i)" style="color: white;">Delete</li>
-                </ul>
-              </div>
-              <div class="card-body">
-                <img [src]="robot.imageUrl" alt="{{ robot.name }}" class="card-image">
-                <div class="card-content">
-                  <p>{{ robot.capacity }} <br /> Rated capacity</p>
-                  <p>{{ robot.speed }} <br /> Maximum speed</p>
-                  <p>{{ robot.accuracy }} <br /> Stacking accuracy</p>
+        <!-- <div class="card" *ngFor="let robot of robots" (click)="openRobotDetail(robot)"> -->
+          <div class="card-container-wrapper mt-4">
+            <div class="card-container">
+              <div *ngFor="let robot of robots; let i = index; trackBy: trackByIndex"
+                  [ngClass]="{ 'highlighted-card': i === centerIndex, 'blurred-card': i !== centerIndex }"
+                  class="card">
+                
+                <h2 class="card-header">{{ robot.name }}</h2>
+                
+                <div class="menu-icon" (click)="toggleMenu(i)">
+                  &#x22EE; <!-- HTML code for vertical ellipsis -->
+                </div>
+                
+                <div class="card-id-status">
+                  <strong>ID: {{ robot.id }}</strong> <!-- Display ID -->
+                  <span class="robot-status">{{ robot.status }}</span> <!-- Display Status -->
+                  <span class="robot-battery">{{ robot.battery }}</span> <!-- Display Battery Percentage -->
+                </div>
+                
+                <!-- Popup menu for edit/delete -->
+                <div class="popup-menu" [class.show]="menuOpenIndex === i">
+                  <ul>
+                    <li (click)="editRobot(i)" style="color: white;">Edit</li>
+                    <li (click)="deleteRobot(i)" style="color: white;">Delete</li>
+                  </ul>
+                </div>
+                
+                <div class="card-body" (click)="openRobotDetail(robot)"> <!-- Click event to open the popup -->
+                  <img [src]="robot.imageUrl" alt="{{ robot.name }}" class="card-image">
+                  <div class="card-content">
+                    <p>{{ robot.capacity }} <br /> Rated capacity</p>
+                    <p>{{ robot.speed }} <br /> Maximum speed</p>
+                    <p>{{ robot.accuracy }} <br /> Stacking accuracy</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          
    
         <!-- Add Robot Popup -->
         <div *ngIf="showPopup" class="popup-overlay" (click)="togglePopup()">
@@ -135,5 +141,5 @@
         </div>
       </div>
     </div>
-</div>
+<!-- </div> -->
    

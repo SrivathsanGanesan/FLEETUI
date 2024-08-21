@@ -238,14 +238,21 @@
               <input id="ipRangeFrom" type="text" placeholder="255.255.0.0" />
               <span>to: </span>
               <input id="ipRangeTo" type="text" placeholder="255.255.0.0" />
-              
-              <button type="button" class="start-button" (click)="startScanning()">
+
+              <button
+                type="button"
+                class="start-button"
+                (click)="startScanning()"
+              >
                 Start
               </button>
-              <button type="button" class="start-button" (click)="stopScanning()">
+              <button
+                type="button"
+                class="start-button"
+                (click)="stopScanning()"
+              >
                 Stop
               </button>
-
             </div>
 
             <div class="popup-overlay" *ngIf="showIPScannerPopup">
@@ -269,7 +276,7 @@
                 <tr *ngFor="let item of ipScanData">
                   <td>{{ item.ip }}</td>
                   <td>{{ item.mac }}</td>
-                  <td>{{ item.hostname }}</td>
+                  <td>{{ item.host }}</td>
                   <td>{{ item.ping }}</td>
                   <td>{{ item.Status }}</td>
                 </tr>
@@ -329,7 +336,7 @@
                 <h2>Communication Settings</h2>
               </div>
             </div>
-            
+
             <div class="Create-button-container">
               <button
                 class="Create-button"
@@ -339,7 +346,11 @@
                 Create
               </button>
             </div>
-            <app-envmap *ngIf="showImageUploadPopup" (closePopup)="closeImageUploadPopup()"> </app-envmap>
+            <app-envmap
+              *ngIf="showImageUploadPopup"
+              (closePopup)="closeImageUploadPopup()"
+            >
+            </app-envmap>
           </div>
         </div>
       </div>

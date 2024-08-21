@@ -17,18 +17,29 @@
   z-index: 0; 
   position: relative; 
 }
+/* Ensure the sidebar has a higher z-index */
+.sidebar {
+  position: relative;
+  z-index: 100; /* Sidebar stays on top */
+}
+
+/* Container for the slider buttons */
+.slider-buttons-container {
+  position: relative;
+  z-index: 0; /* Ensure the buttons are below the sidebar */
+}
 
 .slider-buttons {
-  position: relative;
   display: flex;
   margin-top: 10px;
   width: 200px;
   height: 50px;
-  gap: 5px; /* Add 'px' to ensure the gap is applied correctly */
+  gap: 5px;
   font-size: 28px;
   border-radius: 6px;
   overflow: hidden;
-  z-index: 3; /* Ensure buttons stay above the sidebar */
+  position: relative;
+  z-index: 2; /* Ensure the buttons are below the sidebar */
 }
 
 .slider-buttons button {
@@ -39,7 +50,7 @@
   background-color: transparent;
   color: #333;
   font-weight: bold;
-  z-index: 4; /* Ensure buttons are above the slider */
+  z-index: 3; /* Keep buttons above the slider */
 }
 
 .slider-buttons button.active {
@@ -51,8 +62,8 @@
   width: 50%; /* Half of the container width */
   height: 100%;
   background-color: #DA2127; /* Active button color */
-  z-index: 1; /* Behind the buttons but above the sidebar */
-  transition: transform 0.3s ease; /* Smooth transition for the sliding effect */
+  z-index: 2; /* Keep slider below the buttons */
+  transition: transform 0.3s ease;
 }
 
 .slider.left {
@@ -63,11 +74,11 @@
   transform: translateX(100%);
 }
 
+
 .dashboard-content {
   padding: 20px;
   /* Add any additional styling for the content area */
 }
-
  
 .search-filter-container {
   position: sticky;
@@ -140,10 +151,10 @@
   position: fixed;
   width: 100%;
   border-collapse: collapse;
-
+  
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  overflow: hidden;
+  
   margin-top: 15px; /* Add margin to separate from the chart */
 }
 

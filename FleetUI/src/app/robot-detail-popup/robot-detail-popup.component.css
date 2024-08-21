@@ -1,0 +1,48 @@
+/* robot-detail-popup.component.css */
+.popup-container {
+    width: 70%;
+    max-width: 1300px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .popup-content {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+  }
+  
+  .robot-image-container {
+    flex: 0 0 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .robot-image {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+  
+  .robot-details {
+    flex: 0 0 45%;
+    padding: 0 20px;
+  }
+  
