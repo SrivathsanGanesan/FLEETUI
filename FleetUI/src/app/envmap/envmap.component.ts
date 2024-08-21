@@ -6,10 +6,9 @@ import {
   ElementRef,
   AfterViewInit,
   HostListener,
-  ChangeDetectorRef,
+  ChangeDetectorRef
 } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { checkPrime } from 'node:crypto';
 
 interface Zone {
   type: 'high' | 'medium' | 'low';
@@ -26,11 +25,9 @@ interface Zone {
 })
 export class EnvmapComponent implements AfterViewInit {
   @Output() closePopup = new EventEmitter<void>();
-  @Output() newEnvEvent = new EventEmitter<any>(); //..
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('imagePopupCanvas', { static: false })
-  imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imagePopupCanvas', { static: false }) imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
 
   fileName: string | null = null;
@@ -71,11 +68,10 @@ export class EnvmapComponent implements AfterViewInit {
   showImagePopup: boolean = false;
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
-  ratio: number | null = null; // Store the resolution ratio (meters per pixel)
+  ratio: number | null = null;  // Store the resolution ratio (meters per pixel)
   private nodeCounter: number = 1; // Counter to assign node numbers
   selectedNode: { x: number; y: number } | null = null;
   
-
   constructor(private cdRef: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
@@ -95,6 +91,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
+
 
   closeImagePopup(): void {
     this.showImagePopup = false;
@@ -133,24 +130,24 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.imageSrc) {
       this.showImagePopup = true;
       this.cdRef.detectChanges();
-
+  
       const canvas = this.imagePopupCanvas?.nativeElement;
       if (!canvas) {
-        console.error('Canvas element not found');
+        console.error("Canvas element not found");
         return;
       }
-
+  
       const ctx = canvas.getContext('2d');
       const img = new Image();
       img.src = this.imageSrc;
-
+  
       img.onload = () => {
         // Clear the points array
         this.points = [];
-
+  
         // Clear the canvas
         ctx!.clearRect(0, 0, canvas.width, canvas.height);
-
+  
         // Set canvas dimensions and draw the image
         canvas.width = img.width;
         canvas.height = img.height;
@@ -160,15 +157,10 @@ export class EnvmapComponent implements AfterViewInit {
       alert('No image uploaded.');
     }
   }
-  private calculateDistance(
-    point1: { x: number; y: number },
-    point2: { x: number; y: number }
-  ): number {
-    return Math.sqrt(
-      Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
-    );
+  private calculateDistance(point1: { x: number; y: number }, point2: { x: number; y: number }): number {
+    return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
   }
-
+  
   @HostListener('click', ['$event'])
   onImagePopupCanvasClick(event: MouseEvent): void {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
@@ -186,25 +178,19 @@ export class EnvmapComponent implements AfterViewInit {
         console.log('Two points plotted:', this.points);
         const distance = this.calculateDistance(this.points[0], this.points[1]);
         console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
-        this.showDistanceDialog = true; // Show the distance input dialog
+        this.showDistanceDialog = true;  // Show the distance input dialog
       }
     }
   }
   confirmDistance(): void {
-    if (
-      this.distanceBetweenPoints !== null &&
-      this.distanceBetweenPoints !== 0
-    ) {
-      const distanceInPixels = this.calculateDistance(
-        this.points[0],
-        this.points[1]
-      );
+    if (this.distanceBetweenPoints !== null && this.distanceBetweenPoints !== 0) {
+      const distanceInPixels = this.calculateDistance(this.points[0], this.points[1]);
       console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
-
+      
       if (distanceInPixels !== 0) {
         this.ratio = this.distanceBetweenPoints / distanceInPixels;
         console.log(`Resolution (meters per pixel): ${this.ratio.toFixed(2)}`);
-
+        
         // Update the resolution input field
         if (this.resolutionInput) {
           this.resolutionInput.nativeElement.value = this.ratio.toFixed(2);
@@ -212,12 +198,11 @@ export class EnvmapComponent implements AfterViewInit {
       } else {
         console.log('Distance in pixels is zero, cannot calculate ratio.');
       }
-
+      
       this.showDistanceDialog = false;
     }
   }
   saveCanvas(): void {
-    // add Fetch here..
     const canvas = this.imagePopupCanvas.nativeElement;
     // const dataURL = canvas.toDataURL('image/png');
     const link = document.createElement('a');
@@ -229,14 +214,14 @@ export class EnvmapComponent implements AfterViewInit {
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-
+  
     if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-
+  
       // Clear points array and logs
       this.points = [];
       console.clear(); // Clear console logs
-
+  
       // Redraw image if needed
       const img = new Image();
       img.src = this.imageSrc || '';
@@ -247,7 +232,8 @@ export class EnvmapComponent implements AfterViewInit {
       };
     }
   }
-
+    
+  
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -257,7 +243,7 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fillStyle = 'red';
     ctx.fill();
   }
-
+  
   open(): void {
     if (this.mapName && this.siteName && this.imageSrc) {
       this.fileName = null;
@@ -268,19 +254,19 @@ export class EnvmapComponent implements AfterViewInit {
 
       img.onload = () => {
         if (this.imageCanvas && this.imageCanvas.nativeElement) {
-          // const canvas = this.imageCanvas.nativeElement;
-          // const ctx = canvas.getContext('2d')!;
+          const canvas = this.imageCanvas.nativeElement;
+          const ctx = canvas.getContext('2d')!;
 
-          // canvas.width = this.width || img.width;
-          // canvas.height = this.height || img.height;
+          canvas.width = this.width || img.width;
+          canvas.height = this.height || img.height;
 
-          // ctx.clearRect(0, 0, canvas.width, canvas.height);
-          // ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
           if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
             const overlay = this.overlayCanvas.nativeElement;
-            overlay.width = this.imageCanvas.nativeElement.width;
-            overlay.height = this.imageCanvas.nativeElement.height;
+            overlay.width = canvas.width;
+            overlay.height = canvas.height;
           }
         }
       };
@@ -290,12 +276,6 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   close(): void {
-    // new value to array..
-    this.newEnvEvent.emit({
-      column1: this.mapName,
-      column2: this.siteName,
-      column3: 'Jul 4, 2024. 14:00:17',
-    });
     this.closePopup.emit();
   }
 
@@ -324,10 +304,10 @@ export class EnvmapComponent implements AfterViewInit {
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
-      // const canvas = this.overlayCanvas.nativeElement;
-      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+      const canvas = this.overlayCanvas.nativeElement;
+      const rect = canvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (event.clientY - rect.top) * (canvas.height / rect.height);
   
       // Check if a node is clicked
       let nodeClicked = false;
@@ -386,6 +366,9 @@ private drawNode(node: { x: number; y: number }, color: string, isSelected: bool
 private redrawNodes(): void {
   const canvas = this.overlayCanvas.nativeElement;
   const ctx = canvas.getContext('2d')!;
+
+
+
   this.nodes.forEach(node => {
     const isSelected = this.selectedNode === node;
     const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
@@ -396,7 +379,6 @@ private redrawNodes(): void {
     this.drawConnections();
   }
 }
-
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -411,13 +393,7 @@ private redrawNodes(): void {
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
       const distanceY = y * this.ratio;
-      console.log(
-        `Type: Single Node, Node Number: ${
-          this.nodeCounter
-        }, Distance (meters): X: ${distanceX.toFixed(
-          2
-        )}, Y: ${distanceY.toFixed(2)}`
-      );
+      console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
     }
     this.nodeCounter++; // Increment the node counter
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
@@ -437,21 +413,12 @@ private redrawNodes(): void {
     ctx.fillStyle = 'green'; // Color for multi-nodes
     ctx.fill();
 
-    console.log(
-      `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y }
-    ); // Log the node number and position
+    console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
 
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
       const distanceY = y * this.ratio;
-      console.log(
-        `Type: Multi Node, Node Number: ${
-          this.nodeCounter
-        }, Distance (meters): X: ${distanceX.toFixed(
-          2
-        )}, Y: ${distanceY.toFixed(2)}`
-      );
+      console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
     }
 
     this.nodeCounter++; // Increment the node counter

@@ -175,8 +175,8 @@ canvas {
   left: 0;
   width: 1400px;
   height: 580px;
-  /* background-color: transparent; */
-  background-color: #ffffff;
+  background-color: transparent;
+  /* background-color: #ffffff; */
   z-index: 1;
   pointer-events: none; /* Allows clicks to pass through to the underlying canvas */
 }
