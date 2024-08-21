@@ -12,6 +12,7 @@ interface Poll {
   host: string;
   ping: string;
   Status: string;
+  hostname: string;
 }
 @Component({
   selector: 'app-ipscanner',
@@ -66,6 +67,7 @@ export class IPScannerComponent {
               : data.mac_address,
           host: data.host,
           ping: data.time,
+          hostname:data.hostname,
           Status: data.status,
         };
         console.log(poll);

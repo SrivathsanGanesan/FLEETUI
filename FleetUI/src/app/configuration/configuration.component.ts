@@ -9,7 +9,16 @@ import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
+import { environment } from '../../environments/environment.development';
 
+interface Poll {
+  ip: string;
+  mac: string;
+  host: string;
+  ping: string;
+  Status: string;
+  hostname: string;
+}
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
@@ -95,8 +104,8 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: '192.168.XX.XX', column2: ' ' },
     { column1: '192.168.XX.XX', column2: ' ' },
   ];
-
-  constructor(private cdRef: ChangeDetectorRef) {}
+  ipScanData: Poll[] = [];
+  constructor(private cdr: ChangeDetectorRef) {}
   loadData() {
     // Fetch or initialize data here
     this.EnvData = []; // Replace with actual data fetching
@@ -127,6 +136,67 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
   isRobotPopupVisible: boolean = false;
+  eventSource!: EventSource;
+  startIP: string = '0.0.0.0';
+  EndIP: string = '0.0.0.0';
+
+  startScanning() {
+    this.ipScanData = [];
+    this.startIP = (
+      document.getElementById('ipRangeFrom') as HTMLInputElement
+    ).value;
+    this.EndIP = (
+      document.getElementById('ipRangeTo') as HTMLInputElement
+    ).value;
+    if (this.startIP === '' || this.EndIP === '') {
+      alert('Enter valid Ip');
+      return;
+    }
+    const ipv4Regex =
+      /^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    if (!ipv4Regex.test(this.startIP) || !ipv4Regex.test(this.EndIP)) {
+      alert('not valid IP. Try again');
+      return;
+    }
+
+    const URL = `http://${environment.API_URL}:${environment.PORT}/fleet-config/scan-ip/${this.startIP}-${this.EndIP}`;
+
+    if (this.eventSource) this.eventSource.close();
+
+    this.eventSource = new EventSource(URL);
+    this.eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        let poll: Poll = {
+          ip: data.ip_address,
+          mac:
+            data.mac_address === '' || data.mac_address === 'undefined'
+              ? '00:00:00:00:00:00'
+              : data.mac_address,
+          host: data.host,
+          ping: data.time,
+          hostname:data.hostname,
+          Status: data.status,
+        };
+        console.log(poll);
+        
+        this.ipScanData.push(poll);
+        this.cdr.detectChanges();
+      } catch (error) {
+        console.error('Error parsing SSE data:', error);
+      }
+    };
+
+    this.eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      this.eventSource.close();
+    };
+  }
+  stopScanning() {
+    this.eventSource.close();
+    return;
+  }
+
 
   robots = [
     { id: 1, name: 'Robot A' },

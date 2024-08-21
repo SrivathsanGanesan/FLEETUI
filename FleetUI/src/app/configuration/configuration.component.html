@@ -219,13 +219,13 @@
                 </tr>
               </tbody>
             </table>
-            <button
+            <!-- <button
               class="ASR-button"
               *ngIf="currentTable === 'robot'"
               (click)="openRobotParametersPopup()"
             >
               Add Selected Robots
-            </button>
+            </button> -->
 
             <div class="popup-overlay" *ngIf="showRobotParametersPopup">
               <app-robot-parameters-popup
@@ -233,13 +233,20 @@
               ></app-robot-parameters-popup>
             </div>
             <!-- Add this in your main component HTML -->
-            <button
-              class="IP-Scan"
-              *ngIf="currentTable === 'robot'"
-              (click)="openIPScanner()"
-            >
-              IP Scan
-            </button>
+            <div class="form-group" *ngIf="currentTable === 'robot'">
+              <label for="ipRangeFrom">IP Range:</label>
+              <input id="ipRangeFrom" type="text" placeholder="255.255.0.0" />
+              <span>to: </span>
+              <input id="ipRangeTo" type="text" placeholder="255.255.0.0" />
+              
+              <button type="button" class="start-button" (click)="startScanning()">
+                Start
+              </button>
+              <button type="button" class="start-button" (click)="stopScanning()">
+                Stop
+              </button>
+
+            </div>
 
             <div class="popup-overlay" *ngIf="showIPScannerPopup">
               <app-ipscanner
@@ -248,51 +255,23 @@
               ></app-ipscanner>
             </div>
 
-            <table
-              class="min-w-full divide-y divide-gray-200"
-              *ngIf="currentTable === 'robot'"
-            >
-              <thead class="bg-gray-50">
+            <table *ngIf="currentTable === 'robot'">
+              <thead>
                 <tr>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    ID Address
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Mac Address
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Add/Block
-                  </th>
+                  <th>IP</th>
+                  <th>MAC</th>
+                  <th>Hostname</th>
+                  <th>Ping</th>
+                  <th>Status</th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of selectedrobotData">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.column1 }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.column2 }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <img
-                      src="../../assets/ConfigurationOptions/Add.svg"
-                      alt="Add"
-                      (click)="addItem(item)"
-                      class="icon"
-                    />
-                    <img
-                      src="../../assets/ConfigurationOptions/Block.svg"
-                      alt="Block"
-                      (click)="blockItem(item)"
-                      class="icon"
-                    />
-                  </td>
+              <tbody>
+                <tr *ngFor="let item of ipScanData">
+                  <td>{{ item.ip }}</td>
+                  <td>{{ item.mac }}</td>
+                  <td>{{ item.hostname }}</td>
+                  <td>{{ item.ping }}</td>
+                  <td>{{ item.Status }}</td>
                 </tr>
               </tbody>
             </table>
