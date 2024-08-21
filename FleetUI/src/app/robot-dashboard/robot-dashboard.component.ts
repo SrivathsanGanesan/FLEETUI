@@ -21,6 +21,7 @@ export class RobotDashboardComponent implements OnInit {
     { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
     { message: 'Low Battery - AMR-004', timestamp: '2024-08-16 14:32' },
     { message: 'Emergency Stop - AMR-005', timestamp: '2024-08-16 14:32' }
+    
   ];
 
   currentView: string = 'robot';

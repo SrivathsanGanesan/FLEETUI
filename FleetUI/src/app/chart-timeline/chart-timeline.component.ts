@@ -9,7 +9,8 @@ import {
   ApexYAxis,
   ApexTooltip,
   ApexAnnotations,
-  ApexFill
+  ApexFill,
+  ApexStroke
 } from 'ng-apexcharts';
 
 export type ChartOptions = {
@@ -21,7 +22,9 @@ export type ChartOptions = {
   markers: ApexMarkers;
   tooltip: ApexTooltip;
   fill: ApexFill;
+  stroke: ApexStroke;
   annotations: ApexAnnotations;
+  colors: string[];
 };
 
 @Component({
@@ -36,6 +39,7 @@ export class ChartTimelineComponent implements OnInit {
   constructor() {
     this.chartOptions = {
       series: [{
+        name: "Series 1",
         data: [
           [1327359600000,1.5],
             [1327446000000,31.34],
@@ -318,7 +322,7 @@ export class ChartTimelineComponent implements OnInit {
       chart: {
         id: 'area-datetime',
         type: 'area',
-        height: 350,
+        height: 280,
         zoom: {
           autoScaleYaxis: true
         }
@@ -372,18 +376,23 @@ export class ChartTimelineComponent implements OnInit {
           colorStops: [
             {
               offset: 0,
-              color: '#FF0000', // Red at the start
+              color: '#FF0000',
               opacity: 0.7
             },
             {
               offset: 100,
-              color: '#FF6666', // Lighter red towards the end
+              color: '#FF6666',
               opacity: 0.2
             }
           ]
         }
-      }
-      
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 2,
+        colors: ['#FF0000']
+      },
+      colors: ['#FF0000'], // Explicitly set the color for the series
     };
   }
 

@@ -35,6 +35,9 @@ import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.compo
 import { RouterModule } from '@angular/router';
 import { ChartTimelineComponent } from './chart-timeline/chart-timeline.component';
 import { GradientDonutComponent } from './gradient-donut/gradient-donut.component';
+import { RobotActivityDonutComponent } from './robot-activity-donut/robot-activity-donut.component';
+import { RobotDetailPopupComponent } from './robot-detail-popup/robot-detail-popup.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -67,6 +70,8 @@ import { GradientDonutComponent } from './gradient-donut/gradient-donut.componen
     RobotDashboardComponent,
     ChartTimelineComponent,
     GradientDonutComponent,
+    RobotActivityDonutComponent,
+    RobotDetailPopupComponent,
     
     
     
@@ -81,13 +86,15 @@ import { GradientDonutComponent } from './gradient-donut/gradient-donut.componen
     FormsModule,
     BrowserModule,
     RouterModule.forRoot([]),
-    NgApexchartsModule
+    NgApexchartsModule,
+    MatDialogModule, 
   ],
   providers: [
     // provideClientHydration()
 
     provideAnimationsAsync(),
   ],
+ 
   bootstrap: [AppComponent],
 })
 export class AppModule {}

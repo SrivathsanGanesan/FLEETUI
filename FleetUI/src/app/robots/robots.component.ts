@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { RobotDetailPopupComponent } from '../robot-detail-popup/robot-detail-popup.component';
 
 interface Robot {
   id: number;
@@ -30,7 +32,7 @@ export class RobotsComponent {
     {
       id: 2,
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: "../../assets/robots/agv2.png",
       capacity: '2000 kg',
       speed: '2.7m/s (5.21mph)',
       accuracy: '± 10mm/±0.5’',
@@ -60,7 +62,7 @@ export class RobotsComponent {
     {
       id: 5,
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: "../../assets/robots/agv2.png",
       capacity: '2000 kg',
       speed: '2.7m/s (5.21mph)',
       accuracy: '± 10mm/±0.5’',
@@ -70,7 +72,7 @@ export class RobotsComponent {
     {
       id: 6,
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: "../../assets/robots/agv2.png",
       capacity: '2000 kg',
       speed: '2.7m/s (5.21mph)',
       accuracy: '± 10mm/±0.5’',
@@ -161,5 +163,20 @@ export class RobotsComponent {
   trackByIndex(index: number, obj: any): any {
     return index;
   }
+  
+  constructor(public dialog: MatDialog) {}
 
+  openRobotDetail(robot: any): void {
+    this.dialog.open(RobotDetailPopupComponent, {
+      width: '70%',
+      data: robot
+    });
+  }
+
+  // @Input() robot: any;
+  // @Output() cardClicked = new EventEmitter<any>();
+
+  // openPopup(robot: any) {
+  //   this.cardClicked.emit(robot);
+  // }
 }

@@ -1,0 +1,17 @@
+<div class="popup-container">
+    <h2>{{ data.name }} (ID: {{ data.id }})</h2>
+    
+    <img [src]="data.imageUrl" alt="{{ data.name }}" class="popup-image">
+    
+    <p><strong>Battery:</strong> {{ data.battery }}</p>
+    <p><strong>Status:</strong> {{ data.status }}</p>
+    <p><strong>Capacity:</strong> {{ data.capacity }}</p>
+    <p><strong>Speed:</strong> {{ data.speed }}</p>
+    <p><strong>Accuracy:</strong> {{ data.accuracy }}</p>
+    
+    <div class="popup-actions">
+      <button (click)="onPause()">Pause</button>
+      <button (click)="onClose()">Close</button>
+    </div>
+  </div>
+  

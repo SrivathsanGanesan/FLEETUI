@@ -8,6 +8,7 @@ export type ChartOptions = {
   dataLabels: ApexDataLabels;
   fill: ApexFill;
   legend: ApexLegend;
+  labels: string[];
   title: ApexTitleSubtitle;
   responsive: ApexResponsive[];
 };
@@ -18,13 +19,15 @@ export type ChartOptions = {
   styleUrls: ['./gradient-donut.component.css']
 })
 export class GradientDonutComponent implements OnInit {
-  @Input() series: ApexNonAxisChartSeries = [44, 55, 41, 17, 15];
-  @Input() chartWidth: number = 450;
+  @Input() series: ApexNonAxisChartSeries = [];
+  @Input() labels: string[] = ["Approved", "Pending", "Under review", "Rejected"];  // Labels for each segment
+  @Input() chartWidth: number = 430;
   @Input() startAngle: number = -90;
   @Input() endAngle: number = 270;
   @Input() dataLabelsEnabled: boolean = false;
   @Input() fillType: string = 'gradient';
   @Input() titleText: string = 'Total activities';
+  // @Input() donutThickness: string = '100px';  
   @Input() responsive: ApexResponsive[] = [{
     breakpoint: 480,
     options: {
@@ -41,6 +44,7 @@ export class GradientDonutComponent implements OnInit {
   };
 
   public chartOptions: Partial<ChartOptions> | any;
+  
 
   constructor() {
     this.chartOptions = {};
@@ -56,8 +60,12 @@ export class GradientDonutComponent implements OnInit {
       plotOptions: {
         pie: {
           startAngle: this.startAngle,
-          endAngle: this.endAngle
+          endAngle: this.endAngle,
+          // donut: {
+          //   size: `${this.donutThickness}%`
+          // }
         }
+     
       },
       dataLabels: {
         enabled: this.dataLabelsEnabled
@@ -68,10 +76,22 @@ export class GradientDonutComponent implements OnInit {
       legend: {
         formatter: this.legendFormatter
       },
+      labels: this.labels,  // Assigning the labels here
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }],
       title: {
         text: this.titleText
       },
-      responsive: this.responsive
+      // responsive: this.responsive
     };
   }
 }
