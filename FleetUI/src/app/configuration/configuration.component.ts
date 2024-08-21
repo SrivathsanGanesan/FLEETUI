@@ -53,19 +53,26 @@ export class ConfigurationComponent implements AfterViewInit {
   private backgroundImage: HTMLImageElement | null = null;
   isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
+
   searchTerm: string = '';
   filteredEnvData: any[] = [];
   filteredRobotData: any[] = [];
-
-  constructor(private cdr: ChangeDetectorRef) {
-    this.filteredEnvData = this.EnvData;
-  }
 
   EnvData: any[] = [
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 4, 2024. 14:00:17' },
     { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 15, 2024. 14:00:17' },
     { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' },
   ];
+
+  robotData: any[] = [
+    { column1: 'Robot 1', column2: '192.168.XX.XX' },
+    { column1: 'Robot 2', column2: '192.168.XX.XX' },
+  ];
+
+  constructor(private cdr: ChangeDetectorRef) {
+    this.filteredEnvData = this.EnvData;
+    this.filteredRobotData = this.robotData;
+  }
 
   ngOnChanges() {
     this.filterData();
@@ -81,7 +88,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
     this.EnvData = [...this.EnvData, envData];
     this.filteredEnvData = this.EnvData;
-    this.cdr.detectChanges();
+    // this.cdr.detectChanges(); // uncomment if want..
   }
 
   filterData() {
@@ -109,10 +116,7 @@ export class ConfigurationComponent implements AfterViewInit {
       );
     }
   }
-  robotData: any[] = [
-    { column1: 'Robot 1', column2: '192.168.XX.XX' },
-    { column1: 'Robot 2', column2: '192.168.XX.XX' },
-  ];
+
   selectedrobotData = [
     { column1: '192.168.XX.XX', column2: ' ' },
     { column1: '192.168.XX.XX', column2: ' ' },

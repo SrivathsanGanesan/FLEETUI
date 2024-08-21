@@ -13,72 +13,65 @@
         hidden
       />
     </label>
-    
+
     <!-- Display selected file name -->
     <div *ngIf="fileName && !showImage" class="file-name">{{ fileName }}</div>
     <div class="form-wrapper" *ngIf="fileName && !showImage">
-    <!-- Form for additional details -->
-    <div class="form-container" *ngIf="fileName && !showImage">
-      <label for="mapName">Map Name</label>
-      <input
-        type="text"
-        id="mapName"
-        [(ngModel)]="mapName"
-        placeholder="Enter map name"
-        (keyup.enter)="open()"
-      />
-      
-      <label for="siteName">Site Name</label>
-      <input
-        type="text"
-        id="siteName"
-        [(ngModel)]="siteName"
-        placeholder="Enter site name"
-        (keyup.enter)="open()"
-      />
-    </div>
-    <div class="separator"></div>
-    <div class="form1-container" *ngIf="fileName && !showImage">
-      <div class="Res">
-      <label for="resolution">Resolution</label>
-      <div class="Res1">
+      <!-- Form for additional details -->
+      <div class="form-container" *ngIf="fileName && !showImage">
+        <label for="mapName">Map Name</label>
         <input
-        type="number"
-        id="resolution"
-        #resolutionInput
-        placeholder="Enter Resolution"
-        (keyup.enter)="open()"
-      />
-      <p id="or">or</p>
-      <button class="OpenandLocate" (click)="openImagePopup()">Open and Locate</button>
-    </div>
-    </div>
-    <p>Origin</p>
-      <div class="origin-coor" style="display: flex; align-items: center; gap: 10px;">
+          type="text"
+          id="mapName"
+          [(ngModel)]="mapName"
+          placeholder="Enter map name"
+          (keyup.enter)="open()"
+        />
 
+        <label for="siteName">Site Name</label>
         <input
-          type="number"
-          id="X"
-          placeholder="X"
+          type="text"
+          id="siteName"
+          [(ngModel)]="siteName"
+          placeholder="Enter site name"
           (keyup.enter)="open()"
         />
-        <input
-          type="number"
-          id="Y"
-          placeholder="Y"
-          (keyup.enter)="open()"
-        />
-        <!-- <input
+      </div>
+      <div class="separator"></div>
+      <div class="form1-container" *ngIf="fileName && !showImage">
+        <div class="Res">
+          <label for="resolution">Resolution</label>
+          <div class="Res1">
+            <input
+              type="number"
+              id="resolution"
+              #resolutionInput
+              placeholder="Enter Resolution"
+              (keyup.enter)="open()"
+            />
+            <p id="or">or</p>
+            <button class="OpenandLocate" (click)="openImagePopup()">
+              Open and Locate
+            </button>
+          </div>
+        </div>
+        <p>Origin</p>
+        <div
+          class="origin-coor"
+          style="display: flex; align-items: center; gap: 10px"
+        >
+          <input type="number" id="X" placeholder="X" (keyup.enter)="open()" />
+          <input type="number" id="Y" placeholder="Y" (keyup.enter)="open()" />
+          <!-- <input
         type="number"
         id="θ"
         placeholder="θ"
         (keyup.enter)="open()"
       /> -->
+        </div>
       </div>
-      
     </div>
-    </div>
-      <!-- <label for="height">Enter Height (m)</label>
+    <!-- <label for="height">Enter Height (m)</label>
       <input
         type="number"
         id="height"
@@ -95,7 +88,7 @@
         placeholder="Enter width"
         (keyup.enter)="open()"
       /> -->
-    
+
     <!-- Intermediate Nodes Dialog -->
     <div *ngIf="showImagePopup" class="image-popup-overlay">
       <div class="image-popup-content">
@@ -107,7 +100,11 @@
         <div *ngIf="showDistanceDialog" class="distance-dialog-overlay">
           <div class="distance-dialog">
             <h3>Enter Distance Between Points</h3>
-            <input type="number" [(ngModel)]="distanceBetweenPoints" placeholder="Distance in meters" />
+            <input
+              type="number"
+              [(ngModel)]="distanceBetweenPoints"
+              placeholder="Distance in meters"
+            />
             <button (click)="confirmDistance()">Enter</button>
           </div>
         </div>
@@ -116,15 +113,24 @@
 
     <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
-      <div class="intermediate-nodes-dialog" *ngIf="showIntermediateNodesDialog" >
+      <div
+        class="intermediate-nodes-dialog"
+        *ngIf="showIntermediateNodesDialog"
+      >
         <div class="dialog-content">
           <h3>Enter Number of Nodes</h3>
-          <input type="number" [(ngModel)]="numberOfIntermediateNodes" placeholder="Number of nodes" />
+          <input
+            type="number"
+            [(ngModel)]="numberOfIntermediateNodes"
+            placeholder="Number of nodes"
+          />
           <button (click)="plotIntermediateNodes()">Enter</button>
         </div>
       </div>
-      <canvas class="plottinglayer" #overlayCanvas></canvas> <!-- Transparent canvas for plotting points -->
-      <canvas class="maplayer" #imageCanvas></canvas> <!-- Image canvas -->
+      <canvas class="plottinglayer" #overlayCanvas></canvas>
+      <!-- Transparent canvas for plotting points -->
+      <canvas class="maplayer" #imageCanvas></canvas>
+      <!-- Image canvas -->
       <button class="close-btn" (click)="close()">X</button>
       <div class="options-container">
         <button (click)="toggleOptionsMenu()">
@@ -139,28 +145,33 @@
             <button (click)="setPlottingMode('multi')">Multi Node</button>
           </div>
         </div>
-        
+
         <button>Delete Node</button>
         <div class="dropdown">
           <button class="dropdown-button">Connectivity</button>
           <div class="dropdown-content">
-            <button (click)="setConnectivityMode('uni')">Uni-Directional</button>
+            <button (click)="setConnectivityMode('uni')">
+              Uni-Directional
+            </button>
             <button (click)="setConnectivityMode('bi')">Bi-Directional</button>
           </div>
         </div>
-        
-        
+
         <div class="dropdown">
           <button class="dropdown-button">Zones</button>
           <div class="dropdown-content">
-            <button (click)="setZoneColor('#cd2f2f54')">High Speed Zones</button>
-            <button (click)="setZoneColor('#2f79cd54')">Medium Speed Zones</button>
+            <button (click)="setZoneColor('#cd2f2f54')">
+              High Speed Zones
+            </button>
+            <button (click)="setZoneColor('#2f79cd54')">
+              Medium Speed Zones
+            </button>
             <button (click)="setZoneColor('#2b8f3e64')">Low Speed Zones</button>
           </div>
         </div>
-        
+
         <div class="dropdown">
-          <button class="dropdown-button" >Add Assets</button>
+          <button class="dropdown-button">Add Assets</button>
           <div class="dropdown-content">
             <button (click)="selectAsset('docking')">Docking Station</button>
             <button (click)="selectAsset('charging')">Charging Station</button>
@@ -173,12 +184,12 @@
           (close)="closeRobotPopup()"
           (addRobot)="placeRobots($event)"
         ></app-robot-popup>
-        
-        <button >Remove Robots</button>
-        <button >Save</button>
+
+        <button>Remove Robots</button>
+        <button>Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
-    </div>    
+    </div>
     <div class="button-container" *ngIf="!showImage">
       <button (click)="open()">Open</button>
       <button (click)="close()">Close</button>
