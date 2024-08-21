@@ -71,7 +71,8 @@ export class EnvmapComponent implements AfterViewInit {
   ratio: number | null = null;  // Store the resolution ratio (meters per pixel)
   private nodeCounter: number = 1; // Counter to assign node numbers
   selectedNode: { x: number; y: number } | null = null;
-  
+    
+
   constructor(private cdRef: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
@@ -276,6 +277,13 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   close(): void {
+    // new value to array..
+    if (this.mapName && this.siteName)
+      this.newEnvEvent.emit({
+        column1: this.mapName,
+        column2: this.siteName,
+        column3: 'Jul 4, 2024. 14:00:17',
+      });
     this.closePopup.emit();
   }
 
@@ -304,11 +312,15 @@ export class EnvmapComponent implements AfterViewInit {
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
-      const canvas = this.overlayCanvas.nativeElement;
-      const rect = canvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-      const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-  
+      // const canvas = this.overlayCanvas.nativeElement;
+      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+      const x =
+        (event.clientX - rect.left) *
+        (this.overlayCanvas.nativeElement.width / rect.width);
+      const y =
+        (event.clientY - rect.top) *
+        (this.overlayCanvas.nativeElement.height / rect.height);
+
       // Check if a node is clicked
       let nodeClicked = false;
       for (const node of this.nodes) {
@@ -363,22 +375,20 @@ private drawNode(node: { x: number; y: number }, color: string, isSelected: bool
   }
 }
 
-private redrawNodes(): void {
-  const canvas = this.overlayCanvas.nativeElement;
-  const ctx = canvas.getContext('2d')!;
+  private redrawNodes(): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
+    this.nodes.forEach((node) => {
+      const isSelected = this.selectedNode === node;
+      const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
+      this.drawNode(node, color, isSelected);
+    });
 
-
-
-  this.nodes.forEach(node => {
-    const isSelected = this.selectedNode === node;
-    const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
-    this.drawNode(node, color, isSelected);
-  });
-
-  if (this.connectivityMode) {
-    this.drawConnections();
+    if (this.connectivityMode) {
+      this.drawConnections();
+    }
   }
-}
+
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
