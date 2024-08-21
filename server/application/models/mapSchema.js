@@ -22,7 +22,7 @@ const nodeSchema = new Schema(
   {
     //   single_node: { type: Boolean, default: true },
     //   multi_node: { type: Boolean, default: false },
-    node_type: { type: String, default: "single", enum: ["single", "multi"] },
+    nodeType: { type: String, default: "single", enum: ["single", "multi"] },
     pos: { type: [{ type: { x: Number, y: Number } }], default: [] },
     others: { type: mongoose.Schema.Types.Mixed, default: null },
   },
@@ -37,10 +37,11 @@ const stationSchema = new Schema(
   {
     asset: { type: String, default: "" },
     pos: {
-      type: [
-        { type: { x: Number, y: Number, w: { type: Number, default: 0 } } },
-      ],
-      default: [],
+      type: { x: Number, y: Number, w: { type: Number, default: 0 } },
+      // type: [
+      //   { type: { x: Number, y: Number, w: { type: Number, default: 0 } } },
+      // ],
+      // default: [],
     },
     others: { type: mongoose.Schema.Types.Mixed, default: null },
   },
@@ -57,11 +58,17 @@ const edgeSchema = new Schema(
       enum: ["uniDir", "biDir"],
     },
     start_node: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Node",
-      // name: { type: String, default: "" },
+      // type: mongoose.Schema.Types.ObjectId,
+      // ref: "Node",
+      type: String,
+      default: "",
     },
-    end_node: { type: mongoose.Schema.Types.ObjectId, ref: "Node" },
+    end_node: {
+      // type: mongoose.Schema.Types.ObjectId,
+      // ref: "Node",
+      type: String,
+      default: "",
+    },
     others: { type: mongoose.Schema.Types.Mixed, default: null },
   },
   {
