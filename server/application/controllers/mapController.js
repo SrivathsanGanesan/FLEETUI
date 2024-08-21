@@ -39,10 +39,11 @@ const mapInsert = async (req, res) => {
       siteName,
       mapName,
       imgUrl,
-      zones,
-      robots = [],
+      // robots = [],
       nodes = [],
+      edges = [],
       stations = [],
+      zones,
     } = mapData;
     const projDoc = await projectModel.exists({
       projectName: projectName,
@@ -78,6 +79,7 @@ const mapInsert = async (req, res) => {
       imgUrl: mapData.imgUrl,
       zones,
       nodes,
+      edges,
       stations,
     }).save();
     const MapId = newMap._id;

@@ -2,8 +2,9 @@ const { Schema, model, mongoose } = require("mongoose");
 
 const zoneSchema = new Schema(
   {
-    zoneName: { type: String, required: true, trim: true },
+    zoneName: { type: String, trim: true }, // required: true
     zoneCoordinates: [{ x: Number, y: Number, _id: false }],
+    // speedLimit: { type: Number, default: 0 },
   },
   { versionKey: false }
 );

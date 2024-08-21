@@ -53,6 +53,13 @@ export class ConfigurationComponent implements AfterViewInit {
   private backgroundImage: HTMLImageElement | null = null;
   isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
+  searchTerm: string = '';
+  filteredEnvData: any[] = [];
+  filteredRobotData: any[] = [];
+
+  constructor(private cdr: ChangeDetectorRef) {
+    this.filteredEnvData = this.EnvData;
+  }
 
   EnvData: any[] = [
     { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 4, 2024. 14:00:17' },
@@ -60,17 +67,23 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' },
   ];
 
-  // Update EnvData in both the component and service
-  // this.EnvData.push([newEntry]);
-  // this.sharedDataService.updateEnvData([...this.EnvData]);
-
   ngOnChanges() {
     this.filterData();
   }
 
-  searchTerm: string = '';
-  filteredEnvData: any[] = [];
-  filteredRobotData: any[] = [];
+  addEnvToEnvData(envData: any) {
+    let mapName = envData.column1;
+    for (let env of this.EnvData) {
+      if (mapName.toLowerCase() === env.column1.toLowerCase()) {
+        alert('map name seems already exists');
+        return;
+      }
+    }
+    this.EnvData = [...this.EnvData, envData];
+    this.filteredEnvData = this.EnvData;
+    this.cdr.detectChanges();
+  }
+
   filterData() {
     const term = this.searchTerm.toLowerCase();
 
@@ -105,7 +118,7 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: '192.168.XX.XX', column2: ' ' },
   ];
   ipScanData: Poll[] = [];
-  constructor(private cdr: ChangeDetectorRef) {}
+
   loadData() {
     // Fetch or initialize data here
     this.EnvData = []; // Replace with actual data fetching

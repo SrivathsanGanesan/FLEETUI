@@ -24,8 +24,8 @@ const getHost = (ip) => {
   return new Promise((resolve, reject) => {
     dns.reverse(ip, (err, hostnames) => {
       // process of reverse DNS lookup (with PTR record)..
-      // if (err) resolve(`hostname could not resolve`);
-      if (err) resolve(err.hostname);
+      if (err) resolve(`could not resolve hostname`);
+      // if (err) resolve(err.hostname);
       if (!err && hostnames?.length !== 0) resolve(hostnames[0]);
       else if (hostnames?.length === 0) resolve(`No hostname found`);
     });
