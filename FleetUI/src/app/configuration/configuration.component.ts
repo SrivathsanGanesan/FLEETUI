@@ -72,10 +72,16 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   addEnvToEnvData(envData: any) {
+    let mapName = envData.column1;
+    for (let env of this.EnvData) {
+      if (mapName.toLowerCase() === env.column1.toLowerCase()) {
+        alert('map name seems already exists');
+        return;
+      }
+    }
     this.EnvData = [...this.EnvData, envData];
     this.filteredEnvData = this.EnvData;
     this.cdr.detectChanges();
-    // console.log(this.EnvData);
   }
 
   filterData() {

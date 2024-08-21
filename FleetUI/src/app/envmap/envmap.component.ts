@@ -9,6 +9,7 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { formatDate } from '@angular/common';
+import { checkPrime } from 'node:crypto';
 
 interface Zone {
   type: 'high' | 'medium' | 'low';
@@ -213,6 +214,7 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
   saveCanvas(): void {
+    // add Fetch here..
     const canvas = this.imagePopupCanvas.nativeElement;
     // const dataURL = canvas.toDataURL('image/png');
     const link = document.createElement('a');
@@ -285,9 +287,10 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   close(): void {
+    // new value to array..
     this.newEnvEvent.emit({
-      column1: 'Map new',
-      column2: 'Site new',
+      column1: this.mapName,
+      column2: this.siteName,
       column3: 'Jul 4, 2024. 14:00:17',
     });
     this.closePopup.emit();
