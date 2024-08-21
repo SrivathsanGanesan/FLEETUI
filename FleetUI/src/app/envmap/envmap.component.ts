@@ -73,8 +73,11 @@ export class EnvmapComponent implements AfterViewInit {
   distanceBetweenPoints: number | null = null;
   ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   private nodeCounter: number = 1; // Counter to assign node numbers
+  selectedNode: { x: number; y: number } | null = null;
+  
 
   constructor(private cdRef: ChangeDetectorRef) {}
+
   ngAfterViewInit(): void {
     // Preload asset images
     this.assetImages['docking'] = new Image();
@@ -265,19 +268,19 @@ export class EnvmapComponent implements AfterViewInit {
 
       img.onload = () => {
         if (this.imageCanvas && this.imageCanvas.nativeElement) {
-          const canvas = this.imageCanvas.nativeElement;
-          const ctx = canvas.getContext('2d')!;
+          // const canvas = this.imageCanvas.nativeElement;
+          // const ctx = canvas.getContext('2d')!;
 
-          canvas.width = this.width || img.width;
-          canvas.height = this.height || img.height;
+          // canvas.width = this.width || img.width;
+          // canvas.height = this.height || img.height;
 
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          // ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
           if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
             const overlay = this.overlayCanvas.nativeElement;
-            overlay.width = canvas.width;
-            overlay.height = canvas.height;
+            overlay.width = this.imageCanvas.nativeElement.width;
+            overlay.height = this.imageCanvas.nativeElement.height;
           }
         }
       };
@@ -317,37 +320,83 @@ export class EnvmapComponent implements AfterViewInit {
     this.zoneColor = color;
     this.isDrawingZone = true;
   }
+
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
-    if (
-      this.isPlottingEnabled &&
-      this.overlayCanvas &&
-      this.overlayCanvas.nativeElement
-    ) {
-      const canvas = this.overlayCanvas.nativeElement;
-      const rect = canvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-      const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-      const ctx = canvas.getContext('2d');
-
-      if (this.plottingMode === 'single') {
-        this.plotSingleNode(x, y);
-      } else if (this.plottingMode === 'multi') {
-        this.plotMultiNode(x, y);
+    if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
+      // const canvas = this.overlayCanvas.nativeElement;
+      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+  
+      // Check if a node is clicked
+      let nodeClicked = false;
+      for (const node of this.nodes) {
+        if (this.isNodeClicked(node, x, y)) {
+          this.selectedNode = node; // Select the clicked node
+          nodeClicked = true;
+          break;
+        }
       }
-
-      if (this.connectivityMode) {
-        this.drawConnections();
+  
+      if (nodeClicked) {
+        this.redrawNodes(); // Redraw nodes to show the selected node
+      } else if (this.isPlottingEnabled) {
+        // If no node is selected and plotting is enabled
+        if (this.plottingMode === 'single') {
+          this.plotSingleNode(x, y);
+        } else if (this.plottingMode === 'multi') {
+          this.plotMultiNode(x, y);
+        }
+  
+        if (this.connectivityMode) {
+          this.drawConnections();
+        }
       }
-    }
-
-    if (this.isDrawingZone) {
-      this.startX = event.clientX;
-      this.startY = event.clientY;
+  
+      if (this.isDrawingZone) {
+        this.startX = event.clientX;
+        this.startY = event.clientY;
+      }
     }
   }
-  singleNodes: { x: number; y: number }[] = [];
-  multiNodes: { x: number; y: number }[] = [];
+  
+private isNodeClicked(node: { x: number; y: number }, mouseX: number, mouseY: number): boolean {
+  const radius = 8; // Same as the node radius
+  const dx = mouseX - node.x;
+  const dy = mouseY - node.y;
+  return dx * dx + dy * dy <= radius * radius;
+}
+private drawNode(node: { x: number; y: number }, color: string, isSelected: boolean): void {
+  const canvas = this.overlayCanvas.nativeElement;
+  const ctx = canvas.getContext('2d')!;
+
+  ctx.beginPath();
+  ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  if (isSelected) {
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'black'; 
+      ctx.stroke();
+  }
+}
+
+private redrawNodes(): void {
+  const canvas = this.overlayCanvas.nativeElement;
+  const ctx = canvas.getContext('2d')!;
+  this.nodes.forEach(node => {
+    const isSelected = this.selectedNode === node;
+    const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
+    this.drawNode(node, color, isSelected);
+  });
+
+  if (this.connectivityMode) {
+    this.drawConnections();
+  }
+}
+
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -356,11 +405,8 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fillStyle = 'blue'; // Color for single nodes
     ctx.fill();
 
-    this.singleNodes.push({ x, y });
-    console.log(
-      `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y }
-    ); // Log the node number and position
+    this.nodes.push({ x, y });
+    console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
 
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
@@ -373,7 +419,6 @@ export class EnvmapComponent implements AfterViewInit {
         )}, Y: ${distanceY.toFixed(2)}`
       );
     }
-
     this.nodeCounter++; // Increment the node counter
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
@@ -422,49 +467,30 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   plotIntermediateNodes(): void {
-    if (
-      this.firstNode &&
-      this.secondNode &&
-      this.numberOfIntermediateNodes > 0
-    ) {
-      const dx =
-        (this.secondNode.x - this.firstNode.x) /
-        (this.numberOfIntermediateNodes + 1);
-      const dy =
-        (this.secondNode.y - this.firstNode.y) /
-        (this.numberOfIntermediateNodes + 1);
+    if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
+        const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
+        const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
 
-      for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
-        const x = this.firstNode.x + i * dx;
-        const y = this.firstNode.y + i * dy;
-        this.nodes.push({ x, y });
-        const ctx = this.overlayCanvas.nativeElement.getContext('2d')!;
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'red';
-        ctx.fill();
+        for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
+            const x = this.firstNode.x + i * dx;
+            const y = this.firstNode.y + i * dy;
+            this.nodes.push({ x, y });
 
-        console.log(
-          `Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`,
-          { x, y }
-        ); // Log the node number and position
+            this.drawNode({ x, y }, 'red', false); // Set the initial color and no outline
 
-        if (this.ratio !== null) {
-          const distanceX = x * this.ratio;
-          const distanceY = y * this.ratio;
-          console.log(
-            `Type: Intermediate Node, Node Number: ${
-              this.nodeCounter
-            }, Distance (meters): X: ${distanceX.toFixed(
-              2
-            )}, Y: ${distanceY.toFixed(2)}`
-          );
+            console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
+
+            if (this.ratio !== null) {
+                const distanceX = x * this.ratio;
+                const distanceY = y * this.ratio;
+                console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+            }
+
+            this.nodeCounter++; // Increment the node counter
         }
-
-        this.nodeCounter++; // Increment the node counter
-      }
     }
-  }
+    this.closeIntermediateNodesDialog();
+}
 
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
