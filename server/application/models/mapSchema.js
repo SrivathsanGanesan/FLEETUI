@@ -36,7 +36,12 @@ const Node = dashboardConnection.model("nodes", nodeSchema, "nodes");
 const stationSchema = new Schema(
   {
     asset: { type: String, default: "" },
-    pos: { type: [{ type: { x: Number, y: Number } }], default: [] },
+    pos: {
+      type: [
+        { type: { x: Number, y: Number, w: { type: Number, default: 0 } } },
+      ],
+      default: [],
+    },
     others: { type: mongoose.Schema.Types.Mixed, default: null },
   },
   {
