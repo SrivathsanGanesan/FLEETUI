@@ -13,7 +13,7 @@ const projectConnection = mongoose.createConnection(
 
 const isConnect = (dbConnection) => {
   dbConnection.on("connected", () => {
-    console.log(`${dbConnection.name} connected bro..`);
+    console.log(`${dbConnection.name} connected..`);
   });
 
   dbConnection.on("error", (err) => {
