@@ -68,6 +68,8 @@ export class EnvmapComponent implements AfterViewInit {
   showImagePopup: boolean = false;
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
+  ratio: number | null = null;  // Store the resolution ratio (meters per pixel)
+  
 
   constructor(private cdRef: ChangeDetectorRef) {}
   ngAfterViewInit(): void {
@@ -184,22 +186,20 @@ export class EnvmapComponent implements AfterViewInit {
       console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
       
       if (distanceInPixels !== 0) {
-        const ratio = this.distanceBetweenPoints / distanceInPixels;
-        console.log(`Resolution (meters per pixel): ${ratio.toFixed(2)}`);
+        this.ratio = this.distanceBetweenPoints / distanceInPixels;
+        console.log(`Resolution (meters per pixel): ${this.ratio.toFixed(2)}`);
         
         // Update the resolution input field
         if (this.resolutionInput) {
-          this.resolutionInput.nativeElement.value = ratio.toFixed(2);
+          this.resolutionInput.nativeElement.value = this.ratio.toFixed(2);
         }
       } else {
         console.log('Distance in pixels is zero, cannot calculate ratio.');
       }
       
       this.showDistanceDialog = false;
-      // Additional logic to use the distance can be added here
     }
   }
-
   saveCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     // const dataURL = canvas.toDataURL('image/png');
@@ -207,6 +207,7 @@ export class EnvmapComponent implements AfterViewInit {
     // link.href = dataURL;
     // link.download = 'canvas-image.png';
     link.click();
+    this.showImagePopup = false;
   }
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
@@ -326,34 +327,49 @@ export class EnvmapComponent implements AfterViewInit {
       this.startY = event.clientY;
     }
   }
+  singleNodes: { x: number; y: number }[] = [];
+  multiNodes: { x: number; y: number }[] = [];
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
     ctx.beginPath();
-    ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+    ctx.arc(x, y, 8, 0, 2 * Math.PI, false);
     ctx.fillStyle = 'blue'; // Color for single nodes
     ctx.fill();
 
     this.singleNodes.push({ x, y });
+    console.log('Single Node Position:', { x, y }); // Log the position
+
+    if (this.ratio !== null) {
+      const distanceX = x * this.ratio;
+      const distanceY = y * this.ratio;
+      console.log(`Single Node Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+    }
+
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
-  singleNodes: { x: number; y: number }[] = [];
-  multiNodes: { x: number; y: number }[] = [];
 
   plotMultiNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
 
-    // Ensure only two nodes are plotted
     if (this.nodes.length >= 2) {
       alert('Only two nodes can be plotted in multi-node mode.');
       return;
     }
 
     ctx.beginPath();
-    ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+    ctx.arc(x, y, 8, 0, 2 * Math.PI, false);
     ctx.fillStyle = 'green'; // Color for multi-nodes
     ctx.fill();
+
+    console.log('Multi Node Position:', { x, y }); // Log the position
+
+    if (this.ratio !== null) {
+      const distanceX = x * this.ratio;
+      const distanceY = y * this.ratio;
+      console.log(`Multi Node Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+    }
 
     if (this.nodes.length === 0) {
       this.firstNode = { x, y };
@@ -364,18 +380,11 @@ export class EnvmapComponent implements AfterViewInit {
     }
     this.nodes.push({ x, y });
   }
+
   plotIntermediateNodes(): void {
-    if (
-      this.firstNode &&
-      this.secondNode &&
-      this.numberOfIntermediateNodes > 0
-    ) {
-      const dx =
-        (this.secondNode.x - this.firstNode.x) /
-        (this.numberOfIntermediateNodes + 1);
-      const dy =
-        (this.secondNode.y - this.firstNode.y) /
-        (this.numberOfIntermediateNodes + 1);
+    if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
+      const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
+      const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
 
       for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
         const x = this.firstNode.x + i * dx;
@@ -386,10 +395,19 @@ export class EnvmapComponent implements AfterViewInit {
         ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'red';
         ctx.fill();
+
+        console.log('Intermediate Node Position:', { x, y }); // Log the position
+
+        if (this.ratio !== null) {
+          const distanceX = x * this.ratio;
+          const distanceY = y * this.ratio;
+          console.log(`Intermediate Node Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+        }
       }
     }
     this.closeIntermediateNodesDialog();
   }
+  
 
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
