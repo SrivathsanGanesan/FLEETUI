@@ -74,7 +74,6 @@ export class EnvmapComponent implements AfterViewInit {
   ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   private nodeCounter: number = 1; // Counter to assign node numbers
   selectedNode: { x: number; y: number } | null = null;
-  
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
@@ -291,11 +290,12 @@ export class EnvmapComponent implements AfterViewInit {
 
   close(): void {
     // new value to array..
-    this.newEnvEvent.emit({
-      column1: this.mapName,
-      column2: this.siteName,
-      column3: 'Jul 4, 2024. 14:00:17',
-    });
+    if (this.mapName && this.siteName)
+      this.newEnvEvent.emit({
+        column1: this.mapName,
+        column2: this.siteName,
+        column3: 'Jul 4, 2024. 14:00:17',
+      });
     this.closePopup.emit();
   }
 
@@ -326,9 +326,13 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       // const canvas = this.overlayCanvas.nativeElement;
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
-  
+      const x =
+        (event.clientX - rect.left) *
+        (this.overlayCanvas.nativeElement.width / rect.width);
+      const y =
+        (event.clientY - rect.top) *
+        (this.overlayCanvas.nativeElement.height / rect.height);
+
       // Check if a node is clicked
       let nodeClicked = false;
       for (const node of this.nodes) {
@@ -338,7 +342,7 @@ export class EnvmapComponent implements AfterViewInit {
           break;
         }
       }
-  
+
       if (nodeClicked) {
         this.redrawNodes(); // Redraw nodes to show the selected node
       } else if (this.isPlottingEnabled) {
@@ -348,54 +352,62 @@ export class EnvmapComponent implements AfterViewInit {
         } else if (this.plottingMode === 'multi') {
           this.plotMultiNode(x, y);
         }
-  
+
         if (this.connectivityMode) {
           this.drawConnections();
         }
       }
-  
+
       if (this.isDrawingZone) {
         this.startX = event.clientX;
         this.startY = event.clientY;
       }
     }
   }
-  
-private isNodeClicked(node: { x: number; y: number }, mouseX: number, mouseY: number): boolean {
-  const radius = 8; // Same as the node radius
-  const dx = mouseX - node.x;
-  const dy = mouseY - node.y;
-  return dx * dx + dy * dy <= radius * radius;
-}
-private drawNode(node: { x: number; y: number }, color: string, isSelected: boolean): void {
-  const canvas = this.overlayCanvas.nativeElement;
-  const ctx = canvas.getContext('2d')!;
 
-  ctx.beginPath();
-  ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
-  ctx.fillStyle = color;
-  ctx.fill();
+  private isNodeClicked(
+    node: { x: number; y: number },
+    mouseX: number,
+    mouseY: number
+  ): boolean {
+    const radius = 8; // Same as the node radius
+    const dx = mouseX - node.x;
+    const dy = mouseY - node.y;
+    return dx * dx + dy * dy <= radius * radius;
+  }
+  private drawNode(
+    node: { x: number; y: number },
+    color: string,
+    isSelected: boolean
+  ): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
 
-  if (isSelected) {
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    if (isSelected) {
       ctx.lineWidth = 3;
-      ctx.strokeStyle = 'black'; 
+      ctx.strokeStyle = 'black';
       ctx.stroke();
+    }
   }
-}
 
-private redrawNodes(): void {
-  const canvas = this.overlayCanvas.nativeElement;
-  const ctx = canvas.getContext('2d')!;
-  this.nodes.forEach(node => {
-    const isSelected = this.selectedNode === node;
-    const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
-    this.drawNode(node, color, isSelected);
-  });
+  private redrawNodes(): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
+    this.nodes.forEach((node) => {
+      const isSelected = this.selectedNode === node;
+      const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
+      this.drawNode(node, color, isSelected);
+    });
 
-  if (this.connectivityMode) {
-    this.drawConnections();
+    if (this.connectivityMode) {
+      this.drawConnections();
+    }
   }
-}
 
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -406,7 +418,10 @@ private redrawNodes(): void {
     ctx.fill();
 
     this.nodes.push({ x, y });
-    console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
+    console.log(
+      `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
+      { x, y }
+    ); // Log the node number and position
 
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
@@ -467,30 +482,47 @@ private redrawNodes(): void {
   }
 
   plotIntermediateNodes(): void {
-    if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
-        const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
-        const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
+    if (
+      this.firstNode &&
+      this.secondNode &&
+      this.numberOfIntermediateNodes > 0
+    ) {
+      const dx =
+        (this.secondNode.x - this.firstNode.x) /
+        (this.numberOfIntermediateNodes + 1);
+      const dy =
+        (this.secondNode.y - this.firstNode.y) /
+        (this.numberOfIntermediateNodes + 1);
 
-        for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
-            const x = this.firstNode.x + i * dx;
-            const y = this.firstNode.y + i * dy;
-            this.nodes.push({ x, y });
+      for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
+        const x = this.firstNode.x + i * dx;
+        const y = this.firstNode.y + i * dy;
+        this.nodes.push({ x, y });
 
-            this.drawNode({ x, y }, 'red', false); // Set the initial color and no outline
+        this.drawNode({ x, y }, 'red', false); // Set the initial color and no outline
 
-            console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
+        console.log(
+          `Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`,
+          { x, y }
+        );
 
-            if (this.ratio !== null) {
-                const distanceX = x * this.ratio;
-                const distanceY = y * this.ratio;
-                console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
-            }
-
-            this.nodeCounter++; // Increment the node counter
+        if (this.ratio !== null) {
+          const distanceX = x * this.ratio;
+          const distanceY = y * this.ratio;
+          console.log(
+            `Type: Intermediate Node, Node Number: ${
+              this.nodeCounter
+            }, Distance (meters): X: ${distanceX.toFixed(
+              2
+            )}, Y: ${distanceY.toFixed(2)}`
+          );
         }
+
+        this.nodeCounter++; // Increment the node counter
+      }
     }
     this.closeIntermediateNodesDialog();
-}
+  }
 
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
