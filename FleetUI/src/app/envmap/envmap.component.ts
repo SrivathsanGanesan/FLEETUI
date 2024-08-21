@@ -69,6 +69,7 @@ export class EnvmapComponent implements AfterViewInit {
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
   ratio: number | null = null;  // Store the resolution ratio (meters per pixel)
+  private nodeCounter: number = 1; // Counter to assign node numbers
   
 
   constructor(private cdRef: ChangeDetectorRef) {}
@@ -338,14 +339,15 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fill();
 
     this.singleNodes.push({ x, y });
-    console.log('Single Node Position:', { x, y }); // Log the position
+    console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
 
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
       const distanceY = y * this.ratio;
-      console.log(`Single Node Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+      console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
     }
 
+    this.nodeCounter++; // Increment the node counter
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
 
@@ -363,13 +365,15 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fillStyle = 'green'; // Color for multi-nodes
     ctx.fill();
 
-    console.log('Multi Node Position:', { x, y }); // Log the position
+    console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
 
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
       const distanceY = y * this.ratio;
-      console.log(`Multi Node Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+      console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
     }
+
+    this.nodeCounter++; // Increment the node counter
 
     if (this.nodes.length === 0) {
       this.firstNode = { x, y };
@@ -396,16 +400,17 @@ export class EnvmapComponent implements AfterViewInit {
         ctx.fillStyle = 'red';
         ctx.fill();
 
-        console.log('Intermediate Node Position:', { x, y }); // Log the position
+        console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
 
         if (this.ratio !== null) {
           const distanceX = x * this.ratio;
           const distanceY = y * this.ratio;
-          console.log(`Intermediate Node Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+          console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
         }
+
+        this.nodeCounter++; // Increment the node counter
       }
     }
-    this.closeIntermediateNodesDialog();
   }
   
 
