@@ -70,7 +70,6 @@ export class IPScannerComponent {
           Status: data.status,
           // hostname: data.host,
         };
-        console.log('here');
 
         this.ipScanData.push(poll);
         this.cdr.detectChanges();
