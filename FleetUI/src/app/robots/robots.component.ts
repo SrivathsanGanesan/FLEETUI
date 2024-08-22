@@ -2,15 +2,16 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { RobotDetailPopupComponent } from '../robot-detail-popup/robot-detail-popup.component';
 
-interface Robot {
+export interface Robot {
   id: number;
   name: string;
   imageUrl: string;
   capacity: string;
   speed: string;
   accuracy: string;
-  status: string;     // Add status property
-  battery: string;    // Add battery percentage property
+  status: string;
+  battery: string;
+  serialNumber: string; // Add other fields as needed
 }
 @Component({
   selector: 'app-robots',
@@ -21,6 +22,18 @@ export class RobotsComponent {
   robots: Robot[] = [
     {
       id: 1,
+      serialNumber: '101589', // Example serial number
+      name: 'Forklift AGV',
+      imageUrl: "../../assets/robots/agv1.png",
+      capacity: '2000 kg',
+      speed: '2.7m/s (5.21mph)',
+      accuracy: '± 10mm/±0.5’',
+      status: 'Active',
+      battery: '40%'
+    },
+    {
+      id: 2,
+      serialNumber: '101589', // Example serial number
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
       capacity: '2000 kg',
@@ -30,27 +43,19 @@ export class RobotsComponent {
       battery: '80%'
     },
     {
-      id: 2,
-      name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv2.png",
-      capacity: '2000 kg',
-      speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’',
-      status: 'Inactive',
-      battery: '50%'
-    },
-    {
       id: 3,
+      serialNumber: '101589', // Example serial number
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
       capacity: '2000 kg',
       speed: '2.7m/s (5.21mph)',
       accuracy: '± 10mm/±0.5’',
       status: 'Active',
-      battery: '90%'
+      battery: '80%'
     },
     {
       id: 4,
+      serialNumber: '101589', // Example serial number
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
       capacity: '2000 kg',
@@ -61,18 +66,20 @@ export class RobotsComponent {
     },
     {
       id: 5,
+      serialNumber: '101589', // Example serial number
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv2.png",
+      imageUrl: "../../assets/robots/agv1.png",
       capacity: '2000 kg',
       speed: '2.7m/s (5.21mph)',
       accuracy: '± 10mm/±0.5’',
-      status: 'Inactive',
-      battery: '50%'
+      status: 'Active',
+      battery: '80%'
     },
     {
       id: 6,
+      serialNumber: '101589', // Example serial number
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv2.png",
+      imageUrl: "../../assets/robots/agv1.png",
       capacity: '2000 kg',
       speed: '2.7m/s (5.21mph)',
       accuracy: '± 10mm/±0.5’',
@@ -81,14 +88,15 @@ export class RobotsComponent {
     },
     {
       id: 7,
+      serialNumber: '101589', // Example serial number
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
       capacity: '2000 kg',
       speed: '2.7m/s (5.21mph)',
       accuracy: '± 10mm/±0.5’',
-      status: 'Inactive',
-      battery: '50%'
-    }
+      status: 'Active',
+      battery: '80%'
+    },
     // Add more robots with status and battery information...
   ];
  
@@ -96,8 +104,28 @@ export class RobotsComponent {
   isEditPopupOpen = false;
   menuOpenIndex: number | null = null;
  
-  newRobot: Robot = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%' };
-  editRobotData = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%' };
+  newRobot: Robot = {
+    id: 0, 
+    name: '', 
+    imageUrl: '', 
+    capacity: '', 
+    speed: '', 
+    accuracy: '', 
+    status: 'Active', 
+    battery: '100%',
+    serialNumber: ''
+  };
+  editRobotData: Robot = {
+    id: 0, 
+    name: '', 
+    imageUrl: '', 
+    capacity: '', 
+    speed: '', 
+    accuracy: '', 
+    status: 'Active', 
+    battery: '100%',
+    serialNumber: '' 
+  };
   editIndex: number | null = null;
   centerIndex: any;
  
@@ -121,7 +149,7 @@ export class RobotsComponent {
     if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.capacity && this.newRobot.speed && this.newRobot.accuracy) {
       this.newRobot.id = this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
       this.robots.push({ ...this.newRobot });
-      this.newRobot = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%' };
+      this.newRobot = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%',serialNumber: '' };
       this.togglePopup();
     } else {
       alert('Please fill out all fields.');
@@ -137,7 +165,17 @@ export class RobotsComponent {
  
   saveRobot() {
     if (this.editIndex !== null) {
-      this.robots[this.editIndex] = { ...this.editRobotData };
+      this.robots[this.editIndex] = {
+        id: this.editRobotData.id,
+        name: this.editRobotData.name,
+        imageUrl: this.editRobotData.imageUrl,
+        capacity: this.editRobotData.capacity,
+        speed: this.editRobotData.speed,
+        accuracy: this.editRobotData.accuracy,
+        status: this.editRobotData.status,
+        battery: this.editRobotData.battery,
+        serialNumber: this.editRobotData.serialNumber || 'DefaultSerialNumber'
+      };
       this.closeEditPopup();
     }
   }
@@ -145,9 +183,19 @@ export class RobotsComponent {
   closeEditPopup() {
     this.isEditPopupOpen = false;
     this.editIndex = null;
-    this.editRobotData = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%' };
+    this.editRobotData = { 
+      id: 0, 
+      name: '', 
+      imageUrl: '', 
+      capacity: '', 
+      speed: '', 
+      accuracy: '', 
+      status: 'Active', 
+      battery: '100%',
+      serialNumber: '' 
+    };
   }
- 
+
   deleteRobot(index: number) {
     this.robots.splice(index, 1);
     this.updateRobotIds();
@@ -166,7 +214,7 @@ export class RobotsComponent {
   
   constructor(public dialog: MatDialog) {}
 
-  openRobotDetail(robot: any): void {
+  openRobotDetail(robot: Robot): void {
     this.dialog.open(RobotDetailPopupComponent, {
       width: '70%',
       data: robot

@@ -1,48 +1,130 @@
-/* robot-detail-popup.component.css */
-.popup-container {
-    width: 70%;
-    max-width: 1300px;
+.popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
+    width: 70%;
+    max-width: 1200px;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
   
   .popup-header {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+    margin-bottom: 20px;
   }
   
-  .close-btn {
-    background: none;
-    border: none;
+  .popup-header h2 {
     font-size: 24px;
-    cursor: pointer;
+    font-weight: bold;
   }
   
-  .popup-content {
+  .robot-detail-container {
     display: flex;
+    width: 100%;
     justify-content: space-between;
-    padding-top: 20px;
   }
   
   .robot-image-container {
-    flex: 0 0 50%;
+    flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
   }
   
   .robot-image {
-    max-width: 100%;
-    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    
   }
   
-  .robot-details {
-    flex: 0 0 45%;
-    padding: 0 20px;
+  .battery-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
   }
   
+  .battery-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .battery {
+    width: 80px;
+    height: 30px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    position: relative;
+    background-color: white;
+  }
+  
+  .battery-level {
+    height: 100%;
+    background-color: green;
+    border-radius: 5px 0 0 5px;
+  }
+  
+  .robot-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .robot-info-item {
+    font-size: 16px;
+  }
+  
+  .popup-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+  }
+  
+  button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  button[mat-button] {
+    background-color: #DA2127;
+    color: white;
+  }
+  
+  button[mat-button][color="warn"] {
+    background-color: #5a5a5a;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+  }
+  
+  .close-button svg {
+    fill: red; /* Change the color as needed */
+    width: 24px;
+    height: 24px;
+  }
+  
+  .close-button:hover svg {
+    fill: darkred;
+  }

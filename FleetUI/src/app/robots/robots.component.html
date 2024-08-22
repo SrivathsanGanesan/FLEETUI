@@ -1,6 +1,6 @@
 <div class="flex h-screen">
     <app-sidenavbar class="fixed top-0 left-0 h-full"></app-sidenavbar>
-    <div class="flex-grow ml-64 p-8 h-screen overflow-auto">
+  <div class="flex-grow ml-64 p-8 h-screen overflow-auto">
       <div class="mainContent flex flex-col h-full">
         <!-- Header section -->
         <div class="header-section mb-4">
@@ -69,6 +69,7 @@
                 <div class="card-body" (click)="openRobotDetail(robot)"> <!-- Click event to open the popup -->
                   <img [src]="robot.imageUrl" alt="{{ robot.name }}" class="card-image">
                   <div class="card-content">
+                    <p>{{ robot.serialNumber }} <br /> S.no</p>
                     <p>{{ robot.capacity }} <br /> Rated capacity</p>
                     <p>{{ robot.speed }} <br /> Maximum speed</p>
                     <p>{{ robot.accuracy }} <br /> Stacking accuracy</p>
@@ -92,6 +93,7 @@
    
               <label for="capacity">Capacity:</label>
               <input id="capacity" [(ngModel)]="newRobot.capacity" name="capacity" required>
+              
    
               <label for="speed">Speed:</label>
               <input id="speed" [(ngModel)]="newRobot.speed" name="speed" required>
@@ -139,7 +141,7 @@
             </form>
           </div>
         </div>
-      </div>
     </div>
-<!-- </div> -->
+  </div>
+</div>
    

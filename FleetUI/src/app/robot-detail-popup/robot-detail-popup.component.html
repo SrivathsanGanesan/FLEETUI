@@ -1,17 +1,47 @@
-<div class="popup-container">
-    <h2>{{ data.name }} (ID: {{ data.id }})</h2>
-    
-    <img [src]="data.imageUrl" alt="{{ data.name }}" class="popup-image">
-    
-    <p><strong>Battery:</strong> {{ data.battery }}</p>
-    <p><strong>Status:</strong> {{ data.status }}</p>
-    <p><strong>Capacity:</strong> {{ data.capacity }}</p>
-    <p><strong>Speed:</strong> {{ data.speed }}</p>
-    <p><strong>Accuracy:</strong> {{ data.accuracy }}</p>
-    
+<div class="popup-content">
+    <div class="popup-header">
+      <h2>{{data.name}}</h2>
+      <button class="close-button" (click)="onClose()"> 
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" d="M0 0h24v24H0z"/>
+          <path fill="red" d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="robot-detail-container">
+      <div class="robot-image-container">
+        <img [src]="data.imageUrl" alt="{{data.name}}" class="robot-image">
+        <div class="battery-container">
+          <div class="battery-status">
+            <span>Battery</span>
+            <div class="battery">
+              <div class="battery-level" [style.width.%]="data.battery"></div>
+            </div>
+            <span>{{data.battery}}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="robot-info">
+        <div class="robot-info-item">
+          <strong>ID:</strong> {{data.id}}
+        </div>
+        <div class="robot-info-item">
+          <strong>S.no:</strong> {{data.serialNumber}}
+        </div>
+        <div class="robot-info-item">
+          <strong>Capacity:</strong> {{data.capacity}}
+        </div>
+        <div class="robot-info-item">
+          <strong>Speed:</strong> {{data.speed}}
+        </div>
+        <div class="robot-info-item">
+          <strong>Accuracy:</strong> {{data.accuracy}}
+        </div>
+      </div>
+    </div>
     <div class="popup-actions">
-      <button (click)="onPause()">Pause</button>
-      <button (click)="onClose()">Close</button>
+      <button mat-button color="primary">Pause</button>
+      <button mat-button color="warn" (click)="onClose()">Cancel</button>
     </div>
   </div>
   
