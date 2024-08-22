@@ -73,6 +73,9 @@ export class EnvmapComponent implements AfterViewInit {
   ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   private nodeCounter: number = 1; // Counter to assign node numbers
   selectedNode: { x: number; y: number } | null = null;
+lastSelectedNode: { x: number; y: number } | null = null;
+// connectivityMode: 'uni' | 'bi' | null = null;
+
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
@@ -306,14 +309,23 @@ export class EnvmapComponent implements AfterViewInit {
       this.secondNode = null;
     }
   }
-  setConnectivityMode(mode: 'uni' | 'bi'): void {
-    if (this.nodes.length < 2) {
-      alert('Please plot at least two nodes before setting connectivity.');
-      return;
-    }
-    this.connectivityMode = mode;
-    this.isPlottingEnabled = false;
-  }
+
+// in changing processs
+
+setConnectivityMode(mode: 'uni' | 'bi'): void {
+  this.connectivityMode = mode;
+  this.resetSelection(); // Reset any previous selections when changing mode
+  console.log(`Connectivity mode set to: ${mode}`);
+}
+
+
+
+
+
+
+// in changing processs
+
+
   setZoneColor(color: string): void {
     this.zoneColor = color;
     this.isDrawingZone = true;
@@ -322,46 +334,43 @@ export class EnvmapComponent implements AfterViewInit {
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
-      // const canvas = this.overlayCanvas.nativeElement;
-      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x =
-        (event.clientX - rect.left) *
-        (this.overlayCanvas.nativeElement.width / rect.width);
-      const y =
-        (event.clientY - rect.top) *
-        (this.overlayCanvas.nativeElement.height / rect.height);
+        const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+        const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+        const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
-      // Check if a node is clicked
-      let nodeClicked = false;
-      for (const node of this.nodes) {
-        if (this.isNodeClicked(node, x, y)) {
-          this.selectedNode = node; // Select the clicked node
-          nodeClicked = true;
-          break;
+        // Check if a node is clicked
+        let nodeClicked = false;
+        for (const node of this.nodes) {
+            if (this.isNodeClicked(node, x, y)) {
+                this.onNodeClick(node.x, node.y);
+                nodeClicked = true;
+                break;
+            }
         }
-      }
 
-      if (nodeClicked) {
-        this.redrawNodes(); // Redraw nodes to show the selected node
-      } else if (this.isPlottingEnabled) {
         // If no node is selected and plotting is enabled
-        if (this.plottingMode === 'single') {
-          this.plotSingleNode(x, y);
-        } else if (this.plottingMode === 'multi') {
-          this.plotMultiNode(x, y);
+        if (!nodeClicked && this.isPlottingEnabled) {
+            if (this.plottingMode === 'single') {
+                this.plotSingleNode(x, y);
+            } else if (this.plottingMode === 'multi') {
+                this.plotMultiNode(x, y);
+            }
         }
-
-        if (this.connectivityMode) {
-          this.drawConnections();
-        }
-      }
-
-      if (this.isDrawingZone) {
-        this.startX = event.clientX;
-        this.startY = event.clientY;
-      }
     }
-  }
+}
+
+onNodeClick(x: number, y: number): void {
+    if (!this.selectedNode) {
+        console.log("First node selected:", x, y);
+        this.selectedNode = { x, y };
+    } else {
+        console.log("Second node selected:", x, y);
+        this.lastSelectedNode = this.selectedNode;
+        this.selectedNode = { x, y };
+        this.drawConnections(); // Draw connection between the two selected nodes
+        this.resetSelection(); // Reset for the next connection
+    }
+}
 
   private isNodeClicked(
     node: { x: number; y: number },
@@ -393,19 +402,28 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
 
+
+
+  // in changing process
+
   private redrawNodes(): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas before redrawing
+
     this.nodes.forEach((node) => {
-      const isSelected = this.selectedNode === node;
-      const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
-      this.drawNode(node, color, isSelected);
+        const isSelected = this.selectedNode === node;
+        const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
+        this.drawNode(node, color, isSelected);
     });
 
     if (this.connectivityMode) {
-      this.drawConnections();
+        this.drawConnections(); // Redraw connections after nodes
     }
-  }
+}
+
+  // in changing process
+
 
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -578,61 +596,81 @@ export class EnvmapComponent implements AfterViewInit {
     ctx!.fill();
   }
 
-  drawConnections(): void {
-    if (this.nodes.length < 2) return;
-
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d')!;
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i < this.nodes.length - 1; i++) {
-      const startNode = this.nodes[i];
-      const endNode = this.nodes[i + 1];
-
-      // Draw line
-      ctx.beginPath();
-      ctx.moveTo(startNode.x, startNode.y);
-      ctx.lineTo(endNode.x, endNode.y);
-      ctx.stroke();
-
-      // Draw arrow if unidirectional or bidirectional
-      if (this.connectivityMode === 'uni') {
-        this.drawArrow(ctx, startNode.x, startNode.y, endNode.x, endNode.y);
-      } else if (this.connectivityMode === 'bi') {
-        this.drawArrow(ctx, startNode.x, startNode.y, endNode.x, endNode.y);
-        this.drawArrow(ctx, endNode.x, endNode.y, startNode.x, startNode.y);
-      }
-    }
+// in chaging process
+drawConnections(): void {
+  if (!this.selectedNode || !this.lastSelectedNode || !this.connectivityMode) {
+      console.log("Not enough nodes or mode is not set");
+      return; // Ensure both nodes and a mode are selected
   }
 
-  drawArrow(
-    ctx: CanvasRenderingContext2D,
-    fromX: number,
-    fromY: number,
-    toX: number,
-    toY: number
-  ): void {
-    const headLength = 10; // Length of the arrow head
-    const dx = toX - fromX;
-    const dy = toY - fromY;
-    const angle = Math.atan2(dy, dx);
-
-    ctx.beginPath();
-    ctx.moveTo(toX, toY);
-    ctx.lineTo(
-      toX - headLength * Math.cos(angle - Math.PI / 6),
-      toY - headLength * Math.sin(angle - Math.PI / 6)
-    );
-    ctx.lineTo(
-      toX - headLength * Math.cos(angle + Math.PI / 6),
-      toY - headLength * Math.sin(angle + Math.PI / 6)
-    );
-    ctx.lineTo(toX, toY);
-    ctx.stroke();
-    ctx.fillStyle = 'black';
-    ctx.fill();
+  console.log("Drawing line between:", this.lastSelectedNode, this.selectedNode);
+  
+  const canvas = this.overlayCanvas.nativeElement;
+  const ctx = canvas.getContext('2d');
+  
+  if (!ctx) {
+      console.log("Canvas context is not available");
+      return;
   }
+
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 2;
+
+  // Draw line between the nodes
+  ctx.beginPath();
+  ctx.moveTo(this.lastSelectedNode.x, this.lastSelectedNode.y);
+  ctx.lineTo(this.selectedNode.x, this.selectedNode.y);
+  ctx.stroke();
+
+  // Draw arrow(s) based on the connectivity mode
+  if (this.connectivityMode === 'uni') {
+      console.log("Drawing unidirectional arrow");
+      this.drawArrow(ctx, this.lastSelectedNode.x, this.lastSelectedNode.y, this.selectedNode.x, this.selectedNode.y);
+  } else if (this.connectivityMode === 'bi') {
+      console.log("Drawing bidirectional arrows");
+      this.drawArrow(ctx, this.lastSelectedNode.x, this.lastSelectedNode.y, this.selectedNode.x, this.selectedNode.y);
+      this.drawArrow(ctx, this.selectedNode.x, this.selectedNode.y, this.lastSelectedNode.x, this.lastSelectedNode.y);
+  }
+}
+
+
+
+// in changing process
+
+
+
+drawArrow(ctx: CanvasRenderingContext2D, fromX: number, fromY: number, toX: number, toY: number): void {
+  const headLength = 10;
+  const dx = toX - fromX;
+  const dy = toY - fromY;
+  const angle = Math.atan2(dy, dx);
+
+  console.log("Drawing arrow:", { fromX, fromY, toX, toY });
+
+  ctx.beginPath();
+  ctx.moveTo(toX, toY);
+  ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
+  ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
+  ctx.lineTo(toX, toY);
+  ctx.closePath();
+  ctx.fillStyle = 'black';
+  ctx.fill();
+}
+
+
+resetSelection(): void {
+  this.selectedNode = null;
+  this.lastSelectedNode = null;
+}
+
+
+
+
+
+
+
+
+
 
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
