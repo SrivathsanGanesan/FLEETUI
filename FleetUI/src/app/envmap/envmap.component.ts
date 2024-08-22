@@ -6,7 +6,7 @@ import {
   ElementRef,
   AfterViewInit,
   HostListener,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import { formatDate } from '@angular/common';
 
@@ -25,9 +25,11 @@ interface Zone {
 })
 export class EnvmapComponent implements AfterViewInit {
   @Output() closePopup = new EventEmitter<void>();
+  @Output() newEnvEvent = new EventEmitter<any>();
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('imagePopupCanvas', { static: false }) imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imagePopupCanvas', { static: false })
+  imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
 
   fileName: string | null = null;
@@ -68,10 +70,9 @@ export class EnvmapComponent implements AfterViewInit {
   showImagePopup: boolean = false;
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
-  ratio: number | null = null;  // Store the resolution ratio (meters per pixel)
+  ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   private nodeCounter: number = 1; // Counter to assign node numbers
   selectedNode: { x: number; y: number } | null = null;
-    
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
@@ -92,7 +93,6 @@ export class EnvmapComponent implements AfterViewInit {
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
-
 
   closeImagePopup(): void {
     this.showImagePopup = false;
@@ -131,24 +131,24 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.imageSrc) {
       this.showImagePopup = true;
       this.cdRef.detectChanges();
-  
+
       const canvas = this.imagePopupCanvas?.nativeElement;
       if (!canvas) {
-        console.error("Canvas element not found");
+        console.error('Canvas element not found');
         return;
       }
-  
+
       const ctx = canvas.getContext('2d');
       const img = new Image();
       img.src = this.imageSrc;
-  
+
       img.onload = () => {
         // Clear the points array
         this.points = [];
-  
+
         // Clear the canvas
         ctx!.clearRect(0, 0, canvas.width, canvas.height);
-  
+
         // Set canvas dimensions and draw the image
         canvas.width = img.width;
         canvas.height = img.height;
@@ -158,10 +158,15 @@ export class EnvmapComponent implements AfterViewInit {
       alert('No image uploaded.');
     }
   }
-  private calculateDistance(point1: { x: number; y: number }, point2: { x: number; y: number }): number {
-    return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+  private calculateDistance(
+    point1: { x: number; y: number },
+    point2: { x: number; y: number }
+  ): number {
+    return Math.sqrt(
+      Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
+    );
   }
-  
+
   @HostListener('click', ['$event'])
   onImagePopupCanvasClick(event: MouseEvent): void {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
@@ -179,19 +184,25 @@ export class EnvmapComponent implements AfterViewInit {
         console.log('Two points plotted:', this.points);
         const distance = this.calculateDistance(this.points[0], this.points[1]);
         console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
-        this.showDistanceDialog = true;  // Show the distance input dialog
+        this.showDistanceDialog = true; // Show the distance input dialog
       }
     }
   }
   confirmDistance(): void {
-    if (this.distanceBetweenPoints !== null && this.distanceBetweenPoints !== 0) {
-      const distanceInPixels = this.calculateDistance(this.points[0], this.points[1]);
+    if (
+      this.distanceBetweenPoints !== null &&
+      this.distanceBetweenPoints !== 0
+    ) {
+      const distanceInPixels = this.calculateDistance(
+        this.points[0],
+        this.points[1]
+      );
       console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
-      
+
       if (distanceInPixels !== 0) {
         this.ratio = this.distanceBetweenPoints / distanceInPixels;
         console.log(`Resolution (meters per pixel): ${this.ratio.toFixed(2)}`);
-        
+
         // Update the resolution input field
         if (this.resolutionInput) {
           this.resolutionInput.nativeElement.value = this.ratio.toFixed(2);
@@ -199,7 +210,7 @@ export class EnvmapComponent implements AfterViewInit {
       } else {
         console.log('Distance in pixels is zero, cannot calculate ratio.');
       }
-      
+
       this.showDistanceDialog = false;
     }
   }
@@ -215,14 +226,14 @@ export class EnvmapComponent implements AfterViewInit {
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-  
+
     if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-  
+
       // Clear points array and logs
       this.points = [];
       console.clear(); // Clear console logs
-  
+
       // Redraw image if needed
       const img = new Image();
       img.src = this.imageSrc || '';
@@ -233,8 +244,7 @@ export class EnvmapComponent implements AfterViewInit {
       };
     }
   }
-    
-  
+
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -244,7 +254,7 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fillStyle = 'red';
     ctx.fill();
   }
-  
+
   open(): void {
     if (this.mapName && this.siteName && this.imageSrc) {
       this.fileName = null;
@@ -330,7 +340,7 @@ export class EnvmapComponent implements AfterViewInit {
           break;
         }
       }
-  
+
       if (nodeClicked) {
         this.redrawNodes(); // Redraw nodes to show the selected node
       } else if (this.isPlottingEnabled) {
@@ -340,40 +350,48 @@ export class EnvmapComponent implements AfterViewInit {
         } else if (this.plottingMode === 'multi') {
           this.plotMultiNode(x, y);
         }
-  
+
         if (this.connectivityMode) {
           this.drawConnections();
         }
       }
-  
+
       if (this.isDrawingZone) {
         this.startX = event.clientX;
         this.startY = event.clientY;
       }
     }
   }
-  
-private isNodeClicked(node: { x: number; y: number }, mouseX: number, mouseY: number): boolean {
-  const radius = 8; // Same as the node radius
-  const dx = mouseX - node.x;
-  const dy = mouseY - node.y;
-  return dx * dx + dy * dy <= radius * radius;
-}
-private drawNode(node: { x: number; y: number }, color: string, isSelected: boolean): void {
-  const canvas = this.overlayCanvas.nativeElement;
-  const ctx = canvas.getContext('2d')!;
 
-  ctx.beginPath();
-  ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
-  ctx.fillStyle = color;
-  ctx.fill();
-
-  if (isSelected) {
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = 'black'; 
-      ctx.stroke();
+  private isNodeClicked(
+    node: { x: number; y: number },
+    mouseX: number,
+    mouseY: number
+  ): boolean {
+    const radius = 8; // Same as the node radius
+    const dx = mouseX - node.x;
+    const dy = mouseY - node.y;
+    return dx * dx + dy * dy <= radius * radius;
   }
-}
+  private drawNode(
+    node: { x: number; y: number },
+    color: string,
+    isSelected: boolean
+  ): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
+
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    if (isSelected) {
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+    }
+  }
 
   private redrawNodes(): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -398,12 +416,21 @@ private drawNode(node: { x: number; y: number }, color: string, isSelected: bool
     ctx.fill();
 
     this.nodes.push({ x, y });
-    console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
+    console.log(
+      `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
+      { x, y }
+    ); // Log the node number and position
 
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
       const distanceY = y * this.ratio;
-      console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+      console.log(
+        `Type: Single Node, Node Number: ${
+          this.nodeCounter
+        }, Distance (meters): X: ${distanceX.toFixed(
+          2
+        )}, Y: ${distanceY.toFixed(2)}`
+      );
     }
     this.nodeCounter++; // Increment the node counter
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
@@ -423,12 +450,21 @@ private drawNode(node: { x: number; y: number }, color: string, isSelected: bool
     ctx.fillStyle = 'green'; // Color for multi-nodes
     ctx.fill();
 
-    console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
+    console.log(
+      `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
+      { x, y }
+    ); // Log the node number and position
 
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
       const distanceY = y * this.ratio;
-      console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
+      console.log(
+        `Type: Multi Node, Node Number: ${
+          this.nodeCounter
+        }, Distance (meters): X: ${distanceX.toFixed(
+          2
+        )}, Y: ${distanceY.toFixed(2)}`
+      );
     }
 
     this.nodeCounter++; // Increment the node counter
@@ -444,30 +480,47 @@ private drawNode(node: { x: number; y: number }, color: string, isSelected: bool
   }
 
   plotIntermediateNodes(): void {
-    if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
-        const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
-        const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
+    if (
+      this.firstNode &&
+      this.secondNode &&
+      this.numberOfIntermediateNodes > 0
+    ) {
+      const dx =
+        (this.secondNode.x - this.firstNode.x) /
+        (this.numberOfIntermediateNodes + 1);
+      const dy =
+        (this.secondNode.y - this.firstNode.y) /
+        (this.numberOfIntermediateNodes + 1);
 
-        for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
-            const x = this.firstNode.x + i * dx;
-            const y = this.firstNode.y + i * dy;
-            this.nodes.push({ x, y });
+      for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
+        const x = this.firstNode.x + i * dx;
+        const y = this.firstNode.y + i * dy;
+        this.nodes.push({ x, y });
 
-            this.drawNode({ x, y }, 'red', false); // Set the initial color and no outline
+        this.drawNode({ x, y }, 'red', false); // Set the initial color and no outline
 
-            console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
+        console.log(
+          `Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`,
+          { x, y }
+        );
 
-            if (this.ratio !== null) {
-                const distanceX = x * this.ratio;
-                const distanceY = y * this.ratio;
-                console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
-            }
-
-            this.nodeCounter++; // Increment the node counter
+        if (this.ratio !== null) {
+          const distanceX = x * this.ratio;
+          const distanceY = y * this.ratio;
+          console.log(
+            `Type: Intermediate Node, Node Number: ${
+              this.nodeCounter
+            }, Distance (meters): X: ${distanceX.toFixed(
+              2
+            )}, Y: ${distanceY.toFixed(2)}`
+          );
         }
+
+        this.nodeCounter++; // Increment the node counter
+      }
     }
     this.closeIntermediateNodesDialog();
-}
+  }
 
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
