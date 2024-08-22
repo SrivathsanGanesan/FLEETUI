@@ -10,6 +10,7 @@ import { formatDate } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
 import { environment } from '../../environments/environment.development';
+import { ProjectService } from '../services/project.service';
 
 interface Poll {
   ip: string;
@@ -69,7 +70,10 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private projectService: ProjectService
+  ) {
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
   }
@@ -197,7 +201,8 @@ export class ConfigurationComponent implements AfterViewInit {
         };
         // console.log(poll);
 
-        this.ipScanData.push(poll);
+        if (poll.Status === 'online')
+          this.ipScanData = [...this.ipScanData, poll];
         this.cdr.detectChanges();
       } catch (error) {
         console.error('Error parsing SSE data:', error);
@@ -258,6 +263,14 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
   ngOnInit() {
+    // this.projectService.setMapData(
+    //   // just an temp hardcode..
+    //   {
+    //     id: '66c5c37e3e54e00be931e041',
+    //     mapName: 'mapOfBeruk',
+    //     imgUrl: 'localhost:3000/dashboard/samp.png',
+    //   }
+    // );
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
     this.searchTerm = '';
