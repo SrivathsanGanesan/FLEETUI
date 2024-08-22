@@ -38,4 +38,15 @@ export class ProjectService {
     this.cookieService.delete('project-data', '/');
     this.cookieService.delete('is-project-setted', '/');
   }
+
+  setMapData(mapData: any) {
+    this.cookieService.set('map-data', JSON.stringify(mapData), {
+      path: '/',
+    });
+  }
+
+  getMapData() {
+    const storedMap = this.cookieService.get('map-data');
+    return storedMap ? JSON.parse(storedMap) : null;
+  }
 }

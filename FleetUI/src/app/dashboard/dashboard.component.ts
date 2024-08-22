@@ -1,6 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +26,8 @@ export class DashboardComponent implements AfterViewInit {
   recording = false;
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
+
+  constructor(private projectService: ProjectService) {}
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
@@ -76,7 +79,7 @@ export class DashboardComponent implements AfterViewInit {
   getFloorMap(floor: string): string {
     switch (floor) {
       case 'Floor 1':
-        return '../../assets/maps/Map1.svg';
+        return '../../assets/maps/Map3.svg';
       default:
         return '../../assets/maps/Map1.svg';
     }
