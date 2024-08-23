@@ -32,8 +32,14 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 //..
 
 const mapInsert = async (req, res) => {
-  const mapData = JSON.parse(req.body.mapData);
-  console.log(mapData);
+  const mapData = req.body;
+  // console.log(mapData);
+  const filePath = path.resolve("./proj_assets/nodeGraph/nodeGraph.txt");
+  console.log(filePath, fs.existsSync(filePath));
+
+  if (!fs.existsSync(filePath))
+    return res.status(400).json({ msg: "txt file missing" });
+  fs.writeFile(filePath, JSON.stringify(mapData, null, 2), (err) => {});
   return res.status(200).json({ msg: "okay" });
   try {
     const {
