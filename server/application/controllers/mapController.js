@@ -35,7 +35,7 @@ const mapInsert = async (req, res) => {
   const mapData = req.body;
   // console.log(mapData);
   const filePath = path.resolve("./proj_assets/nodeGraph/nodeGraph.txt");
-  console.log(filePath, fs.existsSync(filePath));
+  // console.log(filePath, fs.existsSync(filePath));
 
   if (!fs.existsSync(filePath))
     return res.status(400).json({ msg: "txt file missing" });
