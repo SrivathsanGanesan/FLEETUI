@@ -10,9 +10,7 @@ export class RobotDashboardComponent implements OnInit {
 
   robotActivities = [
     { id: 1, name: 'AMR-001', task: 'Transporting materials', progress: 85, status: 'Actively Working' },
-    { id: 2, name: 'AMR-002', task: 'Docking for recharging', progress: 20, status: 'Charging' },
-    { id: 3, name: 'AMR-003', task: 'Navigating to waypoint B', progress: 65, status: 'Actively Working' },
-    { id: 4, name: 'AMR-004', task: 'Awaiting new task', progress: 100, status: 'Pending' }
+    { }
   ];
 
   notifications = [
