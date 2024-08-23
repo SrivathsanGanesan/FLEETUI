@@ -24,7 +24,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-dashboardMapRouter.post("/", upload.single("mapImg"), mapInsert);
+dashboardMapRouter.post("/", mapInsert);
+// dashboardMapRouter.post("/", upload.single("mapImg"), mapInsert);
 dashboardMapRouter.get("/:mapName", mapGet);
 dashboardMapRouter.put("/:mapName/robots", newRoboInMap);
 dashboardMapRouter.delete("/:mapId/robots/:roboId", deleteRoboInMap);

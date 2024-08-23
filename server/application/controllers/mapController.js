@@ -33,6 +33,8 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
+  console.log(mapData);
+  return res.status(200).json({ msg: "okay" });
   try {
     const {
       projectName,
