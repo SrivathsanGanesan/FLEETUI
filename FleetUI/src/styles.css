@@ -6,3 +6,25 @@ body {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+/* styles.css or styles.scss */
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000;
+    /* Define other variables as needed */
+  }
+  
+  [data-theme="dark"] {
+    --background-color: #1e1e1e;
+    --text-color: #ffffff;
+    /* Define other variables as needed */
+  }
+  
+  /* Apply these variables globally */
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  

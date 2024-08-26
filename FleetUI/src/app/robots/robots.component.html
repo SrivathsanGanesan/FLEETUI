@@ -2,6 +2,9 @@
     <app-sidenavbar class="fixed top-0 left-0 h-full"></app-sidenavbar>
   <div class="flex-grow ml-64 p-8 h-screen overflow-auto">
       <div class="mainContent flex flex-col h-full">
+        <!-- Add this button somewhere in your robot page, e.g., in the header or toolbar -->
+        
+
         <!-- Header section -->
         <div class="header-section mb-4">
           <h1 class="header-title">Robot Details</h1>
@@ -44,40 +47,40 @@
             <div class="card-container">
               <div *ngFor="let robot of robots; let i = index; trackBy: trackByIndex"
                   [ngClass]="{ 'highlighted-card': i === centerIndex, 'blurred-card': i !== centerIndex }"
-                  class="card">
+                  class="card">               
+                  <div class="top-section">
+                    <div class="icons">
+                      <div class="menu-icon" (click)="toggleMenu(i)">
+                       &#x22EE; <!-- HTML code for vertical ellipsis -->
+                      </div>
+                      <div class="popup-menu" [class.show]="menuOpenIndex === i">
+                        <ul>
+                          <li (click)="editRobot(i)" style="color: white;">Edit</li>
+                          <li (click)="deleteRobot(i)" style="color: white;">Delete</li>
+                        </ul>
+                    </div>
+                  </div>
+                    
+                  
+                     <img [src]="robot.imageUrl" alt="{{ robot.name }}" class="robot-image">
+                  </div>
                 
-                <h2 class="card-header">{{ robot.name }}</h2>
-                
-                <div class="menu-icon" (click)="toggleMenu(i)">
-                  &#x22EE; <!-- HTML code for vertical ellipsis -->
-                </div>
-                
-                <div class="card-id-status">
-                  <strong>ID: {{ robot.id }}</strong> <!-- Display ID -->
-                  <span class="robot-status">{{ robot.status }}</span> <!-- Display Status -->
-                  <span class="robot-battery">{{ robot.battery }}</span> <!-- Display Battery Percentage -->
-                </div>
-                
-                <!-- Popup menu for edit/delete -->
-                <div class="popup-menu" [class.show]="menuOpenIndex === i">
-                  <ul>
-                    <li (click)="editRobot(i)" style="color: white;">Edit</li>
-                    <li (click)="deleteRobot(i)" style="color: white;">Delete</li>
-                  </ul>
-                </div>
-                
-                <div class="card-body" (click)="openRobotDetail(robot)"> <!-- Click event to open the popup -->
-                  <img [src]="robot.imageUrl" alt="{{ robot.name }}" class="card-image">
-                  <div class="card-content">
-                    <p>{{ robot.serialNumber }} <br /> S.no</p>
-                    <p>{{ robot.capacity }} <br /> Rated capacity</p>
-                    <p>{{ robot.speed }} <br /> Maximum speed</p>
-                    <p>{{ robot.accuracy }} <br /> Stacking accuracy</p>
+                 
+                  
+                  <div class="bottom-section">
+                   <h2 class="card-header title">{{ robot.name }}</h2>                
+                  <div class="card-id-status">
+                    <p>ID: {{ robot.id }}</p> <!-- Display ID -->
+                    <p>S.no: {{ robot.serialNumber }}</p> <!-- Display Serial Number -->
+                    <p>Status: <span class="robot-status">{{ robot.status }}</span></p> <!-- Display Status -->
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          
+          
+          
           
    
         <!-- Add Robot Popup -->
