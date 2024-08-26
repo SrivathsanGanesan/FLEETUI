@@ -80,11 +80,6 @@ export class EnvmapComponent implements AfterViewInit {
   selectedNode: { x: number; y: number } | null = null;
 lastSelectedNode: { x: number; y: number } | null = null;
 node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
-
-
-
-// connectivityMode: 'uni' | 'bi' | null = null;
- 
  
   constructor(private cdRef: ChangeDetectorRef) {}
  
@@ -402,12 +397,12 @@ onNodeClick(x: number, y: number): void {
     mouseX: number,
     mouseY: number
   ): boolean {
-    const radius = 8; // Same as the node radius
+    const radius = 6; // Same as the node radius
     const dx = mouseX - node.x;
     const dy = mouseY - node.y;
     return dx * dx + dy * dy <= radius * radius;
   }
-  
+
   private drawNode(
     node: { x: number; y: number },
     color: string,
@@ -415,21 +410,22 @@ onNodeClick(x: number, y: number): void {
   ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
- 
+    
+    // Fixed radius for the nodes
+    const radius = 8; // You can adjust this value for larger or smaller nodes
+  
     ctx.beginPath();
-    ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
+    ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
     ctx.fillStyle = color;
     ctx.fill();
- 
+  
     if (isSelected) {
       ctx.lineWidth = 3;
       ctx.strokeStyle = 'black';
       ctx.stroke();
     }
   }
- 
- 
-
+  
   // in changing process
  
  
@@ -437,7 +433,7 @@ onNodeClick(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
     ctx.beginPath();
-    ctx.arc(x, y, 8, 0, 2 * Math.PI, false);
+    ctx.arc(x, y, 8, 0, 2*Math.PI, false);
     ctx.fillStyle = 'blue'; // Color for single nodes
     ctx.fill();
 
