@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 // import { CookieService } from 'ngx-cookie-service';
 import { ProjectService } from '../services/project.service';
+import { environment } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-login',
@@ -19,8 +20,21 @@ export class LoginComponent {
     private router: Router,
     private authService: AuthService,
     private projectService: ProjectService // private cookieService: CookieService
-  ) {
-    if (document.cookie === '') localStorage.clear(); // not advisable..
+  ) {}
+
+  ngOnInit() {
+    fetch('http://localhost:3000/auth/logout', {
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.isCookieDeleted) {
+          this.authService.logout();
+          this.projectService.clearProjectData();
+          // this.router.navigate(['/']);
+        }
+      })
+      .catch((err) => console.log(err));
   }
 
   togglePasswordVisibility() {

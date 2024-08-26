@@ -50,9 +50,9 @@ export class DashboardComponent implements AfterViewInit {
 
     if (ctx) {
       const img = new Image();
-      img.src = this.getFloorMap(this.selectedFloor);
-      // let imgName = this.projectService.getMapData();
-      // img.src = `http://${imgName.imgUrl}`;
+      // img.src = this.getFloorMap(this.selectedFloor);
+      let imgName = this.projectService.getMapData();
+      img.src = `http://${imgName.imgUrl}`;
 
       img.onload = () => {
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
