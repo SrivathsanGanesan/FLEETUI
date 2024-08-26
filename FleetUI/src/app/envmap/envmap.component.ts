@@ -420,7 +420,7 @@ onNodeClick(x: number, y: number): void {
     ctx.fill();
   
     if (isSelected) {
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 4;
       ctx.strokeStyle = 'black';
       ctx.stroke();
     }
@@ -430,53 +430,44 @@ onNodeClick(x: number, y: number): void {
  
  
   plotSingleNode(x: number, y: number): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d')!;
-    ctx.beginPath();
-    ctx.arc(x, y, 8, 0, 2*Math.PI, false);
-    ctx.fillStyle = 'blue'; // Color for single nodes
-    ctx.fill();
-
+    const color = 'blue'; // Color for single nodes
+    this.drawNode({ x, y }, color, false);
+  
     // Push the node with the current counter before incrementing
     this.nodes.push({ id: this.nodeCounter, x, y });
     console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
     
     if (this.ratio !== null) {
-        const distanceX = x * this.ratio;
-        const distanceY = y * this.ratio;
-        console.log({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'single' });
-        this.Nodes.push({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'single' });
-      }
+      const distanceX = x * this.ratio;
+      const distanceY = y * this.ratio;
+      console.log({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'single' });
+      this.Nodes.push({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'single' });
+    }
     
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
-
+  
  
   plotMultiNode(x: number, y: number): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d')!;
-
     if (this.nodes.length >= 2) {
       alert('Only two nodes can be plotted in multi-node mode.');
       return;
     }
-
-    ctx.beginPath();
-    ctx.arc(x, y, 8, 0, 2 * Math.PI, false);
-    ctx.fillStyle = 'green'; // Color for multi-nodes
-    ctx.fill();
-
+  
+    const color = 'green'; // Color for multi-nodes
+    this.drawNode({ x, y }, color, false);
+  
     console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
-
+  
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
       const distanceY = y * this.ratio;
       console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
     }
-
+  
     this.nodeCounter++; // Increment the node counter
-
+  
     if (this.nodes.length === 0) {
       this.firstNode = { x, y };
     } else if (this.nodes.length === 1) {
@@ -486,7 +477,7 @@ onNodeClick(x: number, y: number): void {
     }
     this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
   }
-
+  
   plotIntermediateNodes(): void {
     if (
       this.firstNode &&
@@ -561,6 +552,7 @@ onNodeClick(x: number, y: number): void {
       this.drawZone(this.startX, this.startY, event.clientX, event.clientY);
     }
   }
+
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
     if (this.isDrawingZone && this.startX !== null && this.startY !== null) {
@@ -612,7 +604,7 @@ drawConnections(): void {
   }
 
   ctx.strokeStyle = 'black';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 3;
 
   // Draw line between the nodes
   ctx.beginPath();
