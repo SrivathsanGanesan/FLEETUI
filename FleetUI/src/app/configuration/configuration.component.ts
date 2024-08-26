@@ -290,7 +290,7 @@ export class ConfigurationComponent implements AfterViewInit {
     if (!response.ok)
       console.error('Error while fetching map data : ', response.status);
     let data = await response.json();
-    console.log(data.map.imgUrl);
+    // console.log(data.map.imgUrl);
 
     this.projectService.setMapData({
       ...this.EnvData[0],

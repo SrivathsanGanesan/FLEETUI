@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environment.development';
 
 interface Project {
   _id: string;
@@ -43,10 +44,13 @@ export class ProjectsetupComponent {
     let pDet = this.cookieService.get('project-data');
     console.log(pDet);
 
-    fetch('http://localhost:3000/fleet-project/projects/project-list', {
-      method: 'GET',
-      credentials: 'include',
-    })
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/projects/project-list`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    )
       .then((res) => {
         if (res.ok) return res.json();
         else throw new Error("Error : data doesn't attained " + res.status);

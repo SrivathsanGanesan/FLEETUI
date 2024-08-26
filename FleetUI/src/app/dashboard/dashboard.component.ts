@@ -44,6 +44,35 @@ export class DashboardComponent implements AfterViewInit {
     this.loadCanvas();
   }
 
+  async ngOnInit() {
+    let mapData = this.projectService.getSelectedProject().sites;
+    let mapArr = [];
+    mapArr = mapData
+      .map((sites: any) => {
+        for (let map of sites.maps) {
+          return {
+            id: map.mapId,
+            mapName: map.mapName,
+            siteName: sites.siteName,
+          };
+        }
+        return null;
+      })
+      .filter((item: any) => item !== null);
+
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapArr[0].mapName}`
+    );
+    if (!response.ok)
+      console.error('Error while fetching map data : ', response.status);
+    let data = await response.json();
+
+    this.projectService.setMapData({
+      ...mapArr[0],
+      imgUrl: data.map.imgUrl,
+    });
+  }
+
   loadCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
