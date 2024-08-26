@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
 import { ProjectService } from '../services/project.service';
@@ -28,7 +28,10 @@ export class DashboardComponent implements AfterViewInit {
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
 
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private projectService: ProjectService,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
@@ -60,6 +63,7 @@ export class DashboardComponent implements AfterViewInit {
       })
       .filter((item: any) => item !== null);
 
+    if (!mapArr.length) return;
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapArr[0].mapName}`
     );
@@ -71,6 +75,8 @@ export class DashboardComponent implements AfterViewInit {
       ...mapArr[0],
       imgUrl: data.map.imgUrl,
     });
+
+    this.loadCanvas();
   }
 
   loadCanvas() {
