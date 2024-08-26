@@ -2,6 +2,7 @@ import { Component, AfterViewInit } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
 import { ProjectService } from '../services/project.service';
+import { environment } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-dashboard',
@@ -50,6 +51,8 @@ export class DashboardComponent implements AfterViewInit {
     if (ctx) {
       const img = new Image();
       img.src = this.getFloorMap(this.selectedFloor);
+      // let imgName = this.projectService.getMapData();
+      // img.src = `http://${imgName.imgUrl}`;
 
       img.onload = () => {
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;

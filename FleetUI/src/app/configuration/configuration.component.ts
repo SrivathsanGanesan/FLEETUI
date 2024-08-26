@@ -263,14 +263,14 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
   ngOnInit() {
-    // this.projectService.setMapData(
-    //   // just an temp hardcode..
-    //   {
-    //     id: '66c5c37e3e54e00be931e041',
-    //     mapName: 'mapOfBeruk',
-    //     imgUrl: 'localhost:3000/dashboard/samp.png',
-    //   }
-    // );
+    this.projectService.setMapData(
+      // just an temp hardcode..
+      {
+        id: '66c5c37e3e54e00be931e041',
+        mapName: 'mapOfBeruk',
+        imgUrl: 'localhost:3000/dashboard/samp.png',
+      }
+    );
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
     this.searchTerm = '';
