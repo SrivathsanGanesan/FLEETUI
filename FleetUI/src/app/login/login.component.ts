@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 // import { CookieService } from 'ngx-cookie-service';
 import { ProjectService } from '../services/project.service';
+import { environment } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-login',
@@ -19,8 +20,12 @@ export class LoginComponent {
     private router: Router,
     private authService: AuthService,
     private projectService: ProjectService // private cookieService: CookieService
-  ) {
-    if (document.cookie === '') localStorage.clear(); // not advisable..
+  ) {}
+
+  async ngOnInit() {
+    // in list..
+    await fetch('http://localhost:3000/auth/logout');
+    // fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`);
   }
 
   togglePasswordVisibility() {
