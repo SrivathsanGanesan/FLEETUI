@@ -59,7 +59,13 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredRobotData: any[] = [];
 
-  EnvData: any[] = [];
+  EnvData: any[] = [
+    {
+      mapName: 'map 1',
+      siteName: 'site 1',
+      date: '12 23 34',
+    },
+  ];
 
   robotData: any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
@@ -259,6 +265,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
   async ngOnInit() {
+    return;
     let mapData = this.projectService.getSelectedProject().sites;
     this.EnvData = mapData
       .map((sites: any) => {
@@ -290,7 +297,6 @@ export class ConfigurationComponent implements AfterViewInit {
     if (!response.ok)
       console.error('Error while fetching map data : ', response.status);
     let data = await response.json();
-    // console.log(data.map.imgUrl);
 
     this.projectService.setMapData({
       ...this.EnvData[0],
