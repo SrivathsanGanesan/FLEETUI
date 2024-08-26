@@ -48,6 +48,41 @@ const createRobo = async (req, res, next) => {
   }
 };
 
+const updateRobo = async (req, res, next) => {
+  const queRoboName = req.params.queRoboName;
+  const roboData = req.body;
+  try {
+    const robo = await Robo.exists({ roboName: queRoboName });
+    if (!robo)
+      return res
+        .status(400)
+        .json({ exists: false, msg: "Robo name seems not exists" });
+    let isRoboNameExists = await Robo.exists({ roboName: roboData.roboName });
+    if (isRoboNameExists)
+      return res
+        .status(400)
+        .json({ roboExists: true, msg: "Robo with this name already exists" });
+    let doc = await Robo.findOneAndUpdate(
+      { roboName: queRoboName },
+      {
+        // yet to add some..
+        roboName: roboData.roboName,
+        ipAdd: roboData.ipAdd,
+        macAdd: roboData.macAdd,
+        batteryStatus: roboData.batteryStatus,
+        roboTask: roboData.roboTask,
+      },
+      { new: true }
+    );
+    return res.status(200).json({ updatedData: doc, msg: "data updated" });
+  } catch (error) {
+    console.log("err occs : ", error);
+    res
+      .status(500)
+      .json({ error: error, msg: "error occured while inserting!" });
+  }
+};
+
 // Count part of Agv..
 const getGrossCount = async (req, res, next) => {
   try {
@@ -120,4 +155,5 @@ module.exports = {
   throughput,
   uptime,
   createRobo,
+  updateRobo,
 };

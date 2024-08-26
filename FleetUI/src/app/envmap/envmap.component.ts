@@ -418,7 +418,7 @@ onNodeClick(x: number, y: number): void {
     ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
     ctx.fillStyle = color;
     ctx.fill();
- 
+  
     if (isSelected) {
       ctx.lineWidth = 3;
       ctx.strokeStyle = 'black';
