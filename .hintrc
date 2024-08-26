@@ -33,7 +33,8 @@
           "backdrop-filter",
           "max-height: fit-content",
           "width: fit-content",
-          "height: fit-content"
+          "height: fit-content",
+          "-webkit-tap-highlight-color"
         ]
       }
     ]
