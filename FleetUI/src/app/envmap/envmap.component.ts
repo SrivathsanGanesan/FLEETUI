@@ -455,7 +455,7 @@ onNodeClick(x: number, y: number): void {
       return;
     }
   
-    const color = 'green'; // Color for multi-nodes
+    const color = 'blue'; // Color for multi-nodes
     this.drawNode({ x, y }, color, false);
   
     console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
@@ -499,7 +499,7 @@ onNodeClick(x: number, y: number): void {
           id: 0
         });
  
-        this.drawNode({ x, y }, 'red', false); // Set the initial color and no outline
+        this.drawNode({ x, y }, 'blue', false); // Set the initial color and no outline
  
         console.log(
           `Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`,
