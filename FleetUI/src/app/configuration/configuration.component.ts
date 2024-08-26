@@ -60,11 +60,11 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredRobotData: any[] = [];
 
   EnvData: any[] = [
-    {
-      mapName: 'map 1',
-      siteName: 'site 1',
-      date: '12 23 34',
-    },
+    // {
+    //   mapName: 'map 1',
+    //   siteName: 'site 1',
+    //   date: '12 23 34',
+    // },
   ];
 
   robotData: any[] = [
@@ -265,11 +265,10 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
   async ngOnInit() {
-    return;
     let mapData = this.projectService.getSelectedProject().sites;
     this.EnvData = mapData
-      .map((sites: any) => {
-        for (let map of sites.maps) {
+      .flatMap((sites: any) => {
+        return sites.maps.map((map: any) => {
           let date = new Date(map?.createdAt);
           let createdAt = date.toLocaleString('en-IN', {
             month: 'short',
@@ -286,13 +285,14 @@ export class ConfigurationComponent implements AfterViewInit {
             siteName: sites.siteName,
             date: createdAt,
           };
-        }
-        return null;
+        });
       })
       .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
+    // console.log(this.EnvData);
 
+    if (!this.EnvData.length) return;
     const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0].mapName}`
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
     );
     if (!response.ok)
       console.error('Error while fetching map data : ', response.status);
