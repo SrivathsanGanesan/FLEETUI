@@ -71,7 +71,14 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
-
+  selectedMap: any = null; // New property to track the selected map
+  isButtonDisabled(item: any): boolean {
+    return this.selectedMap && this.selectedMap !== item;
+  }
+  selectMap(map: any) {
+    this.selectedMap = map;
+    // Additional logic to handle map selection
+  }
   constructor(
     private cdr: ChangeDetectorRef,
     private projectService: ProjectService

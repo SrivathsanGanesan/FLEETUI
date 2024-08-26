@@ -143,7 +143,7 @@
         <p>Node Details</p>
         <div class="node_details">
         <p>Node ID: {{ nodeDetails.id }}</p>
-        <label for="nodeAction">Node Action:</label>
+        <label for="nodeAction">Add Action:</label>
         <select id="nodeAction" [(ngModel)]="nodeDetails.action">
           <option value="Move">Move</option>
           <option value="Dock">Dock</option>
@@ -161,8 +161,6 @@
 
       </div>
       
-      
-
       <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
         <div class="dropdown">
           <button class="dropdown-button">Add Node</button>

@@ -115,62 +115,75 @@
         >
           <div class="overflow-y-auto max-h-[32rem] w-full">
             <table
-              class="min-w-full divide-y divide-gray-200"
-              *ngIf="currentTable === 'Environment' && !imageUploaded"
-            >
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            class="min-w-full divide-y divide-gray-200"
+            *ngIf="currentTable === 'Environment' && !imageUploaded"
+          >
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Map Name
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Site Name
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Last Created
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Edit/Delete
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Pick Map
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let item of filteredEnvData">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ item.mapName }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ item.siteName }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ item.date }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <img
+                    src="../../assets/ConfigurationOptions/Edit.svg"
+                    alt="Edit"
+                    (click)="editItem(item)"
+                    class="icon"
+                  />
+                  <img
+                    src="../../assets/ConfigurationOptions/Delete.svg"
+                    alt="Delete"
+                    (click)="deleteItem(item)"
+                    class="icon"
+                  />
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <button
+                    [disabled]="isButtonDisabled(item)"
+                    (click)="selectMap(item)"
                   >
-                    Map Name
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Site Name
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Last Created
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Edit/Delete
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of filteredEnvData">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.mapName }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.siteName }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.date }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <img
-                      src="../../assets/ConfigurationOptions/Edit.svg"
-                      alt="Edit"
-                      (click)="editItem(item)"
-                      class="icon"
-                    />
-                    <img
-                      src="../../assets/ConfigurationOptions/Delete.svg"
-                      alt="Delete"
-                      (click)="deleteItem(item)"
-                      class="icon"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
+                    Select
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
             <table
               class="min-w-full divide-y divide-gray-200"
               *ngIf="currentTable === 'robot'"
