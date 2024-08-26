@@ -60,9 +60,9 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredRobotData: any[] = [];
  
   EnvData: any[] = [
-    { column1: 'Map 1', column2: 'Site 1', column3: 'Jul 4, 2024. 14:00:17' },
-    { column1: 'Map 2', column2: 'Site 2', column3: 'Jul 15, 2024. 14:00:17' },
-    { column1: 'Map 3', column2: 'Site 4', column3: 'Jul 28, 2024. 14:00:17' },
+    { mapName: 'Map 1', siteName: 'Site 1', date: 'Jul 4, 2024. 14:00:17' },
+    { mapName: 'Map 2', siteName: 'Site 2', date: 'Jul 15, 2024. 14:00:17' },
+    { mapName: 'Map 3', siteName: 'Site 4', date: 'Jul 28, 2024. 14:00:17' },
   ];
  
   robotData: any[] = [
@@ -83,9 +83,9 @@ export class ConfigurationComponent implements AfterViewInit {
   }
  
   addEnvToEnvData(envData: any) {
-    let mapName = envData.column1;
+    let mapName = envData.mapName;
     for (let env of this.EnvData) {
-      if (mapName.toLowerCase() === env.column1.toLowerCase()) {
+      if (mapName.toLowerCase() === env.mapName.toLowerCase()) {
         alert('map name seems already exists');
         return;
       }
@@ -100,15 +100,15 @@ export class ConfigurationComponent implements AfterViewInit {
  
     if (this.currentTable === 'Environment') {
       this.filteredEnvData = this.EnvData.filter((item) => {
-        const date = new Date(item.column3);
+        const date = new Date(item.date);
         const withinDateRange =
           (!this.startDate || date >= this.startDate) &&
           (!this.endDate || date <= this.endDate);
  
         return (
-          (item.column1.toLowerCase().includes(term) ||
-            item.column2.toLowerCase().includes(term) ||
-            item.column3.toLowerCase().includes(term)) &&
+          (item.mapName.toLowerCase().includes(term) ||
+            item.siteName.toLowerCase().includes(term) ||
+            item.date.toLowerCase().includes(term)) &&
           withinDateRange
         );
       });
@@ -263,14 +263,32 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
   ngOnInit() {
-    this.projectService.setMapData(
-      // just an temp hardcode..
-      {
-        id: '66c5c37e3e54e00be931e041',
-        mapName: 'mapOfBeruk',
-        imgUrl: 'localhost:3000/dashboard/samp.png',
-      }
-    );
+    let mapData = this.projectService.getSelectedProject().sites;
+    this.EnvData = mapData
+      .map((sites: any) => {
+        for (let map of sites.maps) {
+          let date = new Date(map?.createdAt);
+          let createdAt = date.toLocaleString('en-IN', {
+            month: 'short',
+            year: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+          });
+
+          return {
+            id: map.mapId,
+            mapName: map.mapName,
+            siteName: sites.siteName,
+            date: createdAt,
+          };
+        }
+        return null;
+      })
+      .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
+
+    this.projectService.setMapData(this.EnvData[0]);
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
     this.searchTerm = '';
@@ -303,9 +321,9 @@ export class ConfigurationComponent implements AfterViewInit {
  
   addEnvironmentData() {
     const newEntry = {
-      // column1: this.mapName,
-      // column2: this.siteName,
-      column3: formatDate(new Date(), 'MMM d, yyyy. HH:mm:ss', 'en-US'),
+      // mapName: this.mapName,
+      // siteName: this.siteName,
+      date: formatDate(new Date(), 'MMM d, yyyy. HH:mm:ss', 'en-US'),
     };
  
     this.EnvData.push(newEntry);
