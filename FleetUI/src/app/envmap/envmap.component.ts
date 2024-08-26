@@ -407,6 +407,7 @@ onNodeClick(x: number, y: number): void {
     const dy = mouseY - node.y;
     return dx * dx + dy * dy <= radius * radius;
   }
+  
   private drawNode(
     node: { x: number; y: number },
     color: string,
@@ -428,25 +429,7 @@ onNodeClick(x: number, y: number): void {
   }
  
  
- 
-  // in changing process
- 
-  private redrawNodes(): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d')!;
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas before redrawing
- 
-    this.nodes.forEach((node) => {
-        const isSelected = this.selectedNode === node;
-        const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
-        this.drawNode(node, color, isSelected);
-    });
- 
-    if (this.connectivityMode) {
-        this.drawConnections(); // Redraw connections after nodes
-    }
-}
- 
+
   // in changing process
  
  
@@ -479,8 +462,8 @@ onNodeClick(x: number, y: number): void {
     const ctx = canvas.getContext('2d')!;
 
     if (this.nodes.length >= 2) {
-        alert('Only two nodes can be plotted in multi-node mode.');
-        return;
+      alert('Only two nodes can be plotted in multi-node mode.');
+      return;
     }
 
     ctx.beginPath();
@@ -488,28 +471,26 @@ onNodeClick(x: number, y: number): void {
     ctx.fillStyle = 'green'; // Color for multi-nodes
     ctx.fill();
 
-    this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
-    console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
-    
-    if (this.ratio !== null) {
-        const distanceX = x * this.ratio;
-        const distanceY = y * this.ratio;
-        console.log({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'multi' });
-        this.Nodes.push({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'multi' });
-      }
+    console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
 
-    this.nodeCounter++; // Increment the node counter after assignment
-    
-    if (this.nodes.length === 0) {
-        this.firstNode = { x, y };
-      } else if (this.nodes.length === 1) {
-        this.secondNode = { x, y };
-        this.showIntermediateNodesDialog = true;
-        this.isPlottingEnabled = false; // Disable further plotting after two nodes
+    if (this.ratio !== null) {
+      const distanceX = x * this.ratio;
+      const distanceY = y * this.ratio;
+      console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
     }
+
+    this.nodeCounter++; // Increment the node counter
+
+    if (this.nodes.length === 0) {
+      this.firstNode = { x, y };
+    } else if (this.nodes.length === 1) {
+      this.secondNode = { x, y };
+      this.showIntermediateNodesDialog = true;
+      this.isPlottingEnabled = false; // Disable further plotting after two nodes
+    }
+    this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
   }
 
- 
   plotIntermediateNodes(): void {
     if (
       this.firstNode &&
