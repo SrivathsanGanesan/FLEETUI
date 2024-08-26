@@ -31,8 +31,10 @@ export class EnvmapComponent implements AfterViewInit {
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('imagePopupCanvas', { static: false })
   imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
- 
+  @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;  
+  @ViewChild('nodeDetailsPopup', { static: false })
+  nodeDetailsPopup!: ElementRef<HTMLDivElement>; // Reference to the node details popup
+
   fileName: string | null = null;
   mapName: string = '';
   siteName: string = '';
@@ -45,7 +47,7 @@ export class EnvmapComponent implements AfterViewInit {
     id: number; x: number; y: number }[] = [];
   Nodes : {id : number; x : number; y : number; type : string}[] = []; // nodes..
   connections: { fromId: number; toId: number; type: 'uni' | 'bi' }[] = []; // connections
- 
+  isNodeDetailsPopupVisible = false; // Control popup visibility 
   ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   selectedAsset: 'docking' | 'charging' | 'picking' | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
@@ -78,8 +80,23 @@ export class EnvmapComponent implements AfterViewInit {
   distanceBetweenPoints: number | null = null;
   private nodeCounter: number = 1; // Counter to assign node numbers
   selectedNode: { x: number; y: number } | null = null;
-lastSelectedNode: { x: number; y: number } | null = null;
-node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
+  lastSelectedNode: { x: number; y: number } | null = null;
+  node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
+  nodeDetails: {
+    id: number;
+    x: number;
+    y: number;
+    description: string;
+    action: 'Move' | 'Dock' | 'Undock' | null; // Can allow null if needed
+  } = {
+    id: 0,
+    x: 0,
+    y: 0,
+    description: '',
+    action: 'Move' // Initialize with a non-null value
+  };
+  
+  
  
   constructor(private cdRef: ChangeDetectorRef) {}
  
@@ -354,42 +371,60 @@ setConnectivityMode(mode: 'uni' | 'bi'): void {
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
-        const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-        const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-        const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
- 
-        // Check if a node is clicked
-        let nodeClicked = false;
-        for (const node of this.nodes) {
-            if (this.isNodeClicked(node, x, y)) {
-                this.onNodeClick(node.x, node.y);
-                nodeClicked = true;
-                break;
-            }
+      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+  
+      // Check if a node is clicked
+      let nodeClicked = false;
+      for (const node of this.nodes) {
+        if (this.isNodeClicked(node, x, y)) {
+          this.onNodeClick(node.x, node.y);
+          nodeClicked = true;
+          break;
         }
- 
-        // If no node is selected and plotting is enabled
-        if (!nodeClicked && this.isPlottingEnabled) {
-            if (this.plottingMode === 'single') {
-                this.plotSingleNode(x, y);
-            } else if (this.plottingMode === 'multi') {
-                this.plotMultiNode(x, y);
-            }
+      }
+  
+      // If no node is selected and plotting is enabled
+      if (!nodeClicked && this.isPlottingEnabled) {
+        if (this.plottingMode === 'single') {
+          this.plotSingleNode(x, y);
+        } else if (this.plottingMode === 'multi') {
+          this.plotMultiNode(x, y);
+        }
+      }
+    }
+  }
+  
+  onNodeClick(x: number, y: number): void {
+    if (this.selectedNode && this.selectedNode.x === x && this.selectedNode.y === y) {
+        // If the node is already selected, deselect it
+        console.log("Node deselected:", x, y);
+        this.deselectNode();
+    } else {
+        // If no node is selected or a different node is clicked
+        if (!this.selectedNode) {
+            console.log("First node selected:", x, y);
+        } else {
+            console.log("Second node selected:", x, y);
+            this.lastSelectedNode = this.selectedNode;
+        }
+        this.selectedNode = { x, y };
+        this.drawNode(this.selectedNode, 'transparent', true); // Draw the node as selected
+
+        // Optionally, draw connections only if a second node is selected
+        if (this.lastSelectedNode) {
+            this.drawConnections();
+            this.resetSelection(); // Reset for the next connection
         }
     }
 }
- 
-onNodeClick(x: number, y: number): void {
-    if (!this.selectedNode) {
-        console.log("First node selected:", x, y);
-        this.selectedNode = { x, y };
-    } else {
-        console.log("Second node selected:", x, y);
-        this.lastSelectedNode = this.selectedNode;
-        this.selectedNode = { x, y };
-        this.drawConnections(); // Draw connection between the two selected nodes
-        this.resetSelection(); // Reset for the next connection
-    }
+private deselectNode(): void {
+  if (this.selectedNode) {
+      // Redraw the node in its original color (transparent)
+      this.drawNode(this.selectedNode, 'transparent', false);
+      this.selectedNode = null;
+  }
 }
  
   private isNodeClicked(
@@ -403,29 +438,68 @@ onNodeClick(x: number, y: number): void {
     return dx * dx + dy * dy <= radius * radius;
   }
  
-  private drawNode(
-    node: { x: number; y: number },
-    color: string,
-    isSelected: boolean
-  ): void {
+  private drawNode(node: { x: number; y: number }, color: string, selected: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d')!;
-   
-    // Fixed radius for the nodes
-    const radius = 8; // You can adjust this value for larger or smaller nodes
- 
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-    ctx.fillStyle = color;
-    ctx.fill();
-  
-    if (isSelected) {
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = 'black';
-      ctx.stroke();
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = selected ? color : 'blue';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = selected ? 3 : 1;
+        ctx.fill();
+        ctx.stroke();
+    }
+}
+
+
+@HostListener('document:contextmenu', ['$event'])
+onRightClick(event: MouseEvent): void {
+  event.preventDefault();
+
+  const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+  const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+  const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+
+  // Check if a node is clicked
+  for (const node of this.nodes) {
+    if (this.isNodeClicked(node, x, y)) {
+      this.showNodeDetailsPopup(node, x, y);
+      break;
     }
   }
- 
+}
+
+
+
+showNodeDetailsPopup(node: { id: number; x: number; y: number }, clickX: number, clickY: number): void {
+  this.nodeDetails = {
+    id: node.id,
+    x: node.x,
+    y: node.y,
+    description: '', // Populate with existing node data if available
+    action: 'Move' // or existing action
+  };
+
+  this.isNodeDetailsPopupVisible = true;
+
+  // Position the popup near the clicked node
+  const popup = this.nodeDetailsPopup.nativeElement;
+  popup.style.left = `${clickX}px`;
+  popup.style.top = `${clickY}px`;
+
+  this.cdRef.detectChanges(); // Ensure the popup updates
+}
+
+closeNodeDetailsPopup(): void {
+  this.isNodeDetailsPopupVisible = false;
+}
+
+saveNodeDetails(): void {
+  // Implement save functionality here
+  this.closeNodeDetailsPopup();
+}
   // in changing process
  
  
@@ -658,15 +732,6 @@ resetSelection(): void {
   this.selectedNode = null;
   this.lastSelectedNode = null;
 }
- 
- 
- 
- 
- 
- 
- 
- 
- 
  
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;

@@ -110,6 +110,7 @@
         </div>
       </div>
     </div>
+    
 
     <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
@@ -137,6 +138,31 @@
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div>
+      <!-- Node Details Popup -->
+      <div #nodeDetailsPopup class="node-details-popup" [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'">        
+        <p>Node Details</p>
+        <div class="node_details">
+        <p>Node ID: {{ nodeDetails.id }}</p>
+        <label for="nodeAction">Node Action:</label>
+        <select id="nodeAction" [(ngModel)]="nodeDetails.action">
+          <option value="Move">Move</option>
+          <option value="Dock">Dock</option>
+          <option value="Undock">Undock</option>
+        </select><br>
+        <label for="nodeDescription">Node Description:</label>
+        <input
+          type="text"
+          id="nodeDescription"
+          [(ngModel)]="nodeDetails.description"
+        /><br>
+      </div>
+        <button class="savenode-btn"(click)="saveNodeDetails()">Save</button>
+        <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
+
+      </div>
+      
+      
+
       <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
         <div class="dropdown">
           <button class="dropdown-button">Add Node</button>
