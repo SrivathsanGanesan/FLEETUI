@@ -72,12 +72,18 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
   selectedMap: any = null; // New property to track the selected map
+  selectMap(map: any) {
+    if (this.selectedMap === map) {
+      // Deselect if the same map is clicked again
+      this.selectedMap = null;
+    } else {
+      // Select a new map
+      this.selectedMap = map;
+    }
+  }
+
   isButtonDisabled(item: any): boolean {
     return this.selectedMap && this.selectedMap !== item;
-  }
-  selectMap(map: any) {
-    this.selectedMap = map;
-    // Additional logic to handle map selection
   }
   constructor(
     private cdr: ChangeDetectorRef,
