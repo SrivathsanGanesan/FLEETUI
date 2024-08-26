@@ -22,6 +22,7 @@ const nodeSchema = new Schema(
   {
     //   single_node: { type: Boolean, default: true },
     //   multi_node: { type: Boolean, default: false },
+    nodeId: { type: Number, default: 0 },
     nodeType: { type: String, default: "single", enum: ["single", "multi"] },
     pos: { type: [{ type: { x: Number, y: Number } }], default: [] },
     others: { type: mongoose.Schema.Types.Mixed, default: null },
@@ -60,13 +61,13 @@ const edgeSchema = new Schema(
     start_node: {
       // type: mongoose.Schema.Types.ObjectId,
       // ref: "Node",
-      type: String,
+      type: Number,
       default: "",
     },
     end_node: {
       // type: mongoose.Schema.Types.ObjectId,
       // ref: "Node",
-      type: String,
+      type: Number,
       default: "",
     },
     others: { type: mongoose.Schema.Types.Mixed, default: null },

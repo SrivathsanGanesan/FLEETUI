@@ -7,8 +7,8 @@ const fs = require("fs");
 const path = require("path");
 
 const clearImgAsset = (req) => {
-  if (fs.existsSync(`proj_assets/dashboardMap/${req.file.filename}`))
-    fs.unlinkSync(`proj_assets/dashboardMap/${req.file.filename}`);
+  if (fs.existsSync(`proj_assets/dashboardMap/${req.file?.filename}`))
+    fs.unlinkSync(`proj_assets/dashboardMap/${req.file?.filename}`);
 };
 
 const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
@@ -32,9 +32,7 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 //..
 
 const mapInsert = async (req, res) => {
-  const mapData = req.body;
-  console.log(mapData);
-  return res.status(200).json({ msg: "okay" });
+  const mapData = JSON.parse(req.body.mapData);
   try {
     const {
       projectName,
@@ -51,6 +49,7 @@ const mapInsert = async (req, res) => {
       projectName: projectName,
       // "sites.siteName": siteName,
     });
+
     if (!projDoc) {
       clearImgAsset(req);
       return res.status(400).json({
