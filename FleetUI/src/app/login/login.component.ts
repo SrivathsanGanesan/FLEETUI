@@ -22,10 +22,19 @@ export class LoginComponent {
     private projectService: ProjectService // private cookieService: CookieService
   ) {}
 
-  async ngOnInit() {
-    // in list..
-    await fetch('http://localhost:3000/auth/logout');
-    // fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`);
+  ngOnInit() {
+    fetch('http://localhost:3000/auth/logout', {
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.isCookieDeleted) {
+          this.authService.logout();
+          this.projectService.clearProjectData();
+          // this.router.navigate(['/']);
+        }
+      })
+      .catch((err) => console.log(err));
   }
 
   togglePasswordVisibility() {
