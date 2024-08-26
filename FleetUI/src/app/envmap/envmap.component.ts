@@ -45,7 +45,7 @@ export class EnvmapComponent implements AfterViewInit {
     id: number; x: number; y: number }[] = [];
   Nodes : {id : number; x : number; y : number; type : string}[] = []; // nodes..
   connections: { fromId: number; toId: number; type: 'uni' | 'bi' }[] = []; // connections
-
+ 
   ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   selectedAsset: 'docking' | 'charging' | 'picking' | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
@@ -80,11 +80,6 @@ export class EnvmapComponent implements AfterViewInit {
   selectedNode: { x: number; y: number } | null = null;
 lastSelectedNode: { x: number; y: number } | null = null;
 node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
-
-
-
-// connectivityMode: 'uni' | 'bi' | null = null;
- 
  
   constructor(private cdRef: ChangeDetectorRef) {}
  
@@ -226,7 +221,7 @@ node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
       this.showDistanceDialog = false;
     }
   }
-
+ 
   //  Saving all nodes and edges
   async saveOpt(){
     console.log(this.Nodes);
@@ -241,9 +236,9 @@ node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
     });
     const data = res.json();
     console.log(data);
-    
+   
   }
-
+ 
   saveCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     // const dataURL = canvas.toDataURL('image/png');
@@ -287,7 +282,7 @@ node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
  
   open(): void {
     this.ratio = Number((document.getElementById('resolution') as HTMLInputElement).value);
-
+ 
     if (this.mapName && this.siteName && this.imageSrc) {
       this.fileName = null;
       this.showImage = true;
@@ -346,7 +341,7 @@ setConnectivityMode(mode: 'uni' | 'bi'): void {
   this.resetSelection(); // Reset any previous selections when changing mode
   console.log(`Connectivity mode set to: ${mode}`);
 }
-
+ 
  
 // in changing processs
  
@@ -402,11 +397,12 @@ onNodeClick(x: number, y: number): void {
     mouseX: number,
     mouseY: number
   ): boolean {
-    const radius = 8; // Same as the node radius
+    const radius = 6; // Same as the node radius
     const dx = mouseX - node.x;
     const dy = mouseY - node.y;
     return dx * dx + dy * dy <= radius * radius;
   }
+ 
   private drawNode(
     node: { x: number; y: number },
     color: string,
@@ -414,9 +410,12 @@ onNodeClick(x: number, y: number): void {
   ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
+   
+    // Fixed radius for the nodes
+    const radius = 8; // You can adjust this value for larger or smaller nodes
  
     ctx.beginPath();
-    ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
+    ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
     ctx.fillStyle = color;
     ctx.fill();
  
@@ -427,26 +426,6 @@ onNodeClick(x: number, y: number): void {
     }
   }
  
- 
- 
-  // in changing process
- 
-  private redrawNodes(): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d')!;
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas before redrawing
- 
-    this.nodes.forEach((node) => {
-        const isSelected = this.selectedNode === node;
-        const color = isSelected ? 'orange' : 'blue'; // Highlight selected node
-        this.drawNode(node, color, isSelected);
-    });
- 
-    if (this.connectivityMode) {
-        this.drawConnections(); // Redraw connections after nodes
-    }
-}
- 
   // in changing process
  
  
@@ -454,61 +433,59 @@ onNodeClick(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
     ctx.beginPath();
-    ctx.arc(x, y, 8, 0, 2 * Math.PI, false);
+    ctx.arc(x, y, 8, 0, 2*Math.PI, false);
     ctx.fillStyle = 'blue'; // Color for single nodes
     ctx.fill();
-
+ 
     // Push the node with the current counter before incrementing
     this.nodes.push({ id: this.nodeCounter, x, y });
     console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
-    
+   
     if (this.ratio !== null) {
         const distanceX = x * this.ratio;
         const distanceY = y * this.ratio;
         console.log({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'single' });
         this.Nodes.push({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'single' });
       }
-    
+   
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
-
+ 
  
   plotMultiNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
-
+ 
     if (this.nodes.length >= 2) {
-        alert('Only two nodes can be plotted in multi-node mode.');
-        return;
+      alert('Only two nodes can be plotted in multi-node mode.');
+      return;
     }
-
+ 
     ctx.beginPath();
     ctx.arc(x, y, 8, 0, 2 * Math.PI, false);
     ctx.fillStyle = 'green'; // Color for multi-nodes
     ctx.fill();
-
-    this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
-    console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
-    
+ 
+    console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y }); // Log the node number and position
+ 
     if (this.ratio !== null) {
-        const distanceX = x * this.ratio;
-        const distanceY = y * this.ratio;
-        console.log({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'multi' });
-        this.Nodes.push({ id: this.nodeCounter, x: distanceX, y: distanceY, type: 'multi' });
-      }
-
-    this.nodeCounter++; // Increment the node counter after assignment
-    
-    if (this.nodes.length === 0) {
-        this.firstNode = { x, y };
-      } else if (this.nodes.length === 1) {
-        this.secondNode = { x, y };
-        this.showIntermediateNodesDialog = true;
-        this.isPlottingEnabled = false; // Disable further plotting after two nodes
+      const distanceX = x * this.ratio;
+      const distanceY = y * this.ratio;
+      console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(2)}, Y: ${distanceY.toFixed(2)}`);
     }
+ 
+    this.nodeCounter++; // Increment the node counter
+ 
+    if (this.nodes.length === 0) {
+      this.firstNode = { x, y };
+    } else if (this.nodes.length === 1) {
+      this.secondNode = { x, y };
+      this.showIntermediateNodesDialog = true;
+      this.isPlottingEnabled = false; // Disable further plotting after two nodes
+    }
+    this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
   }
-
  
   plotIntermediateNodes(): void {
     if (
@@ -620,29 +597,29 @@ drawConnections(): void {
       console.log("Not enough nodes or mode is not set");
       return; // Ensure both nodes and a mode are selected
   }
-
+ 
   const fromId = this.getNodeId(this.lastSelectedNode);
   const toId = this.getNodeId(this.selectedNode);
-
+ 
   console.log("Drawing connection between nodes with IDs:", fromId, toId);
-
+ 
   const canvas = this.overlayCanvas.nativeElement;
   const ctx = canvas.getContext('2d');
-  
+ 
   if (!ctx) {
       console.log("Canvas context is not available");
       return;
   }
-
+ 
   ctx.strokeStyle = 'black';
   ctx.lineWidth = 2;
-
+ 
   // Draw line between the nodes
   ctx.beginPath();
   ctx.moveTo(this.lastSelectedNode.x, this.lastSelectedNode.y);
   ctx.lineTo(this.selectedNode.x, this.selectedNode.y);
   ctx.stroke();
-
+ 
   // Draw arrow(s) based on the connectivity mode
   if (this.connectivityMode === 'uni') {
       console.log("Drawing unidirectional arrow between node IDs:", fromId, toId);
@@ -655,26 +632,26 @@ drawConnections(): void {
       this.connections.push({ fromId, toId, type: 'bi' });
   }
 }
-
+ 
 private getNodeId(node: { x: number; y: number }): number {
   const foundNode = this.nodes.find(n => n.x === node.x && n.y === node.y);
   return foundNode ? foundNode.id : -1; // Return -1 if the node is not found
 }
-
-
-
+ 
+ 
+ 
 // in changing process
 drawArrow(ctx: CanvasRenderingContext2D, fromX: number, fromY: number, toX: number, toY: number): void {
   const fromId = this.getNodeId({ x: fromX, y: fromY });
   const toId = this.getNodeId({ x: toX, y: toY });
-
+ 
   console.log("Drawing arrow between node IDs:", fromId, toId);
-
+ 
   const headLength = 10;
   const dx = toX - fromX;
   const dy = toY - fromY;
   const angle = Math.atan2(dy, dx);
-
+ 
   ctx.beginPath();
   ctx.moveTo(toX, toY);
   ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
