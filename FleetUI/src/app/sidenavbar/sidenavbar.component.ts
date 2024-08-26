@@ -47,6 +47,7 @@ export class SidenavbarComponent implements OnInit {
         if (data.isCookieDeleted) {
           this.authService.logout();
           this.projectService.clearProjectData();
+          this.projectService.clearMapData();
           this.router.navigate(['/']);
         }
       })

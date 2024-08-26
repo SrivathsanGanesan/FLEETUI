@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import path from 'path';
 
 @Injectable({
   providedIn: 'root',
@@ -43,6 +42,10 @@ export class ProjectService {
     this.cookieService.set('map-data', JSON.stringify(mapData), {
       path: '/',
     });
+  }
+
+  clearMapData() {
+    this.cookieService.delete('map-data', '/');
   }
 
   getMapData() {
