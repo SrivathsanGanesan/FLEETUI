@@ -197,7 +197,6 @@ canvas {
   border: 1px solid #ccc;
   max-height: 85vh; /* Ensure content doesn't exceed viewport height */
   max-width: 1400px;
-
   /* width: 1400px;
   height: 580px; */
 }

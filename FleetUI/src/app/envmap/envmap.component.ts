@@ -85,13 +85,13 @@ export class EnvmapComponent implements AfterViewInit {
     x: number;
     y: number;
     description: string;
-    action: 'Move' | 'Dock' | 'Undock' | null; // Can allow null if needed
+    actions: string[]; // Can allow null if needed
   } = {
     id: 0,
     x: 0,
     y: 0,
     description: '',
-    action: 'Move', // Initialize with a non-null value
+    actions: [] // Initialize with a non-null value
   };
 
   constructor(private cdRef: ChangeDetectorRef) {}
@@ -134,6 +134,20 @@ export class EnvmapComponent implements AfterViewInit {
       const y = Math.random() * (canvas.height - robotImage.height);
       ctx!.drawImage(robotImage, x, y);
     }
+  }
+  selectedAction: string = 'Move'; // Initialize with a default action
+  actions: string[] = []; // Array to hold the list of actions
+
+  // Method to add an action to the list
+  addAction(): void {
+    if (this.selectedAction) {
+      this.actions.push(this.selectedAction);
+    }
+  }
+
+  // Method to delete an action from the list
+  removeAction(index: number): void {
+    this.actions.splice(index, 1);
   }
 
   onFileSelected(event: Event): void {
@@ -502,24 +516,14 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
 
-  addAction() {
-    // Handle the "ADD" button click event
-    console.log('Action Added:', this.nodeDetails.action);
-    // You can add more logic here to handle the action
-  }
+
 
   showNodeDetailsPopup(
     node: { id: number; x: number; y: number },
     clickX: number,
     clickY: number
   ): void {
-    this.nodeDetails = {
-      id: node.id,
-      x: node.x,
-      y: node.y,
-      description: '', // Populate with existing node data if available
-      action: 'Move', // or existing action
-    };
+
 
     this.isNodeDetailsPopupVisible = true;
 

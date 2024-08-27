@@ -146,13 +146,22 @@
            
             <div class="action-container">
               <label for="nodeAction">Add Action:</label>
-                <select id="nodeAction" [(ngModel)]="nodeDetails.action">
+                <select id="nodeAction" [(ngModel)]="selectedAction">
                     <option value="Move">Move</option>
                     <option value="Dock">Dock</option>
                     <option value="Undock">Undock</option>
                 </select>
                 <button (click)="addAction()">Add</button>
             </div><br>
+            <div *ngIf="actions.length > 0">
+              <p>Actions:</p>
+              <ul>
+                  <li *ngFor="let action of actions; let i = index">
+                      {{ action }}
+                      <button (click)="removeAction(i)">Delete</button>
+                  </li>
+              </ul>
+          </div>
             <label for="nodeDescription">Node Description:</label>
             <input
                 type="text"
