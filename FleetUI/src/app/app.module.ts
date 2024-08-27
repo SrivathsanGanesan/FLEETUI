@@ -72,13 +72,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ChartTimelineComponent,
     GradientDonutComponent,
     RobotActivityDonutComponent,
-    RobotDetailPopupComponent,
-    
-    
-    
-    
-
-    
+    RobotDetailPopupComponent
   ],
   imports: [
     NgApexchartsModule,
