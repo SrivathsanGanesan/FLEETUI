@@ -143,14 +143,15 @@
         <p>Node Details</p>
         <div class="node_details">
             <p>Node ID: {{ nodeDetails.id }}</p>
-            <label for="nodeAction">Add Action:</label>
+           
             <div class="action-container">
+              <label for="nodeAction">Add Action:</label>
                 <select id="nodeAction" [(ngModel)]="nodeDetails.action">
                     <option value="Move">Move</option>
                     <option value="Dock">Dock</option>
                     <option value="Undock">Undock</option>
                 </select>
-                <button (click)="addAction()">ADD</button>
+                <button (click)="addAction()">Add</button>
             </div><br>
             <label for="nodeDescription">Node Description:</label>
             <input

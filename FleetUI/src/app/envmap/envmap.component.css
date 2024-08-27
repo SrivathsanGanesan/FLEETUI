@@ -186,6 +186,13 @@ h2 {
 .node_details{
   margin: 10px;
 }
+.action-container select{
+  border: none;
+  border-bottom:1px solid black ;
+  font-size: 15px;
+  margin-left: 10px;
+
+}
 canvas {
   border: 1px solid #ccc;
   max-height: 85vh; /* Ensure content doesn't exceed viewport height */
