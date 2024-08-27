@@ -40,6 +40,10 @@ h2 {
 
 }
 
+
+.action-container select {
+  margin-right: 10px; /* Space between dropdown and button */
+}
 .file-name {
   margin-top: 10px;
   font-size: 14px;

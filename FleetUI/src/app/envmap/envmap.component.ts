@@ -471,7 +471,11 @@ onRightClick(event: MouseEvent): void {
   }
 }
 
-
+addAction() {
+  // Handle the "ADD" button click event
+  console.log('Action Added:', this.nodeDetails.action);
+  // You can add more logic here to handle the action
+}
 
 showNodeDetailsPopup(node: { id: number; x: number; y: number }, clickX: number, clickY: number): void {
   this.nodeDetails = {
