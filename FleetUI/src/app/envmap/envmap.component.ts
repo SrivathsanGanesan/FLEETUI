@@ -510,28 +510,45 @@ export class EnvmapComponent implements AfterViewInit {
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y)) {
-        this.showNodeDetailsPopup(node, x, y);
+        this.showNodeDetailsPopup();
         break;
       }
     }
   }
+   // Parameters for the 'Move' action
+   moveParameters = {
+    maxLinearVelocity: 0.8,
+    maxAngularVelocity: 0.8,
+    maxToleranceAtGoalX: 0.05,
+    maxToleranceAtGoalY: 0.05,
+    maxToleranceAtGoalOrientation: 0.01,
+    endPointOrientation: false,
+    autoRobotMode: 'mode1' // Default mode
+  };
 
-
-
+  // Method to handle the change in action selection
+  onActionChange(): void {
+    if (this.selectedAction !== 'Move') {
+      // Clear move parameters when not in 'Move' action
+      this.moveParameters = {
+        maxLinearVelocity: 0.8,
+        maxAngularVelocity: 0.8,
+        maxToleranceAtGoalX: 0.05,
+        maxToleranceAtGoalY: 0.05,
+        maxToleranceAtGoalOrientation: 0.01,
+        endPointOrientation: false,
+        autoRobotMode: 'mode1'
+      };
+    }
+  }
   showNodeDetailsPopup(
-    node: { id: number; x: number; y: number },
-    clickX: number,
-    clickY: number
+  
   ): void {
 
 
     this.isNodeDetailsPopupVisible = true;
 
-    // Position the popup near the clicked node
-    const popup = this.nodeDetailsPopup.nativeElement;
-    popup.style.left = `${clickX}px`;
-    popup.style.top = `${clickY}px`;
-
+   
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
 
