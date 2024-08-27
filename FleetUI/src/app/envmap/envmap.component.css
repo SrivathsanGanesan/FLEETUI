@@ -41,7 +41,7 @@ h2 {
 
 .upload-image img {
   width: 120px;
-  margin: 0px 100px;
+  margin: 0px 120px;
   height: auto;
   cursor: pointer;
 }
@@ -305,14 +305,16 @@ canvas {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #cd2f2f54;
+  background-color: #ff3333;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  border-radius: 10px;
   bottom: 100%; /* Position the dropdown above the button */
   left: 0; /* Aligns the dropdown with the left edge of the button */
   margin-bottom: 0px; /* Adds space between the button and the dropdown */
   z-index: 10;
+  text-align: center;
 }
 
 .dropdown:hover .dropdown-content {
