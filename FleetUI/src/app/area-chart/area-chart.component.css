@@ -1,13 +1,3 @@
-/* #chart {
-  max-width: 900px;
-  margin-top: 15px;
-  background-color: #f6f3f3;
-  padding: 0;
- 
-  border-radius: 10px;
-}
- */
-/* Container to center the dropdown */
 /* Container to center the dropdown */
 .dropdown-container {
   display: flex;
@@ -16,57 +6,148 @@
   position: relative; /* Position relative for the dropdown arrow */
 }
 
-/* Dropdown styling */
-#dataSelector {
-  appearance: none; /* Remove default dropdown styling */
-  padding: 10px 15px;
-  padding-right: 40px; /* Space for the dropdown arrow */
+.menu {
   font-size: 16px;
-  font-weight: 500;
-  color: #ffffff;
-  background-color: #DA2127;
-  border: 2px solid #DA2127;
-  border-radius: 8px;
-  outline: none;
-  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  line-height: 1.6;
+  color: #ffffff; /* Default font color changed to violet */
+  width: fit-content;
+  display: flex;
+  list-style: none;
+}
+
+.menu a {
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.menu .link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 36px;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+  background: linear-gradient(45deg, #7854f7, #7854f7); /* Gradient background */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Button-like shadow */
   cursor: pointer;
 }
 
-/* Dropdown arrow styling */
-#dataSelector::-ms-expand {
-  display: none; /* Remove the default arrow in IE */
-}
-
-.dropdown-container::after {
-  content: '\25BC'; /* Unicode for downward arrow */
+.menu .link::after {
+  content: "";
   position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #7854f7; /* Violet color */
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu .link svg {
+  width: 14px;
+  height: 14px;
+  fill: #ffffff; /* Violet color for the arrow */
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu .item {
+  position: relative;
+}
+
+.menu .item .submenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 100%;
+  border-radius: 0 0 16px 16px;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #cccccc;
+  background: linear-gradient(45deg, #ffffff, #f0f0f0); /* Gradient background */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
   pointer-events: none;
-  color: white;
-  font-size: 18px;
+  list-style: none;
 }
 
-/* Hover effect */
-#dataSelector:hover {
-  background-color: #b81b22;
-  border-color: #b81b22;
+.menu .item:hover .submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  border-top: transparent;
+  border-color: #7854f7; /* Violet color */
 }
 
-/* Focus effect */
-#dataSelector:focus {
-  background-color: #b81b22;
-  border-color: #b81b22;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+.menu .item:hover .link {
+  color: #ffffff;
+  border-radius: 16px 16px 0 0;
 }
 
-/* Option Styling */
-#dataSelector option {
-  background-color: #ffffff;
-  color: #333333;
-  padding: 10px;
-  font-size: 16px;
-  font-weight: 500;
+.menu .item:hover .link::after {
+  transform: scaleX(1);
+  transform-origin: right;
 }
+
+.menu .item:hover .link svg {
+  fill: #ffffff;
+  transform: rotate(-180deg);
+}
+
+.submenu .submenu-item {
+  width: 100%;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.submenu .submenu-link {
+  display: block;
+  padding: 12px 24px;
+  width: 100%;
+  position: relative;
+  text-align: left; /* Aligning the dropdown data to the left */
+  color: #7854f7; /* Violet font color for dropdown items */
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.submenu .submenu-item:last-child .submenu-link {
+  border-bottom: none;
+}
+
+.submenu .submenu-link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  width: 100%;
+  height: 100%;
+  background-color: #7854f7;
+  z-index: -1;
+  transform-origin: left;
+  transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.submenu .submenu-link:hover:before {
+  transform: scaleX(1);
+  transform-origin: right;
+}
+
+.submenu .submenu-link:hover {
+  color: #ffffff; /* White text color on hover */
+}
+
+

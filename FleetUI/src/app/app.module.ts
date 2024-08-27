@@ -74,13 +74,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     GradientDonutComponent,
     RobotActivityDonutComponent,
     RobotDetailPopupComponent,
-    ConfirmationDialogComponent,
-    
-    
-    
-    
-
-    
+    ConfirmationDialogComponent
   ],
   imports: [
     NgApexchartsModule,

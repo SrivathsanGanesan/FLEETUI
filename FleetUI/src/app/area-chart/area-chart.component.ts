@@ -30,6 +30,8 @@ export type ChartOptions = {
 })
 export class AreaChartComponent implements OnInit {
   public chartOptions: ChartOptions;
+  selectedMetric: string = 'Throughput'; // Default value
+
 
   constructor() {
     this.chartOptions = {
@@ -111,10 +113,10 @@ export class AreaChartComponent implements OnInit {
     // Any additional logic can go here
   }
 
-  updateChart(event: Event): void {
-    const selectedValue = (event.target as HTMLSelectElement).value;
+  updateChart(data: string, metricName: string): void {
+    this.selectedMetric = metricName; // Update the displayed metric name
 
-    switch (selectedValue) {
+    switch (data) {
       case 'data1':
         this.chartOptions.series = [
           { name: 'Series 1', data: [45, 52, 38, 45, 19, 23, 50] },
