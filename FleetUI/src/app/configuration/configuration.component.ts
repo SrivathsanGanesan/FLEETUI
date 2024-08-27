@@ -11,6 +11,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+
+
 
 interface Poll {
   ip: string;
@@ -104,7 +107,8 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   constructor(
     private cdr: ChangeDetectorRef,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    public dialog: MatDialog // Inject MatDialog
   ) {
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
@@ -501,14 +505,15 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   deleteItem(item: any) {
-    // Find the index of the item to be deleted
-    const index = this.EnvData.indexOf(item);
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent);
 
-    // Remove the item if found
-    if (index !== -1) {
-      this.EnvData.splice(index, 1);
-      this.filterData(); // Reapply filters after deletion
-    }
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Perform the delete operation
+        console.log('Item deleted:', item);
+        // You can remove the item from the list or perform other actions here
+      }
+    });
   }
 
   addItem(item: any) {

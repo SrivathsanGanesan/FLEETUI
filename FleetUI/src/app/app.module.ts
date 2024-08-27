@@ -38,6 +38,7 @@ import { GradientDonutComponent } from './gradient-donut/gradient-donut.componen
 import { RobotActivityDonutComponent } from './robot-activity-donut/robot-activity-donut.component';
 import { RobotDetailPopupComponent } from './robot-detail-popup/robot-detail-popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 
 
@@ -73,6 +74,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     GradientDonutComponent,
     RobotActivityDonutComponent,
     RobotDetailPopupComponent,
+    ConfirmationDialogComponent,
     
     
     
