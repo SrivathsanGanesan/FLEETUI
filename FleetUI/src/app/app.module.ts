@@ -39,11 +39,6 @@ import { RobotActivityDonutComponent } from './robot-activity-donut/robot-activi
 import { RobotDetailPopupComponent } from './robot-detail-popup/robot-detail-popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-
-
-
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -85,7 +80,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     BrowserModule,
     RouterModule.forRoot([]),
     NgApexchartsModule,
-    MatDialogModule, 
+    MatDialogModule
   ],
   providers: [
     // provideClientHydration()
