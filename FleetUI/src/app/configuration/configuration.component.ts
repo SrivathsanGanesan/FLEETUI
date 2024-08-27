@@ -71,6 +71,7 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
+
   selectedMap: any = null; // New property to track the selected map
   async selectMap(map: any) {
     if (this.selectedMap === map) {
@@ -93,6 +94,9 @@ export class ConfigurationComponent implements AfterViewInit {
         ...map,
         imgUrl: data.map.imgUrl,
       });
+
+      if (this.projectService.getIsMapSet()) return;
+      this.projectService.setIsMapSet(true);
     }
   }
 
@@ -315,7 +319,6 @@ export class ConfigurationComponent implements AfterViewInit {
         });
       })
       .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
-    // console.log(this.EnvData);
 
     if (!this.EnvData.length) return;
     const response = await fetch(
