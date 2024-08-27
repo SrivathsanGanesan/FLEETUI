@@ -328,9 +328,12 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
       };
-    } else {
+    }
+    
+     else {
       alert('Please enter both Map Name and Site Name before clicking Open.');
     }
+    
   }
 
   close(): void {
