@@ -54,6 +54,7 @@ export class ConfigurationComponent implements AfterViewInit {
   private backgroundImage: HTMLImageElement | null = null;
   isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
+  selectedMap: any = null;
 
   searchTerm: string = '';
   filteredEnvData: any[] = [];
@@ -71,29 +72,31 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
-  selectedMap: any = null; // New property to track the selected map
+
   async selectMap(map: any) {
     if (this.selectedMap === map) {
       // Deselect if the same map is clicked again
       this.selectedMap = null;
-      // return;
-    } else {
-      // Select a new map
-      this.selectedMap = map;
-      if (!this.EnvData.length) return;
-      this.projectService.clearMapData();
-      const response = await fetch(
-        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
-      );
-      if (!response.ok)
-        console.error('Error while fetching map data : ', response.status);
-      let data = await response.json();
-
-      this.projectService.setMapData({
-        ...map,
-        imgUrl: data.map.imgUrl,
-      });
+      return;
     }
+    // Select a new map
+    this.selectedMap = map;
+    if (!this.EnvData.length) return;
+    this.projectService.clearMapData();
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+    );
+    if (!response.ok)
+      console.error('Error while fetching map data : ', response.status);
+    let data = await response.json();
+
+    this.projectService.setMapData({
+      ...map,
+      imgUrl: data.map.imgUrl,
+    });
+
+    if (this.projectService.getIsMapSet()) return;
+    this.projectService.setIsMapSet(true);
   }
 
   isButtonDisabled(item: any): boolean {
@@ -315,7 +318,6 @@ export class ConfigurationComponent implements AfterViewInit {
         });
       })
       .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
-    // console.log(this.EnvData);
 
     if (!this.EnvData.length) return;
     const response = await fetch(

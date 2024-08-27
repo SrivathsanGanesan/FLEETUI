@@ -8,7 +8,7 @@ import {
   ApexYAxis,
   ApexTooltip,
   ApexGrid,
-  ApexStroke
+  ApexStroke,
 } from 'ng-apexcharts';
 
 export type ChartOptions = {
@@ -26,7 +26,7 @@ export type ChartOptions = {
 @Component({
   selector: 'app-area-chart',
   templateUrl: './area-chart.component.html',
-  styleUrls: ['./area-chart.component.css']
+  styleUrls: ['./area-chart.component.css'],
 })
 export class AreaChartComponent implements OnInit {
   public chartOptions: ChartOptions;
@@ -35,34 +35,36 @@ export class AreaChartComponent implements OnInit {
 
   constructor() {
     this.chartOptions = {
-      series: [{
-        name: "Series 1",
-        data: [45, 52, 38, 45, 19, 23, 50]
-      }],
+      series: [
+        {
+          name: 'Series 1',
+          data: [45, 52, 38, 45, 19, 23, 50],
+        },
+      ],
       chart: {
         height: 280,
-        type: "area",
-        background: "#FFFFFF" // Setting the background color to white
+        type: 'area',
+        background: '#FFFFFF', // Setting the background color to white
       },
       xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
         labels: {
           style: {
             colors: '#9aa0ac',
-            fontSize: '12px'
-          }
-        }
+            fontSize: '12px',
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
             colors: '#9aa0ac',
-            fontSize: '12px'
-          }
-        }
+            fontSize: '12px',
+          },
+        },
       },
       fill: {
-        type: "gradient",
+        type: 'gradient',
         gradient: {
           shadeIntensity: 1,
           opacityFrom: 0.5,
@@ -71,39 +73,39 @@ export class AreaChartComponent implements OnInit {
           colorStops: [
             {
               offset: 0,
-              color: "#FF0000",
-              opacity: 0.5
+              color: '#FF0000',
+              opacity: 0.5,
             },
             {
               offset: 100,
-              color: "#FFE5E5",
-              opacity: 0.1
-            }
-          ]
-        }
+              color: '#FFE5E5',
+              opacity: 0.1,
+            },
+          ],
+        },
       },
       dataLabels: {
-        enabled: false
+        enabled: false,
       },
       stroke: {
         curve: 'smooth',
         width: 3,
-        colors: ["#DA2127"] // This is the key change: making sure the stroke is red
+        colors: ['#DA2127'], // This is the key change: making sure the stroke is red
       },
       tooltip: {
         enabled: true,
-        theme: "dark",
+        theme: 'dark',
         x: {
-          format: "dd MMM"
-        }
+          format: 'dd MMM',
+        },
       },
       grid: {
         borderColor: '#e7e7e7',
         row: {
           colors: ['#f3f3f3', 'transparent'],
-          opacity: 0.5
-        }
-      }
+          opacity: 0.5,
+        },
+      },
     };
   }
 
@@ -116,24 +118,74 @@ export class AreaChartComponent implements OnInit {
 
     switch (data) {
       case 'data1':
-        this.chartOptions.series = [{ name: "Series 1", data: [45, 52, 38, 45, 19, 23, 50] }];
-        this.chartOptions.xaxis.categories = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+        this.chartOptions.series = [
+          { name: 'Series 1', data: [45, 52, 38, 45, 19, 23, 50] },
+        ];
+        this.chartOptions.xaxis.categories = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+        ];
         break;
       case 'data2':
-        this.chartOptions.series = [{ name: "Series 2", data: [30, 40, 45, 50, 49, 60, 70] }];
-        this.chartOptions.xaxis.categories = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb"];
+        this.chartOptions.series = [
+          { name: 'Series 2', data: [30, 40, 45, 50, 49, 60, 70] },
+        ];
+        this.chartOptions.xaxis.categories = [
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+          'Jan',
+          'Feb',
+        ];
         break;
       case 'data3':
-        this.chartOptions.series = [{ name: "Series 3", data: [20, 29, 37, 36, 44, 45, 50] }];
-        this.chartOptions.xaxis.categories = ["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"];
+        this.chartOptions.series = [
+          { name: 'Series 3', data: [20, 29, 37, 36, 44, 45, 50] },
+        ];
+        this.chartOptions.xaxis.categories = [
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+        ];
         break;
       case 'data4':
-        this.chartOptions.series = [{ name: "Series 4", data: [15, 18, 28, 29, 39, 46, 55] }];
-        this.chartOptions.xaxis.categories = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
+        this.chartOptions.series = [
+          { name: 'Series 4', data: [15, 18, 28, 29, 39, 46, 55] },
+        ];
+        this.chartOptions.xaxis.categories = [
+          'Oct',
+          'Nov',
+          'Dec',
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+        ];
         break;
       case 'data5':
-        this.chartOptions.series = [{ name: "Series 5", data: [50, 60, 55, 48, 38, 33, 45] }];
-        this.chartOptions.xaxis.categories = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+        this.chartOptions.series = [
+          { name: 'Series 5', data: [50, 60, 55, 48, 38, 33, 45] },
+        ];
+        this.chartOptions.xaxis.categories = [
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+        ];
         break;
     }
   }

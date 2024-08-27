@@ -52,4 +52,18 @@ export class ProjectService {
     const storedMap = this.cookieService.get('map-data');
     return storedMap ? JSON.parse(storedMap) : null;
   }
+
+  // track map is selected..
+  setIsMapSet(state: boolean) {
+    this.cookieService.set('_isMapSet', JSON.stringify(state));
+  }
+
+  getIsMapSet() {
+    const isMapSet = this.cookieService.get('_isMapSet');
+    return isMapSet ? JSON.parse(isMapSet) : null;
+  }
+
+  clearIsMapSet() {
+    this.cookieService.delete('_isMapSet', '/');
+  }
 }

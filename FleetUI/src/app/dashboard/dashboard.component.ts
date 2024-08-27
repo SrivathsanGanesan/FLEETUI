@@ -31,24 +31,12 @@ export class DashboardComponent implements AfterViewInit {
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
-  ) {}
-
-  toggleONBtn() {
-    this.ONBtn = !this.ONBtn;
+  ) {
+    if (this.projectService.getIsMapSet()) return;
+    this.onInitMapImg();
   }
 
-  getOnBtnImage(): string {
-    return this.ONBtn
-      ? '../../assets/icons/off.svg'
-      : '../../assets/icons/on.svg';
-  }
-
-  ngAfterViewInit() {
-    this.loadCanvas();
-  }
-
-  async ngOnInit() {
-    return;
+  async onInitMapImg() {
     let mapData = this.projectService.getSelectedProject().sites;
     let mapArr = [];
     mapArr = mapData
@@ -76,7 +64,25 @@ export class DashboardComponent implements AfterViewInit {
       ...mapArr[0],
       imgUrl: data.map.imgUrl,
     });
+    this.loadCanvas();
+  }
 
+  toggleONBtn() {
+    this.ONBtn = !this.ONBtn;
+  }
+
+  getOnBtnImage(): string {
+    return this.ONBtn
+      ? '../../assets/icons/off.svg'
+      : '../../assets/icons/on.svg';
+  }
+
+  ngAfterViewInit() {
+    this.loadCanvas();
+  }
+
+  // guess no need..
+  ngOnInit() {
     this.loadCanvas();
   }
 
