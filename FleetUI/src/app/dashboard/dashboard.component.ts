@@ -32,7 +32,8 @@ export class DashboardComponent implements AfterViewInit {
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
   ) {
-    if (!this.projectService.getIsMapSet()) this.onInitMapImg();
+    if (this.projectService.getIsMapSet()) return;
+    this.onInitMapImg();
   }
 
   async onInitMapImg() {
@@ -63,6 +64,7 @@ export class DashboardComponent implements AfterViewInit {
       ...mapArr[0],
       imgUrl: data.map.imgUrl,
     });
+    this.loadCanvas();
   }
 
   toggleONBtn() {
