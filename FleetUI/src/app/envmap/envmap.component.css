@@ -37,10 +37,7 @@ h2 {
   width: 100px;
   height: auto;
   cursor: pointer;
-
 }
-
-
 .action-container select {
   margin-right: 10px; /* Space between dropdown and button */
 }

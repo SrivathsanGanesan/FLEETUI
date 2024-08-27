@@ -69,12 +69,7 @@ export class EnvmapComponent implements AfterViewInit {
   isRobotPopupVisible: boolean = false;
   tableData: { mapName: string; siteName: string }[] = []; // Holds table data
   private points: { x: number; y: number }[] = [];
-  private zones: {
-    startX: number;
-    startY: number;
-    endX: number;
-    endY: number;
-  }[] = [];
+  private zones: Zone[] = [];
   showImagePopup: boolean = false;
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
@@ -101,6 +96,9 @@ export class EnvmapComponent implements AfterViewInit {
   constructor(private cdRef: ChangeDetectorRef) {}
  
   ngAfterViewInit(): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    ctx!.clearRect(0, 0, canvas.width, canvas.height);
     // Preload asset images
     this.assetImages['docking'] = new Image();
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
@@ -371,6 +369,20 @@ setConnectivityMode(mode: 'uni' | 'bi'): void {
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
+      if (this.isDrawingZone) {
+        const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+        this.startX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+        this.startY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+        this.currentZone = {
+          type: 'low',
+          startX: this.startX,
+          startY: this.startY,
+          endX: this.startX,
+          endY: this.startY,
+          color: this.zoneColor!
+        };
+      }
+      
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
       const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
       const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
@@ -613,30 +625,39 @@ saveNodeDetails(): void {
  
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
-    if (
-      this.isDrawingZone &&
-      this.startX !== null &&
-      this.startY !== null &&
-      this.overlayCanvas &&
-      this.overlayCanvas.nativeElement
-    ) {
-      const canvas = this.overlayCanvas.nativeElement;
-      const ctx = canvas.getContext('2d');
-      const rect = canvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-      const y = (event.clientY - rect.top) * (canvas.height / rect.height);
- 
-      ctx!.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawing
-      this.drawZone(this.startX, this.startY, event.clientX, event.clientY);
+        if (this.isDrawingZone && this.currentZone && this.overlayCanvas && this.overlayCanvas.nativeElement) {
+      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+      const endX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const endY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+
+      // Update the current zone's end coordinates
+      this.currentZone.endX = endX;
+      this.currentZone.endY = endY;
+      // Clear the canvas and redraw all zones
+      this.redrawZones();
     }
   }
 
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
-    if (this.isDrawingZone && this.startX !== null && this.startY !== null) {
+    if (this.isDrawingZone && this.currentZone && this.overlayCanvas && this.overlayCanvas.nativeElement) {
+      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+      const endX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const endY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+  
+      // Update the current zone's end coordinates
+      this.currentZone.endX = endX;
+      this.currentZone.endY = endY;
+  
+      // Save the current zone to the zones array
+      this.zones.push(this.currentZone);
+  
+      // Redraw all zones
+      this.redrawZones();
+  
+      // Reset drawing state
       this.isDrawingZone = false;
-      this.startX = null;
-      this.startY = null;
+      this.currentZone = null;
     }
   }
   drawZone(startX: number, startY: number, endX: number, endY: number): void {
@@ -659,6 +680,30 @@ saveNodeDetails(): void {
     );
     ctx!.fillStyle = this.zoneColor;
     ctx!.fill();
+  }
+  private redrawZones(): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+
+    ctx!.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw all existing zones
+    for (const zone of this.zones) {
+      ctx!.beginPath();
+      ctx!.rect(zone.startX, zone.startY, zone.endX - zone.startX, zone.endY - zone.startY);
+      ctx!.fillStyle = zone.color;
+      ctx!.fill();
+      ctx!.stroke();
+    }
+
+    // Draw the current zone being drawn
+    if (this.currentZone) {
+      ctx!.beginPath();
+      ctx!.rect(this.currentZone.startX, this.currentZone.startY, this.currentZone.endX - this.currentZone.startX, this.currentZone.endY - this.currentZone.startY);
+      ctx!.fillStyle = this.currentZone.color;
+      ctx!.fill();
+      ctx!.stroke();
+    }
   }
  
 // in chaging process
