@@ -158,9 +158,7 @@
                 id="nodeDescription"
                 [(ngModel)]="nodeDetails.description"
             /><br>
-        </div>
-
-    
+        </div>    
         <button class="savenode-btn"(click)="saveNodeDetails()">Save</button>
         <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
 
@@ -219,8 +217,10 @@
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
     </div>
+    
+    
     <div class="button-container" *ngIf="!showImage">
-      <button (click)="open()">Open</button>
+      <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
     </div>
   </div>
