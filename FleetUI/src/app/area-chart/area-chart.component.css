@@ -7,3 +7,66 @@
   border-radius: 10px;
 }
  */
+/* Container to center the dropdown */
+/* Container to center the dropdown */
+.dropdown-container {
+  display: flex;
+  justify-content: left;
+  margin-bottom: 20px;
+  position: relative; /* Position relative for the dropdown arrow */
+}
+
+/* Dropdown styling */
+#dataSelector {
+  appearance: none; /* Remove default dropdown styling */
+  padding: 10px 15px;
+  padding-right: 40px; /* Space for the dropdown arrow */
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #DA2127;
+  border: 2px solid #DA2127;
+  border-radius: 8px;
+  outline: none;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+/* Dropdown arrow styling */
+#dataSelector::-ms-expand {
+  display: none; /* Remove the default arrow in IE */
+}
+
+.dropdown-container::after {
+  content: '\25BC'; /* Unicode for downward arrow */
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: white;
+  font-size: 18px;
+}
+
+/* Hover effect */
+#dataSelector:hover {
+  background-color: #b81b22;
+  border-color: #b81b22;
+}
+
+/* Focus effect */
+#dataSelector:focus {
+  background-color: #b81b22;
+  border-color: #b81b22;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Option Styling */
+#dataSelector option {
+  background-color: #ffffff;
+  color: #333333;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 500;
+}

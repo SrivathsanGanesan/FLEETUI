@@ -31,13 +31,11 @@ export type ChartOptions = {
 export class AreaChartComponent implements OnInit {
   public chartOptions: ChartOptions;
 
-  
   constructor() {
     this.chartOptions = {
       series: [{
         name: "Series 1",
         data: [45, 52, 38, 45, 19, 23, 50]
-        
       }],
       chart: {
         height: 280,
@@ -106,19 +104,35 @@ export class AreaChartComponent implements OnInit {
       }
     };
   }
-  
-  
 
   ngOnInit(): void {
     // Any additional logic can go here
-    
+  }
+
+  updateChart(event: Event): void {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+
+    switch (selectedValue) {
+      case 'data1':
+        this.chartOptions.series = [{ name: "Series 1", data: [45, 52, 38, 45, 19, 23, 50] }];
+        this.chartOptions.xaxis.categories = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+        break;
+      case 'data2':
+        this.chartOptions.series = [{ name: "Series 2", data: [30, 40, 45, 50, 49, 60, 70] }];
+        this.chartOptions.xaxis.categories = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb"];
+        break;
+      case 'data3':
+        this.chartOptions.series = [{ name: "Series 3", data: [20, 29, 37, 36, 44, 45, 50] }];
+        this.chartOptions.xaxis.categories = ["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"];
+        break;
+      case 'data4':
+        this.chartOptions.series = [{ name: "Series 4", data: [15, 18, 28, 29, 39, 46, 55] }];
+        this.chartOptions.xaxis.categories = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
+        break;
+      case 'data5':
+        this.chartOptions.series = [{ name: "Series 5", data: [50, 60, 55, 48, 38, 33, 45] }];
+        this.chartOptions.xaxis.categories = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+        break;
+    }
   }
 }
-setTimeout(() => {
-  const paths = document.querySelectorAll('.apexcharts-area-series path');
-  paths.forEach((path: any) => {
-    path.setAttribute('stroke', '#FF0000');
-  });
-}, 500); // Ensure the chart has fully rendered before manipulating
-
-

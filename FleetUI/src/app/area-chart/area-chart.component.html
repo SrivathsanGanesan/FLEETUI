@@ -1,10 +1,21 @@
-<div id="chart">
-    <apx-chart
-      [series]="chartOptions.series"
-      [chart]="chartOptions.chart"
-      [xaxis]="chartOptions.xaxis"
-      [fill]="chartOptions.fill"
-      [dataLabels]="chartOptions.dataLabels">
-    </apx-chart>
-  </div>
-  
+<div class="dropdown-container">
+  <select id="dataSelector" (change)="updateChart($event)">
+    <option value="data1">Throughput</option>
+    <option value="data2">Starvation rate</option>
+    <option value="data3">Task allocation</option>
+    <option value="data4">Pick accuracy</option>
+    <option value="data5">Error rate</option>
+  </select>
+</div>
+
+<apx-chart
+  [series]="chartOptions.series"
+  [chart]="chartOptions.chart"
+  [xaxis]="chartOptions.xaxis"
+  [yaxis]="chartOptions.yaxis"
+  [fill]="chartOptions.fill"
+  [dataLabels]="chartOptions.dataLabels"
+  [stroke]="chartOptions.stroke"
+  [tooltip]="chartOptions.tooltip"
+  [grid]="chartOptions.grid"
+></apx-chart>

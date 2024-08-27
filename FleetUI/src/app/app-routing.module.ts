@@ -11,6 +11,7 @@ import { Userlogscomponent } from './userlogs/userlogs.component';
 import { UsermanagementComponent } from './usermanagement/usermanagement.component';
 import { RobotsComponent } from './robots/robots.component';
 import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.component';
+import { TasksComponent } from './tasks/tasks.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,11 @@ const routes: Routes = [
   {
     path: 'robots',
     component: RobotsComponent,
+    canActivate: [AuthGuard, ProjectGuard],
+  },
+  {
+    path: 'tasks',
+    component: TasksComponent,
     canActivate: [AuthGuard, ProjectGuard],
   },
   {

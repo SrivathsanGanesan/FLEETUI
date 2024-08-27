@@ -1,5 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ApexNonAxisChartSeries, ApexResponsive, ApexChart, ApexPlotOptions, ApexDataLabels, ApexFill, ApexLegend, ApexTitleSubtitle } from 'ng-apexcharts';
+import { 
+  ApexNonAxisChartSeries, 
+  ApexResponsive, 
+  ApexChart, 
+  ApexPlotOptions, 
+  ApexDataLabels, 
+  ApexFill, 
+  ApexLegend, 
+  ApexTitleSubtitle 
+} from 'ng-apexcharts';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -27,7 +36,8 @@ export class GradientDonutComponent implements OnInit {
   @Input() dataLabelsEnabled: boolean = false;
   @Input() fillType: string = 'gradient';
   @Input() titleText: string = 'Total activities';
-  // @Input() donutThickness: string = '100px';  
+  @Input() legendFontSize: string = '17px'; // New input for legend font size
+  @Input() dataLabelFontSize: string = '14px'; // New input for data label font size
   @Input() responsive: ApexResponsive[] = [{
     breakpoint: 480,
     options: {
@@ -44,7 +54,6 @@ export class GradientDonutComponent implements OnInit {
   };
 
   public chartOptions: Partial<ChartOptions> | any;
-  
 
   constructor() {
     this.chartOptions = {};
@@ -61,22 +70,22 @@ export class GradientDonutComponent implements OnInit {
         pie: {
           startAngle: this.startAngle,
           endAngle: this.endAngle,
-          // donut: {
-          //   size: `${this.donutThickness}%`
-          // }
         }
-     
       },
       dataLabels: {
-        enabled: this.dataLabelsEnabled
+        enabled: this.dataLabelsEnabled,
+        style: {
+          fontSize: this.dataLabelFontSize, // Set font size for data labels
+        }
       },
       fill: {
         type: this.fillType
       },
       legend: {
+        fontSize: this.legendFontSize, // Set font size for legend labels
         formatter: this.legendFormatter
       },
-      labels: this.labels,  // Assigning the labels here
+      labels: this.labels, // Assigning the labels here
       responsive: [{
         breakpoint: 480,
         options: {
@@ -90,8 +99,7 @@ export class GradientDonutComponent implements OnInit {
       }],
       title: {
         text: this.titleText
-      },
-      // responsive: this.responsive
+      }
     };
   }
 }

@@ -43,7 +43,7 @@
     margin-bottom: 20px;
     
   }
-  
+/*   
   .battery-container {
     display: flex;
     justify-content: center;
@@ -70,7 +70,7 @@
     height: 100%;
     background-color: green;
     border-radius: 5px 0 0 5px;
-  }
+  } */
   
   .robot-info {
     flex: 1;
@@ -210,5 +210,35 @@
    }
 
 
-
-  
+/* 
+  battery */
+  .loader {
+    width: 100px;
+    height: 50px;
+    border: 4px solid #03c148;
+    border-right-color: transparent;
+    padding: 6px;
+    background: repeating-linear-gradient(90deg,#03c148 0 20px,#0000 0 30px)
+      left/0% 100% no-repeat content-box content-box;
+    position: relative;
+    animation: p5 2s infinite steps(6);
+   }
+   .loader::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: 100%;
+    width: 20px;
+    background: linear-gradient(
+          #0000   calc(50% - 14px),#03c148 0 calc(50% - 10px),
+          #0000 0 calc(50% + 10px),#03c148 0 calc(50% + 14px),#0000 0) left /100% 100%,
+      linear-gradient(#03c148 calc(50% - 10px),#0000        0 calc(50% + 10px),#03c148 0) left /4px 100%,
+      linear-gradient(#0000        calc(50% - 10px),#03c148 0 calc(50% + 10px),#0000        0) right/4px 100%;
+    background-repeat: no-repeat;
+   }
+   @keyframes p5 {
+    100% {
+      background-size: 120% 100%
+    }
+   }
