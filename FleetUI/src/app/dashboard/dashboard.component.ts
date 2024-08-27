@@ -48,6 +48,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async ngOnInit() {
+    return;
     let mapData = this.projectService.getSelectedProject().sites;
     let mapArr = [];
     mapArr = mapData
