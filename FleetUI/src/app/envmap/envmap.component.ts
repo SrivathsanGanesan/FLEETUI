@@ -204,27 +204,7 @@ export class EnvmapComponent implements AfterViewInit {
     );
   }
 
-  @HostListener('click', ['$event'])
-  onImagePopupCanvasClick(event: MouseEvent): void {
-    if (!this.showImagePopup || !this.imagePopupCanvas) return;
 
-    const canvas = this.imagePopupCanvas.nativeElement;
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-
-    if (this.points.length < 2) {
-      this.points.push({ x, y });
-      this.plotPointOnImagePopupCanvas(x, y);
-
-      if (this.points.length === 2) {
-        console.log('Two points plotted:', this.points);
-        const distance = this.calculateDistance(this.points[0], this.points[1]);
-        console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
-        this.showDistanceDialog = true; // Show the distance input dialog
-      }
-    }
-  }
   confirmDistance(): void {
     if (
       this.distanceBetweenPoints !== null &&
@@ -282,16 +262,20 @@ export class EnvmapComponent implements AfterViewInit {
   }
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-
+    const ctx = canvas.getContext('2d');  
     if (ctx) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-
-      // Clear points array and logs
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      // Reset the points array and hide the distance dialog
       this.points = [];
-      console.clear(); // Clear console logs
-
-      // Redraw image if needed
+      this.showDistanceDialog = false;
+  
+  
+      // Clear console logs if needed
+      console.clear();
+  
+      // Redraw the image if necessary
       const img = new Image();
       img.src = this.imageSrc || '';
       img.onload = () => {
@@ -301,7 +285,28 @@ export class EnvmapComponent implements AfterViewInit {
       };
     }
   }
-
+  
+  @HostListener('click', ['$event'])
+  onImagePopupCanvasClick(event: MouseEvent): void {
+    if (!this.showImagePopup || !this.imagePopupCanvas) return;
+  
+    const canvas = this.imagePopupCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+  
+    if (this.points.length < 2) {
+      this.points.push({ x, y });
+      this.plotPointOnImagePopupCanvas(x, y);
+  
+      if (this.points.length === 2) {
+        console.log('Two points plotted:', this.points);
+        const distance = this.calculateDistance(this.points[0], this.points[1]);
+        console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
+        this.showDistanceDialog = true; // Show the distance input dialog
+      }
+    }
+  }
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
