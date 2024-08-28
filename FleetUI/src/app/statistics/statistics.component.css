@@ -44,7 +44,7 @@
 
 .stat-card,
 
-.donut-chart,
+.app-gradient-donut,
 .operation-activities,
 .notifications {
   flex: 1;
@@ -133,14 +133,14 @@
 }
 
 .stat-title {
-  font-size: 12px;
+  font-size: 16px;
   color: #888888;
 }
 
 .stat-value {
   font-size: 24px;
   font-weight: 600;
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 .stat-change {
@@ -161,11 +161,49 @@
 }
 
 /* General styling for the donut chart */
+/* General styling for the donut chart */
 .donut-chart {
+  flex: 0.7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+  width: 100%;
+  max-width: 500px; /* Adjust as needed */
+  min-width: 300px; /* Adjust as needed */
+  height: auto;
+}
+
+.donut-chart svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+.donut-chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Making sure the donut chart adjusts properly within its container */
+@media (max-width: 768px) {
+  .donut-chart {
+    max-width: 300px; /* Make it smaller for smaller screens */
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .donut-chart {
+    max-width: 200px; /* Further reduce size for very small screens */
+    padding: 10px;
+  }
 }
 
 .area-chart-container {
@@ -368,10 +406,10 @@
 
 
 
-.dashboard-content {
+/* .dashboard-content {
   padding: 20px;
-  /* Add any additional styling for the content area */
-}
+  
+} */
  
 .search-filter-container {
   position: sticky;
@@ -567,14 +605,14 @@
 }
 
 .stat-title {
-  font-size: 12px;
+  font-size: 16px;
   color: #888888;
-  margin-top:-15px;
+  margin-top:-13px;
 }
 
 .stat-value {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 500;
 }
 
 h2 {
@@ -693,7 +731,7 @@ h2 {
   border-radius: 8px;
   padding: 5px;
   width: 100%;
-  flex-grow: 1; /* Ensures the chart container grows to fill available space */
+  flex-grow: 1; 
 }
 
 /* activities container styles */
