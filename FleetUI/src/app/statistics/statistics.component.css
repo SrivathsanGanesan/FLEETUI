@@ -1,4 +1,7 @@
 .mainContent {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
   position: absolute;
   top: 30px;
   left: 70px;
@@ -23,7 +26,25 @@
   z-index: 100; /* Sidebar stays on top */
 }
 
+.top-row {
+  display: flex;
+  justify-content: space-between;
+}
 
+.middle-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+
+.stat-card,
+.donut-chart,
+.operation-activities,
+.notifications {
+  flex: 1;
+  margin-right: 20px;
+}
 
 
 
@@ -79,6 +100,165 @@
 .slider.right {
   transform: translateX(100%);
 }
+
+
+.donut-chart {
+  flex: 0.7;
+}
+
+.notifications {
+  flex: 0.6;
+}
+
+.stat-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  text-align: left;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-title {
+  font-size: 12px;
+  color: #888888;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.stat-change {
+  font-size: 14px;
+}
+
+.stat-change.positive {
+  color: #4CAF50;
+}
+
+.stat-change.negative {
+  color: #F44336;
+}
+
+.stat-chart svg {
+  width: 100%;
+  height: auto;
+}
+
+/* General styling for the donut chart */
+.donut-chart {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.area-chart-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+}
+
+/* Styling for operation activities and notifications */
+.operation-activities,
+.notifications {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.operation-activities .section-header,
+.notifications .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFD6D6;
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.view-all-btn {
+  background-color: #7854f7;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
  .tab-container {
@@ -512,12 +692,9 @@ h2 {
 
 /* activities container styles */
 
-app-gradient-donut{
-  position: fixed;
-    display: flex;
-    position: absolute; /* Position the Operation Pie component absolutely */
-    right: 160px; /* Align it to the right side */
-    top: calc(100% + 10px); /* Place it below the stat cards with a 20px margin */
-    width: 300px; /* Ensure it matches the intended width */
-
- }
+.donut-chart {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
