@@ -169,7 +169,7 @@
 
 .search-box input {
   border: none;
-  padding: 2%;
+  padding: 1%;
   outline: none;
   width: 100%;
   font-size: 1.0vw;
@@ -208,8 +208,8 @@
 .dashboard-container {
   display: flex;
   justify-content: space-between;
-  gap: 2%;
-  margin-top: 2%;
+  gap: 1%;
+  margin-top: 1%;
   padding: 0;
   width: 100%;
   box-sizing: border-box;
@@ -219,7 +219,7 @@
 .robot-activity-container {
   flex: 1;
   background-color: #fff;
-  padding: 2%;
+  padding: 0.5%;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -228,7 +228,7 @@
 .notifications-container {
   flex: 0.65;
   background-color: #fff;
-  padding: 2%;
+  padding: 0.5%;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -238,16 +238,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2%;
+  margin-bottom: 1%;
   background-color: #FFD6D6;
-  padding: 2%;
+  padding: 0.5%;
   border-radius: 5px;
 }
 
 /* Header text */
 .section-header h3 {
   margin: 0;
-  font-size: 1.5vw;
+  font-size: 1.0vw;
   font-weight: 600;
   color: #333;
 }
@@ -256,11 +256,11 @@
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 2%;
+  padding: 1%;
   border-radius: 5px;
   border: none;
   cursor: pointer;
-  font-size: 1vw;
+  font-size: 0.8vw;
 }
 
 /* General table styling */
@@ -276,7 +276,7 @@
 
 .activity-table td, .notifications-table td {
   padding: 1%;
-  font-size: 1.2vw;
+  font-size: 0.8vw;
   color: #555;
 }
 
@@ -307,7 +307,7 @@
 .statistics-container {
   position: absolute;
   top: 6%;
-  right: 2%;
+  right: 1%;
   display: flex;
   gap: 2%;
 }
@@ -448,12 +448,12 @@ h2 {
   position: sticky;
   display: flex;
   flex-direction: column;
-  margin-top: 2%;
-  max-width: 65%;
+  margin-top: 1%;
+  max-width: 63%;
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  padding: 2%;
+  padding: 0.8%;
   width: 100%;
   flex-grow: 1;
 }
@@ -462,10 +462,11 @@ h2 {
 app-gradient-donut {
   position: absolute;
   display: flex;
-  max-width: 30%;
-  right: 2%;
-  top: 60%;
-  width: 30vw;
+  
+  max-width: 40%;
+  right: 10%;
+  top: 50%;
+  width: 35vw;
   height: 30vw;
   justify-content: center;
   align-items: center;
