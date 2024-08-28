@@ -13,8 +13,6 @@ import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
-
-
 interface Poll {
   ip: string;
   mac: string;
