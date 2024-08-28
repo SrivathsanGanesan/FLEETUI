@@ -1,11 +1,11 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild } from '@angular/core';
 import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
   ApexChart,
   ApexFill,
-  ChartComponent
-} from "ng-apexcharts";
+  ChartComponent,
+} from 'ng-apexcharts';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -18,10 +18,10 @@ export type ChartOptions = {
 @Component({
   selector: 'app-uptime',
   templateUrl: './uptime.component.html',
-  styleUrls: ['./uptime.component.css']
+  styleUrls: ['./uptime.component.css'],
 })
 export class UptimeComponent {
-  @ViewChild("chart") chart!: ChartComponent;
+  @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
   constructor() {
@@ -30,8 +30,7 @@ export class UptimeComponent {
       chart: {
         width: 280, // Increased width
         height: 320, // Increased height
-        type: "radialBar",
-
+        type: 'radialBar',
       },
       plotOptions: {
         radialBar: {
@@ -40,34 +39,34 @@ export class UptimeComponent {
           startAngle: -90,
           endAngle: 90,
           hollow: {
-            size: "70%"  // Adjust the hollow size to reduce the bar width
+            size: '70%', // Adjust the hollow size to reduce the bar width
           },
-          track: {            
-            background: "#e7e7e7",
-            strokeWidth: "70%",
-            margin: 1 // margin is in pixels
+          track: {
+            background: '#e7e7e7',
+            strokeWidth: '70%',
+            margin: 1, // margin is in pixels
           },
           dataLabels: {
             name: {
               show: true,
               offsetY: 45, // Adjusted to fit the larger chart size
-              fontSize: "16px", // Increased font size
-              color:"#FF3333"
+              fontSize: '16px', // Increased font size
+              color: '#FF3333',
             },
             value: {
               offsetY: 0, // Adjusted to fit the larger chart size
-              fontSize: "40px", // Increased font size
-              color:"#FF3333"
-            }
-          }
-        }
+              fontSize: '40px', // Increased font size
+              color: '#FF3333',
+            },
+          },
+        },
       },
       fill: {
-        type: "gradient",
+        type: 'gradient',
         gradient: {
-          shade: "light",
+          shade: 'light',
           shadeIntensity: 0.4,
-          gradientToColors: ["#FFB3B3"],
+          gradientToColors: ['#FFB3B3'],
           inverseColors: false,
           opacityFrom: 1,
           opacityTo: 1,
@@ -75,18 +74,18 @@ export class UptimeComponent {
           colorStops: [
             {
               offset: 0,
-              color: "#FFB3B3",
-              opacity: 1
+              color: '#FFB3B3',
+              opacity: 1,
             },
             {
               offset: 100,
-              color: "#FF3333",
-              opacity: 1
-            }
-          ]
-        }
+              color: '#FF3333',
+              opacity: 1,
+            },
+          ],
+        },
       },
-      labels: ["Average Time"]
+      labels: ['Average Time'],
     };
   }
 }

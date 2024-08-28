@@ -1,0 +1,93 @@
+<div class="flex h-screen">
+    <div class="flex-grow ml-64 p-8 h-screen overflow-hidden">
+      <div class="mainContent flex flex-col h-full justify-center items-center">
+        
+        <!-- Header section -->
+        <div class="header-section">
+          <h1 class="header-title">{{ activeHeader }}</h1>
+          <div class="subheader-container">
+            <div class="subheader-text">Create and edit task reports</div>
+            <img src="../../assets/icons/i-icon.svg" alt="Icon" class="subheader-icon">
+          </div>
+        </div>
+  
+        <!-- search container -->
+        <div class="search-filter-container">
+          <!-- Search Bar -->
+          <div class="search-box">
+            <input type="text" placeholder="Search For Something..." />
+            <button class="search-btn">
+              <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
+            </button>
+          </div>
+        
+          <!-- Options Container -->
+          <div class="options-container">
+            <div class="filter-options">
+              <button [class.active]="activeFilter === 'today'" (click)="setActiveFilter('today')">Today</button>
+              <button [class.active]="activeFilter === 'week'" (click)="setActiveFilter('week')">Week</button>
+              <button [class.active]="activeFilter === 'month'" (click)="setActiveFilter('month')">Month</button>
+            </div>
+          
+            <div class="date-inputs">
+              <label for="start-date" class="date-label"></label>
+              <input type="date" id="start-date" (change)="onDateChange($event)" class="date-input">
+          
+              <label for="end-date" class="date-label"></label>
+              <input type="date" id="end-date" (change)="onDateChange($event)" class="date-input">
+            </div>
+          </div>  
+        </div>
+  
+        <!-- Table -->
+        <div class="table-container">
+          <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
+            <div class="overflow-y-auto max-h-[32rem] w-full">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.no</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source and destination</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot</th>
+                    
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr *ngFor="let item of taskData">
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column6 }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Export -->
+        <div class="export-button-container">
+          <button class="export-button" (click)="showPopup()">Export</button>
+          <div *ngIf="isPopupVisible" class="export-popup">
+            <div class="popup-content">
+              <div class="close-icon-container">
+                <button class="close-icon" (click)="closePopup()">&times;</button>
+              </div>
+              <h3>Select Format</h3>
+              <div class="button-container">
+                <button (click)="exportData('csv')">Export as CSV</button>
+                <button (click)="exportData('excel')">Export as Excel</button>
+                <button (click)="exportData('pdf')">Export as PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

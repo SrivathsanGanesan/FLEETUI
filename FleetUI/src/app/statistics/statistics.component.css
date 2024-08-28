@@ -254,153 +254,107 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 } */
 
-.tasks-table {
-  position: fixed;
+.dashboard-container {
+  display: flex;
+  justify-content: space-between; /* Distribute space between items */
+  gap: 15px; /* Adjust the gap between the two tables */
+  margin-top: 10px; /* Reduce the margin to save space */
+  padding: 0; /* Remove any extra padding */
   width: 100%;
-  border-collapse: collapse;
-  
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Styling for the robot activity table */
+.robot-activity-container {
+  flex: 1; /* Allow the container to take up available space proportionally */
+  background-color: #fff;
+  padding: 8px; /* Reduced padding */
   border-radius: 8px;
-  
-  margin-top: 15px; /* Add margin to separate from the chart */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Slightly lighter shadow */
 }
 
-.tasks-table table {
-  width: 100%;
-  border-spacing: 0;
+/* Styling for the notifications table */
+.notifications-container {
+  flex: 0.65; /* Allow the container to take up less space than the robot activity table */
+  background-color: #fff;
+  padding: 8px; /* Reduced padding */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Matching the shadow for consistency */
 }
 
-.tasks-table thead {
-  background-color: #FFD6D6;
-  color: #000;
-}
-
-.tasks-table thead th {
-  padding: 8px 10px; /* Reduced padding for tighter columns */
-  text-align: left;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.tasks-table tbody {
-  background-color: #FFF;
-}
-
-.tasks-table tbody tr {
-  border-bottom: 1px solid #eee;
-}
-
-.tasks-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.tasks-table tbody td {
-  padding: 8px 10px; /* Reduced padding for tighter columns */
-  text-align: left;
-  font-size: 14px;
-  color: #444;
-}
-
-.tasks-table tbody td:first-child {
-  font-weight: bold;
-}
-
-.tasks-table tbody td:nth-child(3) {
-  color: green; /* Status color - customize as needed */
-  font-weight: bold;
-}
-
-.tasks-table tbody td:nth-child(4) {
+/* Styling for the section headers */
+.section-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 5px;
+  margin-bottom: 5px; /* Reduced margin to save space */
+  background-color: #FFD6D6; /* Pink background for header */
+  padding: 8px; /* Add padding to the header for better spacing */
+  border-radius: 5px;
 }
 
-.tasks-table tbody td:nth-child(4) .battery-bar {
-  width: 60px;
-  height: 8px;
-  background-color: #eee;
-  border-radius: 4px;
-  position: relative;
+/* Header text */
+.section-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
 }
 
-.tasks-table tbody td:nth-child(4) .battery-bar .fill {
-  height: 100%;
-  border-radius: 4px;
-  background-color: green; /* Battery fill color */
-}
-
-.tasks-table tbody td:last-child {
-  display: flex;
-  gap: 5px;
-}
-
-.tasks-table tbody td button {
-  padding: 4px 8px; /* Reduced padding for smaller buttons */
+/* View All button */
+.view-all-btn {
+  background-color: #7854f7;
+  color: white;
+  padding: 4px 8px; /* Reduced padding */
+  border-radius: 5px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
 }
 
-.tasks-table tbody td button:first-child {
-  background-color: #DA2127; /* Edit button color */
-  color: white;
+/* General table styling */
+.activity-table, .notifications-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
 }
 
-.tasks-table tbody td button:last-child {
-  background-color: #DA2127; /* Delete button color */
-  color: white;
+.activity-table tr, .notifications-table tr {
+  border-bottom: 1px solid #eee;
 }
 
-.tasks-table tbody tr:hover {
-  background-color: #f9f9f9;
+.activity-table td, .notifications-table td {
+  padding: 4px; /* Reduced padding for spacing */
+  font-size: 14px; /* Set the font size */
+  color: #555; /* Set the text color */
 }
 
-.tasks-table .new-task-btn {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
+/* Specific styling for the first column in both tables (e.g., ID column) */
+.activity-table td:first-child, .notifications-table td:first-child {
+  font-weight: bold; /* Make the text bold */
+  color: #333; /* Set a darker color for emphasis */
 }
 
-.tasks-table .new-task-btn button {
-  padding: 10px 20px;
-  background-color: #FF8C8C; /* New Task button color */
-  border: none;
-  border-radius: 4px;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
+/* Optional: Add background color for alternating rows */
+.activity-table tr:nth-child(odd), .notifications-table tr:nth-child(odd) {
+  background-color: #f9f9f9; /* Light gray for odd rows */
 }
 
-.tasks-table .new-task-btn button:hover {
-  background-color: #ff6666;
+/* Hover effect for table rows */
+.activity-table tr:hover, .notifications-table tr:hover {
+  background-color: #f1f1f1; /* Slightly darker gray on hover */
 }
 
-.tasks-table h3 {
-  font-size: 24px; /* Adjusted font size */
-  font-weight: bold;
-  color: #5c5c5c;
-  margin: 0px 0 5px 0; /* Adjusted margin */
-  padding: 0px;
+/* Align text in the first column */
+.activity-table td:first-child, .notifications-table td:first-child {
+  text-align: left;
 }
 
-.tasks-table h4 {
-  font-size: 12px; /* Adjusted font size */
-  color: #999;
-  margin: 0 0 10px 0; /* Adjusted margin */
-  padding: 0;
+/* Align text in the rest of the columns */
+.activity-table td:not(:first-child), .notifications-table td:not(:first-child) {
+  text-align: left; /* Adjust as needed (left, center, right) */
 }
 
-button {
-  background-color: #ff6666;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 5px;
-}
 
 .statistics-container {
   position: absolute;
@@ -442,6 +396,37 @@ h2 {
   font-size: 32px;
 }
 
+/* Styling for positive stat change */
+.stat-change.positive {
+  color: #4CAF50; /* Green color */
+  font-weight: medium;
+  font-size: 0.8 rem; /* Adjust the size as needed */
+  display: flex;
+  align-items: center;
+}
+
+.stat-change.positive span {
+  margin-left: 5px;
+  font-size: 0.8 rem; /* Adjust the size of the arrow */
+  color: #4CAF50; /* Match the arrow color with the text */
+}
+
+/* Styling for negative stat change */
+.stat-change.negative {
+  color: #F44336; /* Red color for negative change */
+  font-weight: medium;
+  font-size: 0.8 rem; /* Adjust the size as needed */
+  display: flex;
+  align-items: center;
+}
+
+.stat-change.negative span {
+  margin-left: 5px;
+  font-size: 0.8 rem; /* Adjust the size of the arrow */
+  color: #F44336; /* Match the arrow color with the text */
+}
+
+/* General styling for stat-chart */
 .stat-chart {
   position: absolute; /* Absolutely position the SVG */
   right: 30px; /* Align it to the right with some padding */
@@ -451,68 +436,88 @@ h2 {
   height: 70px; /* Set height explicitly */
 }
 
-
 .loading svg polyline {
-    
   fill: none;
   stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
- }
- .loading svg polyline#back {
-  fill: none;
+}
+
+.stat-chart svg {
+  width: 100%; /* Make SVG fill the container */
+  height: auto;
+}
+
+/* Specific styling for Stat Card 1 (red color) */
+.stat-card-1 .loading svg polyline#back {
   stroke: #ff4d5033;
- }
- .loading svg polyline#front {
-  fill: none;
-  stroke: #ff0303;
+}
+
+.stat-card-1 .loading svg polyline#front {
+  stroke: #DA2127;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
- }
- @keyframes dash_682 {
+}
+
+/* Specific styling for Stat Card 2 (green color) */
+.stat-card-2 .loading svg polyline#back {
+  stroke: #4CAF5033;
+  stroke: #FFC10733;
+}
+
+.stat-card-2 .loading svg polyline#front {
+  stroke: #FFC107;
+  stroke-dasharray: 48, 144;
+  stroke-dashoffset: 192;
+  animation: dash_682 1.4s linear infinite;
+  
+}
+
+/* Specific styling for Stat Card 3 (yellow color) */
+.stat-card-3 .loading svg polyline#back {
+  stroke: #4CAF5033;
+}
+
+.stat-card-3 .loading svg polyline#front {
+  stroke: #4CAF50;
+  stroke-dasharray: 48, 144;
+  stroke-dashoffset: 192;
+  animation: dash_682 1.4s linear infinite;
+}
+
+/* Keyframes for dash animation */
+@keyframes dash_682 {
   72.5% {
     opacity: 0;
   }
   to {
     stroke-dashoffset: 0;
   }
- }
-.stat-chart svg {
-  width: 100%; /* Make SVG fill the container */
-  height: auto
 }
 
 .area-chart-container {
   position: sticky;
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
-  max-width: 950px; 
+  margin-top: 19px;
+  max-width: 942px; 
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  padding: 10px;
+  padding: 5px;
   width: 100%;
   flex-grow: 1; /* Ensures the chart container grows to fill available space */
 }
 
 /* activities container styles */
-app-operation-pie {
-  position: fixed;
-  display: flex;
-  position: absolute; /* Position the Operation Pie component absolutely */
-  right: 140px; /* Align it to the right side */
-  top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
-  width: 300px; /* Ensure it matches the intended width */
-}
 
 app-gradient-donut{
   position: fixed;
     display: flex;
     position: absolute; /* Position the Operation Pie component absolutely */
-    right: 140px; /* Align it to the right side */
-    top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
+    right: 160px; /* Align it to the right side */
+    top: calc(100% + 10px); /* Place it below the stat cards with a 20px margin */
     width: 300px; /* Ensure it matches the intended width */
 
  }

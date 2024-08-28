@@ -28,158 +28,100 @@
             <app-area-chart></app-area-chart>
         </div>
         <!--  -->
+
+        <div class="dashboard-container">
+          <!-- Robot Activity Section -->
+          <div class="robot-activity-container">
+            <div class="section-header">
+              <h3>Operation Activities</h3>
+              <button class="view-all-btn">View All</button>
+            </div>
+            <table class="activity-table">
+              <tr *ngFor="let activity of robotActivities">
+                <td>{{ activity.id }}</td>
+                <td>{{ activity.name }} - {{ activity.task }} - {{ activity.progress }}% - {{ activity.status }}</td>
+              </tr>
+            </table>
+          </div>
         
-        <div class="tasks-table">
-          <!-- <div class="table-header">
-          <h3>Task Statistics</h3>          
-        </div> -->
-          <table>
-            <thead>
-              <tr>
-                <th>s.no</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Battery</th>
-                <th>Robot location</th>
-                <th>Task</th>
-                <th>Actions</th>
+          <!-- Notifications Section -->
+          <div class="notifications-container">
+            <div class="section-header">
+              <h3>Notifications</h3>
+              <button class="view-all-btn">View All</button>
+            </div>
+            <table class="notifications-table">
+              <tr *ngFor="let notification of notifications">
+                <td>{{ notification.message }} - {{ notification.timestamp }}</td>
               </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Forklift</td>
-                <td style="color: green;">Completed</td>
-                <td>
-                  50%
-                  <div class="battery-bar">
-                    <div class="fill" style="width: 50%;"></div>
-                  </div>
-                </td>
-                <td>86,75.92.01</td>
-                <td>Picked rack no 21</td>
-                <td>
-                  <button>Edit</button>
-                  <button>Delete</button>
-                </td>
-              </tr>
-        
-              <tr>
-                <td>2</td>
-                <td>Pallet stacker</td>
-                <td style="color: #FF8C8C;">In progress</td>
-                <td>
-                  27%
-                  <div class="battery-bar">
-                    <div class="fill" style="width: 27%; background-color: #FF8C8C;"></div>
-                  </div>
-                </td>
-                <td>86,75.92.01</td>
-                <td>Charging</td>
-                <td>
-                  <button>Edit</button>
-                  <button>Delete</button>
-                </td>
-              </tr>
-        
-              <tr>
-                <td>3</td>
-                <td>Counterbalance</td>
-                <td style="color: green;">Completed</td>
-                <td>
-                  60%
-                  <div class="battery-bar">
-                    <div class="fill" style="width: 60%;"></div>
-                  </div>
-                </td>
-                <td>86,75.92.01</td>
-                <td>Dropped rack 10</td>
-                <td>
-                  <button>Edit</button>
-                  <button>Delete</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            </table>
+          </div>
         </div>
         
-         <!-- Stat card 1 -->
-          <div class="statistics-container">
-            <div class="stat-card">
-              <div class="stat-title">Statistics</div>
-              <div class="stat-value">System uptime</div>
-              <h2>214</h2>
-              <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
-              <div class="stat-chart">
-                <section>
+        <!-- Stat card 1 -->
+              <div class="statistics-container">
+                <div class="stat-card stat-card-1">
+                  <div class="stat-title">Statistics</div>
+                  <div class="stat-value">System uptime</div>
+                  <h2>214</h2>
+                  <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
+                  <div class="stat-chart">
+                    <section>
+                      <div class="loading">
+                        <svg width="140px" height="100px">
+                          <polyline id="back" points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486"></polyline>
+                          <polyline id="front" points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486"></polyline>
+                        </svg>
+                      </div>
+                    </section>
+                  </div>
+                </div>
                 
-                  <div class="loading">
-                    <svg width="140px" height="100px">
-                    <polyline points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,
-                    63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" id="back"></polyline>
-                    <polyline points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,
-                    63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" id="front"></polyline>
-                    </svg>
-                    </div>
+                <!-- Stat card 2 -->
+                <div class="stat-card stat-card-2">
+                  <div class="stat-title">Statistics</div>
+                  <div class="stat-value">Responsiveness</div>
+                  <h2>127</h2>
+                  <div class="stat-change positive">+33.06% <span>&uarr;</span></div>
+                  <div class="stat-chart">
+                    <section>
+                      <div class="loading">
+                        <svg width="140px" height="100px">
+                          <polyline id="back" points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486"></polyline>
+                          <polyline id="front" points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486"></polyline>
+                        </svg>
+                      </div>
+                    </section>
+                  </div>
+                </div>
                 
-                </section>
-              </div>
-            </div>
-               
-              <!-- Stat card 2 -->
-            <div class="stat-card">
-              <div class="stat-title">Statistics</div>
-              <div class="stat-value">Responsiveness</div>
-              <h2>127</h2>
-              <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
-              <div class="stat-chart">
-                <section>
-                
-                  <div class="loading">
-                    <svg width="140px" height="100px">
-                    <polyline points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,
-                    63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" id="back"></polyline>
-                    <polyline points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,
-                    63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" id="front"></polyline>
-                    </svg>
-                    </div>
-                
-                </section>
-              </div>
-            </div>
-            
-            <!-- Stat card 3 -->
-            <div class="stat-card">
-              <div class="stat-title">Statistics</div>
-              <div class="stat-value">Success rate</div>
-              <h2>40</h2>
-              <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
-              <div class="stat-chart">
-                <section>
-                
-                  <div class="loading">
-                    <svg width="140px" height="100px">
-                    <polyline points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,
-                    63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" id="back"></polyline>
-                    <polyline points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,
-                    63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" id="front"></polyline>
-                    </svg>
-                    </div>
-                
-                </section>
-              </div>
-            </div>
-            <!-- <app-operation-pie></app-operation-pie> -->
+                <!-- Stat card 3 -->
+                <div class="stat-card stat-card-3">
+                  <div class="stat-title">Statistics</div>
+                  <div class="stat-value">Success rate</div>
+                  <h2>40</h2>
+                  <div class="stat-change negative">-5.12% <span>&darr;</span></div>
+                  <div class="stat-chart">
+                    <section>
+                      <div class="loading">
+                        <svg width="140px" height="100px">
+                          <polyline id="back" points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486"></polyline>
+                          <polyline id="front" points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486"></polyline>
+                        </svg>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+               <!-- <app-operation-pie></app-operation-pie> -->
                   <app-gradient-donut
                   [series]="[410, 142, 340, 590]"
                   [labels]="['Approved', 'Pending', 'Under review', 'Rejected']"
-                  [legendFontSize]="'18px'"  
-                  [dataLabelFontSize]="'16px'" 
-                  [chartWidth]="500"
+                  [legendFontSize]="'14px'"  
+                  [dataLabelFontSize]="'14px'" 
+                  [chartWidth]="450"
                   [titleText]="'Activity Breakdown'">
                 </app-gradient-donut>
-
-          </div>
+             </div>
 
           <!-- Your existing Operation content goes here -->
           <!-- This part won't be hidden; it just won't be rendered when 'robot' is active -->
