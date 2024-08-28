@@ -138,68 +138,121 @@
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div>
+
+
+
+
       <!-- Node Details Popup -->
       <div #nodeDetailsPopup class="node-details-popup" [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'">
-        <p>Node Details</p>
-        <div class="node_details">
-            <p>Node ID: {{ nodeDetails.id }}</p>
-    
-            <div class="action-container">
-                <label for="nodeAction">Add Action:</label>
-                <select id="nodeAction" [(ngModel)]="selectedAction" (change)="onActionChange()">
-                    <option value="Move">Move</option>
-                    <option value="Dock">Dock</option>
-                    <option value="Undock">Undock</option>
-                </select>
-                <button (click)="addAction()">Add</button>
-            </div><br>
-    
-            <div *ngIf="actions.length > 0">
-                <p>Actions:</p>
-                <ul>
-                    <li *ngFor="let action of actions; let i = index">
-                        {{ action }}
-                        <button (click)="removeAction(i)">Delete</button>
-                    </li>
-                </ul>
-            </div>
-    
-            <label for="nodeDescription">Node Description:</label>
-            <input
-                type="text"
-                id="nodeDescription"
-                [(ngModel)]="nodeDetails.description"
-            /><br>
-        </div>
-    
-        <!-- Move Action Form -->
-        <div *ngIf="selectedAction === 'Move'" class="move-action-form">
-            <h4>Move Action Parameters</h4>
-            <label>Max Linear Velocity:</label>
-            <input type="number" [(ngModel)]="moveParameters.maxLinearVelocity" /><br>
-            <label>Max Angular Velocity:</label>
-            <input type="number" [(ngModel)]="moveParameters.maxAngularVelocity" /><br>
-            <label>Max Tolerance at Goal X:</label>
-            <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalX" /><br>
-            <label>Max Tolerance at Goal Y:</label>
-            <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalY" /><br>
-            <label>Max Tolerance at Goal Orientation:</label>
-            <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br>
-            <label>End Point Orientation:</label>
-            <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br>
-            <label>Auto Robot Operation Mode:</label>
-            <select [(ngModel)]="moveParameters.autoRobotMode">
+        
+        <div class="sampleCSS">
+          <div class="node_details">
+          <p>Node Details</p>
+          <p>Node ID: {{ nodeDetails.id }}</p>
+          <div class="action-container">
+            <label for="nodeAction">Add Action:</label>
+            <select id="nodeAction" [(ngModel)]="selectedAction" (change)="onActionChange()">
+              <option value="Move">Move</option>
+              <option value="Dock">Dock</option>
+              <option value="Undock">Undock</option>
+            </select>
+            
+          </div><br>
+          <div *ngIf="actions.length > 0">
+            <p>Actions:</p>
+            <ul>
+              <li *ngFor="let action of actions; let i = index">
+                {{ action }}
+                <button (click)="removeAction(i)">Delete</button>
+              </li>
+            </ul>
+          </div>
+          <label for="nodeDescription">Node Description:</label>
+          <input type="text" id="nodeDescription" [(ngModel)]="nodeDetails.description" /><br>
+          </div> 
+
+          <div>
+            <div *ngIf="selectedAction === 'Move'" class="move-action-form">
+              <p>Move Action Parameters</p>
+              <label>Max Linear Velocity:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxLinearVelocity" /><br>
+              <label>Max Angular Velocity:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxAngularVelocity" /><br>
+              <label>Max Tolerance at Goal X:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalX" /><br>
+              <label>Max Tolerance at Goal Y:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalY" /><br>
+              <label>Max Tolerance at Goal Orientation:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br>
+              <label>End Point Orientation:</label>
+              <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br>
+              <label>Auto Robot Operation Mode:</label>
+              <select [(ngModel)]="moveParameters.autoRobotMode">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
                 <!-- Add more options as needed -->
-            </select>
-        </div>
+              </select><br>
+              <button (click)="addAction()">Add</button>
+            </div>
     
+            <div *ngIf="selectedAction === 'Dock'" class="move-action-form">
+              <p>Dock Action Parameters</p>
+              <label>Max Linear Velocity:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxAngularVelocity" /><br>
+              <label>Max Tolerance at Goal X:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalX" /><br>
+              <label>Max Tolerance at Goal Y:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalY" /><br>
+              <label>Max Tolerance at Goal Orientation:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br>
+              <label>End Point Orientation:</label>
+              <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br>
+              <label>Auto Robot Operation Mode:</label>
+              <select [(ngModel)]="moveParameters.autoRobotMode">
+                <option value="mode1">Mode 1</option>
+                <option value="mode2">Mode 2</option>
+                <!-- Add more options as needed -->
+              </select><br>
+              <button (click)="addAction()">Add</button>
+            </div>
+    
+            <div *ngIf="selectedAction === 'Undock'" class="move-action-form">
+              <p>Undock Action Parameters</p>
+              <label>Max Linear Velocity:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxLinearVelocity" /><br>
+              <label>Max Angular Velocity:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxAngularVelocity" /><br>
+              <label>Max Tolerance at Goal X:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalX" /><br>
+              <label>Max Tolerance at Goal Y:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalY" /><br>
+              <label>Max Tolerance at Goal Orientation:</label>
+              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br>
+              <label>End Point Orientation:</label>
+              <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br>
+              <label>Auto Robot Operation Mode:</label>
+              <select [(ngModel)]="moveParameters.autoRobotMode">
+                <option value="mode1">Mode 1</option>
+                <option value="mode2">Mode 2</option>
+                <!-- Add more options as needed -->
+              </select><br>
+              <button (click)="addAction()">Add</button>
+            </div>
+          </div>
+
+        </div>
+       
+        
+        
+      
         <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
         <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
-    </div>
-    
+      </div>
       
+
+
+
+
       <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
         <div class="dropdown">
           <button class="dropdown-button">Add Node</button>

@@ -135,7 +135,7 @@ export class EnvmapComponent implements AfterViewInit {
       ctx!.drawImage(robotImage, x, y);
     }
   }
-  selectedAction: string = 'Move'; // Initialize with a default action
+  selectedAction: string = ''; // Initialize with an empty string or any other default value
   actions: string[] = []; // Array to hold the list of actions
 
   // Method to add an action to the list
@@ -268,12 +268,9 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
   
       // Reset the points array and hide the distance dialog
-      this.points = [];
+      this.points = [];      
       this.showDistanceDialog = false;
-  
-  
-      // Clear console logs if needed
-      console.clear();
+      this.distanceBetweenPoints = null;  // Reset distance if applicable
   
       // Redraw the image if necessary
       const img = new Image();
@@ -284,6 +281,9 @@ export class EnvmapComponent implements AfterViewInit {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       };
     }
+  
+    // Clear console logs after logging the message
+    console.clear();
   }
   
   @HostListener('click', ['$event'])

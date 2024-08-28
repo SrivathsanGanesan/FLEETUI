@@ -171,27 +171,16 @@ h2 {
   margin-top: 20px;
   position: relative;
 }
-.node-details-popup {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.81);
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  padding: 10px;
-  z-index: 1000;
-  display: flex;
-}
+
 .closenode-btn{
   margin-left: 20px;
 }
-.node_details{
-  margin: 10px;
-}
+
 .action-container select{
   border: none;
   border-bottom:1px solid black ;
   font-size: 15px;
   margin-left: 10px;
-
 }
 canvas {
   border: 1px solid #ccc;
@@ -270,18 +259,37 @@ canvas {
 .options-container button img {
   width: 30px; /* Adjust width as needed */
   height: auto; /* Keeps aspect ratio */
-  opacity: 1.5; /* Slightly dim the image on hover */
+  opacity: 1; /* Slightly dim the image on hover */
+}
+.node_details{
+  width: 50%;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
 }
 .node-details-popup {
-  position: fixed; /* Position relative to the viewport */
+  position: absolute; /* Position relative to the viewport */
   top: 50%;        /* Center vertically */
   left: 50%;       /* Center horizontally */
   transform: translate(-50%, -50%); /* Adjust for exact centering */
   background-color: white;
+  border-radius: 20px;
   padding: 10px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
   z-index: 1000; /* Ensure it's above other content */
-  display: none; /* Hidden by default */
+  display: flex;
+  gap:10px;
+}
+.node-details-popup input{
+  border: none;
+  border-bottom: 1px solid black;
+  border-radius: 10px;
+}
+.sampleCSS {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:40px;
 }
 
 .calibration-layer {
@@ -434,3 +442,4 @@ button:hover {
   border-radius: 10px;
   cursor: pointer;
 }
+
