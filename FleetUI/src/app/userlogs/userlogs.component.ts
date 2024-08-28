@@ -10,6 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
  
 export class Userlogscomponent {
+
 activeFilter: any;
 togglePopup() {
 throw new Error('Method not implemented.');
@@ -124,13 +125,13 @@ currentTab: any;
   getHeader(button: string): string {
     switch (button) {
       case 'task':
-        return 'Task reports';
+        return 'Task logs';
       case 'robot':
-        return 'Robot reports';
+        return 'Robot logs';
       case 'fleet':
-        return 'Fleet reports';
+        return 'Fleet logs';
       default:
-        return 'Task reports';
+        return 'Task logs';
     }
   }
  

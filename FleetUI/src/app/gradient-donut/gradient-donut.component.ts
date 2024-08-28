@@ -30,7 +30,7 @@ export type ChartOptions = {
 export class GradientDonutComponent implements OnInit {
   @Input() series: ApexNonAxisChartSeries = [];
   @Input() labels: string[] = ["Approved", "Pending", "Under review", "Rejected"];  // Labels for each segment
-  @Input() chartWidth: number = 430;
+  @Input() chartWidth: number = 400;
   @Input() startAngle: number = -90;
   @Input() endAngle: number = 270;
   @Input() dataLabelsEnabled: boolean = false;

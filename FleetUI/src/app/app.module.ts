@@ -39,6 +39,7 @@ import { RobotActivityDonutComponent } from './robot-activity-donut/robot-activi
 import { RobotDetailPopupComponent } from './robot-detail-popup/robot-detail-popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { TasksComponent } from './tasks/tasks.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -69,7 +70,8 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     GradientDonutComponent,
     RobotActivityDonutComponent,
     RobotDetailPopupComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    TasksComponent
   ],
   imports: [
     NgApexchartsModule,

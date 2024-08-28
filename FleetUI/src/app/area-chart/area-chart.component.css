@@ -2,12 +2,12 @@
 .dropdown-container {
   display: flex;
   justify-content: left;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   position: relative; /* Position relative for the dropdown arrow */
 }
 
 .menu {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
   color: #ffffff; /* Default font color changed to violet */
   width: fit-content;
@@ -29,11 +29,11 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 12px 36px;
+  padding: 8px 24px;
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
-  background: linear-gradient(45deg, #7854f7, #7854f7); /* Gradient background */
+  background: linear-gradient(45deg, #8c6ef7, #7854f7); /* Gradient background */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Button-like shadow */
   cursor: pointer;
 }
@@ -52,6 +52,7 @@
   transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* Arrow color */
 .menu .link svg {
   width: 14px;
   height: 14px;
@@ -61,6 +62,7 @@
 
 .menu .item {
   position: relative;
+  width: 100%; /* Ensure the width of the item is 100% to align with the button */
 }
 
 .menu .item .submenu {
@@ -69,7 +71,7 @@
   align-items: center;
   position: absolute;
   top: 100%;
-  border-radius: 0 0 16px 16px;
+  border-radius: 5px 5px 16px 16px;
   left: 0;
   width: 100%;
   overflow: hidden;
@@ -91,11 +93,12 @@
   pointer-events: auto;
   border-top: transparent;
   border-color: #7854f7; /* Violet color */
+  width: 100%; /* Ensure the dropdown width matches the button's width */
 }
 
 .menu .item:hover .link {
   color: #ffffff;
-  border-radius: 16px 16px 0 0;
+  border-radius: 16px 16px 5px 5px;
 }
 
 .menu .item:hover .link::after {
