@@ -135,7 +135,7 @@ const uptime = async (req, res, next) => {
         status: "operational",
         percentage: 97,
       },
-      timestamp: "2024-06-01T12:00:00Z", // timestamp created at..
+      timestamp: "2024-06-01T12:00:00Z",
       details: {
         last_checked: "2024-06-01T11:59:00Z",
         check_interval_minutes: 2,

@@ -38,7 +38,6 @@ const mapInsert = async (req, res) => {
       projectName,
       siteName,
       mapName,
-      imgUrl,
       // robots = [],
       nodes = [],
       edges = [],
