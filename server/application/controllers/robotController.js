@@ -62,18 +62,12 @@ const updateRobo = async (req, res, next) => {
       return res
         .status(400)
         .json({ roboExists: true, msg: "Robo with this name already exists" });
-    let doc = await Robo.findOneAndUpdate(
-      { roboName: queRoboName },
-      {
-        // yet to add some..
-        roboName: roboData.roboName,
-        ipAdd: roboData.ipAdd,
-        macAdd: roboData.macAdd,
-        batteryStatus: roboData.batteryStatus,
-        roboTask: roboData.roboTask,
-      },
-      { new: true }
-    );
+    Object.keys(roboData).forEach((key) => {
+      if (roboData[key] === null) delete roboData[key];
+    });
+    let doc = await Robo.findOneAndUpdate({ roboName: queRoboName }, roboData, {
+      new: true,
+    });
     return res.status(200).json({ updatedData: doc, msg: "data updated" });
   } catch (error) {
     console.log("err occs : ", error);
