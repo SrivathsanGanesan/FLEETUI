@@ -30,6 +30,7 @@ export class RobotPopupComponent {
     } else {
       this.showError = true; // Show the error message if no robots are selected
     }
+    this.resetSelections();
   } 
 
   private resetSelections() {
