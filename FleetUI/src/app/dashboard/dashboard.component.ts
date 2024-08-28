@@ -1,8 +1,14 @@
-import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ChangeDetectorRef,
+  ViewChild,
+} from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
+import { UptimeComponent } from '../uptime/uptime.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,6 +16,7 @@ import { environment } from '../../environments/environment.development';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit {
+  @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   ONBtn = false;
   showDashboard = false;
   selectedFloor = 'Floor 1';
@@ -65,6 +72,11 @@ export class DashboardComponent implements AfterViewInit {
       imgUrl: data.map.imgUrl,
     });
     this.loadCanvas();
+  }
+
+  // start-stop the operation!
+  startStopOpt() {
+    if (this.UptimeComponent) this.UptimeComponent.getUptime(); // call the uptime comp function
   }
 
   toggleONBtn() {

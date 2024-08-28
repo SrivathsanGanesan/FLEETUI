@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
 import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
@@ -22,11 +22,14 @@ export type ChartOptions = {
 })
 export class UptimeComponent {
   @ViewChild('chart') chart!: ChartComponent;
+  @Input() ONBtn!: boolean;
   public chartOptions: Partial<ChartOptions>;
+
+  uptimePercentage: number = 0;
 
   constructor() {
     this.chartOptions = {
-      series: [76],
+      series: [this.uptimePercentage],
       chart: {
         width: 280, // Increased width
         height: 320, // Increased height
@@ -87,5 +90,23 @@ export class UptimeComponent {
       },
       labels: ['Average Time'],
     };
+  }
+
+  ngOnInit() {}
+
+  getUptime() {
+    if (this.ONBtn) {
+      // alter the logic, cz of toggling function in button..
+      this.chartOptions.series = [0];
+      return;
+    }
+    fetch('http://localhost:3000/dashboard/uptime/map123')
+      .then((response) => response.json())
+      .then((data) => {
+        this.chartOptions.series = [data.percentage];
+      })
+      .catch((error) => console.log(error));
+
+    // console.log(this.uptimePercentage);
   }
 }

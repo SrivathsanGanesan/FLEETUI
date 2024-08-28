@@ -136,7 +136,11 @@ const uptime = async (req, res, next) => {
       },
     };
     if (mockData)
-      return res.status(200).json({ uptime: mockData, opt: "succeed!" });
+      return res.status(200).json({
+        uptime: mockData,
+        percentage: Math.floor(Math.random() * 100),
+        opt: "succeed!",
+      });
     return res.status(500).json({ opt: "failed", error: err });
   } catch (err) {
     console.log("uptime Err : ", err);
