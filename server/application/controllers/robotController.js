@@ -10,8 +10,8 @@ const insertRoboId = async ({ roboId, roboName, projectName }) => {
   );
   return proj;
 };
+//..
 
-// Insert new Robo..
 const createRobo = async (req, res, next) => {
   const { projectName, roboName, ipAdd, macAdd, batteryStatus, roboTask } =
     JSON.parse(req.body.roboData);
@@ -77,7 +77,7 @@ const updateRobo = async (req, res, next) => {
   }
 };
 
-// Count part of Agv..
+// -------- [ALTER : active number of robots] --------------
 const getGrossCount = async (req, res, next) => {
   try {
     res
