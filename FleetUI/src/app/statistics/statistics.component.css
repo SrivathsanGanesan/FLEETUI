@@ -1,7 +1,4 @@
 .mainContent {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
   position: absolute;
   top: 30px;
   left: 70px;
@@ -12,7 +9,6 @@
   background-color: white;
 }
 
-
 .header {
   margin-top: 10px;
   padding: 0px;
@@ -20,59 +16,31 @@
   z-index: 0; 
   position: relative; 
 }
+
 /* Ensure the sidebar has a higher z-index */
 .sidebar {
   position: relative;
-  z-index: 100; /* Sidebar stays on top */
+  z-index: 100;
 }
-
-.top-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px; /* Ensure even spacing between cards */
-  margin-bottom: 20px;
-}
-
-
-.middle-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-
-.stat-card,
-
-.app-gradient-donut,
-.operation-activities,
-.notifications {
-  flex: 1;
-  margin-right: 20px;
-  
-}
-
-
-
-
 
 /* Container for the slider buttons */
 .slider-buttons-container {
   position: relative;
-  z-index: 0; /* Ensure the buttons are below the sidebar */
+  z-index: 0;
 }
 
 .slider-buttons {
   display: flex;
   margin-top: 10px;
-  width: 200px;
+  width: 100%;
+  max-width: 200px;
   height: 50px;
   gap: 5px;
   font-size: 28px;
   border-radius: 6px;
   overflow: hidden;
   position: relative;
-  z-index: 2; /* Ensure the buttons are below the sidebar */
+  z-index: 2;
 }
 
 .slider-buttons button {
@@ -83,7 +51,7 @@
   background-color: transparent;
   color: #333;
   font-weight: bold;
-  z-index: 3; /* Keep buttons above the slider */
+  z-index: 3;
 }
 
 .slider-buttons button.active {
@@ -92,10 +60,10 @@
 
 .slider {
   position: absolute;
-  width: 50%; /* Half of the container width */
+  width: 50%;
   height: 100%;
-  background-color: #DA2127; /* Active button color */
-  z-index: 2; /* Keep slider below the buttons */
+  background-color: #DA2127;
+  z-index: 2;
   transition: transform 0.3s ease;
 }
 
@@ -107,227 +75,23 @@
   transform: translateX(100%);
 }
 
-
-.donut-chart {
-  flex: 0.7;
-}
-
-.notifications {
-  flex: 0.6;
-}
-
-.stat-card {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  text-align: left;
-  position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-.stat-title {
-  font-size: 16px;
-  color: #888888;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 5px 0;
-}
-
-.stat-change {
-  font-size: 14px;
-}
-
-.stat-change.positive {
-  color: #4CAF50;
-}
-
-.stat-change.negative {
-  color: #F44336;
-}
-
-.stat-chart svg {
-  width: 100%;
-  height: auto;
-}
-
-/* General styling for the donut chart */
-/* General styling for the donut chart */
-.donut-chart {
-  flex: 0.7;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-top: 20px;
-  width: 100%;
-  max-width: 500px; /* Adjust as needed */
-  min-width: 300px; /* Adjust as needed */
-  height: auto;
-}
-
-.donut-chart svg {
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-}
-
-.donut-chart-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-/* Making sure the donut chart adjusts properly within its container */
-@media (max-width: 768px) {
-  .donut-chart {
-    max-width: 300px; /* Make it smaller for smaller screens */
-    padding: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .donut-chart {
-    max-width: 200px; /* Further reduce size for very small screens */
-    padding: 10px;
-  }
-}
-
-.area-chart-container {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-top: 20px;
-}
-
-/* Styling for operation activities and notifications */
-.operation-activities,
-.notifications {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.operation-activities .section-header,
-.notifications .section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #FFD6D6;
-  padding: 8px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
-
-.section-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.view-all-btn {
-  background-color: #7854f7;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- .tab-container {
+.tab-container {
   display: flex;
   margin-top: 10px;
-  width: 200px;
+  width: 100%;
+  max-width: 200px;
   height: 50px;
   gap: 5px;
   font-size: 28px;
   border-radius: 6px;
   overflow: hidden;
   position: relative;
-  z-index: 2; /* Ensure the buttons are below the sidebar */
-  /* position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start; */
+  z-index: 2;
   padding: 5px;
   background-color: #ffffff;
-
-  position: relative;
-  z-index: 0; /* Ensure the buttons are below the sidebar */
 }
- 
- .indicator {
+
+.indicator {
   content: "";
   width: 130px;
   height: 28px;
@@ -340,16 +104,18 @@
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.12), 0px 3px 1px rgba(0, 0, 0, 0.04);
   border-radius: 7px;
   transition: all 0.5s ease-out;
- }
- .tab {
+}
+
+.tab {
   width: 130px;
   height: 28px;
   position: absolute;
   z-index: 99;
   outline: none;
   opacity: 0;
- }
- .tab_label {
+}
+
+.tab_label {
   width: 130px;
   height: 28px;
   position: relative;
@@ -361,68 +127,34 @@
   font-size: 0.75rem;
   opacity: 0.6;
   cursor: pointer;
- }
- .tab--1:checked ~ .indicator {
+}
+
+.tab--1:checked ~ .indicator {
   left: 2px;
- }
- .tab--2:checked ~ .indicator {
+}
+
+.tab--2:checked ~ .indicator {
   left: calc(130px + 2px);
- }
- 
+}
 
-/* in progress */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .dashboard-content {
+.dashboard-content {
   padding: 20px;
-  
-} */
- 
+}
+
 .search-filter-container {
   position: sticky;
   display: flex;
   flex-direction: column;
   margin-top: 10px;
-  width:530px;
+  width: 100%;
+  max-width: 530px;
   gap: 5px;
   padding: 5px;
   background-color: #efefef;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .search-box {
   display: flex;
   align-items: center;
@@ -431,23 +163,22 @@
   overflow: hidden;
   background-color: #ffffff;
   width: 100%;
-  max-width: 600px; /* Adjust as needed */
 }
- 
+
 .search-box input {
   border: none;
   padding: 10px 15px;
   outline: none;
-  width: 100%; /* Take full width */
+  width: 100%;
   font-size: 14px;
-  border-radius: 25px 0 0 25px; /* Matching the radius of the search box */
+  border-radius: 25px 0 0 25px;
 }
+
 .search-box input::placeholder {
   color: #aaa;
 }
- 
+
 .search-btn {
-  
   background-color: #ff5c5c;
   color: white;
   border: none;
@@ -459,51 +190,44 @@
   border-radius: 0 25px 25px 0;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
+
 .search-btn img {
-  width: 40px; /* Adjust size as needed */
-  height: 24px; /* Adjust size as needed */
+  width: 40px;
+  height: 24px;
 }
+
 .search-btn:hover {
   background-color: #e64e4e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-
-/* table stylings */
-/* .tasks-table {
-  margin-top: 10px;
-  background-color: #ffffff;
-  padding: 5px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-} */
-
+/* Table stylings */
 .dashboard-container {
   display: flex;
-  justify-content: space-between; /* Distribute space between items */
-  gap: 15px; /* Adjust the gap between the two tables */
-  margin-top: 10px; /* Reduce the margin to save space */
-  padding: 0; /* Remove any extra padding */
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 10px;
+  padding: 0;
   width: 100%;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  box-sizing: border-box;
 }
 
 /* Styling for the robot activity table */
 .robot-activity-container {
-  flex: 1; /* Allow the container to take up available space proportionally */
+  flex: 1;
   background-color: #fff;
-  padding: 8px; /* Reduced padding */
+  padding: 8px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Slightly lighter shadow */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Styling for the notifications table */
 .notifications-container {
-  flex: 0.65; /* Allow the container to take up less space than the robot activity table */
+  flex: 0.65;
   background-color: #fff;
-  padding: 8px; /* Reduced padding */
+  padding: 8px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Matching the shadow for consistency */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Styling for the section headers */
@@ -511,9 +235,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px; /* Reduced margin to save space */
-  background-color: #FFD6D6; /* Pink background for header */
-  padding: 8px; /* Add padding to the header for better spacing */
+  margin-bottom: 5px;
+  background-color: #FFD6D6;
+  padding: 8px;
   border-radius: 5px;
 }
 
@@ -529,7 +253,7 @@
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 4px 8px; /* Reduced padding */
+  padding: 4px 8px;
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -548,25 +272,22 @@
 }
 
 .activity-table td, .notifications-table td {
-  padding: 4px; /* Reduced padding for spacing */
-  font-size: 14px; /* Set the font size */
-  color: #555; /* Set the text color */
+  padding: 4px;
+  font-size: 14px;
+  color: #555;
 }
 
-/* Specific styling for the first column in both tables (e.g., ID column) */
 .activity-table td:first-child, .notifications-table td:first-child {
-  font-weight: bold; /* Make the text bold */
-  color: #333; /* Set a darker color for emphasis */
+  font-weight: bold;
+  color: #333;
 }
 
-/* Optional: Add background color for alternating rows */
 .activity-table tr:nth-child(odd), .notifications-table tr:nth-child(odd) {
-  background-color: #f9f9f9; /* Light gray for odd rows */
+  background-color: #f9f9f9;
 }
 
-/* Hover effect for table rows */
 .activity-table tr:hover, .notifications-table tr:hover {
-  background-color: #f1f1f1; /* Slightly darker gray on hover */
+  background-color: #f1f1f1;
 }
 
 /* Align text in the first column */
@@ -576,17 +297,17 @@
 
 /* Align text in the rest of the columns */
 .activity-table td:not(:first-child), .notifications-table td:not(:first-child) {
-  text-align: left; /* Adjust as needed (left, center, right) */
+  text-align: left;
 }
 
-
+/* Statistics container */
 .statistics-container {
   position: absolute;
   top: 20px;
   right: 20px;
   display: flex;
   margin-top: 10px;
-  /* gap: 20px; */
+  gap: 20px;
 }
 
 .stat-card {
@@ -595,24 +316,25 @@
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 200px;
-  height: 80px; /* Adjust height to fit content */
+  height: 80px;
   text-align: left;
   position: relative;
 }
+
 .stat-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .stat-title {
-  font-size: 16px;
+  font-size: 12px;
   color: #888888;
-  margin-top:-13px;
+  margin-top: -15px;
 }
 
 .stat-value {
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 h2 {
@@ -622,42 +344,42 @@ h2 {
 
 /* Styling for positive stat change */
 .stat-change.positive {
-  color: #4CAF50; /* Green color */
+  color: #4CAF50;
   font-weight: medium;
-  font-size: 0.8 rem; /* Adjust the size as needed */
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
 }
 
 .stat-change.positive span {
   margin-left: 5px;
-  font-size: 0.8 rem; /* Adjust the size of the arrow */
-  color: #4CAF50; /* Match the arrow color with the text */
+  font-size: 0.8rem;
+  color: #4CAF50;
 }
 
 /* Styling for negative stat change */
 .stat-change.negative {
-  color: #F44336; /* Red color for negative change */
+  color: #F44336;
   font-weight: medium;
-  font-size: 0.8 rem; /* Adjust the size as needed */
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
 }
 
 .stat-change.negative span {
   margin-left: 5px;
-  font-size: 0.8 rem; /* Adjust the size of the arrow */
-  color: #F44336; /* Match the arrow color with the text */
+  font-size: 0.8rem;
+  color: #F44336;
 }
 
 /* General styling for stat-chart */
 .stat-chart {
-  position: absolute; /* Absolutely position the SVG */
-  right: 30px; /* Align it to the right with some padding */
-  top: 50%; /* Move to the vertical center */
-  transform: translateY(-50%); /* Adjust to perfectly center vertically */
-  width: 96px; /* Set width explicitly */
-  height: 70px; /* Set height explicitly */
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 96px;
+  height: 70px;
 }
 
 .loading svg polyline {
@@ -668,7 +390,7 @@ h2 {
 }
 
 .stat-chart svg {
-  width: 100%; /* Make SVG fill the container */
+  width: 100%;
   height: auto;
 }
 
@@ -684,9 +406,8 @@ h2 {
   animation: dash_682 1.4s linear infinite;
 }
 
-/* Specific styling for Stat Card 2 (green color) */
+/* Specific styling for Stat Card 2 (yellow color) */
 .stat-card-2 .loading svg polyline#back {
-  stroke: #4CAF5033;
   stroke: #FFC10733;
 }
 
@@ -695,10 +416,9 @@ h2 {
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
-  
 }
 
-/* Specific styling for Stat Card 3 (yellow color) */
+/* Specific styling for Stat Card 3 (green color) */
 .stat-card-3 .loading svg polyline#back {
   stroke: #4CAF5033;
 }
@@ -720,19 +440,30 @@ h2 {
   }
 }
 
+/* Area chart container */
 .area-chart-container {
   position: sticky;
   display: flex;
   flex-direction: column;
   margin-top: 19px;
-  max-width: 942px; 
+  max-width: 65%;
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   padding: 5px;
   width: 100%;
-  flex-grow: 1; 
+  flex-grow: 1;
 }
 
-/* activities container styles */
-
+/* App gradient donut */
+app-gradient-donut {
+  position: absolute;
+  display: flex;
+  max-width: 30%;
+  right: 20px; /* Align it to the right side */
+  top: 120px; /* Place it below the stat cards */
+  width: 300px;
+  height: 300px;
+  justify-content: center;
+  align-items: center;
+}
