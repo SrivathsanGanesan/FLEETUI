@@ -200,13 +200,15 @@ canvas {
 }
 .close-btn {
   position: absolute;
-  top: -35px;
-  right: 0px;
-  background-color: #a52828;
-  color: #fff;
-  font-size: 8px;
+  top: -25px;
+  right: -5px;
+  background-color: #dad8d8;
+  color: #ff7373;
+  font-size: 20px;
+  font-weight: bolder;
+  padding: 5px;
   border: none;
-  border-radius: 50%;
+  border-radius: 5px;
   cursor: pointer;
 }
 
@@ -432,7 +434,7 @@ canvas {
   background-color: #b93636;
 }
 .close-btn:hover {
-  background-color: #601515a7;
+  background-color: #dad8d8;
 }
 
 button {
