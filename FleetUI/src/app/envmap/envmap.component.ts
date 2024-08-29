@@ -131,6 +131,34 @@ export class EnvmapComponent implements AfterViewInit {
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
 }
 
+deleteSelectedNode(): void {
+  if (!this.selectedNode) {
+    console.log('No node selected for deletion.');
+    return;
+  }
+
+  // Remove the selected node from the nodes array
+  this.nodes = this.nodes.filter(node => node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y);
+
+  // Remove the node from the Nodes array
+  this.Nodes = this.Nodes.filter(node => node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y);
+
+  // Clear the canvas and redraw the remaining nodes
+  const canvas = this.overlayCanvas.nativeElement;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Redraw remaining nodes
+    this.nodes.forEach(node => {
+      this.plotPointOnImagePopupCanvas(node.x, node.y);
+    });
+  }
+
+  // Reset selectedNode
+  this.selectedNode = null;
+  console.log('Node deleted successfully.');
+}
 
   closeImagePopup(): void {
     this.showImagePopup = false;
