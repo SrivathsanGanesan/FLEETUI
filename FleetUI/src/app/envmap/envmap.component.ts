@@ -276,6 +276,9 @@ removeAction(index: number): void {
   this.actions.splice(index, 1);
   this.hideActionForms();
 }
+isOptionDisabled(option: string): boolean {
+  return this.actions.some(action => action.type === option);
+}
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

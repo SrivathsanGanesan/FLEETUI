@@ -140,10 +140,10 @@
           <div class="action-container">
             <label for="nodeAction">Add Action:</label>
             <select id="nodeAction" [(ngModel)]="selectedAction" (change)="onActionChange()">
-              <option value="Move">Move</option>
-              <option value="Dock">Dock</option>
-              <option value="Undock">Undock</option>
-            </select>
+              <option value="Move" [disabled]="isOptionDisabled('Move')">Move</option>
+              <option value="Dock" [disabled]="isOptionDisabled('Dock')">Dock</option>
+              <option value="Undock" [disabled]="isOptionDisabled('Undock')">Undock</option>
+            </select>            
           </div>
 
           <div *ngIf="actions.length > 0" class="action-div">
