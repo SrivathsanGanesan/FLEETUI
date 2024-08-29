@@ -159,6 +159,22 @@ deleteSelectedNode(): void {
   this.selectedNode = null;
   console.log('Node deleted successfully.');
 }
+@HostListener('click', ['$event'])
+onOverlayCanvasClick(event: MouseEvent): void {
+  const canvas = this.overlayCanvas.nativeElement;
+  const rect = canvas.getBoundingClientRect();
+  const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+  const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+
+  const selected = this.nodes.find(
+    node => Math.abs(node.x - x) < 5 && Math.abs(node.y - y) < 5
+  );
+
+  if (selected) {
+    this.selectedNode = selected;
+    console.log(`Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`);
+  }
+}
 
   closeImagePopup(): void {
     this.showImagePopup = false;
@@ -178,26 +194,75 @@ deleteSelectedNode(): void {
       ctx!.drawImage(robotImage, x, y);
     }
   }
+     // Parameters for the 'Move' action
+     moveParameters = {
+      maxLinearVelocity: "",
+      maxAngularVelocity: "",
+      maxToleranceAtGoalX: "",
+      maxToleranceAtGoalY: "",
+      maxToleranceAtGoalOrientation: "",
+      endPointOrientation: false,
+      autoRobotMode: 'mode1' // Default mode
+    };
+  
+// Method to handle the change in action selection
+onActionChange(): void {
+  this.resetParameters();
+  this.showActionForm();
+}
+resetParameters(): void {
+  this.moveParameters = {
+    maxLinearVelocity: "",
+    maxAngularVelocity: "",
+    maxToleranceAtGoalX: "",
+    maxToleranceAtGoalY: "",
+    maxToleranceAtGoalOrientation: "",
+    endPointOrientation: false,
+    autoRobotMode: 'mode1'
+  };
+}
+showActionForm(): void {
+  this.hideActionForms();
+  if (this.selectedAction === 'Move') {
+    this.isMoveActionFormVisible = true;
+  } else if (this.selectedAction === 'Dock') {
+    this.isDockActionFormVisible = true;
+  } else if (this.selectedAction === 'Undock') {
+    this.isUndockActionFormVisible = true;
+  }
+}
+hideActionForms(): void {
+  this.isMoveActionFormVisible = false;
+  this.isDockActionFormVisible = false;
+  this.isUndockActionFormVisible = false;
+}
+editAction(index: number): void {
+  const action = this.actions[index];
+  this.selectedAction = action.type;
+  this.moveParameters = { ...action.parameters }; // Load the parameters into the form
+  this.showActionForm();
+
+  // Remove the action from the list
+  this.actions.splice(index, 1);
+}
+
   selectedAction: string = ''; // Initialize with an empty string or any other default value
-  actions: string[] = []; // Array to hold the list of actions
+  actions: any[] = []; // Array to hold the list of actions with parameters
+// Method to add an action to the list
+addAction(): void {
+  if (this.selectedAction) {
+    const action = {
+      type: this.selectedAction,
+      parameters: { ...this.moveParameters } // Deep copy to store current parameters
+    };
+    this.actions.push(action);
 
-  // Method to add an action to the list
-  addAction(): void {
-    if (this.selectedAction) {
-        this.actions.push(this.selectedAction);
+    // Hide the form after adding
+    this.hideActionForms();
 
-        // Close the respective action form based on the selected action
-        if (this.selectedAction === 'Move') {
-            this.isMoveActionFormVisible = false;
-        } else if (this.selectedAction === 'Dock') {
-            this.isDockActionFormVisible = false;
-        } else if (this.selectedAction === 'Undock') {
-            this.isUndockActionFormVisible = false;
-        }
-
-        // Optionally reset the selected action to prevent re-adding the same action
-        this.selectedAction = '';
-    }
+    // Reset the selected action
+    this.selectedAction = '';
+  }
 }
 
   openMoveActionForm(): void {
@@ -206,13 +271,11 @@ deleteSelectedNode(): void {
     this.isUndockActionFormVisible=true;
   }
 
-  // Method to delete an action from the list
-  removeAction(index: number): void {
-    this.actions.splice(index, 1);
-    this.isMoveActionFormVisible = true;
-    this.isDockActionFormVisible=true;
-    this.isUndockActionFormVisible=true;
-  }
+// Method to delete an action from the list
+removeAction(index: number): void {
+  this.actions.splice(index, 1);
+  this.hideActionForms();
+}
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -592,32 +655,7 @@ deleteSelectedNode(): void {
       }
     }
   }
-   // Parameters for the 'Move' action
-   moveParameters = {
-    maxLinearVelocity: 0.8,
-    maxAngularVelocity: 0.8,
-    maxToleranceAtGoalX: 0.05,
-    maxToleranceAtGoalY: 0.05,
-    maxToleranceAtGoalOrientation: 0.01,
-    endPointOrientation: false,
-    autoRobotMode: 'mode1' // Default mode
-  };
 
-  // Method to handle the change in action selection
-  onActionChange(): void {
-    if (this.selectedAction !== 'Move') {
-      // Clear move parameters when not in 'Move' action
-      this.moveParameters = {
-        maxLinearVelocity: 0.8,
-        maxAngularVelocity: 0.8,
-        maxToleranceAtGoalX: 0.05,
-        maxToleranceAtGoalY: 0.05,
-        maxToleranceAtGoalOrientation: 0.01,
-        endPointOrientation: false,
-        autoRobotMode: 'mode1'
-      };
-    }
-  }
   showNodeDetailsPopup(
   
   ): void {
