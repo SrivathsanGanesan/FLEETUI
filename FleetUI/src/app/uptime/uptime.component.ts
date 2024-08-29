@@ -106,6 +106,7 @@ export class UptimeComponent {
       this.chartOptions.series = [0];
       return;
     }
+
     if (this.eventSource) this.eventSource.close();
     let URL = `http://${environment.API_URL}:${environment.PORT}/dashboard/uptime/map123`;
     this.eventSource = new EventSource(URL);
@@ -113,7 +114,7 @@ export class UptimeComponent {
       this.eventSource.onmessage = (event) => {
         const uptime = JSON.parse(event.data);
         this.uptimePercentage = uptime.percentage;
-        this.chartOptions.series = [this.uptimePercentage];
+        this.chartOptions.series = [this.uptimePercentage]; // this.uptimePercentage
         this.cdr.detectChanges(); // it's impt
         // console.log(this.uptimePercentage);
       };
