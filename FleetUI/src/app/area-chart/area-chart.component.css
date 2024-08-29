@@ -1,4 +1,3 @@
-/* Container to center the dropdown */
 .dropdown-container {
   display: flex;
   justify-content: left;
@@ -36,6 +35,8 @@
   background: linear-gradient(45deg, #8c6ef7, #7854f7); /* Gradient background */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Button-like shadow */
   cursor: pointer;
+  width: 150px; /* Fixed width for the dropdown button */
+  text-align: center; /* Center the text inside the button */
 }
 
 .menu .link::after {
@@ -56,6 +57,7 @@
 .menu .link svg {
   width: 14px;
   height: 14px;
+  
   fill: #ffffff; /* Violet color for the arrow */
   transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -84,6 +86,7 @@
   z-index: 1;
   pointer-events: none;
   list-style: none;
+  width: 200px; /* Fixed width for the submenu matching the button */
 }
 
 .menu .item:hover .submenu {
@@ -93,7 +96,7 @@
   pointer-events: auto;
   border-top: transparent;
   border-color: #7854f7; /* Violet color */
-  width: 100%; /* Ensure the dropdown width matches the button's width */
+  width: 200px; /* Ensure the dropdown width matches the button's width */
 }
 
 .menu .item:hover .link {
@@ -124,6 +127,8 @@
   text-align: left; /* Aligning the dropdown data to the left */
   color: #7854f7; /* Violet font color for dropdown items */
   transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+  box-sizing: border-box; /* Include padding in the element's total width */
+  width: 100%; /* Match the width of the parent item */
 }
 
 .submenu .submenu-item:last-child .submenu-link {

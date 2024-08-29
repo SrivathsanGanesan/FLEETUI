@@ -87,6 +87,7 @@
 .menu .link svg {
   width: 14px;
   height: 14px;
+  
   fill: #ffffff; /* Violet color for the arrow */
   transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
 }

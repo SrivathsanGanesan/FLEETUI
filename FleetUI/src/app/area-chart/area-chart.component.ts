@@ -38,7 +38,7 @@ export class AreaChartComponent implements OnInit {
       series: [
         {
           name: 'Series 1',
-          data: [45, 52, 38, 45, 19, 23, 50],
+          data: [45, 52, 38, 40, 19, 23, 50],
         },
       ],
       chart: {
@@ -133,7 +133,7 @@ export class AreaChartComponent implements OnInit {
         break;
       case 'data2':
         this.chartOptions.series = [
-          { name: 'Series 2', data: [30, 40, 45, 50, 49, 60, 70] },
+          { name: 'Series 2', data: [25, 30, 45, 50, 49, 60, 70] },
         ];
         this.chartOptions.xaxis.categories = [
           'Aug',
@@ -175,7 +175,7 @@ export class AreaChartComponent implements OnInit {
         break;
       case 'data5':
         this.chartOptions.series = [
-          { name: 'Series 5', data: [50, 60, 55, 48, 38, 33, 45] },
+          { name: 'Series 5', data: [20, 60, 55, 48, 38, 33, 45] },
         ];
         this.chartOptions.xaxis.categories = [
           'May',
