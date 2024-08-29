@@ -87,12 +87,16 @@ export class EnvmapComponent implements AfterViewInit {
     description: string;
     actions: string[]; // Can allow null if needed
   } = {
-    id: 0,
+    id: 1,
     x: 0,
     y: 0,
     description: '',
     actions: [] // Initialize with a non-null value
   };
+  isMoveActionFormVisible: boolean = true;
+  isDockActionFormVisible: boolean = true;
+  isUndockActionFormVisible: boolean = true;
+
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
@@ -141,13 +145,34 @@ export class EnvmapComponent implements AfterViewInit {
   // Method to add an action to the list
   addAction(): void {
     if (this.selectedAction) {
-      this.actions.push(this.selectedAction);
+        this.actions.push(this.selectedAction);
+
+        // Close the respective action form based on the selected action
+        if (this.selectedAction === 'Move') {
+            this.isMoveActionFormVisible = false;
+        } else if (this.selectedAction === 'Dock') {
+            this.isDockActionFormVisible = false;
+        } else if (this.selectedAction === 'Undock') {
+            this.isUndockActionFormVisible = false;
+        }
+
+        // Optionally reset the selected action to prevent re-adding the same action
+        this.selectedAction = '';
     }
+}
+
+  openMoveActionForm(): void {
+    this.isMoveActionFormVisible = true;
+    this.isDockActionFormVisible=true;
+    this.isUndockActionFormVisible=true;
   }
 
   // Method to delete an action from the list
   removeAction(index: number): void {
     this.actions.splice(index, 1);
+    this.isMoveActionFormVisible = true;
+    this.isDockActionFormVisible=true;
+    this.isUndockActionFormVisible=true;
   }
 
   onFileSelected(event: Event): void {
@@ -272,23 +297,26 @@ export class EnvmapComponent implements AfterViewInit {
       this.showDistanceDialog = false;
       this.distanceBetweenPoints = null;  // Reset distance if applicable
   
-      // Redraw the image if necessary
+      // Redraw the image if necessary without resetting canvas size
       const img = new Image();
       img.src = this.imageSrc || '';
       img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw image on the cleared canvas
       };
-    }
-  
-    // Clear console logs after logging the message
+    }  
     console.clear();
   }
   
   @HostListener('click', ['$event'])
   onImagePopupCanvasClick(event: MouseEvent): void {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
+  
+    const targetElement = event.target as HTMLElement;
+    
+    // Check if the click was on the "Clear" button, and if so, return early
+    if (targetElement.classList.contains('clear-btn')) {
+      return;
+    }
   
     const canvas = this.imagePopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
@@ -307,16 +335,21 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
+  
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
-
+  
+    // Plot the node on the canvas
     ctx.beginPath();
     ctx.arc(x, y, 5, 0, 2 * Math.PI);
     ctx.fillStyle = 'red';
     ctx.fill();
+  
+    // Log the node position to the console
+    console.log(`Node plotted at position: (${x.toFixed(2)}, ${y.toFixed(2)})`);
   }
-
+  
   open(): void {
     this.ratio = Number(
       (document.getElementById('resolution') as HTMLInputElement).value

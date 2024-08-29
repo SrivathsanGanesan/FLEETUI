@@ -92,7 +92,7 @@
     <!-- Intermediate Nodes Dialog -->
     <div *ngIf="showImagePopup" class="image-popup-overlay">
       <div class="image-popup-content">
-        <canvas #imagePopupCanvas width="1000" height="500"></canvas>
+        <canvas class="imagePopupCanvas" #imagePopupCanvas ></canvas>
         <button class="close-btn" (click)="closeImagePopup()">X</button>
         <button class="save-btn" (click)="saveCanvas()">Save</button>
         <button class="clear-btn" (click)="clearCanvas()">Clear</button>
@@ -139,10 +139,6 @@
         </button>
       </div>
 
-
-
-
-      <!-- Node Details Popup -->
       <div #nodeDetailsPopup class="node-details-popup" [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'">
         
         <div class="sampleCSS">
@@ -160,19 +156,19 @@
           </div><br>
           <div *ngIf="actions.length > 0">
             <p>Actions:</p>
-            <ul>
-              <li *ngFor="let action of actions; let i = index">
+            <button class="action-button">
+              <span *ngFor="let action of actions; let i = index">
                 {{ action }}
-                <button (click)="removeAction(i)">Delete</button>
-              </li>
-            </ul>
+                <button class="action-del-button" (click)="removeAction(i)">X</button>
+              </span>
+            </button>
           </div>
           <label for="nodeDescription">Node Description:</label>
           <input type="text" id="nodeDescription" [(ngModel)]="nodeDetails.description" /><br>
           </div> 
 
-          <div>
-            <div *ngIf="selectedAction === 'Move'" class="move-action-form">
+          <div class="action-form">
+            <div *ngIf="selectedAction === 'Move' && isMoveActionFormVisible"  class="move-action-form">
               <p>Move Action Parameters</p>
               <label>Max Linear Velocity:</label>
               <input type="number" [(ngModel)]="moveParameters.maxLinearVelocity" /><br>
@@ -195,7 +191,7 @@
               <button (click)="addAction()">Add</button>
             </div>
     
-            <div *ngIf="selectedAction === 'Dock'" class="move-action-form">
+            <div *ngIf="selectedAction === 'Dock' && isDockActionFormVisible" class="move-action-form">
               <p>Dock Action Parameters</p>
               <label>Max Linear Velocity:</label>
               <input type="number" [(ngModel)]="moveParameters.maxAngularVelocity" /><br>
@@ -204,19 +200,21 @@
               <label>Max Tolerance at Goal Y:</label>
               <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalY" /><br>
               <label>Max Tolerance at Goal Orientation:</label>
-              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br>
+              <input type="number" [(ngModel)]="moveParameters.endPointOrientation" /><br>
+              <label>Goal offset X</label>
+              <input type="number" [(ngModel)]="moveParameters.endPointOrientation" /><br>
+              <label>Goal offset Y</label>
+              <input type="number" [(ngModel)]="moveParameters.endPointOrientation" /><br>
+              <label>Goal offset Orientation</label>
+              <input type="checkbox" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br>
               <label>End Point Orientation:</label>
-              <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br>
-              <label>Auto Robot Operation Mode:</label>
-              <select [(ngModel)]="moveParameters.autoRobotMode">
-                <option value="mode1">Mode 1</option>
-                <option value="mode2">Mode 2</option>
-                <!-- Add more options as needed -->
-              </select><br>
+              <input type="number" [(ngModel)]="moveParameters.endPointOrientation" /><br>
+              <label>Docking Type</label>
+                <br>
               <button (click)="addAction()">Add</button>
             </div>
     
-            <div *ngIf="selectedAction === 'Undock'" class="move-action-form">
+            <div *ngIf="selectedAction === 'Undock'&& isUndockActionFormVisible" class="move-action-form">
               <p>Undock Action Parameters</p>
               <label>Max Linear Velocity:</label>
               <input type="number" [(ngModel)]="moveParameters.maxLinearVelocity" /><br>
@@ -230,28 +228,18 @@
               <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br>
               <label>End Point Orientation:</label>
               <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br>
-              <label>Auto Robot Operation Mode:</label>
-              <select [(ngModel)]="moveParameters.autoRobotMode">
-                <option value="mode1">Mode 1</option>
-                <option value="mode2">Mode 2</option>
-                <!-- Add more options as needed -->
-              </select><br>
+              <label>Undocking Distance</label>
+              <br>
               <button (click)="addAction()">Add</button>
             </div>
           </div>
 
         </div>
-       
-        
-        
-      
+        <div class="Node-btn">
         <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
         <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
       </div>
-      
-
-
-
+      </div>
 
       <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
         <div class="dropdown">
