@@ -71,7 +71,7 @@
           <div class="Chart2">
             <p>Uptime</p>
             <div class="U-Chart">
-              <app-uptime [ONBtn]="ONBtn"></app-uptime>
+              <app-uptime [ONBtn]="this.ONBtn"></app-uptime>
             </div>
           </div>
           <!-- *ngIf="ONBtn" insert it in below class at the end -->
@@ -87,7 +87,7 @@
           <div class="Chart3">
             <p>Robot</p>
             <div class="R-Chart">
-              <app-chart></app-chart>
+              <app-chart [ONBtn]="ONBtn"></app-chart>
             </div>
           </div>
           <!-- *ngIf="ONBtn" insert it in below class at the end -->

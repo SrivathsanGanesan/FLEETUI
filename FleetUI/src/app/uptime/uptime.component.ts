@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input } from '@angular/core';
+import { Component, ViewChild, Input, ChangeDetectorRef } from '@angular/core';
 import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
@@ -6,6 +6,7 @@ import {
   ApexFill,
   ChartComponent,
 } from 'ng-apexcharts';
+import { environment } from '../../environments/environment.development';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -26,8 +27,9 @@ export class UptimeComponent {
   public chartOptions: Partial<ChartOptions>;
 
   uptimePercentage: number = 0;
+  eventSource!: EventSource;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this.chartOptions = {
       series: [this.uptimePercentage],
       chart: {
@@ -92,21 +94,37 @@ export class UptimeComponent {
     };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (!this.ONBtn) return;
+    this.getUptime();
+  }
 
-  getUptime() {
+  getUptimeIfOn() {
     if (this.ONBtn) {
       // alter the logic, cz of toggling function in button..
+      if (this.eventSource) this.eventSource.close();
       this.chartOptions.series = [0];
       return;
     }
-    fetch('http://localhost:3000/dashboard/uptime/map123')
-      .then((response) => response.json())
-      .then((data) => {
-        this.chartOptions.series = [data.percentage];
-      })
-      .catch((error) => console.log(error));
+    this.getUptime();
+  }
 
-    // console.log(this.uptimePercentage);
+  getUptime() {
+    if (this.eventSource) this.eventSource.close();
+    let URL = `http://${environment.API_URL}:${environment.PORT}/dashboard/uptime/map123`;
+    this.eventSource = new EventSource(URL);
+    try {
+      this.eventSource.onmessage = (event) => {
+        const uptime = JSON.parse(event.data);
+        this.uptimePercentage = uptime.percentage;
+        this.chartOptions.series = [this.uptimePercentage]; // this.uptimePercentage
+        this.cdr.detectChanges(); // it's impt
+        // console.log(this.uptimePercentage);
+      };
+    } catch (error) {}
+    this.eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      this.eventSource.close();
+    };
   }
 }

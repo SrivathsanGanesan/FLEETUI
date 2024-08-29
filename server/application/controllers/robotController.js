@@ -1,6 +1,12 @@
 const { Robo } = require("../models/mapSchema");
 const { projectModel } = require("../../fleetcore/models/projectSchema");
 
+const eventStreamHeader = {
+  "Content-Type": "text/event-stream",
+  "Cache-Control": "no-cache",
+  Connection: "keep-alive",
+};
+
 const insertRoboId = async ({ roboId, roboName, projectName }) => {
   const proj = await projectModel.findOneAndUpdate(
     { projectName: projectName }, // wanna add robo name.. to the ref
@@ -88,12 +94,6 @@ const getGrossCount = async (req, res, next) => {
   }
 };
 
-const eventStreamHeader = {
-  "Content-Type": "text/event-stream",
-  "Cache-Control": "no-cache",
-  Connection: "keep-alive",
-};
-
 // -------- [WIP] --------------
 const throughput = async (req, res, next) => {
   const mapId = req.params.mapId;
@@ -122,8 +122,35 @@ const throughput = async (req, res, next) => {
 const uptime = async (req, res, next) => {
   const mapId = req.params.mapId;
   try {
-    //..
-    const mockData = {
+    res.writeHead(200, eventStreamHeader);
+    const fuse = setInterval(async () => {
+      const uptimePer = JSON.stringify({
+        percentage: Math.floor(Math.random() * 5) + 96,
+      });
+      res.write(`data: ${uptimePer}\n\n`);
+    }, 1000 * 1.5);
+
+    res.on("close", () => {
+      clearInterval(fuse);
+      res.end();
+    });
+
+    // return res.status(500).json({ opt: "failed", error: err });
+  } catch (err) {
+    console.log("uptime Err : ", err);
+    res.status(500).json({ opt: "failed", error: err });
+  }
+};
+
+module.exports = {
+  getGrossCount,
+  throughput,
+  uptime,
+  createRobo,
+  updateRobo,
+};
+
+/* const mockData = {
       service: "Fleet Management System",
       uptime: {
         status: "operational",
@@ -140,18 +167,4 @@ const uptime = async (req, res, next) => {
         uptime: mockData,
         percentage: Math.floor(Math.random() * 100),
         opt: "succeed!",
-      });
-    return res.status(500).json({ opt: "failed", error: err });
-  } catch (err) {
-    console.log("uptime Err : ", err);
-    res.status(500).json({ opt: "failed", error: err });
-  }
-};
-
-module.exports = {
-  getGrossCount,
-  throughput,
-  uptime,
-  createRobo,
-  updateRobo,
-};
+      }); */

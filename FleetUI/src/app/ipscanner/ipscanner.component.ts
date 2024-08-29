@@ -22,7 +22,7 @@ interface Poll {
 export class IPScannerComponent {
   @Output() close = new EventEmitter<void>();
   constructor(private cdr: ChangeDetectorRef) {} // need to rem in later..
-  eventSource!: EventSource;
+  eventSource!: EventSource; // non-null assertion operator..
   startIP: string = '0.0.0.0';
   EndIP: string = '0.0.0.0';
   ipScanData: Poll[] = [];
