@@ -125,7 +125,7 @@ const uptime = async (req, res, next) => {
     res.writeHead(200, eventStreamHeader);
     const fuse = setInterval(async () => {
       const uptimePer = JSON.stringify({
-        percentage: Math.floor(Math.random() * 100),
+        percentage: Math.floor(Math.random() * 10) + 91,
       });
       res.write(`data: ${uptimePer}\n\n`);
     }, 1000 * 1.5);
