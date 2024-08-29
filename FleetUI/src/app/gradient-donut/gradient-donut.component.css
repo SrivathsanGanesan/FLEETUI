@@ -1,24 +1,17 @@
 
- 
-
-  /* .apexcharts-donut-slice {
-    stroke-width: 50px !important;  
-} */
-
-
-
 .activities-container {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
+  width: 100%;
   padding: 2%;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-top: 2%; /* Add margin to avoid overlap */
-  width: 35vw; /* Responsive width based on viewport */
-  height: 42vh; /* Responsive height based on viewport height */
+  margin-top: 2%; 
+  width: 35vw; 
+  height: 42vh; 
   box-sizing: border-box;
 }
 
@@ -29,21 +22,7 @@ apx-chart {
   margin: 0 auto; /* Center the chart */
 }
 
-/* Ensure the styles override the inline styles */
-.apexcharts-datalabel-label, .apexcharts-datalabel-value {
-  font-size: 1.4em !important; /* Adjust the size of the values */
-  font-weight: bold !important; /* Make the values bold */
-  color: #000000 !important; /* Black color for values */
-  text-anchor: middle !important; /* Center the text */
-  dominant-baseline: middle !important; /* Align vertically */
-  pointer-events: none !important; /* Disable pointer events on values */
-}
-/* Targeting the value inside the donut */
-.apexcharts-datalabel[data-value] {
-  font-size: 1.4em !important;
-  font-weight: bold !important;
-  color: #000000 !important;
-}
+
 
 /* Responsive styling for smaller screens */
 @media (max-width: 480px) {

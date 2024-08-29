@@ -469,7 +469,7 @@ h2 {
 app-gradient-donut {
   position: absolute;
   display: flex;
-
+ 
   max-width: 35%;
   right: 12%;
   top: 35%;
@@ -477,4 +477,5 @@ app-gradient-donut {
   height: 30vw;
   justify-content: center;
   align-items: center;
+  flex-grow: 1;
 }
