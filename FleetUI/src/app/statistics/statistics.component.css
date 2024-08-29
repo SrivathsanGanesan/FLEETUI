@@ -4,7 +4,7 @@
   left: 5%;
  
   /* width: calc(100% - 70px); */
-  width: 90%; /* Relative to the parent or viewport */
+  width: 95%; /* Relative to the parent or viewport */
   padding: 1%;
   /* overflow: hidden; */
   box-sizing: border-box;
