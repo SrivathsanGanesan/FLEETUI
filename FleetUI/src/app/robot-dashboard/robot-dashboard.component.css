@@ -235,19 +235,22 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+
 .stat-title {
   font-size: 0.8vw;
   color: #888888;
-  margin-top: 0;
+  margin-top: -1%;
 }
 
 .stat-value {
   font-size: 1.2vw;
-  font-weight: 400;
+  font-weight: 500;
+  margin-top: -1%;
+
 }
 
 h2 {
-  margin: -2% 0;
+  margin: -4% 0;
   font-size: 2vw;
 }
 
@@ -284,11 +287,11 @@ h2 {
 /* General styling for stat-chart */
 .stat-chart {
   position: absolute;
-  right: 10%;
+  right: 5%;
   top: 50%;
   transform: translateY(-40%);
   width: 6vw;   /* Adjust the width of the chart */
-  height: 8vw;  /* Keep height proportional to the width */
+  height: 7vw;  /* Keep height proportional to the width */
 }
 
 .loading svg polyline {
@@ -356,32 +359,34 @@ h2 {
 /* Robot Activity Table */
 
 /* Parent container holding both sections */
+
+/* Table stylings */
 .dashboard-container {
   display: flex;
-  justify-content: space-between; /* Distribute space between items */
-  gap: 15px; /* Adjust the gap between the two tables */
-  margin-top: 10px; /* Reduce the margin to save space */
-  padding: 0; /* Remove any extra padding */
+  justify-content: space-between;
+  gap: 1%;
+  margin-top: 1%;
+  padding: 0;
   width: 100%;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  box-sizing: border-box;
 }
 
 /* Styling for the robot activity table */
 .robot-activity-container {
-  flex: 1; /* Allow the container to take up available space proportionally */
+  flex: 1;
   background-color: #fff;
-  padding: 8px; /* Reduced padding */
+  padding: 0.5%;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Slightly lighter shadow */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Styling for the notifications table */
 .notifications-container {
-  flex: 0.65; /* Allow the container to take up less space than the robot activity table */
+  flex: 0.65;
   background-color: #fff;
-  padding: 8px; /* Reduced padding */
+  padding: 0.5%;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Matching the shadow for consistency */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Styling for the section headers */
@@ -389,16 +394,16 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px; /* Reduced margin to save space */
-  background-color: #FFD6D6; /* Pink background for header */
-  padding: 8px; /* Add padding to the header for better spacing */
+  margin-bottom: 1%;
+  background-color: #FFD6D6;
+  padding: 0.5%;
   border-radius: 5px;
 }
 
 /* Header text */
 .section-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 1.0vw;
   font-weight: 600;
   color: #333;
 }
@@ -407,11 +412,11 @@ h2 {
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 4px 8px; /* Reduced padding */
+  padding: 1%;
   border-radius: 5px;
   border: none;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 0.8vw;
 }
 
 /* General table styling */
@@ -426,25 +431,22 @@ h2 {
 }
 
 .activity-table td, .notifications-table td {
-  padding: 4px; /* Reduced padding for spacing */
-  font-size: 14px; /* Set the font size */
-  color: #555; /* Set the text color */
+  padding: 1%;
+  font-size: 0.8vw;
+  color: #555;
 }
 
-/* Specific styling for the first column in both tables (e.g., ID column) */
 .activity-table td:first-child, .notifications-table td:first-child {
-  font-weight: bold; /* Make the text bold */
-  color: #333; /* Set a darker color for emphasis */
+  font-weight: bold;
+  color: #333;
 }
 
-/* Optional: Add background color for alternating rows */
 .activity-table tr:nth-child(odd), .notifications-table tr:nth-child(odd) {
-  background-color: #f9f9f9; /* Light gray for odd rows */
+  background-color: #f9f9f9;
 }
 
-/* Hover effect for table rows */
 .activity-table tr:hover, .notifications-table tr:hover {
-  background-color: #f1f1f1; /* Slightly darker gray on hover */
+  background-color: #f1f1f1;
 }
 
 /* Align text in the first column */
@@ -454,7 +456,7 @@ h2 {
 
 /* Align text in the rest of the columns */
 .activity-table td:not(:first-child), .notifications-table td:not(:first-child) {
-  text-align: left; /* Adjust as needed (left, center, right) */
+  text-align: left;
 }
 
 

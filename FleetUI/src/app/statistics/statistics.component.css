@@ -306,7 +306,7 @@
 /* Statistics container */
 .statistics-container {
   position: absolute;
-  top: 6%;
+  top: 7%;
   right: 1%;
   display: flex;
   gap: 2%;
@@ -331,16 +331,18 @@
 .stat-title {
   font-size: 0.8vw;
   color: #888888;
-  margin-top: 0;
+  margin-top: -1%;
 }
 
 .stat-value {
   font-size: 1.2vw;
   font-weight: 500;
+  margin-top: -1%;
+
 }
 
 h2 {
-  margin: -2% 0;
+  margin: -4% 0;
   font-size: 2vw;
 }
 
@@ -377,11 +379,11 @@ h2 {
 /* General styling for stat-chart */
 .stat-chart {
   position: absolute;
-  right: 10%;
+  right: 5%;
   top: 50%;
   transform: translateY(-40%);
   width: 6vw;   /* Adjust the width of the chart */
-  height: 8vw;  /* Keep height proportional to the width */
+  height: 7vw;  /* Keep height proportional to the width */
 }
 
 .loading svg polyline {
@@ -465,7 +467,7 @@ app-gradient-donut {
   
   max-width: 40%;
   right: 10%;
-  top: 40%;
+  top: 35%;
   width: 35vw;
   height: 30vw;
   justify-content: center;
