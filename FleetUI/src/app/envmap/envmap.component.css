@@ -165,7 +165,11 @@ h2 {
   justify-content: center;
   gap: 10px;
 }
+.button-container button :hover{
+    background-color: #ff3333;
+    color: #fff;
 
+}
 .image-container {
   margin-top: 20px;
   position: relative;
@@ -472,9 +476,7 @@ button {
   border-radius: 10px;
   cursor: pointer;
 }
-button:hover {
-  background-color: #cc0000;
-}
+
 .distance-dialog-overlay {
   position: fixed;
   top: 0;
