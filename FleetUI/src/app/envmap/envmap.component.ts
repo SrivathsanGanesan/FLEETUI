@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment.development';
+import { saveAs } from 'file-saver';
 
 interface Zone {
   type: 'high' | 'medium' | 'low';
@@ -204,81 +205,168 @@ onOverlayCanvasClick(event: MouseEvent): void {
       endPointOrientation: false,
       autoRobotMode: 'mode1' // Default mode
     };
-  
-// Method to handle the change in action selection
-onActionChange(): void {
-  this.resetParameters();
-  this.showActionForm();
-}
-resetParameters(): void {
-  this.moveParameters = {
-    maxLinearVelocity: "",
-    maxAngularVelocity: "",
-    maxToleranceAtGoalX: "",
-    maxToleranceAtGoalY: "",
-    maxToleranceAtGoalOrientation: "",
-    endPointOrientation: false,
-    autoRobotMode: 'mode1'
-  };
-}
-showActionForm(): void {
-  this.hideActionForms();
-  if (this.selectedAction === 'Move') {
-    this.isMoveActionFormVisible = true;
-  } else if (this.selectedAction === 'Dock') {
-    this.isDockActionFormVisible = true;
-  } else if (this.selectedAction === 'Undock') {
-    this.isUndockActionFormVisible = true;
-  }
-}
-hideActionForms(): void {
-  this.isMoveActionFormVisible = false;
-  this.isDockActionFormVisible = false;
-  this.isUndockActionFormVisible = false;
-}
-editAction(index: number): void {
-  const action = this.actions[index];
-  this.selectedAction = action.type;
-  this.moveParameters = { ...action.parameters }; // Load the parameters into the form
-  this.showActionForm();
+    dockParameters = {
+      maxLinearVelocity: "",
+      maxAngularVelocity: "",
+      maxToleranceAtGoalX: "",
+      maxToleranceAtGoalY: "",
+      maxToleranceAtGoalOrientation: "",
+      goalOffsetX: "",
+      goalOffsetY: "",
+      goalOffsetOrientation: "",
+      endPointOrientation: false,
+      dockingType: 'mode1'
+    };
+    undockParameters = {
+      maxLinearVelocity: "",
+      maxAngularVelocity: "",
+      maxToleranceAtGoalX: "",
+      maxToleranceAtGoalY: "",
+      maxToleranceAtGoalOrientation: "",
+      endPointOrientation: false,
+      undockingDistance: ""
+    };
 
-  // Remove the action from the list
-  this.actions.splice(index, 1);
-}
+    // Method to save node details
+    saveNodeDetails(): void {
+      // Create a JSON object with the action details
+      const nodeDetails = {
+        actions: this.actions
+      };
+  
+      // Log the JSON object to the console
+      console.log(JSON.stringify(nodeDetails, null, 2));
+  
+      // Optionally save the JSON object to a file
+      const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], { type: 'application/json' });
+      saveAs(blob, 'node-details.json');
+      this.isNodeDetailsPopupVisible = false;
+
+    }
+  // Method to handle the change in action selection
+  onActionChange(): void {
+    this.resetParameters();
+    this.showActionForm();
+  }
+  resetParameters(): void {
+    this.moveParameters = {
+      maxLinearVelocity: "",
+      maxAngularVelocity: "",
+      maxToleranceAtGoalX: "",
+      maxToleranceAtGoalY: "",
+      maxToleranceAtGoalOrientation: "",
+      endPointOrientation: false,
+      autoRobotMode: 'mode1'
+    };
+    this.dockParameters = {
+      maxLinearVelocity: "",
+      maxAngularVelocity: "",
+      maxToleranceAtGoalX: "",
+      maxToleranceAtGoalY: "",
+      maxToleranceAtGoalOrientation: "",
+      goalOffsetX: "",
+      goalOffsetY: "",
+      goalOffsetOrientation: "",
+      endPointOrientation: false,
+      dockingType: 'mode1'
+    };
+    this.undockParameters = {
+      maxLinearVelocity: "",
+      maxAngularVelocity: "",
+      maxToleranceAtGoalX: "",
+      maxToleranceAtGoalY: "",
+      maxToleranceAtGoalOrientation: "",
+      endPointOrientation: false,
+      undockingDistance: ""
+    };
+  }
+  showActionForm(): void {
+    this.hideActionForms();
+    if (this.selectedAction === 'Move') {
+      this.isMoveActionFormVisible = true;
+    } else if (this.selectedAction === 'Dock') {
+      this.isDockActionFormVisible = true;
+    } else if (this.selectedAction === 'Undock') {
+      this.isUndockActionFormVisible = true;
+    }
+  }
+  hideActionForms(): void {
+    this.isMoveActionFormVisible = false;
+    this.isDockActionFormVisible = false;
+    this.isUndockActionFormVisible = false;
+  }
+  editAction(index: number): void {
+    const action = this.actions[index];
+    this.selectedAction = action.type;
+
+    // Load the corresponding parameters into the form
+    if (this.selectedAction === 'Move') {
+      this.moveParameters = { ...action.parameters };
+    } else if (this.selectedAction === 'Dock') {
+      this.dockParameters = { ...action.parameters };
+    } else if (this.selectedAction === 'Undock') {
+      this.undockParameters = { ...action.parameters };
+    }
+
+    this.showActionForm();
+    this.actions.splice(index, 1); // Remove the action from the list
+  }
 
   selectedAction: string = ''; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
-// Method to add an action to the list
-addAction(): void {
-  if (this.selectedAction) {
-    const action = {
-      type: this.selectedAction,
-      parameters: { ...this.moveParameters } // Deep copy to store current parameters
-    };
-    this.actions.push(action);
+  // Method to add an action to the list
+  addAction(): void {
+    if (this.selectedAction) {
+      let action;
 
-    // Hide the form after adding
-    this.hideActionForms();
+      if (this.selectedAction === 'Move') {
+        action = {
+          actionType: this.selectedAction,
+          actionId:"action_move_001",
+          actionDescription:"Move to the next Point",
+          parameters: { ...this.moveParameters }
+        };
+      } else if (this.selectedAction === 'Dock') {
+        action = {
+          actionType: this.selectedAction,
+          actionId:"action_dock_001",
+          actionDescription:"Dock at the Charging Station",
+          parameters: { ...this.dockParameters }
+        };
+      } else if (this.selectedAction === 'Undock') {
+        action = {
+          actionType: this.selectedAction,
+          actionId:"action_undock_001",
+          actionDescription:"undock from the charging station",
+          parameters: { ...this.undockParameters }
+        };
+      }
 
-    // Reset the selected action
-    this.selectedAction = '';
+      this.actions.push(action);
+
+      // Hide the form after adding
+      this.hideActionForms();
+
+      // Reset the selected action
+      this.selectedAction = '';
+    }
   }
-}
-
   openMoveActionForm(): void {
     this.isMoveActionFormVisible = true;
     this.isDockActionFormVisible=true;
     this.isUndockActionFormVisible=true;
   }
-
-// Method to delete an action from the list
-removeAction(index: number): void {
-  this.actions.splice(index, 1);
-  this.hideActionForms();
-}
-isOptionDisabled(option: string): boolean {
-  return this.actions.some(action => action.type === option);
-}
+  closeNodeDetailsPopup(): void {
+    this.isNodeDetailsPopupVisible = false;
+  }
+  // Method to delete an action from the list
+  removeAction(index: number): void {
+    this.actions.splice(index, 1);
+    this.hideActionForms();
+  }
+  isOptionDisabled(option: string): boolean {
+    return this.actions.some(action => action.actionType === option);
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -335,33 +423,40 @@ isOptionDisabled(option: string): boolean {
   }
 
 
+  showError: boolean = false; // Flag to show error message
+
   confirmDistance(): void {
     if (
-      this.distanceBetweenPoints !== null &&
-      this.distanceBetweenPoints !== 0
+      this.distanceBetweenPoints === null ||
+      this.distanceBetweenPoints <= 0
     ) {
-      const distanceInPixels = this.calculateDistance(
-        this.points[0],
-        this.points[1]
-      );
-      console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
-
-      if (distanceInPixels !== 0) {
-        this.ratio = this.distanceBetweenPoints / distanceInPixels;
-        console.log(`Resolution (meters per pixel): ${this.ratio.toFixed(2)}`);
-
-        // Update the resolution input field
-        if (this.resolutionInput) {
-          this.resolutionInput.nativeElement.value = this.ratio.toFixed(2);
-        }
-      } else {
-        console.log('Distance in pixels is zero, cannot calculate ratio.');
-      }
-
-      this.showDistanceDialog = false;
+      this.showError = true; // Show error message if input is invalid
+      return; // Exit the function if validation fails
     }
+  
+    this.showError = false; // Hide error message if input is valid
+  
+    const distanceInPixels = this.calculateDistance(
+      this.points[0],
+      this.points[1]
+    );
+    console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
+  
+    if (distanceInPixels !== 0) {
+      this.ratio = this.distanceBetweenPoints / distanceInPixels;
+      console.log(`Resolution (meters per pixel): ${this.ratio.toFixed(2)}`);
+  
+      // Update the resolution input field
+      if (this.resolutionInput) {
+        this.resolutionInput.nativeElement.value = this.ratio.toFixed(2);
+      }
+    } else {
+      console.log('Distance in pixels is zero, cannot calculate ratio.');
+    }
+  
+    this.showDistanceDialog = false;
   }
-
+  
   //  Saving all nodes and edges
   async saveOpt() {
     console.log(this.Nodes);
@@ -441,20 +536,29 @@ isOptionDisabled(option: string): boolean {
     }
   }
   
+
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
-  
+
     // Plot the node on the canvas
     ctx.beginPath();
     ctx.arc(x, y, 5, 0, 2 * Math.PI);
     ctx.fillStyle = 'red';
     ctx.fill();
-  
-    // Log the node position to the console
-    console.log(`Node plotted at position: (${x.toFixed(2)}, ${y.toFixed(2)})`);
+
+    // Add the node to the nodes array with an ID
+    const nodeId = this.nodeCounter++;
+    this.Nodes.push({ id: nodeId, x: x, y: y, type: this.plottingMode || 'single' });
+
+    // Log the node details in JSON format
+    this.logNodeDetails();
   }
-  
+
+  private logNodeDetails(): void {
+    const nodesJson = JSON.stringify(this.Nodes, null, 2);
+    console.log('Node details:', nodesJson);
+  }
   open(): void {
     this.ratio = Number(
       (document.getElementById('resolution') as HTMLInputElement).value
@@ -670,14 +774,7 @@ isOptionDisabled(option: string): boolean {
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
 
-  closeNodeDetailsPopup(): void {
-    this.isNodeDetailsPopupVisible = false;
-  }
 
-  saveNodeDetails(): void {
-    // Implement save functionality here
-    this.closeNodeDetailsPopup();
-  }
   // in changing process
 
   plotSingleNode(x: number, y: number): void {
