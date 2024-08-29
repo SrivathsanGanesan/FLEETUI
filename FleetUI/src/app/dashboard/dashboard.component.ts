@@ -76,7 +76,7 @@ export class DashboardComponent implements AfterViewInit {
 
   // start-stop the operation!
   startStopOpt() {
-    if (this.UptimeComponent) this.UptimeComponent.getUptime(); // call the uptime comp function
+    if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
   }
 
   toggleONBtn() {

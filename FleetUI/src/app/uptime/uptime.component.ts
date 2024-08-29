@@ -99,14 +99,17 @@ export class UptimeComponent {
     this.getUptime();
   }
 
-  getUptime() {
+  getUptimeIfOn() {
     if (this.ONBtn) {
       // alter the logic, cz of toggling function in button..
       if (this.eventSource) this.eventSource.close();
       this.chartOptions.series = [0];
       return;
     }
+    this.getUptime();
+  }
 
+  getUptime() {
     if (this.eventSource) this.eventSource.close();
     let URL = `http://${environment.API_URL}:${environment.PORT}/dashboard/uptime/map123`;
     this.eventSource = new EventSource(URL);
