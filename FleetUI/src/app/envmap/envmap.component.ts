@@ -103,7 +103,17 @@ export class EnvmapComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-    ctx!.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (ctx) {
+        // Translate the origin to the bottom-left corner
+        ctx.translate(0, canvas.height);
+        // Flip the y-axis
+        ctx.scale(1, -1);
+        
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
     // Preload asset images
     this.assetImages['docking'] = new Image();
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
@@ -119,7 +129,8 @@ export class EnvmapComponent implements AfterViewInit {
 
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
-  }
+}
+
 
   closeImagePopup(): void {
     this.showImagePopup = false;
