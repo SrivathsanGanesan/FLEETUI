@@ -472,19 +472,21 @@ app-operation-pie {
     width: 300px; /* Ensure it matches the intended width */
   }
 
-  .robot-uptime-chart{
-    /* position: sticky; */
+  .robot-uptime-chart {
+    /* position: relative; or absolute; */
+    display: flex;
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
-    max-width: 935px; 
+    margin-top: 1%;
+    max-width: 63%;
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    padding: 10px;
+    padding: 0.1% 0.8%; /* Reduced padding on top and bottom, keeping left and right */
     width: 100%;
-    flex-grow: 1; /* Ensures the chart container grows to fill available space */
-  }
+    flex-grow: 1;
+}
+
  
 
 

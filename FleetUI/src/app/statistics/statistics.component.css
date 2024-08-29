@@ -2,9 +2,9 @@
   position: absolute;
   top: 2%;
   left: 5%;
-
-  width: calc(100% - 70px);
-
+ 
+  /* width: calc(100% - 70px); */
+  width: 95%; /* Relative to the parent or viewport */
   padding: 1%;
   /* overflow: hidden; */
   box-sizing: border-box;
@@ -469,7 +469,7 @@ h2 {
 app-gradient-donut {
   position: absolute;
   display: flex;
-
+ 
   max-width: 35%;
   right: 12%;
   top: 35%;
@@ -477,4 +477,5 @@ app-gradient-donut {
   height: 30vw;
   justify-content: center;
   align-items: center;
+  flex-grow: 1;
 }

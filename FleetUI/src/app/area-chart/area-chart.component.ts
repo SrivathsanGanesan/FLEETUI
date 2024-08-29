@@ -32,13 +32,12 @@ export class AreaChartComponent implements OnInit {
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
 
-
   constructor() {
     this.chartOptions = {
       series: [
         {
           name: 'Series 1',
-          data: [45, 52, 38, 40, 19, 23, 50],
+          data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33], // Your default data
         },
       ],
       chart: {
@@ -47,7 +46,19 @@ export class AreaChartComponent implements OnInit {
         background: '#FFFFFF', // Setting the background color to white
       },
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        categories: [
+          'Dec 01',
+          'Dec 02',
+          'Dec 03',
+          'Dec 04',
+          'Dec 05',
+          'Dec 06',
+          'Dec 07',
+          'Dec 08',
+          'Dec 09',
+          'Dec 10',
+          'Dec 11',
+        ], // Your default categories
         labels: {
           style: {
             colors: '#9aa0ac',
@@ -73,12 +84,12 @@ export class AreaChartComponent implements OnInit {
           colorStops: [
             {
               offset: 0,
-              color: '#FF0000',
+              color: '#DA2127',
               opacity: 0.5,
             },
             {
               offset: 100,
-              color: '#FFE5E5',
+              color: '#DA2127',
               opacity: 0.1,
             },
           ],
@@ -113,78 +124,113 @@ export class AreaChartComponent implements OnInit {
     // Any additional logic can go here
   }
 
-  updateChart(data: string, metricName: string): void {
+  updateChart(dataKey: string, metricName: string): void {
     this.selectedMetric = metricName; // Update the displayed metric name
 
-    switch (data) {
+    switch (dataKey) {
       case 'data1':
         this.chartOptions.series = [
-          { name: 'Series 1', data: [45, 52, 38, 45, 19, 23, 50] },
+          {
+            name: 'Series 1',
+            data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33],
+          },
         ];
         this.chartOptions.xaxis.categories = [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
+          'Dec 01',
+          'Dec 02',
+          'Dec 03',
+          'Dec 04',
+          'Dec 05',
+          'Dec 06',
+          'Dec 07',
+          'Dec 08',
+          'Dec 09',
+          'Dec 10',
+          'Dec 11',
         ];
         break;
       case 'data2':
         this.chartOptions.series = [
-          { name: 'Series 2', data: [25, 30, 45, 50, 49, 60, 70] },
+          {
+            name: 'Series 2',
+            data: [60, 75, 50, 80, 55, 70, 45, 60, 55, 75, 65],
+          },
         ];
         this.chartOptions.xaxis.categories = [
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec',
-          'Jan',
-          'Feb',
+          'Dec 01',
+          'Dec 02',
+          'Dec 03',
+          'Dec 04',
+          'Dec 05',
+          'Dec 06',
+          'Dec 07',
+          'Dec 08',
+          'Dec 09',
+          'Dec 10',
+          'Dec 11',
         ];
         break;
       case 'data3':
         this.chartOptions.series = [
-          { name: 'Series 3', data: [20, 29, 37, 36, 44, 45, 50] },
+          {
+            name: 'Series 3',
+            data: [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
+          },
         ];
         this.chartOptions.xaxis.categories = [
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
+          'Dec 01',
+          'Dec 02',
+          'Dec 03',
+          'Dec 04',
+          'Dec 05',
+          'Dec 06',
+          'Dec 07',
+          'Dec 08',
+          'Dec 09',
+          'Dec 10',
+          'Dec 11',
         ];
         break;
       case 'data4':
         this.chartOptions.series = [
-          { name: 'Series 4', data: [15, 18, 28, 29, 39, 46, 55] },
+          {
+            name: 'Series 4',
+            data: [50, 60, 55, 70, 65, 80, 75, 85, 90, 95, 100],
+          },
         ];
         this.chartOptions.xaxis.categories = [
-          'Oct',
-          'Nov',
-          'Dec',
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
+          'Dec 01',
+          'Dec 02',
+          'Dec 03',
+          'Dec 04',
+          'Dec 05',
+          'Dec 06',
+          'Dec 07',
+          'Dec 08',
+          'Dec 09',
+          'Dec 10',
+          'Dec 11',
         ];
         break;
       case 'data5':
         this.chartOptions.series = [
-          { name: 'Series 5', data: [20, 60, 55, 48, 38, 33, 45] },
+          {
+            name: 'Series 5',
+            data: [25, 35, 45, 55, 65, 75, 85, 95, 100, 110, 120],
+          },
         ];
         this.chartOptions.xaxis.categories = [
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
+          'Dec 01',
+          'Dec 02',
+          'Dec 03',
+          'Dec 04',
+          'Dec 05',
+          'Dec 06',
+          'Dec 07',
+          'Dec 08',
+          'Dec 09',
+          'Dec 10',
+          'Dec 11',
         ];
         break;
     }

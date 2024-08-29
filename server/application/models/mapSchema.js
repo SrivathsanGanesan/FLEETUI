@@ -79,6 +79,19 @@ const edgeSchema = new Schema(
   }
 );
 
+const logTimeSchema = new Schema(
+  {
+    startTime: { type: Date, default: Date.now },
+    stopTime: { type: Date, default: null },
+    isCycleComplete: { type: Boolean, default: false },
+    inHr: { type: Number, default: 0 },
+  },
+  {
+    versionKey: false,
+    _id: false,
+  }
+);
+
 const mapSchema = new Schema(
   {
     mapName: {
@@ -101,6 +114,7 @@ const mapSchema = new Schema(
     stations: { type: [stationSchema], default: [] },
     zones: { ctype: [zoneSchema], cdefault: [] },
     robots: { type: [roboProjSchema], default: [] },
+    logTime: { type: [logTimeSchema], default: [] },
   },
   { timestamps: true, versionKey: false }
 );
