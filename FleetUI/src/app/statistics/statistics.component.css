@@ -2,7 +2,7 @@
   position: absolute;
   top: 2%;
   left: 5%;
- 
+
   width: calc(100% - 70px);
 
   padding: 1%;
@@ -45,7 +45,6 @@
   z-index: 2;
 }
 
-
 .slider-buttons button {
   flex: 1;
   padding: 2%;
@@ -65,7 +64,7 @@
   position: absolute;
   width: 50%;
   height: 100%;
-  background-color: #DA2127;
+  background-color: #da2127;
   z-index: 2;
   transition: transform 0.3s ease;
 }
@@ -172,7 +171,7 @@
   padding: 1%;
   outline: none;
   width: 100%;
-  font-size: 1.0vw;
+  font-size: 1vw;
   border-radius: 25px 0 0 25px;
 }
 
@@ -239,7 +238,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1%;
-  background-color: #FFD6D6;
+  background-color: #ffd6d6;
   padding: 0.5%;
   border-radius: 5px;
 }
@@ -247,7 +246,7 @@
 /* Header text */
 .section-header h3 {
   margin: 0;
-  font-size: 1.0vw;
+  font-size: 1vw;
   font-weight: 600;
   color: #333;
 }
@@ -264,42 +263,50 @@
 }
 
 /* General table styling */
-.activity-table, .notifications-table {
+.activity-table,
+.notifications-table {
   width: 100%;
   border-collapse: collapse;
   margin: 0;
 }
 
-.activity-table tr, .notifications-table tr {
+.activity-table tr,
+.notifications-table tr {
   border-bottom: 1px solid #eee;
 }
 
-.activity-table td, .notifications-table td {
+.activity-table td,
+.notifications-table td {
   padding: 1%;
   font-size: 0.8vw;
   color: #555;
 }
 
-.activity-table td:first-child, .notifications-table td:first-child {
+.activity-table td:first-child,
+.notifications-table td:first-child {
   font-weight: bold;
   color: #333;
 }
 
-.activity-table tr:nth-child(odd), .notifications-table tr:nth-child(odd) {
+.activity-table tr:nth-child(odd),
+.notifications-table tr:nth-child(odd) {
   background-color: #f9f9f9;
 }
 
-.activity-table tr:hover, .notifications-table tr:hover {
+.activity-table tr:hover,
+.notifications-table tr:hover {
   background-color: #f1f1f1;
 }
 
 /* Align text in the first column */
-.activity-table td:first-child, .notifications-table td:first-child {
+.activity-table td:first-child,
+.notifications-table td:first-child {
   text-align: left;
 }
 
 /* Align text in the rest of the columns */
-.activity-table td:not(:first-child), .notifications-table td:not(:first-child) {
+.activity-table td:not(:first-child),
+.notifications-table td:not(:first-child) {
   text-align: left;
 }
 /* Statistics container */
@@ -317,7 +324,7 @@
   padding: 1%;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  width: 18vw;  /* Adjust the width to fit the stat chart */
+  width: 18vw; /* Adjust the width to fit the stat chart */
   height: 14vh; /* Adjust the height for better visibility */
   text-align: left;
   position: relative;
@@ -338,7 +345,6 @@
   font-size: 1.2vw;
   font-weight: 500;
   margin-top: -1%;
-
 }
 
 h2 {
@@ -348,9 +354,9 @@ h2 {
 
 /* Styling for positive stat change */
 .stat-change.positive {
-  color: #4CAF50;
+  color: #4caf50;
   font-weight: medium;
-  font-size: 1.0vw;
+  font-size: 1vw;
   display: flex;
   align-items: center;
 }
@@ -358,14 +364,14 @@ h2 {
 .stat-change.positive span {
   margin-left: 5%;
   font-size: 1.2vw;
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 /* Styling for negative stat change */
 .stat-change.negative {
-  color: #F44336;
+  color: #f44336;
   font-weight: medium;
-  font-size: 1.0vw;
+  font-size: 1vw;
   display: flex;
   align-items: center;
 }
@@ -373,7 +379,7 @@ h2 {
 .stat-change.negative span {
   margin-left: 5%;
   font-size: 1.2vw;
-  color: #F44336;
+  color: #f44336;
 }
 
 /* General styling for stat-chart */
@@ -382,8 +388,8 @@ h2 {
   right: 5%;
   top: 50%;
   transform: translateY(-40%);
-  width: 6vw;   /* Adjust the width of the chart */
-  height: 7vw;  /* Keep height proportional to the width */
+  width: 6vw; /* Adjust the width of the chart */
+  height: 7vw; /* Keep height proportional to the width */
 }
 
 .loading svg polyline {
@@ -404,7 +410,7 @@ h2 {
 }
 
 .stat-card-1 .loading svg polyline#front {
-  stroke: #DA2127;
+  stroke: #da2127;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
@@ -412,11 +418,11 @@ h2 {
 
 /* Specific styling for Stat Card 2 (yellow color) */
 .stat-card-2 .loading svg polyline#back {
-  stroke: #FFC10733;
+  stroke: #ffc10733;
 }
 
 .stat-card-2 .loading svg polyline#front {
-  stroke: #FFC107;
+  stroke: #ffc107;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
@@ -424,11 +430,11 @@ h2 {
 
 /* Specific styling for Stat Card 3 (green color) */
 .stat-card-3 .loading svg polyline#back {
-  stroke: #4CAF5033;
+  stroke: #4caf5033;
 }
 
 .stat-card-3 .loading svg polyline#front {
-  stroke: #4CAF50;
+  stroke: #4caf50;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
@@ -443,7 +449,6 @@ h2 {
     stroke-dashoffset: 0;
   }
 }
-
 
 /* Area chart container */
 .area-chart-container {
@@ -464,7 +469,7 @@ h2 {
 app-gradient-donut {
   position: absolute;
   display: flex;
-  
+
   max-width: 35%;
   right: 12%;
   top: 35%;

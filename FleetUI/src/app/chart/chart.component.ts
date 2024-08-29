@@ -1,12 +1,12 @@
-import { Component, ViewChild } from "@angular/core";
-
+import { Component, ViewChild, Input } from '@angular/core';
+import { ProjectService } from '../services/project.service';
 import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
   ApexChart,
   ApexFill,
-  ApexStroke
-} from "ng-apexcharts";
+  ApexStroke,
+} from 'ng-apexcharts';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -18,43 +18,46 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: "app-chart",
-  templateUrl: "./chart.component.html",
-  styleUrls: ["./chart.component.css"]
+  selector: 'app-chart',
+  templateUrl: './chart.component.html',
+  styleUrls: ['./chart.component.css'],
 })
 export class ChartComponent {
-  @ViewChild("chart") chart!: ChartComponent;
+  @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
+  @Input() ONBtn!: boolean;
 
-  constructor() {
-    const totalRobots = 100; // Define the total number of robots
-    const activeRobots = 65; // Define the active robots
+  activeRobots: number = 1;
+  totalRobots: number = 0;
 
+  constructor(private projectService: ProjectService) {
+    const { robots } = this.projectService.getSelectedProject();
+    this.totalRobots = robots.length;
     this.chartOptions = {
-      series: [activeRobots],
+      series: [(this.activeRobots / this.totalRobots) * 100], // normalized value..
       chart: {
         width: 230,
         height: 250,
-        type: "radialBar",
+        type: 'radialBar',
         toolbar: {
-          show: false
-        }
+          show: false,
+        },
       },
       plotOptions: {
         radialBar: {
           offsetY: -25,
-          startAngle: -200,
-          endAngle: 200,
+          startAngle: -180,
+          endAngle: 180,
           hollow: {
             margin: 1,
-            size: "60%",
-            background: "#fff",
+            size: '60%',
+            background: '#fff',
             image: undefined,
-            position: "front",
+            position: 'front',
           },
           track: {
-            background: "#ffe5e5",
-            strokeWidth: "70%",
+            background: '#ffe5e5',
+            strokeWidth: '70%',
             margin: -5,
           },
           dataLabels: {
@@ -62,28 +65,26 @@ export class ChartComponent {
             name: {
               offsetY: 85,
               show: true,
-              color: "#FF3333",
-              fontSize: "10px"
+              color: '#FF3333',
+              fontSize: '10px',
             },
             value: {
-              formatter: function(val) {
-                return `${activeRobots}/${totalRobots}`;
-              },
+              formatter: this.currentActiveRobots.bind(this),
               offsetY: -5,
-              color: "#FF3333",
-              fontSize: "25px",
-              show: true
-            }
-          }
-        }
+              color: '#FF3333',
+              fontSize: '25px',
+              show: true,
+            },
+          },
+        },
       },
       fill: {
-        type: "gradient",
+        type: 'gradient',
         gradient: {
-          shade: "dark",
-          type: "vertical",
+          shade: 'dark',
+          type: 'vertical',
           shadeIntensity: 0.1,
-          gradientToColors: ["#FFFFFF"],
+          gradientToColors: ['#FFFFFF'],
           inverseColors: true,
           opacityFrom: 1,
           opacityTo: 1,
@@ -91,21 +92,30 @@ export class ChartComponent {
           colorStops: [
             {
               offset: 0,
-              color: "#FFB3B3",
-              opacity: 1
+              color: '#FFB3B3',
+              opacity: 1,
             },
             {
               offset: 80,
-              color: "#FF3333",
-              opacity: 1
-            }
-          ]
-        }
+              color: '#FF3333',
+              opacity: 1,
+            },
+          ],
+        },
       },
       stroke: {
-        lineCap: "round"
+        lineCap: 'round',
       },
-      labels: ["Number of Active Robots"]
+      labels: ['Number of Active Robots'],
     };
+  }
+
+  ngOnInit() {
+    const { robots } = this.projectService.getSelectedProject();
+    this.totalRobots = robots.length;
+  }
+
+  currentActiveRobots(): string {
+    return `${this.activeRobots}/${this.totalRobots}`;
   }
 }

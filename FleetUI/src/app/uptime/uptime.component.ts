@@ -92,7 +92,15 @@ export class UptimeComponent {
     };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (!this.ONBtn) return;
+    fetch('http://localhost:3000/dashboard/uptime/map123')
+      .then((response) => response.json())
+      .then((data) => {
+        this.chartOptions.series = [data.percentage];
+      })
+      .catch((error) => console.log(error));
+  }
 
   getUptime() {
     if (this.ONBtn) {
@@ -106,7 +114,5 @@ export class UptimeComponent {
         this.chartOptions.series = [data.percentage];
       })
       .catch((error) => console.log(error));
-
-    // console.log(this.uptimePercentage);
   }
 }
