@@ -32,7 +32,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   margin-top: 2%; /* Add margin to avoid overlap */
   width: 35vw; /* Responsive width based on viewport */
-  height: 40vh; /* Responsive height based on viewport height */
+  height: 45vh; /* Responsive height based on viewport height */
   box-sizing: border-box;
 }
 

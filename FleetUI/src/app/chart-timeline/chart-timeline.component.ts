@@ -38,13 +38,13 @@ export class ChartTimelineComponent implements OnInit {
 
   // Sample data for each metric
   cpuData = [
-    { x: new Date(2024, 0, 1), y: 70 },
+    { x: new Date(2024, 0, 1), y: 30 },
     { x: new Date(2024, 0, 2), y: 65 },
     { x: new Date(2024, 0, 3), y: 75 }
   ];
 
   robotUtilizationData = [
-    { x: new Date(2024, 0, 1), y: 50 },
+    { x: new Date(2024, 0, 1), y: 60 },
     { x: new Date(2024, 0, 2), y: 55 },
     { x: new Date(2024, 0, 3), y: 60 }
   ];
@@ -56,7 +56,7 @@ export class ChartTimelineComponent implements OnInit {
   ];
 
   memoryData = [
-    { x: new Date(2024, 0, 1), y: 40 },
+    { x: new Date(2024, 0, 1), y: 10 },
     { x: new Date(2024, 0, 2), y: 45 },
     { x: new Date(2024, 0, 3), y: 42 }
   ];
