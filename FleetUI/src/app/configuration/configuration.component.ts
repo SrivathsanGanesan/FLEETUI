@@ -504,15 +504,20 @@ export class ConfigurationComponent implements AfterViewInit {
 
   deleteItem(item: any) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent);
-
+  
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Perform the delete operation
+        // Assuming `currentTable` determines which data array to modify
+        if (this.currentTable === 'Environment') {
+          this.filteredEnvData = this.filteredEnvData.filter(i => i !== item);
+        } else if (this.currentTable === 'robot') {
+          this.filteredRobotData = this.filteredRobotData.filter(i => i !== item);
+        }
         console.log('Item deleted:', item);
-        // You can remove the item from the list or perform other actions here
       }
     });
   }
+  
 
   addItem(item: any) {
     console.log('Add item:', item);
