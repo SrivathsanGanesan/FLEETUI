@@ -465,8 +465,8 @@ app-gradient-donut {
   position: absolute;
   display: flex;
   
-  max-width: 40%;
-  right: 10%;
+  max-width: 35%;
+  right: 12%;
   top: 35%;
   width: 35vw;
   height: 30vw;
