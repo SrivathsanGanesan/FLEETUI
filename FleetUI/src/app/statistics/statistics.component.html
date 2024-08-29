@@ -117,12 +117,18 @@
                 </div>
                <!-- <app-operation-pie></app-operation-pie> -->
                   <app-gradient-donut
-                  [series]="[410, 142, 340, 590]"
-                  [labels]="['Approved', 'Pending', 'Under review', 'Rejected']"
+                  [series]="[510, 142, 340, 590,340]"
+                  [labels]="['Completed', 'Inprogress', 'ToDo', 'Error', 'Cancelled']"
                   [legendFontSize]="'14px'"  
                   [dataLabelFontSize]="'14px'" 
-                  [chartWidth]="450"
-                  [titleText]="'Activity Breakdown'">
+                  [chartWidth]="470"
+                 
+                  [fillType]="'gradient'"
+                  [titleText]="'Operations'"
+                
+                  [legendFontSize]="'16px'"
+                  [dataLabelFontSize]="'18px'">
+                  
                 </app-gradient-donut>
              </div>
 

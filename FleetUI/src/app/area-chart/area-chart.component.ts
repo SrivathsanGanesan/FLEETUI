@@ -73,12 +73,12 @@ export class AreaChartComponent implements OnInit {
           colorStops: [
             {
               offset: 0,
-              color: '#FF0000',
+              color: '#DA2127',
               opacity: 0.5,
             },
             {
               offset: 100,
-              color: '#FFE5E5',
+              color: '#DA2127',
               opacity: 0.1,
             },
           ],
@@ -133,7 +133,7 @@ export class AreaChartComponent implements OnInit {
         break;
       case 'data2':
         this.chartOptions.series = [
-          { name: 'Series 2', data: [25, 30, 45, 50, 49, 60, 70] },
+          { name: 'Series 2', data: [40, 30, 45, 50, 49, 60, 70] },
         ];
         this.chartOptions.xaxis.categories = [
           'Aug',

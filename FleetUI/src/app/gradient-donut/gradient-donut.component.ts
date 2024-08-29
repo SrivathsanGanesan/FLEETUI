@@ -29,7 +29,7 @@ export type ChartOptions = {
 })
 export class GradientDonutComponent implements OnInit {
   @Input() series: ApexNonAxisChartSeries = [];
-  @Input() labels: string[] = ["Approved", "Pending", "Under review", "Rejected"];  // Labels for each segment
+  @Input() labels: string[] = [];  // Labels for each segment
   @Input() chartWidth: number = 400;
   @Input() startAngle: number = -90;
   @Input() endAngle: number = 270;
@@ -63,43 +63,54 @@ export class GradientDonutComponent implements OnInit {
     this.chartOptions = {
       series: this.series,
       chart: {
+        type: 'donut',
         width: this.chartWidth,
-        type: 'donut'
       },
       plotOptions: {
         pie: {
           startAngle: this.startAngle,
           endAngle: this.endAngle,
-        }
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: '1.4em',
+                fontWeight: 'bold',
+                color: '#121212',
+                offsetY: -5,
+              },
+              value: {
+                show: true,
+                fontSize: '1.4em',
+                fontWeight: 'bold',
+                color: '#121212',
+                offsetY: 5,
+              },
+            },
+          },
+        },
       },
       dataLabels: {
         enabled: this.dataLabelsEnabled,
         style: {
-          fontSize: this.dataLabelFontSize, // Set font size for data labels
-        }
+          fontSize: this.dataLabelFontSize,
+          fontWeight: 'bold',
+          colors: ['#000000'],
+        },
       },
       fill: {
-        type: this.fillType
+        type: this.fillType,
       },
       legend: {
-        fontSize: this.legendFontSize, // Set font size for legend labels
-        formatter: this.legendFormatter
+        fontSize: this.legendFontSize,
+        formatter: this.legendFormatter,
       },
-      labels: this.labels, // Assigning the labels here
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200
-          },
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }],
+      labels: this.labels,
       title: {
-        text: this.titleText
-      }
+        text: this.titleText,
+      },
+      responsive: this.responsive,
     };
   }
 }

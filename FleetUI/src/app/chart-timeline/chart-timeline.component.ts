@@ -129,12 +129,12 @@ export class ChartTimelineComponent implements OnInit {
           colorStops: [
             {
               offset: 0,
-              color: '#FF0000',
+              color: '#7854f7',
               opacity: 0.7
             },
             {
               offset: 100,
-              color: '#FF6666',
+              color: '#7854f7',
               opacity: 0.2
             }
           ]
@@ -143,11 +143,15 @@ export class ChartTimelineComponent implements OnInit {
       stroke: {
         curve: 'smooth',
         width: 3,
-        colors: ['#DA2127'], // This is the key change: making sure the stroke is red
+        colors: ['#7854f7'], // This is the key change: making sure the stroke is red
       },
       grid: {
-        borderColor: '#f1f1f1',
-      }
+        borderColor: '#e7e7e7',
+        row: {
+          colors: ['#f3f3f3', 'transparent'],
+          opacity: 0.5,
+        },
+      },
     };
   }
 }
