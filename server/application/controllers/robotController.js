@@ -1,6 +1,12 @@
 const { Robo } = require("../models/mapSchema");
 const { projectModel } = require("../../fleetcore/models/projectSchema");
 
+const eventStreamHeader = {
+  "Content-Type": "text/event-stream",
+  "Cache-Control": "no-cache",
+  Connection: "keep-alive",
+};
+
 const insertRoboId = async ({ roboId, roboName, projectName }) => {
   const proj = await projectModel.findOneAndUpdate(
     { projectName: projectName }, // wanna add robo name.. to the ref
@@ -86,12 +92,6 @@ const getGrossCount = async (req, res, next) => {
   } catch (err) {
     res.status(500).json({ opt: "failed", error: err });
   }
-};
-
-const eventStreamHeader = {
-  "Content-Type": "text/event-stream",
-  "Cache-Control": "no-cache",
-  Connection: "keep-alive",
 };
 
 // -------- [WIP] --------------
