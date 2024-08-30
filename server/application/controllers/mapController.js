@@ -91,14 +91,19 @@ const mapInsert = async (req, res) => {
       return res.status(400).json({
         succeded: false,
         msg: "operation failed while inserting ref Id of Map!",
+        map: null,
       });
     }
-    res.status(201).json({ exits: false, msg: "data inserted!" });
+    res.status(201).json({ exits: false, msg: "data inserted!", map: newMap });
   } catch (err) {
     clearImgAsset(req);
     console.log("err occs : ", err);
-    if(err.code === 11000) return res.status(400).json({ msg: "duplicate key error, might conflicts in field values" });
-    res.status(500).json({ msg: "error occured while inserting!" });
+    if (err.code === 11000)
+      return res.status(400).json({
+        msg: "duplicate key error, might conflicts in field values",
+        map: null,
+      });
+    res.status(500).json({ msg: "error occured while inserting!", map: null });
   }
 };
 

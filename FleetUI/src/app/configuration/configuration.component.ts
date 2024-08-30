@@ -102,6 +102,7 @@ export class ConfigurationComponent implements AfterViewInit {
       })
       .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
     if (!this.EnvData.length) return;
+    // console.log(this.EnvData);
 
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`

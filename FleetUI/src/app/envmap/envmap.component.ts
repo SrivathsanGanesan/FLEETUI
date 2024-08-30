@@ -13,6 +13,7 @@ import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment.development';
 import { saveAs } from 'file-saver';
 import { ProjectService } from '../services/project.service';
+import { error } from 'console';
 
 interface Zone {
   type: 'high' | 'medium' | 'low';
@@ -497,7 +498,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   //  Saving all nodes and edges
-  async saveOpt() {
+  saveOpt() {
     console.log(this.Nodes);
     console.log(this.connections);
     if (!this.selectedImage) {
@@ -537,18 +538,53 @@ export class EnvmapComponent implements AfterViewInit {
       nodes: [this.Nodes],
       stations: [],
     };
-    this.form?.append('mapImg', this.selectedImage);
+    // this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
-    const res = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps`,
-      {
-        credentials: 'include',
-        method: 'POST',
-        body: this.form,
-      }
-    );
-    const data = res.json();
-    console.log(data);
+    fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps`, {
+      credentials: 'include',
+      method: 'POST',
+      body: this.form,
+    })
+      .then((response) => {
+        if (!response.ok)
+          throw new Error(
+            `Error occured with status code of ${response.status}`
+          );
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.isFileExist === false) {
+          alert(data.msg);
+          return;
+        }
+        if (!data.map) {
+          let mapCreatedAt = new Date(data.map.createdAt);
+          let createdAt = mapCreatedAt.toLocaleString('en-IN', {
+            month: 'short',
+            year: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+          });
+          this.EnvData = [
+            ...this.EnvData,
+            {
+              id: data.map._id,
+              mapName: data.map.mapName,
+              siteName: data.map.siteName,
+              date: mapCreatedAt,
+            },
+          ];
+          this.cdRef.detectChanges();
+        }
+        console.log(this.EnvData);
+        this.closePopup.emit();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   saveCanvas(): void {

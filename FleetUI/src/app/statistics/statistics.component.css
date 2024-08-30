@@ -2,7 +2,7 @@
   position: absolute;
   top: 2%;
   left: 5%;
- 
+
   /* width: calc(100% - 70px); */
   width: 95%; /* Relative to the parent or viewport */
   padding: 1%;
@@ -218,8 +218,7 @@
 .robot-activity-container {
   flex: 1;
   background-color: #fff;
-  
- 
+
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -228,7 +227,7 @@
 .notifications-container {
   flex: 0.65;
   background-color: #fff;
-  
+
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -240,7 +239,7 @@
   align-items: center;
   margin-bottom: 1%;
   background-color: #ffd6d6;
- 
+
   border-radius: 5px;
 }
 
@@ -457,7 +456,6 @@ h2 {
   margin-top: 5%;
   width: 100%;
   gap: 1%; /* Space between the area chart and the donut chart */
-  
 }
 
 /* Area chart container */
@@ -485,22 +483,23 @@ h2 {
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .charts-container {
-      flex-direction: column; /* Stack charts vertically on smaller screens */
+    flex-direction: column; /* Stack charts vertically on smaller screens */
   }
 
-  .area-chart-container, .donut-chart-container {
-      width: 100%; /* Full width for both charts */
-      height: auto; /* Let the height adjust automatically on smaller screens */
+  .area-chart-container,
+  .donut-chart-container {
+    width: 100%; /* Full width for both charts */
+    height: auto; /* Let the height adjust automatically on smaller screens */
   }
 }
 
 /* Responsive adjustments for very small screens */
 @media (max-width: 768px) {
-  .area-chart-container, .donut-chart-container {
-      height: 250px; /* Adjust height for small screens */
+  .area-chart-container,
+  .donut-chart-container {
+    height: 250px; /* Adjust height for small screens */
   }
 }
-
 
 /* Ensure the legend inside the donut chart scales properly */
 .apexcharts-legend {
@@ -509,7 +508,8 @@ h2 {
   justify-content: center;
 }
 
-.apexcharts-datalabel-label, .apexcharts-datalabel-value {
+.apexcharts-datalabel-label,
+.apexcharts-datalabel-value {
   font-size: 1.2em !important;
   font-weight: medium !important;
   color: #000000 !important;
