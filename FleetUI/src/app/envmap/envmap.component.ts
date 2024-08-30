@@ -29,7 +29,6 @@ interface Zone {
 export class EnvmapComponent implements AfterViewInit {
   @Input() EnvData: any[] = [];
   @Output() closePopup = new EventEmitter<void>();
-  // @Output() newEnvEvent = new EventEmitter<any>();
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('imagePopupCanvas', { static: false })
@@ -38,6 +37,7 @@ export class EnvmapComponent implements AfterViewInit {
   @ViewChild('nodeDetailsPopup', { static: false })
   nodeDetailsPopup!: ElementRef<HTMLDivElement>; // Reference to the node details popup
 
+  form: FormData | null = null;
   fileName: string | null = null;
   mapName: string = '';
   siteName: string = '';
@@ -470,7 +470,7 @@ export class EnvmapComponent implements AfterViewInit {
   async saveOpt() {
     console.log(this.Nodes);
     console.log(this.connections);
-    return;
+    this.form = new FormData();
     const res = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps`,
       {
