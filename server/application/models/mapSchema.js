@@ -109,8 +109,8 @@ const mapSchema = new Schema(
     imgUrl: { type: String, default: "" },
     mpp: { type: Number, default: 0.0 }, // resolution
     ppm: { type: Number, default: 0.0 },
-    nodes: { type: [nodeSchema], default: [] },
-    edges: { type: [edgeSchema], default: [] },
+    nodes: { type: mongoose.Schema.Types.Mixed, default: [] }, // type : [nodeSchema]
+    edges: { type: mongoose.Schema.Types.Mixed, default: [] }, // type: [edgeSchema]
     stations: { type: [stationSchema], default: [] },
     zones: { ctype: [zoneSchema], cdefault: [] },
     robots: { type: [roboProjSchema], default: [] },

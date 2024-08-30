@@ -94,32 +94,50 @@
                     </section>
                   </div>
                 </div>
-               <!-- <app-operation-pie></app-operation-pie> -->
-                  <app-gradient-donut
-                  [series]="[510, 142, 340, 590,340]"
-                  [labels]="['Completed', 'Inprogress', 'ToDo', 'Error', 'Cancelled']"
-                  [legendFontSize]="'14px'"  
-                  [dataLabelFontSize]="'14px'" 
-                  [chartWidth]="470"
-                 
-                  [fillType]="'gradient'"
-                  [titleText]="'Operations'"
-                
-                  [legendFontSize]="'16px'"
-                  [dataLabelFontSize]="'18px'">
-                  
-                </app-gradient-donut>
              </div>
+           </div>   
 
-          <!-- Your existing Operation content goes here -->
-          <!-- This part won't be hidden; it just won't be rendered when 'robot' is active -->
-        </div>   
+                      <div class="charts-container">
+                        <div class="area-chart-container">
+                            <app-area-chart></app-area-chart>
+                        </div>
+                        <div class="donut-chart-container">
+                            <app-gradient-donut
+                                [series]="[510, 142, 340, 590,340]"
+                                [labels]="['Completed', 'Inprogress', 'ToDo', 'Error', 'Cancelled']"
+                                [legendFontSize]="'14px'"  
+                                [dataLabelFontSize]="'14px'" 
+                                [chartWidth]="470"
+                                [fillType]="'gradient'"
+                                [titleText]="'Operations'"
+                                [legendFontSize]="'16px'"
+                                [dataLabelFontSize]="'18px'">
+                            </app-gradient-donut>
+                        </div>
+                      </div>
+                    
+        
 
-         <!-- area chart -->
-         <div class="area-chart-container">
+
+         
+         <!-- <div class="area-chart-container">
           <app-area-chart></app-area-chart>
          </div>
-      <!--  -->
+         <app-gradient-donut
+         [series]="[510, 142, 340, 590,340]"
+         [labels]="['Completed', 'Inprogress', 'ToDo', 'Error', 'Cancelled']"
+         [legendFontSize]="'14px'"  
+         [dataLabelFontSize]="'14px'" 
+         [chartWidth]="470"
+        
+         [fillType]="'gradient'"
+         [titleText]="'Operations'"
+       
+         [legendFontSize]="'16px'"
+         [dataLabelFontSize]="'18px'">
+         
+       </app-gradient-donut> -->
+    
 
         <div class="dashboard-container">
           <!-- Robot Activity Section -->
