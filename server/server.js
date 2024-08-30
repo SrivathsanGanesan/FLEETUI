@@ -32,6 +32,9 @@ app.use("/fleet-project-file", projectFileRouter);
 const configurationRouter = require("./fleetcore/routes/configurationRouter");
 app.use("/fleet-config", configurationRouter);
 
+const trackMapFleetRouter = require("./application/routes/trackMapFleetRouter");
+app.use("/track-fleet", trackMapFleetRouter);
+
 app.listen(process.env.PORT, (err) => {
   err
     ? console.log("error while connecting : ", err)

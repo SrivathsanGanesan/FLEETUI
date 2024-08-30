@@ -165,7 +165,11 @@ h2 {
   justify-content: center;
   gap: 10px;
 }
+.button-container button :hover{
+    background-color: #ff3333;
+    color: #fff;
 
+}
 .image-container {
   margin-top: 20px;
   position: relative;
@@ -200,13 +204,15 @@ canvas {
 }
 .close-btn {
   position: absolute;
-  top: -35px;
-  right: 0px;
-  background-color: #a52828;
-  color: #fff;
-  font-size: 8px;
+  top: -25px;
+  right: -5px;
+  background-color: #dad8d8;
+  color: #ff7373;
+  font-size: 20px;
+  font-weight: bolder;
+  padding: 5px;
   border: none;
-  border-radius: 50%;
+  border-radius: 5px;
   cursor: pointer;
 }
 
@@ -332,6 +338,12 @@ canvas {
   color: #f8f8f8;
 } 
 
+.distance-error-message{
+  font-size: 10px;
+  font-weight: bold;
+  color: red;
+}
+
 .delete-icon{
   background-color: rgba(205, 48, 48, 0.493);
   font-size: 10px;
@@ -426,7 +438,7 @@ canvas {
   background-color: #b93636;
 }
 .close-btn:hover {
-  background-color: #601515a7;
+  background-color: #dad8d8;
 }
 
 button {
@@ -464,9 +476,7 @@ button {
   border-radius: 10px;
   cursor: pointer;
 }
-button:hover {
-  background-color: #cc0000;
-}
+
 .distance-dialog-overlay {
   position: fixed;
   top: 0;
