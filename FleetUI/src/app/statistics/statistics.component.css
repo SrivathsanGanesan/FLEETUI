@@ -313,10 +313,10 @@
 /* Statistics container */
 .statistics-container {
   position: absolute;
-  top: 7%;
+  top: 5%;
   right: 1%;
   display: flex;
-  gap: 2%;
+  gap: 1%;
 }
 
 .stat-card {
@@ -448,35 +448,66 @@ h2 {
   to {
     stroke-dashoffset: 0;
   }
+}.charts-container {
+  display: flex;
+  justify-content: space-between; /* Distributes space between the charts */
+  align-items: flex-start; /* Aligns charts to the top */
+  margin-top: 4.5%;
+  width: 100%;
+  gap: 1%; /* Space between the area chart and the donut chart */
+  padding: 0.5%; /* Optional: add padding around the container */
 }
 
 /* Area chart container */
 .area-chart-container {
-  position: sticky;
-  display: flex;
-  flex-direction: column;
-  margin-top: 6%;
-  max-width: 63%;
+  flex-grow: 2; /* Area chart takes up more space */
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  padding: 0.1% 0.8%; /* Reduced padding on top and bottom, keeping left and right */
-  width: 100%;
-  flex-grow: 1;
+  padding: 1%;
+  width: 60%; /* Ensures full width within the flex container */
+  
 }
 
+/* Donut chart container */
+.donut-chart-container {
+  flex-grow: 1; /* Donut chart takes up less space */
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1%;
+  width: 35%; /* Ensures full width within the flex container */
+}
 
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .charts-container {
+      flex-direction: column; /* Stack charts vertically on smaller screens */
+  }
 
-/* App gradient donut */
-app-gradient-donut {
-  position: absolute;
+  .area-chart-container, .donut-chart-container {
+      width: 100%; /* Full width for both charts */
+  }
+}
+
+/* Ensure the legend inside the donut chart scales properly */
+.apexcharts-legend {
+  font-size: 1.2vw; /* Adjust font size for legend */
   display: flex;
-  max-width: 55%;
-  right: 6%;
-  top: 35%;
-  width: 55vw;
-  height: 30vw;
+  justify-content: center;
+}
+
+.apexcharts-datalabel-label, .apexcharts-datalabel-value {
+  font-size: 1.2em !important;
+  font-weight: medium !important;
+  color: #000000 !important;
+  text-anchor: middle !important;
+  dominant-baseline: middle !important;
+  pointer-events: none !important;
+}
+
+.apexcharts-legend-series {
+  display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
 }
