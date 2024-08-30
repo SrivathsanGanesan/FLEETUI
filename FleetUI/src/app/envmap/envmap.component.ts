@@ -104,6 +104,7 @@ export class EnvmapComponent implements AfterViewInit {
   isMoveActionFormVisible: boolean = true;
   isDockActionFormVisible: boolean = true;
   isUndockActionFormVisible: boolean = true;
+  isDragging: boolean = false;
 
 
   constructor(private cdRef: ChangeDetectorRef) {}
@@ -673,7 +674,7 @@ onOverlayCanvasClick(event: MouseEvent): void {
       const y =
         (event.clientY - rect.top) *
         (this.overlayCanvas.nativeElement.height / rect.height);
-
+      
       // Check if a node is clicked
       let nodeClicked = false;
       for (const node of this.nodes) {
