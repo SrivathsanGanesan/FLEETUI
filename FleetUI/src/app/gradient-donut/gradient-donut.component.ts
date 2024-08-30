@@ -36,8 +36,8 @@ export class GradientDonutComponent implements OnInit {
   @Input() dataLabelsEnabled: boolean = false;
   @Input() fillType: string = 'gradient';
   @Input() titleText: string = 'Total activities';
-  @Input() legendFontSize: string = '17px'; // New input for legend font size
-  @Input() dataLabelFontSize: string = '14px'; // New input for data label font size
+  @Input() legendFontSize: string = '17px';
+  @Input() dataLabelFontSize: string = '14px';
   @Input() responsive: ApexResponsive[] = [{
     breakpoint: 480,
     options: {
@@ -71,21 +71,30 @@ export class GradientDonutComponent implements OnInit {
           startAngle: this.startAngle,
           endAngle: this.endAngle,
           donut: {
+            size: '60%', // Adjust size to ensure it fits well within the container
             labels: {
               show: true,
               name: {
                 show: true,
-                fontSize: '1.4em',
+                fontSize: '1.2em',
                 fontWeight: 'bold',
                 color: '#121212',
-                offsetY: -5,
+                offsetY: -10,
               },
               value: {
                 show: true,
+                fontSize: '1.2em',
+                fontWeight: 'bold',
+                color: '#121212',
+                offsetY: 10,
+                formatter: (val: any) => `${val}%`, // Formatting the value to show percentage
+              },
+              total: {
+                show: true,
+                label: 'Total',
                 fontSize: '1.4em',
                 fontWeight: 'bold',
                 color: '#121212',
-                offsetY: 5,
               },
             },
           },
@@ -105,10 +114,26 @@ export class GradientDonutComponent implements OnInit {
       legend: {
         fontSize: this.legendFontSize,
         formatter: this.legendFormatter,
+        itemMargin: {
+          horizontal: 10,
+          vertical: 13,
+        },
+        labels: {
+          colors: ['#000000'], // Adjust color as needed
+        },
       },
       labels: this.labels,
       title: {
         text: this.titleText,
+        align: 'left',
+        margin: 10,
+        offsetX: 0,
+        offsetY: 15,
+        floating: false,
+        style: {
+          fontSize: '1.2em',
+          color: '#263238'
+        },
       },
       responsive: this.responsive,
     };
