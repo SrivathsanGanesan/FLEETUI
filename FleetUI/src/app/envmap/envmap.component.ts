@@ -49,7 +49,14 @@ export class EnvmapComponent implements AfterViewInit {
     x: number;
     y: number;
   }[] = [];
-  Nodes: { id: number; x: number; y: number; type: string }[] = []; // nodes..
+  Nodes: { id: number; x: number; y: number; type: string }[] = [];
+  NodeDetails: {
+    nodeID: number;
+    sequenceId: number;
+    nodeDescription: string;
+    released:boolean;
+    nodePosition: { x: number; y: number; orientation:number };
+  }[] = []; // updated structure
   connections: { fromId: number; toId: number; type: 'uni' | 'bi' }[] = []; // connections
   isNodeDetailsPopupVisible = false; // Control popup visibility
   ratio: number | null = null; // Store the resolution ratio (meters per pixel)
@@ -102,36 +109,38 @@ export class EnvmapComponent implements AfterViewInit {
   constructor(private cdRef: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx) {
-        // Translate the origin to the bottom-left corner
-        ctx.translate(0, canvas.height);
-        // Flip the y-axis
-        ctx.scale(1, -1);
-        
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
+      const canvas = this.overlayCanvas.nativeElement;
+      const ctx = canvas.getContext('2d');
+      
+      if (ctx) {
+          // Translate the origin to the bottom-left corner
+          ctx.translate(0, canvas.height);
+          // Flip the y-axis
+          ctx.scale(1, -1);
+          
+          // Clear the canvas
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+  
+      // Preload asset images
+      this.assetImages['docking'] = new Image();
+      this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
+  
+      this.assetImages['charging'] = new Image();
+      this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
+  
+      this.assetImages['picking'] = new Image();
+      this.assetImages['picking'].src = 'assets/Asseticon/picking-station.svg';
+  
+      this.robotImages['robotA'] = new Image();
+      this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
+  
+      this.robotImages['robotB'] = new Image();
+      this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
     }
-
-    // Preload asset images
-    this.assetImages['docking'] = new Image();
-    this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
-
-    this.assetImages['charging'] = new Image();
-    this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
-
-    this.assetImages['picking'] = new Image();
-    this.assetImages['picking'].src = 'assets/Asseticon/picking-station.svg';
-
-    this.robotImages['robotA'] = new Image();
-    this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
-
-    this.robotImages['robotB'] = new Image();
-    this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
-}
-
+  }
+  
 deleteSelectedNode(): void {
   if (!this.selectedNode) {
     console.log('No node selected for deletion.');
@@ -154,9 +163,7 @@ deleteSelectedNode(): void {
     this.nodes.forEach(node => {
       this.plotPointOnImagePopupCanvas(node.x, node.y);
     });
-  }
-
-  // Reset selectedNode
+  }  // Reset selectedNode
   this.selectedNode = null;
   console.log('Node deleted successfully.');
 }
@@ -176,7 +183,6 @@ onOverlayCanvasClick(event: MouseEvent): void {
     console.log(`Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`);
   }
 }
-
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
@@ -227,22 +233,35 @@ onOverlayCanvasClick(event: MouseEvent): void {
       undockingDistance: ""
     };
 
-    // Method to save node details
     saveNodeDetails(): void {
-      // Create a JSON object with the action details
+      // Transform Nodes array to NodeDetails format
+      this.NodeDetails = this.Nodes.map((node, index) => ({
+        nodeID: node.id,
+        sequenceId: index + 1, // Assuming sequenceId is based on the order of nodes
+        nodeDescription: "", // Set this as empty or assign a value if available
+        released: true,
+        nodePosition: {
+          x: node.x,
+          y: node.y,
+          orientation: node.x
+        },
+        actions: this.actions // Include actions here
+      }));
+    
+      // Create a JSON object with the node details
       const nodeDetails = {
-        actions: this.actions
+        nodes: this.NodeDetails
       };
-  
+    
       // Log the JSON object to the console
       console.log(JSON.stringify(nodeDetails, null, 2));
-  
-      // Optionally save the JSON object to a file
+    
+      // Save the JSON object to a file
       const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], { type: 'application/json' });
       saveAs(blob, 'node-details.json');
-      this.isNodeDetailsPopupVisible = false;
-
+      this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
     }
+    
   // Method to handle the change in action selection
   onActionChange(): void {
     this.resetParameters();
@@ -297,8 +316,8 @@ onOverlayCanvasClick(event: MouseEvent): void {
   }
   editAction(index: number): void {
     const action = this.actions[index];
-    this.selectedAction = action.type;
-
+    this.selectedAction = action.actionType; // Ensure this matches the actionType
+  
     // Load the corresponding parameters into the form
     if (this.selectedAction === 'Move') {
       this.moveParameters = { ...action.parameters };
@@ -307,11 +326,10 @@ onOverlayCanvasClick(event: MouseEvent): void {
     } else if (this.selectedAction === 'Undock') {
       this.undockParameters = { ...action.parameters };
     }
-
+  
     this.showActionForm();
     this.actions.splice(index, 1); // Remove the action from the list
-  }
-
+  }  
   selectedAction: string = ''; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
   // Method to add an action to the list
@@ -762,81 +780,60 @@ onOverlayCanvasClick(event: MouseEvent): void {
       }
     }
   }
-
-  showNodeDetailsPopup(
-  
+  showNodeDetailsPopup(  
   ): void {
-
-
-    this.isNodeDetailsPopupVisible = true;
-
-   
+    this.isNodeDetailsPopupVisible = true;   
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
-
-
   // in changing process
+
 
   plotSingleNode(x: number, y: number): void {
     const color = 'blue'; // Color for single nodes
     this.drawNode({ x, y }, color, false);
-
-    // Push the node with the current counter before incrementing
+  
+    this.nodeDetails = {
+      id: this.nodeCounter,
+      x: x * (this.ratio || 1), // Adjust for ratio if present
+      y: y * (this.ratio || 1),
+      description: 'Single Node',
+      actions: []
+    };
+  
+    console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
+  
     this.nodes.push({ id: this.nodeCounter, x, y });
-    console.log(
-      `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y }
-    );
-
-    if (this.ratio !== null) {
-      const distanceX = x * this.ratio;
-      const distanceY = y * this.ratio;
-      console.log({
-        id: this.nodeCounter,
-        x: distanceX,
-        y: distanceY,
-        type: 'single',
-      });
-      this.Nodes.push({
-        id: this.nodeCounter,
-        x: distanceX,
-        y: distanceY,
-        type: 'single',
-      });
-    }
-
+    this.Nodes.push({ ...this.nodeDetails, type: 'single' });
+  
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
+
 
   plotMultiNode(x: number, y: number): void {
     if (this.nodes.length >= 2) {
       alert('Only two nodes can be plotted in multi-node mode.');
       return;
     }
-
+  
     const color = 'blue'; // Color for multi-nodes
     this.drawNode({ x, y }, color, false);
-
-    console.log(
-      `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y }
-    ); // Log the node number and position
-
-    if (this.ratio !== null) {
-      const distanceX = x * this.ratio;
-      const distanceY = y * this.ratio;
-      console.log(
-        `Type: Multi Node, Node Number: ${
-          this.nodeCounter
-        }, Distance (meters): X: ${distanceX.toFixed(
-          2
-        )}, Y: ${distanceY.toFixed(2)}`
-      );
-    }
-
+  
+    this.nodeDetails = {
+      id: this.nodeCounter,
+      x: x * (this.ratio || 1), // Adjust for ratio if present
+      y: y * (this.ratio || 1),
+      description: 'Multi Node',
+      actions: []
+    };
+  
+    console.log(`Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
+  
+    this.nodes.push({ id: this.nodeCounter, x, y });
+    this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
+  
     this.nodeCounter++; // Increment the node counter
-
+  
     if (this.nodes.length === 0) {
       this.firstNode = { x, y };
     } else if (this.nodes.length === 1) {
@@ -844,67 +841,37 @@ onOverlayCanvasClick(event: MouseEvent): void {
       this.showIntermediateNodesDialog = true;
       this.isPlottingEnabled = false; // Disable further plotting after two nodes
     }
-    this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
   }
 
-  plotIntermediateNodes(): void {
-    if (
-      this.firstNode &&
-      this.secondNode &&
-      this.numberOfIntermediateNodes > 0
-    ) {
-      const dx =
-        (this.secondNode.x - this.firstNode.x) /
-        (this.numberOfIntermediateNodes + 1);
-      const dy =
-        (this.secondNode.y - this.firstNode.y) /
-        (this.numberOfIntermediateNodes + 1);
 
-      for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
-        const x = this.firstNode.x + i * dx;
-        const y = this.firstNode.y + i * dy;
-        this.nodes.push({
-          x,
-          y,
-          id: 0,
-        });
+plotIntermediateNodes(): void {
+  if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
+    const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
+    const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
 
-        this.drawNode({ x, y }, 'blue', false); // Set the initial color and no outline
+    for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
+      const x = this.firstNode.x + i * dx;
+      const y = this.firstNode.y + i * dy;
+      this.nodes.push({ id: this.nodeCounter, x, y });
 
-        console.log(
-          `Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`,
-          { x, y }
-        );
+      this.nodeDetails = {
+        id: this.nodeCounter,
+        x: x * (this.ratio || 1), // Adjust for ratio if present
+        y: y * (this.ratio || 1),
+        description: 'Intermediate Node',
+        actions: []
+      };
 
-        if (this.ratio !== null) {
-          const distanceX = x * this.ratio;
-          const distanceY = y * this.ratio;
-          // console.log(
-          //   `Type: Intermediate Node, Node Number: ${
-          //     this.nodeCounter
-          //   }, Distance (meters): X: ${distanceX.toFixed(
-          //     2
-          //   )}, Y: ${distanceY.toFixed(2)}`
-          // );
-          console.log({
-            id: this.nodeCounter,
-            x: distanceX,
-            y: distanceY,
-            type: 'multi',
-          });
-          this.Nodes.push({
-            id: this.nodeCounter,
-            x: x * this.ratio,
-            y: y * this.ratio,
-            type: 'multi',
-          });
-        }
+      this.drawNode({ x, y }, 'blue', false); // Set the initial color and no outline
+      console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
 
-        this.nodeCounter++; // Increment the node counter
-      }
+      this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
+
+      this.nodeCounter++; // Increment the node counter
     }
-    this.closeIntermediateNodesDialog();
   }
+  this.closeIntermediateNodesDialog();
+}
 
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
