@@ -108,39 +108,39 @@ export class EnvmapComponent implements AfterViewInit {
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
-  ngAfterViewInit(): void {
-    if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
-      const canvas = this.overlayCanvas.nativeElement;
-      const ctx = canvas.getContext('2d');
-      
-      if (ctx) {
-          // Translate the origin to the bottom-left corner
-          ctx.translate(0, canvas.height);
-          // Flip the y-axis
-          ctx.scale(1, -1);
-          
-          // Clear the canvas
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-  
-      // Preload asset images
-      this.assetImages['docking'] = new Image();
-      this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
-  
-      this.assetImages['charging'] = new Image();
-      this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
-  
-      this.assetImages['picking'] = new Image();
-      this.assetImages['picking'].src = 'assets/Asseticon/picking-station.svg';
-  
-      this.robotImages['robotA'] = new Image();
-      this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
-  
-      this.robotImages['robotB'] = new Image();
-      this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
+ngAfterViewInit(): void {
+  if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    
+    if (ctx) {
+        // Translate the origin to the bottom-left corner
+        ctx.translate(0, canvas.height);
+        // Flip the y-axis
+        ctx.scale(1, -1);
+        
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
+
+    // Preload asset images
+    this.assetImages['docking'] = new Image();
+    this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
+
+    this.assetImages['charging'] = new Image();
+    this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
+
+    this.assetImages['picking'] = new Image();
+    this.assetImages['picking'].src = 'assets/Asseticon/picking-station.svg';
+
+    this.robotImages['robotA'] = new Image();
+    this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
+
+    this.robotImages['robotB'] = new Image();
+    this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
-  
+}
+
 deleteSelectedNode(): void {
   if (!this.selectedNode) {
     console.log('No node selected for deletion.');

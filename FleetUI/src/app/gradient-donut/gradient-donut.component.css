@@ -1,5 +1,20 @@
 
 .activities-container {
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5%; /* Reduced top margin */
+  margin-bottom: 0.5%; /* Add or reduce bottom margin as needed */
+  max-width: 33%;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 0.5% 0.8%; /* Reduced padding on top and bottom, keeping left and right */
+  width: 100%;
+  flex-grow: 1;;
+}
+
+/* .activities-container {
   position: relative;
   display: flex;
   justify-content: center;
@@ -13,14 +28,8 @@
   width: 35vw; 
   height: 42vh; 
   box-sizing: border-box;
-}
+} */
 
-apx-chart {
-  width: auto !important; /* Prevent the chart from being squeezed */
-  max-width: 90%; /* Ensure the chart width is manageable */
-  height: auto !important;
-  margin: 0 auto; /* Center the chart */
-}
 
 
 

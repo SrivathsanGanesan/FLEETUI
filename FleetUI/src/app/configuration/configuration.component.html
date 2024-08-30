@@ -361,8 +361,8 @@
             </div>
             <app-envmap
               *ngIf="showImageUploadPopup"
+              [EnvData]="this.EnvData"
               (closePopup)="closeImageUploadPopup()"
-              (newEnvEvent)="addEnvToEnvData($event)"
             >
             </app-envmap>
           </div>
