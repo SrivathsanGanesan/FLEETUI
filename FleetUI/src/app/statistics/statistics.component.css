@@ -460,7 +460,11 @@ h2 {
 
 /* Area chart container */
 .area-chart-container {
-  flex-grow: 2; /* Area chart takes up more space */
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  margin-top: 7%;
+  max-width: 63%;
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
@@ -508,6 +512,11 @@ h2 {
 
 .apexcharts-legend-series {
   display: flex;
+  max-width: 55%;
+  right: 6%;
+  top: 45%;
+  width: 55vw;
+  height: 30vw;
   justify-content: center;
   align-items: center;
 }

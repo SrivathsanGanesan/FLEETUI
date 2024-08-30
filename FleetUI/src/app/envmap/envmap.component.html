@@ -92,11 +92,11 @@
     <!-- Intermediate Nodes Dialog -->
     <div *ngIf="showImagePopup" class="image-popup-overlay">
       <div class="image-popup-content">
-        <canvas class="imagePopupCanvas" #imagePopupCanvas ></canvas>
+        <canvas class="imagePopupCanvas" #imagePopupCanvas></canvas>
         <button class="close-btn" (click)="closeImagePopup()">X</button>
         <button class="save-btn" (click)="saveCanvas()">Save</button>
         <button class="clear-btn" (click)="clearCanvas()">Clear</button>
-        
+
         <!-- Distance Input Dialog -->
         <div *ngIf="showDistanceDialog" class="distance-dialog-overlay">
           <div class="distance-dialog">
@@ -113,11 +113,8 @@
             <button (click)="confirmDistance()">Enter</button>
           </div>
         </div>
-        
-        
       </div>
     </div>
-    
 
     <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
@@ -136,115 +133,208 @@
         </div>
       </div>
       <canvas class="plottinglayer" #overlayCanvas></canvas>
-      <div #nodeDetailsPopup class="node-details-popup" [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'">
-        
+      <div
+        #nodeDetailsPopup
+        class="node-details-popup"
+        [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
+      >
         <div class="sampleCSS">
           <div class="node_details">
-          <p>Node Details</p>
-          <div class="node-id">Node ID: {{ nodeDetails.id }}</div>
-          <div class="action-container">
-            <label for="nodeAction">Add Action:</label>
-            <select id="nodeAction" [(ngModel)]="selectedAction" (change)="onActionChange()">
-              <option value="Move" [disabled]="isOptionDisabled('Move')">Move</option>
-              <option value="Dock" [disabled]="isOptionDisabled('Dock')">Dock</option>
-              <option value="Undock" [disabled]="isOptionDisabled('Undock')">Undock</option>
-            </select>            
-          </div>
+            <p>Node Details</p>
+            <div class="node-id">Node ID: {{ nodeDetails.id }}</div>
+            <div class="action-container">
+              <label for="nodeAction">Add Action:</label>
+              <select
+                id="nodeAction"
+                [(ngModel)]="selectedAction"
+                (change)="onActionChange()"
+              >
+                <option value="Move" [disabled]="isOptionDisabled('Move')">
+                  Move
+                </option>
+                <option value="Dock" [disabled]="isOptionDisabled('Dock')">
+                  Dock
+                </option>
+                <option value="Undock" [disabled]="isOptionDisabled('Undock')">
+                  Undock
+                </option>
+              </select>
+            </div>
 
-          <div *ngIf="actions.length > 0" class="action-div">
-            <p>Actions:</p>
-            <div class="action-buttons">
-              <div *ngFor="let action of actions; let i = index" class="action-item">
-                <button class="action-button" (click)="editAction(i)">
-                  {{ action.actionType }}
-                  <span class="delete-icon" (click)="removeAction(i)">X</span>
-                </button>
+            <div *ngIf="actions.length > 0" class="action-div">
+              <p>Actions:</p>
+              <div class="action-buttons">
+                <div
+                  *ngFor="let action of actions; let i = index"
+                  class="action-item"
+                >
+                  <button class="action-button" (click)="editAction(i)">
+                    {{ action.actionType }}
+                    <span class="delete-icon" (click)="removeAction(i)">X</span>
+                  </button>
+                </div>
               </div>
             </div>
+
+            <label for="nodeDescription">Node Description:</label>
+            <input
+              type="text"
+              id="nodeDescription"
+              [(ngModel)]="nodeDetails.description"
+            /><br />
           </div>
-          
-          <label for="nodeDescription">Node Description:</label>
-          <input type="text" id="nodeDescription" [(ngModel)]="nodeDetails.description" /><br>
-          </div> 
 
           <div class="action-form">
-            <div *ngIf="selectedAction === 'Move' && isMoveActionFormVisible"  class="move-action-form">
+            <div
+              *ngIf="selectedAction === 'Move' && isMoveActionFormVisible"
+              class="move-action-form"
+            >
               <p>Move Action Parameters</p>
               <label>Max Linear Velocity:</label>
-              <input type="number" [(ngModel)]="moveParameters.maxLinearVelocity" /><br>
+              <input
+                type="number"
+                [(ngModel)]="moveParameters.maxLinearVelocity"
+              /><br />
               <label>Max Angular Velocity:</label>
-              <input type="number" [(ngModel)]="moveParameters.maxAngularVelocity" /><br>
+              <input
+                type="number"
+                [(ngModel)]="moveParameters.maxAngularVelocity"
+              /><br />
               <label>Max Tolerance at Goal X:</label>
-              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalX" /><br>
+              <input
+                type="number"
+                [(ngModel)]="moveParameters.maxToleranceAtGoalX"
+              /><br />
               <label>Max Tolerance at Goal Y:</label>
-              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalY" /><br>
+              <input
+                type="number"
+                [(ngModel)]="moveParameters.maxToleranceAtGoalY"
+              /><br />
               <label>Max Tolerance at Goal Orientation:</label>
-              <input type="number" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br>
+              <input
+                type="number"
+                [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation"
+              /><br />
               <label>End Point Orientation:</label>
-              <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br>
+              <input
+                type="checkbox"
+                [(ngModel)]="moveParameters.endPointOrientation"
+              /><br />
               <label>Auto Robot Operation Mode:</label>
               <select [(ngModel)]="moveParameters.autoRobotMode">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
-                <!-- Add more options as needed -->
-              </select><br>
+                <!-- Add more options as needed --></select
+              ><br />
               <button (click)="addAction()">Add</button>
             </div>
-    
-            <div *ngIf="selectedAction === 'Dock' && isDockActionFormVisible" class="move-action-form">
+
+            <div
+              *ngIf="selectedAction === 'Dock' && isDockActionFormVisible"
+              class="move-action-form"
+            >
               <p>Dock Action Parameters</p>
               <label>Max Linear Velocity:</label>
-              <input type="number" [(ngModel)]="dockParameters.maxAngularVelocity" /><br>
+              <input
+                type="number"
+                [(ngModel)]="dockParameters.maxAngularVelocity"
+              /><br />
               <label>Max Tolerance at Goal X:</label>
-              <input type="number" [(ngModel)]="dockParameters.maxToleranceAtGoalX" /><br>
+              <input
+                type="number"
+                [(ngModel)]="dockParameters.maxToleranceAtGoalX"
+              /><br />
               <label>Max Tolerance at Goal Y:</label>
-              <input type="number" [(ngModel)]="dockParameters.maxToleranceAtGoalY" /><br>
+              <input
+                type="number"
+                [(ngModel)]="dockParameters.maxToleranceAtGoalY"
+              /><br />
               <label>Max Tolerance at Goal Orientation:</label>
-              <input type="number" [(ngModel)]="dockParameters.maxToleranceAtGoalOrientation" /><br>
+              <input
+                type="number"
+                [(ngModel)]="dockParameters.maxToleranceAtGoalOrientation"
+              /><br />
               <label>Goal offset X</label>
-              <input type="number" [(ngModel)]="dockParameters.goalOffsetX" /><br>
+              <input
+                type="number"
+                [(ngModel)]="dockParameters.goalOffsetX"
+              /><br />
               <label>Goal offset Y</label>
-              <input type="number" [(ngModel)]="dockParameters.goalOffsetY" /><br>
+              <input
+                type="number"
+                [(ngModel)]="dockParameters.goalOffsetY"
+              /><br />
               <label>Goal offset Orientation</label>
-              <input type="number" [(ngModel)]="dockParameters.goalOffsetOrientation" /><br>
+              <input
+                type="number"
+                [(ngModel)]="dockParameters.goalOffsetOrientation"
+              /><br />
               <label>End Point Orientation:</label>
-              <input type="checkbox" [(ngModel)]="dockParameters.endPointOrientation" /><br>
+              <input
+                type="checkbox"
+                [(ngModel)]="dockParameters.endPointOrientation"
+              /><br />
               <label>Docking Type: </label>
               <select [(ngModel)]="dockParameters.dockingType">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
-                <!-- Add more options as needed -->
-              </select><br>
+                <!-- Add more options as needed --></select
+              ><br />
               <button (click)="addAction()">Add</button>
             </div>
-    
-            <div *ngIf="selectedAction === 'Undock'&& isUndockActionFormVisible" class="move-action-form">
+
+            <div
+              *ngIf="selectedAction === 'Undock' && isUndockActionFormVisible"
+              class="move-action-form"
+            >
               <p>Undock Action Parameters</p>
               <label>Max Linear Velocity:</label>
-              <input type="number" [(ngModel)]="undockParameters.maxLinearVelocity" /><br>
+              <input
+                type="number"
+                [(ngModel)]="undockParameters.maxLinearVelocity"
+              /><br />
               <label>Max Angular Velocity:</label>
-              <input type="number" [(ngModel)]="undockParameters.maxAngularVelocity" /><br>
+              <input
+                type="number"
+                [(ngModel)]="undockParameters.maxAngularVelocity"
+              /><br />
               <label>Max Tolerance at Goal X:</label>
-              <input type="number" [(ngModel)]="undockParameters.maxToleranceAtGoalX" /><br>
+              <input
+                type="number"
+                [(ngModel)]="undockParameters.maxToleranceAtGoalX"
+              /><br />
               <label>Max Tolerance at Goal Y:</label>
-              <input type="number" [(ngModel)]="undockParameters.maxToleranceAtGoalY" /><br>
+              <input
+                type="number"
+                [(ngModel)]="undockParameters.maxToleranceAtGoalY"
+              /><br />
               <label>Max Tolerance at Goal Orientation:</label>
-              <input type="number" [(ngModel)]="undockParameters.maxToleranceAtGoalOrientation" /><br>
+              <input
+                type="number"
+                [(ngModel)]="undockParameters.maxToleranceAtGoalOrientation"
+              /><br />
               <label>End Point Orientation:</label>
-              <input type="checkbox" [(ngModel)]="undockParameters.endPointOrientation" /><br>
+              <input
+                type="checkbox"
+                [(ngModel)]="undockParameters.endPointOrientation"
+              /><br />
               <label>Undocking Distance</label>
-              <input type="number" [(ngModel)]="undockParameters.undockingDistance" /><br>
+              <input
+                type="number"
+                [(ngModel)]="undockParameters.undockingDistance"
+              /><br />
 
-              <br>
+              <br />
               <button (click)="addAction()">Add</button>
             </div>
           </div>
-
         </div>
         <div class="Node-btn">
-        <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
-        <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
-      </div>
+          <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
+          <button class="closenode-btn" (click)="closeNodeDetailsPopup()">
+            Close
+          </button>
+        </div>
       </div>
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
@@ -255,8 +345,6 @@
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div>
-
-
 
       <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
         <div class="dropdown">
@@ -310,8 +398,7 @@
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
     </div>
-    
-    
+
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
