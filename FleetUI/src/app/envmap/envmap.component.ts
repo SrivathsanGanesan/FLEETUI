@@ -499,6 +499,11 @@ export class EnvmapComponent implements AfterViewInit {
 
   //  Saving all nodes and edges
   saveOpt() {
+    this.EnvData = [
+      ...this.EnvData,
+      { id: 1, mapName: 'summa', siteName: 'dummy', date: '11-22-33' },
+    ];
+    return;
     console.log(this.Nodes);
     console.log(this.connections);
     if (!this.selectedImage) {
@@ -573,7 +578,7 @@ export class EnvmapComponent implements AfterViewInit {
             {
               id: data.map._id,
               mapName: data.map.mapName,
-              siteName: data.map.siteName,
+              siteName: this.siteName,
               date: mapCreatedAt,
             },
           ];
@@ -773,7 +778,7 @@ export class EnvmapComponent implements AfterViewInit {
       const y =
         (event.clientY - rect.top) *
         (this.overlayCanvas.nativeElement.height / rect.height);
-      
+
       // Check if a node is clicked
       let nodeClicked = false;
       for (const node of this.nodes) {
