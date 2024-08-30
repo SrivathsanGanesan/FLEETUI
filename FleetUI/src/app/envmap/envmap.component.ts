@@ -27,7 +27,7 @@ interface Zone {
   styleUrls: ['./envmap.component.css'],
 })
 export class EnvmapComponent implements AfterViewInit {
-  @Input() addEnvToEnvData!: (data: any) => boolean;
+  @Input() EnvData: any[] = [];
   @Output() closePopup = new EventEmitter<void>();
   // @Output() newEnvEvent = new EventEmitter<any>();
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
@@ -466,10 +466,11 @@ export class EnvmapComponent implements AfterViewInit {
     this.showDistanceDialog = false;
   }
 
-  //  Saving all nodes and edges
+  //  Saving all values..
   async saveOpt() {
     console.log(this.Nodes);
     console.log(this.connections);
+    return;
     const res = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps`,
       {
@@ -573,12 +574,14 @@ export class EnvmapComponent implements AfterViewInit {
     console.log('Node details:', nodesJson);
   }
   open(): void {
-    if (this.mapName && this.siteName)
-      this.addEnvToEnvData({
-        mapName: this.mapName,
-        siteName: this.siteName,
-        date: 'Jul 4, 2024. 14:00:17',
-      });
+    if (this.mapName && this.siteName) {
+      for (let env of this.EnvData) {
+        if (this.mapName.toLowerCase() === env.mapName?.toLowerCase()) {
+          alert('Map name seems already exists, try another!');
+          return;
+        }
+      }
+    }
 
     this.ratio = Number(
       (document.getElementById('resolution') as HTMLInputElement).value

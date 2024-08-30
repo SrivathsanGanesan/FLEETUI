@@ -12,6 +12,7 @@ import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-p
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { error } from 'node:console';
 
 interface Poll {
   ip: string;
@@ -19,7 +20,6 @@ interface Poll {
   host: string;
   ping: string;
   Status: string;
-  // hostname: string;
 }
 @Component({
   selector: 'app-configuration',
@@ -61,18 +61,69 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredRobotData: any[] = [];
 
-  EnvData: any[] = [
-    // {
-    //   mapName: 'map 1',
-    //   siteName: 'site 1',
-    //   date: '12 23 34',
-    // },
-  ];
+  EnvData: any[] = []; // map details..
 
   robotData: any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private projectService: ProjectService,
+    public dialog: MatDialog // Inject MatDialog
+  ) {
+    this.filteredEnvData = this.EnvData;
+    this.filteredRobotData = this.robotData;
+  }
+
+  ngOnInit() {
+    let mapData = this.projectService.getSelectedProject().sites;
+    this.EnvData = mapData
+      .flatMap((sites: any) => {
+        return sites.maps.map((map: any) => {
+          let date = new Date(map?.createdAt);
+          let createdAt = date.toLocaleString('en-IN', {
+            month: 'short',
+            year: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+          });
+
+          return {
+            id: map.mapId,
+            mapName: map.mapName,
+            siteName: sites.siteName,
+            date: createdAt,
+          };
+        });
+      })
+      .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
+    if (!this.EnvData.length) return;
+
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
+    )
+      .then((response) => {
+        if (!response.ok) {
+          console.error('Error while fetching map data : ', response.status);
+          throw new Error('error while fetchind map data');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        this.projectService.setMapData({
+          ...this.EnvData[0],
+          imgUrl: data.map.imgUrl,
+        });
+      });
+    this.filteredEnvData = this.EnvData;
+    this.filteredRobotData = this.robotData;
+    this.searchTerm = '';
+    this.searchTermChanged();
+  }
 
   async selectMap(map: any) {
     if (this.selectedMap === map) {
@@ -103,30 +154,20 @@ export class ConfigurationComponent implements AfterViewInit {
   isButtonDisabled(item: any): boolean {
     return this.selectedMap && this.selectedMap !== item;
   }
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private projectService: ProjectService,
-    public dialog: MatDialog // Inject MatDialog
-  ) {
-    this.filteredEnvData = this.EnvData;
-    this.filteredRobotData = this.robotData;
-  }
 
   ngOnChanges() {
     this.filterData();
   }
 
+  // quick to remove it then...
   addEnvToEnvData(envData: any): boolean {
     let mapName = envData.mapName;
     for (let env of this.EnvData) {
-      if (mapName.toLowerCase() === env.mapName?.toLowerCase()) {
-        alert('map name seems already exists');
-        return false;
-      }
+      if (mapName.toLowerCase() === env.mapName?.toLowerCase()) return true;
     }
     this.EnvData = [...this.EnvData, envData];
     this.filteredEnvData = this.EnvData;
-    return true;
+    return false;
     // this.cdr.detectChanges(); // uncomment if want..
   }
 
@@ -296,53 +337,6 @@ export class ConfigurationComponent implements AfterViewInit {
 
   searchTermChanged() {
     this.filterData();
-  }
-  async ngOnInit() {
-    let mapData = this.projectService.getSelectedProject().sites;
-    this.EnvData = mapData
-      .flatMap((sites: any) => {
-        return sites.maps.map((map: any) => {
-          let date = new Date(map?.createdAt);
-          let createdAt = date.toLocaleString('en-IN', {
-            month: 'short',
-            year: 'numeric',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-          });
-
-          return {
-            id: map.mapId,
-            mapName: map.mapName,
-            siteName: sites.siteName,
-            date: createdAt,
-          };
-        });
-      })
-      .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
-
-    if (!this.EnvData.length) return;
-    const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
-    );
-    if (!response.ok)
-      console.error('Error while fetching map data : ', response.status);
-    let data = await response.json();
-
-    this.projectService.setMapData({
-      ...this.EnvData[0],
-      imgUrl: data.map.imgUrl,
-    });
-    this.filteredEnvData = this.EnvData;
-    this.filteredRobotData = this.robotData;
-    this.searchTerm = '';
-    this.searchTermChanged();
-    // Initialize the robot image when the component loads
-
-    // Optionally, you can also handle image loading errors
-
-    // Add mouse event listeners
   }
 
   showIPScannerPopup = false;
