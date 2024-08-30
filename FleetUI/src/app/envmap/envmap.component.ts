@@ -499,8 +499,6 @@ export class EnvmapComponent implements AfterViewInit {
   async saveOpt() {
     console.log(this.Nodes);
     console.log(this.connections);
-    let node = { nodeId: '' };
-    return;
     if (!this.selectedImage) {
       alert('file missing!');
       return;
@@ -534,45 +532,12 @@ export class EnvmapComponent implements AfterViewInit {
           ],
         },
       ],
-      edges: [
-        {
-          connectivity: 'uniDir',
-          start_node: 2,
-          end_node: 5,
-        },
-      ],
-      nodes: [
-        {
-          nodeId: 2,
-          nodeType: 'single',
-          pos: {
-            x: 3.5,
-            y: 5.34,
-            w: 0,
-          },
-        },
-        {
-          nodeId: 5,
-          nodeType: 'single',
-          pos: {
-            x: 1,
-            y: 6.34,
-            w: 0,
-          },
-        },
-      ],
-      stations: [
-        {
-          asset: 'picking',
-          pos: {
-            x: 11.5666,
-            y: 4.564,
-          },
-        },
-      ],
+      edges: [this.connections],
+      nodes: [this.Nodes],
+      stations: [],
     };
-    // this.form?.append('mapImg', this.selectedImage);
-    this.form?.append('mapData', JSON.stringify({})); // Insert the map related data here..
+    this.form?.append('mapImg', this.selectedImage);
+    this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
     const res = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps`,
       {
