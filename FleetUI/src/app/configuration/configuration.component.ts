@@ -116,16 +116,17 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
 
-  addEnvToEnvData(envData: any) {
+  addEnvToEnvData(envData: any): boolean {
     let mapName = envData.mapName;
     for (let env of this.EnvData) {
-      if (mapName.toLowerCase() === env.mapName.toLowerCase()) {
+      if (mapName.toLowerCase() === env.mapName?.toLowerCase()) {
         alert('map name seems already exists');
-        return;
+        return false;
       }
     }
     this.EnvData = [...this.EnvData, envData];
     this.filteredEnvData = this.EnvData;
+    return true;
     // this.cdr.detectChanges(); // uncomment if want..
   }
 
@@ -504,20 +505,21 @@ export class ConfigurationComponent implements AfterViewInit {
 
   deleteItem(item: any) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent);
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Assuming `currentTable` determines which data array to modify
         if (this.currentTable === 'Environment') {
-          this.filteredEnvData = this.filteredEnvData.filter(i => i !== item);
+          this.filteredEnvData = this.filteredEnvData.filter((i) => i !== item);
         } else if (this.currentTable === 'robot') {
-          this.filteredRobotData = this.filteredRobotData.filter(i => i !== item);
+          this.filteredRobotData = this.filteredRobotData.filter(
+            (i) => i !== item
+          );
         }
         console.log('Item deleted:', item);
       }
     });
   }
-  
 
   addItem(item: any) {
     console.log('Add item:', item);

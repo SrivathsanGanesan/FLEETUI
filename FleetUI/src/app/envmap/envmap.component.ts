@@ -7,6 +7,7 @@ import {
   AfterViewInit,
   HostListener,
   ChangeDetectorRef,
+  Input,
 } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment.development';
@@ -26,8 +27,9 @@ interface Zone {
   styleUrls: ['./envmap.component.css'],
 })
 export class EnvmapComponent implements AfterViewInit {
+  @Input() addEnvToEnvData!: (data: any) => boolean;
   @Output() closePopup = new EventEmitter<void>();
-  @Output() newEnvEvent = new EventEmitter<any>();
+  // @Output() newEnvEvent = new EventEmitter<any>();
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('imagePopupCanvas', { static: false })
@@ -92,12 +94,11 @@ export class EnvmapComponent implements AfterViewInit {
     x: 0,
     y: 0,
     description: '',
-    actions: [] // Initialize with a non-null value
+    actions: [], // Initialize with a non-null value
   };
   isMoveActionFormVisible: boolean = true;
   isDockActionFormVisible: boolean = true;
   isUndockActionFormVisible: boolean = true;
-
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
@@ -106,13 +107,13 @@ export class EnvmapComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-        // Translate the origin to the bottom-left corner
-        ctx.translate(0, canvas.height);
-        // Flip the y-axis
-        ctx.scale(1, -1);
-        
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Translate the origin to the bottom-left corner
+      ctx.translate(0, canvas.height);
+      // Flip the y-axis
+      ctx.scale(1, -1);
+
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
     // Preload asset images
@@ -130,52 +131,60 @@ export class EnvmapComponent implements AfterViewInit {
 
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
-}
-
-deleteSelectedNode(): void {
-  if (!this.selectedNode) {
-    console.log('No node selected for deletion.');
-    return;
   }
 
-  // Remove the selected node from the nodes array
-  this.nodes = this.nodes.filter(node => node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y);
+  deleteSelectedNode(): void {
+    if (!this.selectedNode) {
+      console.log('No node selected for deletion.');
+      return;
+    }
 
-  // Remove the node from the Nodes array
-  this.Nodes = this.Nodes.filter(node => node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y);
+    // Remove the selected node from the nodes array
+    this.nodes = this.nodes.filter(
+      (node) =>
+        node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y
+    );
 
-  // Clear the canvas and redraw the remaining nodes
-  const canvas = this.overlayCanvas.nativeElement;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Redraw remaining nodes
-    this.nodes.forEach(node => {
-      this.plotPointOnImagePopupCanvas(node.x, node.y);
-    });
+    // Remove the node from the Nodes array
+    this.Nodes = this.Nodes.filter(
+      (node) =>
+        node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y
+    );
+
+    // Clear the canvas and redraw the remaining nodes
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Redraw remaining nodes
+      this.nodes.forEach((node) => {
+        this.plotPointOnImagePopupCanvas(node.x, node.y);
+      });
+    }
+
+    // Reset selectedNode
+    this.selectedNode = null;
+    console.log('Node deleted successfully.');
   }
+  @HostListener('click', ['$event'])
+  onOverlayCanvasClick(event: MouseEvent): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
 
-  // Reset selectedNode
-  this.selectedNode = null;
-  console.log('Node deleted successfully.');
-}
-@HostListener('click', ['$event'])
-onOverlayCanvasClick(event: MouseEvent): void {
-  const canvas = this.overlayCanvas.nativeElement;
-  const rect = canvas.getBoundingClientRect();
-  const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-  const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+    const selected = this.nodes.find(
+      (node) => Math.abs(node.x - x) < 5 && Math.abs(node.y - y) < 5
+    );
 
-  const selected = this.nodes.find(
-    node => Math.abs(node.x - x) < 5 && Math.abs(node.y - y) < 5
-  );
-
-  if (selected) {
-    this.selectedNode = selected;
-    console.log(`Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`);
+    if (selected) {
+      this.selectedNode = selected;
+      console.log(
+        `Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`
+      );
+    }
   }
-}
 
   closeImagePopup(): void {
     this.showImagePopup = false;
@@ -195,54 +204,55 @@ onOverlayCanvasClick(event: MouseEvent): void {
       ctx!.drawImage(robotImage, x, y);
     }
   }
-     // Parameters for the 'Move' action
-     moveParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
-      endPointOrientation: false,
-      autoRobotMode: 'mode1' // Default mode
-    };
-    dockParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
-      goalOffsetX: "",
-      goalOffsetY: "",
-      goalOffsetOrientation: "",
-      endPointOrientation: false,
-      dockingType: 'mode1'
-    };
-    undockParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
-      endPointOrientation: false,
-      undockingDistance: ""
+  // Parameters for the 'Move' action
+  moveParameters = {
+    maxLinearVelocity: '',
+    maxAngularVelocity: '',
+    maxToleranceAtGoalX: '',
+    maxToleranceAtGoalY: '',
+    maxToleranceAtGoalOrientation: '',
+    endPointOrientation: false,
+    autoRobotMode: 'mode1', // Default mode
+  };
+  dockParameters = {
+    maxLinearVelocity: '',
+    maxAngularVelocity: '',
+    maxToleranceAtGoalX: '',
+    maxToleranceAtGoalY: '',
+    maxToleranceAtGoalOrientation: '',
+    goalOffsetX: '',
+    goalOffsetY: '',
+    goalOffsetOrientation: '',
+    endPointOrientation: false,
+    dockingType: 'mode1',
+  };
+  undockParameters = {
+    maxLinearVelocity: '',
+    maxAngularVelocity: '',
+    maxToleranceAtGoalX: '',
+    maxToleranceAtGoalY: '',
+    maxToleranceAtGoalOrientation: '',
+    endPointOrientation: false,
+    undockingDistance: '',
+  };
+
+  // Method to save node details
+  saveNodeDetails(): void {
+    // Create a JSON object with the action details
+    const nodeDetails = {
+      actions: this.actions,
     };
 
-    // Method to save node details
-    saveNodeDetails(): void {
-      // Create a JSON object with the action details
-      const nodeDetails = {
-        actions: this.actions
-      };
-  
-      // Log the JSON object to the console
-      console.log(JSON.stringify(nodeDetails, null, 2));
-  
-      // Optionally save the JSON object to a file
-      const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], { type: 'application/json' });
-      saveAs(blob, 'node-details.json');
-      this.isNodeDetailsPopupVisible = false;
+    // Log the JSON object to the console
+    console.log(JSON.stringify(nodeDetails, null, 2));
 
-    }
+    // Optionally save the JSON object to a file
+    const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
+      type: 'application/json',
+    });
+    saveAs(blob, 'node-details.json');
+    this.isNodeDetailsPopupVisible = false;
+  }
   // Method to handle the change in action selection
   onActionChange(): void {
     this.resetParameters();
@@ -250,34 +260,34 @@ onOverlayCanvasClick(event: MouseEvent): void {
   }
   resetParameters(): void {
     this.moveParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
+      maxLinearVelocity: '',
+      maxAngularVelocity: '',
+      maxToleranceAtGoalX: '',
+      maxToleranceAtGoalY: '',
+      maxToleranceAtGoalOrientation: '',
       endPointOrientation: false,
-      autoRobotMode: 'mode1'
+      autoRobotMode: 'mode1',
     };
     this.dockParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
-      goalOffsetX: "",
-      goalOffsetY: "",
-      goalOffsetOrientation: "",
+      maxLinearVelocity: '',
+      maxAngularVelocity: '',
+      maxToleranceAtGoalX: '',
+      maxToleranceAtGoalY: '',
+      maxToleranceAtGoalOrientation: '',
+      goalOffsetX: '',
+      goalOffsetY: '',
+      goalOffsetOrientation: '',
       endPointOrientation: false,
-      dockingType: 'mode1'
+      dockingType: 'mode1',
     };
     this.undockParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
+      maxLinearVelocity: '',
+      maxAngularVelocity: '',
+      maxToleranceAtGoalX: '',
+      maxToleranceAtGoalY: '',
+      maxToleranceAtGoalOrientation: '',
       endPointOrientation: false,
-      undockingDistance: ""
+      undockingDistance: '',
     };
   }
   showActionForm(): void {
@@ -322,23 +332,23 @@ onOverlayCanvasClick(event: MouseEvent): void {
       if (this.selectedAction === 'Move') {
         action = {
           actionType: this.selectedAction,
-          actionId:"action_move_001",
-          actionDescription:"Move to the next Point",
-          parameters: { ...this.moveParameters }
+          actionId: 'action_move_001',
+          actionDescription: 'Move to the next Point',
+          parameters: { ...this.moveParameters },
         };
       } else if (this.selectedAction === 'Dock') {
         action = {
           actionType: this.selectedAction,
-          actionId:"action_dock_001",
-          actionDescription:"Dock at the Charging Station",
-          parameters: { ...this.dockParameters }
+          actionId: 'action_dock_001',
+          actionDescription: 'Dock at the Charging Station',
+          parameters: { ...this.dockParameters },
         };
       } else if (this.selectedAction === 'Undock') {
         action = {
           actionType: this.selectedAction,
-          actionId:"action_undock_001",
-          actionDescription:"undock from the charging station",
-          parameters: { ...this.undockParameters }
+          actionId: 'action_undock_001',
+          actionDescription: 'undock from the charging station',
+          parameters: { ...this.undockParameters },
         };
       }
 
@@ -353,8 +363,8 @@ onOverlayCanvasClick(event: MouseEvent): void {
   }
   openMoveActionForm(): void {
     this.isMoveActionFormVisible = true;
-    this.isDockActionFormVisible=true;
-    this.isUndockActionFormVisible=true;
+    this.isDockActionFormVisible = true;
+    this.isUndockActionFormVisible = true;
   }
   closeNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = false;
@@ -365,7 +375,7 @@ onOverlayCanvasClick(event: MouseEvent): void {
     this.hideActionForms();
   }
   isOptionDisabled(option: string): boolean {
-    return this.actions.some(action => action.actionType === option);
+    return this.actions.some((action) => action.actionType === option);
   }
 
   onFileSelected(event: Event): void {
@@ -422,7 +432,6 @@ onOverlayCanvasClick(event: MouseEvent): void {
     );
   }
 
-
   showError: boolean = false; // Flag to show error message
 
   confirmDistance(): void {
@@ -433,19 +442,19 @@ onOverlayCanvasClick(event: MouseEvent): void {
       this.showError = true; // Show error message if input is invalid
       return; // Exit the function if validation fails
     }
-  
+
     this.showError = false; // Hide error message if input is valid
-  
+
     const distanceInPixels = this.calculateDistance(
       this.points[0],
       this.points[1]
     );
     console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
-  
+
     if (distanceInPixels !== 0) {
       this.ratio = this.distanceBetweenPoints / distanceInPixels;
       console.log(`Resolution (meters per pixel): ${this.ratio.toFixed(2)}`);
-  
+
       // Update the resolution input field
       if (this.resolutionInput) {
         this.resolutionInput.nativeElement.value = this.ratio.toFixed(2);
@@ -453,10 +462,10 @@ onOverlayCanvasClick(event: MouseEvent): void {
     } else {
       console.log('Distance in pixels is zero, cannot calculate ratio.');
     }
-  
+
     this.showDistanceDialog = false;
   }
-  
+
   //  Saving all nodes and edges
   async saveOpt() {
     console.log(this.Nodes);
@@ -487,46 +496,46 @@ onOverlayCanvasClick(event: MouseEvent): void {
   }
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');  
+    const ctx = canvas.getContext('2d');
     if (ctx) {
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
       // Reset the points array and hide the distance dialog
-      this.points = [];      
+      this.points = [];
       this.showDistanceDialog = false;
-      this.distanceBetweenPoints = null;  // Reset distance if applicable
-  
+      this.distanceBetweenPoints = null; // Reset distance if applicable
+
       // Redraw the image if necessary without resetting canvas size
       const img = new Image();
       img.src = this.imageSrc || '';
       img.onload = () => {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw image on the cleared canvas
       };
-    }  
+    }
     console.clear();
   }
-  
+
   @HostListener('click', ['$event'])
   onImagePopupCanvasClick(event: MouseEvent): void {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
-  
+
     const targetElement = event.target as HTMLElement;
-    
+
     // Check if the click was on the "Clear" button, and if so, return early
     if (targetElement.classList.contains('clear-btn')) {
       return;
     }
-  
+
     const canvas = this.imagePopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-  
+
     if (this.points.length < 2) {
       this.points.push({ x, y });
       this.plotPointOnImagePopupCanvas(x, y);
-  
+
       if (this.points.length === 2) {
         console.log('Two points plotted:', this.points);
         const distance = this.calculateDistance(this.points[0], this.points[1]);
@@ -535,7 +544,6 @@ onOverlayCanvasClick(event: MouseEvent): void {
       }
     }
   }
-  
 
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
@@ -549,7 +557,12 @@ onOverlayCanvasClick(event: MouseEvent): void {
 
     // Add the node to the nodes array with an ID
     const nodeId = this.nodeCounter++;
-    this.Nodes.push({ id: nodeId, x: x, y: y, type: this.plottingMode || 'single' });
+    this.Nodes.push({
+      id: nodeId,
+      x: x,
+      y: y,
+      type: this.plottingMode || 'single',
+    });
 
     // Log the node details in JSON format
     this.logNodeDetails();
@@ -560,6 +573,13 @@ onOverlayCanvasClick(event: MouseEvent): void {
     console.log('Node details:', nodesJson);
   }
   open(): void {
+    if (this.mapName && this.siteName)
+      this.addEnvToEnvData({
+        mapName: this.mapName,
+        siteName: this.siteName,
+        date: 'Jul 4, 2024. 14:00:17',
+      });
+
     this.ratio = Number(
       (document.getElementById('resolution') as HTMLInputElement).value
     );
@@ -589,22 +609,12 @@ onOverlayCanvasClick(event: MouseEvent): void {
           }
         }
       };
-    }
-    
-     else {
+    } else {
       alert('Please enter both Map Name and Site Name before clicking Open.');
     }
-    
   }
 
   close(): void {
-    // new value to array..
-    if (this.mapName && this.siteName)
-      this.newEnvEvent.emit({
-        column1: this.mapName,
-        column2: this.siteName,
-        column3: 'Jul 4, 2024. 14:00:17',
-      });
     this.closePopup.emit();
   }
 
@@ -636,18 +646,22 @@ onOverlayCanvasClick(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       if (this.isDrawingZone) {
         const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-        this.startX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-        this.startY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+        this.startX =
+          (event.clientX - rect.left) *
+          (this.overlayCanvas.nativeElement.width / rect.width);
+        this.startY =
+          (event.clientY - rect.top) *
+          (this.overlayCanvas.nativeElement.height / rect.height);
         this.currentZone = {
           type: 'low',
           startX: this.startX,
           startY: this.startY,
           endX: this.startX,
           endY: this.startY,
-          color: this.zoneColor!
+          color: this.zoneColor!,
         };
       }
-      
+
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
       const x =
         (event.clientX - rect.left) *
@@ -763,17 +777,11 @@ onOverlayCanvasClick(event: MouseEvent): void {
     }
   }
 
-  showNodeDetailsPopup(
-  
-  ): void {
-
-
+  showNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = true;
 
-   
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
-
 
   // in changing process
 
@@ -915,10 +923,19 @@ onOverlayCanvasClick(event: MouseEvent): void {
 
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
-        if (this.isDrawingZone && this.currentZone && this.overlayCanvas && this.overlayCanvas.nativeElement) {
+    if (
+      this.isDrawingZone &&
+      this.currentZone &&
+      this.overlayCanvas &&
+      this.overlayCanvas.nativeElement
+    ) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const endX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-      const endY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+      const endX =
+        (event.clientX - rect.left) *
+        (this.overlayCanvas.nativeElement.width / rect.width);
+      const endY =
+        (event.clientY - rect.top) *
+        (this.overlayCanvas.nativeElement.height / rect.height);
 
       // Update the current zone's end coordinates
       this.currentZone.endX = endX;
@@ -930,21 +947,30 @@ onOverlayCanvasClick(event: MouseEvent): void {
 
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
-    if (this.isDrawingZone && this.currentZone && this.overlayCanvas && this.overlayCanvas.nativeElement) {
+    if (
+      this.isDrawingZone &&
+      this.currentZone &&
+      this.overlayCanvas &&
+      this.overlayCanvas.nativeElement
+    ) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const endX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-      const endY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
-  
+      const endX =
+        (event.clientX - rect.left) *
+        (this.overlayCanvas.nativeElement.width / rect.width);
+      const endY =
+        (event.clientY - rect.top) *
+        (this.overlayCanvas.nativeElement.height / rect.height);
+
       // Update the current zone's end coordinates
       this.currentZone.endX = endX;
       this.currentZone.endY = endY;
-  
+
       // Save the current zone to the zones array
       this.zones.push(this.currentZone);
-  
+
       // Redraw all zones
       this.redrawZones();
-  
+
       // Reset drawing state
       this.isDrawingZone = false;
       this.currentZone = null;
@@ -980,7 +1006,12 @@ onOverlayCanvasClick(event: MouseEvent): void {
     // Draw all existing zones
     for (const zone of this.zones) {
       ctx!.beginPath();
-      ctx!.rect(zone.startX, zone.startY, zone.endX - zone.startX, zone.endY - zone.startY);
+      ctx!.rect(
+        zone.startX,
+        zone.startY,
+        zone.endX - zone.startX,
+        zone.endY - zone.startY
+      );
       ctx!.fillStyle = zone.color;
       ctx!.fill();
       ctx!.stroke();
@@ -989,17 +1020,26 @@ onOverlayCanvasClick(event: MouseEvent): void {
     // Draw the current zone being drawn
     if (this.currentZone) {
       ctx!.beginPath();
-      ctx!.rect(this.currentZone.startX, this.currentZone.startY, this.currentZone.endX - this.currentZone.startX, this.currentZone.endY - this.currentZone.startY);
+      ctx!.rect(
+        this.currentZone.startX,
+        this.currentZone.startY,
+        this.currentZone.endX - this.currentZone.startX,
+        this.currentZone.endY - this.currentZone.startY
+      );
       ctx!.fillStyle = this.currentZone.color;
       ctx!.fill();
       ctx!.stroke();
     }
   }
- 
-// in chaging process
-drawConnections(): void {
-  if (!this.selectedNode || !this.lastSelectedNode || !this.connectivityMode) {
-      console.log("Not enough nodes or mode is not set");
+
+  // in chaging process
+  drawConnections(): void {
+    if (
+      !this.selectedNode ||
+      !this.lastSelectedNode ||
+      !this.connectivityMode
+    ) {
+      console.log('Not enough nodes or mode is not set');
       return; // Ensure both nodes and a mode are selected
     }
 
