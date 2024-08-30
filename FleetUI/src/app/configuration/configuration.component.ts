@@ -12,7 +12,7 @@ import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-p
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-import { error } from 'node:console';
+import { response } from 'express';
 
 interface Poll {
   ip: string;
@@ -69,7 +69,7 @@ export class ConfigurationComponent implements AfterViewInit {
   ];
 
   constructor(
-    private cdr: ChangeDetectorRef,
+    private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
     public dialog: MatDialog // Inject MatDialog
   ) {
@@ -78,29 +78,46 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   ngOnInit() {
-    let mapData = this.projectService.getSelectedProject().sites;
-    this.EnvData = mapData
-      .flatMap((sites: any) => {
-        return sites.maps.map((map: any) => {
-          let date = new Date(map?.createdAt);
-          let createdAt = date.toLocaleString('en-IN', {
-            month: 'short',
-            year: 'numeric',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-          });
-
-          return {
-            id: map.mapId,
-            mapName: map.mapName,
-            siteName: sites.siteName,
-            date: createdAt,
-          };
-        });
+    let mapData = this.projectService.getSelectedProject(); // _id
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${mapData._id}`,
+      { credentials: 'include' }
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error(`Error code of ${response.status}`);
+        return response.json();
       })
-      .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
+      .then((data) => {
+        const { sites } = data.project;
+        this.EnvData = sites
+          .flatMap((sites: any) => {
+            return sites.maps.map((map: any) => {
+              let date = new Date(map?.createdAt);
+              let createdAt = date.toLocaleString('en-IN', {
+                month: 'short',
+                year: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+              });
+
+              return {
+                id: map.mapId,
+                mapName: map.mapName,
+                siteName: sites.siteName,
+                date: createdAt,
+              };
+            });
+          })
+          .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
+        this.filteredEnvData = this.EnvData;
+        this.cdRef.detectChanges();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     if (!this.EnvData.length) return;
     // console.log(this.EnvData);
 
@@ -110,7 +127,7 @@ export class ConfigurationComponent implements AfterViewInit {
       .then((response) => {
         if (!response.ok) {
           console.error('Error while fetching map data : ', response.status);
-          throw new Error('error while fetchind map data');
+          throw new Error('Error while fetching map data');
         }
         return response.json();
       })
@@ -119,8 +136,11 @@ export class ConfigurationComponent implements AfterViewInit {
           ...this.EnvData[0],
           imgUrl: data.map.imgUrl,
         });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    this.filteredEnvData = this.EnvData;
+    // this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
     this.searchTerm = '';
     this.searchTermChanged();
@@ -161,15 +181,11 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   // quick to remove it then...
-  addEnvToEnvData(envData: any): boolean {
-    let mapName = envData.mapName;
-    for (let env of this.EnvData) {
-      if (mapName.toLowerCase() === env.mapName?.toLowerCase()) return true;
-    }
+  addEnvToEnvData(envData: any): void {
+    console.log(envData);
     this.EnvData = [...this.EnvData, envData];
     this.filteredEnvData = this.EnvData;
-    return false;
-    // this.cdr.detectChanges(); // uncomment if want..
+    this.cdRef.detectChanges();
   }
 
   filterData() {
@@ -280,7 +296,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
         if (poll.Status === 'online')
           this.ipScanData = [...this.ipScanData, poll];
-        this.cdr.detectChanges();
+        this.cdRef.detectChanges();
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }

@@ -9,11 +9,9 @@ import {
   ChangeDetectorRef,
   Input,
 } from '@angular/core';
-import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment.development';
 import { saveAs } from 'file-saver';
 import { ProjectService } from '../services/project.service';
-import { error } from 'console';
 
 interface Zone {
   type: 'high' | 'medium' | 'low';
@@ -30,8 +28,8 @@ interface Zone {
 })
 export class EnvmapComponent implements AfterViewInit {
   @Input() EnvData: any[] = [];
+  @Input() addEnvToEnvData!: (data: any) => void;
   @Output() closePopup = new EventEmitter<void>();
-  @Output() newEnvEvent = new EventEmitter<any>();
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('imagePopupCanvas', { static: false })
@@ -499,11 +497,6 @@ export class EnvmapComponent implements AfterViewInit {
 
   //  Saving all nodes and edges
   saveOpt() {
-    this.EnvData = [
-      ...this.EnvData,
-      { id: 1, mapName: 'summa', siteName: 'dummy', date: '11-22-33' },
-    ];
-    return;
     console.log(this.Nodes);
     console.log(this.connections);
     if (!this.selectedImage) {
@@ -543,7 +536,7 @@ export class EnvmapComponent implements AfterViewInit {
       nodes: [this.Nodes],
       stations: [],
     };
-    // this.form?.append('mapImg', this.selectedImage);
+    this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
     fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps`, {
       credentials: 'include',
@@ -551,10 +544,10 @@ export class EnvmapComponent implements AfterViewInit {
       body: this.form,
     })
       .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            `Error occured with status code of ${response.status}`
-          );
+        // if (!response.ok)
+        //   throw new Error(
+        //     `Error occured with status code of ${response.status}`
+        //   );
         return response.json();
       })
       .then((data) => {
@@ -563,7 +556,7 @@ export class EnvmapComponent implements AfterViewInit {
           alert(data.msg);
           return;
         }
-        if (!data.map) {
+        if (data.map) {
           let mapCreatedAt = new Date(data.map.createdAt);
           let createdAt = mapCreatedAt.toLocaleString('en-IN', {
             month: 'short',
@@ -573,22 +566,21 @@ export class EnvmapComponent implements AfterViewInit {
             minute: 'numeric',
             second: 'numeric',
           });
-          this.EnvData = [
-            ...this.EnvData,
-            {
-              id: data.map._id,
-              mapName: data.map.mapName,
-              siteName: this.siteName,
-              date: mapCreatedAt,
-            },
-          ];
+          this.EnvData.push({
+            id: data.map._id,
+            mapName: data.map.mapName,
+            siteName: this.siteName,
+            date: createdAt,
+          });
           this.cdRef.detectChanges();
         }
+
         console.log(this.EnvData);
+
         this.closePopup.emit();
       })
       .catch((error) => {
-        console.error(error);
+        console.error('Error occ : ', error);
       });
   }
 
@@ -724,7 +716,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   close(): void {
-    this.closePopup.emit();
+    this.closePopup.emit(); // Then close the popup
   }
 
   setPlottingMode(mode: 'single' | 'multi'): void {
