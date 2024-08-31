@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
     cb(null, "proj_assets/dashboardMap"); // cb(err, value);
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
-    // cb(null, Date.now() + "-" + file.originalname);
+    // cb(null, file.originalname);
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 

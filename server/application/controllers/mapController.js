@@ -6,6 +6,13 @@ const {
 const fs = require("fs");
 const path = require("path");
 
+const deleteImage = (imgName) => {
+  const dest = path.resolve(`proj_assets/dashboardMap/${imgName}`);
+  if (!fs.existsSync(dest)) return false;
+  if (fs.existsSync(dest)) fs.unlinkSync(dest);
+  return true;
+};
+
 const clearImgAsset = (req) => {
   if (fs.existsSync(`proj_assets/dashboardMap/${req.file?.filename}`))
     fs.unlinkSync(`proj_assets/dashboardMap/${req.file?.filename}`);
@@ -179,9 +186,25 @@ const deleteRoboInMap = async (req, res, next) => {
   }
 };
 
-const deleteMap = async (req, res, next) => {
+const deleteMap = async (req, res) => {
+  const { projectName, siteName } = req.body;
   const mapName = req.params.mapName;
   try {
+    const project = await projectModel.findOne({ projectName: projectName });
+    for (let site of project.sites) {
+      if (site.siteName === siteName)
+        site.maps = site.maps.filter((map) => map.mapName !== mapName);
+    }
+    await project.save();
+
+    let mapDet = await Map.findOne({ mapName: mapName });
+    let imgToDelete = mapDet.imgUrl.split("/")[2]; // [localhost:3000, dashboard, samp.png]
+    let isImgDeleted = deleteImage(imgToDelete);
+    if (!isImgDeleted)
+      return res
+        .status(500)
+        .json({ imageExists: false, msg: "File not found to delete" });
+
     const map = await Map.deleteOne({ mapName: mapName });
     if (map.deletedCount === 0)
       return res.status(400).json({

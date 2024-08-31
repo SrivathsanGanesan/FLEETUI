@@ -56,6 +56,7 @@ export class ConfigurationComponent implements AfterViewInit {
   isConnectivityModeActive: boolean = false; // Track if connectivity mode is active
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
   selectedMap: any = null;
+  mapData: any = null;
 
   searchTerm: string = '';
   filteredEnvData: any[] = [];
@@ -78,9 +79,9 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   ngOnInit() {
-    let mapData = this.projectService.getSelectedProject(); // _id
+    this.mapData = this.projectService.getSelectedProject(); // _id
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${mapData._id}`,
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
       { credentials: 'include' }
     )
       .then((response) => {
@@ -181,12 +182,12 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   // quick to remove it then...
-  addEnvToEnvData(envData: any): void {
-    console.log(envData);
-    this.EnvData = [...this.EnvData, envData];
-    this.filteredEnvData = this.EnvData;
-    this.cdRef.detectChanges();
-  }
+  // addEnvToEnvData(envData: any): void {
+  //   console.log(envData);
+  //   this.EnvData = [...this.EnvData, envData];
+  //   this.filteredEnvData = this.EnvData;
+  //   this.cdRef.detectChanges();
+  // }
 
   filterData() {
     const term = this.searchTerm.toLowerCase();
@@ -515,11 +516,18 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   async deleteMap(map: any): Promise<boolean> {
+    console.log(this.mapData.projectName, map.siteName);
+
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map.mapName}`,
       {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
+        body: JSON.stringify({
+          projectName: this.mapData?.projectName,
+          siteName: map.siteName,
+        }),
       }
     )
       .then((response) => {
@@ -528,6 +536,7 @@ export class ConfigurationComponent implements AfterViewInit {
         return response.json();
       })
       .then((data) => {
+        return false;
         if (data.isDeleted) return true;
         if (data.isMapExist === false) {
           alert(data.msg);
@@ -549,6 +558,7 @@ export class ConfigurationComponent implements AfterViewInit {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) isDeleted = await this.deleteMap(item);
       if (isDeleted) {
+        alert('Deleted!');
         // Assuming `currentTable` determines which data array to modify
         if (this.currentTable === 'Environment') {
           this.filteredEnvData = this.filteredEnvData.filter((i) => i !== item);
