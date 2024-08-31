@@ -190,12 +190,18 @@ const deleteMap = async (req, res) => {
   const { projectName, siteName } = req.body;
   const mapName = req.params.mapName;
   try {
-    const project = await projectModel.findOne({ projectName: projectName });
-    for (let site of project.sites) {
-      if (site.siteName === siteName)
-        site.maps = site.maps.filter((map) => map.mapName !== mapName);
-    }
-    await project.save();
+    const updatedProj = await projectModel.findOneAndUpdate(
+      {
+        projectName: projectName,
+        "sites.siteName": siteName,
+      },
+      {
+        $pull: {
+          "sites.$.maps": { mapName: mapName },
+        },
+      },
+      { new: true } // which returns the updated doc!
+    );
 
     let mapDet = await Map.findOne({ mapName: mapName });
     let imgToDelete = mapDet.imgUrl.split("/")[2]; // [localhost:3000, dashboard, samp.png]
@@ -212,7 +218,9 @@ const deleteMap = async (req, res) => {
         isMapExist: false,
         msg: "map not exist!",
       });
-    return res.status(200).json({ idDeleted: true, opt: "succeed!" });
+    return res
+      .status(200)
+      .json({ idDeleted: true, opt: "succeed!", updatedProj: updatedProj });
   } catch (err) {
     console.log("err occ : ", err);
     res.send(500).json({
