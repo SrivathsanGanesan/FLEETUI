@@ -12,6 +12,7 @@ import {
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment.development';
 import { saveAs } from 'file-saver';
+import { ProjectService } from '../services/project.service';
 
 interface Zone {
   type: 'high' | 'medium' | 'low';
@@ -116,9 +117,13 @@ export class EnvmapComponent implements AfterViewInit {
   private lineEndX: number | null = null;
   private lineEndY: number | null = null;
 
-  constructor(private cdRef: ChangeDetectorRef) {}
+  constructor(
+    private cdRef: ChangeDetectorRef,
+    private projectService: ProjectService
+  ) {}
 
   ngAfterViewInit(): void {
+    this.projData = this.projectService.getSelectedProject();
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const canvas = this.overlayCanvas.nativeElement;
       const ctx = canvas.getContext('2d');
@@ -411,6 +416,7 @@ export class EnvmapComponent implements AfterViewInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
+      this.selectedImage = input.files[0];
       const file = input.files[0];
       this.fileName = file.name;
       this.showImage = false;
@@ -545,10 +551,14 @@ export class EnvmapComponent implements AfterViewInit {
       body: this.form,
     })
       .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(
+        //     `Error occured with status code of ${response.status}`
+        //   );
         return response.json();
       })
       .then((data) => {
-        // console.log(data);
+        console.log(data);
         if (data.isFileExist === false) {
           alert(data.msg);
           return;
@@ -669,6 +679,15 @@ export class EnvmapComponent implements AfterViewInit {
     console.log('Node details:', nodesJson);
   }
   open(): void {
+    if (this.mapName && this.siteName) {
+      for (let map of this.EnvData) {
+        if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
+          alert('Map name seems already exists, try another');
+          return;
+        }
+      }
+    }
+
     this.ratio = Number(
       (document.getElementById('resolution') as HTMLInputElement).value
     );
@@ -704,14 +723,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   close(): void {
-    // new value to array..
-    if (this.mapName && this.siteName)
-      this.newEnvEvent.emit({
-        column1: this.mapName,
-        column2: this.siteName,
-        column3: 'Jul 4, 2024. 14:00:17',
-      });
-    this.closePopup.emit();
+    this.closePopup.emit(); // Then close the popup
   }
 
   setPlottingMode(mode: 'single' | 'multi'): void {
