@@ -32,8 +32,8 @@ app.use("/fleet-project-file", projectFileRouter);
 const configurationRouter = require("./fleetcore/routes/configurationRouter");
 app.use("/fleet-config", configurationRouter);
 
-const trackMapFleetRouter = require("./application/routes/trackMapFleetRouter");
-app.use("/track-fleet", trackMapFleetRouter);
+const liveStreamRouter = require("./fleetcore/routes/liveStreamRouter");
+app.use("/stream-data", liveStreamRouter);
 
 app.listen(process.env.PORT, (err) => {
   err

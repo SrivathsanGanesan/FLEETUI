@@ -7,6 +7,7 @@ import {
   AfterViewInit,
   HostListener,
   ChangeDetectorRef,
+  Input,
 } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment.development';
@@ -26,17 +27,24 @@ interface Zone {
   styleUrls: ['./envmap.component.css'],
 })
 export class EnvmapComponent implements AfterViewInit {
+  @Input() EnvData: any[] = [];
+  @Input() addEnvToEnvData!: (data: any) => void;
   @Output() closePopup = new EventEmitter<void>();
   @Output() newEnvEvent = new EventEmitter<any>();
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('imagePopupCanvas', { static: false }) imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imagePopupCanvas', { static: false })
+  imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('nodeDetailsPopup', { static: false }) nodeDetailsPopup!: ElementRef<HTMLDivElement>;
+  @ViewChild('nodeDetailsPopup', { static: false })
+  nodeDetailsPopup!: ElementRef<HTMLDivElement>;
 
+  form: FormData | null = null;
+  selectedImage: File | null = null;
   fileName: string | null = null;
   mapName: string = '';
   siteName: string = '';
+  projData: any;
   height: number | null = null;
   width: number | null = null;
   showImage: boolean = false;
@@ -52,8 +60,8 @@ export class EnvmapComponent implements AfterViewInit {
     nodeID: number;
     sequenceId: number;
     nodeDescription: string;
-    released:boolean;
-    nodePosition: { x: number; y: number; orientation:number };
+    released: boolean;
+    nodePosition: { x: number; y: number; orientation: number };
   }[] = []; // updated structure
   connections: { fromId: number; toId: number; type: 'uni' | 'bi' }[] = []; // connections
   isNodeDetailsPopupVisible = false; // Control popup visibility
@@ -97,7 +105,7 @@ export class EnvmapComponent implements AfterViewInit {
     x: 0,
     y: 0,
     description: '',
-    actions: [] // Initialize with a non-null value
+    actions: [], // Initialize with a non-null value
   };
   isMoveActionFormVisible: boolean = true;
   isDockActionFormVisible: boolean = true;
@@ -108,82 +116,92 @@ export class EnvmapComponent implements AfterViewInit {
   private lineEndX: number | null = null;
   private lineEndY: number | null = null;
 
-
   constructor(private cdRef: ChangeDetectorRef) {}
 
-ngAfterViewInit(): void {
-  if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
+  ngAfterViewInit(): void {
+    if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
+      const canvas = this.overlayCanvas.nativeElement;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.translate(0, canvas.height); // Move the origin to bottom-left
+        ctx.scale(1, -1); // Flip vertically
+      }
+      if (!ctx) {
+        console.error('Failed to get canvas context');
+        return; // Exit if ctx is null
+      }
+
+      // Preload asset images (unchanged)
+      this.assetImages['docking'] = new Image();
+      this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
+
+      this.assetImages['charging'] = new Image();
+      this.assetImages['charging'].src =
+        'assets/Asseticon/charging-station.svg';
+
+      this.assetImages['picking'] = new Image();
+      this.assetImages['picking'].src = 'assets/Asseticon/picking-station.svg';
+
+      this.robotImages['robotA'] = new Image();
+      this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
+
+      this.robotImages['robotB'] = new Image();
+      this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
+    }
+  }
+
+  deleteSelectedNode(): void {
+    if (!this.selectedNode) {
+      console.log('No node selected for deletion.');
+      return;
+    }
+
+    // Remove the selected node from the nodes array
+    this.nodes = this.nodes.filter(
+      (node) =>
+        node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y
+    );
+
+    // Remove the node from the Nodes array
+    this.Nodes = this.Nodes.filter(
+      (node) =>
+        node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y
+    );
+
+    // Clear the canvas and redraw the remaining nodes
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      ctx.translate(0, canvas.height); // Move the origin to bottom-left
-      ctx.scale(1, -1); // Flip vertically
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Redraw remaining nodes
+      this.nodes.forEach((node) => {
+        this.plotPointOnImagePopupCanvas(node.x, node.y);
+      });
+    } // Reset selectedNode
+    this.selectedNode = null;
+    console.log('Node deleted successfully.');
+  }
+  @HostListener('click', ['$event'])
+  onOverlayCanvasClick(event: MouseEvent): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const y =
+      canvas.height -
+      (event.clientY - rect.top) * (canvas.height / rect.height);
+
+    const selected = this.nodes.find(
+      (node) => Math.abs(node.x - x) < 5 && Math.abs(node.y - y) < 5
+    );
+
+    if (selected) {
+      this.selectedNode = selected;
+      console.log(
+        `Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`
+      );
     }
-    if (!ctx) {
-      console.error('Failed to get canvas context');
-      return; // Exit if ctx is null
-    }
-
-    // Preload asset images (unchanged)
-    this.assetImages['docking'] = new Image();
-    this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
-
-    this.assetImages['charging'] = new Image();
-    this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
-
-    this.assetImages['picking'] = new Image();
-    this.assetImages['picking'].src = 'assets/Asseticon/picking-station.svg';
-
-    this.robotImages['robotA'] = new Image();
-    this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
-
-    this.robotImages['robotB'] = new Image();
-    this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
-}
-
-deleteSelectedNode(): void {
-  if (!this.selectedNode) {
-    console.log('No node selected for deletion.');
-    return;
-  }
-
-  // Remove the selected node from the nodes array
-  this.nodes = this.nodes.filter(node => node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y);
-
-  // Remove the node from the Nodes array
-  this.Nodes = this.Nodes.filter(node => node.x !== this.selectedNode!.x || node.y !== this.selectedNode!.y);
-
-  // Clear the canvas and redraw the remaining nodes
-  const canvas = this.overlayCanvas.nativeElement;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Redraw remaining nodes
-    this.nodes.forEach(node => {
-      this.plotPointOnImagePopupCanvas(node.x, node.y);
-    });
-  }  // Reset selectedNode
-  this.selectedNode = null;
-  console.log('Node deleted successfully.');
-}
-@HostListener('click', ['$event'])
-onOverlayCanvasClick(event: MouseEvent): void {
-  const canvas = this.overlayCanvas.nativeElement;
-  const rect = canvas.getBoundingClientRect();
-  const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-  const y = canvas.height - (event.clientY - rect.top) * (canvas.height / rect.height);
-
-  const selected = this.nodes.find(
-    node => Math.abs(node.x - x) < 5 && Math.abs(node.y - y) < 5
-  );
-
-  if (selected) {
-    this.selectedNode = selected;
-    console.log(`Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`);
-  }
-}
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
@@ -202,67 +220,69 @@ onOverlayCanvasClick(event: MouseEvent): void {
       ctx!.drawImage(robotImage, x, y);
     }
   }
-     // Parameters for the 'Move' action
-     moveParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
-      endPointOrientation: false,
-      autoRobotMode: 'mode1' // Default mode
-    };
-    dockParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
-      goalOffsetX: "",
-      goalOffsetY: "",
-      goalOffsetOrientation: "",
-      endPointOrientation: false,
-      dockingType: 'mode1'
-    };
-    undockParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
-      endPointOrientation: false,
-      undockingDistance: ""
+  // Parameters for the 'Move' action
+  moveParameters = {
+    maxLinearVelocity: '',
+    maxAngularVelocity: '',
+    maxToleranceAtGoalX: '',
+    maxToleranceAtGoalY: '',
+    maxToleranceAtGoalOrientation: '',
+    endPointOrientation: false,
+    autoRobotMode: 'mode1', // Default mode
+  };
+  dockParameters = {
+    maxLinearVelocity: '',
+    maxAngularVelocity: '',
+    maxToleranceAtGoalX: '',
+    maxToleranceAtGoalY: '',
+    maxToleranceAtGoalOrientation: '',
+    goalOffsetX: '',
+    goalOffsetY: '',
+    goalOffsetOrientation: '',
+    endPointOrientation: false,
+    dockingType: 'mode1',
+  };
+  undockParameters = {
+    maxLinearVelocity: '',
+    maxAngularVelocity: '',
+    maxToleranceAtGoalX: '',
+    maxToleranceAtGoalY: '',
+    maxToleranceAtGoalOrientation: '',
+    endPointOrientation: false,
+    undockingDistance: '',
+  };
+
+  saveNodeDetails(): void {
+    // Transform Nodes array to NodeDetails format
+    this.NodeDetails = this.Nodes.map((node, index) => ({
+      nodeID: node.id,
+      sequenceId: index + 1, // Assuming sequenceId is based on the order of nodes
+      nodeDescription: '', // Set this as empty or assign a value if available
+      released: true,
+      nodePosition: {
+        x: node.x,
+        y: node.y,
+        orientation: node.x,
+      },
+      actions: this.actions, // Include actions here
+    }));
+
+    // Create a JSON object with the node details
+    const nodeDetails = {
+      nodes: this.NodeDetails,
     };
 
-    saveNodeDetails(): void {
-      // Transform Nodes array to NodeDetails format
-      this.NodeDetails = this.Nodes.map((node, index) => ({
-        nodeID: node.id,
-        sequenceId: index + 1, // Assuming sequenceId is based on the order of nodes
-        nodeDescription: "", // Set this as empty or assign a value if available
-        released: true,
-        nodePosition: {
-          x: node.x,
-          y: node.y,
-          orientation: node.x
-        },
-        actions: this.actions // Include actions here
-      }));
-    
-      // Create a JSON object with the node details
-      const nodeDetails = {
-        nodes: this.NodeDetails
-      };
-    
-      // Log the JSON object to the console
-      console.log(JSON.stringify(nodeDetails, null, 2));
-    
-      // Save the JSON object to a file
-      const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], { type: 'application/json' });
-      saveAs(blob, 'node-details.json');
-      this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
-    }
-    
+    // Log the JSON object to the console
+    console.log(JSON.stringify(nodeDetails, null, 2));
+
+    // Save the JSON object to a file
+    const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
+      type: 'application/json',
+    });
+    saveAs(blob, 'node-details.json');
+    this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
+  }
+
   // Method to handle the change in action selection
   onActionChange(): void {
     this.resetParameters();
@@ -270,34 +290,34 @@ onOverlayCanvasClick(event: MouseEvent): void {
   }
   resetParameters(): void {
     this.moveParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
+      maxLinearVelocity: '',
+      maxAngularVelocity: '',
+      maxToleranceAtGoalX: '',
+      maxToleranceAtGoalY: '',
+      maxToleranceAtGoalOrientation: '',
       endPointOrientation: false,
-      autoRobotMode: 'mode1'
+      autoRobotMode: 'mode1',
     };
     this.dockParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
-      goalOffsetX: "",
-      goalOffsetY: "",
-      goalOffsetOrientation: "",
+      maxLinearVelocity: '',
+      maxAngularVelocity: '',
+      maxToleranceAtGoalX: '',
+      maxToleranceAtGoalY: '',
+      maxToleranceAtGoalOrientation: '',
+      goalOffsetX: '',
+      goalOffsetY: '',
+      goalOffsetOrientation: '',
       endPointOrientation: false,
-      dockingType: 'mode1'
+      dockingType: 'mode1',
     };
     this.undockParameters = {
-      maxLinearVelocity: "",
-      maxAngularVelocity: "",
-      maxToleranceAtGoalX: "",
-      maxToleranceAtGoalY: "",
-      maxToleranceAtGoalOrientation: "",
+      maxLinearVelocity: '',
+      maxAngularVelocity: '',
+      maxToleranceAtGoalX: '',
+      maxToleranceAtGoalY: '',
+      maxToleranceAtGoalOrientation: '',
       endPointOrientation: false,
-      undockingDistance: ""
+      undockingDistance: '',
     };
   }
   showActionForm(): void {
@@ -315,22 +335,22 @@ onOverlayCanvasClick(event: MouseEvent): void {
     this.isDockActionFormVisible = false;
     this.isUndockActionFormVisible = false;
   }
-editAction(index: number): void {
-  const action = this.actions[index];
-  this.selectedAction = action.actionType; // Ensure this matches the actionType
+  editAction(index: number): void {
+    const action = this.actions[index];
+    this.selectedAction = action.actionType; // Ensure this matches the actionType
 
-  // Load the corresponding parameters into the form
-  if (this.selectedAction === 'Move') {
-    this.moveParameters = { ...action.parameters };
-  } else if (this.selectedAction === 'Dock') {
-    this.dockParameters = { ...action.parameters };
-  } else if (this.selectedAction === 'Undock') {
-    this.undockParameters = { ...action.parameters };
+    // Load the corresponding parameters into the form
+    if (this.selectedAction === 'Move') {
+      this.moveParameters = { ...action.parameters };
+    } else if (this.selectedAction === 'Dock') {
+      this.dockParameters = { ...action.parameters };
+    } else if (this.selectedAction === 'Undock') {
+      this.undockParameters = { ...action.parameters };
+    }
+
+    this.showActionForm();
+    this.actions.splice(index, 1); // Remove the action from the list
   }
-
-  this.showActionForm();
-  this.actions.splice(index, 1); // Remove the action from the list
-}
 
   selectedAction: string = ''; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
@@ -342,23 +362,23 @@ editAction(index: number): void {
       if (this.selectedAction === 'Move') {
         action = {
           actionType: this.selectedAction,
-          actionId:"action_move_001",
-          actionDescription:"Move to the next Point",
-          parameters: { ...this.moveParameters }
+          actionId: 'action_move_001',
+          actionDescription: 'Move to the next Point',
+          parameters: { ...this.moveParameters },
         };
       } else if (this.selectedAction === 'Dock') {
         action = {
           actionType: this.selectedAction,
-          actionId:"action_dock_001",
-          actionDescription:"Dock at the Charging Station",
-          parameters: { ...this.dockParameters }
+          actionId: 'action_dock_001',
+          actionDescription: 'Dock at the Charging Station',
+          parameters: { ...this.dockParameters },
         };
       } else if (this.selectedAction === 'Undock') {
         action = {
           actionType: this.selectedAction,
-          actionId:"action_undock_001",
-          actionDescription:"undock from the charging station",
-          parameters: { ...this.undockParameters }
+          actionId: 'action_undock_001',
+          actionDescription: 'undock from the charging station',
+          parameters: { ...this.undockParameters },
         };
       }
 
@@ -373,8 +393,8 @@ editAction(index: number): void {
   }
   openMoveActionForm(): void {
     this.isMoveActionFormVisible = true;
-    this.isDockActionFormVisible=true;
-    this.isUndockActionFormVisible=true;
+    this.isDockActionFormVisible = true;
+    this.isUndockActionFormVisible = true;
   }
   closeNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = false;
@@ -385,7 +405,7 @@ editAction(index: number): void {
     this.hideActionForms();
   }
   isOptionDisabled(option: string): boolean {
-    return this.actions.some(action => action.actionType === option);
+    return this.actions.some((action) => action.actionType === option);
   }
 
   onFileSelected(event: Event): void {
@@ -442,7 +462,6 @@ editAction(index: number): void {
     );
   }
 
-
   showError: boolean = false; // Flag to show error message
 
   confirmDistance(): void {
@@ -453,19 +472,19 @@ editAction(index: number): void {
       this.showError = true; // Show error message if input is invalid
       return; // Exit the function if validation fails
     }
-  
+
     this.showError = false; // Hide error message if input is valid
-  
+
     const distanceInPixels = this.calculateDistance(
       this.points[0],
       this.points[1]
     );
     console.log(`Distance entered: ${this.distanceBetweenPoints} meters`);
-  
+
     if (distanceInPixels !== 0) {
       this.ratio = this.distanceBetweenPoints / distanceInPixels;
       console.log(`Resolution (meters per pixel): ${this.ratio.toFixed(2)}`);
-  
+
       // Update the resolution input field
       if (this.resolutionInput) {
         this.resolutionInput.nativeElement.value = this.ratio.toFixed(2);
@@ -473,27 +492,93 @@ editAction(index: number): void {
     } else {
       console.log('Distance in pixels is zero, cannot calculate ratio.');
     }
-  
+
     this.showDistanceDialog = false;
   }
-  
+
   //  Saving all nodes and edges
-  async saveOpt() {
+  saveOpt() {
     console.log(this.Nodes);
     console.log(this.connections);
-    const res = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nodes: this.Nodes,
-          edges: this.connections,
-        }),
-      }
-    );
-    const data = res.json();
-    console.log(data);
+    if (!this.selectedImage) {
+      alert('file missing!');
+      return;
+    }
+    this.form = new FormData();
+    let mapData = {
+      projectName: this.projData.projectName,
+      siteName: this.siteName,
+      mapName: this.mapName,
+      imgUrl: '',
+      zones: [
+        {
+          zoneName: 'low_speed_zone',
+          zoneCoordinates: [
+            {
+              x: 5,
+              y: 5,
+            },
+            {
+              x: 10,
+              y: 5,
+            },
+            {
+              x: 5,
+              y: 10,
+            },
+            {
+              x: 10,
+              y: 10,
+            },
+          ],
+        },
+      ],
+      edges: [this.connections],
+      nodes: [this.Nodes],
+      stations: [],
+    };
+    this.form?.append('mapImg', this.selectedImage);
+    this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
+    fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps`, {
+      credentials: 'include',
+      method: 'POST',
+      body: this.form,
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        // console.log(data);
+        if (data.isFileExist === false) {
+          alert(data.msg);
+          return;
+        }
+        if (data.map) {
+          let mapCreatedAt = new Date(data.map.createdAt);
+          let createdAt = mapCreatedAt.toLocaleString('en-IN', {
+            month: 'short',
+            year: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+          });
+          this.EnvData.push({
+            id: data.map._id,
+            mapName: data.map.mapName,
+            siteName: this.siteName,
+            date: createdAt,
+          });
+          this.cdRef.detectChanges();
+        }
+
+        console.log(this.EnvData);
+
+        this.closePopup.emit();
+      })
+      .catch((error) => {
+        console.error('Error occ : ', error);
+      });
   }
 
   saveCanvas(): void {
@@ -507,46 +592,46 @@ editAction(index: number): void {
   }
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');  
+    const ctx = canvas.getContext('2d');
     if (ctx) {
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
       // Reset the points array and hide the distance dialog
-      this.points = [];      
+      this.points = [];
       this.showDistanceDialog = false;
-      this.distanceBetweenPoints = null;  // Reset distance if applicable
-  
+      this.distanceBetweenPoints = null; // Reset distance if applicable
+
       // Redraw the image if necessary without resetting canvas size
       const img = new Image();
       img.src = this.imageSrc || '';
       img.onload = () => {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw image on the cleared canvas
       };
-    }  
+    }
     console.clear();
   }
-  
+
   @HostListener('click', ['$event'])
   onImagePopupCanvasClick(event: MouseEvent): void {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
-  
+
     const targetElement = event.target as HTMLElement;
-    
+
     // Check if the click was on the "Clear" button, and if so, return early
     if (targetElement.classList.contains('clear-btn')) {
       return;
     }
-  
+
     const canvas = this.imagePopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-  
+
     if (this.points.length < 2) {
       this.points.push({ x, y });
       this.plotPointOnImagePopupCanvas(x, y);
-  
+
       if (this.points.length === 2) {
         console.log('Two points plotted:', this.points);
         const distance = this.calculateDistance(this.points[0], this.points[1]);
@@ -555,7 +640,6 @@ editAction(index: number): void {
       }
     }
   }
-  
 
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
@@ -569,7 +653,12 @@ editAction(index: number): void {
 
     // Add the node to the nodes array with an ID
     const nodeId = this.nodeCounter++;
-    this.Nodes.push({ id: nodeId, x: x, y: y, type: this.plottingMode || 'single' });
+    this.Nodes.push({
+      id: nodeId,
+      x: x,
+      y: y,
+      type: this.plottingMode || 'single',
+    });
 
     // Log the node details in JSON format
     this.logNodeDetails();
@@ -609,12 +698,9 @@ editAction(index: number): void {
           }
         }
       };
-    }
-    
-     else {
+    } else {
       alert('Please enter both Map Name and Site Name before clicking Open.');
     }
-    
   }
 
   close(): void {
@@ -650,8 +736,6 @@ editAction(index: number): void {
     this.zoneColor = color;
     this.isDrawingZone = true;
   }
-
-
 
   onNodeClick(x: number, y: number): void {
     if (
@@ -738,35 +822,35 @@ editAction(index: number): void {
       }
     }
   }
-  showNodeDetailsPopup(  
-  ): void {
-    this.isNodeDetailsPopupVisible = true;   
+  showNodeDetailsPopup(): void {
+    this.isNodeDetailsPopupVisible = true;
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
   // in changing process
 
-
   plotSingleNode(x: number, y: number): void {
     const color = 'blue'; // Color for single nodes
     this.drawNode({ x, y }, color, false);
-  
+
     this.nodeDetails = {
       id: this.nodeCounter,
       x: x * (this.ratio || 1), // Adjust for ratio if present
       y: y * (this.ratio || 1),
       description: 'Single Node',
-      actions: []
+      actions: [],
     };
-  
-    console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
-  
+
+    console.log(
+      `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
+      { x, y }
+    );
+
     this.nodes.push({ id: this.nodeCounter, x, y });
     this.Nodes.push({ ...this.nodeDetails, type: 'single' });
-  
+
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
-
 
   plotMultiNode(x: number, y: number): void {
     if (this.nodes.length >= 2) {
@@ -812,35 +896,45 @@ editAction(index: number): void {
     this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
   }
 
+  plotIntermediateNodes(): void {
+    if (
+      this.firstNode &&
+      this.secondNode &&
+      this.numberOfIntermediateNodes > 0
+    ) {
+      const dx =
+        (this.secondNode.x - this.firstNode.x) /
+        (this.numberOfIntermediateNodes + 1);
+      const dy =
+        (this.secondNode.y - this.firstNode.y) /
+        (this.numberOfIntermediateNodes + 1);
 
-plotIntermediateNodes(): void {
-  if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
-    const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
-    const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
+      for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
+        const x = this.firstNode.x + i * dx;
+        const y = this.firstNode.y + i * dy;
+        this.nodes.push({ id: this.nodeCounter, x, y });
 
-    for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
-      const x = this.firstNode.x + i * dx;
-      const y = this.firstNode.y + i * dy;
-      this.nodes.push({ id: this.nodeCounter, x, y });
+        this.nodeDetails = {
+          id: this.nodeCounter,
+          x: x * (this.ratio || 1), // Adjust for ratio if present
+          y: y * (this.ratio || 1),
+          description: 'Intermediate Node',
+          actions: [],
+        };
 
-      this.nodeDetails = {
-        id: this.nodeCounter,
-        x: x * (this.ratio || 1), // Adjust for ratio if present
-        y: y * (this.ratio || 1),
-        description: 'Intermediate Node',
-        actions: []
-      };
+        this.drawNode({ x, y }, 'blue', false); // Set the initial color and no outline
+        console.log(
+          `Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`,
+          { x, y }
+        );
 
-      this.drawNode({ x, y }, 'blue', false); // Set the initial color and no outline
-      console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
+        this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
 
-      this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
-
-      this.nodeCounter++; // Increment the node counter
+        this.nodeCounter++; // Increment the node counter
+      }
     }
+    this.closeIntermediateNodesDialog();
   }
-  this.closeIntermediateNodesDialog();
-}
 
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
@@ -854,18 +948,22 @@ plotIntermediateNodes(): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       if (this.isDrawingZone) {
         const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-        this.startX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-        this.startY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+        this.startX =
+          (event.clientX - rect.left) *
+          (this.overlayCanvas.nativeElement.width / rect.width);
+        this.startY =
+          (event.clientY - rect.top) *
+          (this.overlayCanvas.nativeElement.height / rect.height);
         this.currentZone = {
           type: 'low',
           startX: this.startX,
           startY: this.startY,
           endX: this.startX,
           endY: this.startY,
-          color: this.zoneColor!
+          color: this.zoneColor!,
         };
       }
-      
+
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
       const x =
         (event.clientX - rect.left) *
@@ -883,14 +981,14 @@ plotIntermediateNodes(): void {
           break;
         }
       }
-    // If a node is selected, start drawing the line
-    if (this.selectedNode && nodeClicked) {
-      this.isDrawingLine = true;
-      this.lineStartX = x;
-      this.lineStartY = y;
-      this.lineEndX = x;
-      this.lineEndY = y;
-    }
+      // If a node is selected, start drawing the line
+      if (this.selectedNode && nodeClicked) {
+        this.isDrawingLine = true;
+        this.lineStartX = x;
+        this.lineStartY = y;
+        this.lineEndX = x;
+        this.lineEndY = y;
+      }
       // If no node is selected and plotting is enabled
       if (!nodeClicked && this.isPlottingEnabled) {
         if (this.plottingMode === 'single') {
@@ -901,23 +999,38 @@ plotIntermediateNodes(): void {
       }
     }
   }
-  
+
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     if (this.isDrawingLine) {
       const canvas = this.overlayCanvas.nativeElement;
       const rect = canvas.getBoundingClientRect();
       this.lineEndX = (event.clientX - rect.left) * (canvas.width / rect.width);
-      this.lineEndY = (event.clientY - rect.top) * (canvas.height / rect.height);
+      this.lineEndY =
+        (event.clientY - rect.top) * (canvas.height / rect.height);
 
       // Redraw the canvas to show the line preview
       this.redrawCanvas();
-      this.drawArrowLine(this.lineStartX!, this.lineStartY!, this.lineEndX!, this.lineEndY!);
+      this.drawArrowLine(
+        this.lineStartX!,
+        this.lineStartY!,
+        this.lineEndX!,
+        this.lineEndY!
+      );
     }
-      if (this.isDrawingZone && this.currentZone && this.overlayCanvas && this.overlayCanvas.nativeElement) {
+    if (
+      this.isDrawingZone &&
+      this.currentZone &&
+      this.overlayCanvas &&
+      this.overlayCanvas.nativeElement
+    ) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const endX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-      const endY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+      const endX =
+        (event.clientX - rect.left) *
+        (this.overlayCanvas.nativeElement.width / rect.width);
+      const endY =
+        (event.clientY - rect.top) *
+        (this.overlayCanvas.nativeElement.height / rect.height);
 
       // Update the current zone's end coordinates
       this.currentZone.endX = endX;
@@ -933,73 +1046,96 @@ plotIntermediateNodes(): void {
       this.isDrawingLine = false;
 
       // Finalize the line drawing
-      this.drawArrowLine(this.lineStartX!, this.lineStartY!, this.lineEndX!, this.lineEndY!);
+      this.drawArrowLine(
+        this.lineStartX!,
+        this.lineStartY!,
+        this.lineEndX!,
+        this.lineEndY!
+      );
 
       // Optionally, store the connection details here...
       this.connections.push({
         fromId: (this.selectedNode as { id: number; x: number; y: number }).id,
         toId: this.nodeCounter, // Assuming you want to create a new node at the end
-        type: this.connectivityMode || 'uni'
+        type: this.connectivityMode || 'uni',
       });
 
       // Reset the start and end positions
       this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
     }
-    if (this.isDrawingZone && this.currentZone && this.overlayCanvas && this.overlayCanvas.nativeElement) {
+    if (
+      this.isDrawingZone &&
+      this.currentZone &&
+      this.overlayCanvas &&
+      this.overlayCanvas.nativeElement
+    ) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const endX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-      const endY = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
-  
+      const endX =
+        (event.clientX - rect.left) *
+        (this.overlayCanvas.nativeElement.width / rect.width);
+      const endY =
+        (event.clientY - rect.top) *
+        (this.overlayCanvas.nativeElement.height / rect.height);
+
       // Update the current zone's end coordinates
       this.currentZone.endX = endX;
       this.currentZone.endY = endY;
-  
+
       // Save the current zone to the zones array
       this.zones.push(this.currentZone);
-  
+
       // Redraw all zones
       this.redrawZones();
-  
+
       // Reset drawing state
       this.isDrawingZone = false;
       this.currentZone = null;
     }
   }
-  private drawArrowLine(startX: number, startY: number, endX: number, endY: number): void {
+  private drawArrowLine(
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number
+  ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-        ctx.translate(0, canvas.height); // Move the origin to bottom-left
-        const angleRadians = Math.atan2(endY - startY, endX - startX);
-        const angleDegrees = angleRadians * (180 / Math.PI);
+      ctx.translate(0, canvas.height); // Move the origin to bottom-left
+      const angleRadians = Math.atan2(endY - startY, endX - startX);
+      const angleDegrees = angleRadians * (180 / Math.PI);
 
-        console.log(`Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(2)}°`);
+      console.log(
+        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
+          2
+        )}°`
+      );
 
-        // Draw the line
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+      // Draw the line
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+      ctx.stroke();
 
-        // Draw arrowhead
-        const arrowLength = 10;
-        ctx.beginPath();
-        ctx.moveTo(endX, endY);
-        ctx.lineTo(
-            endX - arrowLength * Math.cos(angleRadians - Math.PI / 6),
-            endY - arrowLength * Math.sin(angleRadians - Math.PI / 6)
-        );
-        ctx.moveTo(endX, endY);
-        ctx.lineTo(
-            endX - arrowLength * Math.cos(angleRadians + Math.PI / 6),
-            endY - arrowLength * Math.sin(angleRadians + Math.PI / 6)
-        );
-        ctx.stroke();
+      // Draw arrowhead
+      const arrowLength = 10;
+      ctx.beginPath();
+      ctx.moveTo(endX, endY);
+      ctx.lineTo(
+        endX - arrowLength * Math.cos(angleRadians - Math.PI / 6),
+        endY - arrowLength * Math.sin(angleRadians - Math.PI / 6)
+      );
+      ctx.moveTo(endX, endY);
+      ctx.lineTo(
+        endX - arrowLength * Math.cos(angleRadians + Math.PI / 6),
+        endY - arrowLength * Math.sin(angleRadians + Math.PI / 6)
+      );
+      ctx.stroke();
     }
-}
+  }
 
   private redrawCanvas(): void {
     // Clear the canvas and redraw all elements (nodes, zones, lines, etc.)
@@ -1007,11 +1143,13 @@ plotIntermediateNodes(): void {
     const ctx = canvas.getContext('2d');
     if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      this.nodes.forEach(node => this.drawNode(node, 'blue', false));
+      this.nodes.forEach((node) => this.drawNode(node, 'blue', false));
       // Redraw connections if needed
-      this.connections.forEach(connection => {
-        const fromNode = this.nodes.find(node => node.id === connection.fromId);
-        const toNode = this.nodes.find(node => node.id === connection.toId);
+      this.connections.forEach((connection) => {
+        const fromNode = this.nodes.find(
+          (node) => node.id === connection.fromId
+        );
+        const toNode = this.nodes.find((node) => node.id === connection.toId);
         if (fromNode && toNode) {
           this.drawArrowLine(fromNode.x, fromNode.y, toNode.x, toNode.y);
         }
@@ -1048,7 +1186,12 @@ plotIntermediateNodes(): void {
     // Draw all existing zones
     for (const zone of this.zones) {
       ctx!.beginPath();
-      ctx!.rect(zone.startX, zone.startY, zone.endX - zone.startX, zone.endY - zone.startY);
+      ctx!.rect(
+        zone.startX,
+        zone.startY,
+        zone.endX - zone.startX,
+        zone.endY - zone.startY
+      );
       ctx!.fillStyle = zone.color;
       ctx!.fill();
       ctx!.stroke();
@@ -1057,17 +1200,26 @@ plotIntermediateNodes(): void {
     // Draw the current zone being drawn
     if (this.currentZone) {
       ctx!.beginPath();
-      ctx!.rect(this.currentZone.startX, this.currentZone.startY, this.currentZone.endX - this.currentZone.startX, this.currentZone.endY - this.currentZone.startY);
+      ctx!.rect(
+        this.currentZone.startX,
+        this.currentZone.startY,
+        this.currentZone.endX - this.currentZone.startX,
+        this.currentZone.endY - this.currentZone.startY
+      );
       ctx!.fillStyle = this.currentZone.color;
       ctx!.fill();
       ctx!.stroke();
     }
   }
- 
-// in chaging process
-drawConnections(): void {
-  if (!this.selectedNode || !this.lastSelectedNode || !this.connectivityMode) {
-      console.log("Not enough nodes or mode is not set");
+
+  // in chaging process
+  drawConnections(): void {
+    if (
+      !this.selectedNode ||
+      !this.lastSelectedNode ||
+      !this.connectivityMode
+    ) {
+      console.log('Not enough nodes or mode is not set');
       return; // Ensure both nodes and a mode are selected
     }
 

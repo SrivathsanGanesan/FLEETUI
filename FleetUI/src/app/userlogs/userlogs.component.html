@@ -2,44 +2,75 @@
   <app-sidenavbar class="fixed top-0 left-0 h-full"></app-sidenavbar>
   <div class="flex-grow ml-64 p-8 h-screen overflow-hidden">
     <div class="mainContent flex flex-col h-full justify-center items-center">
-      
       <!-- Header section -->
       <div class="header-section">
         <h1 class="header-title">{{ activeHeader }}</h1>
         <div class="subheader-container">
           <div class="subheader-text">Create and edit logs</div>
-          <img src="../../assets/icons/i-icon.svg" alt="Icon" class="subheader-icon">
+          <img
+            src="../../assets/icons/i-icon.svg"
+            alt="Icon"
+            class="subheader-icon"
+          />
         </div>
       </div>
 
       <!-- search container -->
-          <div class="search-filter-container">
-            <!-- Search Bar -->
-            <div class="search-box">
-              <input type="text" placeholder="Search For Something..." />
-              <button class="search-btn">
-                <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
-              </button>
-            </div>
-      
-            <!-- Options Container -->
-            <div class="options-container">
-              <div class="filter-options">
-                <button [class.active]="activeFilter === 'today'" (click)="setActiveFilter('today')">Today</button>
-                <button [class.active]="activeFilter === 'week'" (click)="setActiveFilter('week')">Week</button>
-                <button [class.active]="activeFilter === 'month'" (click)="setActiveFilter('month')">Month</button>
-              </div>
-            
-              <div class="date-inputs">
-                <label for="start-date" class="date-label"></label>
-                <input type="date" id="start-date" (change)="onDateChange($event)" class="date-input">
-            
-                <label for="end-date" class="date-label"></label>
-                <input type="date" id="end-date" (change)="onDateChange($event)" class="date-input">
-              </div>
-            </div>  
+      <div class="search-filter-container">
+        <!-- Search Bar -->
+        <div class="search-box">
+          <input type="text" placeholder="Search For Something..." />
+          <button class="search-btn">
+            <img
+              src="../../assets/icons/download-removebg-preview.png"
+              alt="Search"
+            />
+          </button>
+        </div>
+
+        <!-- Options Container -->
+        <div class="options-container">
+          <div class="filter-options">
+            <button
+              [class.active]="activeFilter === 'today'"
+              (click)="setActiveFilter('today')"
+            >
+              Today
+            </button>
+            <button
+              [class.active]="activeFilter === 'week'"
+              (click)="setActiveFilter('week')"
+            >
+              Week
+            </button>
+            <button
+              [class.active]="activeFilter === 'month'"
+              (click)="setActiveFilter('month')"
+            >
+              Month
+            </button>
           </div>
-       <!--  -->
+
+          <div class="date-inputs">
+            <label for="start-date" class="date-label"></label>
+            <input
+              type="date"
+              id="start-date"
+              (change)="onDateChange($event)"
+              class="date-input"
+            />
+
+            <label for="end-date" class="date-label"></label>
+            <input
+              type="date"
+              id="end-date"
+              (change)="onDateChange($event)"
+              class="date-input"
+            />
+          </div>
+        </div>
+      </div>
+      <!--  -->
 
       <!-- Buttons -->
       <div class="button-container">
@@ -47,7 +78,10 @@
           <div class="mb-4">
             <button
               class="button"
-              [ngClass]="{ 'active-button': activeButton === 'task', 'transition-active': isTransitioning }"
+              [ngClass]="{
+                'active-button': activeButton === 'task',
+                'transition-active': isTransitioning
+              }"
               (click)="showTable('task')"
               (click)="setActiveButton('task')"
             >
@@ -55,7 +89,10 @@
             </button>
             <button
               class="button"
-              [ngClass]="{ 'active-button': activeButton === 'robot', 'transition-active': isTransitioning }"
+              [ngClass]="{
+                'active-button': activeButton === 'robot',
+                'transition-active': isTransitioning
+              }"
               (click)="showTable('robot')"
               (click)="setActiveButton('robot')"
             >
@@ -63,7 +100,10 @@
             </button>
             <button
               class="button"
-              [ngClass]="{ 'active-button': activeButton === 'fleet', 'transition-active': isTransitioning }"
+              [ngClass]="{
+                'active-button': activeButton === 'fleet',
+                'transition-active': isTransitioning
+              }"
               (click)="showTable('fleet')"
               (click)="setActiveButton('fleet')"
             >
@@ -75,73 +115,184 @@
 
       <!-- Table -->
       <div class="table-container">
-        <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
+        <div
+          class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative"
+        >
           <div class="overflow-y-auto max-h-[32rem] w-full">
-            <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'task'">
+            <table
+              class="min-w-full divide-y divide-gray-200"
+              *ngIf="currentTable === 'task'"
+            >
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task ID</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task name</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Date and time
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Task ID
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Task name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Criticality
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Description
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngFor="let item of taskData">
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column6 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column1 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column2 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column3 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column4 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column5 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column6 }}
+                  </td>
                 </tr>
               </tbody>
             </table>
-          
-            <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'robot'">
+
+            <table
+              class="min-w-full divide-y divide-gray-200"
+              *ngIf="currentTable === 'robot'"
+            >
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot ID </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot name</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Error code </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Date and time
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Robot ID
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Robot name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Error code
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Criticality
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Description
+                  </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngFor="let item of robotData">
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column6 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column1 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column2 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column3 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column4 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column5 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column6 }}
+                  </td>
                 </tr>
               </tbody>
             </table>
-          
-            <table class="min-w-full divide-y divide-gray-200" *ngIf="currentTable === 'fleet'">
+
+            <table
+              class="min-w-full divide-y divide-gray-200"
+              *ngIf="currentTable === 'fleet'"
+            >
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time 1</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Module name</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Error code</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Date and time 1
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Module name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Error code
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Criticality
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Description
+                  </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngFor="let item of fleetData">
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
-                  
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column1 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column2 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column3 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column4 }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.column5 }}
+                  </td>
                 </tr>
               </tbody>
             </table>
