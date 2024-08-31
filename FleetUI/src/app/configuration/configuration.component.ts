@@ -516,39 +516,32 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   async deleteMap(map: any): Promise<boolean> {
-    console.log(this.mapData.projectName, map.siteName);
-
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map.mapName}`,
-      {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          projectName: this.mapData?.projectName,
-          siteName: map.siteName,
-        }),
-      }
-    )
-      .then((response) => {
-        // if (!response.ok)
-        //   throw new Error(`Error with status code of ${response.status}`);
-        return response.json();
-      })
-      .then((data) => {
-        return false;
-        if (data.isDeleted) return true;
-        if (data.isMapExist === false) {
-          alert(data.msg);
-          return false;
+    try {
+      const response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map.mapName}`,
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            projectName: this.mapData?.projectName,
+            siteName: map.siteName,
+          }),
         }
+      );
+      // if (!response.ok)
+      //   console.error('Error while fetching map data : ', response.status);
+      let data = await response.json();
+      if (data.isDeleted) return true;
+      if (data.isMapExist === false) {
         alert(data.msg);
         return false;
-      })
-      .catch((err) => {
-        console.log('Err occured : ', err);
-      });
-    return false;
+      }
+      return false;
+    } catch (error) {
+      console.log('Err occured : ', error);
+      return false;
+    }
   }
 
   deleteItem(item: any) {
@@ -558,10 +551,11 @@ export class ConfigurationComponent implements AfterViewInit {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) isDeleted = await this.deleteMap(item);
       if (isDeleted) {
-        alert('Deleted!');
         // Assuming `currentTable` determines which data array to modify
         if (this.currentTable === 'Environment') {
-          this.filteredEnvData = this.filteredEnvData.filter((i) => i !== item);
+          this.EnvData = this.EnvData.filter((i) => i !== item);
+          this.filteredEnvData = this.EnvData;
+          this.cdRef.detectChanges();
         } else if (this.currentTable === 'robot') {
           this.filteredRobotData = this.filteredRobotData.filter(
             (i) => i !== item

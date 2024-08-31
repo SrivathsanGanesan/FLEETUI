@@ -203,13 +203,20 @@ const deleteMap = async (req, res) => {
       { new: true } // which returns the updated doc!
     );
 
+    let isMapExists = await Map.exists({ mapName: mapName });
+    if (!isMapExists)
+      return res
+        .status(400)
+        .json({ isMapExists: false, msg: "Map not exists!" });
     let mapDet = await Map.findOne({ mapName: mapName });
     let imgToDelete = mapDet.imgUrl.split("/")[2]; // [localhost:3000, dashboard, samp.png]
     let isImgDeleted = deleteImage(imgToDelete);
     if (!isImgDeleted)
-      return res
-        .status(500)
-        .json({ imageExists: false, msg: "File not found to delete" });
+      return res.status(500).json({
+        isDeleted: false,
+        imageExists: false,
+        msg: "File not found to delete",
+      });
 
     const map = await Map.deleteOne({ mapName: mapName });
     if (map.deletedCount === 0)
@@ -220,7 +227,7 @@ const deleteMap = async (req, res) => {
       });
     return res
       .status(200)
-      .json({ idDeleted: true, opt: "succeed!", updatedProj: updatedProj });
+      .json({ isDeleted: true, opt: "succeed!", updatedProj: updatedProj });
   } catch (err) {
     console.log("err occ : ", err);
     res.send(500).json({
