@@ -29,7 +29,7 @@ dashboardMapRouter.post("/", upload.single("mapImg"), mapInsert);
 dashboardMapRouter.get("/:mapName", mapGet);
 dashboardMapRouter.put("/:mapName/robots", newRoboInMap);
 dashboardMapRouter.delete("/:mapId/robots/:roboId", deleteRoboInMap);
-dashboardMapRouter.delete("/:mapId", deleteMap);
+dashboardMapRouter.delete("/:mapName", deleteMap);
 dashboardMapRouter.delete("/:mapId/delete_img", delMapImg);
 dashboardMapRouter.post(
   "/:mapId/replace_img",

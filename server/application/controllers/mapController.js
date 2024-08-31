@@ -180,13 +180,16 @@ const deleteRoboInMap = async (req, res, next) => {
 };
 
 const deleteMap = async (req, res, next) => {
+  const mapName = req.params.mapName;
   try {
-    const mapId = req.params.mapId;
-    const map = await Map.deleteOne({ mapId: mapId });
+    const map = await Map.deleteOne({ mapName: mapName });
     if (map.deletedCount === 0)
-      return res.status(400).json({ opt: "failed", msg: "map not exist!" });
-    // await Map.deleteOne({ mapId: req.params.mapId });
-    return res.status(200).json({ opt: "succeed!" });
+      return res.status(400).json({
+        idDeleted: false,
+        isMapExist: false,
+        msg: "map not exist!",
+      });
+    return res.status(200).json({ idDeleted: true, opt: "succeed!" });
   } catch (err) {
     console.log("err occ : ", err);
     res.send(500).json({

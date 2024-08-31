@@ -514,11 +514,41 @@ export class ConfigurationComponent implements AfterViewInit {
     console.log('Edit item:', item);
   }
 
+  async deleteMap(map: any): Promise<boolean> {
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map.mapName}`,
+      {
+        method: 'DELETE',
+        credentials: 'include',
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with status code of ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        if (data.isDeleted) return true;
+        if (data.isMapExist === false) {
+          alert(data.msg);
+          return false;
+        }
+        alert(data.msg);
+        return false;
+      })
+      .catch((err) => {
+        console.log('Err occured : ', err);
+      });
+    return false;
+  }
+
   deleteItem(item: any) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent);
+    let isDeleted = false;
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) isDeleted = await this.deleteMap(item);
+      if (isDeleted) {
         // Assuming `currentTable` determines which data array to modify
         if (this.currentTable === 'Environment') {
           this.filteredEnvData = this.filteredEnvData.filter((i) => i !== item);
