@@ -109,7 +109,8 @@ export class EnvmapComponent implements AfterViewInit {
   isMoveActionFormVisible: boolean = true;
   isDockActionFormVisible: boolean = true;
   isUndockActionFormVisible: boolean = true;
-  isDragging: boolean = false;
+  
+
 
   constructor(
     private cdRef: ChangeDetectorRef,
