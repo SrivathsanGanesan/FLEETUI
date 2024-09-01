@@ -110,7 +110,6 @@ export class EnvmapComponent implements AfterViewInit {
   private lineEndY: number | null = null;
   isDistanceConfirmed = false; // Flag to control the Save button
 
-
   constructor(private cdRef: ChangeDetectorRef,private renderer: Renderer2) {}
 
   ngAfterViewInit(): void {
@@ -130,25 +129,23 @@ export class EnvmapComponent implements AfterViewInit {
       this.setupCanvas();
     }
   }
+
   getOverlayCanvas(): HTMLCanvasElement | null {
     return this.overlayCanvas?.nativeElement;
   }
-  
+
   setupCanvas(): void {
     const canvas = this.getOverlayCanvas();
     if (!canvas) {
       console.error('Canvas element not found');
       return;
     }
-
     // Ensure the canvas has width and height
     if (canvas.width === 0 || canvas.height === 0) {
       console.error('Canvas width or height is zero');
       return;
     }
-
     const ctx = canvas.getContext('2d');
-
     if (ctx) {
       // Move the origin to bottom-left
       ctx.translate(0, canvas.height);
@@ -174,7 +171,28 @@ export class EnvmapComponent implements AfterViewInit {
       console.error('Failed to get canvas context');
     }
   }
-
+  plotAsset(x: number, y: number): void {
+    const canvas = this.getOverlayCanvas();
+    if (!canvas) {
+      console.error('Canvas element not found');
+      return;
+    }
+  
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Failed to get canvas context');
+      return;
+    }
+  
+    const assetImage = this.assetImages[this.selectedAsset || ''];
+    if (assetImage) {
+      ctx.drawImage(assetImage, x, y);
+      console.log(`Plotted ${this.selectedAsset} at (${x}, ${y})`);
+    } else {
+      console.error('Selected asset is not valid');
+    }
+  }
+  
   private drawNode(
     node: { x: number; y: number },
     color: string,
@@ -256,28 +274,28 @@ deleteSelectedNode(): void {
   this.selectedNode = null;
   console.log('Node deleted successfully.');
 }
-@HostListener('click', ['$event'])
-onOverlayCanvasClick(event: MouseEvent): void {
-  const canvas = this.overlayCanvas.nativeElement;
-  const rect = canvas.getBoundingClientRect();
-  const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-  const y = canvas.height - (event.clientY - rect.top) * (canvas.height / rect.height);
+  @HostListener('click', ['$event'])
+  onOverlayCanvasClick(event: MouseEvent): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const y = canvas.height - (event.clientY - rect.top) * (canvas.height / rect.height);
 
-  const selected = this.nodes.find(
-    node => Math.abs(node.x - x) < 5 && Math.abs(node.y - y) < 5
-  );
+    const selected = this.nodes.find(
+      node => Math.abs(node.x - x) < 5 && Math.abs(node.y - y) < 5
+    );
 
-  if (selected) {
-    this.selectedNode = selected;
-    console.log(`Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`);
+    if (selected) {
+      this.selectedNode = selected;
+      console.log(`Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`);
+    }
   }
-}
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
   selectAsset(assetType: 'docking' | 'charging' | 'picking'): void {
     this.selectedAsset = assetType;
-    this.isPlottingEnabled = false; // Disable other plotting modes when placing an asset
+    this.isPlottingEnabled = false; // Disable other plotting nodes when placing an asset
   }
   onRobotsPlaced(event: { type: 'robotA' | 'robotB'; count: number }): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -403,22 +421,22 @@ onOverlayCanvasClick(event: MouseEvent): void {
     this.isDockActionFormVisible = false;
     this.isUndockActionFormVisible = false;
   }
-editAction(index: number): void {
-  const action = this.actions[index];
-  this.selectedAction = action.actionType; // Ensure this matches the actionType
+  editAction(index: number): void {
+    const action = this.actions[index];
+    this.selectedAction = action.actionType; // Ensure this matches the actionType
 
-  // Load the corresponding parameters into the form
-  if (this.selectedAction === 'Move') {
-    this.moveParameters = { ...action.parameters };
-  } else if (this.selectedAction === 'Dock') {
-    this.dockParameters = { ...action.parameters };
-  } else if (this.selectedAction === 'Undock') {
-    this.undockParameters = { ...action.parameters };
+    // Load the corresponding parameters into the form
+    if (this.selectedAction === 'Move') {
+      this.moveParameters = { ...action.parameters };
+    } else if (this.selectedAction === 'Dock') {
+      this.dockParameters = { ...action.parameters };
+    } else if (this.selectedAction === 'Undock') {
+      this.undockParameters = { ...action.parameters };
+    }
+
+    this.showActionForm();
+    this.actions.splice(index, 1); // Remove the action from the list
   }
-
-  this.showActionForm();
-  this.actions.splice(index, 1); // Remove the action from the list
-}
 
   selectedAction: string = ''; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
@@ -553,7 +571,6 @@ editAction(index: number): void {
     const data = res.json();
     console.log(data);
   }
-
   confirmDistance(): void {
     if (this.distanceBetweenPoints === null || this.distanceBetweenPoints <= 0) {
       this.showError = true; // Show error message if input is invalid
@@ -580,7 +597,6 @@ editAction(index: number): void {
     this.showDistanceDialog = false;
     this.isDistanceConfirmed = true; // Make the Save button visible
   }
-
   saveCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     // const dataURL = canvas.toDataURL('image/png');
@@ -614,15 +630,12 @@ editAction(index: number): void {
   
   @HostListener('click', ['$event'])
   onImagePopupCanvasClick(event: MouseEvent): void {
-    if (!this.showImagePopup || !this.imagePopupCanvas) return;
-  
-    const targetElement = event.target as HTMLElement;
-    
+    if (!this.showImagePopup || !this.imagePopupCanvas) return;  
+    const targetElement = event.target as HTMLElement;    
     // Check if the click was on the "Clear" button, and if so, return early
     if (targetElement.classList.contains('clear-btn')) {
       return;
-    }
-  
+    }  
     const canvas = this.imagePopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
@@ -640,7 +653,6 @@ editAction(index: number): void {
       }
     }
   }
-  
 
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
@@ -694,14 +706,11 @@ editAction(index: number): void {
           }
         }
       };
-    }
-    
+    }    
      else {
       alert('Please enter both Map Name and Site Name before clicking Open.');
-    }
-    
+    }    
   }
-
   close(): void {
     // new value to array..
     if (this.mapName && this.siteName)
@@ -712,7 +721,6 @@ editAction(index: number): void {
       });
     this.closePopup.emit();
   }
-
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
     this.isPlottingEnabled = true;
@@ -722,7 +730,6 @@ editAction(index: number): void {
       this.secondNode = null;
     }
   }
-
   // in changing processs
   setConnectivityMode(mode: 'uni' | 'bi'): void {
     this.connectivityMode = mode;
@@ -735,9 +742,6 @@ editAction(index: number): void {
     this.zoneColor = color;
     this.isDrawingZone = true;
   }
-
-
-
   onNodeClick(x: number, y: number): void {
     if (
       this.selectedNode &&
@@ -788,7 +792,6 @@ editAction(index: number): void {
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
-
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
     const x =
       (event.clientX - rect.left) *
@@ -805,14 +808,13 @@ editAction(index: number): void {
       }
     }
   }
+
   showNodeDetailsPopup(  
   ): void {
     this.isNodeDetailsPopupVisible = true;   
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
   // in changing process
-
-
   plotSingleNode(x: number, y: number): void {
     const color = 'blue'; // Color for single nodes
     this.drawNode({ x, y }, color, false);
@@ -824,7 +826,6 @@ editAction(index: number): void {
       description: 'Single Node',
       actions: []
     };
-  
     console.log(`Type: Single Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
   
     this.nodes.push({ id: this.nodeCounter, x, y });
@@ -833,8 +834,6 @@ editAction(index: number): void {
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
-
-
   plotMultiNode(x: number, y: number): void {
     if (this.nodes.length >= 2) {
       alert('Only two nodes can be plotted in multi-node mode.');
@@ -878,36 +877,34 @@ editAction(index: number): void {
     }
     this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
   }
+  plotIntermediateNodes(): void {
+    if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
+      const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
+      const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
 
+      for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
+        const x = this.firstNode.x + i * dx;
+        const y = this.firstNode.y + i * dy;
+        this.nodes.push({ id: this.nodeCounter, x, y });
 
-plotIntermediateNodes(): void {
-  if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
-    const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
-    const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
+        this.nodeDetails = {
+          id: this.nodeCounter,
+          x: x * (this.ratio || 1), // Adjust for ratio if present
+          y: y * (this.ratio || 1),
+          description: 'Intermediate Node',
+          actions: []
+        };
 
-    for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
-      const x = this.firstNode.x + i * dx;
-      const y = this.firstNode.y + i * dy;
-      this.nodes.push({ id: this.nodeCounter, x, y });
+        this.drawNode({ x, y }, 'blue', false); // Set the initial color and no outline
+        console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
 
-      this.nodeDetails = {
-        id: this.nodeCounter,
-        x: x * (this.ratio || 1), // Adjust for ratio if present
-        y: y * (this.ratio || 1),
-        description: 'Intermediate Node',
-        actions: []
-      };
+        this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
 
-      this.drawNode({ x, y }, 'blue', false); // Set the initial color and no outline
-      console.log(`Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`, { x, y });
-
-      this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
-
-      this.nodeCounter++; // Increment the node counter
+        this.nodeCounter++; // Increment the node counter
+      }
     }
+    this.closeIntermediateNodesDialog();
   }
-  this.closeIntermediateNodesDialog();
-}
 
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
@@ -958,12 +955,12 @@ plotIntermediateNodes(): void {
           this.plotSingleNode(x, y);
         } else if (this.plottingMode === 'multi') {
           this.plotMultiNode(x, y);
-        }
+        }else if (this.selectedAsset) {
+        this.plotAsset(x, y); // Plot asset if an asset is selected
+      }
       }
     }
   }
-  
-  
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     if (this.isDrawingLine) {
@@ -988,7 +985,6 @@ plotIntermediateNodes(): void {
       this.redrawZones();
     }
   }
-
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
     if (this.isDrawingLine) {
@@ -1069,9 +1065,7 @@ plotIntermediateNodes(): void {
   private redrawZones(): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-
     ctx!.clearRect(0, 0, canvas.width, canvas.height);
-
     // Draw all existing zones
     for (const zone of this.zones) {
       ctx!.beginPath();
@@ -1080,7 +1074,6 @@ plotIntermediateNodes(): void {
       ctx!.fill();
       ctx!.stroke();
     }
-
     // Draw the current zone being drawn
     if (this.currentZone) {
       ctx!.beginPath();
