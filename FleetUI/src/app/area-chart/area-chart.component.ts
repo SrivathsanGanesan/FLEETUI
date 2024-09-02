@@ -84,24 +84,25 @@ export class AreaChartComponent implements OnInit {
           colorStops: [
             {
               offset: 0,
-              color: '#DA2127',
+              color: '#32CD32',
               opacity: 0.5,
             },
             {
               offset: 100,
-              color: '#DA2127',
+              color: '#32CD3200',
               opacity: 0.1,
             },
           ],
         },
       },
       dataLabels: {
-        enabled: false,
-      },
+        enabled: true,
+        
+    },
       stroke: {
         curve: 'smooth',
         width: 3,
-        colors: ['#DA2127'], // This is the key change: making sure the stroke is red
+        colors: ['#32CD32'], // This is the key change: making sure the stroke is red
       },
       tooltip: {
         enabled: true,

@@ -9,25 +9,39 @@
             <button (click)="setView('operation')" [class.active]="currentView === 'operation'">Operation</button>
             <button (click)="setView('robot')" [class.active]="currentView === 'robot'">Robot</button>
             <div class="slider" [ngClass]="{'left': currentView === 'operation', 'right': currentView === 'robot'}"></div>
-          </div>
-          
+          </div>       
         </div>
+        <!-- <div class="slider-buttons">
+          <input
+            checked=""
+            value="Operation"
+            name="view"
+            id="operation"
+            type="radio"
+            class="input"
+            (change)="setView('operation')"
+          />
+          <label for="operation" class="label">Operation</label>
+          <input
+            value="Robot"
+            name="view"
+            id="robot"
+            type="radio"
+            class="input"
+            (change)="setView('robot')"
+          />
+          <label for="robot" class="label">Robot</label>
+        </div> -->
         
-  
-        <div *ngIf="currentView === 'operation'">
-             
-          
-
-
         
-
-        
+      
+        <div *ngIf="currentView === 'operation'">   
         
         <!-- Stat card 1 -->
               <div class="statistics-container">
                 <div class="stat-card stat-card-1">
-                  <div class="stat-title">Statistics</div>
-                  <div class="stat-value">System uptime</div>
+                  
+                  <div class="stat-value">System throughput</div>
                   <h2>214</h2>
                   <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
                   <div class="stat-chart">
@@ -44,8 +58,8 @@
                 
                 <!-- Stat card 2 -->
                 <div class="stat-card stat-card-2">
-                  <div class="stat-title">Statistics</div>
-                  <div class="stat-value">Responsiveness</div>
+                  
+                  <div class="stat-value">System uptime</div>
                   <h2>127</h2>
                   <div class="stat-change positive">+33.06% <span>&uarr;</span></div>
                   <div class="stat-chart">
@@ -62,7 +76,7 @@
                 
                 <!-- Stat card 3 -->
                 <div class="stat-card stat-card-3">
-                  <div class="stat-title">Statistics</div>
+                  
                   <div class="stat-value">Success rate</div>
                   <h2>40</h2>
                   <div class="stat-change negative">-5.12% <span>&darr;</span></div>
@@ -78,12 +92,12 @@
                   </div>
                 </div>
                 <!-- Stat card 4 -->
-                <div class="stat-card stat-card-1">
-                  <div class="stat-title">Statistics</div>
-                  <div class="stat-value">System uptime</div>
+                <div class="stat-card stat-card-4">
+                  
+                  <div class="stat-value">Responsiveness</div>
                   <h2>214</h2>
                   <div class="stat-change positive">+18.34% <span>&uarr;</span></div>
-                  <div class="stat-chart">
+                    <div class="stat-chart">
                     <section>
                       <div class="loading">
                         <svg width="140px" height="100px">
@@ -115,62 +129,46 @@
                             </app-gradient-donut>
                         </div>
                       </div>
-                    
-        
+                       
 
-
-         
-         <!-- <div class="area-chart-container">
-          <app-area-chart></app-area-chart>
-         </div>
-         <app-gradient-donut
-         [series]="[510, 142, 340, 590,340]"
-         [labels]="['Completed', 'Inprogress', 'ToDo', 'Error', 'Cancelled']"
-         [legendFontSize]="'14px'"  
-         [dataLabelFontSize]="'14px'" 
-         [chartWidth]="470"
-        
-         [fillType]="'gradient'"
-         [titleText]="'Operations'"
-       
-         [legendFontSize]="'16px'"
-         [dataLabelFontSize]="'18px'">
-         
-       </app-gradient-donut> -->
-    
-
-        <div class="dashboard-container">
-          <!-- Robot Activity Section -->
-          <div class="robot-activity-container">
-            <div class="section-header">
-              <h3>Operation Activities</h3>
-              <button class="view-all-btn">View All</button>
+       <div class="dashboard-container">
+        <!-- Robot Activity Section -->
+        <div class="robot-activity-container">
+          <div class="section-header">
+            <h3>Operation Activities</h3>
+            <div class="search-box">
+              <input type="text" placeholder="Search activities..." (input)="onSearch($event)" />
             </div>
-            <table class="activity-table">
-              <tr *ngFor="let activity of robotActivities">
-                <td>{{ activity.id }}</td>
-                <td>{{ activity.name }} - {{ activity.task }} - {{ activity.progress }}% - {{ activity.status }}</td>
-              </tr>
-            </table>
+            <button class="view-all-btn">View All</button>
           </div>
-        
-          <!-- Notifications Section -->
-          <div class="notifications-container">
-            <div class="section-header">
-              <h3>Notifications</h3>
-              <button class="view-all-btn">View All</button>
-            </div>
-            <table class="notifications-table">
-              <tr *ngFor="let notification of notifications">
-                <td>{{ notification.message }} - {{ notification.timestamp }}</td>
-              </tr>
-            </table>
-          </div>
+          <table class="activity-table">
+            <tr *ngFor="let activity of filteredRobotActivities">
+              <td>{{ activity.id }}</td>
+              <td>{{ activity.name }} - {{ activity.task }} - {{ activity.progress }}% - {{ activity.status }}</td>
+            </tr>
+          </table>
         </div>
+      
+        <!-- Notifications Section -->
+        <div class="notifications-container">
+          <div class="section-header">
+            <h3>Notifications</h3>
+            <div class="search-box">
+              <input type="text" placeholder="Search notifications..." (input)="onSearchNotifications($event)" />
+            </div>
+            <button class="view-all-btn">View All</button>
+          </div>
+          <table class="notifications-table">
+            <tr *ngFor="let notification of filteredNotifications">
+              <td>{{ notification.message }} - {{ notification.timestamp }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
       <!-- Router outlet for displaying the appropriate view -->
         <router-outlet></router-outlet>
         
         
-
+       
   </div>
 </div>

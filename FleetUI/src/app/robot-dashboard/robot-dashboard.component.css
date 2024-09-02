@@ -3,14 +3,14 @@
   top: 2%;
   left: 5%;
  
-  width: calc(100% - 70px);
-
+  /* width: calc(100% - 70px); */
+  width: 95%; /* Relative to the parent or viewport */
   padding: 1%;
   /* overflow: hidden; */
   box-sizing: border-box;
   background-color: white;
 }
-
+ 
 .header {
   margin-top: 1%;
   padding: 0;
@@ -18,25 +18,25 @@
   z-index: 0;
   position: relative;
 }
-
+ 
 /* Ensure the sidebar has a higher z-index */
 .sidebar {
   position: relative;
   z-index: 100;
 }
-
+ 
 /* Container for the slider buttons */
 .slider-buttons-container {
   position: relative;
   z-index: 0;
 }
-
+ 
 .slider-buttons {
   display: flex;
-  margin-top: 2%;
+  margin-top: 3%;
   width: 100%;
   max-width: 15%;
-  height: 7vh; /* Use vh units for height relative to viewport height */
+  height: 7vh; 
   gap: 2%;
   font-size: 2.5vw;
   border-radius: 6px;
@@ -44,8 +44,7 @@
   position: relative;
   z-index: 2;
 }
-
-
+ 
 .slider-buttons button {
   flex: 1;
   padding: 2%;
@@ -56,292 +55,167 @@
   font-weight: bold;
   z-index: 3;
 }
-
+ 
 .slider-buttons button.active {
   color: white;
 }
-
+ 
 .slider {
   position: absolute;
   width: 50%;
   height: 100%;
-  background-color: #DA2127;
+  background-color: #da2127;
   z-index: 2;
   transition: transform 0.3s ease;
 }
-
+ 
 .slider.left {
   transform: translateX(0);
 }
-
+ 
 .slider.right {
   transform: translateX(100%);
 }
 
 
-  
- .tab-container {
-  display: flex;
-  margin-top: 10px;
-  width: 200px;
-  height: 50px;
-  gap: 5px;
-  font-size: 28px;
-  border-radius: 6px;
-  overflow: hidden;
-  position: relative;
-  z-index: 2; /* Ensure the buttons are below the sidebar */
-  /* position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start; */
-  padding: 5px;
-  background-color: #ffffff;
-
-  position: relative;
-  z-index: 0; /* Ensure the buttons are below the sidebar */
-}
  
- .indicator {
-  content: "";
-  width: 130px;
-  height: 28px;
-  background: #ffffff;
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  z-index: 9;
-  border: 0.5px solid rgba(0, 0, 0, 0.04);
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.12), 0px 3px 1px rgba(0, 0, 0, 0.04);
-  border-radius: 7px;
-  transition: all 0.2s ease-out;
- }
- .tab {
-  width: 130px;
-  height: 28px;
-  position: absolute;
-  z-index: 99;
-  outline: none;
-  opacity: 0;
- }
- .tab_label {
-  width: 130px;
-  height: 28px;
-  position: relative;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  font-size: 0.75rem;
-  opacity: 0.6;
-  cursor: pointer;
- }
- .tab--1:checked ~ .indicator {
-  left: 2px;
- }
- .tab--2:checked ~ .indicator {
-  left: calc(130px + 2px);
- }
-   
 
-/* Top section containing the search bar and filters */
-
-.dashboard-content {
-  padding: 2%;
-}
-
-.search-filter-container {
-  position: sticky;
-  display: flex;
-  flex-direction: column;
-  margin-top: 0.5%;
-  width: 100%;
-  max-width: 35%;
-  gap: 2%;
-  padding: 0.5%;
-  background-color: #efefef;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  border-radius: 25px;
-  overflow: hidden;
-  background-color: #ffffff;
-  width: 100%;
-}
-
-.search-box input {
-  border: none;
-  padding: 2%;
-  outline: none;
-  width: 100%;
-  font-size: 1.0vw;
-  border-radius: 25px 0 0 25px;
-}
-
-.search-box input::placeholder {
-  color: #aaa;
-}
-
-.search-btn {
-  background-color: #ff5c5c;
-  color: white;
-  border: none;
-  padding: 3%;
-  width: 20%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0 25px 25px 0;
-  transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.search-btn img {
-  width: 60%;
-  height: auto;
-}
-
-.search-btn:hover {
-  background-color: #e64e4e;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+/* Statistics container */
 /* Statistics container */
 .statistics-container {
   position: absolute;
-  top: 6%;
-  right: 2%;
+  top: 7%;
+  right: 1%;
   display: flex;
-  gap: 2%;
+  justify-content: space-between;
+  gap: 1%;
 }
-
-.stat-card {
+ 
+.stat-card,.sale-card {
   background-color: #ffffff;
   padding: 1%;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  width: 18vw;  /* Adjust the width to fit the stat chart */
-  height: 14vh; /* Adjust the height for better visibility */
+  width: 18vw; 
+  height: auto;
   text-align: left;
   position: relative;
+  margin-bottom: 1%;
 }
+ 
 
-.stat-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-
-.stat-title {
-  font-size: 0.8vw;
-  color: #888888;
-  margin-top: -1%;
-}
-
+ 
 .stat-value {
-  font-size: 1.2vw;
+  font-size: 1.3vw;
   font-weight: 500;
   margin-top: -1%;
-
 }
-
+ 
 h2 {
-  margin: -4% 0;
-  font-size: 2vw;
+  margin: -0.1em 0;
+  font-size: 2.0em; /* Increased font size */
 }
-
+ 
 /* Styling for positive stat change */
 .stat-change.positive {
-  color: #4CAF50;
+  color: #4caf50;
   font-weight: medium;
-  font-size: 1.0vw;
+  font-size: 1vw;
   display: flex;
   align-items: center;
 }
-
+ 
 .stat-change.positive span {
   margin-left: 5%;
   font-size: 1.2vw;
-  color: #4CAF50;
+  color: #4caf50;
 }
-
+ 
 /* Styling for negative stat change */
 .stat-change.negative {
-  color: #F44336;
+  color: #f44336;
   font-weight: medium;
-  font-size: 1.0vw;
+  font-size: 1vw;
   display: flex;
   align-items: center;
 }
-
+ 
 .stat-change.negative span {
   margin-left: 5%;
   font-size: 1.2vw;
-  color: #F44336;
+  color: #f44336;
 }
-
+ 
 /* General styling for stat-chart */
 .stat-chart {
   position: absolute;
   right: 5%;
   top: 50%;
   transform: translateY(-40%);
-  width: 6vw;   /* Adjust the width of the chart */
-  height: 7vw;  /* Keep height proportional to the width */
+  width: 6vw; /* Adjust the width of the chart */
+  height: 7vw; /* Keep height proportional to the width */
 }
-
+ 
 .loading svg polyline {
   fill: none;
   stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
+ 
 .stat-chart svg {
   width: 100%;
   height: auto;
 }
-
+ 
 /* Specific styling for Stat Card 1 (red color) */
 .stat-card-1 .loading svg polyline#back {
   stroke: #ff4d5033;
 }
-
+ 
 .stat-card-1 .loading svg polyline#front {
-  stroke: #DA2127;
+  stroke: #da2127;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
 }
-
+ 
 /* Specific styling for Stat Card 2 (yellow color) */
 .stat-card-2 .loading svg polyline#back {
-  stroke: #FFC10733;
+  stroke: #ffc10733;
 }
-
+ 
 .stat-card-2 .loading svg polyline#front {
-  stroke: #FFC107;
+  stroke: #ffc107;
+  stroke-dasharray: 48, 144;
+  stroke-dashoffset: 192;
+  animation: dash_682 1.4s linear infinite;
+}
+ 
+/* Specific styling for Stat Card 3 (green color) */
+.stat-card-3 .loading svg polyline#back {
+  stroke: #4c57af33;
+}
+ 
+.stat-card-3 .loading svg polyline#front {
+  stroke: #212dd3;;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
 }
 
 /* Specific styling for Stat Card 3 (green color) */
-.stat-card-3 .loading svg polyline#back {
-  stroke: #4CAF5033;
+.stat-card-4 .loading svg polyline#back {
+  stroke: #4caf5033;
 }
-
-.stat-card-3 .loading svg polyline#front {
-  stroke: #4CAF50;
+ 
+.stat-card-4 .loading svg polyline#front {
+  stroke: #4caf50;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
 }
-
+ 
 /* Keyframes for dash animation */
 @keyframes dash_682 {
   72.5% {
@@ -353,12 +227,6 @@ h2 {
 }
 
 
-/* Robot Uptime Chart */
-
-
-/* Robot Activity Table */
-
-/* Parent container holding both sections */
 
 /* Table stylings */
 .dashboard-container {
@@ -373,20 +241,22 @@ h2 {
 
 /* Styling for the robot activity table */
 .robot-activity-container {
-  flex: 1;
+  flex: 0.5; /* Set to 50% of the width */
   background-color: #fff;
-  padding: 0.5%;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.5%; /* Minimal padding */
+  overflow: hidden; /* Ensure the table doesn't overflow */
 }
 
 /* Styling for the notifications table */
 .notifications-container {
-  flex: 0.65;
+  flex: 0.5; /* Set to 50% of the width */
   background-color: #fff;
-  padding: 0.5%;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.5%; /* Minimal padding */
+  overflow: hidden; /* Ensure the table doesn't overflow */
 }
 
 /* Styling for the section headers */
@@ -394,102 +264,162 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #FFCDCD;
   margin-bottom: 1%;
-  background-color: #FFD6D6;
-  padding: 0.5%;
   border-radius: 5px;
+  padding: 0.3rem; /* Reduced padding */
 }
 
 /* Header text */
 .section-header h3 {
   margin: 0;
-  font-size: 1.0vw;
-  font-weight: 600;
+  font-size: 1vw;
+  font-weight: 500;
   color: #333;
+}
+
+/* Styling the search box */
+.search-box {
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #ffffff;
+  width: 60%; /* Adjust width as needed */
+  margin-right: 1rem; /* Space between search box and view all button */
+}
+
+.search-box input {
+  border: none;
+  padding: 0.5rem;
+  outline: none;
+  width: 100%;
+  font-size: 0.8vw;
+  border-radius: 5px;
+}
+
+.search-box input::placeholder {
+  color: #aaa;
 }
 
 /* View All button */
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 1%;
+  padding: 0.5rem;
   border-radius: 5px;
   border: none;
   cursor: pointer;
   font-size: 0.8vw;
+  margin-left: 1rem;
 }
 
-/* General table styling */
-.activity-table, .notifications-table {
+/* Table scrollable after 4 rows */
+.activity-table,
+.notifications-table {
   width: 100%;
   border-collapse: collapse;
   margin: 0;
+  max-height: 6rem; /* Adjust height as needed */
+  overflow-y: auto;
+  display: block;
 }
 
-.activity-table tr, .notifications-table tr {
+.activity-table tr,
+.notifications-table tr {
   border-bottom: 1px solid #eee;
 }
 
-.activity-table td, .notifications-table td {
-  padding: 1%;
+.activity-table td,
+.notifications-table td {
   font-size: 0.8vw;
   color: #555;
 }
 
-.activity-table td:first-child, .notifications-table td:first-child {
+.activity-table td:first-child,
+.notifications-table td:first-child {
   font-weight: bold;
   color: #333;
 }
 
-.activity-table tr:nth-child(odd), .notifications-table tr:nth-child(odd) {
+.activity-table tr:nth-child(odd),
+.notifications-table tr:nth-child(odd) {
   background-color: #f9f9f9;
 }
 
-.activity-table tr:hover, .notifications-table tr:hover {
+.activity-table tr:hover,
+.notifications-table tr:hover {
   background-color: #f1f1f1;
 }
 
 /* Align text in the first column */
-.activity-table td:first-child, .notifications-table td:first-child {
+.activity-table td:first-child,
+.notifications-table td:first-child {
   text-align: left;
 }
 
 /* Align text in the rest of the columns */
-.activity-table td:not(:first-child), .notifications-table td:not(:first-child) {
+.activity-table td:not(:first-child),
+.notifications-table td:not(:first-child) {
   text-align: left;
 }
 
-
-
-
-/* Responsive Design */
-app-operation-pie {
-    position: fixed;
-    display: flex;
-    position: absolute; /* Position the Operation Pie component absolutely */
-    right: 140px; /* Align it to the right side */
-    top: calc(100% + 15px); /* Place it below the stat cards with a 20px margin */
-    width: 300px; /* Ensure it matches the intended width */
-  }
-
-  .robot-uptime-chart {
-    /* position: relative; or absolute; */
-    display: flex;
-    display: flex;
-    flex-direction: column;
-    margin-top: 1%;
-    max-width: 63%;
-    background-color: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    padding: 0.1% 0.8%; /* Reduced padding on top and bottom, keeping left and right */
-    width: 100%;
-    flex-grow: 1;
+/* Make sure the table header stays in place */
+.activity-table thead th,
+.notifications-table thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
 }
 
- 
 
+.charts-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 5%;
+  width: 100%;
+  gap: 1%;
+}
 
+.robot-uptime-chart {
+  flex-grow: 2;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1%;
+  width: 60%;
+  height: 270px;
+}
 
+/* The operation pie chart should directly apply these styles */
+app-operation-pie {
+  
+  flex-grow: 1;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1%;
+  width: 35%;
+  height: 270px;
+}
 
-  /* for stat chart */
+@media (max-width: 1200px) {
+  .charts-container {
+    flex-direction: column;
+  }
+  .robot-uptime-chart,
+  app-operation-pie {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .robot-uptime-chart,
+  app-operation-pie {
+    height: 250px;
+  }
+}
+

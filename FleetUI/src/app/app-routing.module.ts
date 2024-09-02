@@ -8,7 +8,7 @@ import { ConfigurationComponent } from './configuration/configuration.component'
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectGuard } from './guards/project.guard';
 import { Userlogscomponent } from './userlogs/userlogs.component';
-import { UsermanagementComponent } from './usermanagement/usermanagement.component';
+
 import { RobotsComponent } from './robots/robots.component';
 import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.component';
 import { TasksComponent } from './tasks/tasks.component';
@@ -50,11 +50,7 @@ const routes: Routes = [
     component: ConfigurationComponent,
     canActivate: [AuthGuard, ProjectGuard],
   },
-  {
-    path: 'usermanagement',
-    component: UsermanagementComponent,
-    canActivate: [AuthGuard, ProjectGuard],
-  },
+ 
   {
     path: 'dashboard',
     component: DashboardComponent,

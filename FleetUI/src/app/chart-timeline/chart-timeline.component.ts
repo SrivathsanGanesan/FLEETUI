@@ -45,9 +45,7 @@ export class ChartTimelineComponent implements OnInit {
     { x: new Date(2024, 0, 5), y: 49 },
     { x: new Date(2024, 0, 6), y: 55 },
     { x: new Date(2024, 0, 7), y: 60 },
-    { x: new Date(2024, 0, 8), y: 70 },
-    { x: new Date(2024, 0, 9), y: 65 },
-    { x: new Date(2024, 0, 10), y: 80 }
+   
   ];
   
   robotUtilizationData = [
@@ -58,9 +56,7 @@ export class ChartTimelineComponent implements OnInit {
     { x: new Date(2024, 0, 5), y: 75 },
     { x: new Date(2024, 0, 6), y: 80 },
     { x: new Date(2024, 0, 7), y: 85 },
-    { x: new Date(2024, 0, 8), y: 90 },
-    { x: new Date(2024, 0, 9), y: 95 },
-    { x: new Date(2024, 0, 10), y: 100 }
+   
   ];
   
   batteryData = [
@@ -71,9 +67,7 @@ export class ChartTimelineComponent implements OnInit {
     { x: new Date(2024, 0, 5), y: 78 },
     { x: new Date(2024, 0, 6), y: 75 },
     { x: new Date(2024, 0, 7), y: 72 },
-    { x: new Date(2024, 0, 8), y: 70 },
-    { x: new Date(2024, 0, 9), y: 68 },
-    { x: new Date(2024, 0, 10), y: 65 }
+    
   ];
   
   memoryData = [
@@ -84,9 +78,7 @@ export class ChartTimelineComponent implements OnInit {
     { x: new Date(2024, 0, 5), y: 50 },
     { x: new Date(2024, 0, 6), y: 60 },
     { x: new Date(2024, 0, 7), y: 70 },
-    { x: new Date(2024, 0, 8), y: 80 },
-    { x: new Date(2024, 0, 9), y: 90 },
-    { x: new Date(2024, 0, 10), y: 100 }
+   
   ];
   
   networkData = [
@@ -97,9 +89,7 @@ export class ChartTimelineComponent implements OnInit {
     { x: new Date(2024, 0, 5), y: 40 },
     { x: new Date(2024, 0, 6), y: 45 },
     { x: new Date(2024, 0, 7), y: 50 },
-    { x: new Date(2024, 0, 8), y: 55 },
-    { x: new Date(2024, 0, 9), y: 60 },
-    { x: new Date(2024, 0, 10), y: 65 }
+   
   ];
   
   idleTimeData = [
@@ -110,9 +100,7 @@ export class ChartTimelineComponent implements OnInit {
     { x: new Date(2024, 0, 5), y: 10 },
     { x: new Date(2024, 0, 6), y: 9 },
     { x: new Date(2024, 0, 7), y: 7 },
-    { x: new Date(2024, 0, 8), y: 8 },
-    { x: new Date(2024, 0, 9), y: 9 },
-    { x: new Date(2024, 0, 10), y: 10 }
+    
   ];
   
   errorData = [
@@ -123,9 +111,7 @@ export class ChartTimelineComponent implements OnInit {
     { x: new Date(2024, 0, 5), y: 5 },
     { x: new Date(2024, 0, 6), y: 4 },
     { x: new Date(2024, 0, 7), y: 3 },
-    { x: new Date(2024, 0, 8), y: 2 },
-    { x: new Date(2024, 0, 9), y: 1 },
-    { x: new Date(2024, 0, 10), y: 0 }
+
   ];
   
 
@@ -152,7 +138,7 @@ export class ChartTimelineComponent implements OnInit {
       chart: {
         id: 'area-datetime',
         type: 'area',
-        height: 280,
+        height: 230,
         zoom: {
           autoScaleYaxis: true
         }

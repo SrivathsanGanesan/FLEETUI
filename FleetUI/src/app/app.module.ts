@@ -15,7 +15,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { Userlogscomponent } from './userlogs/userlogs.component';
-import { UsermanagementComponent } from './usermanagement/usermanagement.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartComponent } from './chart/chart.component';
 import { UptimeComponent } from './uptime/uptime.component';
@@ -40,6 +39,9 @@ import { RobotDetailPopupComponent } from './robot-detail-popup/robot-detail-pop
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { TasksComponent } from './tasks/tasks.component';
+import { RobotChartComponent } from './robot-chart/robot-chart.component';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +50,6 @@ import { TasksComponent } from './tasks/tasks.component';
     DashboardComponent,
     ProjectsetupComponent,
     ConfigurationComponent,
-    UsermanagementComponent,
     RobotPopupComponent,
     RobotsComponent,
     RobotParametersPopupComponent,
@@ -71,7 +72,11 @@ import { TasksComponent } from './tasks/tasks.component';
     RobotActivityDonutComponent,
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
-    TasksComponent
+    TasksComponent,
+    RobotChartComponent,
+ 
+
+   
   ],
   imports: [
     NgApexchartsModule,
