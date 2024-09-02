@@ -148,6 +148,11 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngIf="filteredEnvData.length === 0">
+                  <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                    No data found
+                  </td>
+                </tr>
                 <tr *ngFor="let item of filteredEnvData">
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.mapName }}
@@ -208,6 +213,11 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngIf="filteredRobotData.length === 0">
+                  <td colspan="3" class="px-6 py-4 text-center text-gray-500">
+                    No data found
+                  </td>
+                </tr>
                 <tr *ngFor="let item of filteredRobotData">
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.column1 }}
@@ -286,6 +296,11 @@
                 </tr>
               </thead>
               <tbody>
+                <tr  *ngIf="ipScanData.length === 0">
+                  <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                    No data found
+                  </td>
+                </tr>
                 <tr *ngFor="let item of ipScanData">
                   <td>{{ item.ip }}</td>
                   <td>{{ item.mac }}</td>
