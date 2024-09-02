@@ -115,6 +115,7 @@ const mapSchema = new Schema(
     zones: { ctype: [zoneSchema], cdefault: [] },
     robots: { type: [roboProjSchema], default: [] },
     logTime: { type: [logTimeSchema], default: [] },
+    // throughPut :
   },
   { timestamps: true, versionKey: false }
 );

@@ -10,6 +10,7 @@ import {
   ApexGrid,
   ApexStroke,
 } from 'ng-apexcharts';
+import { environment } from '../../environments/environment.development';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -36,8 +37,8 @@ export class AreaChartComponent implements OnInit {
     this.chartOptions = {
       series: [
         {
-          name: 'Series 1',
-          data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33], // Your default data
+          name: '',
+          data: [], // Your default data
         },
       ],
       chart: {
@@ -97,8 +98,7 @@ export class AreaChartComponent implements OnInit {
       },
       dataLabels: {
         enabled: true,
-        
-    },
+      },
       stroke: {
         curve: 'smooth',
         width: 3,
@@ -122,7 +122,7 @@ export class AreaChartComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Any additional logic can go here
+    this.updateChart('data1', 'Throughput');
   }
 
   updateChart(dataKey: string, metricName: string): void {
@@ -130,110 +130,146 @@ export class AreaChartComponent implements OnInit {
 
     switch (dataKey) {
       case 'data1':
-        this.chartOptions.series = [
-          {
-            name: 'Series 1',
-            data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33],
-          },
-        ];
-        this.chartOptions.xaxis.categories = [
-          'Dec 01',
-          'Dec 02',
-          'Dec 03',
-          'Dec 04',
-          'Dec 05',
-          'Dec 06',
-          'Dec 07',
-          'Dec 08',
-          'Dec 09',
-          'Dec 10',
-          'Dec 11',
-        ];
+        this.updateThroughput();
         break;
       case 'data2':
-        this.chartOptions.series = [
-          {
-            name: 'Series 2',
-            data: [60, 75, 50, 80, 55, 70, 45, 60, 55, 75, 65],
-          },
-        ];
-        this.chartOptions.xaxis.categories = [
-          'Dec 01',
-          'Dec 02',
-          'Dec 03',
-          'Dec 04',
-          'Dec 05',
-          'Dec 06',
-          'Dec 07',
-          'Dec 08',
-          'Dec 09',
-          'Dec 10',
-          'Dec 11',
-        ];
+        this.updateStarvationRate();
         break;
       case 'data3':
-        this.chartOptions.series = [
-          {
-            name: 'Series 3',
-            data: [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
-          },
-        ];
-        this.chartOptions.xaxis.categories = [
-          'Dec 01',
-          'Dec 02',
-          'Dec 03',
-          'Dec 04',
-          'Dec 05',
-          'Dec 06',
-          'Dec 07',
-          'Dec 08',
-          'Dec 09',
-          'Dec 10',
-          'Dec 11',
-        ];
+        this.updateTaskAllocation();
         break;
       case 'data4':
-        this.chartOptions.series = [
-          {
-            name: 'Series 4',
-            data: [50, 60, 55, 70, 65, 80, 75, 85, 90, 95, 100],
-          },
-        ];
-        this.chartOptions.xaxis.categories = [
-          'Dec 01',
-          'Dec 02',
-          'Dec 03',
-          'Dec 04',
-          'Dec 05',
-          'Dec 06',
-          'Dec 07',
-          'Dec 08',
-          'Dec 09',
-          'Dec 10',
-          'Dec 11',
-        ];
+        this.updatePickAccuracy();
         break;
       case 'data5':
-        this.chartOptions.series = [
-          {
-            name: 'Series 5',
-            data: [25, 35, 45, 55, 65, 75, 85, 95, 100, 110, 120],
-          },
-        ];
-        this.chartOptions.xaxis.categories = [
-          'Dec 01',
-          'Dec 02',
-          'Dec 03',
-          'Dec 04',
-          'Dec 05',
-          'Dec 06',
-          'Dec 07',
-          'Dec 08',
-          'Dec 09',
-          'Dec 10',
-          'Dec 11',
-        ];
+        this.updateErrorRate();
         break;
     }
+  }
+
+  async updateThroughput() {
+    let throughputArr;
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/graph/throughput/map123`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+    const data = await response.json();
+    console.log(data.throughput.Stat);
+    if (data.throughput)
+      throughputArr = data.throughput.Stat.map(
+        (stat: any) => stat.TotalThroughPutPerHour
+      );
+    // console.log(throughputArr);
+
+    this.chartOptions.series = [
+      {
+        name: 'Series 1',
+        data: throughputArr, // array of only numbers (throuput per hour)..
+      },
+    ];
+    this.chartOptions.xaxis.categories = [
+      // 'Dec 01',
+      // 'Dec 02',
+      // 'Dec 03',
+      // 'Dec 04',
+      // 'Dec 05',
+      // 'Dec 06',
+      // 'Dec 07',
+      // 'Dec 08',
+      // 'Dec 09',
+      // 'Dec 10',
+      // 'Dec 11',
+    ];
+  }
+
+  updateStarvationRate() {
+    this.chartOptions.series = [
+      {
+        name: 'Series 2',
+        data: [60, 75, 50, 80, 55, 70, 45, 60, 55, 75, 65],
+      },
+    ];
+    this.chartOptions.xaxis.categories = [
+      'Dec 01',
+      'Dec 02',
+      'Dec 03',
+      'Dec 04',
+      'Dec 05',
+      'Dec 06',
+      'Dec 07',
+      'Dec 08',
+      'Dec 09',
+      'Dec 10',
+      'Dec 11',
+    ];
+  }
+
+  updateTaskAllocation() {
+    this.chartOptions.series = [
+      {
+        name: 'Series 3',
+        data: [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
+      },
+    ];
+    this.chartOptions.xaxis.categories = [
+      'Dec 01',
+      'Dec 02',
+      'Dec 03',
+      'Dec 04',
+      'Dec 05',
+      'Dec 06',
+      'Dec 07',
+      'Dec 08',
+      'Dec 09',
+      'Dec 10',
+      'Dec 11',
+    ];
+  }
+
+  updatePickAccuracy() {
+    this.chartOptions.series = [
+      {
+        name: 'Series 4',
+        data: [50, 60, 55, 70, 65, 80, 75, 85, 90, 95, 100],
+      },
+    ];
+    this.chartOptions.xaxis.categories = [
+      'Dec 01',
+      'Dec 02',
+      'Dec 03',
+      'Dec 04',
+      'Dec 05',
+      'Dec 06',
+      'Dec 07',
+      'Dec 08',
+      'Dec 09',
+      'Dec 10',
+      'Dec 11',
+    ];
+  }
+
+  updateErrorRate() {
+    this.chartOptions.series = [
+      {
+        name: 'Series 5',
+        data: [25, 35, 45, 55, 65, 75, 85, 95, 100, 110, 120],
+      },
+    ];
+    this.chartOptions.xaxis.categories = [
+      'Dec 01',
+      'Dec 02',
+      'Dec 03',
+      'Dec 04',
+      'Dec 05',
+      'Dec 06',
+      'Dec 07',
+      'Dec 08',
+      'Dec 09',
+      'Dec 10',
+      'Dec 11',
+    ];
   }
 }
