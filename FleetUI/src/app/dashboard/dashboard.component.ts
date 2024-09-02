@@ -9,6 +9,7 @@ import RecordRTC from 'recordrtc';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,10 +46,29 @@ export class DashboardComponent implements AfterViewInit {
     this.onInitMapImg();
   }
 
+  ngAfterViewInit() {
+    this.loadCanvas();
+  }
+
+  // guess no need..
+  ngOnInit() {
+    if (this.projectService.getIsMapSet()) return;
+    this.onInitMapImg();
+    this.loadCanvas();
+  }
+
   async onInitMapImg() {
-    let mapData = this.projectService.getSelectedProject().sites;
+    let project = this.projectService.getSelectedProject();
     let mapArr = [];
-    mapArr = mapData
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${project._id}`,
+      { credentials: 'include' }
+    );
+    if (!response.ok)
+      console.error('Error while fetching map data : ', response.status);
+    let data = await response.json();
+    let projectSites = data.project.sites;
+    mapArr = projectSites
       .map((sites: any) => {
         for (let map of sites.maps) {
           return {
@@ -62,16 +82,14 @@ export class DashboardComponent implements AfterViewInit {
       .filter((item: any) => item !== null);
 
     if (!mapArr.length) return;
-    const response = await fetch(
+    const mapResponse = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapArr[0].mapName}`
     );
-    if (!response.ok)
-      console.error('Error while fetching map data : ', response.status);
-    let data = await response.json();
+    let mapData = await mapResponse.json();
 
     this.projectService.setMapData({
       ...mapArr[0],
-      imgUrl: data.map.imgUrl,
+      imgUrl: mapData.map.imgUrl,
     });
     this.loadCanvas();
   }
@@ -91,15 +109,6 @@ export class DashboardComponent implements AfterViewInit {
     return this.ONBtn
       ? '../../assets/icons/off.svg'
       : '../../assets/icons/on.svg';
-  }
-
-  ngAfterViewInit() {
-    this.loadCanvas();
-  }
-
-  // guess no need..
-  ngOnInit() {
-    this.loadCanvas();
   }
 
   getliveAmrPos() {

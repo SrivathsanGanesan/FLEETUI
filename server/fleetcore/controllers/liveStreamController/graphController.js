@@ -9,18 +9,37 @@ const throughput = async (req, res, next) => {
   const mapId = req.params.mapId;
   try {
     //..
-    res.writeHead(200, eventStreamHeader);
-    const fuse = setInterval(async () => {
-      const coor = JSON.stringify({
-        data_x: Math.floor(Math.random() * 20),
-        data_y: Math.floor(Math.random() * 150),
-      });
-      res.write(`data: ${coor}\n\n`);
-    }, 1000 * 1.5);
-
-    res.on("close", () => {
-      clearInterval(fuse);
-      res.end();
+    return res.status(200).json({
+      msg: "data sent",
+      throughput: {
+        Stat: [
+          {
+            TotalNumberRobots: 5,
+            TotalTimeElasped: 3600,
+            TotalTaskCount: 100,
+            TotalThroughPutPerHour: 50,
+          },
+          {
+            TotalNumberRobots: 4,
+            TotalTimeElasped: 3600,
+            TotalTaskCount: 90,
+            TotalThroughPutPerHour: 22.5,
+          },
+          {
+            TotalNumberRobots: 5,
+            TotalTimeElasped: 3600,
+            TotalTaskCount: 100,
+            TotalThroughPutPerHour: 35,
+          },
+          {
+            TotalNumberRobots: 5,
+            TotalTimeElasped: 3600,
+            TotalTaskCount: 100,
+            TotalThroughPutPerHour: 45,
+          },
+        ],
+        InProgress: 10,
+      },
     });
   } catch (err) {
     console.log("eventStream error occured : ", err);
