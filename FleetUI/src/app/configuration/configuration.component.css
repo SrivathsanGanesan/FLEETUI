@@ -68,7 +68,7 @@ th, td {
   border: 1px solid #ffffff;
   padding: 5px;
   height: 30px;
-  text-align: center;
+  text-align: left;
 }
 
 th {
@@ -82,7 +82,9 @@ th {
 td {
   font-size: 13px;
 }
-
+td img,button{
+margin-left: 10px;
+}
 tr:hover {
   background-color: #f2f2f2;
 }
