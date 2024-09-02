@@ -124,6 +124,8 @@
 
     <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
+      <canvas class="maplayer" #imageCanvas></canvas>
+      <canvas class="plottinglayer" id="overlayCanvas" #overlayCanvas></canvas>
       <div
         class="intermediate-nodes-dialog"
         *ngIf="showIntermediateNodesDialog"
@@ -144,7 +146,6 @@
           </button>
         </div>
       </div>
-      <canvas class="plottinglayer" #overlayCanvas></canvas>
       <div
         #nodeDetailsPopup
         class="node-details-popup"
@@ -349,7 +350,7 @@
         </div>
       </div>
       <!-- Transparent canvas for plotting points -->
-      <canvas class="maplayer" #imageCanvas></canvas>
+
       <!-- Image canvas -->
       <button class="close-btn" (click)="close()">X</button>
       <div class="options-container">

@@ -54,6 +54,7 @@ import { TasksComponent } from './tasks/tasks.component';
     IPScannerComponent,
     Userlogscomponent,
     StatisticsComponent,
+    EnvmapComponent,
     RobotsComponent,
     ChartComponent,
     UptimeComponent,
