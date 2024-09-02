@@ -552,8 +552,6 @@ deleteSelectedNode(): void {
 
   showError: boolean = false; // Flag to show error message
 
-
-  
   //  Saving all nodes and edges
   async saveOpt() {
     console.log(this.Nodes);
