@@ -94,7 +94,13 @@
       <div class="image-popup-content">
         <canvas class="imagePopupCanvas" #imagePopupCanvas></canvas>
         <button class="close-btn" (click)="closeImagePopup()">X</button>
-        <button *ngIf="isDistanceConfirmed" class="save-btn" (click)="saveCanvas()">Save</button>
+        <button
+          *ngIf="isDistanceConfirmed"
+          class="save-btn"
+          (click)="saveCanvas()"
+        >
+          Save
+        </button>
         <button class="clear-btn" (click)="clearCanvas()">Clear</button>
 
         <!-- Distance Input Dialog -->
@@ -130,10 +136,15 @@
             placeholder="Number of nodes"
             (ngModelChange)="onInputChanged()"
           />
-          <button *ngIf="isEnterButtonVisible" (click)="plotIntermediateNodes()">Enter</button>
+          <button
+            *ngIf="isEnterButtonVisible"
+            (click)="plotIntermediateNodes()"
+          >
+            Enter
+          </button>
         </div>
       </div>
-      <canvas class="plottinglayer" #overlayCanvas></canvas>      
+      <canvas class="plottinglayer" #overlayCanvas></canvas>
       <div
         #nodeDetailsPopup
         class="node-details-popup"
@@ -355,7 +366,7 @@
             <button (click)="setPlottingMode('multi')">Multi Node</button>
           </div>
         </div>
-        <button >Delete Node</button>
+        <button>Delete Node</button>
         <div class="dropdown">
           <button class="dropdown-button">Connectivity</button>
           <div class="dropdown-content">
