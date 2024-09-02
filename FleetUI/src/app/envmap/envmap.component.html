@@ -1,5 +1,5 @@
 <div class="popup-overlay">
-  <div class="popup-content">
+  <div class="popup-content"  [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }">
     <h2 *ngIf="!showImage">Select and insert Map file</h2>
 
     <!-- Image for file upload -->
