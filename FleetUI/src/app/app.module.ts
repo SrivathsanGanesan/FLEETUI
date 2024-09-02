@@ -39,6 +39,7 @@ import { RobotDetailPopupComponent } from './robot-detail-popup/robot-detail-pop
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { TasksComponent } from './tasks/tasks.component';
+import { EnvmapModule } from './envmap/envmap.module';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { TasksComponent } from './tasks/tasks.component';
     BrowserModule,
     RouterModule.forRoot([]),
     NgApexchartsModule,
+    EnvmapModule,
     MatDialogModule,
   ],
   providers: [

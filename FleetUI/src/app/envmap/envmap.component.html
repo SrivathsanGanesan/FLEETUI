@@ -1,7 +1,6 @@
 <div class="popup-overlay">
   <div class="popup-content"  [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }">
     <h2 *ngIf="!showImage">Select and insert Map file</h2>
-
     <!-- Image for file upload -->
     <label for="fileInput" class="upload-image" *ngIf="!showImage">
       <img src="../../assets/icons/arrow-down-circle.svg" alt="Upload" />
@@ -13,7 +12,6 @@
         hidden
       />
     </label>
-
     <!-- Display selected file name -->
     <div *ngIf="fileName && !showImage" class="file-name">{{ fileName }}</div>
     <div class="form-wrapper" *ngIf="fileName && !showImage">
@@ -88,7 +86,6 @@
         placeholder="Enter width"
         (keyup.enter)="open()"
       /> -->
-
     <!-- Intermediate Nodes Dialog -->
     <div *ngIf="showImagePopup" class="image-popup-overlay">
       <div class="image-popup-content">
@@ -121,11 +118,7 @@
         </div>
       </div>
     </div>
-
-    <!-- Canvas for displaying the image -->
     <div class="image-container" *ngIf="showImage">
-      <canvas class="maplayer" #imageCanvas></canvas>
-      <canvas class="plottinglayer" id="overlayCanvas" #overlayCanvas></canvas>
       <div
         class="intermediate-nodes-dialog"
         *ngIf="showIntermediateNodesDialog"
@@ -146,6 +139,8 @@
           </button>
         </div>
       </div>
+      
+      <canvas class="plottinglayer" #overlayCanvas></canvas>
       <div
         #nodeDetailsPopup
         class="node-details-popup"
@@ -350,7 +345,7 @@
         </div>
       </div>
       <!-- Transparent canvas for plotting points -->
-
+      <canvas class="maplayer" #imageCanvas></canvas>
       <!-- Image canvas -->
       <button class="close-btn" (click)="close()">X</button>
       <div class="options-container">
@@ -411,7 +406,6 @@
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
     </div>
-
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>

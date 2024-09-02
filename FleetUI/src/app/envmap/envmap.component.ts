@@ -34,10 +34,8 @@ export class EnvmapComponent implements AfterViewInit {
  
   @Output() closePopup = new EventEmitter<void>();
   @Output() newEnvEvent = new EventEmitter<any>();
-  @ViewChild('imageCanvas', { static: false })
-  imageCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('overlayCanvas', { static: false })
-  overlayCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imageCanvas', { static: false })  imageCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('overlayCanvas', { static: false  })  overlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('imagePopupCanvas', { static: false })
   imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
@@ -122,6 +120,8 @@ export class EnvmapComponent implements AfterViewInit {
   private lineEndY: number | null = null;
   isDistanceConfirmed = false; // Flag to control the Save button
   isEnterButtonVisible = false;
+  isCanvasInitialized = false;
+
  
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -132,22 +132,21 @@ export class EnvmapComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
     setTimeout(() => {
-      const canvas = this.renderer.selectRootElement(
-        '#overlayCanvas',
-        true
-      ) as HTMLCanvasElement;
+      console.log('ngAfterViewInit: overlayCanvas', this.overlayCanvas);
+      const canvas = this.overlayCanvas?.nativeElement;
       if (canvas) {
         this.setupCanvas();
+        this.isCanvasInitialized = true; // Avoid re-initializing the canvas
       } else {
         console.error('Canvas element still not found');
       }
-    }, 100);
+    }, 0); // Adjust the delay if necessary
   }
  
   ngAfterViewChecked(): void {
-    if (!this.overlayCanvas && this.showImage) {
-      console.log('Trying to get canvas in ngAfterViewChecked...');
+    if (this.showImage && this.overlayCanvas && !this.isCanvasInitialized) {
       this.setupCanvas();
+      this.isCanvasInitialized = true;
     }
   }
  
@@ -234,51 +233,42 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
  
-  private drawArrowLine(
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number
-  ): void {
+  private drawArrowLine(startX: number, startY: number, endX: number, endY: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
- 
+
     if (ctx) {
-      // Calculate the angle in radians and convert it to degrees
-      const angleRadians = Math.atan2(endY - startY, endX - startX);
-      const angleDegrees = angleRadians * (180 / Math.PI);
- 
-      console.log(
-        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
-          2
-        )}°`
-      );
- 
-      // Draw the line
-      ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
-      ctx.strokeStyle = 'red';
-      ctx.lineWidth = 2;
-      ctx.stroke();
- 
-      // Draw arrowhead
-      const arrowLength = 10;
-      ctx.beginPath();
-      ctx.moveTo(endX, endY);
-      ctx.lineTo(
-        endX - arrowLength * Math.cos(angleRadians - Math.PI / 6),
-        endY + arrowLength * Math.sin(angleRadians - Math.PI / 6)
-      );
-      ctx.moveTo(endX, endY);
-      ctx.lineTo(
-        endX - arrowLength * Math.cos(angleRadians + Math.PI / 6),
-        endY + arrowLength * Math.sin(angleRadians + Math.PI / 6)
-      );
-      ctx.stroke();
+        // Calculate the angle in radians and convert it to degrees
+        const angleRadians = Math.atan2(endY - startY, endX - startX);
+        const angleDegrees = angleRadians * (180 / Math.PI);
+
+        console.log(`Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(2)}°`);
+
+        // Draw the line
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw arrowhead
+        const arrowLength = 10;
+        ctx.beginPath();
+        ctx.moveTo(endX, endY);
+        ctx.lineTo(
+            endX - arrowLength * Math.cos(angleRadians - Math.PI / 6),
+            endY + arrowLength * Math.sin(angleRadians - Math.PI / 6)
+        );
+        ctx.moveTo(endX, endY);
+        ctx.lineTo(
+            endX - arrowLength * Math.cos(angleRadians + Math.PI / 6),
+            endY + arrowLength * Math.sin(angleRadians + Math.PI / 6)
+        );
+        ctx.stroke();
     }
-  }
- 
+}
+
   deleteSelectedNode(): void {
     if (!this.selectedNode) {
       console.log('No node selected for deletion.');
@@ -1119,12 +1109,7 @@ export class EnvmapComponent implements AfterViewInit {
  
       // Redraw the canvas to show the line preview
       this.redrawCanvas();
-      this.drawArrowLine(
-        this.lineStartX!,
-        this.lineStartY!,
-        this.lineEndX!,
-        this.lineEndY!
-      );
+      this.drawArrowLine(this.lineStartX!, this.lineStartY!, this.lineEndX!, this.lineEndY!);
     }
     if (
       this.isDrawingZone &&
@@ -1149,6 +1134,22 @@ export class EnvmapComponent implements AfterViewInit {
   }
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
+    if (this.isDrawingLine) {
+      this.isDrawingLine = false;
+
+      // Finalize the line drawing
+      this.drawArrowLine(this.lineStartX!, this.lineStartY!, this.lineEndX!, this.lineEndY!);
+
+      // Optionally, store the connection details here...
+      this.connections.push({
+        fromId: (this.selectedNode as { id: number; x: number; y: number }).id,
+        toId: this.nodeCounter, // Assuming you want to create a new node at the end
+        type: this.connectivityMode || 'uni'
+      });
+
+      // Reset the start and end positions
+      this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
+    }
     if (
       this.isDrawingZone &&
       this.currentZone &&
