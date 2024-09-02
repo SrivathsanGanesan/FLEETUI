@@ -1,10 +1,9 @@
-// -------- [WIP] --------------
-
 const eventStreamHeader = {
   "Content-Type": "text/event-stream",
   "Cache-Control": "no-cache",
   Connection: "keep-alive",
 };
+//..
 
 const throughput = async (req, res, next) => {
   const mapId = req.params.mapId;
