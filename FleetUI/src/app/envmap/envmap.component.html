@@ -128,8 +128,9 @@
             type="number"
             [(ngModel)]="numberOfIntermediateNodes"
             placeholder="Number of nodes"
+            (ngModelChange)="onInputChanged()"
           />
-          <button (click)="plotIntermediateNodes()">Enter</button>
+          <button *ngIf="isEnterButtonVisible" (click)="plotIntermediateNodes()">Enter</button>
         </div>
       </div>
       <canvas class="plottinglayer" #overlayCanvas></canvas>      

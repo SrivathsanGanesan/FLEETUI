@@ -109,6 +109,7 @@ export class EnvmapComponent implements AfterViewInit {
   private lineEndX: number | null = null;
   private lineEndY: number | null = null;
   isDistanceConfirmed = false; // Flag to control the Save button
+  isEnterButtonVisible = false;
 
   constructor(private cdRef: ChangeDetectorRef,private renderer: Renderer2) {}
 
@@ -877,7 +878,11 @@ deleteSelectedNode(): void {
     }
     this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
   }
+  onInputChanged(): void {
+    this.isEnterButtonVisible = this.numberOfIntermediateNodes !== null && this.numberOfIntermediateNodes > 0;
+  }
   plotIntermediateNodes(): void {
+    if (this.numberOfIntermediateNodes && this.numberOfIntermediateNodes > 0) {
     if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
       const dx = (this.secondNode.x - this.firstNode.x) / (this.numberOfIntermediateNodes + 1);
       const dy = (this.secondNode.y - this.firstNode.y) / (this.numberOfIntermediateNodes + 1);
@@ -903,7 +908,7 @@ deleteSelectedNode(): void {
         this.nodeCounter++; // Increment the node counter
       }
     }
-    this.closeIntermediateNodesDialog();
+    this.closeIntermediateNodesDialog();}
   }
 
   closeIntermediateNodesDialog(): void {
