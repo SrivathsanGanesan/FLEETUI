@@ -17,6 +17,8 @@ import { UptimeComponent } from '../uptime/uptime.component';
 })
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
+
+  eventSource!: EventSource;
   ONBtn = false;
   showDashboard = false;
   selectedFloor = 'Floor 1';
@@ -81,6 +83,8 @@ export class DashboardComponent implements AfterViewInit {
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
+    if (this.ONBtn) this.getliveAmrPos();
+    if (!this.ONBtn) this.eventSource.close(); // try take of it..
   }
 
   getOnBtnImage(): string {
@@ -96,6 +100,26 @@ export class DashboardComponent implements AfterViewInit {
   // guess no need..
   ngOnInit() {
     this.loadCanvas();
+  }
+
+  getliveAmrPos() {
+    const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos`;
+    if (this.eventSource) this.eventSource.close();
+
+    this.eventSource = new EventSource(URL);
+    this.eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log(data);
+      } catch (error) {
+        console.error('Error parsing SSE data:', error);
+      }
+    };
+
+    this.eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      this.eventSource.close();
+    };
   }
 
   loadCanvas() {

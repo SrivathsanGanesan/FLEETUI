@@ -23,6 +23,7 @@
     "get-ip-range": "^4.0.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.0",
+    "mqtt": "^5.10.1",
     "multer": "^1.4.5-lts.1",
     "network-scanner-js": "^1.1.5",
     "node-arp": "^1.0.6",

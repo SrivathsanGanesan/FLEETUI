@@ -5,11 +5,9 @@ const path = require("path");
 // dashboard...
 const dashboardMapRouter = require("./application/routes/dashboardMapRouter");
 const dashbdGrossCountRouter = require("./application/routes/dashboardGrossCountRouter");
-const dashboardThroughputRouter = require("./application/routes/dashboardThroughputRouter");
 const dashboardUptimeRouter = require("./application/routes/dashboardUptimeRouter");
 app.use("/dashboard/maps", dashboardMapRouter);
 app.use("/dashboard", dashbdGrossCountRouter);
-app.use("/dashboard/throughput", dashboardThroughputRouter);
 app.use("/dashboard/uptime", dashboardUptimeRouter);
 
 // login...
@@ -32,8 +30,12 @@ app.use("/fleet-project-file", projectFileRouter);
 const configurationRouter = require("./fleetcore/routes/configurationRouter");
 app.use("/fleet-config", configurationRouter);
 
-const trackMapFleetRouter = require("./application/routes/trackMapFleetRouter");
-app.use("/track-fleet", trackMapFleetRouter);
+// live data of fleet..
+const liveStreamRouter = require("./fleetcore/routes/liveStreamRouter");
+app.use("/stream-data", liveStreamRouter);
+
+const throughputRouter = require("./fleetcore/routes/throughputRouter");
+app.use("/graph/throughput", throughputRouter);
 
 app.listen(process.env.PORT, (err) => {
   err

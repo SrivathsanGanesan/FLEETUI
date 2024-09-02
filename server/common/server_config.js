@@ -11,7 +11,6 @@ app.use(
     origin: [
       "http://localhost:4200",
       // "http://192.168.11.183:3000",
-      // "http://localhost:57065",
     ], // WIP...
     credentials: true,
   })
