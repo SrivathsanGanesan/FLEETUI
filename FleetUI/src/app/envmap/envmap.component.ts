@@ -55,12 +55,19 @@ export class EnvmapComponent implements AfterViewInit {
   showImage: boolean = false;
   imageSrc: string | null = null;
   showOptionsLayer: boolean = false;
+  orientationAngle: number = 0;
   nodes: {
     id: number;
     x: number;
     y: number;
   }[] = [];
-  Nodes: { id: number; x: number; y: number; orientationAngle?: number; type: string }[] = [];
+  Nodes: {
+    id: number;
+    x: number;
+    y: number;
+    orientationAngle?: number;
+    type: string;
+  }[] = [];
   NodeDetails: {
     nodeID: number;
     sequenceId: number;
@@ -169,7 +176,6 @@ export class EnvmapComponent implements AfterViewInit {
     }
     const ctx = canvas.getContext('2d');
     if (ctx) {
- 
       // Preload asset images
       this.assetImages['docking'] = new Image();
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
@@ -211,28 +217,46 @@ export class EnvmapComponent implements AfterViewInit {
       console.error('Selected asset is not valid');
     }
   }
-  
-  private drawArrowLine(startX: number, startY: number, endX: number, endY: number): void {
+
+  private drawArrowLine(
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number
+  ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-        // Apply the Y-transformation (assuming the transformation inverts the Y-coordinate)
-        const canvasHeight = canvas.height;
-        const transformedStartY = canvasHeight - startY;
-        const transformedEndY = canvasHeight - endY;
+      // Apply the Y-transformation (assuming the transformation inverts the Y-coordinate)
+      const canvasHeight = canvas.height;
+      const transformedStartY = canvasHeight - startY;
+      const transformedEndY = canvasHeight - endY;
 
-        // Calculate the angle in radians and convert it to degrees using the transformed Y-coordinates
-        const angleRadians = Math.atan2(transformedEndY - transformedStartY, endX - startX);
-        const angleDegrees = angleRadians * (180 / Math.PI);
+      // Calculate the angle in radians and convert it to degrees using the transformed Y-coordinates
+      const angleRadians = Math.atan2(
+        transformedEndY - transformedStartY,
+        endX - startX
+      );
+      const angleDegrees = angleRadians * (180 / Math.PI);
 
-        // Update the orientationAngle of the node
-        const currentNode = this.Nodes.find(node => node.x === startX && node.y === startY);
-        if (currentNode) {
-            currentNode.orientationAngle = angleDegrees;
-        }
+      // Update the orientationAngle of the node
+      const currentNode = this.Nodes.find((node) => {
+        if (Math.abs(node.x - startX) <= 5)
+          node.orientationAngle = angleDegrees;
+        // return node.x === startX && node.y === startY;
+      });
 
-        console.log(`Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(2)}°`);
+      this.orientationAngle = angleDegrees;
+      if (currentNode) {
+        currentNode.orientationAngle = angleDegrees;
+      }
+
+      console.log(
+        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
+          2
+        )}°`
+      );
 
       // Draw the line
       ctx.beginPath();
@@ -364,21 +388,22 @@ export class EnvmapComponent implements AfterViewInit {
   saveNodeDetails(): void {
     // Transform Nodes array to NodeDetails format
     this.NodeDetails = this.Nodes.map((node, index) => ({
-        nodeID: node.id,
-        sequenceId: index + 1, // Assuming sequenceId is based on the order of nodes
-        nodeDescription: '', // Set this as empty or assign a value if available
-        released: true,
-        nodePosition: {
-            x: node.x,
-            y: node.y,
-            orientation: node.orientationAngle || 0, // Use the latest orientation angle here
-        },
-        actions: this.actions, // Include actions here
+      nodeID: node.id,
+      sequenceId: index + 1, // Assuming sequenceId is based on the order of nodes
+      nodeDescription: '', // Set this as empty or assign a value if available
+      released: true,
+      nodePosition: {
+        x: node.x,
+        y: node.y,
+        // orientation: this.orientationAngle,
+        orientation: node.orientationAngle || 0, // Use the latest orientation angle here
+      },
+      actions: this.actions, // Include actions here
     }));
 
     // Create a JSON object with the node details
     const nodeDetails = {
-        nodes: this.NodeDetails,
+      nodes: this.NodeDetails,
     };
 
     // Log the JSON object to the console
@@ -386,12 +411,11 @@ export class EnvmapComponent implements AfterViewInit {
 
     // Save the JSON object to a file
     const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
-        type: 'application/json',
+      type: 'application/json',
     });
     saveAs(blob, 'node-details.json');
     this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
-}
-
+  }
 
   onActionChange(): void {
     this.resetParameters();
@@ -893,13 +917,12 @@ export class EnvmapComponent implements AfterViewInit {
     const radius = 6; // Node radius
     const canvas = this.overlayCanvas.nativeElement;
     const transformedY = canvas.height - node.y; // Flip the Y-axis for node.y
-  
+
     const dx = mouseX - node.x;
     const dy = mouseY - transformedY; // Use transformed Y-coordinate
     return dx * dx + dy * dy <= radius * radius;
   }
-  
- 
+
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
@@ -924,19 +947,23 @@ export class EnvmapComponent implements AfterViewInit {
     this.isNodeDetailsPopupVisible = true;
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
-  private drawNode(node: { x: number; y: number }, color: string, selected: boolean): void {
+  private drawNode(
+    node: { x: number; y: number },
+    color: string,
+    selected: boolean
+  ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-        const transformedY = canvas.height - node.y; // Flip the Y-axis
-        ctx.beginPath();
-        ctx.arc(node.x, transformedY, 5, 0, 2 * Math.PI);
-        ctx.fillStyle = selected ? color : 'blue';
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = selected ? 3 : 1;
-        ctx.fill();
-        ctx.stroke();
+      const transformedY = canvas.height - node.y; // Flip the Y-axis
+      ctx.beginPath();
+      ctx.arc(node.x, transformedY, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = selected ? color : 'blue';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = selected ? 3 : 1;
+      ctx.fill();
+      ctx.stroke();
     }
   }
   // in changing process
@@ -945,18 +972,22 @@ export class EnvmapComponent implements AfterViewInit {
     const transformedY = canvas.height - y; // Flip the Y-axis
 
     const color = 'blue'; // Color for single nodes
-    this.drawNode({ x, y: this.overlayCanvas.nativeElement.height-y }, color, false);
+    this.drawNode(
+      { x, y: this.overlayCanvas.nativeElement.height - y },
+      color,
+      false
+    );
 
     this.nodeDetails = {
-        id: this.nodeCounter,
-        x: x * (this.ratio || 1), // Adjust for ratio if present
-        y: transformedY * (this.ratio || 1),
-        description: 'Single Node',
-        actions: [],
+      id: this.nodeCounter,
+      x: x * (this.ratio || 1), // Adjust for ratio if present
+      y: transformedY * (this.ratio || 1),
+      description: 'Single Node',
+      actions: [],
     };
     console.log(
-        `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
-        { x, y: transformedY }
+      `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
+      { x, y: transformedY }
     );
 
     this.nodes.push({ id: this.nodeCounter, x, y: transformedY });
@@ -964,49 +995,51 @@ export class EnvmapComponent implements AfterViewInit {
 
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
-}
+  }
 
   plotMultiNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const transformedY = canvas.height - y; // Flip the Y-axis
 
     if (this.nodes.length >= 2) {
-        alert('Only two nodes can be plotted in multi-node mode.');
-        return;
+      alert('Only two nodes can be plotted in multi-node mode.');
+      return;
     }
 
     const color = 'blue'; // Color for multi-nodes
     this.drawNode({ x, y: transformedY }, color, false);
 
     console.log(
-        `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
-        { x, y: transformedY }
+      `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
+      { x, y: transformedY }
     ); // Log the node number and position
 
     if (this.ratio !== null) {
-        const distanceX = x * this.ratio;
-        const distanceY = transformedY * this.ratio;
-        console.log(
-            `Type: Multi Node, Node Number: ${this.nodeCounter}, Distance (meters): X: ${distanceX.toFixed(
-                2
-            )}, Y: ${distanceY.toFixed(2)}`
-        );
+      const distanceX = x * this.ratio;
+      const distanceY = transformedY * this.ratio;
+      console.log(
+        `Type: Multi Node, Node Number: ${
+          this.nodeCounter
+        }, Distance (meters): X: ${distanceX.toFixed(
+          2
+        )}, Y: ${distanceY.toFixed(2)}`
+      );
     }
     this.nodeDetails = {
-        id: this.nodeCounter,
-        x: x, // Adjust for ratio if present
-        y: transformedY,
-        description: 'Multi Node',
-        actions: [],
+      id: this.nodeCounter,
+      x: x, // Adjust for ratio if present
+      y: transformedY,
+      description: 'Multi Node',
+      actions: [],
     };
     this.nodeCounter++; // Increment the node counter
 
     if (this.nodes.length === 0) {
-        this.firstNode = { x, y: transformedY };
+      this.firstNode = { x, y: transformedY };
     } else if (this.nodes.length === 1) {
-        this.secondNode = { x, y: transformedY };
-        this.showIntermediateNodesDialog = true;
-        this.isPlottingEnabled = false; // Disable further plotting after two nodes
+      this.secondNode = { x, y: transformedY };
+      this.showIntermediateNodesDialog = true;
+      this.isPlottingEnabled = false; // Disable further plotting after two nodes
     }
     this.nodes.push({ id: this.nodeCounter, x, y: transformedY }); // Assign ID before incrementing
   }
@@ -1128,12 +1161,14 @@ export class EnvmapComponent implements AfterViewInit {
 
       // Redraw the canvas to show the line preview
       this.redrawCanvas();
-      this.drawArrowLine(
-        this.lineStartX!,
-        this.lineStartY!,
-        this.lineEndX!,
-        this.lineEndY!
-      );
+      if (this.lineStartX !== null && this.lineStartY !== null) {
+        this.drawArrowLine(
+          this.lineStartX,
+          this.lineStartY,
+          this.lineEndX!,
+          this.lineEndY!
+        );
+      }
     }
     if (
       this.isDrawingZone &&
@@ -1158,7 +1193,11 @@ export class EnvmapComponent implements AfterViewInit {
   }
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
-    if (this.isDrawingLine) {
+    if (
+      this.isDrawingLine &&
+      this.lineStartX !== null &&
+      this.lineStartY !== null
+    ) {
       this.isDrawingLine = false;
 
       // Finalize the line drawing
@@ -1170,11 +1209,14 @@ export class EnvmapComponent implements AfterViewInit {
       );
 
       // Optionally, store the connection details here...
-      this.connections.push({
-        fromId: (this.selectedNode as { id: number; x: number; y: number }).id,
-        toId: this.nodeCounter, // Assuming you want to create a new node at the end
-        type: this.connectivityMode || 'uni',
-      });
+      if (this.selectedNode) {
+        this.connections.push({
+          fromId: (this.selectedNode as { id: number; x: number; y: number })
+            .id,
+          toId: this.nodeCounter,
+          type: this.connectivityMode || 'uni',
+        });
+      }
 
       // Reset the start and end positions
       this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
