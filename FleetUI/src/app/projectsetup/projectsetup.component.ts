@@ -145,7 +145,7 @@ export class ProjectsetupComponent {
     // } catch (error) {
     //   console.log('Err ra pans : ', error);
     // }
-    fetch('http://localhost:3000/auth/logout', {
+    fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`, {
       credentials: 'include',
     })
       .then((res) => res.json())
@@ -163,7 +163,7 @@ export class ProjectsetupComponent {
   async sendZip() {
     try {
       let response = await fetch(
-        'http://localhost:3000/fleet-project-file/upload-project/',
+        `http://${environment.API_URL}:${environment.PORT}/fleet-project-file/upload-project/`,
         {
           credentials: 'include',
           method: 'POST',
@@ -269,17 +269,20 @@ export class ProjectsetupComponent {
       return;
     }
 
-    fetch('http://localhost:3000/fleet-project/project', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        project: {
-          projectName: this.projectname,
-          siteName: this.sitename,
-        },
-      }),
-    })
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/project`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          project: {
+            projectName: this.projectname,
+            siteName: this.sitename,
+          },
+        }),
+      }
+    )
       .then((res) => {
         if (res.status === 400) alert('project Name already exits');
         else if (res.status === 500) console.log('Error in server side');
@@ -306,10 +309,13 @@ export class ProjectsetupComponent {
       alert('no project selected');
       return;
     }
-    fetch(`http://localhost:3000/fleet-project/${this.project._id}`, {
-      method: 'GET',
-      credentials: 'include',
-    })
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.project._id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    )
       .then((res) => {
         // if (!res.ok) {
         //   throw new Error('Project not found: ' + res.status);
