@@ -990,22 +990,6 @@ deleteSelectedNode(): void {
   }
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
-    if (this.isDrawingLine) {
-      this.isDrawingLine = false;
-
-      // Finalize the line drawing
-      this.drawArrowLine(this.lineStartX!, this.lineStartY!, this.lineEndX!, this.lineEndY!);
-
-      // Optionally, store the connection details here...
-      this.connections.push({
-        fromId: (this.selectedNode as { id: number; x: number; y: number }).id,
-        toId: this.nodeCounter, // Assuming you want to create a new node at the end
-        type: this.connectivityMode || 'uni'
-      });
-
-      // Reset the start and end positions
-      this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
-    }
     if (this.isDrawingZone && this.currentZone && this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
       const endX = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
@@ -1014,6 +998,17 @@ deleteSelectedNode(): void {
       // Update the current zone's end coordinates
       this.currentZone.endX = endX;
       this.currentZone.endY = endY;
+  
+      // Check for overlap with existing zones
+      if (this.checkZoneOverlap(this.currentZone)) {
+        alert('Zones cannot overlap! The overlapping zone has been removed.');
+        this.currentZone = null; // Reset the current zone
+        this.isDrawingZone = false;
+  
+        // Clear the canvas and redraw all zones without the current one
+        this.redrawZones();
+        return; // Exit early to prevent saving the overlapping zone
+      }
   
       // Save the current zone to the zones array
       this.zones.push(this.currentZone);
@@ -1026,7 +1021,23 @@ deleteSelectedNode(): void {
       this.currentZone = null;
     }
   }
-
+  
+  private checkZoneOverlap(newZone: Zone): boolean {
+    for (const zone of this.zones) {
+      if (this.isOverlapping(zone, newZone)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private isOverlapping(zone1: Zone, zone2: Zone): boolean {
+    return !(zone2.startX > zone1.endX || 
+             zone2.endX < zone1.startX || 
+             zone2.startY > zone1.endY || 
+             zone2.endY < zone1.startY);
+  }
+  
   private redrawCanvas(): void {
     // Clear the canvas and redraw all elements (nodes, zones, lines, etc.)
     const canvas = this.overlayCanvas.nativeElement;
