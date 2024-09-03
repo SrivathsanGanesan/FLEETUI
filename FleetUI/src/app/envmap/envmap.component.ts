@@ -55,12 +55,19 @@ export class EnvmapComponent implements AfterViewInit {
   showImage: boolean = false;
   imageSrc: string | null = null;
   showOptionsLayer: boolean = false;
+  orientationAngle: number = 0;
   nodes: {
     id: number;
     x: number;
     y: number;
   }[] = [];
-  Nodes: { id: number; x: number; y: number; type: string }[] = [];
+  Nodes: {
+    id: number;
+    x: number;
+    y: number;
+    orientationAngle?: number;
+    type: string;
+  }[] = [];
   NodeDetails: {
     nodeID: number;
     sequenceId: number;
@@ -122,6 +129,7 @@ export class EnvmapComponent implements AfterViewInit {
   private lineEndY: number | null = null;
   isDistanceConfirmed = false; // Flag to control the Save button
   isEnterButtonVisible = false;
+  isCanvasInitialized = false;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -131,23 +139,23 @@ export class EnvmapComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
+    if (!this.overlayCanvas) return;
     setTimeout(() => {
-      const canvas = this.renderer.selectRootElement(
-        '#overlayCanvas',
-        true
-      ) as HTMLCanvasElement;
+      console.log('ngAfterViewInit: overlayCanvas', this.overlayCanvas);
+      const canvas = this.overlayCanvas?.nativeElement;
       if (canvas) {
         this.setupCanvas();
+        this.isCanvasInitialized = true; // Avoid re-initializing the canvas
       } else {
         console.error('Canvas element still not found');
       }
-    }, 100);
+    }, 0); // Adjust the delay if necessary
   }
 
   ngAfterViewChecked(): void {
-    if (!this.overlayCanvas && this.showImage) {
-      console.log('Trying to get canvas in ngAfterViewChecked...');
+    if (this.showImage && this.overlayCanvas && !this.isCanvasInitialized) {
       this.setupCanvas();
+      this.isCanvasInitialized = true;
     }
   }
 
@@ -168,11 +176,6 @@ export class EnvmapComponent implements AfterViewInit {
     }
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      // Move the origin to bottom-left
-      ctx.translate(0, canvas.height);
-      // Flip vertically to invert the Y-axis
-      ctx.scale(1, -1);
-
       // Preload asset images
       this.assetImages['docking'] = new Image();
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
@@ -215,25 +218,6 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
 
-  private drawNode(
-    node: { x: number; y: number },
-    color: string,
-    selected: boolean
-  ): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx) {
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, 5, 0, 2 * Math.PI);
-      ctx.fillStyle = selected ? color : 'blue';
-      ctx.strokeStyle = 'black';
-      ctx.lineWidth = selected ? 3 : 1;
-      ctx.fill();
-      ctx.stroke();
-    }
-  }
-
   private drawArrowLine(
     startX: number,
     startY: number,
@@ -244,9 +228,29 @@ export class EnvmapComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-      // Calculate the angle in radians and convert it to degrees
-      const angleRadians = Math.atan2(endY - startY, endX - startX);
+      // Apply the Y-transformation (assuming the transformation inverts the Y-coordinate)
+      const canvasHeight = canvas.height;
+      const transformedStartY = canvasHeight - startY;
+      const transformedEndY = canvasHeight - endY;
+
+      // Calculate the angle in radians and convert it to degrees using the transformed Y-coordinates
+      const angleRadians = Math.atan2(
+        transformedEndY - transformedStartY,
+        endX - startX
+      );
       const angleDegrees = angleRadians * (180 / Math.PI);
+
+      // Update the orientationAngle of the node
+      const currentNode = this.Nodes.find((node) => {
+        if (Math.abs(node.x - startX) <= 5)
+          node.orientationAngle = angleDegrees;
+        // return node.x === startX && node.y === startY;
+      });
+
+      this.orientationAngle = angleDegrees;
+      if (currentNode) {
+        currentNode.orientationAngle = angleDegrees;
+      }
 
       console.log(
         `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
@@ -391,7 +395,8 @@ export class EnvmapComponent implements AfterViewInit {
       nodePosition: {
         x: node.x,
         y: node.y,
-        orientation: node.x,
+        // orientation: this.orientationAngle,
+        orientation: node.orientationAngle || 0, // Use the latest orientation angle here
       },
       actions: this.actions, // Include actions here
     }));
@@ -412,7 +417,6 @@ export class EnvmapComponent implements AfterViewInit {
     this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
   }
 
-  // Method to handle the change in action selection
   onActionChange(): void {
     this.resetParameters();
     this.showActionForm();
@@ -651,6 +655,10 @@ export class EnvmapComponent implements AfterViewInit {
       })
       .then((data) => {
         console.log(data);
+        if (data.exits === true) {
+          alert(data.msg);
+          return;
+        }
         if (data.isFileExist === false) {
           alert(data.msg);
           return;
@@ -906,9 +914,12 @@ export class EnvmapComponent implements AfterViewInit {
     mouseX: number,
     mouseY: number
   ): boolean {
-    const radius = 6; // Same as the node radius
+    const radius = 6; // Node radius
+    const canvas = this.overlayCanvas.nativeElement;
+    const transformedY = canvas.height - node.y; // Flip the Y-axis for node.y
+
     const dx = mouseX - node.x;
-    const dy = mouseY - node.y;
+    const dy = mouseY - transformedY; // Use transformed Y-coordinate
     return dx * dx + dy * dy <= radius * radius;
   }
 
@@ -936,46 +947,76 @@ export class EnvmapComponent implements AfterViewInit {
     this.isNodeDetailsPopupVisible = true;
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
+  private drawNode(
+    node: { x: number; y: number },
+    color: string,
+    selected: boolean
+  ): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+      const transformedY = canvas.height - node.y; // Flip the Y-axis
+      ctx.beginPath();
+      ctx.arc(node.x, transformedY, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = selected ? color : 'blue';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = selected ? 3 : 1;
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
   // in changing process
   plotSingleNode(x: number, y: number): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const transformedY = canvas.height - y; // Flip the Y-axis
+
     const color = 'blue'; // Color for single nodes
-    this.drawNode({ x, y }, color, false);
+    this.drawNode(
+      { x, y: this.overlayCanvas.nativeElement.height - y },
+      color,
+      false
+    );
 
     this.nodeDetails = {
       id: this.nodeCounter,
       x: x * (this.ratio || 1), // Adjust for ratio if present
-      y: y * (this.ratio || 1),
+      y: transformedY * (this.ratio || 1),
       description: 'Single Node',
       actions: [],
     };
     console.log(
       `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y }
+      { x, y: transformedY }
     );
 
-    this.nodes.push({ id: this.nodeCounter, x, y });
+    this.nodes.push({ id: this.nodeCounter, x, y: transformedY });
     this.Nodes.push({ ...this.nodeDetails, type: 'single' });
 
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
   }
+
   plotMultiNode(x: number, y: number): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const transformedY = canvas.height - y; // Flip the Y-axis
+
     if (this.nodes.length >= 2) {
       alert('Only two nodes can be plotted in multi-node mode.');
       return;
     }
 
     const color = 'blue'; // Color for multi-nodes
-    this.drawNode({ x, y }, color, false);
+    this.drawNode({ x, y: transformedY }, color, false);
 
     console.log(
       `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y }
+      { x, y: transformedY }
     ); // Log the node number and position
 
     if (this.ratio !== null) {
       const distanceX = x * this.ratio;
-      const distanceY = y * this.ratio;
+      const distanceY = transformedY * this.ratio;
       console.log(
         `Type: Multi Node, Node Number: ${
           this.nodeCounter
@@ -987,21 +1028,22 @@ export class EnvmapComponent implements AfterViewInit {
     this.nodeDetails = {
       id: this.nodeCounter,
       x: x, // Adjust for ratio if present
-      y: y,
+      y: transformedY,
       description: 'Multi Node',
       actions: [],
     };
     this.nodeCounter++; // Increment the node counter
 
     if (this.nodes.length === 0) {
-      this.firstNode = { x, y };
+      this.firstNode = { x, y: transformedY };
     } else if (this.nodes.length === 1) {
-      this.secondNode = { x, y };
+      this.secondNode = { x, y: transformedY };
       this.showIntermediateNodesDialog = true;
       this.isPlottingEnabled = false; // Disable further plotting after two nodes
     }
-    this.nodes.push({ id: this.nodeCounter, x, y }); // Assign ID before incrementing
+    this.nodes.push({ id: this.nodeCounter, x, y: transformedY }); // Assign ID before incrementing
   }
+
   onInputChanged(): void {
     this.isEnterButtonVisible =
       this.numberOfIntermediateNodes !== null &&
@@ -1119,12 +1161,14 @@ export class EnvmapComponent implements AfterViewInit {
 
       // Redraw the canvas to show the line preview
       this.redrawCanvas();
-      this.drawArrowLine(
-        this.lineStartX!,
-        this.lineStartY!,
-        this.lineEndX!,
-        this.lineEndY!
-      );
+      if (this.lineStartX !== null && this.lineStartY !== null) {
+        this.drawArrowLine(
+          this.lineStartX,
+          this.lineStartY,
+          this.lineEndX!,
+          this.lineEndY!
+        );
+      }
     }
     if (
       this.isDrawingZone &&
@@ -1149,6 +1193,34 @@ export class EnvmapComponent implements AfterViewInit {
   }
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
+    if (
+      this.isDrawingLine &&
+      this.lineStartX !== null &&
+      this.lineStartY !== null
+    ) {
+      this.isDrawingLine = false;
+
+      // Finalize the line drawing
+      this.drawArrowLine(
+        this.lineStartX!,
+        this.lineStartY!,
+        this.lineEndX!,
+        this.lineEndY!
+      );
+
+      // Optionally, store the connection details here...
+      if (this.selectedNode) {
+        this.connections.push({
+          fromId: (this.selectedNode as { id: number; x: number; y: number })
+            .id,
+          toId: this.nodeCounter,
+          type: this.connectivityMode || 'uni',
+        });
+      }
+
+      // Reset the start and end positions
+      this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
+    }
     if (
       this.isDrawingZone &&
       this.currentZone &&

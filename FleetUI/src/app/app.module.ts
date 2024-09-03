@@ -39,8 +39,7 @@ import { RobotDetailPopupComponent } from './robot-detail-popup/robot-detail-pop
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { TasksComponent } from './tasks/tasks.component';
-import { RobotChartComponent } from './robot-chart/robot-chart.component';
-
+import { EnvmapModule } from './envmap/envmap.module';
 
 @NgModule({
   declarations: [
@@ -56,6 +55,7 @@ import { RobotChartComponent } from './robot-chart/robot-chart.component';
     IPScannerComponent,
     Userlogscomponent,
     StatisticsComponent,
+    EnvmapComponent,
     RobotsComponent,
     ChartComponent,
     UptimeComponent,
@@ -73,10 +73,6 @@ import { RobotChartComponent } from './robot-chart/robot-chart.component';
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
-    RobotChartComponent,
- 
-
-   
   ],
   imports: [
     NgApexchartsModule,
@@ -87,14 +83,15 @@ import { RobotChartComponent } from './robot-chart/robot-chart.component';
     BrowserModule,
     RouterModule.forRoot([]),
     NgApexchartsModule,
-    MatDialogModule
+    EnvmapModule,
+    MatDialogModule,
   ],
   providers: [
     // provideClientHydration()
 
     provideAnimationsAsync(),
   ],
- 
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}

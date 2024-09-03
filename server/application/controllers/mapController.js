@@ -51,6 +51,8 @@ const mapInsert = async (req, res) => {
       stations = [],
       zones,
     } = mapData;
+    const map = await Map.exists({ mapName: mapName });
+    if (map) return res.json({ exits: true, msg: "Map name already exits" });
     const projDoc = await projectModel.exists({
       projectName: projectName,
       // "sites.siteName": siteName,
@@ -79,9 +81,6 @@ const mapInsert = async (req, res) => {
     if (req.file === undefined)
       return res.status(400).json({ msg: "file missing", isFileExist: false });
     mapData.imgUrl = `localhost:3000/dashboard/${req.file.filename}`;
-
-    const map = await Map.exists({ mapName: mapName });
-    if (map) return res.json({ exits: true, msg: "Map name already exits" });
 
     const newMap = await new Map({
       mapName,
