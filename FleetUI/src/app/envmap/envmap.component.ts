@@ -396,29 +396,29 @@ export class EnvmapComponent implements AfterViewInit {
       },
       actions: this.actions, // Include actions here
     }));
-  
+
     // Create a JSON object with the node details
     const nodeDetails = {
       nodes: this.NodeDetails,
     };
-  
+
     // Log the JSON object to the console
     console.log(JSON.stringify(nodeDetails, null, 2));
-  
+
     // Save the JSON object to a file
     const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
       type: 'application/json',
     });
     saveAs(blob, 'node-details.json');
-  
+
     // Clear all the details for the previous node
     this.Nodes = []; // Clear the Nodes array
     this.resetParameters(); // Reset the parameters
     this.actions = []; // Clear the actions array
-    this.selectedAction = ''; // Reset the selected action  
+    this.selectedAction = ''; // Reset the selected action
     this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
   }
-  
+
   onActionChange(): void {
     this.resetParameters();
     this.showActionForm();

@@ -40,18 +40,28 @@ const throughput = async (req, res, next) => {
         TotalTimeElasped: 3600,
         TotalTaskCount: 100,
         TotalThroughPutPerHour: 12,
+        TimeStamp: 1725220709,
       },
       {
         TotalNumberRobots: 4,
         TotalTimeElasped: 3600,
         TotalTaskCount: 90,
         TotalThroughPutPerHour: 22.5,
+        TimeStamp: 1725224309,
       },
       {
         TotalNumberRobots: 5,
         TotalTimeElasped: 3600,
         TotalTaskCount: 100,
         TotalThroughPutPerHour: 45,
+        TimeStamp: 1725227909,
+      },
+      {
+        TotalNumberRobots: 5,
+        TotalTimeElasped: 3600,
+        TotalTaskCount: 100,
+        TotalThroughPutPerHour: 25,
+        TimeStamp: 1725267909,
       },
     ];
     let InProgress = 3;
@@ -70,7 +80,8 @@ const throughput = async (req, res, next) => {
 
     return res.status(200).json({
       msg: "data sent",
-      throughput: throughput,
+      throughput: { Stat: dummyStat, InProgress: InProgress },
+      // throughput: throughput,
     });
   } catch (err) {
     console.log("error occured : ", err);
