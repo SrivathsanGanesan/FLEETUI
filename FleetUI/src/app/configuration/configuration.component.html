@@ -183,7 +183,12 @@
                       [disabled]="isButtonDisabled(item)"
                       (click)="selectMap(item)"
                     >
-                      SELECT
+                      <!-- SELECT -->
+                      {{
+                        item.mapName === this.selectedMap?.mapName
+                          ? "SELECT"
+                          : "DESELECT"
+                      }}
                     </button>
                   </td>
                 </tr>
@@ -297,7 +302,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr  *ngIf="ipScanData.length === 0">
+                <tr *ngIf="ipScanData.length === 0">
                   <td colspan="5" class="px-6 py-4 text-center text-gray-500">
                     No data found
                   </td>

@@ -113,6 +113,8 @@ export class ConfigurationComponent implements AfterViewInit {
           .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
         this.filteredEnvData = this.EnvData;
         this.cdRef.detectChanges();
+        if (!this.projectService.getIsMapSet())
+          this.selectedMap = this.EnvData[0];
       })
       .catch((error) => {
         console.log(error);
@@ -173,20 +175,16 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   isButtonDisabled(item: any): boolean {
+    /* if (this.selectedMap.id === item.id && this.selectedMap.mapName === item.mapName) {
+      return false;
+    }
+    return true; */
     return this.selectedMap && this.selectedMap !== item;
   }
 
   ngOnChanges() {
     this.filterData();
   }
-
-  // quick to remove it then...
-  // addEnvToEnvData(envData: any): void {
-  //   console.log(envData);
-  //   this.EnvData = [...this.EnvData, envData];
-  //   this.filteredEnvData = this.EnvData;
-  //   this.cdRef.detectChanges();
-  // }
 
   filterData() {
     const term = this.searchTerm.toLowerCase();
@@ -227,6 +225,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {}
+
   drawConnectivity() {
     const canvas = this.uploadedCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
