@@ -3,13 +3,14 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   ViewChild,
+  viewChild,
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
-import { map } from 'rxjs';
+import { ThroughputComponent } from '../throughput/throughput.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +19,7 @@ import { map } from 'rxjs';
 })
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
+  @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
 
   eventSource!: EventSource;
   ONBtn = false;
@@ -97,6 +99,7 @@ export class DashboardComponent implements AfterViewInit {
   // start-stop the operation!
   startStopOpt() {
     if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
+    if (this.throughputComponent) this.throughputComponent.getThroughPut();
   }
 
   toggleONBtn() {

@@ -40,28 +40,21 @@ const throughput = async (req, res, next) => {
         TotalTimeElasped: 3600,
         TotalTaskCount: 100,
         TotalThroughPutPerHour: 12,
-        TimeStamp: 1725220709,
+        TimeStamp: 1725305782000,
       },
       {
         TotalNumberRobots: 4,
         TotalTimeElasped: 3600,
         TotalTaskCount: 90,
         TotalThroughPutPerHour: 22.5,
-        TimeStamp: 1725224309,
+        TimeStamp: 1725309382000,
       },
       {
         TotalNumberRobots: 5,
         TotalTimeElasped: 3600,
         TotalTaskCount: 100,
         TotalThroughPutPerHour: 45,
-        TimeStamp: 1725227909,
-      },
-      {
-        TotalNumberRobots: 5,
-        TotalTimeElasped: 3600,
-        TotalTaskCount: 100,
-        TotalThroughPutPerHour: 25,
-        TimeStamp: 1725267909,
+        TimeStamp: 1725312982000,
       },
     ];
     let InProgress = 3;

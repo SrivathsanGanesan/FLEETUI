@@ -180,7 +180,6 @@ export class AreaChartComponent implements OnInit {
         this.x_axis_timeStamp.push(time);
         return stat.TotalThroughPutPerHour;
       });
-    // console.log(throughputArr, x_axis_timeStamp);
 
     this.chartOptions = {
       ...this.chartOptions,
