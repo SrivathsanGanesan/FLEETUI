@@ -8,6 +8,7 @@ import { ExportService } from '../export.service';
 })
 export class TasksComponent implements OnInit {
 
+
   searchQuery: string = '';
   isPopupVisible: boolean = false;
   activeFilter: string = 'today'; // Default filter
@@ -30,18 +31,29 @@ export class TasksComponent implements OnInit {
     // Add more data as necessary
   ];
 
+  
+
+  filteredTaskData = this.taskData;
+
   constructor(private exportService: ExportService) {}
 
   ngOnInit(): void {}
 
+  onSearch(event: Event): void {
+    const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
+
+    if (!inputValue) {
+      this.filteredTaskData = this.taskData;
+    } else {
+      this.filteredTaskData = this.taskData.filter(item =>
+        Object.values(item).some(val => String(val).toLowerCase().includes(inputValue))
+      );
+    }
+  }
+
   setActiveFilter(filter: string) {
     this.activeFilter = filter;
     // Implement your filtering logic here
-  }
-
-  onSearch(event: Event): void {
-    const query = (event.target as HTMLInputElement).value;
-    // Implement your search logic here
   }
 
   onDateChange(event: Event): void {
@@ -51,7 +63,7 @@ export class TasksComponent implements OnInit {
   }
 
   exportData(format: string) {
-    const data = this.taskData; // We only have one table now
+    const data = this.taskData;
     switch (format) {
       case 'csv':
         this.exportService.exportToCSV(data, `TaskDataExport`);
@@ -65,14 +77,13 @@ export class TasksComponent implements OnInit {
       default:
         console.error('Invalid export format');
     }
-    this.closePopup();
   }
 
   showPopup() {
     this.isPopupVisible = true;
   }
 
-  closePopup() {
+  onClose() {
     this.isPopupVisible = false;
   }
 }

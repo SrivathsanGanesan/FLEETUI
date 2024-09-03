@@ -6,13 +6,12 @@ export interface Robot {
   id: number;
   name: string;
   imageUrl: string;
-  capacity: string;
-  speed: string;
-  accuracy: string;
   status: string;
   battery: string;
-  serialNumber: string; // Add other fields as needed
+  serialNumber: string;
+  // Add other fields as needed
 }
+
 
 @Component({
   selector: 'app-robots',
@@ -21,86 +20,64 @@ export interface Robot {
 })
 export class RobotsComponent implements OnInit {
 
+  robotImages: string[] = [
+    'agv1.png',
+    'agv2.png',
+    'agv3.png',
+    // Add more images from assets/robots
+  ];
+
 
   robots: Robot[] = [
     {
       id: 1,
-      serialNumber: '101589', // Example serial number
+      serialNumber: '101589',
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
-      capacity: '2000 kg',
-      speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’',
       status: 'Active',
       battery: '40%'
     },
     {
       id: 2,
-      serialNumber: '101589', // Example serial number
+      serialNumber: '101589',
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
-      capacity: '2000 kg',
-      speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’',
       status: 'Active',
-      battery: '80%'
+      battery: '40%'
     },
     {
       id: 3,
-      serialNumber: '101589', // Example serial number
+      serialNumber: '101589',
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
-      capacity: '2000 kg',
-      speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’',
       status: 'Active',
-      battery: '80%'
+      battery: '40%'
     },
     {
       id: 4,
-      serialNumber: '101589', // Example serial number
+      serialNumber: '101589',
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
-      capacity: '2000 kg',
-      speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’',
       status: 'Active',
-      battery: '80%'
+      battery: '40%'
     },
     {
       id: 5,
-      serialNumber: '101589', // Example serial number
+      serialNumber: '101589',
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
-      capacity: '2000 kg',
-      speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’',
       status: 'Active',
-      battery: '80%'
+      battery: '40%'
     },
     {
-      id: 6,
-      serialNumber: '101589', // Example serial number
+      id: 6 ,
+      serialNumber: '101589',
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
-      capacity: '2000 kg',
-      speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’',
       status: 'Active',
-      battery: '80%'
+      battery: '40%'
     },
-    {
-      id: 7,
-      serialNumber: '101589', // Example serial number
-      name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
-      capacity: '2000 kg',
-      speed: '2.7m/s (5.21mph)',
-      accuracy: '± 10mm/±0.5’',
-      status: 'Active',
-      battery: '80%'
-    },
-    // Add more robots here...
+    // Add more robots...
   ];
 
   showPopup = false;
@@ -108,28 +85,26 @@ export class RobotsComponent implements OnInit {
   menuOpenIndex: number | null = null;
 
   newRobot: Robot = {
-    id: 0, 
-    name: '', 
-    imageUrl: '', 
-    capacity: '', 
-    speed: '', 
-    accuracy: '', 
-    status: 'Active', 
+    id: 0,
+    name: '',
+    imageUrl: '',
+    status: 'Active',
     battery: '100%',
     serialNumber: ''
   };
 
   editRobotData: Robot = {
-    id: 0, 
-    name: '', 
-    imageUrl: '', 
-    capacity: '', 
-    speed: '', 
-    accuracy: '', 
-    status: 'Active', 
+    id: 0,
+    name: '',
+    imageUrl: '',
+    status: 'Active',
     battery: '100%',
-    serialNumber: '' 
+    serialNumber: ''
   };
+  getImagePath(imageName: string): string {
+    return `../../assets/robots/${imageName}`;
+  }
+
 
   editIndex: number | null = null;
   centerIndex: any;
@@ -152,10 +127,10 @@ export class RobotsComponent implements OnInit {
   }
 
   addRobot() {
-    if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.capacity && this.newRobot.speed && this.newRobot.accuracy) {
+    if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.serialNumber && this.newRobot.status && this.newRobot.battery) {
       this.newRobot.id = this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
       this.robots.push({ ...this.newRobot });
-      this.newRobot = { id: 0, name: '', imageUrl: '', capacity: '', speed: '', accuracy: '', status: 'Active', battery: '100%', serialNumber: '' };
+      this.newRobot = { id: 0, name: '', imageUrl: '',  serialNumber: '',  status: 'Active', battery: '100%' };
       this.togglePopup();
     } else {
       alert('Please fill out all fields.');
@@ -175,12 +150,12 @@ export class RobotsComponent implements OnInit {
         id: this.editRobotData.id,
         name: this.editRobotData.name,
         imageUrl: this.editRobotData.imageUrl,
-        capacity: this.editRobotData.capacity,
-        speed: this.editRobotData.speed,
-        accuracy: this.editRobotData.accuracy,
+        serialNumber: this.editRobotData.serialNumber || 'DefaultSerialNumber',
+       
+       
         status: this.editRobotData.status,
         battery: this.editRobotData.battery,
-        serialNumber: this.editRobotData.serialNumber || 'DefaultSerialNumber'
+        
       };
       this.closeEditPopup();
     }
@@ -193,12 +168,10 @@ export class RobotsComponent implements OnInit {
       id: 0, 
       name: '', 
       imageUrl: '', 
-      capacity: '', 
-      speed: '', 
-      accuracy: '', 
+      serialNumber: '' ,
       status: 'Active', 
       battery: '100%',
-      serialNumber: '' 
+      
     };
   }
 

@@ -124,9 +124,9 @@
   .transition-active {
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
   }
-  
-  /* Export Button Container */
-  .export-button-container {
+ /* Export Button Container */
+/* Export Button Container */
+.export-button-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -156,21 +156,22 @@
   }
   
   .popup-content {
+    position: relative; /* Important for positioning the close button */
     font-size: 36px;
     font-weight: bold;
     color: #DA2127;
-    padding: 40px;
+    padding: 60px;
     background: #fff;
     border-radius: 8px;
     text-align: center;
-    max-width: 500px;
+    max-width: 600px;
     margin: auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
-  .popup-content button {
+  .popup-content .button-container button {
     display: block;
-    margin: 10px auto;
+    margin: 20px auto;
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -182,17 +183,41 @@
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
   }
   
-  .popup-content button:hover {
+  .popup-content .button-container button:hover {
     background-color: #ff3333;
     color: #fdfdfd;
   }
   
-  .close-popup {
-    background-color: #ff6666;
+  /* Close Button Styles */
+  .close-button {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background-color: white;
+    border: 2px solid red;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; /* Ensure it appears above other elements */
   }
   
-  .close-popup:hover {
-    background-color: #ff3333;
+  .close-button svg {
+    width: 20px;
+    height: 20px;
+    fill: red; /* Color for the close icon */
+  }
+  
+  .close-button:hover {
+    background-color: #da2127;
+  }
+  
+  .close-button:hover svg {
+    fill: white; /* Change color on hover */
   }
   
   /* Main container for the search bar and filters */

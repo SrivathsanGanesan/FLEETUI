@@ -32,9 +32,9 @@ export class OperationPieComponent implements OnInit {
 
   constructor() {
     this.chartOptions = {
-      series: [44, 55, 13],
+      series: [60, 30, 10],
       chart: {
-        width: 380,
+        width: 420,
         type: 'pie'
       },
       plotOptions: {
@@ -47,7 +47,9 @@ export class OperationPieComponent implements OnInit {
       dataLabels: {
         enabled: true,
         style: {
-          fontSize: '14px'
+          fontSize: '16px'
+          
+          
         }
       },
       fill: {
@@ -60,13 +62,14 @@ export class OperationPieComponent implements OnInit {
         },
         itemMargin: {
           horizontal: 10,
-          vertical: 13
+          vertical: 25
         }
       },
       labels: ['Active', 'Inactive', 'Error'],
       title: {
-        text: 'Operation Distribution',
-        align: 'left'
+        text: 'Robots',
+        align: 'left',
+        
       },
       responsive: [{
         breakpoint: 480,

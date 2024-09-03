@@ -10,19 +10,7 @@
     background-color: white;
   }
 
-  /* styles.css or component-specific CSS */
-  :root {
-    --background-color: #ffffff;
-    --text-color: #000000;
-    /* Define other variables as needed */
-  }
-  
-  [data-theme="dark"] {
-    --background-color: #1e1e1e;
-    --text-color: #ffffff;
-    /* Define other variables as needed */
-  }
-  
+
   body {
     background-color: var(--background-color);
     color: var(--text-color);
@@ -161,7 +149,7 @@ body, .card, .popup-menu {
    
    
   .edit-button, .delete-button {
-    padding: 0.75rem 1.5rem;
+    /* padding: 0.75rem 1.5rem; */
    
     border: none;
     border-radius: 0.375rem;
@@ -171,31 +159,12 @@ body, .card, .popup-menu {
     transition: background-color 0.3s, box-shadow 0.3s;
   }
    
+  
   .edit-button:hover, .delete-button:hover {
     background-color: #ff4d4d;
     box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
   }
    
-  /* Card Container */
-  /* .card-container-wrapper {
-    margin-top: 1rem;
-    overflow-y: auto;
-  }
-  
-  .card-container {
-    display: flex;
-    gap: 2rem;
-    overflow-x: scroll;
-    padding: 1rem;
-  }
-  
-  
- 
-    .card-container {
-      flex-direction: column; /
-    } */
-  
-
 
     .card-container-wrapper {
       display: flex;
@@ -214,15 +183,29 @@ body, .card, .popup-menu {
       /* Other styles remain the same */
     }
   /* Styles for the card */
-.card {
-  width: 230px;
-  border-radius: 20px;
-  background: #eb2222;
-  padding: 5px;
-  overflow: hidden;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 20px 0px;
-  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+  .card {
+    width: 230px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #f44646, #ff7979);
+    padding: 5px;
+    overflow: hidden;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 20px 0px;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative; /* Important for positioning the icon */
+  }
+  
+  .wifi-icon {
+    position: absolute;
+    top: 5;
+    right: 0;
+    width: 24px; /* Adjust the size as needed */
+    height: auto; /* Maintain aspect ratio */
+  }
+ 
+  
+  
+  
+  
 
 .card:hover {
   transform: scale(1.05);
@@ -235,7 +218,7 @@ body, .card, .popup-menu {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(45deg, rgb(248, 93, 93) 0%, rgb(255, 80, 80) 100%);
+  background: linear-gradient(45deg, rgb(255, 245, 245) 0%, rgb(249, 249, 249) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -244,6 +227,8 @@ body, .card, .popup-menu {
   width: 100%;
   height: 100%;
   object-fit: contain; /* Adjust to make sure the image fits well */
+  
+ 
 }
 
 .card .top-section .menu-icon {
@@ -292,14 +277,15 @@ body, .card, .popup-menu {
   color: white;
   text-align: center;
   letter-spacing: 2px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .card .bottom-section .card-id-status {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: rgba(170, 222, 243, 0.721);
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.721);
 }
 
 .card .bottom-section .card-id-status p {
@@ -310,6 +296,25 @@ body, .card, .popup-menu {
   color: #4caf50; /* Green color for active status */
 }
 
+/* Center the "View Details" button */
+.details-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ff5c5c; /* Example button background color */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  margin: 0 auto; /* Center the button horizontally */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.details-button:hover {
+  background-color: #e64e4e;
+  transform: scale(1.05); /* Add a hover effect */
+}
    
    /* Popup Overlay */
 .popup-overlay {
@@ -362,14 +367,14 @@ body, .card, .popup-menu {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
-  color: #333; /* Darker label color */
+  color: #272727; /* Darker label color */
 }
 
 /* Input Styling */
 .popup form .mb-4 input {
   width: 100%;
   padding: 0.75rem; /* Add padding for better UX */
-  border: 1px solid #a5a5a5;
+  border: 1px solid #ffffff;
   border-radius: 0.375rem;
   box-shadow: 0 0 0 2px rgba(120, 120, 120, 0.2); /* Add shadow on focus */
   outline: none;
@@ -461,7 +466,7 @@ body, .card, .popup-menu {
   }
    
   .popup-menu ul li:hover {
-    background-color: #ff6666;
+    background-color: #ea0606;
   }
    
   .card-right {
@@ -477,6 +482,7 @@ body, .card, .popup-menu {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    
   }
    
   .id-text {
@@ -515,118 +521,3 @@ body, .card, .popup-menu {
     margin-right: 5px;
   }
 
-
-
- /* Slider button */
- .body {
-  --radius: 8px;
-  --border: 4px;
-  --height: 48px;
-  --speed: 0.25s;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  font-family: "SF Pro Text", "SF Pro Icons", "AOS Icons", "Helvetica Neue",
-    Helvetica, Arial, sans-serif, system-ui;
- }
- .tabs {
-  height: var(--height);
-  display: grid;
-  grid-auto-flow: column;
-  background: hsl(0 0% 0%);
-  border-radius: var(--radius);
-  grid-auto-columns: 1fr;
-  position: relative;
-  border: var(--border) solid hsl(0 0% 0%);
- }
- .tabs {
-  --ease: linear(
-    0,
-    0.1641 3.52%,
-    0.311 7.18%,
-    0.4413 10.99%,
-    0.5553 14.96%,
-    0.6539 19.12%,
-    0.738 23.5%,
-    0.8086 28.15%,
-    0.8662 33.12%,
-    0.9078 37.92%,
-    0.9405 43.12%,
-    0.965 48.84%,
-    0.9821 55.28%,
-    0.992 61.97%,
-    0.9976 70.09%,
-    1
-  );
- }
- .tabs > .input,
- .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
- }
- .tabs:has(:checked:nth-of-type(1)) {
-  --active: 0;
- }
- .tabs:has(:checked:nth-of-type(2)) {
-  --active: 1;
- }
- .tabs:has(:checked:nth-of-type(3)) {
-  --active: 2;
- }
- .tabs:has(:checked:nth-of-type(4)) {
-  --active: 3;
- }
- .tabs :checked + .label {
-  --highlight: 1;
- }
- .tabs:has(.input:nth-of-type(2)) {
-  --count: 2;
- }
- .tabs:has(.input:nth-of-type(3)) {
-  --count: 3;
- }
- .tabs:has(.input:nth-of-type(4)) {
-  --count: 4;
- }
- .tabs .label {
-  padding: 0 clamp(10px, 10px + 10px, 20px);
-  cursor: pointer;
-  text-align: center;
-  height: 100%;
-  display: grid;
-  border-radius: calc(var(--radius) - var(--border));
-  place-items: center;
-  color: hsl(0 0% 100% / calc(0.5 + var(--highlight, 0)));
-  transition: background, color;
-  transition-duration: 0.25s;
-  transition-timing-function: var(--ease, ease);
- }
- .input:not(:checked) + .label:hover {
-  --highlight: 0.35;
-  background: hsl(0 0% 20%);
- }
- .tabs::after {
-  pointer-events: none;
-  content: "";
-  width: calc(100% / var(--count));
-  height: 100%;
-  background: hsl(0 0% 100%);
-  position: absolute;
-  border-radius: calc(var(--radius) - var(--border));
-  mix-blend-mode: difference;
-  translate: calc(var(--active, 0) * 100%) 0;
-  transition: translate, outline-color;
-  transition-duration: var(--speed);
-  transition-timing-function: var(--ease, ease);
-  outline: 2px solid transparent;
- }
- .tabs:has(:focus-visible)::after {
-  outline-color: red;
- }

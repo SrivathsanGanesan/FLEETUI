@@ -42,52 +42,55 @@
   
         <!-- Table -->
         <div class="table-container">
-          <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
-            <div class="overflow-y-auto max-h-[32rem] w-full">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.no</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source and destination</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot</th>
-                    
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr *ngFor="let item of taskData">
-                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ item.column6 }}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
+              <div class="overflow-y-auto max-h-[32rem] w-full">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.no</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task ID</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source and destination</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr *ngFor="let item of filteredTaskData">
+                      <td class="px-6 py-4 whitespace-nowrap">{{ item.column1 }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ item.column2 }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ item.column3 }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ item.column4 }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ item.column5 }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ item.column6 }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
   
         <!-- Export -->
+        <!-- Export -->
         <div class="export-button-container">
-          <button class="export-button" (click)="showPopup()">Export</button>
-          <div *ngIf="isPopupVisible" class="export-popup">
-            <div class="popup-content">
-              <div class="close-icon-container">
-                <button class="close-icon" (click)="closePopup()">&times;</button>
-              </div>
-              <h3>Select Format</h3>
-              <div class="button-container">
-                <button (click)="exportData('csv')">Export as CSV</button>
-                <button (click)="exportData('excel')">Export as Excel</button>
-                <button (click)="exportData('pdf')">Export as PDF</button>
+            <button class="export-button" (click)="showPopup()">Export</button>
+            <div *ngIf="isPopupVisible" class="export-popup">
+              <div class="popup-content">
+                <button class="close-button" (click)="onClose()"> 
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="none" d="M0 0h24v24H0z"/>
+                    <path d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"/>
+                  </svg>
+                </button>
+                <h3>Select Format</h3>
+                <div class="button-container">
+                  <button (click)="exportData('csv')">Export as CSV</button>
+                  <button (click)="exportData('excel')">Export as Excel</button>
+                  <button (click)="exportData('pdf')">Export as PDF</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   </div>

@@ -27,8 +27,6 @@ notifications = [
   { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
- 
-  
 ];
 
 filteredRobotActivities = this.robotActivities;
