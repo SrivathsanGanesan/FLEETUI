@@ -11,6 +11,7 @@ import {
   ApexStroke,
 } from 'ng-apexcharts';
 import { environment } from '../../environments/environment.development';
+import { ProjectService } from '../services/project.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -32,8 +33,9 @@ export type ChartOptions = {
 export class AreaChartComponent implements OnInit {
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
+  selectedMap: any | null = null;
 
-  constructor() {
+  constructor(private projectService: ProjectService) {
     this.chartOptions = {
       series: [
         {
@@ -122,6 +124,7 @@ export class AreaChartComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.selectedMap = this.projectService.getMapData();
     this.updateChart('data1', 'Throughput');
   }
 
@@ -149,15 +152,15 @@ export class AreaChartComponent implements OnInit {
 
   async updateThroughput() {
     let throughputArr;
+    if (!this.selectedMap) return;
     const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/graph/throughput/map123`,
+      `http://${environment.API_URL}:${environment.PORT}/graph/throughput/${this.selectedMap.id}`,
       {
         method: 'GET',
         credentials: 'include',
       }
     );
     const data = await response.json();
-    console.log(data.throughput.Stat);
     if (data.throughput)
       throughputArr = data.throughput.Stat.map(
         (stat: any) => stat.TotalThroughPutPerHour

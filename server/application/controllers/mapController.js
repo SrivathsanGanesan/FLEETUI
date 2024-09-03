@@ -46,8 +46,9 @@ const mapInsert = async (req, res) => {
       siteName,
       mapName,
       // robots = [],
-      nodes = [],
-      edges = [],
+      mpp,
+      nodes,
+      edges,
       stations = [],
       zones,
     } = mapData;
@@ -85,6 +86,7 @@ const mapInsert = async (req, res) => {
     const newMap = await new Map({
       mapName,
       imgUrl: mapData.imgUrl,
+      mpp,
       zones,
       nodes,
       edges,

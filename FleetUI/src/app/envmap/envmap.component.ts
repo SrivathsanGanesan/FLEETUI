@@ -613,6 +613,7 @@ export class EnvmapComponent implements AfterViewInit {
       projectName: this.projData.projectName,
       siteName: this.siteName,
       mapName: this.mapName,
+      mpp: this.ratio,
       imgUrl: '',
       zones: [
         {

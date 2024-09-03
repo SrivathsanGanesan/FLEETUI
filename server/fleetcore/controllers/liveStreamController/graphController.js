@@ -1,3 +1,5 @@
+const { Map, Robo } = require("../../../application/models/mapSchema");
+
 const eventStreamHeader = {
   "Content-Type": "text/event-stream",
   "Cache-Control": "no-cache",
@@ -5,46 +7,77 @@ const eventStreamHeader = {
 };
 //..
 
+const getFleetThroughput = (req, res, next) => {
+  fetch(`http://fleetIp:8080/fms/amr/get_throughput_stats`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        req.responseStatus = "NOT_OK";
+        return next();
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      req.fleetData = data;
+    })
+    .catch((err) => {
+      req.fleetErr = err;
+    });
+  next();
+};
+
 const throughput = async (req, res, next) => {
   const mapId = req.params.mapId;
   try {
     //..
+    let dummyStat = [
+      {
+        TotalNumberRobots: 5,
+        TotalTimeElasped: 3600,
+        TotalTaskCount: 100,
+        TotalThroughPutPerHour: 12,
+      },
+      {
+        TotalNumberRobots: 4,
+        TotalTimeElasped: 3600,
+        TotalTaskCount: 90,
+        TotalThroughPutPerHour: 22.5,
+      },
+      {
+        TotalNumberRobots: 5,
+        TotalTimeElasped: 3600,
+        TotalTaskCount: 100,
+        TotalThroughPutPerHour: 45,
+      },
+    ];
+    let InProgress = 3;
+    const mapData = await Map.findOne({ _id: mapId });
+    // const mapData = await Map.findOneAndUpdate(
+    //   { _id: mapId },
+    //   {
+    //     $push: {
+    //       "throughPut.Stat": { $each: dummyStat }, // can push multiple entries to the array using $each
+    //       "throughPut.inProg": InProgress,
+    //     },
+    //   },
+    //   { new: true }
+    // );
+    let throughput = mapData.throughPut;
+
     return res.status(200).json({
       msg: "data sent",
-      throughput: {
-        Stat: [
-          {
-            TotalNumberRobots: 5,
-            TotalTimeElasped: 3600,
-            TotalTaskCount: 100,
-            TotalThroughPutPerHour: 50,
-          },
-          {
-            TotalNumberRobots: 4,
-            TotalTimeElasped: 3600,
-            TotalTaskCount: 90,
-            TotalThroughPutPerHour: 22.5,
-          },
-          {
-            TotalNumberRobots: 5,
-            TotalTimeElasped: 3600,
-            TotalTaskCount: 100,
-            TotalThroughPutPerHour: 35,
-          },
-          {
-            TotalNumberRobots: 5,
-            TotalTimeElasped: 3600,
-            TotalTaskCount: 100,
-            TotalThroughPutPerHour: 45,
-          },
-        ],
-        InProgress: 10,
-      },
+      throughput: throughput,
     });
   } catch (err) {
-    console.log("eventStream error occured : ", err);
+    console.log("error occured : ", err);
+    if (err.name === "CastError")
+      return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ opt: "failed", error: err });
   }
 };
 
-module.exports = { throughput };
+module.exports = { getFleetThroughput, throughput };

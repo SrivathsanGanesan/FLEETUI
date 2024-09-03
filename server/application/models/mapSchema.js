@@ -92,6 +92,14 @@ const logTimeSchema = new Schema(
   }
 );
 
+const throughPutSchema = new Schema(
+  {
+    Stat: { type: [Schema.Types.Mixed] },
+    inProg: { type: [Schema.Types.Mixed] },
+  },
+  { timestamps: true, versionKey: false, _id: false }
+);
+
 const mapSchema = new Schema(
   {
     mapName: {
@@ -115,7 +123,10 @@ const mapSchema = new Schema(
     zones: { ctype: [zoneSchema], cdefault: [] },
     robots: { type: [roboProjSchema], default: [] },
     logTime: { type: [logTimeSchema], default: [] },
-    throughPut: { type: [], default: [] },
+    throughPut: {
+      type: throughPutSchema,
+      default: { Stat: [], inProg: [] },
+    },
   },
   { timestamps: true, versionKey: false }
 );
