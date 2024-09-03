@@ -301,8 +301,6 @@ h2 {
 .search-box input::placeholder {
   color: #aaa;
 }
-
-/* View All button */
 .view-all-btn {
   background-color: #7854f7;
   color: white;
@@ -338,8 +336,9 @@ h2 {
 
 .activity-table td:first-child,
 .notifications-table td:first-child {
-  font-weight: bold;
-  color: #333;
+  font-weight: medium;
+  color: #222222;
+  padding-left: 1rem; /* Ensure the first cell has enough padding on the left */
 }
 
 .activity-table tr:nth-child(odd),

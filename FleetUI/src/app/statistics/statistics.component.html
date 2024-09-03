@@ -11,30 +11,6 @@
             <div class="slider" [ngClass]="{'left': currentView === 'operation', 'right': currentView === 'robot'}"></div>
           </div>       
         </div>
-        <!-- <div class="slider-buttons">
-          <input
-            checked=""
-            value="Operation"
-            name="view"
-            id="operation"
-            type="radio"
-            class="input"
-            (change)="setView('operation')"
-          />
-          <label for="operation" class="label">Operation</label>
-          <input
-            value="Robot"
-            name="view"
-            id="robot"
-            type="radio"
-            class="input"
-            (change)="setView('robot')"
-          />
-          <label for="robot" class="label">Robot</label>
-        </div> -->
-        
-        
-      
         <div *ngIf="currentView === 'operation'">   
         
         <!-- Stat card 1 -->
@@ -131,44 +107,44 @@
                       </div>
                        
 
-       <div class="dashboard-container">
-        <!-- Robot Activity Section -->
-        <div class="robot-activity-container">
-          <div class="section-header">
-            <h3>Operation Activities</h3>
-            <div class="search-box">
-              <input type="text" placeholder="Search activities..." (input)="onSearch($event)" />
+          <div class="dashboard-container">
+            <!-- Robot Activity Section -->
+            <div class="robot-activity-container">
+              <div class="section-header">
+                <h3>Operation Activities</h3>
+                <div class="search-box">
+                  <input type="text" placeholder="Search activities..." (input)="onSearch($event)" />
+                </div>
+                <button class="view-all-btn">View All</button>
+              </div>
+              <table class="activity-table">
+                <tr *ngFor="let activity of filteredRobotActivities">
+                  <td>{{ activity.id }}</td>
+                  <td>{{ activity.name }} - {{ activity.task }} - {{ activity.progress }}% - {{ activity.status }}</td>
+                </tr>
+              </table>
             </div>
-            <button class="view-all-btn">View All</button>
-          </div>
-          <table class="activity-table">
-            <tr *ngFor="let activity of filteredRobotActivities">
-              <td>{{ activity.id }}</td>
-              <td>{{ activity.name }} - {{ activity.task }} - {{ activity.progress }}% - {{ activity.status }}</td>
-            </tr>
-          </table>
-        </div>
-      
-        <!-- Notifications Section -->
-        <div class="notifications-container">
-          <div class="section-header">
-            <h3>Notifications</h3>
-            <div class="search-box">
-              <input type="text" placeholder="Search notifications..." (input)="onSearchNotifications($event)" />
+          
+            <!-- Notifications Section -->
+            <div class="notifications-container">
+              <div class="section-header">
+                <h3>Notifications</h3>
+                <div class="search-box">
+                  <input type="text" placeholder="Search notifications..." (input)="onSearchNotifications($event)" />
+                </div>
+                <button class="view-all-btn">View All</button>
+              </div>
+              <table class="notifications-table">
+                <tr *ngFor="let notification of filteredNotifications">
+                  <td>{{ notification.message }} - {{ notification.timestamp }}</td>
+                </tr>
+              </table>
             </div>
-            <button class="view-all-btn">View All</button>
           </div>
-          <table class="notifications-table">
-            <tr *ngFor="let notification of filteredNotifications">
-              <td>{{ notification.message }} - {{ notification.timestamp }}</td>
-            </tr>
-          </table>
-        </div>
-      </div>
-      <!-- Router outlet for displaying the appropriate view -->
-        <router-outlet></router-outlet>
-        
-        
+          <!-- Router outlet for displaying the appropriate view -->
+            <router-outlet></router-outlet>
+            
+            
        
   </div>
 </div>

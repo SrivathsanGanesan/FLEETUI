@@ -17,35 +17,7 @@
         </div>
    
 
-        <div class="body">
-          <div class="tabs">
-          <input
-               checked=""
-               value="HTML"
-               name="fav_language"
-               id="html"
-               type="radio"
-               class="input"
-             />
-          <label for="html" class="label">HTML</label>
-          <input
-               value="CSS"
-               name="fav_language"
-               id="css"
-               type="radio"
-               class="input"
-             />
-          <label for="css" class="label">CSS</label>
-          <input
-               value="JavaScript"
-               name="fav_language"
-               id="javascript"
-               type="radio"
-               class="input"
-             />
-          <label for="javascript" class="label">JavaScript</label>
-          </div>
-          </div>
+       
         <!-- Search and Date Filters -->
         <div class="search-filter-container">
           <!-- Search Bar -->
@@ -86,7 +58,9 @@
                 </div>
           
                 <div class="bottom-section">
-                  <h2 class="card-header title">{{ robot.name }}</h2>                
+                  <img src="../../assets/icons/wifi.png" alt="WiFi Icon" class="wifi-icon">
+                  <h2 class="card-header title">{{ robot.name }}</h2>   
+                  <!-- <svg class="wifi-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 18c1.104 0 2-.896 2-2h-4c0 1.104.896 2 2 2zm6.202-3c-.478-1.196-1.788-2-3.202-2s-2.724.804-3.202 2h-2.096c-.478-1.196-1.788-2-3.202-2s-2.724.804-3.202 2h-.4c1.037-3.042 4.218-5 7.8-5s6.763 1.958 7.8 5h-.4zm-6.202-5c3.582 0 6.763 1.958 7.8 5h-1.6c-1.037-3.042-4.218-5-7.8-5s-6.763 1.958-7.8 5h-1.6c1.037-3.042 4.218-5 7.8-5zm0-5c4.851 0 9.162 2.568 11.406 6.5l-1.737 1.002c-2.02-3.513-5.764-5.754-9.669-5.754s-7.649 2.241-9.669 5.754l-1.737-1.002c2.244-3.932 6.555-6.5 11.406-6.5z"/></svg>              -->
                   <div class="card-id-status">
                     <p>ID: {{ robot.id }}</p> <!-- Display ID -->
                     <p>S.no: {{ robot.serialNumber }}</p> <!-- Display Serial Number -->
@@ -120,29 +94,23 @@
               required
             />
 
-            <label for="capacity">Capacity:</label>
+            <label for="serialNumber">serial number</label>
             <input
-              id="capacity"
-              [(ngModel)]="newRobot.capacity"
-              name="capacity"
+              id="S.no"
+              [(ngModel)]="newRobot.serialNumber"
+              name="serialNumber"
               required
             />
 
-            <label for="speed">Speed:</label>
+            <label for="speed">Status:</label>
             <input
-              id="speed"
-              [(ngModel)]="newRobot.speed"
-              name="speed"
+              id="Status"
+              [(ngModel)]="newRobot.status"
+              name="S.no"
               required
             />
 
-            <label for="accuracy">Accuracy:</label>
-            <input
-              id="accuracy"
-              [(ngModel)]="newRobot.accuracy"
-              name="accuracy"
-              required
-            />
+            
 
             <div class="flex">
               <button type="submit">Add Robot</button>
@@ -175,30 +143,22 @@
                 required
               />
             </div>
+            
             <div class="mb-4">
-              <label for="capacity">Capacity</label>
-              <input
-                id="capacity"
-                [(ngModel)]="editRobotData.capacity"
-                name="capacity"
-                required
-              />
-            </div>
-            <div class="mb-4">
-              <label for="speed">Speed</label>
+              <label for="Battery">Battery</label>
               <input
                 id="speed"
-                [(ngModel)]="editRobotData.speed"
-                name="speed"
+                [(ngModel)]="editRobotData.battery"
+                name="battery"
                 required
               />
             </div>
             <div class="mb-4">
-              <label for="accuracy">Accuracy</label>
+              <label for="serialNumber">serialNumber</label>
               <input
-                id="accuracy"
-                [(ngModel)]="editRobotData.accuracy"
-                name="accuracy"
+                id="serialNumber"
+                [(ngModel)]="editRobotData.serialNumber"
+                name="serialNumber"
                 required
               />
             </div>

@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './userlogs.component.css',
 })
 export class Userlogscomponent {
+
   activeFilter: any;
   togglePopup() {
     throw new Error('Method not implemented.');
@@ -264,7 +265,7 @@ export class Userlogscomponent {
       default:
         console.error('Invalid export format');
     }
-    this.closePopup(); // Close the popup after export
+    
   }
 
   getHeader(button: string): string {
@@ -284,7 +285,7 @@ export class Userlogscomponent {
     this.isPopupVisible = true;
   }
 
-  closePopup() {
+  onClose() {
     this.isPopupVisible = false;
   }
   ONBtn: any;
