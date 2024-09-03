@@ -178,16 +178,13 @@
                     />
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <button
-                    class="sel-btn"
-                      [disabled]="isButtonDisabled(item)"
-                      (click)="selectMap(item)"
-                    >
+                    <button class="sel-btn" (click)="selectMap(item)">
+                      <!-- [disabled]="isButtonDisabled(item)" -->
                       <!-- SELECT -->
                       {{
                         item.mapName === this.selectedMap?.mapName
-                          ? "SELECT"
-                          : "DESELECT"
+                          ? "DESELECT"
+                          : "SELECT"
                       }}
                     </button>
                   </td>

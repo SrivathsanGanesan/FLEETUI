@@ -78,6 +78,9 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   ngOnInit() {
+    let currMapData = this.projectService.getMapData();
+    if (currMapData) this.selectedMap = currMapData;
+
     this.mapData = this.projectService.getSelectedProject(); // _id
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
@@ -149,9 +152,23 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   async selectMap(map: any) {
-    if (this.selectedMap === map) {
+    if (this.selectedMap?.id === map.id) {
       // Deselect if the same map is clicked again
-      this.selectedMap = null;
+      this.projectService.clearMapData();
+      this.projectService.setIsMapSet(false);
+      if (!this.EnvData.length) return;
+      this.selectedMap = this.EnvData[0];
+      const response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
+      );
+      if (!response.ok)
+        console.error('Error while fetching map data : ', response.status);
+      let data = await response.json();
+      let { map } = data;
+      this.ngOnInit();
+
+      if (this.projectService.getIsMapSet()) return;
+      this.projectService.setIsMapSet(true);
       return;
     }
     // Select a new map
@@ -175,11 +192,13 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   isButtonDisabled(item: any): boolean {
-    /* if (this.selectedMap.id === item.id && this.selectedMap.mapName === item.mapName) {
+    if (
+      this.selectedMap?.id === item.id &&
+      this.selectedMap?.mapName === item.mapName
+    )
       return false;
-    }
-    return true; */
-    return this.selectedMap && this.selectedMap !== item;
+    return true;
+    // return this.selectedMap && this.selectedMap !== item;
   }
 
   ngOnChanges() {
