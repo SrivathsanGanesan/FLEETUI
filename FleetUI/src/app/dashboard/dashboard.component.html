@@ -87,7 +87,7 @@
           <div class="Chart3">
             <p>Robot</p>
             <div class="R-Chart">
-              <app-chart [ONBtn]="ONBtn"></app-chart>
+              <app-chart [ONBtn]="this.ONBtn"></app-chart>
             </div>
           </div>
           <!-- *ngIf="ONBtn" insert it in below class at the end -->
@@ -102,7 +102,7 @@
       <div class="Chart1-container">
         <!-- [ngClass]="{ blurred: ONBtn }" insert it in below class at the end -->
         <div class="Chart1">
-          <app-throughput></app-throughput>
+          <app-throughput [ONBtn]="this.ONBtn"></app-throughput>
         </div>
         <!-- *ngIf="ONBtn" insert it in below class at the end -->
         <!-- <div class="chart1-blur-layer"> // need to take..

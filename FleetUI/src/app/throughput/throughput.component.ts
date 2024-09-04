@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, Input, ChangeDetectorRef } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -8,8 +8,10 @@ import {
   ApexStroke,
   ApexYAxis,
   ApexTitleSubtitle,
-  ApexLegend
-} from "ng-apexcharts";
+  ApexLegend,
+} from 'ng-apexcharts';
+import { ProjectService } from '../services/project.service';
+import { environment } from '../../environments/environment.development';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -28,109 +30,159 @@ export type ChartOptions = {
 @Component({
   selector: 'app-throughput',
   templateUrl: './throughput.component.html',
-  styleUrls: ['./throughput.component.css']
+  styleUrls: ['./throughput.component.css'],
 })
 export class ThroughputComponent {
-  @ViewChild("chart") chart!: ChartComponent;
+  @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
   public averagePercentage: number = 0;
+  @Input() ONBtn!: boolean;
 
-  constructor() {
+  seriesData: any[] = [];
+
+  selectedMap: any | null = null;
+  throughputArr: number[] = [];
+  x_axis_timeStamp: string[] = [];
+
+  constructor(
+    private projectService: ProjectService,
+    private cdRef: ChangeDetectorRef
+  ) {
     const seriesData = {
       hourlyDataSeries1: {
-        picks: [110, 91, 55, 101, 129, 122, 69, 91, 148],
+        picks: [
+          // 110, 91, 55, 101, 129, 122, 69, 91, 148
+        ],
         datestime: [
-          "2024-09-18T00:00:00.000Z",
-          "2024-09-18T01:00:00.000Z",
-          "2024-09-18T02:00:00.000Z",
-          "2024-09-18T03:00:00.000Z",
-          "2024-09-18T04:00:00.000Z",
-          "2024-09-18T05:00:00.000Z",
-          "2024-09-18T06:00:00.000Z",
-          "2024-09-18T07:00:00.000Z",
-          "2024-09-18T08:00:00.000Z"
-        ]
-      }
+          // '2024-09-18T00:00:00.000Z',
+          // '2024-09-18T01:00:00.000Z',
+          // '2024-09-18T02:00:00.000Z',
+          // '2024-09-18T03:00:00.000Z',
+          // '2024-09-18T04:00:00.000Z',
+          // '2024-09-18T05:00:00.000Z',
+          // '2024-09-18T06:00:00.000Z',
+          // '2024-09-18T07:00:00.000Z',
+          // '2024-09-18T08:00:00.000Z',
+        ],
+      },
     };
 
-    const totalPicks = seriesData.hourlyDataSeries1.picks.reduce((acc, val) => acc + val, 0);
+    const totalPicks = seriesData.hourlyDataSeries1.picks.reduce(
+      (acc, val) => acc + val,
+      0
+    );
     const numberOfDataPoints = seriesData.hourlyDataSeries1.picks.length;
     this.averagePercentage = totalPicks / numberOfDataPoints;
 
     this.chartOptions = {
       series: [
         {
-          name: "Picks",
-          data: seriesData.hourlyDataSeries1.picks,
-          color: "#ff7373", // Using preferred color
-        }
+          name: 'Picks',
+          data: this.seriesData,
+          color: '#ff7373', // Using preferred color
+        },
       ],
       chart: {
-        type: "area",
+        type: 'area',
         height: 225, // Set height
-        width: 440,  // Set width
+        width: 440, // Set width
         zoom: {
-          enabled: false
-        }
+          enabled: false,
+        },
       },
       dataLabels: {
-        enabled: false
+        enabled: false,
       },
       stroke: {
-        curve: "smooth"
+        curve: 'smooth',
       },
       title: {
-        text: "ThroughPut",
-        align: "left",
+        text: 'ThroughPut',
+        align: 'left',
         style: {
-          fontFamily: "Arial, Helvetica, sans-serif",
-          fontWeight: "bold",
-          fontSize: "18px"
-        }
+          fontFamily: 'Arial, Helvetica, sans-serif',
+          fontWeight: 'bold',
+          fontSize: '18px',
+        },
       },
       subtitle: {
-        text: "Picks Per Hour",
-        align: "left",
+        text: 'Picks Per Hour',
+        align: 'left',
         style: {
-          fontFamily: "Arial, Helvetica, sans-serif",
-          fontWeight: "bold",
-          fontSize: "10px",
-          color: "#FF3333"
-        }
+          fontFamily: 'Arial, Helvetica, sans-serif',
+          fontWeight: 'bold',
+          fontSize: '10px',
+          color: '#FF3333',
+        },
       },
       labels: seriesData.hourlyDataSeries1.datestime,
       xaxis: {
-        type: "datetime",
+        type: 'datetime',
         tickAmount: 10,
         labels: {
-          format: "HH:mm"
+          format: 'HH:mm',
         },
-        // title: {
-        //   text: "Time",
-        //   style: {
-        //     fontFamily: "Arial, Helvetica, sans-serif",
-        //     fontWeight: "bold",
-        //     fontSize: "10px"
-        //   }
-        // }
       },
       yaxis: {
         opposite: true,
-        // title: {
-        //   text: "Picks",
-        //   style: {
-        //     fontFamily: "Arial, Helvetica, sans-serif",
-        //     fontWeight: "bold",
-        //     fontSize: "10px"
-        //   }
-        // }
       },
       legend: {
-        horizontalAlign: "left",
-        fontFamily: "Arial, Helvetica, sans-serif",
-        fontWeight: "bold",
-        fontSize: "8px"
-      }
+        horizontalAlign: 'left',
+        fontFamily: 'Arial, Helvetica, sans-serif',
+        fontWeight: 'bold',
+        fontSize: '8px',
+      },
     };
+  }
+
+  ngOnInit() {
+    this.selectedMap = this.projectService.getMapData();
+    if (!this.ONBtn) return;
+    this.getThroughPut();
+  }
+
+  async getThroughPut() {
+    if (!this.selectedMap) return;
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/graph/throughput/${this.selectedMap.id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+    const data = await response.json();
+
+    if (data.throughput && data.throughput.Stat)
+      this.throughputArr = data.throughput.Stat.map((stat: any) => {
+        let time = new Date(stat.TimeStamp).toLocaleString('en-IN', {
+          // month: 'short',
+          // year: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+        });
+
+        // x_axis_timeStamp = [...x_axis_timeStamp, time];
+        this.x_axis_timeStamp.push(time);
+        return stat.TotalThroughPutPerHour;
+      });
+    console.log(this.throughputArr, this.x_axis_timeStamp);
+
+    this.chartOptions = {
+      ...this.chartOptions,
+      series: [
+        {
+          name: 'Throughput',
+          data: this.throughputArr,
+          color: '#ff7373',
+        },
+      ],
+      xaxis: {
+        // ...this.chartOptions.xaxis, // only if needed..
+        categories: this.x_axis_timeStamp,
+      },
+    };
+
+    this.cdRef.detectChanges();
   }
 }

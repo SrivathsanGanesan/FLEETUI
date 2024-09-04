@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -34,8 +34,13 @@ export class AreaChartComponent implements OnInit {
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
   selectedMap: any | null = null;
+  throughputArr: number[] = [];
+  x_axis_timeStamp: string[] = [];
 
-  constructor(private projectService: ProjectService) {
+  constructor(
+    private projectService: ProjectService,
+    private cdRef: ChangeDetectorRef
+  ) {
     this.chartOptions = {
       series: [
         {
@@ -151,7 +156,6 @@ export class AreaChartComponent implements OnInit {
   }
 
   async updateThroughput() {
-    let throughputArr;
     if (!this.selectedMap) return;
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/throughput/${this.selectedMap.id}`,
@@ -161,31 +165,36 @@ export class AreaChartComponent implements OnInit {
       }
     );
     const data = await response.json();
-    if (data.throughput)
-      throughputArr = data.throughput.Stat.map(
-        (stat: any) => stat.TotalThroughPutPerHour
-      );
-    // console.log(throughputArr);
 
-    this.chartOptions.series = [
-      {
-        name: 'Series 1',
-        data: throughputArr, // array of only numbers (throuput per hour)..
+    if (data.throughput && data.throughput.Stat)
+      this.throughputArr = data.throughput.Stat.map((stat: any) => {
+        let time = new Date(stat.TimeStamp).toLocaleString('en-IN', {
+          month: 'short',
+          year: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+        });
+
+        // x_axis_timeStamp = [...x_axis_timeStamp, time];
+        this.x_axis_timeStamp.push(time);
+        return stat.TotalThroughPutPerHour;
+      });
+
+    this.chartOptions = {
+      ...this.chartOptions,
+      series: [
+        {
+          name: 'Series 1',
+          data: this.throughputArr,
+        },
+      ],
+      xaxis: {
+        ...this.chartOptions.xaxis,
+        categories: this.x_axis_timeStamp,
       },
-    ];
-    this.chartOptions.xaxis.categories = [
-      // 'Dec 01',
-      // 'Dec 02',
-      // 'Dec 03',
-      // 'Dec 04',
-      // 'Dec 05',
-      // 'Dec 06',
-      // 'Dec 07',
-      // 'Dec 08',
-      // 'Dec 09',
-      // 'Dec 10',
-      // 'Dec 11',
-    ];
+    };
+    this.cdRef.detectChanges();
   }
 
   updateStarvationRate() {
