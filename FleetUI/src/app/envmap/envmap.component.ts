@@ -164,6 +164,7 @@ export class EnvmapComponent implements AfterViewInit {
   direction: 'uni' | 'bi' | null = null;
 
   setDirection(direction: 'uni' | 'bi'): void {
+    this.deselectNode();
     this.direction = direction;
     this.firstNode = null;
     this.secondNode = null;
@@ -259,15 +260,17 @@ export class EnvmapComponent implements AfterViewInit {
   deleteSelectedNode(): void {
     if (this.selectedNode) {
       // Remove from nodes array
-      // console.log(this.selectedNode.pos.x, this.selectedNode.pos.y);
-      
       this.nodes = this.nodes.filter(
         (node) => {
           return node.pos.x !== this.selectedNode?.pos.x && node.pos.y !== this.selectedNode?.pos.y;
         }
       );
 
-      console.log(this.nodes);
+      this.edges = this.edges.filter((edge) => {
+        return edge.startNodeId !== this.selectedNode?.id && edge.endNodeId !== this.selectedNode?.id;
+      });
+      console.log(this.edges);
+      // this.cdRef.detectChanges(); // remove in later..
   
       // Clear the selectedNode
       this.selectedNode = null;
@@ -1144,7 +1147,9 @@ export class EnvmapComponent implements AfterViewInit {
     };
 
     // Log the JSON object to the console
-    console.log(JSON.stringify(nodeDetails, null, 2));
+    console.log(nodeDetails);
+    console.log(this.edges);
+    
 
     // Save the JSON object to a file
     const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
@@ -1167,7 +1172,8 @@ export class EnvmapComponent implements AfterViewInit {
   }
   private onNodeClick(x: number, y: number): void {
     // Find the clicked node
-    const clickedNode = this.nodes.find(node =>
+    let clickedNode : Node | undefined;
+    clickedNode = this.nodes.find(node =>
         node.pos.x === x && node.pos.y === y
     );
 
@@ -1179,8 +1185,10 @@ export class EnvmapComponent implements AfterViewInit {
       } else if (!this.secondNode) {
         this.secondNode = clickedNode;
         this.drawNode(clickedNode, 'red', true); // Highlight the second node
-
-        let edge : Edge;
+  
+        // After selecting the second node, draw the line based on direction
+        if (this.direction === 'uni') {
+          let edge : Edge;
           edge = {
             edgeId : this.edgeCounter.toString(),
             sequenceId  : this.edgeCounter,
@@ -1193,7 +1201,7 @@ export class EnvmapComponent implements AfterViewInit {
             minHeight : 0, 
             orientation : 0, 
             orientationType : '', 
-            direction :this.direction === 'uni' ? 'UN_DIRECTIONAL' : 'BI_DIRECTIONAL', 
+            direction :'UN_DIRECTIONAL', 
             rotationAllowed : true,
             maxRotationSpeed : 0,
             // Trajectory trajectory,
@@ -1201,11 +1209,29 @@ export class EnvmapComponent implements AfterViewInit {
             action : [],
           }
           this.edges.push(edge);
-  
-        // After selecting the second node, draw the line based on direction
-        if (this.direction === 'uni') {
           this.drawEdge(this.firstNode.pos, this.secondNode.pos, 'uni', this.firstNode.id, this.secondNode.id);
         } else if (this.direction === 'bi') {
+          let edge : Edge;
+          edge = {
+            edgeId : this.edgeCounter.toString(),
+            sequenceId  : this.edgeCounter,
+            edgeDescription :'', 
+            released : true, 
+            startNodeId :  this.firstNode.id, 
+            endNodeId : this.secondNode.id, 
+            maxSpeed : 0, 
+            maxHeight : 0, 
+            minHeight : 0, 
+            orientation : 0, 
+            orientationType : '', 
+            direction : 'BI_DIRECTIONAL', 
+            rotationAllowed : true,
+            maxRotationSpeed : 0,
+            // Trajectory trajectory,
+            length : 0, 
+            action : [],
+          }
+          this.edges.push(edge);
           this.drawEdge(this.firstNode.pos, this.secondNode.pos, 'bi', this.firstNode.id, this.secondNode.id);
         }
 
@@ -1415,6 +1441,10 @@ export class EnvmapComponent implements AfterViewInit {
         this.lineEndY!
       );
 
+      setTimeout(() => {
+        // Clear the canvas section where the arrow was drawn
+         this.redrawCanvas(); // Ensure this redraws all existing elements except for the arrow
+       }, 1500);
 
 
       // Reset the start and end positions
@@ -1469,6 +1499,7 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      this.cdRef.detectChanges() // remove later..
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       this.nodes.forEach((node) => this.drawNode(node, 'blue', false));
       // Redraw connections if needed
