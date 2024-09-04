@@ -34,7 +34,7 @@ export class AreaChartComponent implements OnInit {
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
   selectedMap: any | null = null;
-  throughputArr: number[] = [];
+  throughputArr: number[] = [0];
   x_axis_timeStamp: string[] = [];
 
   constructor(
@@ -45,7 +45,7 @@ export class AreaChartComponent implements OnInit {
       series: [
         {
           name: '',
-          data: [], // Your default data
+          data: this.throughputArr,
         },
       ],
       chart: {
