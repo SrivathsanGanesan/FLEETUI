@@ -24,12 +24,6 @@ interface Zone {
   endY: number;
   color: string;
 }
-// interface Node {
-//   id: number;
-//   x: number;
-//   y: number;
-//   type: 'single' | 'multi'; // Only allows 'single' or 'multi'
-// }
 
 interface Node {
   id:string,
@@ -39,6 +33,27 @@ interface Node {
   pos : { x : number, y : number, orientation : number},
   actions : any[]
 }
+
+interface Edge {
+    edgeId :string; //Unique edge identification
+    sequenceId  : number; //Number to track the sequence of nodes and edges in an order and to simplify order updates
+    edgeDescription : string; //Additional information on the edge
+    released : boolean; //"true" indicates that the edge is part of the base. "false" indicates that the edge is part of the horizon.
+    startNodeId :  string; //nodeId of startNode
+    endNodeId : string; //nodeId of endNode
+    maxSpeed : number; //Permitted maximum speed on the edge in m/s
+    maxHeight : number; //Permitted maximum height of the vehicle, including the load, on edge in m
+    minHeight : number; //Permitted minimal height of the load handling device on the edge in m
+    orientation : number; //Orientation of the AGV on the edge in rad
+    orientationType : string; //The value orientationType defines if it has to be interpreted relative to the global project specific map coordinate system or tangential to the edge
+    direction : string; //Sets direction at junctions for line-guided or wire-guided vehicles, to be defined initially (vehicle-individual)
+    rotationAllowed : boolean; //“true”: rotation is allowed on the edge. “false”: rotation is not allowed on the edge.
+    maxRotationSpeed : number; //Maximum rotation speed in rad/s
+    // Trajectory trajectory; //Defines the curve, on which the AGV should move between startNode and endNode
+    length : number; //Length of the path from startNode to endNode
+    action : any[]; //Array of actionIds to be executed on the edge
+};
+
 @Component({
   selector: 'app-envmap',
   templateUrl: './envmap.component.html',
@@ -72,7 +87,8 @@ export class EnvmapComponent implements AfterViewInit {
   imageSrc: string | null = null;
   showOptionsLayer: boolean = false;
   orientationAngle: number = 0;
-  nodes: Node[] = [];
+  nodes: Node[] = []; // Org_nodes
+  edges : Edge[] = []; // Org_edges
   
   Nodes: {
     id: number;
@@ -116,6 +132,8 @@ export class EnvmapComponent implements AfterViewInit {
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
   private nodeCounter: number = 1; // Counter to assign node numbers
+  private edgeCounter: number = 1; // Counter to assign edge numbers
+  private actionCounter: number = 1; // Counter to assign action numbers
   selectedNode: Node | null = null;
   lastSelectedNode: { x: number; y: number } | null = null;
   node: { id: number; x: number; y: number  }[] = []; // Nodes with unique IDs
@@ -143,7 +161,15 @@ export class EnvmapComponent implements AfterViewInit {
   isDistanceConfirmed = false; // Flag to control the Save button
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
+  direction: 'uni' | 'bi' | null = null;
 
+  setDirection(direction: 'uni' | 'bi'): void {
+    this.direction = direction;
+    this.firstNode = null;
+    this.secondNode = null;
+  }
+
+  
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
@@ -790,12 +816,10 @@ export class EnvmapComponent implements AfterViewInit {
     if (ctx) {
       const transformedY = canvas.height - node.pos.y; // Flip the Y-axis
       ctx.beginPath();
-      ctx.arc(node.pos.x, transformedY, 5, 0, 2 * Math.PI);
+      ctx.arc(node.pos.x, transformedY, 7, 0, 2 * Math.PI);
       ctx.fillStyle = selected ? color : 'blue';
-      ctx.strokeStyle = 'black';
       ctx.lineWidth = selected ? 3 : 1;
       ctx.fill();
-      ctx.stroke();
     }
   }  
   private drawArrowLine(
@@ -1148,6 +1172,49 @@ export class EnvmapComponent implements AfterViewInit {
     );
 
     if (clickedNode) {
+
+      if (!this.firstNode) {
+        this.firstNode = clickedNode;
+        this.drawNode(clickedNode, 'red', true); // Highlight the first node
+      } else if (!this.secondNode) {
+        this.secondNode = clickedNode;
+        this.drawNode(clickedNode, 'red', true); // Highlight the second node
+
+        let edge : Edge;
+          edge = {
+            edgeId : this.edgeCounter.toString(),
+            sequenceId  : this.edgeCounter,
+            edgeDescription :'', 
+            released : true, 
+            startNodeId :  this.firstNode.id, 
+            endNodeId : this.secondNode.id, 
+            maxSpeed : 0, 
+            maxHeight : 0, 
+            minHeight : 0, 
+            orientation : 0, 
+            orientationType : '', 
+            direction :this.direction === 'uni' ? 'UN_DIRECTIONAL' : 'BI_DIRECTIONAL', 
+            rotationAllowed : true,
+            maxRotationSpeed : 0,
+            // Trajectory trajectory,
+            length : 0, 
+            action : [],
+          }
+          this.edges.push(edge);
+  
+        // After selecting the second node, draw the line based on direction
+        if (this.direction === 'uni') {
+          this.drawEdge(this.firstNode.pos, this.secondNode.pos, 'uni', this.firstNode.id, this.secondNode.id);
+        } else if (this.direction === 'bi') {
+          this.drawEdge(this.firstNode.pos, this.secondNode.pos, 'bi', this.firstNode.id, this.secondNode.id);
+        }
+
+        this.edgeCounter++;
+  
+        // Reset after drawing
+        this.resetSelection();
+      }
+    
         if (this.selectedNode === clickedNode) {
             // If the same node is clicked again, deselect it
             this.deselectNode();
@@ -1169,14 +1236,55 @@ export class EnvmapComponent implements AfterViewInit {
             }
         }
     }
+  }
+  private drawEdge(startPos: { x: number, y: number }, endPos: { x: number, y: number }, direction : string, startNodeId : string, endNodeId : string): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+
+  
+    if (ctx) {
+      ctx.beginPath();
+      ctx.moveTo(startPos.x, canvas.height - startPos.y); // Start point (flip Y-axis)
+      ctx.lineTo(endPos.x, canvas.height - endPos.y); // End point (flip Y-axis)
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+  
+      this.drawArrowhead(ctx, startPos, endPos, direction);
+  
+      if (direction === 'bi') {
+        // Draw the reverse arrow for bi-directional
+        this.drawArrowhead(ctx, endPos, startPos, direction);
+      }
+    }
 }
+  
+  private drawArrowhead(ctx: CanvasRenderingContext2D, from: { x: number, y: number }, to: { x: number, y: number }, direction: string): void {
+    const headLength = 10; // Length of the arrowhead
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
+  
+    ctx.beginPath();
+    ctx.moveTo(to.x, this.overlayCanvas.nativeElement.height - to.y);
+    ctx.lineTo(to.x - headLength * Math.cos(angle - Math.PI / 6), this.overlayCanvas.nativeElement.height - (to.y - headLength * Math.sin(angle - Math.PI / 6)));
+    ctx.lineTo(to.x - headLength * Math.cos(angle + Math.PI / 6), this.overlayCanvas.nativeElement.height - (to.y - headLength * Math.sin(angle + Math.PI / 6)));
+    ctx.lineTo(to.x, this.overlayCanvas.nativeElement.height - to.y);
+    ctx.fillStyle = 'black';
+    ctx.fill();
+  }
+  
+  resetSelection(): void {
+    this.firstNode = null;
+    this.secondNode = null;
+    this.direction = null;
+  }
+
   private deselectNode(): void {
     if (this.selectedNode) {
         // Redraw the previously selected node as deselected (transparent or default color)
         this.drawNode(this.selectedNode, 'blue', false); // Using 'blue' for non-selected nodes
         this.selectedNode = null;
     }
-}
+  }
   private isNodeClicked(
     node: Node,
     mouseX: number,
@@ -1364,13 +1472,13 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       this.nodes.forEach((node) => this.drawNode(node, 'blue', false));
       // Redraw connections if needed
-      this.connections.forEach((connection) => {
+      this.edges.forEach((edge) => {
         const fromNode = this.nodes.find(
-          (node) =>parseInt(node.id) === connection.fromId
+          (node) => node.id === edge.startNodeId
         );
-        const toNode = this.nodes.find((node) => parseInt(node.id) === connection.toId);
+        const toNode = this.nodes.find((node) => node.id === edge.endNodeId);
         if (fromNode && toNode) {
-          this.drawArrowLine(fromNode.pos.x, fromNode.pos.y, toNode.pos.x, toNode.pos.y);
+          this.drawEdge(fromNode.pos, toNode.pos, edge.direction, fromNode.id, toNode.id);
         }
       });
     }
@@ -1443,7 +1551,6 @@ export class EnvmapComponent implements AfterViewInit {
       ctx!.stroke();
     }
   }
-  // in chaging process
   drawConnections(): void {
     if (
       !this.selectedNode ||
@@ -1482,11 +1589,6 @@ export class EnvmapComponent implements AfterViewInit {
     return foundNode ? parseInt(foundNode.id) : -1; // Return -1 if the node is not found
   }
 
-  resetSelection(): void {
-    this.selectedNode = null;
-    this.lastSelectedNode = null;
-  }
-
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
   }
@@ -1496,7 +1598,6 @@ export class EnvmapComponent implements AfterViewInit {
   openRobotPopup(): void {
     this.isRobotPopupVisible = true;
   }
-
   closeRobotPopup(): void {
     this.isRobotPopupVisible = false;
   }
