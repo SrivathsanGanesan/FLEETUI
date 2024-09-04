@@ -94,7 +94,6 @@ export class EnvmapComponent implements AfterViewInit {
   selectedAsset: 'docking' | 'charging' | 'picking' | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   plottingMode: 'single' | 'multi' | null = null;
-  connectivityMode: 'uni' | 'bi' | null = null;
   zoneColor: string | null = null;
   isPlottingEnabled: boolean = false;
   isDrawingZone: boolean = false;
@@ -231,103 +230,27 @@ export class EnvmapComponent implements AfterViewInit {
       console.error('Selected asset is not valid');
     }
   }
-
-  private drawArrowLine(
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-    maxHeight: number = 100, // Maximum allowed height
-    maxWidth: number = 100   // Maximum allowed width
-  ): void {
-    console.log(startX, startY);
-    
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-  
-    if (ctx) {
-      // Apply the Y-transformation (assuming the transformation inverts the Y-coordinate)
-      const canvasHeight = canvas.height;
-      const transformedStartY = canvasHeight - startY;
-      let transformedEndY = canvasHeight - endY;
-      
-      // Calculate the actual height of the line
-      let height = Math.abs(transformedEndY - transformedStartY);
-      let width = Math.abs(endX - startX);
-  
-      // Adjust the endY coordinate if the height exceeds maxHeight
-      if (height > maxHeight) {
-        const directionY = transformedEndY > transformedStartY ? 1 : -1; // Determine if the line is going up or down
-        transformedEndY = transformedStartY + directionY * maxHeight;
-      }
-  
-      // Adjust the endX coordinate if the width exceeds maxWidth
-      if (width > maxWidth) {
-        const directionX = endX > startX ? 1 : -1; // Determine if the line is going right or left
-        endX = startX + directionX * maxWidth;
-      }
-  
-      // Recalculate the angle after possible adjustments
-      const angleRadians = Math.atan2(
-        transformedEndY - transformedStartY,
-        endX - startX
-      );
-      const angleDegrees = angleRadians * (180 / Math.PI);
-  
-      // Update the orientationAngle of the node
-      const currentNode = this.Nodes.find((node) => {
-        if (Math.abs(node.x - startX) <= 5)
-          node.orientationAngle = angleDegrees;
-      });
-  
-      this.orientationAngle = angleDegrees;
-      if (this.secondNode) this.secondNode.pos.orientation = angleDegrees;
-      if (currentNode) {
-        currentNode.orientationAngle = angleDegrees;
-      }
-  
-      console.log(
-        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(2)}°`
-      );
-  
-      // Draw the line
-      ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, canvasHeight - transformedEndY); // Use transformedEndY for correct rendering
-      ctx.strokeStyle = 'red';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-  
-      // Draw arrowhead
-      const arrowLength = 10;
-      ctx.beginPath();
-      ctx.moveTo(endX, canvasHeight - transformedEndY); // Arrow at the adjusted end point
-      ctx.lineTo(
-        endX - arrowLength * Math.cos(angleRadians - Math.PI / 6),
-        (canvasHeight - transformedEndY) + arrowLength * Math.sin(angleRadians - Math.PI / 6)
-      );
-      ctx.moveTo(endX, canvasHeight - transformedEndY);
-      ctx.lineTo(
-        endX - arrowLength * Math.cos(angleRadians + Math.PI / 6),
-        (canvasHeight - transformedEndY) + arrowLength * Math.sin(angleRadians + Math.PI / 6)
-      );
-      ctx.stroke();
-    }
-  }
-  
-  
   deleteSelectedNode(): void {
-    if (!this.selectedNode) {
-    // Remove the selected node from the nodes array
-    this.nodes = this.nodes.filter(
-      (node) =>
-        node.pos.x !== this.selectedNode!.pos.x || node.pos.y !== this.selectedNode!.pos.y
-    );
-    }
+    if (this.selectedNode) {
+      // Remove from nodes array
+      // console.log(this.selectedNode.pos.x, this.selectedNode.pos.y);
+      
+      this.nodes = this.nodes.filter(
+        (node) => {
+          return node.pos.x !== this.selectedNode?.pos.x && node.pos.y !== this.selectedNode?.pos.y;
+        }
+      );
 
-    this.selectedNode = null;
-    console.log('Node deleted successfully.');
-  }
+      console.log(this.nodes);
+  
+      // Clear the selectedNode
+      this.selectedNode = null;
+          // Redraw the canvas
+      this.redrawCanvas();
+    } else {
+      console.log("No node selected to delete.");
+    }
+  }  
   @HostListener('click', ['$event'])
   onOverlayCanvasClick(event: MouseEvent): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -348,7 +271,7 @@ export class EnvmapComponent implements AfterViewInit {
     //   );
     // }
   }
- closeImagePopup(): void {
+  closeImagePopup(): void {
     this.showImagePopup = false;
   }
   selectAsset(assetType: 'docking' | 'charging' | 'picking'): void {
@@ -397,44 +320,6 @@ export class EnvmapComponent implements AfterViewInit {
     endPointOrientation: false,
     undockingDistance: '',
   };
-
-  saveNodeDetails(): void {
-    // Transform Nodes array to NodeDetails format
-    this.NodeDetails = this.Nodes.map((node, index) => ({
-      nodeID: `node_${String(node.id).padStart(3, '0')}`, // Format nodeID as a string
-      sequenceId: index + 1, // SequenceId is based on the order of nodes
-      nodeDescription: '', // Set this as empty or assign a value if available
-      released: true,
-      nodePosition: {
-        x: node.x,
-        y: node.y,
-        orientation: node.orientationAngle || 0, // Use the latest orientation angle here
-      },
-      actions: this.actions, // Include actions here
-    }));
-
-    // Create a JSON object with the node details
-    const nodeDetails = {
-      nodes: this.NodeDetails,
-    };
-
-    // Log the JSON object to the console
-    console.log(JSON.stringify(nodeDetails, null, 2));
-
-    // Save the JSON object to a file
-    const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
-      type: 'application/json',
-    });
-    saveAs(blob, 'node-details.json');
-
-    // Clear all the details for the previous node
-    this.Nodes = []; // Clear the Nodes array
-    this.resetParameters(); // Reset the parameters
-    this.actions = []; // Clear the actions array
-    this.selectedAction = ''; // Reset the selected action
-    this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
-  }
-
   onActionChange(): void {
     this.resetParameters();
     this.showActionForm();
@@ -872,14 +757,6 @@ export class EnvmapComponent implements AfterViewInit {
   close(): void {
     this.closePopup.emit(); // Then close the popup
   }
-
-  // in changing processs
-  setConnectivityMode(mode: 'uni' | 'bi'): void {
-    this.connectivityMode = mode;
-    this.resetSelection(); // Reset any previous selections when changing mode
-    console.log(`Connectivity mode set to: ${mode}`);
-  }
-
   // in changing processs
   setZoneColor(color: string): void {
     this.zoneColor = color;
@@ -928,9 +805,89 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.fill();
       ctx.stroke();
     }
-  }
+  }  
+  private drawArrowLine(
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    maxHeight: number = 50, // Maximum allowed height
+    maxWidth: number = 50   // Maximum allowed width
+  ): void {
+    console.log(startX, startY);
+    
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
   
-  // in changing process
+    if (ctx) {
+      // Apply the Y-transformation (assuming the transformation inverts the Y-coordinate)
+      const canvasHeight = canvas.height;
+      const transformedStartY = canvasHeight - startY;
+      let transformedEndY = canvasHeight - endY;
+      
+      // Calculate the actual height of the line
+      let height = Math.abs(transformedEndY - transformedStartY);
+      let width = Math.abs(endX - startX);
+  
+      // Adjust the endY coordinate if the height exceeds maxHeight
+      if (height > maxHeight) {
+        const directionY = transformedEndY > transformedStartY ? 1 : -1; // Determine if the line is going up or down
+        transformedEndY = transformedStartY + directionY * maxHeight;
+      }
+  
+      // Adjust the endX coordinate if the width exceeds maxWidth
+      if (width > maxWidth) {
+        const directionX = endX > startX ? 1 : -1; // Determine if the line is going right or left
+        endX = startX + directionX * maxWidth;
+      }
+  
+      // Recalculate the angle after possible adjustments
+      const angleRadians = Math.atan2(
+        transformedEndY - transformedStartY,
+        endX - startX
+      );
+      const angleDegrees = angleRadians * (180 / Math.PI);
+  
+      // Update the orientationAngle of the node
+      const currentNode = this.nodes.find((node) => {
+        if (Math.abs(node.pos.x - startX) <= 5)
+          node.pos.orientation = angleDegrees;
+      });
+  
+      this.orientationAngle = angleDegrees;
+      if (this.secondNode) this.secondNode.pos.orientation = angleDegrees;
+      if (currentNode) {
+        currentNode.pos.orientation = angleDegrees;
+      }
+  
+      console.log(
+        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(2)}°`
+      );
+  
+      // Draw the line
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, canvasHeight - transformedEndY); // Use transformedEndY for correct rendering
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+  
+      // Draw arrowhead
+      const arrowLength = 10;
+      ctx.beginPath();
+      ctx.moveTo(endX, canvasHeight - transformedEndY); // Arrow at the adjusted end point
+      ctx.lineTo(
+        endX - arrowLength * Math.cos(angleRadians - Math.PI / 6),
+        (canvasHeight - transformedEndY) + arrowLength * Math.sin(angleRadians - Math.PI / 6)
+      );
+      ctx.moveTo(endX, canvasHeight - transformedEndY);
+      ctx.lineTo(
+        endX - arrowLength * Math.cos(angleRadians + Math.PI / 6),
+        (canvasHeight - transformedEndY) + arrowLength * Math.sin(angleRadians + Math.PI / 6)
+      );
+      ctx.stroke();
+    }
+  }  
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const transformedY = canvas.height - y; // Flip the Y-axis
@@ -965,7 +922,7 @@ export class EnvmapComponent implements AfterViewInit {
       sequenceId : this.nodeCounter,
       description : '',
       released :true,
-      pos : { x : x, y : transformedY, orientation : 0},
+      pos : { x : x, y : transformedY, orientation : this.orientationAngle},
       actions: []
     }
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
@@ -1081,9 +1038,7 @@ export class EnvmapComponent implements AfterViewInit {
 
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
-}
-
-
+  }
   onInputChanged(): void {
     this.isEnterButtonVisible =
       this.numberOfIntermediateNodes !== null &&
@@ -1102,6 +1057,12 @@ export class EnvmapComponent implements AfterViewInit {
         const dy =
           (this.secondNode.pos.y - this.firstNode.pos.y) /
           (this.numberOfIntermediateNodes + 1);
+          
+          for(let node of this.nodes){
+            if (node.pos.x == this.firstNode?.pos.x && node.pos.y == this.firstNode?.pos.y)
+              node.pos.orientation = this.secondNode!.pos.orientation;
+          }
+          
 
         for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
           const x = this.firstNode.pos.x + i * dx;
@@ -1111,7 +1072,7 @@ export class EnvmapComponent implements AfterViewInit {
             sequenceId : this.nodeCounter,
             description : '',
             released :true,
-            pos : { x : x, y : y, orientation : this.firstNode!.pos.orientation},
+            pos : { x : x, y : y, orientation : this.secondNode!.pos.orientation},
             actions: []
           }
           this.nodes.push(node);
@@ -1145,56 +1106,84 @@ export class EnvmapComponent implements AfterViewInit {
       this.closeIntermediateNodesDialog();
     }
   }
+  saveNodeDetails(): void {
+    // Transform Nodes array to NodeDetails format
+    this.NodeDetails = this.nodes.map((node, index) => ({
+      nodeID: `node_${String(node.id).padStart(3, '0')}`, // Format nodeID as a string
+      sequenceId: index + 1, // SequenceId is based on the order of nodes
+      nodeDescription: '', // Set this as empty or assign a value if available
+      released: true,
+      nodePosition: {
+        x: node.pos.x,
+        y: node.pos.y,
+        orientation: node.pos.orientation, // Use the latest orientation angle here
+      },
+      actions: this.actions, // Include actions here
+    }));
 
+    // Create a JSON object with the node details
+    const nodeDetails = {
+      nodes: this.NodeDetails,
+    };
+
+    // Log the JSON object to the console
+    console.log(JSON.stringify(nodeDetails, null, 2));
+
+    // Save the JSON object to a file
+    const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
+      type: 'application/json',
+    });
+    saveAs(blob, 'node-details.json');
+
+    // Clear all the details for the previous node
+    this.Nodes = []; // Clear the Nodes array
+    this.resetParameters(); // Reset the parameters
+    this.actions = []; // Clear the actions array
+    this.selectedAction = ''; // Reset the selected action
+    this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
+  }
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
     this.firstNode = null;
     this.secondNode = null;
     this.numberOfIntermediateNodes = 0;
   }
+  private onNodeClick(x: number, y: number): void {
+    // Find the clicked node
+    const clickedNode = this.nodes.find(node =>
+        node.pos.x === x && node.pos.y === y
+    );
 
-  onNodeClick(x: number, y: number): void {
-    if (
-      this.selectedNode &&
-      this.selectedNode.pos.x === x &&
-      this.selectedNode.pos.y === y
-    ) {
-      // If the node is already selected, deselect it
-      console.log('Node deselected:', x, y);
-      this.deselectNode();
-    } else {
-      // If no node is selected or a different node is clicked
-      if (!this.selectedNode) {
-        console.log('First node selected:', x, y);
-      } else {
-        console.log('Second node selected:', x, y);
-      }
-      // this.selectedNode = { x, y };
-      let node = {
-        id:'',
-        sequenceId : 0,
-        description : '',
-        released : true,
-        pos : { x : x, y : y, orientation : 0}, //..impt
-        actions : []
-      }
-      this.drawNode(node, 'transparent', true); // Draw the node as selected
-
-      // Optionally, draw connections only if a second node is selected
-      if (this.lastSelectedNode) {
-        this.drawConnections();
-        this.resetSelection(); // Reset for the next connection
-      }
+    if (clickedNode) {
+        if (this.selectedNode === clickedNode) {
+            // If the same node is clicked again, deselect it
+            this.deselectNode();
+            console.log('Node deselected:', x, y);
+        } else {
+            // If a different node is clicked, deselect the previous one if any
+            if (this.selectedNode) {
+                this.deselectNode();
+            }
+            // Select the new node
+            this.selectedNode = clickedNode;
+            this.drawNode(clickedNode, 'red', true); // Highlight the selected node
+            console.log('Node selected:', x, y);
+            
+            // Draw connections or perform any other actions
+            if (this.lastSelectedNode) {
+                this.drawConnections();
+                this.resetSelection(); // Reset for the next connection
+            }
+        }
     }
-  } 
+}
   private deselectNode(): void {
     if (this.selectedNode) {
-      // Redraw the node in its original color (transparent)
-      this.drawNode(this.selectedNode, 'transparent', false);
-      this.selectedNode = null;
+        // Redraw the previously selected node as deselected (transparent or default color)
+        this.drawNode(this.selectedNode, 'blue', false); // Using 'blue' for non-selected nodes
+        this.selectedNode = null;
     }
-  }
-
+}
   private isNodeClicked(
     node: Node,
     mouseX: number,
@@ -1208,7 +1197,6 @@ export class EnvmapComponent implements AfterViewInit {
     const dy = mouseY - transformedY; // Use transformed Y-coordinate
     return dx * dx + dy * dy <= radius * radius;
   }
-
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -1316,6 +1304,7 @@ export class EnvmapComponent implements AfterViewInit {
       const x = (event.clientX - rect.left) * (canvas.width / rect.width);
       const y = (event.clientY - rect.top) * (canvas.height / rect.height);
       const transformedY = canvas.height - y; // Flip the Y-axis
+      
 
       // Finalize the line drawing
       this.drawArrowLine(
@@ -1325,14 +1314,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.lineEndY!
       );
 
-      // Optionally, store the connection details here...
-      if (this.selectedNode) {
-        this.connections.push({
-          fromId: parseInt((this.selectedNode as Node).id),
-          toId: this.nodeCounter,
-          type: this.connectivityMode || 'uni',
-        });
-      }
+
 
       // Reset the start and end positions
       this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
@@ -1381,25 +1363,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.currentZone = null;
     }
   }
-
-  private checkZoneOverlap(newZone: Zone): boolean {
-    for (const zone of this.zones) {
-      if (this.isOverlapping(zone, newZone)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private isOverlapping(zone1: Zone, zone2: Zone): boolean {
-    return !(
-      zone2.startX > zone1.endX ||
-      zone2.endX < zone1.startX ||
-      zone2.startY > zone1.endY ||
-      zone2.endY < zone1.startY
-    );
-  }
-
   private redrawCanvas(): void {
     // Clear the canvas and redraw all elements (nodes, zones, lines, etc.)
     const canvas = this.overlayCanvas.nativeElement;
@@ -1418,6 +1381,22 @@ export class EnvmapComponent implements AfterViewInit {
         }
       });
     }
+  }
+  private checkZoneOverlap(newZone: Zone): boolean {
+    for (const zone of this.zones) {
+      if (this.isOverlapping(zone, newZone)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  private isOverlapping(zone1: Zone, zone2: Zone): boolean {
+    return !(
+      zone2.startX > zone1.endX ||
+      zone2.endX < zone1.startX ||
+      zone2.startY > zone1.endY ||
+      zone2.endY < zone1.startY
+    );
   }
   drawZone(startX: number, startY: number, endX: number, endY: number): void {
     if (!this.overlayCanvas || !this.zoneColor) return;
@@ -1471,13 +1450,11 @@ export class EnvmapComponent implements AfterViewInit {
       ctx!.stroke();
     }
   }
-
   // in chaging process
   drawConnections(): void {
     if (
       !this.selectedNode ||
-      !this.lastSelectedNode ||
-      !this.connectivityMode
+      !this.lastSelectedNode 
     ) {
       console.log('Not enough nodes or mode is not set');
       return; // Ensure both nodes and a mode are selected
@@ -1505,82 +1482,11 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.lineTo(this.selectedNode.pos.x, this.selectedNode.pos.y);
     ctx.stroke();
 
-    // Draw arrow(s) based on the connectivity mode
-    if (this.connectivityMode === 'uni') {
-      console.log(
-        'Drawing unidirectional arrow between node IDs:',
-        fromId,
-        toId
-      );
-      this.drawArrow(
-        ctx,
-        this.lastSelectedNode.x,
-        this.lastSelectedNode.y,
-        this.selectedNode.pos.x,
-        this.selectedNode.pos.y
-      );
-      this.connections.push({ fromId, toId, type: 'uni' });
-    } else if (this.connectivityMode === 'bi') {
-      console.log(
-        'Drawing bidirectional arrows between node IDs:',
-        fromId,
-        toId
-      );
-      this.drawArrow(
-        ctx,
-        this.lastSelectedNode.x,
-        this.lastSelectedNode.y,
-        this.selectedNode.pos.x,
-        this.selectedNode.pos.y
-      );
-      this.drawArrow(
-        ctx,
-        this.selectedNode.pos.x,
-        this.selectedNode.pos.y,
-        this.lastSelectedNode.x,
-        this.lastSelectedNode.y
-      );
-      this.connections.push({ fromId, toId, type: 'bi' });
-    }
+    
   }
-
   private getNodeId(node: { x: number; y: number }): number {
     const foundNode = this.nodes.find((n) => n.pos.x === node.x && n.pos.y === node.y);
     return foundNode ? parseInt(foundNode.id) : -1; // Return -1 if the node is not found
-  }
-
-  // in changing process
-  drawArrow(
-    ctx: CanvasRenderingContext2D,
-    fromX: number,
-    fromY: number,
-    toX: number,
-    toY: number
-  ): void {
-    const fromId = this.getNodeId({ x: fromX, y: fromY });
-    const toId = this.getNodeId({ x: toX, y: toY });
-
-    console.log('Drawing arrow between node IDs:', fromId, toId);
-
-    const headLength = 10;
-    const dx = toX - fromX;
-    const dy = toY - fromY;
-    const angle = Math.atan2(dy, dx);
-
-    ctx.beginPath();
-    ctx.moveTo(toX, toY);
-    ctx.lineTo(
-      toX - headLength * Math.cos(angle - Math.PI / 6),
-      toY - headLength * Math.sin(angle - Math.PI / 6)
-    );
-    ctx.lineTo(
-      toX - headLength * Math.cos(angle + Math.PI / 6),
-      toY - headLength * Math.sin(angle + Math.PI / 6)
-    );
-    ctx.lineTo(toX, toY);
-    ctx.closePath();
-    ctx.fillStyle = 'black';
-    ctx.fill();
   }
 
   resetSelection(): void {
