@@ -198,8 +198,8 @@ body, .card, .popup-menu {
     position: absolute;
     top: 5;
     right: 0;
-    width: 24px; /* Adjust the size as needed */
-    height: auto; /* Maintain aspect ratio */
+    width: 24px; 
+    height: auto;
   }
  
   
@@ -236,7 +236,7 @@ body, .card, .popup-menu {
   top: 10px;
   right: 10px;
   cursor: pointer;
-  color: white;
+  color: rgb(255, 11, 11);
 }
 
 .card .top-section .popup-menu {
@@ -244,8 +244,8 @@ body, .card, .popup-menu {
   position: absolute;
   top: 30px;
   right: 10px;
-  background-color: #333;
-  padding: 10px;
+  background-color: #000000;
+  /* padding: 10px; */
   border-radius: 5px;
   z-index: 100;
 }
@@ -272,7 +272,7 @@ body, .card, .popup-menu {
 }
 
 .card .bottom-section .title {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: bolder;
   color: white;
   text-align: center;
