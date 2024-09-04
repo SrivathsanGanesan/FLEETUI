@@ -37,6 +37,10 @@ app.use("/stream-data", liveStreamRouter);
 const throughputRouter = require("./fleetcore/routes/throughputRouter");
 app.use("/graph/throughput", throughputRouter);
 
+// tasks..
+const tasksRouter = require("./fleetcore/routes/tasksRouter");
+app.use("/fleet-tasks", tasksRouter);
+
 app.listen(process.env.PORT, (err) => {
   err
     ? console.log("error while connecting : ", err)

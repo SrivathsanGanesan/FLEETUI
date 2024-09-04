@@ -4,11 +4,9 @@ import { ExportService } from '../export.service';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css'] // Note: changed to `styleUrls`
+  styleUrls: ['./tasks.component.css'], // Note: changed to `styleUrls`
 })
 export class TasksComponent implements OnInit {
-
-
   searchQuery: string = '';
   isPopupVisible: boolean = false;
   activeFilter: string = 'today'; // Default filter
@@ -16,28 +14,124 @@ export class TasksComponent implements OnInit {
   currentTable: string = 'task'; // Default table
 
   taskData = [
-    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 1 Col 1', column2: 'Row 1 Col 2', column3: 'Row 1 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
-    { column1: 'Row 2 Col 1', column2: 'Row 2 Col 2', column3: 'Row 2 Col 3', column4: 'Row 1 Col 3', column5: 'Row 1 Col 3', column6: 'Row 1 Col 3' },
+    {
+      taskId: 'task_001',
+      taskStatus: 'Row 1 Col 2',
+      taskAllocatedAT: 'Row 1 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Pickup',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: '-----',
+      taskStatus: 'Row 1 Col 2',
+      taskAllocatedAT: 'Row 1 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Pickup',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: '-----',
+      taskStatus: 'Row 2 Col 2',
+      taskAllocatedAT: 'Row 2 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Pickup',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: 'task_001',
+      taskStatus: 'Row 1 Col 2',
+      taskAllocatedAT: 'Row 1 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Dropoff',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: '-----',
+      taskStatus: 'Row 2 Col 2',
+      taskAllocatedAT: 'Row 2 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Dropoff',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: 'task_001',
+      taskStatus: 'Row 1 Col 2',
+      taskAllocatedAT: 'Row 1 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Charge',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: '-----',
+      taskStatus: 'Row 2 Col 2',
+      taskAllocatedAT: 'Row 2 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Dropoff',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: '-----',
+      taskStatus: 'Row 1 Col 2',
+      taskAllocatedAT: 'Row 1 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Charge',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: 'task_001',
+      taskStatus: 'Row 2 Col 2',
+      taskAllocatedAT: 'Row 2 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Pickup',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: '-----',
+      taskStatus: 'Row 2 Col 2',
+      taskAllocatedAT: 'Row 2 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Pickup',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: '-----',
+      taskStatus: 'Row 1 Col 2',
+      taskAllocatedAT: 'Row 1 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Pickup',
+      roboId: 'Row 1 Col 3',
+    },
+    {
+      taskId: '-----',
+      taskStatus: 'Row 2 Col 2',
+      taskAllocatedAT: 'Row 2 Col 3',
+      completedAt: 'Row 1 Col 3',
+      sourceLocation: 'Row 1 Col 3',
+      taskType: 'Pickup',
+      roboId: 'Row 1 Col 3',
+    },
     // Add more data as necessary
   ];
-
-  
 
   filteredTaskData = this.taskData;
 
   constructor(private exportService: ExportService) {}
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    
+  }
 
   onSearch(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
@@ -45,8 +139,10 @@ export class TasksComponent implements OnInit {
     if (!inputValue) {
       this.filteredTaskData = this.taskData;
     } else {
-      this.filteredTaskData = this.taskData.filter(item =>
-        Object.values(item).some(val => String(val).toLowerCase().includes(inputValue))
+      this.filteredTaskData = this.taskData.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(inputValue)
+        )
       );
     }
   }
@@ -57,8 +153,11 @@ export class TasksComponent implements OnInit {
   }
 
   onDateChange(event: Event): void {
-    const startDate = (document.getElementById('start-date') as HTMLInputElement).value;
-    const endDate = (document.getElementById('end-date') as HTMLInputElement).value;
+    const startDate = (
+      document.getElementById('start-date') as HTMLInputElement
+    ).value;
+    const endDate = (document.getElementById('end-date') as HTMLInputElement)
+      .value;
     // Implement your date range filtering logic here
   }
 

@@ -1,14 +1,7 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
 
-const eventStreamHeader = {
-  "Content-Type": "text/event-stream",
-  "Cache-Control": "no-cache",
-  Connection: "keep-alive",
-};
-//..
-
-const getFleetThroughput = (req, res, next) => {
-  fetch(`http://fleetIp:8080/fms/amr/get_throughput_stats`, {
+const getFleetTask = (req, res, next) => {
+  fetch(`http://fleetIp:8080/fms/amr/get_tasks_list`, {
     method: "POST",
     credentials: "include",
     body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
@@ -30,7 +23,7 @@ const getFleetThroughput = (req, res, next) => {
   next();
 };
 
-const throughput = async (req, res, next) => {
+const getTasks = async (req, res) => {
   const mapId = req.params.mapId;
   try {
     //..
@@ -98,4 +91,4 @@ const throughput = async (req, res, next) => {
   }
 };
 
-module.exports = { getFleetThroughput, throughput };
+module.exports = { getFleetTask, getTasks };

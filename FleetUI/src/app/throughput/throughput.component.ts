@@ -157,7 +157,7 @@ export class ThroughputComponent {
         let time = new Date(stat.TimeStamp).toLocaleString('en-IN', {
           // month: 'short',
           // year: 'numeric',
-          day: 'numeric',
+          // day: 'numeric',
           hour: 'numeric',
           minute: 'numeric',
         });
