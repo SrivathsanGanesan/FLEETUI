@@ -567,8 +567,8 @@ export class EnvmapComponent implements AfterViewInit {
           ],
         },
       ],
-      edges: [this.connections],
-      nodes: [this.Nodes],
+      edges: [this.edges],
+      nodes: [this.nodes],
       stations: [],
     };
     this.form?.append('mapImg', this.selectedImage);
