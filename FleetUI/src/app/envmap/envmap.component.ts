@@ -236,70 +236,86 @@ export class EnvmapComponent implements AfterViewInit {
     startX: number,
     startY: number,
     endX: number,
-    endY: number
+    endY: number,
+    maxHeight: number = 100, // Maximum allowed height
+    maxWidth: number = 100   // Maximum allowed width
   ): void {
     console.log(startX, startY);
     
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-
+  
     if (ctx) {
       // Apply the Y-transformation (assuming the transformation inverts the Y-coordinate)
       const canvasHeight = canvas.height;
       const transformedStartY = canvasHeight - startY;
-      const transformedEndY = canvasHeight - endY;
-
-      // Calculate the angle in radians and convert it to degrees using the transformed Y-coordinates
+      let transformedEndY = canvasHeight - endY;
+      
+      // Calculate the actual height of the line
+      let height = Math.abs(transformedEndY - transformedStartY);
+      let width = Math.abs(endX - startX);
+  
+      // Adjust the endY coordinate if the height exceeds maxHeight
+      if (height > maxHeight) {
+        const directionY = transformedEndY > transformedStartY ? 1 : -1; // Determine if the line is going up or down
+        transformedEndY = transformedStartY + directionY * maxHeight;
+      }
+  
+      // Adjust the endX coordinate if the width exceeds maxWidth
+      if (width > maxWidth) {
+        const directionX = endX > startX ? 1 : -1; // Determine if the line is going right or left
+        endX = startX + directionX * maxWidth;
+      }
+  
+      // Recalculate the angle after possible adjustments
       const angleRadians = Math.atan2(
         transformedEndY - transformedStartY,
         endX - startX
       );
       const angleDegrees = angleRadians * (180 / Math.PI);
-
+  
       // Update the orientationAngle of the node
       const currentNode = this.Nodes.find((node) => {
         if (Math.abs(node.x - startX) <= 5)
           node.orientationAngle = angleDegrees;
-        // return node.x === startX && node.y === startY;
       });
-
+  
       this.orientationAngle = angleDegrees;
-      if(this.secondNode) this.secondNode.pos.orientation = angleDegrees
+      if (this.secondNode) this.secondNode.pos.orientation = angleDegrees;
       if (currentNode) {
         currentNode.orientationAngle = angleDegrees;
       }
-
+  
       console.log(
-        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
-          2
-        )}°`
+        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(2)}°`
       );
-
+  
       // Draw the line
       ctx.beginPath();
       ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
+      ctx.lineTo(endX, canvasHeight - transformedEndY); // Use transformedEndY for correct rendering
       ctx.strokeStyle = 'red';
       ctx.lineWidth = 2;
       ctx.stroke();
-
+  
       // Draw arrowhead
       const arrowLength = 10;
       ctx.beginPath();
-      ctx.moveTo(endX, endY);
+      ctx.moveTo(endX, canvasHeight - transformedEndY); // Arrow at the adjusted end point
       ctx.lineTo(
         endX - arrowLength * Math.cos(angleRadians - Math.PI / 6),
-        endY + arrowLength * Math.sin(angleRadians - Math.PI / 6)
+        (canvasHeight - transformedEndY) + arrowLength * Math.sin(angleRadians - Math.PI / 6)
       );
-      ctx.moveTo(endX, endY);
+      ctx.moveTo(endX, canvasHeight - transformedEndY);
       ctx.lineTo(
         endX - arrowLength * Math.cos(angleRadians + Math.PI / 6),
-        endY + arrowLength * Math.sin(angleRadians + Math.PI / 6)
+        (canvasHeight - transformedEndY) + arrowLength * Math.sin(angleRadians + Math.PI / 6)
       );
       ctx.stroke();
     }
   }
-
+  
+  
   deleteSelectedNode(): void {
     if (!this.selectedNode) {
     // Remove the selected node from the nodes array
@@ -983,84 +999,90 @@ export class EnvmapComponent implements AfterViewInit {
 
     const color = 'blue'; // Color for multi-nodes
     this.drawNode({
-      id:'',
-      sequenceId : 0,
-      description : '',
-      released : true,
-      pos : { x : x, y : transformedY, orientation : 0},
-      actions : []
+        id: '',
+        sequenceId: 0,
+        description: '',
+        released: true,
+        pos: { x: x, y: transformedY, orientation: 0 },
+        actions: []
     }, color, false);
 
     console.log(
-      `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y: transformedY }
+        `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
+        { x, y: transformedY }
     ); // Log the node number and position
 
     if (this.ratio !== null) {
-      const distanceX = x * this.ratio;
-      const distanceY = transformedY * this.ratio;
-      console.log(
-        `Type: Multi Node, Node Number: ${
-          this.nodeCounter
-        }, Distance (meters): X: ${distanceX.toFixed(
-          2
-        )}, Y: ${distanceY.toFixed(2)}`
-      );
+        const distanceX = x * this.ratio;
+        const distanceY = transformedY * this.ratio;
+        console.log(
+            `Type: Multi Node, Node Number: ${
+                this.nodeCounter
+            }, Distance (meters): X: ${distanceX.toFixed(
+                2
+            )}, Y: ${distanceY.toFixed(2)}`
+        );
     }
+
     this.nodeDetails = {
-      id: this.nodeCounter,
-      x: x, // Adjust for ratio if present
-      y: transformedY,
-      description: '',
-      actions: [],
+        id: this.nodeCounter,
+        x: x, // Adjust for ratio if present
+        y: transformedY,
+        description: '',
+        actions: [],
     };
 
-    // if (this.nodes.length === 0) { // [] => {x, y}
-    if(this.firstNode === null){
-      let firstnode = {
-        id : this.nodeCounter.toString(),
-        sequenceId : this.nodeCounter,
-        description : '',
-        released :true,
-        pos : { x : x, y: transformedY, orientation : 0},
-        actions: []
-      }
-      this.firstNode = firstnode;
-      this.nodes.push(firstnode);
-    } else if (this.secondNode === null) { // [{x, y}] + {x,y}
-      let secondnode = {
-        id : this.nodeCounter.toString(),
-        sequenceId : this.nodeCounter,
-        description : '',
-        released :true,
-        pos : { x : x, y : transformedY, orientation : 0},
-        actions: []
-      };
-      this.secondNode = secondnode;
-      this.nodes.push(secondnode);
-      this.isDrawingLine = true;
-      this.lineStartX = x;
-      this.lineStartY = y;
+    if (this.firstNode === null) {
+        // Plotting the first node
+        let firstnode = {
+            id: this.nodeCounter.toString(),
+            sequenceId: this.nodeCounter,
+            description: '',
+            released: true,
+            pos: { x: x, y: transformedY, orientation: 0 },
+            actions: []
+        }
+        this.firstNode = firstnode;
+        this.nodes.push(firstnode);
+    } else if (this.secondNode === null) {
+        // Plotting the second node
+        let secondnode = {
+            id: this.nodeCounter.toString(),
+            sequenceId: this.nodeCounter,
+            description: '',
+            released: true,
+            pos: { x: x, y: transformedY, orientation: 0 },
+            actions: []
+        };
+        this.secondNode = secondnode;
+        this.nodes.push(secondnode);
 
-      this.overlayCanvas.nativeElement.addEventListener('mousemove', this.onMouseMove.bind(this));
-      this.overlayCanvas.nativeElement.addEventListener('mouseup', this.onMouseUp.bind(this));
-      
-      this.showIntermediateNodesDialog = true;
-      this.isPlottingEnabled = false; // Disable further plotting after two nodes 
+        this.isDrawingLine = true;
+        this.lineStartX = x;
+        this.lineStartY = y;
+
+        this.overlayCanvas.nativeElement.addEventListener('mousemove', this.onMouseMove.bind(this));
+        this.overlayCanvas.nativeElement.addEventListener('mouseup', this.onMouseUp.bind(this));
+
+        this.showIntermediateNodesDialog = true;
+        this.isPlottingEnabled = false; // Disable further plotting after two nodes 
+    } else {
+        // Plotting additional nodes
+        let node = {
+            id: this.nodeCounter.toString(),
+            sequenceId: this.nodeCounter,
+            description: '',
+            released: true,
+            pos: { x: x, y: transformedY, orientation: this.secondNode.pos.orientation },
+            actions: []
+        };
+        this.nodes.push(node);
     }
-    let node = {
-      id : this.nodeCounter.toString(),
-      sequenceId : this.nodeCounter,
-      description : '',
-      released :true,
-      pos : { x : x, y : transformedY, orientation : this.secondNode!.pos.orientation},
-      actions: []
-    }
-    // this.nodes.push(node);
+
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
+}
 
-  }
 
   onInputChanged(): void {
     this.isEnterButtonVisible =
