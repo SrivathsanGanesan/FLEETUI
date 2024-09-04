@@ -500,7 +500,6 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   showError: boolean = false; // Flag to show error message
-
   //  Saving all nodes and edges
   saveOpt() {
     console.log(this.Nodes);
@@ -656,7 +655,6 @@ export class EnvmapComponent implements AfterViewInit {
     }
     console.clear();
   }
-
   @HostListener('click', ['$event'])
   onImagePopupCanvasClick(event: MouseEvent): void {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
@@ -682,7 +680,6 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
-
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -705,7 +702,6 @@ export class EnvmapComponent implements AfterViewInit {
     // Log the node details in JSON format
     this.logNodeDetails();
   }
-
   private logNodeDetails(): void {
     const nodesJson = JSON.stringify(this.Nodes, null, 2);
     console.log('Node details:', nodesJson);
@@ -753,16 +749,13 @@ export class EnvmapComponent implements AfterViewInit {
       alert('Please enter both Map Name and Site Name before clicking Open.');
     }
   }
-
   close(): void {
     this.closePopup.emit(); // Then close the popup
   }
-  // in changing processs
   setZoneColor(color: string): void {
     this.zoneColor = color;
     this.isDrawingZone = true;
   }
-
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
@@ -782,7 +775,6 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
-
   showNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = true;
     this.cdRef.detectChanges(); // Ensure the popup updates
@@ -943,6 +935,7 @@ export class EnvmapComponent implements AfterViewInit {
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
     this.isPlottingEnabled = true;
+    this.toggleOptionsMenu();
     
     if (mode === 'multi') {
       // this.nodes = [];
@@ -1497,7 +1490,6 @@ export class EnvmapComponent implements AfterViewInit {
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
   }
-
   hideCalibrationLayer(): void {
     this.isOptionsMenuVisible = false;
   }
