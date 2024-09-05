@@ -127,6 +127,7 @@ const mapSchema = new Schema(
       type: throughPutSchema,
       default: { Stat: [], inProg: [] },
     },
+    tasks: { type: [Schema.Types.Mixed], default: [] },
   },
   { timestamps: true, versionKey: false }
 );

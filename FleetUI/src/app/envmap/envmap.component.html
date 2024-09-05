@@ -140,7 +140,7 @@
         </div>
       </div>
       
-      <canvas class="plottinglayer" #overlayCanvas></canvas>
+      <canvas class="plottinglayer" #overlayCanvas ></canvas>
       <div
         #nodeDetailsPopup
         class="node-details-popup"
@@ -366,13 +366,10 @@
         <div class="dropdown">
           <button class="dropdown-button">Connectivity</button>
           <div class="dropdown-content">
-            <button (click)="setConnectivityMode('uni')">
-              Uni-Directional
-            </button>
-            <button (click)="setConnectivityMode('bi')">Bi-Directional</button>
+            <button (click)="setDirection('uni')">Uni-Directional</button>
+            <button (click)="setDirection('bi')">Bi-Directional</button>
           </div>
         </div>
-
         <div class="dropdown">
           <button class="dropdown-button">Zones</button>
           <div class="dropdown-content">
