@@ -3,6 +3,8 @@ node_modules/
 logs
 *.log
 
+server/proj_assets/*/*.png
+
 # Angular
 dist
 /tmp
