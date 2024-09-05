@@ -4,6 +4,7 @@ logs
 *.log
 
 server/proj_assets/*/*.png
+# **/*/*.png # ig it would need!
 
 # Angular
 dist
