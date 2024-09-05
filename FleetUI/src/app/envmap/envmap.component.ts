@@ -107,8 +107,6 @@ export class EnvmapComponent implements AfterViewInit {
   connections: { fromId: number; toId: number; type: 'uni' | 'bi' }[] = []; // connections
   isNodeDetailsPopupVisible = false; // Control popup visibility
   ratio: number | null = null; // Store the resolution ratio (meters per pixel)
-  selectedAsset: 'docking' | 'charging' | 'picking' | null = null;
-  assetImages: { [key: string]: HTMLImageElement } = {};
   plottingMode: 'single' | 'multi' | null = null;
   zoneColor: string | null = null;
   isPlottingEnabled: boolean = false;
@@ -162,14 +160,22 @@ export class EnvmapComponent implements AfterViewInit {
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
   direction: 'uni' | 'bi' | null = null;
+  selectedAssetType: string | null = null;
+  assetImages: { [key: string]: HTMLImageElement } = {};
+
 
   setDirection(direction: 'uni' | 'bi'): void {
+    this.toggleOptionsMenu();
     this.deselectNode();
     this.direction = direction;
     this.firstNode = null;
     this.secondNode = null;
   }
-
+  selectAssetType(assetType: string) {
+    this.toggleOptionsMenu();
+    this.selectedAssetType = assetType;
+  }
+  
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
@@ -188,6 +194,7 @@ export class EnvmapComponent implements AfterViewInit {
         console.error('Canvas element still not found');
       }
     }, 0); // Adjust the delay if necessary
+
   }
   ngAfterViewChecked(): void {
     if (this.showImage && this.overlayCanvas && !this.isCanvasInitialized) {
@@ -211,6 +218,18 @@ export class EnvmapComponent implements AfterViewInit {
     }
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      this.assetImages['docking'] = new Image();
+      this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
+    
+      this.assetImages['charging'] = new Image();
+      this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
+    
+      this.assetImages['waiting'] = new Image();
+      this.assetImages['waiting'].src = 'assets/Asseticon/waiting-station.svg';
+
+      this.assetImages['intermediate'] = new Image();
+      this.assetImages['intermediate'].src = 'assets/Asseticon/intermediate-station.svg';
+
       this.robotImages['robotA'] = new Image();
       this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
 
@@ -1345,6 +1364,19 @@ export class EnvmapComponent implements AfterViewInit {
     const dy = mouseY - transformedY; // Use transformed Y-coordinate
     return dx * dx + dy * dy <= radius * radius;
   }
+  private plotAsset(x: number, y: number, assetType: string): void {
+    const ctx = this.overlayCanvas.nativeElement.getContext('2d');
+    const image = this.assetImages[assetType];
+    if (image && ctx) {
+      const imageSize = 50; // Set image size
+      ctx.drawImage(image, x - imageSize / 2,  y - imageSize / 2, imageSize, imageSize);
+      
+      // Optionally, add this asset as a "node" for future reference
+      // this.nodes.push({ id: this.generateNodeId(), pos: { x, y }, type: 'asset', assetType });
+    }
+    // this.redrawCanvas(); // Redraw other elements
+  }
+  
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -1355,6 +1387,13 @@ export class EnvmapComponent implements AfterViewInit {
       const y =
         (event.clientY - rect.top) *
         (this.overlayCanvas.nativeElement.height / rect.height);
+
+        if (this.selectedAssetType) {
+          // Plot asset image
+          this.plotAsset(x, y, this.selectedAssetType);
+          this.selectedAssetType = null; // Reset after plotting
+          return;
+        }
 
       if (this.isDrawingZone) {
         this.startX = x;

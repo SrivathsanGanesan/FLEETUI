@@ -391,11 +391,13 @@
         <div class="dropdown">
           <button class="dropdown-button">Add Assets</button>
           <div class="dropdown-content">
-            <button>Docking Station</button>
-            <button>Charging Station</button>
-            <button>Picking Station</button>
+            <button (click)="selectAssetType('docking')">Docking Station</button>
+            <button (click)="selectAssetType('charging')">Charging Station</button>
+            <button (click)="selectAssetType('waiting')">Waiting Station</button>
+            <button (click)="selectAssetType('intermediate')">Intermediate Station</button>
           </div>
         </div>
+        
         <button (click)="openRobotPopup()">Add Robots</button>
         <app-robot-popup
           [isVisible]="isRobotPopupVisible"
