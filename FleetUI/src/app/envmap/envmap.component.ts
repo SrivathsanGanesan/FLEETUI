@@ -88,8 +88,7 @@ export class EnvmapComponent implements AfterViewInit {
   showOptionsLayer: boolean = false;
   orientationAngle: number = 0;
   nodes: Node[] = []; // Org_nodes
-  edges : Edge[] = []; // Org_edges
-  
+  edges : Edge[] = []; // Org_edges  
   Nodes: {
     id: number;
     x: number;
@@ -168,15 +167,12 @@ export class EnvmapComponent implements AfterViewInit {
     this.direction = direction;
     this.firstNode = null;
     this.secondNode = null;
-  }
-
-  
+  }  
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
     private projectService: ProjectService
   ) {}
-
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
     if (!this.overlayCanvas) return;
@@ -191,18 +187,15 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }, 0); // Adjust the delay if necessary
   }
-
   ngAfterViewChecked(): void {
     if (this.showImage && this.overlayCanvas && !this.isCanvasInitialized) {
       this.setupCanvas();
       this.isCanvasInitialized = true;
     }
   }
-
   getOverlayCanvas(): HTMLCanvasElement | null {
     return this.overlayCanvas?.nativeElement;
   }
-
   setupCanvas(): void {
     const canvas = this.getOverlayCanvas();
     if (!canvas) {
@@ -216,17 +209,6 @@ export class EnvmapComponent implements AfterViewInit {
     }
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      // Preload asset images
-      this.assetImages['docking'] = new Image();
-      this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
-
-      this.assetImages['charging'] = new Image();
-      this.assetImages['charging'].src =
-        'assets/Asseticon/charging-station.svg';
-
-      this.assetImages['picking'] = new Image();
-      this.assetImages['picking'].src = 'assets/Asseticon/picking-station.svg';
-
       this.robotImages['robotA'] = new Image();
       this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
 
@@ -234,27 +216,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
     } else {
       console.error('Failed to get canvas context');
-    }
-  }
-  plotAsset(x: number, y: number): void {
-    const canvas = this.getOverlayCanvas();
-    if (!canvas) {
-      console.error('Canvas element not found');
-      return;
-    }
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      console.error('Failed to get canvas context');
-      return;
-    }
-
-    const assetImage = this.assetImages[this.selectedAsset || ''];
-    if (assetImage) {
-      ctx.drawImage(assetImage, x, y);
-      console.log(`Plotted ${this.selectedAsset} at (${x}, ${y})`);
-    } else {
-      console.error('Selected asset is not valid');
     }
   }
   deleteSelectedNode(): void {
@@ -302,10 +263,6 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
-  }
-  selectAsset(assetType: 'docking' | 'charging' | 'picking'): void {
-    this.selectedAsset = assetType;
-    this.isPlottingEnabled = false; // Disable other plotting nodes when placing an asset
   }
   onRobotsPlaced(event: { type: 'robotA' | 'robotB'; count: number }): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -416,38 +373,47 @@ export class EnvmapComponent implements AfterViewInit {
     this.showActionForm();
     this.actions.splice(index, 1); // Remove the action from the list
   }
-
   selectedAction: string = ''; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
   // Method to add an action to the list
   addAction(): void {
     if (this.selectedAction) {
-      let action;
+      let action : any;
 
       if (this.selectedAction === 'Move') {
         action = {
           actionType: this.selectedAction,
-          actionId: 'action_move_001',
+          actionId: `action_${this.actionCounter}`,
           actionDescription: 'Move to the next Point',
           parameters: { ...this.moveParameters },
         };
+        this.actionCounter++;
       } else if (this.selectedAction === 'Dock') {
         action = {
           actionType: this.selectedAction,
-          actionId: 'action_dock_001',
+          actionId: `action_${this.actionCounter}`,
           actionDescription: 'Dock at the Charging Station',
           parameters: { ...this.dockParameters },
         };
+        this.actionCounter++;
       } else if (this.selectedAction === 'Undock') {
         action = {
           actionType: this.selectedAction,
-          actionId: 'action_undock_001',
+          actionId: `action_${this.actionCounter}`,
           actionDescription: 'undock from the charging station',
           parameters: { ...this.undockParameters },
         };
+        this.actionCounter++;
       }
 
       this.actions.push(action);
+      this.nodes = this.nodes.map(node => {
+        console.log(this.selectedNode?.id, node.id);
+        if(this.selectedNode?.id === node.id)
+          node.actions.push(action);
+        return node;
+      })
+      this.cdRef.detectChanges();
 
       // Hide the form after adding
       this.hideActionForms();
@@ -527,7 +493,6 @@ export class EnvmapComponent implements AfterViewInit {
       Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
     );
   }
-
   showError: boolean = false; // Flag to show error message
   //  Saving all nodes and edges
   saveOpt() {
@@ -1142,12 +1107,10 @@ export class EnvmapComponent implements AfterViewInit {
     }));
 
     // Create a JSON object with the node details
-    const nodeDetails = {
-      nodes: this.NodeDetails,
-    };
+    const nodeDetails = this.nodes;
 
     // Log the JSON object to the console
-    console.log(nodeDetails);
+    console.log(this.nodes);
     console.log(this.edges);
     
 
@@ -1283,27 +1246,29 @@ export class EnvmapComponent implements AfterViewInit {
         this.drawArrowhead(ctx, endPos, startPos, direction);
       }
     }
-}
-  
+  }  
   private drawArrowhead(ctx: CanvasRenderingContext2D, from: { x: number, y: number }, to: { x: number, y: number }, direction: string): void {
     const headLength = 10; // Length of the arrowhead
+    const offset = 5; // Distance to move the arrowhead away from the node
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
-  
+
+    // Calculate the new position for the arrowhead
+    const newToX = to.x - offset * Math.cos(angle);
+    const newToY = to.y - offset * Math.sin(angle);
+
     ctx.beginPath();
-    ctx.moveTo(to.x, this.overlayCanvas.nativeElement.height - to.y);
-    ctx.lineTo(to.x - headLength * Math.cos(angle - Math.PI / 6), this.overlayCanvas.nativeElement.height - (to.y - headLength * Math.sin(angle - Math.PI / 6)));
-    ctx.lineTo(to.x - headLength * Math.cos(angle + Math.PI / 6), this.overlayCanvas.nativeElement.height - (to.y - headLength * Math.sin(angle + Math.PI / 6)));
-    ctx.lineTo(to.x, this.overlayCanvas.nativeElement.height - to.y);
+    ctx.moveTo(newToX, this.overlayCanvas.nativeElement.height - newToY);
+    ctx.lineTo(newToX - headLength * Math.cos(angle - Math.PI / 6), this.overlayCanvas.nativeElement.height - (newToY - headLength * Math.sin(angle - Math.PI / 6)));
+    ctx.lineTo(newToX - headLength * Math.cos(angle + Math.PI / 6), this.overlayCanvas.nativeElement.height - (newToY - headLength * Math.sin(angle + Math.PI / 6)));
+    ctx.lineTo(newToX, this.overlayCanvas.nativeElement.height - newToY);
     ctx.fillStyle = 'black';
     ctx.fill();
   }
-  
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
     this.direction = null;
   }
-
   private deselectNode(): void {
     if (this.selectedNode) {
         // Redraw the previously selected node as deselected (transparent or default color)
@@ -1371,8 +1336,6 @@ export class EnvmapComponent implements AfterViewInit {
         } 
         if (this.plottingMode === 'multi') {
           this.plotMultiNode(x, y);
-        } else if (this.selectedAsset) {
-          this.plotAsset(x, y); // Plot asset if an asset is selected
         }
       }
     }
@@ -1619,7 +1582,6 @@ export class EnvmapComponent implements AfterViewInit {
     const foundNode = this.nodes.find((n) => n.pos.x === node.x && n.pos.y === node.y);
     return foundNode ? parseInt(foundNode.id) : -1; // Return -1 if the node is not found
   }
-
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
   }
