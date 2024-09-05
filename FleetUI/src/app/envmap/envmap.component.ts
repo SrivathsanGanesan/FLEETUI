@@ -110,9 +110,7 @@ export class EnvmapComponent implements AfterViewInit {
   isNodeDetailsPopupVisible = false; // Control popup visibility
   ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   plottingMode: 'single' | 'multi' | null = null;
-  zoneColor: string | null = null;
   isPlottingEnabled: boolean = false;
-  isDrawingZone: boolean = false;
   isDrawing: boolean = false;
   startX: number | null = null;
   startY: number | null = null;
@@ -122,12 +120,10 @@ export class EnvmapComponent implements AfterViewInit {
   numberOfIntermediateNodes: number = 0;
   firstNode: Node | null = null;
   secondNode: Node | null = null;
-  currentZone: Zone | null = null;
   robotImages: { [key: string]: HTMLImageElement } = {};
   isRobotPopupVisible: boolean = false;
   tableData: { mapName: string; siteName: string }[] = []; // Holds table data
   private points: { x: number; y: number }[] = [];
-  private zones: Zone[] = [];
   showImagePopup: boolean = false;
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
@@ -168,6 +164,7 @@ export class EnvmapComponent implements AfterViewInit {
   // selectedAsset: { x: number, y: number, type: string } | null = null;
   selectedAsset :asset | null = null
   draggingAsset: boolean = false;
+  
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -775,10 +772,6 @@ export class EnvmapComponent implements AfterViewInit {
   }
   close(): void {
     this.closePopup.emit(); // Then close the popup
-  }
-  setZoneColor(color: string): void {
-    this.zoneColor = color;
-    this.isDrawingZone = true;
   }
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
@@ -1390,7 +1383,7 @@ export class EnvmapComponent implements AfterViewInit {
       // this.nodes.push({ id: this.generateNodeId(), pos: { x, y }, type: 'asset', assetType });
     }
     // this.redrawCanvas(); // Redraw other elements
-  }  
+  } 
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -1419,18 +1412,6 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
 
-      if (this.isDrawingZone) {
-        this.startX = x;
-        this.startY = y;
-        this.currentZone = {
-          type: 'low',
-          startX: this.startX,
-          startY: this.startY,
-          endX: this.startX,
-          endY: this.startY,
-          color: this.zoneColor!,
-        };
-      }
 
       let nodeClicked = false;
       for (const node of this.nodes) {
@@ -1459,7 +1440,6 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
-
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     if (this.draggingAsset && this.selectedAsset) {
@@ -1493,28 +1473,7 @@ export class EnvmapComponent implements AfterViewInit {
         );
       }
     }
-    if (
-      this.isDrawingZone &&
-      this.currentZone &&
-      this.overlayCanvas &&
-      this.overlayCanvas.nativeElement
-    ) {
-      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const endX =
-        (event.clientX - rect.left) *
-        (this.overlayCanvas.nativeElement.width / rect.width);
-      const endY =
-        (event.clientY - rect.top) *
-        (this.overlayCanvas.nativeElement.height / rect.height);
-
-      // Update the current zone's end coordinates
-      this.currentZone.endX = endX;
-      this.currentZone.endY = endY;
-      // Clear the canvas and redraw all zones
-      this.redrawZones();
-    }
   }
-
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
     if (
@@ -1556,45 +1515,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.onMouseUp.bind(this)
       );
     }
-    if (
-      this.isDrawingZone &&
-      this.currentZone &&
-      this.overlayCanvas &&
-      this.overlayCanvas.nativeElement
-    ) {
-      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const endX =
-        (event.clientX - rect.left) *
-        (this.overlayCanvas.nativeElement.width / rect.width);
-      const endY =
-        (event.clientY - rect.top) *
-        (this.overlayCanvas.nativeElement.height / rect.height);
 
-      // Update the current zone's end coordinates
-      this.currentZone.endX = endX;
-      this.currentZone.endY = endY;
-
-      // Check for overlap with existing zones
-      if (this.checkZoneOverlap(this.currentZone)) {
-        alert('Zones cannot overlap! The overlapping zone has been removed.');
-        this.currentZone = null; // Reset the current zone
-        this.isDrawingZone = false;
-
-        // Clear the canvas and redraw all zones without the current one
-        this.redrawZones();
-        return; // Exit early to prevent saving the overlapping zone
-      }
-
-      // Save the current zone to the zones array
-      this.zones.push(this.currentZone);
-
-      // Redraw all zones
-      this.redrawZones();
-
-      // Reset drawing state
-      this.isDrawingZone = false;
-      this.currentZone = null;
-    }
     if (this.draggingAsset && this.selectedAsset) {
       // Finalize asset position
       this.draggingAsset = false;
@@ -1679,74 +1600,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.assets.forEach((asset)=>{
         this.plotAsset(asset.x, asset.y, asset.type);
       })
-    }
-  }
-  private checkZoneOverlap(newZone: Zone): boolean {
-    for (const zone of this.zones) {
-      if (this.isOverlapping(zone, newZone)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  private isOverlapping(zone1: Zone, zone2: Zone): boolean {
-    return !(
-      zone2.startX > zone1.endX ||
-      zone2.endX < zone1.startX ||
-      zone2.startY > zone1.endY ||
-      zone2.endY < zone1.startY
-    );
-  }
-  drawZone(startX: number, startY: number, endX: number, endY: number): void {
-    if (!this.overlayCanvas || !this.zoneColor) return;
-
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-    const rect = canvas.getBoundingClientRect();
-    const x1 = (startX - rect.left) * (canvas.width / rect.width);
-    const y1 = (startY - rect.top) * (canvas.height / rect.height);
-    const x2 = (endX - rect.left) * (canvas.width / rect.width);
-    const y2 = (endY - rect.top) * (canvas.height / rect.height);
-
-    ctx!.beginPath();
-    ctx!.rect(
-      Math.min(x1, x2),
-      Math.min(y1, y2),
-      Math.abs(x2 - x1),
-      Math.abs(y2 - y1)
-    );
-    ctx!.fillStyle = this.zoneColor;
-    ctx!.fill();
-  }
-  private redrawZones(): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-    ctx!.clearRect(0, 0, canvas.width, canvas.height);
-    // Draw all existing zones
-    for (const zone of this.zones) {
-      ctx!.beginPath();
-      ctx!.rect(
-        zone.startX,
-        zone.startY,
-        zone.endX - zone.startX,
-        zone.endY - zone.startY
-      );
-      ctx!.fillStyle = zone.color;
-      ctx!.fill();
-      ctx!.stroke();
-    }
-    // Draw the current zone being drawn
-    if (this.currentZone) {
-      ctx!.beginPath();
-      ctx!.rect(
-        this.currentZone.startX,
-        this.currentZone.startY,
-        this.currentZone.endX - this.currentZone.startX,
-        this.currentZone.endY - this.currentZone.startY
-      );
-      ctx!.fillStyle = this.currentZone.color;
-      ctx!.fill();
-      ctx!.stroke();
     }
   }
   drawConnections(): void {
