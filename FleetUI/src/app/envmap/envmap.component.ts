@@ -89,7 +89,6 @@ export class EnvmapComponent implements AfterViewInit {
   orientationAngle: number = 0;
   nodes: Node[] = []; // Org_nodes
   edges: Edge[] = []; // Org_edges
-
   Nodes: {
     id: number;
     x: number;
@@ -162,7 +161,9 @@ export class EnvmapComponent implements AfterViewInit {
   direction: 'uni' | 'bi' | null = null;
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
-
+  selectedAsset: { x: number, y: number, type: string } | null = null;
+  draggingAsset: boolean = false;
+  assets: { x: number, y: number, type: string }[] = []; // Array to track assets
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -1325,23 +1326,32 @@ export class EnvmapComponent implements AfterViewInit {
     const headLength = 10; // Length of the arrowhead
     const offset = 5; // Distance to move the arrowhead away from the node
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
-
+  
+    // Calculate the offset position for the arrowhead
+    const offsetX = offset * Math.cos(angle);
+    const offsetY = offset * Math.sin(angle);
+  
+    // Adjust the end position of the arrowhead by the offset
+    const adjustedToX = to.x - offsetX;
+    const adjustedToY = to.y - offsetY;
+  
     ctx.beginPath();
-    ctx.moveTo(to.x, this.overlayCanvas.nativeElement.height - to.y);
+    ctx.moveTo(adjustedToX, this.overlayCanvas.nativeElement.height - adjustedToY);
     ctx.lineTo(
-      to.x - headLength * Math.cos(angle - Math.PI / 6),
+      adjustedToX - headLength * Math.cos(angle - Math.PI / 6),
       this.overlayCanvas.nativeElement.height -
-        (to.y - headLength * Math.sin(angle - Math.PI / 6))
+        (adjustedToY - headLength * Math.sin(angle - Math.PI / 6))
     );
     ctx.lineTo(
-      to.x - headLength * Math.cos(angle + Math.PI / 6),
+      adjustedToX - headLength * Math.cos(angle + Math.PI / 6),
       this.overlayCanvas.nativeElement.height -
-        (to.y - headLength * Math.sin(angle + Math.PI / 6))
+        (adjustedToY - headLength * Math.sin(angle + Math.PI / 6))
     );
-    ctx.lineTo(to.x, this.overlayCanvas.nativeElement.height - to.y);
+    ctx.lineTo(adjustedToX, this.overlayCanvas.nativeElement.height - adjustedToY);
     ctx.fillStyle = 'black';
     ctx.fill();
   }
+  
 
   resetSelection(): void {
     this.firstNode = null;
@@ -1375,8 +1385,7 @@ export class EnvmapComponent implements AfterViewInit {
       // this.nodes.push({ id: this.generateNodeId(), pos: { x, y }, type: 'asset', assetType });
     }
     // this.redrawCanvas(); // Redraw other elements
-  }
-  
+  }  
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -1394,6 +1403,14 @@ export class EnvmapComponent implements AfterViewInit {
           this.selectedAssetType = null; // Reset after plotting
           return;
         }
+            // Check if an asset is clicked for dragging
+    for (const asset of this.assets) { // assuming `this.assets` is an array holding your plotted assets
+      if (this.isAssetClicked(asset, x, y)) {
+        this.selectedAsset = { x: asset.x, y: asset.y, type: asset.type };
+        this.draggingAsset = true;
+        break;
+      }
+    }
 
       if (this.isDrawingZone) {
         this.startX = x;
@@ -1437,6 +1454,17 @@ export class EnvmapComponent implements AfterViewInit {
   }
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
+    if (this.draggingAsset && this.selectedAsset) {
+      const canvas = this.overlayCanvas.nativeElement;
+      const rect = canvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+  
+      // Update the position of the selected asset
+      this.redrawCanvas(); // Clear the canvas
+      this.plotAsset(x, y, this.selectedAsset.type); // Draw the asset at the new position
+      this.selectedAsset = { x, y, type: this.selectedAsset.type }; // Update position
+    }
     if (this.isDrawingLine) {
       const canvas = this.overlayCanvas.nativeElement;
       const rect = canvas.getBoundingClientRect();
@@ -1555,6 +1583,35 @@ export class EnvmapComponent implements AfterViewInit {
       // Reset drawing state
       this.isDrawingZone = false;
       this.currentZone = null;
+    }
+    if (this.draggingAsset && this.selectedAsset) {
+      // Finalize asset position
+      this.draggingAsset = false;
+      const canvas = this.overlayCanvas.nativeElement;
+      const rect = canvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+  
+      // Update asset position
+      this.updateAssetPosition(this.selectedAsset.type, x, y);
+      this.selectedAsset = null;
+    }
+  }
+  private isAssetClicked(asset: { x: number, y: number, type: string }, mouseX: number, mouseY: number): boolean {
+    const radius = 25; // Adjust radius to match asset size
+    const dx = mouseX - asset.x;
+    const dy = mouseY - asset.y;
+    return dx * dx + dy * dy <= radius * radius;
+  }
+  
+  private updateAssetPosition(type: string, x: number, y: number): void {
+    // Implement logic to update asset position in your data structure
+    // Example: Find and update asset in this.assets
+    const asset = this.assets.find(a => a.type === type);
+    if (asset) {
+      asset.x = x;
+      asset.y = y;
+      this.redrawCanvas(); // Redraw canvas to show the updated position
     }
   }
   private redrawCanvas(): void {
