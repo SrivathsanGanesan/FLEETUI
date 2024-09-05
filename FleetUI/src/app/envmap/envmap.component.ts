@@ -26,33 +26,33 @@ interface Zone {
 }
 
 interface Node {
-  id:string,
-  sequenceId : number,
-  description : string,
-  released : boolean,
-  pos : { x : number, y : number, orientation : number},
-  actions : any[]
+  id: string;
+  sequenceId: number;
+  description: string;
+  released: boolean;
+  pos: { x: number; y: number; orientation: number };
+  actions: any[];
 }
 
 interface Edge {
-    edgeId :string; //Unique edge identification
-    sequenceId  : number; //Number to track the sequence of nodes and edges in an order and to simplify order updates
-    edgeDescription : string; //Additional information on the edge
-    released : boolean; //"true" indicates that the edge is part of the base. "false" indicates that the edge is part of the horizon.
-    startNodeId :  string; //nodeId of startNode
-    endNodeId : string; //nodeId of endNode
-    maxSpeed : number; //Permitted maximum speed on the edge in m/s
-    maxHeight : number; //Permitted maximum height of the vehicle, including the load, on edge in m
-    minHeight : number; //Permitted minimal height of the load handling device on the edge in m
-    orientation : number; //Orientation of the AGV on the edge in rad
-    orientationType : string; //The value orientationType defines if it has to be interpreted relative to the global project specific map coordinate system or tangential to the edge
-    direction : string; //Sets direction at junctions for line-guided or wire-guided vehicles, to be defined initially (vehicle-individual)
-    rotationAllowed : boolean; //“true”: rotation is allowed on the edge. “false”: rotation is not allowed on the edge.
-    maxRotationSpeed : number; //Maximum rotation speed in rad/s
-    // Trajectory trajectory; //Defines the curve, on which the AGV should move between startNode and endNode
-    length : number; //Length of the path from startNode to endNode
-    action : any[]; //Array of actionIds to be executed on the edge
-};
+  edgeId: string; //Unique edge identification
+  sequenceId: number; //Number to track the sequence of nodes and edges in an order and to simplify order updates
+  edgeDescription: string; //Additional information on the edge
+  released: boolean; //"true" indicates that the edge is part of the base. "false" indicates that the edge is part of the horizon.
+  startNodeId: string; //nodeId of startNode
+  endNodeId: string; //nodeId of endNode
+  maxSpeed: number; //Permitted maximum speed on the edge in m/s
+  maxHeight: number; //Permitted maximum height of the vehicle, including the load, on edge in m
+  minHeight: number; //Permitted minimal height of the load handling device on the edge in m
+  orientation: number; //Orientation of the AGV on the edge in rad
+  orientationType: string; //The value orientationType defines if it has to be interpreted relative to the global project specific map coordinate system or tangential to the edge
+  direction: string; //Sets direction at junctions for line-guided or wire-guided vehicles, to be defined initially (vehicle-individual)
+  rotationAllowed: boolean; //“true”: rotation is allowed on the edge. “false”: rotation is not allowed on the edge.
+  maxRotationSpeed: number; //Maximum rotation speed in rad/s
+  // Trajectory trajectory; //Defines the curve, on which the AGV should move between startNode and endNode
+  length: number; //Length of the path from startNode to endNode
+  action: any[]; //Array of actionIds to be executed on the edge
+}
 
 @Component({
   selector: 'app-envmap',
@@ -88,7 +88,8 @@ export class EnvmapComponent implements AfterViewInit {
   showOptionsLayer: boolean = false;
   orientationAngle: number = 0;
   nodes: Node[] = []; // Org_nodes
-  edges : Edge[] = []; // Org_edges  
+  edges: Edge[] = []; // Org_edges
+
   Nodes: {
     id: number;
     x: number;
@@ -135,7 +136,7 @@ export class EnvmapComponent implements AfterViewInit {
   private actionCounter: number = 1; // Counter to assign action numbers
   selectedNode: Node | null = null;
   lastSelectedNode: { x: number; y: number } | null = null;
-  node: { id: number; x: number; y: number  }[] = []; // Nodes with unique IDs
+  node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
   nodeDetails: {
     id: number;
     x: number;
@@ -167,7 +168,8 @@ export class EnvmapComponent implements AfterViewInit {
     this.direction = direction;
     this.firstNode = null;
     this.secondNode = null;
-  }  
+  }
+
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
@@ -221,26 +223,30 @@ export class EnvmapComponent implements AfterViewInit {
   deleteSelectedNode(): void {
     if (this.selectedNode) {
       // Remove from nodes array
-      this.nodes = this.nodes.filter(
-        (node) => {
-          return node.pos.x !== this.selectedNode?.pos.x && node.pos.y !== this.selectedNode?.pos.y;
-        }
-      );
+      this.nodes = this.nodes.filter((node) => {
+        return (
+          node.pos.x !== this.selectedNode?.pos.x &&
+          node.pos.y !== this.selectedNode?.pos.y
+        );
+      });
 
       this.edges = this.edges.filter((edge) => {
-        return edge.startNodeId !== this.selectedNode?.id && edge.endNodeId !== this.selectedNode?.id;
+        return (
+          edge.startNodeId !== this.selectedNode?.id &&
+          edge.endNodeId !== this.selectedNode?.id
+        );
       });
       console.log(this.edges);
       // this.cdRef.detectChanges(); // remove in later..
-  
+
       // Clear the selectedNode
       this.selectedNode = null;
-          // Redraw the canvas
+      // Redraw the canvas
       this.redrawCanvas();
     } else {
-      console.log("No node selected to delete.");
+      console.log('No node selected to delete.');
     }
-  }  
+  }
   @HostListener('click', ['$event'])
   onOverlayCanvasClick(event: MouseEvent): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -773,11 +779,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isNodeDetailsPopupVisible = true;
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
-  private drawNode(
-    node: Node,
-    color: string,
-    selected: boolean
-  ): void {
+  private drawNode(node: Node, color: string, selected: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
 
@@ -789,65 +791,67 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.lineWidth = selected ? 3 : 1;
       ctx.fill();
     }
-  }  
+  }
   private drawArrowLine(
     startX: number,
     startY: number,
     endX: number,
     endY: number,
     maxHeight: number = 50, // Maximum allowed height
-    maxWidth: number = 50   // Maximum allowed width
+    maxWidth: number = 50 // Maximum allowed width
   ): void {
     console.log(startX, startY);
-    
+
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-  
+
     if (ctx) {
       // Apply the Y-transformation (assuming the transformation inverts the Y-coordinate)
       const canvasHeight = canvas.height;
       const transformedStartY = canvasHeight - startY;
       let transformedEndY = canvasHeight - endY;
-      
+
       // Calculate the actual height of the line
       let height = Math.abs(transformedEndY - transformedStartY);
       let width = Math.abs(endX - startX);
-  
+
       // Adjust the endY coordinate if the height exceeds maxHeight
       if (height > maxHeight) {
         const directionY = transformedEndY > transformedStartY ? 1 : -1; // Determine if the line is going up or down
         transformedEndY = transformedStartY + directionY * maxHeight;
       }
-  
+
       // Adjust the endX coordinate if the width exceeds maxWidth
       if (width > maxWidth) {
         const directionX = endX > startX ? 1 : -1; // Determine if the line is going right or left
         endX = startX + directionX * maxWidth;
       }
-  
+
       // Recalculate the angle after possible adjustments
       const angleRadians = Math.atan2(
         transformedEndY - transformedStartY,
         endX - startX
       );
       const angleDegrees = angleRadians * (180 / Math.PI);
-  
+
       // Update the orientationAngle of the node
       const currentNode = this.nodes.find((node) => {
         if (Math.abs(node.pos.x - startX) <= 5)
           node.pos.orientation = angleDegrees;
       });
-  
+
       this.orientationAngle = angleDegrees;
       if (this.secondNode) this.secondNode.pos.orientation = angleDegrees;
       if (currentNode) {
         currentNode.pos.orientation = angleDegrees;
       }
-  
+
       console.log(
-        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(2)}°`
+        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
+          2
+        )}°`
       );
-  
+
       // Draw the line
       ctx.beginPath();
       ctx.moveTo(startX, startY);
@@ -855,23 +859,27 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.strokeStyle = 'red';
       ctx.lineWidth = 2;
       ctx.stroke();
-  
+
       // Draw arrowhead
       const arrowLength = 10;
       ctx.beginPath();
       ctx.moveTo(endX, canvasHeight - transformedEndY); // Arrow at the adjusted end point
       ctx.lineTo(
         endX - arrowLength * Math.cos(angleRadians - Math.PI / 6),
-        (canvasHeight - transformedEndY) + arrowLength * Math.sin(angleRadians - Math.PI / 6)
+        canvasHeight -
+          transformedEndY +
+          arrowLength * Math.sin(angleRadians - Math.PI / 6)
       );
       ctx.moveTo(endX, canvasHeight - transformedEndY);
       ctx.lineTo(
         endX - arrowLength * Math.cos(angleRadians + Math.PI / 6),
-        (canvasHeight - transformedEndY) + arrowLength * Math.sin(angleRadians + Math.PI / 6)
+        canvasHeight -
+          transformedEndY +
+          arrowLength * Math.sin(angleRadians + Math.PI / 6)
       );
       ctx.stroke();
     }
-  }  
+  }
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const transformedY = canvas.height - y; // Flip the Y-axis
@@ -879,12 +887,12 @@ export class EnvmapComponent implements AfterViewInit {
     const color = 'blue'; // Color for single nodes
     this.drawNode(
       {
-        id:'',
-        sequenceId : 0,
-        description : '',
-        released : true,
-        pos : { x : x, y : transformedY, orientation : 0},
-        actions : []
+        id: '',
+        sequenceId: 0,
+        description: '',
+        released: true,
+        pos: { x: x, y: transformedY, orientation: 0 },
+        actions: [],
       },
       color,
       false
@@ -902,13 +910,13 @@ export class EnvmapComponent implements AfterViewInit {
       { x, y: transformedY }
     );
     let node = {
-      id : this.nodeCounter.toString(),
-      sequenceId : this.nodeCounter,
-      description : '',
-      released :true,
-      pos : { x : x, y : transformedY, orientation : this.orientationAngle},
-      actions: []
-    }
+      id: this.nodeCounter.toString(),
+      sequenceId: this.nodeCounter,
+      description: '',
+      released: true,
+      pos: { x: x, y: transformedY, orientation: this.orientationAngle },
+      actions: [],
+    };
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
     this.nodes.push(node);
     this.Nodes.push({ ...this.nodeDetails, type: 'single' });
@@ -921,14 +929,20 @@ export class EnvmapComponent implements AfterViewInit {
     this.lineStartX = x;
     this.lineStartY = y;
 
-    this.overlayCanvas.nativeElement.addEventListener('mousemove', this.onMouseMove.bind(this));
-    this.overlayCanvas.nativeElement.addEventListener('mouseup', this.onMouseUp.bind(this));
+    this.overlayCanvas.nativeElement.addEventListener(
+      'mousemove',
+      this.onMouseMove.bind(this)
+    );
+    this.overlayCanvas.nativeElement.addEventListener(
+      'mouseup',
+      this.onMouseUp.bind(this)
+    );
   }
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
     this.isPlottingEnabled = true;
     this.toggleOptionsMenu();
-    
+
     if (mode === 'multi') {
       // this.nodes = [];
       this.firstNode = null;
@@ -940,85 +954,99 @@ export class EnvmapComponent implements AfterViewInit {
     const transformedY = canvas.height - y; // Flip the Y-axis
 
     const color = 'blue'; // Color for multi-nodes
-    this.drawNode({
+    this.drawNode(
+      {
         id: '',
         sequenceId: 0,
         description: '',
         released: true,
         pos: { x: x, y: transformedY, orientation: 0 },
-        actions: []
-    }, color, false);
+        actions: [],
+      },
+      color,
+      false
+    );
 
     console.log(
-        `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
-        { x, y: transformedY }
+      `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
+      { x, y: transformedY }
     ); // Log the node number and position
 
     if (this.ratio !== null) {
-        const distanceX = x * this.ratio;
-        const distanceY = transformedY * this.ratio;
-        console.log(
-            `Type: Multi Node, Node Number: ${
-                this.nodeCounter
-            }, Distance (meters): X: ${distanceX.toFixed(
-                2
-            )}, Y: ${distanceY.toFixed(2)}`
-        );
+      const distanceX = x * this.ratio;
+      const distanceY = transformedY * this.ratio;
+      console.log(
+        `Type: Multi Node, Node Number: ${
+          this.nodeCounter
+        }, Distance (meters): X: ${distanceX.toFixed(
+          2
+        )}, Y: ${distanceY.toFixed(2)}`
+      );
     }
 
     this.nodeDetails = {
-        id: this.nodeCounter,
-        x: x, // Adjust for ratio if present
-        y: transformedY,
-        description: '',
-        actions: [],
+      id: this.nodeCounter,
+      x: x, // Adjust for ratio if present
+      y: transformedY,
+      description: '',
+      actions: [],
     };
 
     if (this.firstNode === null) {
-        // Plotting the first node
-        let firstnode = {
-            id: this.nodeCounter.toString(),
-            sequenceId: this.nodeCounter,
-            description: '',
-            released: true,
-            pos: { x: x, y: transformedY, orientation: 0 },
-            actions: []
-        }
-        this.firstNode = firstnode;
-        this.nodes.push(firstnode);
+      // Plotting the first node
+      let firstnode = {
+        id: this.nodeCounter.toString(),
+        sequenceId: this.nodeCounter,
+        description: '',
+        released: true,
+        pos: { x: x, y: transformedY, orientation: 0 },
+        actions: [],
+      };
+      this.firstNode = firstnode;
+      this.nodes.push(firstnode);
     } else if (this.secondNode === null) {
-        // Plotting the second node
-        let secondnode = {
-            id: this.nodeCounter.toString(),
-            sequenceId: this.nodeCounter,
-            description: '',
-            released: true,
-            pos: { x: x, y: transformedY, orientation: 0 },
-            actions: []
-        };
-        this.secondNode = secondnode;
-        this.nodes.push(secondnode);
+      // Plotting the second node
+      let secondnode = {
+        id: this.nodeCounter.toString(),
+        sequenceId: this.nodeCounter,
+        description: '',
+        released: true,
+        pos: { x: x, y: transformedY, orientation: 0 },
+        actions: [],
+      };
+      this.secondNode = secondnode;
+      this.nodes.push(secondnode);
 
-        this.isDrawingLine = true;
-        this.lineStartX = x;
-        this.lineStartY = y;
+      this.isDrawingLine = true;
+      this.lineStartX = x;
+      this.lineStartY = y;
 
-        this.overlayCanvas.nativeElement.addEventListener('mousemove', this.onMouseMove.bind(this));
-        this.overlayCanvas.nativeElement.addEventListener('mouseup', this.onMouseUp.bind(this));
+      this.overlayCanvas.nativeElement.addEventListener(
+        'mousemove',
+        this.onMouseMove.bind(this)
+      );
+      this.overlayCanvas.nativeElement.addEventListener(
+        'mouseup',
+        this.onMouseUp.bind(this)
+      );
 
-        this.showIntermediateNodesDialog = true;
-        this.isPlottingEnabled = false; // Disable further plotting after two nodes 
+      this.showIntermediateNodesDialog = true;
+      this.isPlottingEnabled = false; // Disable further plotting after two nodes
     } else {
-        // Plotting additional nodes
-        let node = {
-            id: this.nodeCounter.toString(),
-            sequenceId: this.nodeCounter,
-            description: '',
-            released: true,
-            pos: { x: x, y: transformedY, orientation: this.secondNode.pos.orientation },
-            actions: []
-        };
-        this.nodes.push(node);
+      // Plotting additional nodes
+      let node = {
+        id: this.nodeCounter.toString(),
+        sequenceId: this.nodeCounter,
+        description: '',
+        released: true,
+        pos: {
+          x: x,
+          y: transformedY,
+          orientation: this.secondNode.pos.orientation,
+        },
+        actions: [],
+      };
+      this.nodes.push(node);
     }
 
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
@@ -1042,24 +1070,26 @@ export class EnvmapComponent implements AfterViewInit {
         const dy =
           (this.secondNode.pos.y - this.firstNode.pos.y) /
           (this.numberOfIntermediateNodes + 1);
-          
-          for(let node of this.nodes){
-            if (node.pos.x == this.firstNode?.pos.x && node.pos.y == this.firstNode?.pos.y)
-              node.pos.orientation = this.secondNode!.pos.orientation;
-          }
-          
+
+        for (let node of this.nodes) {
+          if (
+            node.pos.x == this.firstNode?.pos.x &&
+            node.pos.y == this.firstNode?.pos.y
+          )
+            node.pos.orientation = this.secondNode!.pos.orientation;
+        }
 
         for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
           const x = this.firstNode.pos.x + i * dx;
           const y = this.firstNode.pos.y + i * dy;
           let node = {
-            id : this.nodeCounter.toString(),
-            sequenceId : this.nodeCounter,
-            description : '',
-            released :true,
-            pos : { x : x, y : y, orientation : this.secondNode!.pos.orientation},
-            actions: []
-          }
+            id: this.nodeCounter.toString(),
+            sequenceId: this.nodeCounter,
+            description: '',
+            released: true,
+            pos: { x: x, y: y, orientation: this.secondNode!.pos.orientation },
+            actions: [],
+          };
           this.nodes.push(node);
 
           this.nodeDetails = {
@@ -1070,14 +1100,18 @@ export class EnvmapComponent implements AfterViewInit {
             actions: [],
           };
 
-          this.drawNode({
-            id:'',
-            sequenceId : 0,
-            description : '',
-            released : true,
-            pos : { x : x, y : y, orientation : 0},
-            actions : []
-          }, 'blue', false); // Set the initial color and no outline
+          this.drawNode(
+            {
+              id: '',
+              sequenceId: 0,
+              description: '',
+              released: true,
+              pos: { x: x, y: y, orientation: 0 },
+              actions: [],
+            },
+            'blue',
+            false
+          ); // Set the initial color and no outline
           console.log(
             `Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`,
             { x, y }
@@ -1112,7 +1146,6 @@ export class EnvmapComponent implements AfterViewInit {
     // Log the JSON object to the console
     console.log(this.nodes);
     console.log(this.edges);
-    
 
     // Save the JSON object to a file
     const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
@@ -1135,102 +1168,118 @@ export class EnvmapComponent implements AfterViewInit {
   }
   private onNodeClick(x: number, y: number): void {
     // Find the clicked node
-    let clickedNode : Node | undefined;
-    clickedNode = this.nodes.find(node =>
-        node.pos.x === x && node.pos.y === y
+    let clickedNode: Node | undefined;
+    clickedNode = this.nodes.find(
+      (node) => node.pos.x === x && node.pos.y === y
     );
 
     if (clickedNode) {
-
       if (!this.firstNode) {
         this.firstNode = clickedNode;
         this.drawNode(clickedNode, 'red', true); // Highlight the first node
       } else if (!this.secondNode) {
         this.secondNode = clickedNode;
         this.drawNode(clickedNode, 'red', true); // Highlight the second node
-  
+
         // After selecting the second node, draw the line based on direction
         if (this.direction === 'uni') {
-          let edge : Edge;
+          let edge: Edge;
           edge = {
-            edgeId : this.edgeCounter.toString(),
-            sequenceId  : this.edgeCounter,
-            edgeDescription :'', 
-            released : true, 
-            startNodeId :  this.firstNode.id, 
-            endNodeId : this.secondNode.id, 
-            maxSpeed : 0, 
-            maxHeight : 0, 
-            minHeight : 0, 
-            orientation : 0, 
-            orientationType : '', 
-            direction :'UN_DIRECTIONAL', 
-            rotationAllowed : true,
-            maxRotationSpeed : 0,
+            edgeId: this.edgeCounter.toString(),
+            sequenceId: this.edgeCounter,
+            edgeDescription: '',
+            released: true,
+            startNodeId: this.firstNode.id,
+            endNodeId: this.secondNode.id,
+            maxSpeed: 0,
+            maxHeight: 0,
+            minHeight: 0,
+            orientation: 0,
+            orientationType: '',
+            direction: 'UN_DIRECTIONAL',
+            rotationAllowed: true,
+            maxRotationSpeed: 0,
             // Trajectory trajectory,
-            length : 0, 
-            action : [],
-          }
+            length: 0,
+            action: [],
+          };
           this.edges.push(edge);
-          this.drawEdge(this.firstNode.pos, this.secondNode.pos, 'uni', this.firstNode.id, this.secondNode.id);
+          this.drawEdge(
+            this.firstNode.pos,
+            this.secondNode.pos,
+            'uni',
+            this.firstNode.id,
+            this.secondNode.id
+          );
         } else if (this.direction === 'bi') {
-          let edge : Edge;
+          let edge: Edge;
           edge = {
-            edgeId : this.edgeCounter.toString(),
-            sequenceId  : this.edgeCounter,
-            edgeDescription :'', 
-            released : true, 
-            startNodeId :  this.firstNode.id, 
-            endNodeId : this.secondNode.id, 
-            maxSpeed : 0, 
-            maxHeight : 0, 
-            minHeight : 0, 
-            orientation : 0, 
-            orientationType : '', 
-            direction : 'BI_DIRECTIONAL', 
-            rotationAllowed : true,
-            maxRotationSpeed : 0,
+            edgeId: this.edgeCounter.toString(),
+            sequenceId: this.edgeCounter,
+            edgeDescription: '',
+            released: true,
+            startNodeId: this.firstNode.id,
+            endNodeId: this.secondNode.id,
+            maxSpeed: 0,
+            maxHeight: 0,
+            minHeight: 0,
+            orientation: 0,
+            orientationType: '',
+            direction: 'BI_DIRECTIONAL',
+            rotationAllowed: true,
+            maxRotationSpeed: 0,
             // Trajectory trajectory,
-            length : 0, 
-            action : [],
-          }
+            length: 0,
+            action: [],
+          };
           this.edges.push(edge);
-          this.drawEdge(this.firstNode.pos, this.secondNode.pos, 'bi', this.firstNode.id, this.secondNode.id);
+          this.drawEdge(
+            this.firstNode.pos,
+            this.secondNode.pos,
+            'bi',
+            this.firstNode.id,
+            this.secondNode.id
+          );
         }
 
         this.edgeCounter++;
-  
+
         // Reset after drawing
         this.resetSelection();
       }
-    
-        if (this.selectedNode === clickedNode) {
-            // If the same node is clicked again, deselect it
-            this.deselectNode();
-            console.log('Node deselected:', x, y);
-        } else {
-            // If a different node is clicked, deselect the previous one if any
-            if (this.selectedNode) {
-                this.deselectNode();
-            }
-            // Select the new node
-            this.selectedNode = clickedNode;
-            this.drawNode(clickedNode, 'red', true); // Highlight the selected node
-            console.log('Node selected:', x, y);
-            
-            // Draw connections or perform any other actions
-            if (this.lastSelectedNode) {
-                this.drawConnections();
-                this.resetSelection(); // Reset for the next connection
-            }
+
+      if (this.selectedNode === clickedNode) {
+        // If the same node is clicked again, deselect it
+        this.deselectNode();
+        console.log('Node deselected:', x, y);
+      } else {
+        // If a different node is clicked, deselect the previous one if any
+        if (this.selectedNode) {
+          this.deselectNode();
         }
+        // Select the new node
+        this.selectedNode = clickedNode;
+        this.drawNode(clickedNode, 'red', true); // Highlight the selected node
+        console.log('Node selected:', x, y);
+
+        // Draw connections or perform any other actions
+        if (this.lastSelectedNode) {
+          this.drawConnections();
+          this.resetSelection(); // Reset for the next connection
+        }
+      }
     }
   }
-  private drawEdge(startPos: { x: number, y: number }, endPos: { x: number, y: number }, direction : string, startNodeId : string, endNodeId : string): void {
+  private drawEdge(
+    startPos: { x: number; y: number },
+    endPos: { x: number; y: number },
+    direction: string,
+    startNodeId: string,
+    endNodeId: string
+  ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
 
-  
     if (ctx) {
       ctx.beginPath();
       ctx.moveTo(startPos.x, canvas.height - startPos.y); // Start point (flip Y-axis)
@@ -1238,32 +1287,43 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 2;
       ctx.stroke();
-  
+
       this.drawArrowhead(ctx, startPos, endPos, direction);
-  
+
       if (direction === 'bi') {
         // Draw the reverse arrow for bi-directional
         this.drawArrowhead(ctx, endPos, startPos, direction);
       }
     }
-  }  
-  private drawArrowhead(ctx: CanvasRenderingContext2D, from: { x: number, y: number }, to: { x: number, y: number }, direction: string): void {
+  }
+
+  private drawArrowhead(
+    ctx: CanvasRenderingContext2D,
+    from: { x: number; y: number },
+    to: { x: number; y: number },
+    direction: string
+  ): void {
     const headLength = 10; // Length of the arrowhead
     const offset = 5; // Distance to move the arrowhead away from the node
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
 
-    // Calculate the new position for the arrowhead
-    const newToX = to.x - offset * Math.cos(angle);
-    const newToY = to.y - offset * Math.sin(angle);
-
     ctx.beginPath();
-    ctx.moveTo(newToX, this.overlayCanvas.nativeElement.height - newToY);
-    ctx.lineTo(newToX - headLength * Math.cos(angle - Math.PI / 6), this.overlayCanvas.nativeElement.height - (newToY - headLength * Math.sin(angle - Math.PI / 6)));
-    ctx.lineTo(newToX - headLength * Math.cos(angle + Math.PI / 6), this.overlayCanvas.nativeElement.height - (newToY - headLength * Math.sin(angle + Math.PI / 6)));
-    ctx.lineTo(newToX, this.overlayCanvas.nativeElement.height - newToY);
+    ctx.moveTo(to.x, this.overlayCanvas.nativeElement.height - to.y);
+    ctx.lineTo(
+      to.x - headLength * Math.cos(angle - Math.PI / 6),
+      this.overlayCanvas.nativeElement.height -
+        (to.y - headLength * Math.sin(angle - Math.PI / 6))
+    );
+    ctx.lineTo(
+      to.x - headLength * Math.cos(angle + Math.PI / 6),
+      this.overlayCanvas.nativeElement.height -
+        (to.y - headLength * Math.sin(angle + Math.PI / 6))
+    );
+    ctx.lineTo(to.x, this.overlayCanvas.nativeElement.height - to.y);
     ctx.fillStyle = 'black';
     ctx.fill();
   }
+
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
@@ -1271,16 +1331,12 @@ export class EnvmapComponent implements AfterViewInit {
   }
   private deselectNode(): void {
     if (this.selectedNode) {
-        // Redraw the previously selected node as deselected (transparent or default color)
-        this.drawNode(this.selectedNode, 'blue', false); // Using 'blue' for non-selected nodes
-        this.selectedNode = null;
+      // Redraw the previously selected node as deselected (transparent or default color)
+      this.drawNode(this.selectedNode, 'blue', false); // Using 'blue' for non-selected nodes
+      this.selectedNode = null;
     }
   }
-  private isNodeClicked(
-    node: Node,
-    mouseX: number,
-    mouseY: number
-  ): boolean {
+  private isNodeClicked(node: Node, mouseX: number, mouseY: number): boolean {
     const radius = 6; // Node radius
     const canvas = this.overlayCanvas.nativeElement;
     const transformedY = canvas.height - node.pos.y; // Flip the Y-axis for node.y
@@ -1327,13 +1383,13 @@ export class EnvmapComponent implements AfterViewInit {
       //     this.lineStartX = x;
       //     this.lineStartY = y;
       //     this.lineEndX = x;
-      //     this.lineEndY = y;        
+      //     this.lineEndY = y;
       // }
 
       if (!nodeClicked && this.isPlottingEnabled) {
         if (this.plottingMode === 'single') {
           this.plotSingleNode(x, y);
-        } 
+        }
         if (this.plottingMode === 'multi') {
           this.plotMultiNode(x, y);
         }
@@ -1357,7 +1413,8 @@ export class EnvmapComponent implements AfterViewInit {
           this.lineStartY,
           this.lineEndX,
           this.lineEndY
-      )}
+        );
+      }
     }
     if (
       this.isDrawingZone &&
@@ -1394,7 +1451,6 @@ export class EnvmapComponent implements AfterViewInit {
       const x = (event.clientX - rect.left) * (canvas.width / rect.width);
       const y = (event.clientY - rect.top) * (canvas.height / rect.height);
       const transformedY = canvas.height - y; // Flip the Y-axis
-      
 
       // Finalize the line drawing
       this.drawArrowLine(
@@ -1406,16 +1462,21 @@ export class EnvmapComponent implements AfterViewInit {
 
       setTimeout(() => {
         // Clear the canvas section where the arrow was drawn
-         this.redrawCanvas(); // Ensure this redraws all existing elements except for the arrow
-       }, 1500);
-
+        this.redrawCanvas(); // Ensure this redraws all existing elements except for the arrow
+      }, 1500);
 
       // Reset the start and end positions
       this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
 
       // Remove the mousemove and mouseup event listeners
-      this.overlayCanvas.nativeElement.removeEventListener('mousemove', this.onMouseMove.bind(this));
-      this.overlayCanvas.nativeElement.removeEventListener('mouseup', this.onMouseUp.bind(this));
+      this.overlayCanvas.nativeElement.removeEventListener(
+        'mousemove',
+        this.onMouseMove.bind(this)
+      );
+      this.overlayCanvas.nativeElement.removeEventListener(
+        'mouseup',
+        this.onMouseUp.bind(this)
+      );
     }
     if (
       this.isDrawingZone &&
@@ -1462,7 +1523,7 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      this.cdRef.detectChanges() // remove later..
+      this.cdRef.detectChanges(); // remove later..
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       this.nodes.forEach((node) => this.drawNode(node, 'blue', false));
       // Redraw connections if needed
@@ -1472,7 +1533,13 @@ export class EnvmapComponent implements AfterViewInit {
         );
         const toNode = this.nodes.find((node) => node.id === edge.endNodeId);
         if (fromNode && toNode) {
-          this.drawEdge(fromNode.pos, toNode.pos, edge.direction, fromNode.id, toNode.id);
+          this.drawEdge(
+            fromNode.pos,
+            toNode.pos,
+            edge.direction,
+            fromNode.id,
+            toNode.id
+          );
         }
       });
     }
@@ -1546,16 +1613,16 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
   drawConnections(): void {
-    if (
-      !this.selectedNode ||
-      !this.lastSelectedNode 
-    ) {
+    if (!this.selectedNode || !this.lastSelectedNode) {
       console.log('Not enough nodes or mode is not set');
       return; // Ensure both nodes and a mode are selected
     }
 
     const fromId = this.getNodeId(this.lastSelectedNode);
-    const toId = this.getNodeId({x : this.selectedNode.pos.x, y : this.selectedNode.pos.y});
+    const toId = this.getNodeId({
+      x: this.selectedNode.pos.x,
+      y: this.selectedNode.pos.y,
+    });
 
     console.log('Drawing connection between nodes with IDs:', fromId, toId);
 
@@ -1575,11 +1642,11 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.moveTo(this.lastSelectedNode.x, this.lastSelectedNode.y);
     ctx.lineTo(this.selectedNode.pos.x, this.selectedNode.pos.y);
     ctx.stroke();
-
-    
   }
   private getNodeId(node: { x: number; y: number }): number {
-    const foundNode = this.nodes.find((n) => n.pos.x === node.x && n.pos.y === node.y);
+    const foundNode = this.nodes.find(
+      (n) => n.pos.x === node.x && n.pos.y === node.y
+    );
     return foundNode ? parseInt(foundNode.id) : -1; // Return -1 if the node is not found
   }
   toggleOptionsMenu(): void {

@@ -31,11 +31,11 @@ export class RobotsComponent implements OnInit {
   robots: Robot[] = [
     {
       id: 1,
-      serialNumber: '101589',
+      serialNumber: '1000000',
       name: 'Forklift AGV',
       imageUrl: "../../assets/robots/agv1.png",
       status: 'Active',
-      battery: '40%'
+      battery: '40%',
     },
     {
       id: 2,
