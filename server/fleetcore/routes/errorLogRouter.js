@@ -4,6 +4,6 @@ const {
 } = require("../controllers/liveStreamController/errorLogController");
 
 const errLogRouter = express.Router();
-errLogRouter.post("/task-logs", getTaskErrLogs);
+errLogRouter.post("/task-logs/:mapId", getTaskErrLogs);
 
 module.exports = errLogRouter;

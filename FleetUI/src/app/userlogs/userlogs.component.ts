@@ -1,6 +1,8 @@
 import { environment } from '../../environments/environment.development';
 import { ExportService } from '../export.service';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ProjectService } from '../services/project.service';
+import { timeStamp } from 'console';
 
 @Component({
   selector: 'app-userlogs',
@@ -8,6 +10,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
   styleUrl: './userlogs.component.css',
 })
 export class Userlogscomponent {
+  mapData: any | null = null;
   activeFilter: any;
   ONBtn: any;
   searchQuery: string = '';
@@ -19,16 +22,7 @@ export class Userlogscomponent {
   currentTab: any;
 
   // Your task data
-  taskData = [
-    {
-      dateTime: 'Sept 3, 3:30 AM',
-      taskId: 'Task_001',
-      taskName: 'drop packs',
-      errCode: 'Err_001',
-      criticality: 'medium',
-      desc: 'latency occured',
-    },
-  ];
+  taskData: any[] = [];
 
   // Your robot data
   robotData = [
@@ -156,7 +150,71 @@ export class Userlogscomponent {
     },
   ];
 
-  constructor(private exportService: ExportService) {}
+  constructor(
+    private exportService: ExportService,
+    private projectService: ProjectService
+  ) {
+    this.mapData = this.projectService.getMapData();
+    this.taskData = [
+      {
+        dateTime: 'Sept 3, 3:30 AM',
+        taskId: 'Task_001',
+        taskName: 'drop packs',
+        errCode: 'Err_001',
+        criticality: 'medium',
+        desc: 'latency occured',
+      },
+      {
+        dateTime: 'Sept 3, 3:30 AM',
+        taskId: 'Task_001',
+        taskName: 'drop packs',
+        errCode: 'Err_001',
+        criticality: 'medium',
+        desc: 'latency occured',
+      },
+    ];
+  }
+
+  ngOnInit() {
+    this.mapData = this.projectService.getMapData();
+    if (!this.mapData) {
+      console.log('Seems no map has been selected');
+      return;
+    }
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-logs/task-logs/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          timeStamp1: '',
+          timeStamp2: '',
+        }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with the statusCode of ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        const { taskLogs } = data;
+        this.taskData = taskLogs.notifications.map((taskErr: any) => {
+          return {
+            dateTime: new Date().toDateString(),
+            taskId: 'task_001',
+            taskName: 'Pick Packs',
+            errCode: taskErr.name,
+            criticality: taskErr.criticality,
+            desc: taskErr.description,
+          };
+        });
+        // console.log(taskLogs);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   togglePopup() {
     throw new Error('Method not implemented.');
