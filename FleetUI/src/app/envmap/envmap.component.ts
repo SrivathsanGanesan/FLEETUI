@@ -53,6 +53,7 @@ interface Edge {
   length: number; //Length of the path from startNode to endNode
   action: any[]; //Array of actionIds to be executed on the edge
 }
+interface asset {id : number, x: number, y: number, type: string }; // Array to track assets
 
 @Component({
   selector: 'app-envmap',
@@ -89,6 +90,7 @@ export class EnvmapComponent implements AfterViewInit {
   orientationAngle: number = 0;
   nodes: Node[] = []; // Org_nodes
   edges: Edge[] = []; // Org_edges
+  assets: asset[] =[]; //org_assets
   Nodes: {
     id: number;
     x: number;
@@ -96,6 +98,7 @@ export class EnvmapComponent implements AfterViewInit {
     orientationAngle?: number;
     type: string;
   }[] = [];
+
   NodeDetails: {
     nodeID: string;
     sequenceId: number;
@@ -131,6 +134,7 @@ export class EnvmapComponent implements AfterViewInit {
   private nodeCounter: number = 1; // Counter to assign node numbers
   private edgeCounter: number = 1; // Counter to assign edge numbers
   private actionCounter: number = 1; // Counter to assign action numbers
+  private assetCounter : number = 1; // counter to assign asset numbers
   selectedNode: Node | null = null;
   lastSelectedNode: { x: number; y: number } | null = null;
   node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
@@ -161,9 +165,9 @@ export class EnvmapComponent implements AfterViewInit {
   direction: 'uni' | 'bi' | null = null;
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
-  selectedAsset: { x: number, y: number, type: string } | null = null;
+  // selectedAsset: { x: number, y: number, type: string } | null = null;
+  selectedAsset :asset | null = null
   draggingAsset: boolean = false;
-  assets: { x: number, y: number, type: string }[] = []; // Array to track assets
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -1166,6 +1170,8 @@ export class EnvmapComponent implements AfterViewInit {
     // Log the JSON object to the console
     console.log(this.nodes);
     console.log(this.edges);
+    console.log(this.assets);
+    
 
     // Save the JSON object to a file
     const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
@@ -1350,8 +1356,7 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.lineTo(adjustedToX, this.overlayCanvas.nativeElement.height - adjustedToY);
     ctx.fillStyle = 'black';
     ctx.fill();
-  }
-  
+  }  
 
   resetSelection(): void {
     this.firstNode = null;
@@ -1390,27 +1395,29 @@ export class EnvmapComponent implements AfterViewInit {
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x =
-        (event.clientX - rect.left) *
-        (this.overlayCanvas.nativeElement.width / rect.width);
-      const y =
-        (event.clientY - rect.top) *
-        (this.overlayCanvas.nativeElement.height / rect.height);
+      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
         if (this.selectedAssetType) {
-          // Plot asset image
+        
+          let asset : asset;
+          asset = { id : this.assetCounter, x : x, y : y, type : this.selectedAssetType }
+          this.selectedAsset = asset;
+          this.assets.push(asset)
+          
           this.plotAsset(x, y, this.selectedAssetType);
           this.selectedAssetType = null; // Reset after plotting
+          this.assetCounter++;
           return;
         }
-            // Check if an asset is clicked for dragging
-    for (const asset of this.assets) { // assuming `this.assets` is an array holding your plotted assets
-      if (this.isAssetClicked(asset, x, y)) {
-        this.selectedAsset = { x: asset.x, y: asset.y, type: asset.type };
-        this.draggingAsset = true;
-        break;
-      }
-    }
+            // Check if an asset is clicked for dragging 
+        for (const asset of this.assets) { // assuming `this.assets` is an array holding your plotted assets
+          if (this.isAssetClicked(asset, x, y)) {
+            this.selectedAsset = asset;
+            this.draggingAsset = true;
+            break;
+          }
+        }
 
       if (this.isDrawingZone) {
         this.startX = x;
@@ -1452,6 +1459,7 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
+
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     if (this.draggingAsset && this.selectedAsset) {
@@ -1463,7 +1471,9 @@ export class EnvmapComponent implements AfterViewInit {
       // Update the position of the selected asset
       this.redrawCanvas(); // Clear the canvas
       this.plotAsset(x, y, this.selectedAsset.type); // Draw the asset at the new position
-      this.selectedAsset = { x, y, type: this.selectedAsset.type }; // Update position
+      // this.selectedAsset = { x, y, type: this.selectedAsset.type }; // Update position
+      this.selectedAsset.x = x;
+      this.selectedAsset.y = y;
     }
     if (this.isDrawingLine) {
       const canvas = this.overlayCanvas.nativeElement;
@@ -1504,6 +1514,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.redrawZones();
     }
   }
+
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
     if (
@@ -1591,9 +1602,35 @@ export class EnvmapComponent implements AfterViewInit {
       const rect = canvas.getBoundingClientRect();
       const x = (event.clientX - rect.left) * (canvas.width / rect.width);
       const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+
+      if (this.selectedAssetType) {
+        let asset : asset;
+        // for(let asset of this.assets){
+        //   if(this.selectedAsset.id === asset.id){
+        //     asset.x = x;
+        //     asset.y = y;
+        //   }
+        // }
+
+        this.assets = this.assets.map(asset => {
+          if(this.selectedAsset?.id === asset.id){
+            asset.x = x;
+            asset.y = y;
+            asset.type = this.selectedAsset.type;
+            return asset;
+          }
+          return asset;
+        })
+        
+        this.plotAsset(x, y, this.selectedAssetType);
+        this.selectedAssetType = null; // Reset after plotting
+        this.updateAssetPosition(this.selectedAsset.id, x, y);
+        this.selectedAsset = null;
+        return;
+      }
   
       // Update asset position
-      this.updateAssetPosition(this.selectedAsset.type, x, y);
+      this.updateAssetPosition(this.selectedAsset.id, x, y);
       this.selectedAsset = null;
     }
   }
@@ -1604,10 +1641,10 @@ export class EnvmapComponent implements AfterViewInit {
     return dx * dx + dy * dy <= radius * radius;
   }
   
-  private updateAssetPosition(type: string, x: number, y: number): void {
+  private updateAssetPosition(id: number, x: number, y: number): void {
     // Implement logic to update asset position in your data structure
     // Example: Find and update asset in this.assets
-    const asset = this.assets.find(a => a.type === type);
+    const asset = this.assets.find(asset => asset.id === id);
     if (asset) {
       asset.x = x;
       asset.y = y;
@@ -1638,6 +1675,10 @@ export class EnvmapComponent implements AfterViewInit {
           );
         }
       });
+
+      this.assets.forEach((asset)=>{
+        this.plotAsset(asset.x, asset.y, asset.type);
+      })
     }
   }
   private checkZoneOverlap(newZone: Zone): boolean {
