@@ -615,8 +615,8 @@ export class EnvmapComponent implements AfterViewInit {
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
     fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps`, {
-      credentials: 'include',
       method: 'POST',
+      credentials: 'include',
       body: this.form,
     })
       .then((response) => {
@@ -662,6 +662,8 @@ export class EnvmapComponent implements AfterViewInit {
       .catch((error) => {
         console.error('Error occ : ', error);
       });
+
+      this.form = null
   }
   confirmDistance(): void {
     if (
@@ -1444,15 +1446,15 @@ export class EnvmapComponent implements AfterViewInit {
     if (ctx) {
       // Draw outer black stroke
       ctx.beginPath();
-      ctx.arc(x, y, 8, 0, 2 * Math.PI);
-      ctx.strokeStyle = 'black';
-      ctx.lineWidth = 3;
+      ctx.arc(x, y, 6, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 1;
       ctx.stroke();
 
       // Draw inner violet circle
       ctx.beginPath();
-      ctx.arc(x, y, 6, 0, 2 * Math.PI);
-      ctx.fillStyle = 'violet';
+      ctx.arc(x, y, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = 'red';
       ctx.fill();
     } else {
       console.error('Failed to get canvas context');
@@ -1476,9 +1478,7 @@ export class EnvmapComponent implements AfterViewInit {
         const zoneColor = this.zoneColors[this.zoneType];
         ctx.fillStyle = zoneColor;
         ctx.fill();
-        ctx.strokeStyle = 'black'; // Keep the stroke black
-        ctx.lineWidth = 2;
-        ctx.stroke();
+
     } else {
         console.error('Insufficient points or zone type not selected');
     }
