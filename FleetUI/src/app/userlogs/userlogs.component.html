@@ -158,12 +158,13 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of taskData">
+                <tr *ngFor="let item of taskData; index as i">
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.dateTime }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.taskId }}
+                    {{ i + 1 }}
+                    <!-- {{ item.taskId }} -->
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.taskName }}
