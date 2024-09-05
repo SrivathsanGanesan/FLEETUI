@@ -55,11 +55,33 @@ interface Edge {
 }
 interface asset {id : number, x: number, y: number, type: string }; // Array to track assets
 
+enum ZoneType {
+  HIGH_SPEED_ZONE = 'High Speed Zone',
+  MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
+  SLOW_SPEED_ZONE = 'Slow Speed Zone',
+  MUTED_SPEED_ZONE = 'Muted Speed Zone',
+  TURNING_SPEED_ZONE = 'Turning Speed Zone',
+  IN_PLACE_SPEED_ZONE = 'In Place Speed Zone',
+  CHARGING_ZONE = 'Charging Zone',
+  PREFERRED_ZONE = 'Preferred Zone',
+  UNPREFERRED_ZONE = 'Unpreferred Zone',
+  KEEPOUT_ZONE = 'Keepout Zone',
+  CRITICAL_SAFETY_ZONE = 'Critical Safety Zone',
+  BLIND_LOCALISATION_ZONE = 'Blind Localisation Zone',
+  DENSE_ZONE = 'Dense Zone',
+  STRICTLY_PATH_ZONE = 'Strictly Path Zone',
+  OBSTACLE_AVOIDANCE_ZONE = 'Obstacle Avoidance Zone',
+  EMERGENCY_ZONE = 'Emergency Zone',
+  MAINTENANCE_ZONE = 'Maintenance Zone',
+  PARKING_ZONE = 'Parking Zone'
+}
+
 @Component({
   selector: 'app-envmap',
   templateUrl: './envmap.component.html',
   styleUrls: ['./envmap.component.css'],
 })
+
 export class EnvmapComponent implements AfterViewInit {
   @Input() EnvData: any[] = [];
   @Input() addEnvToEnvData!: (data: any) => void;
@@ -155,16 +177,45 @@ export class EnvmapComponent implements AfterViewInit {
   private lineStartY: number | null = null;
   private lineEndX: number | null = null;
   private lineEndY: number | null = null;
+  selectedAction: string = ''; // Initialize with an empty string or any other default value
+  actions: any[] = []; // Array to hold the list of actions with parameters
   isDistanceConfirmed = false; // Flag to control the Save button
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
+  showError: boolean = false; // Flag to show error message
   direction: 'uni' | 'bi' | null = null;
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
   selectedAsset :asset | null = null
   draggingAsset: boolean = false;
-  
+  isZonePlottingEnabled = false;
+  plottedPoints: { x: number, y: number }[] = [];
+  maxZonePoints = 6;  
+  zoneType: ZoneType | null = null; // Selected zone type
+  isPopupVisible: boolean = false; // Popup visibility
+  zoneColors: { [key in ZoneType]: string } = {
+    [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)',     // Red with 30% opacity
+    [ZoneType.MEDIUM_SPEED_ZONE]: 'rgba(255, 165, 0, 0.3)', // Orange with 30% opacity
+    [ZoneType.SLOW_SPEED_ZONE]: 'rgba(255, 255, 0, 0.3)',   // Yellow with 30% opacity
+    [ZoneType.MUTED_SPEED_ZONE]: 'rgba(0, 128, 0, 0.3)',    // Green with 30% opacity
+    [ZoneType.TURNING_SPEED_ZONE]: 'rgba(0, 0, 255, 0.3)',  // Blue with 30% opacity
+    [ZoneType.IN_PLACE_SPEED_ZONE]: 'rgba(75, 0, 130, 0.3)', // Indigo with 30% opacity
+    [ZoneType.CHARGING_ZONE]: 'rgba(238, 130, 238, 0.3)',   // Violet with 30% opacity
+    [ZoneType.PREFERRED_ZONE]: 'rgba(0, 255, 255, 0.3)',    // Cyan with 30% opacity
+    [ZoneType.UNPREFERRED_ZONE]: 'rgba(128, 0, 128, 0.3)',  // Purple with 30% opacity
+    [ZoneType.KEEPOUT_ZONE]: 'rgba(255, 69, 0, 0.3)',       // OrangeRed with 30% opacity
+    [ZoneType.CRITICAL_SAFETY_ZONE]: 'rgba(255, 20, 147, 0.3)', // DeepPink with 30% opacity
+    [ZoneType.BLIND_LOCALISATION_ZONE]: 'rgba(127, 255, 0, 0.3)', // Chartreuse with 30% opacity
+    [ZoneType.DENSE_ZONE]: 'rgba(220, 20, 60, 0.3)',        // Crimson with 30% opacity
+    [ZoneType.STRICTLY_PATH_ZONE]: 'rgba(0, 0, 139, 0.3)',  // DarkBlue with 30% opacity
+    [ZoneType.OBSTACLE_AVOIDANCE_ZONE]: 'rgba(0, 100, 0, 0.3)', // DarkGreen with 30% opacity
+    [ZoneType.EMERGENCY_ZONE]: 'rgba(139, 0, 0, 0.3)',      // DarkRed with 30% opacity
+    [ZoneType.MAINTENANCE_ZONE]: 'rgba(184, 134, 11, 0.3)', // DarkGoldenRod with 30% opacity
+    [ZoneType.PARKING_ZONE]: 'rgba(47, 79, 79, 0.3)'        // DarkSlateGray with 30% opacity
+};
+
+  zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -241,6 +292,26 @@ export class EnvmapComponent implements AfterViewInit {
       console.error('Failed to get canvas context');
     }
   }
+  @HostListener('click', ['$event'])
+  onOverlayCanvasClick(event: MouseEvent): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const y =
+      canvas.height -
+      (event.clientY - rect.top) * (canvas.height / rect.height);
+
+    const selected = this.nodes.find(
+      (node) => Math.abs(node.pos.x - x) < 5 && Math.abs(node.pos.y - y) < 5
+    );
+
+    // if (selected) {
+    //   this.selectedNode = selected;
+    //   console.log(
+    //     `Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`
+    //   );
+    // }
+  }
   deleteSelectedNode(): void {
     if (this.selectedNode) {
       // Remove from nodes array
@@ -268,26 +339,7 @@ export class EnvmapComponent implements AfterViewInit {
       console.log('No node selected to delete.');
     }
   }
-  @HostListener('click', ['$event'])
-  onOverlayCanvasClick(event: MouseEvent): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-    const y =
-      canvas.height -
-      (event.clientY - rect.top) * (canvas.height / rect.height);
 
-    const selected = this.nodes.find(
-      (node) => Math.abs(node.pos.x - x) < 5 && Math.abs(node.pos.y - y) < 5
-    );
-
-    // if (selected) {
-    //   this.selectedNode = selected;
-    //   console.log(
-    //     `Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`
-    //   );
-    // }
-  }
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
@@ -400,8 +452,6 @@ export class EnvmapComponent implements AfterViewInit {
     this.showActionForm();
     this.actions.splice(index, 1); // Remove the action from the list
   }
-  selectedAction: string = ''; // Initialize with an empty string or any other default value
-  actions: any[] = []; // Array to hold the list of actions with parameters
   // Method to add an action to the list
   addAction(): void {
     if (this.selectedAction) {
@@ -520,7 +570,6 @@ export class EnvmapComponent implements AfterViewInit {
       Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
     );
   }
-  showError: boolean = false; // Flag to show error message
   //  Saving all nodes and edges
   saveOpt() {
     console.log(this.Nodes);
@@ -1384,12 +1433,80 @@ export class EnvmapComponent implements AfterViewInit {
     }
     // this.redrawCanvas(); // Redraw other elements
   } 
+  startZonePlotting(): void {
+    this.toggleOptionsMenu();
+    this.isZonePlottingEnabled = true;
+    this.plottedPoints = []; // Reset previously plotted points
+  }
+  plotZonePoint(x: number, y: number): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      // Draw outer black stroke
+      ctx.beginPath();
+      ctx.arc(x, y, 8, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Draw inner violet circle
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, 2 * Math.PI);
+      ctx.fillStyle = 'violet';
+      ctx.fill();
+    } else {
+      console.error('Failed to get canvas context');
+    }
+  }
+  drawLayer(): void {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (ctx && this.plottedPoints.length === this.maxZonePoints && this.zoneType) {
+        ctx.beginPath();
+        ctx.moveTo(this.plottedPoints[0].x, this.plottedPoints[0].y);
+
+        // Draw lines between points to form a polygon
+        for (let i = 1; i < this.plottedPoints.length; i++) {
+            ctx.lineTo(this.plottedPoints[i].x, this.plottedPoints[i].y);
+        }
+
+        ctx.closePath();
+
+        // Set the fill color based on the selected zone type
+        const zoneColor = this.zoneColors[this.zoneType];
+        ctx.fillStyle = zoneColor;
+        ctx.fill();
+        ctx.strokeStyle = 'black'; // Keep the stroke black
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    } else {
+        console.error('Insufficient points or zone type not selected');
+    }
+}
+
+  onZoneTypeSelected(zoneType: ZoneType): void {
+    this.zoneType = zoneType;
+    this.isPopupVisible = false; // Hide the popup
+    this.drawLayer(); // Draw the layer with the selected zone color
+  }
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
       const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
       const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+
+        if (this.isZonePlottingEnabled && this.plottedPoints.length < this.maxZonePoints) {
+        // Plot the point
+        this.plotZonePoint(x, y);
+        // Add the point to the array of plotted points
+        this.plottedPoints.push({ x, y });
+        // If six points are plotted, form the layer (polygon)
+        if (this.plottedPoints.length >= this.maxZonePoints) {
+          this.isZonePlottingEnabled = false;
+          this.showZoneTypePopup();
+          console.log('Zone plotting completed and layer formed');
+        }}
 
         if (this.selectedAssetType) {
         
@@ -1440,6 +1557,10 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
+  showZoneTypePopup(): void {
+    this.isPopupVisible = true;
+  }
+// Method to handle zone type selection
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     if (this.draggingAsset && this.selectedAsset) {

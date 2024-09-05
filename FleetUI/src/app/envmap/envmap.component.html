@@ -354,6 +354,9 @@
         </button>
       </div>
 
+
+
+
       <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
         <div class="dropdown">
           <button class="dropdown-button">Add Node</button>
@@ -370,9 +373,7 @@
             <button (click)="setDirection('bi')">Bi-Directional</button>
           </div>
         </div>
-        <button id="zoneButton">Zones</button>
-
-
+        <button (click)="startZonePlotting()">Zones</button>
         <div class="dropdown">
           <button class="dropdown-button">Add Assets</button>
           <div class="dropdown-content">
@@ -394,6 +395,16 @@
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
+            <!-- Popup for zone type selection -->
+            <div *ngIf="isPopupVisible" class="popup-overlay">
+              <div class="popup-content">
+                <h3>Select Zone Type</h3>
+                <select [(ngModel)]="zoneType">
+                  <option *ngFor="let zone of zoneTypeList" [value]="zone">{{ zone }}</option>
+                </select>
+                <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">Confirm</button>
+              </div>
+            </div>
     </div>
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
