@@ -129,9 +129,7 @@ export class TasksComponent implements OnInit {
 
   constructor(private exportService: ExportService) {}
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() {}
 
   onSearch(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
