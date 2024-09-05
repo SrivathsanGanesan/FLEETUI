@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ExportService } from '../export.service';
+import { environment } from '../../environments/environment.development';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-tasks',
@@ -7,11 +9,13 @@ import { ExportService } from '../export.service';
   styleUrls: ['./tasks.component.css'], // Note: changed to `styleUrls`
 })
 export class TasksComponent implements OnInit {
+  mapData: any | null = null;
   searchQuery: string = '';
   isPopupVisible: boolean = false;
   activeFilter: string = 'today'; // Default filter
   activeHeader: string = 'Tasks'; // Default header
   currentTable: string = 'task'; // Default table
+  tasks: any[] = [];
 
   taskData = [
     {
@@ -24,112 +28,64 @@ export class TasksComponent implements OnInit {
       roboId: 'Row 1 Col 3',
     },
     {
-      taskId: '-----',
-      taskStatus: 'Row 1 Col 2',
-      taskAllocatedAT: 'Row 1 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: '-----',
-      taskStatus: 'Row 2 Col 2',
-      taskAllocatedAT: 'Row 2 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-    {
       taskId: 'task_001',
       taskStatus: 'Row 1 Col 2',
       taskAllocatedAT: 'Row 1 Col 3',
       completedAt: 'Row 1 Col 3',
       sourceLocation: 'Row 1 Col 3',
-      taskType: 'Dropoff',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: '-----',
-      taskStatus: 'Row 2 Col 2',
-      taskAllocatedAT: 'Row 2 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Dropoff',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: 'task_001',
-      taskStatus: 'Row 1 Col 2',
-      taskAllocatedAT: 'Row 1 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Charge',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: '-----',
-      taskStatus: 'Row 2 Col 2',
-      taskAllocatedAT: 'Row 2 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Dropoff',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: '-----',
-      taskStatus: 'Row 1 Col 2',
-      taskAllocatedAT: 'Row 1 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Charge',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: 'task_001',
-      taskStatus: 'Row 2 Col 2',
-      taskAllocatedAT: 'Row 2 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
       taskType: 'Pickup',
       roboId: 'Row 1 Col 3',
     },
-    {
-      taskId: '-----',
-      taskStatus: 'Row 2 Col 2',
-      taskAllocatedAT: 'Row 2 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: '-----',
-      taskStatus: 'Row 1 Col 2',
-      taskAllocatedAT: 'Row 1 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: '-----',
-      taskStatus: 'Row 2 Col 2',
-      taskAllocatedAT: 'Row 2 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-    // Add more data as necessary
   ];
 
-  filteredTaskData = this.taskData;
+  filteredTaskData = this.tasks;
 
-  constructor(private exportService: ExportService) {}
+  constructor(
+    private exportService: ExportService,
+    private projectService: ProjectService
+  ) {
+    if (this.mapData) this.mapData = this.projectService.getMapData();
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.mapData = this.projectService.getMapData().id;
+    if (!this.mapData) return;
+
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ timeStamp1: '', timeStamp2: '' }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with status code of : ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        // console.log(data.tasks);
+        const { tasks } = data;
+        this.tasks = tasks.map((task: any) => {
+          return {
+            taskId: task.task_id,
+            taskName: task.sub_task[0]?.task_type
+              ? task.sub_task[0]?.task_type
+              : 'N/A',
+            status: task.task_status.status,
+            roboName: task.agent_name,
+            sourceDestination: task.sub_task[0]?.source_location
+              ? task.sub_task[0]?.source_location
+              : 'N/A',
+          };
+        });
+        this.filteredTaskData = this.tasks;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   onSearch(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();

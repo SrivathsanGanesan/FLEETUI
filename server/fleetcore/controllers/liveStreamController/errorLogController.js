@@ -1,0 +1,30 @@
+const { Map, Robo } = require("../../../application/models/mapSchema");
+
+const getFleetErrLogs = (req, res, next) => {
+  fetch(`http://fleetIp:8080/fms/amr/get_tasks_list`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        req.responseStatus = "NOT_OK";
+        return next();
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      req.fleetData = data;
+    })
+    .catch((err) => {
+      req.fleetErr = err;
+    });
+  next();
+};
+
+const getTaskErrLogs = (req, res) => {
+  return res.status(200).json("hey man");
+};
+
+module.exports = { getFleetErrLogs, getTaskErrLogs };

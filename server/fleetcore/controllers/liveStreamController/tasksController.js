@@ -2,7 +2,7 @@ const { Map, Robo } = require("../../../application/models/mapSchema");
 const fleetTasks = {
   tasks: [
     {
-      task_id: "12345",
+      task_id: "task_001",
       agent_ID: "AMR 2",
       agent_name: "Robot A",
       task_status: {
@@ -25,7 +25,7 @@ const fleetTasks = {
       ],
     },
     {
-      task_id: "67890",
+      task_id: "task_002",
       agent_ID: "AMR 3",
       agent_name: "Robot B",
       task_status: {
