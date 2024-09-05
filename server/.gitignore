@@ -1,0 +1,8 @@
+node_modules/
+
+logs
+*.log
+
+server/proj_assets/dashboardMap/*.png
+# **/**/*.png
+# **/**/*.jpg

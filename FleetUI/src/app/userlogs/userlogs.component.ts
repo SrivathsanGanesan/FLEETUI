@@ -1,6 +1,6 @@
-import { table } from 'console';
+import { environment } from '../../environments/environment.development';
 import { ExportService } from '../export.service';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-userlogs',
@@ -8,91 +8,25 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './userlogs.component.css',
 })
 export class Userlogscomponent {
-
   activeFilter: any;
-  togglePopup() {
-    throw new Error('Method not implemented.');
-  }
-  exportAsPDF() {
-    throw new Error('Method not implemented.');
-  }
-  exportAsExcel() {
-    throw new Error('Method not implemented.');
-  }
-  exportAsCSV() {
-    throw new Error('Method not implemented.');
-  }
-
-  onTabChange(arg0: string) {
-    throw new Error('Method not implemented.');
-  }
-
+  ONBtn: any;
   searchQuery: string = '';
   isPopupVisible: boolean | undefined;
   isTransitioning: boolean = false;
   activeButton: string = 'task'; // Default active button
-  activeHeader: string = 'Task reports'; // Default header
-
-  setActiveButton(button: string) {
-    this.activeButton = button;
-    this.isTransitioning = true;
-    setTimeout(() => {
-      this.activeButton = button;
-      this.activeHeader = this.getHeader(button);
-      this.isTransitioning = false;
-    }, 200); // 300ms matches the CSS transition duration
-  }
-
+  activeHeader: string = 'Task logs'; // Default header
   currentTable = 'task';
+  currentTab: any;
+
   // Your task data
   taskData = [
     {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
+      dateTime: 'Sept 3, 3:30 AM',
+      taskId: 'Task_001',
+      taskName: 'drop packs',
+      errCode: 'Err_001',
+      criticality: 'medium',
+      desc: 'latency occured',
     },
   ];
 
@@ -222,13 +156,38 @@ export class Userlogscomponent {
     },
   ];
 
-  currentTab: any;
+  constructor(private exportService: ExportService) {}
+
+  togglePopup() {
+    throw new Error('Method not implemented.');
+  }
+  exportAsPDF() {
+    throw new Error('Method not implemented.');
+  }
+  exportAsExcel() {
+    throw new Error('Method not implemented.');
+  }
+  exportAsCSV() {
+    throw new Error('Method not implemented.');
+  }
+
+  onTabChange(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
+
+  setActiveButton(button: string) {
+    this.activeButton = button;
+    this.isTransitioning = true;
+    setTimeout(() => {
+      this.activeButton = button;
+      this.activeHeader = this.getHeader(button);
+      this.isTransitioning = false;
+    }, 200); // 300ms matches the CSS transition duration
+  }
 
   showTable(table: string) {
     this.currentTable = table;
   }
-
-  constructor(private exportService: ExportService) {}
 
   setCurrentTable(table: string) {
     this.currentTable = table;
@@ -265,7 +224,6 @@ export class Userlogscomponent {
       default:
         console.error('Invalid export format');
     }
-    
   }
 
   getHeader(button: string): string {
@@ -288,7 +246,6 @@ export class Userlogscomponent {
   onClose() {
     this.isPopupVisible = false;
   }
-  ONBtn: any;
 
   setActiveFilter(filter: string) {
     this.activeFilter = filter;

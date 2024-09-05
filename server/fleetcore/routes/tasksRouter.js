@@ -6,6 +6,6 @@ const {
 
 const tasksRouter = express.Router();
 // tasksRouter.get("/:mapId", getFleetTask, getTasks);
-tasksRouter.get("/:mapId", getTasks);
+tasksRouter.post("/:mapId", getTasks);
 
 module.exports = tasksRouter;

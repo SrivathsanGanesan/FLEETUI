@@ -1,101 +1,168 @@
 <div class="flex h-screen">
   <app-sidenavbar></app-sidenavbar>
-    <div class="flex-grow ml-64 p-8 h-screen overflow-hidden">
-      <div class="mainContent flex flex-col h-full justify-center items-center">
-        
-        <!-- Header section -->
-        <div class="header-section">
-          <h1 class="header-title">{{ activeHeader }}</h1>
-          <div class="subheader-container">
-            <div class="subheader-text">Create and edit task reports</div>
-            <img src="../../assets/icons/i-icon.svg" alt="Icon" class="subheader-icon">
-          </div>
+  <div class="flex-grow ml-64 p-8 h-screen overflow-hidden">
+    <div class="mainContent flex flex-col h-full justify-center items-center">
+      <!-- Header section -->
+      <div class="header-section">
+        <h1 class="header-title">{{ activeHeader }}</h1>
+        <div class="subheader-container">
+          <div class="subheader-text">Create and edit task reports</div>
+          <img
+            src="../../assets/icons/i-icon.svg"
+            alt="Icon"
+            class="subheader-icon"
+          />
         </div>
-  
-        <!-- search container -->
-        <div class="search-filter-container">
-          <!-- Search Bar -->
-          <div class="search-box">
-            <input type="text" placeholder="Search For Something..." />
-            <button class="search-btn">
-              <img src="../../assets/icons/download-removebg-preview.png" alt="Search" />
+      </div>
+
+      <!-- search container -->
+      <div class="search-filter-container">
+        <!-- Search Bar -->
+        <div class="search-box">
+          <input type="text" placeholder="Search For Something..." />
+          <button class="search-btn">
+            <img
+              src="../../assets/icons/download-removebg-preview.png"
+              alt="Search"
+            />
+          </button>
+        </div>
+
+        <!-- Options Container -->
+        <div class="options-container">
+          <div class="filter-options">
+            <button
+              [class.active]="activeFilter === 'today'"
+              (click)="setActiveFilter('today')"
+            >
+              Today
+            </button>
+            <button
+              [class.active]="activeFilter === 'week'"
+              (click)="setActiveFilter('week')"
+            >
+              Week
+            </button>
+            <button
+              [class.active]="activeFilter === 'month'"
+              (click)="setActiveFilter('month')"
+            >
+              Month
             </button>
           </div>
-        
-          <!-- Options Container -->
-          <div class="options-container">
-            <div class="filter-options">
-              <button [class.active]="activeFilter === 'today'" (click)="setActiveFilter('today')">Today</button>
-              <button [class.active]="activeFilter === 'week'" (click)="setActiveFilter('week')">Week</button>
-              <button [class.active]="activeFilter === 'month'" (click)="setActiveFilter('month')">Month</button>
-            </div>
-          
-            <div class="date-inputs">
-              <label for="start-date" class="date-label"></label>
-              <input type="date" id="start-date" (change)="onDateChange($event)" class="date-input">
-          
-              <label for="end-date" class="date-label"></label>
-              <input type="date" id="end-date" (change)="onDateChange($event)" class="date-input">
-            </div>
-          </div>  
+
+          <div class="date-inputs">
+            <label for="start-date" class="date-label"></label>
+            <input
+              type="date"
+              id="start-date"
+              (change)="onDateChange($event)"
+              class="date-input"
+            />
+
+            <label for="end-date" class="date-label"></label>
+            <input
+              type="date"
+              id="end-date"
+              (change)="onDateChange($event)"
+              class="date-input"
+            />
+          </div>
         </div>
-  
-        <!-- Table -->
-        <div class="table-container">
-            <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
-              <div class="overflow-y-auto max-h-[32rem] w-full">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.no</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task ID</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task Type</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task Allocated At</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed At</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source Location</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot Id</th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr *ngFor="let item of filteredTaskData; index as i">
-                      <td class="px-6 py-4 whitespace-nowrap">{{ i }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ item.taskId }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ item.taskType }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ item.taskStatus }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ item.taskAllocatedAT }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ item.completedAt }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ item.sourceLocation }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ item.roboId }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <div
+          class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative"
+        >
+          <div class="overflow-y-auto max-h-[32rem] w-full">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    S.no
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Task ID
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Task Name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Robot Name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Source and Destination
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let item of this.filteredTaskData; index as i">
+                  <td class="px-6 py-4 whitespace-nowrap">{{ i + 1 }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.taskId }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.taskName }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.status }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.roboName }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ item.sourceDestination }}
+                  </td>
+                  <!-- <td class="px-6 py-4 whitespace-nowrap">{{ item.sourceLocation }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ item.roboId }}</td> -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export -->
+      <!-- Export -->
+      <div class="export-button-container">
+        <button class="export-button" (click)="showPopup()">Export</button>
+        <div *ngIf="isPopupVisible" class="export-popup">
+          <div class="popup-content">
+            <button class="close-button" (click)="onClose()">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+              >
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                  d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"
+                />
+              </svg>
+            </button>
+            <h3>Select Format</h3>
+            <div class="button-container">
+              <button (click)="exportData('csv')">Export as CSV</button>
+              <button (click)="exportData('excel')">Export as Excel</button>
+              <button (click)="exportData('pdf')">Export as PDF</button>
             </div>
           </div>
-  
-        <!-- Export -->
-        <!-- Export -->
-        <div class="export-button-container">
-            <button class="export-button" (click)="showPopup()">Export</button>
-            <div *ngIf="isPopupVisible" class="export-popup">
-              <div class="popup-content">
-                <button class="close-button" (click)="onClose()"> 
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="none" d="M0 0h24v24H0z"/>
-                    <path d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"/>
-                  </svg>
-                </button>
-                <h3>Select Format</h3>
-                <div class="button-container">
-                  <button (click)="exportData('csv')">Export as CSV</button>
-                  <button (click)="exportData('excel')">Export as Excel</button>
-                  <button (click)="exportData('pdf')">Export as PDF</button>
-                </div>
-              </div>
-            </div>
-          </div>
+        </div>
       </div>
     </div>
   </div>
-  
+</div>
