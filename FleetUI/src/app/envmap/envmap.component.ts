@@ -46,7 +46,9 @@ interface Edge {
 }
 interface asset {id : number, x: number, y: number, type: string }; // Array to track assets
 
-interface Zone { id : string, pos : any[], type : ZoneType | null }
+interface Zone { id : string, pos : any[], type : ZoneType | null };
+
+interface Robo { roboDet : any, x : number, y : number };
 
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -105,6 +107,7 @@ export class EnvmapComponent implements AfterViewInit {
   edges: Edge[] = []; // Org_edges
   assets: asset[] =[]; // Org_assets
   zones : Zone[] = []; // Org_zones
+  robos : Robo[] = []; // Org_robos
   Nodes: {
     id: number;
     x: number;
@@ -207,7 +210,8 @@ export class EnvmapComponent implements AfterViewInit {
     [ZoneType.EMERGENCY_ZONE]: 'rgba(139, 0, 0, 0.3)',      // DarkRed with 30% opacity
     [ZoneType.MAINTENANCE_ZONE]: 'rgba(184, 134, 11, 0.3)', // DarkGoldenRod with 30% opacity
     [ZoneType.PARKING_ZONE]: 'rgba(47, 79, 79, 0.3)'        // DarkSlateGray with 30% opacity
-};
+  };
+  roboInitOffset : number = 60;
 
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
 
@@ -337,17 +341,7 @@ export class EnvmapComponent implements AfterViewInit {
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
-  onRobotsPlaced(event: { type: 'robotA' | 'robotB'; count: number }): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-    const robotImage = this.robotImages[event.type];
 
-    for (let i = 0; i < event.count; i++) {
-      const x = Math.random() * (canvas.width - robotImage.width);
-      const y = Math.random() * (canvas.height - robotImage.height);
-      ctx!.drawImage(robotImage, x, y);
-    }
-  }
   // Parameters for the 'Move' action
   moveParameters = {
     maxLinearVelocity: '',
@@ -938,6 +932,27 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.stroke();
     }
   }
+
+  plotRobo(x : number, y : number){
+    // let roboImg = 'assets/CanvasRobo/robotA.svg';
+    const image = this.robotImages['robotB'];
+    // img.src = robot.image;
+    
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+
+    if (image && ctx) {
+      const imageSize = 20; // Set image size
+      ctx.drawImage(image, x - imageSize / 2,  y - imageSize / 2, imageSize*1.5 , imageSize);
+    }
+    // if (ctx) {
+    //   img.src = roboImg;
+    //   img.onload = () => {
+    //     ctx.drawImage(img, x - img.width, y - img.height);
+    //   };
+    // }
+  }
+
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const transformedY = canvas.height - y; // Flip the Y-axis
@@ -1733,6 +1748,10 @@ export class EnvmapComponent implements AfterViewInit {
         this.drawLayer();
         this.plottedPoints = [];
       })
+
+      this.robos.forEach((robo)=>{
+        this.plotRobo(robo.x, robo.y);
+      })
     }
   }
   drawConnections(): void {
@@ -1790,14 +1809,23 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
     selectedRobots.forEach((robot) => {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
+      let robo : Robo;
+      
+      const x = 0 + this.roboInitOffset;
+      const y = 50;
 
-      const img = new Image();
-      img.src = robot.image;
-      img.onload = () => {
-        ctx.drawImage(img, x - img.width, y - img.height);
-      };
+      for(let robo of this.robos) 
+        if(robo.roboDet.id === robot.id) {
+          alert('robo already in map!');
+          return;
+        }
+
+      robo = { roboDet : robot, x : x, y : y };
+      this.robos.push(robo)
+
+      this.roboInitOffset += 60;
+
+      this.plotRobo(x,y);
     });
   }
 }
