@@ -12,14 +12,12 @@ export interface Robot {
   // Add other fields as needed
 }
 
-
 @Component({
   selector: 'app-robots',
   templateUrl: './robots.component.html',
-  styleUrls: ['./robots.component.css']
+  styleUrls: ['./robots.component.css'],
 })
 export class RobotsComponent implements OnInit {
-
   robotImages: string[] = [
     'agv1.png',
     'agv2.png',
@@ -27,13 +25,12 @@ export class RobotsComponent implements OnInit {
     // Add more images from assets/robots
   ];
 
-
   robots: Robot[] = [
     {
       id: 1,
       serialNumber: '1000000',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
     },
@@ -41,41 +38,41 @@ export class RobotsComponent implements OnInit {
       id: 2,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
-      battery: '40%'
+      battery: '40%',
     },
     {
       id: 3,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
-      battery: '40%'
+      battery: '40%',
     },
     {
       id: 4,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
-      battery: '40%'
+      battery: '40%',
     },
     {
       id: 5,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
-      battery: '40%'
+      battery: '40%',
     },
     {
-      id: 6 ,
+      id: 6,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
-      battery: '40%'
+      battery: '40%',
     },
     // Add more robots...
   ];
@@ -90,7 +87,7 @@ export class RobotsComponent implements OnInit {
     imageUrl: '',
     status: 'Active',
     battery: '100%',
-    serialNumber: ''
+    serialNumber: '',
   };
 
   editRobotData: Robot = {
@@ -99,12 +96,11 @@ export class RobotsComponent implements OnInit {
     imageUrl: '',
     status: 'Active',
     battery: '100%',
-    serialNumber: ''
+    serialNumber: '',
   };
   getImagePath(imageName: string): string {
     return `../../assets/robots/${imageName}`;
   }
-
 
   editIndex: number | null = null;
   centerIndex: any;
@@ -127,10 +123,24 @@ export class RobotsComponent implements OnInit {
   }
 
   addRobot() {
-    if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.serialNumber && this.newRobot.status && this.newRobot.battery) {
-      this.newRobot.id = this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
+    if (
+      this.newRobot.name &&
+      this.newRobot.imageUrl &&
+      this.newRobot.serialNumber &&
+      this.newRobot.status &&
+      this.newRobot.battery
+    ) {
+      this.newRobot.id =
+        this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
       this.robots.push({ ...this.newRobot });
-      this.newRobot = { id: 0, name: '', imageUrl: '',  serialNumber: '',  status: 'Active', battery: '100%' };
+      this.newRobot = {
+        id: 0,
+        name: '',
+        imageUrl: '',
+        serialNumber: '',
+        status: 'Active',
+        battery: '100%',
+      };
       this.togglePopup();
     } else {
       alert('Please fill out all fields.');
@@ -151,11 +161,9 @@ export class RobotsComponent implements OnInit {
         name: this.editRobotData.name,
         imageUrl: this.editRobotData.imageUrl,
         serialNumber: this.editRobotData.serialNumber || 'DefaultSerialNumber',
-       
-       
+
         status: this.editRobotData.status,
         battery: this.editRobotData.battery,
-        
       };
       this.closeEditPopup();
     }
@@ -164,14 +172,13 @@ export class RobotsComponent implements OnInit {
   closeEditPopup() {
     this.isEditPopupOpen = false;
     this.editIndex = null;
-    this.editRobotData = { 
-      id: 0, 
-      name: '', 
-      imageUrl: '', 
-      serialNumber: '' ,
-      status: 'Active', 
+    this.editRobotData = {
+      id: 0,
+      name: '',
+      imageUrl: '',
+      serialNumber: '',
+      status: 'Active',
       battery: '100%',
-      
     };
   }
 
@@ -199,7 +206,7 @@ export class RobotsComponent implements OnInit {
   openRobotDetail(robot: Robot): void {
     this.dialog.open(RobotDetailPopupComponent, {
       width: '70%',
-      data: robot
+      data: robot,
     });
   }
 }

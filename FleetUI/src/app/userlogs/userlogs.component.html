@@ -188,58 +188,22 @@
             >
               <thead class="bg-gray-50">
                 <tr>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Date and time
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Robot ID
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Robot name
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Error code
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Criticality
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Description
-                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Date and time </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Robot ID </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Robot name </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Error code </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Criticality </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Description </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngFor="let item of robotData">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.column1 }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.column2 }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.column3 }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.column4 }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.column5 }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.column6 }}
-                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.dateTime }} </td>
+                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.roboId }} </td>
+                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.roboName }} </td>
+                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.errCode }} </td>
+                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.criticality }} </td>
+                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.desc }} </td>
                 </tr>
               </tbody>
             </table>
