@@ -16,15 +16,6 @@ import { saveAs } from 'file-saver';
 import { ProjectService } from '../services/project.service';
 import { sequence } from '@angular/animations';
 
-interface Zone {
-  type: 'high' | 'medium' | 'low';
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-  color: string;
-}
-
 interface Node {
   id: string;
   sequenceId: number;
@@ -55,6 +46,8 @@ interface Edge {
 }
 interface asset {id : number, x: number, y: number, type: string }; // Array to track assets
 
+interface Zone { id : string, pos : any[], type : ZoneType | null }
+
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -75,13 +68,11 @@ enum ZoneType {
   MAINTENANCE_ZONE = 'Maintenance Zone',
   PARKING_ZONE = 'Parking Zone'
 }
-
 @Component({
   selector: 'app-envmap',
   templateUrl: './envmap.component.html',
   styleUrls: ['./envmap.component.css'],
 })
-
 export class EnvmapComponent implements AfterViewInit {
   @Input() EnvData: any[] = [];
   @Input() addEnvToEnvData!: (data: any) => void;
@@ -112,7 +103,8 @@ export class EnvmapComponent implements AfterViewInit {
   orientationAngle: number = 0;
   nodes: Node[] = []; // Org_nodes
   edges: Edge[] = []; // Org_edges
-  assets: asset[] =[]; //org_assets
+  assets: asset[] =[]; // Org_assets
+  zones : Zone[] = []; // Org_zones
   Nodes: {
     id: number;
     x: number;
@@ -153,6 +145,8 @@ export class EnvmapComponent implements AfterViewInit {
   private edgeCounter: number = 1; // Counter to assign edge numbers
   private actionCounter: number = 1; // Counter to assign action numbers
   private assetCounter : number = 1; // counter to assign asset numbers
+  private zoneCounter : number = 1; // counter to assigh zone numbers
+  private zonePosCounter : number = 1; // counter to assign zone numbers
   selectedNode: Node | null = null;
   lastSelectedNode: { x: number; y: number } | null = null;
   node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
@@ -190,8 +184,8 @@ export class EnvmapComponent implements AfterViewInit {
   selectedAsset :asset | null = null
   draggingAsset: boolean = false;
   isZonePlottingEnabled = false;
-  plottedPoints: { x: number, y: number }[] = [];
-  maxZonePoints = 6;  
+  plottedPoints: { id : number, x: number, y: number }[] = [];
+  firstPlottedPoint : {id : number, x : number, y : number} | null = null;
   zoneType: ZoneType | null = null; // Selected zone type
   isPopupVisible: boolean = false; // Popup visibility
   zoneColors: { [key in ZoneType]: string } = {
@@ -828,12 +822,8 @@ export class EnvmapComponent implements AfterViewInit {
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-    const x =
-      (event.clientX - rect.left) *
-      (this.overlayCanvas.nativeElement.width / rect.width);
-    const y =
-      (event.clientY - rect.top) *
-      (this.overlayCanvas.nativeElement.height / rect.height);
+    const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+    const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
     // Check if a node is clicked
     for (const node of this.nodes) {
@@ -1215,6 +1205,8 @@ export class EnvmapComponent implements AfterViewInit {
     console.log(this.nodes);
     console.log(this.edges);
     console.log(this.assets);
+    console.log(this.zones);
+    
     
 
     // Save the JSON object to a file
@@ -1366,7 +1358,6 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
-
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
@@ -1401,7 +1392,6 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fillStyle = 'black';
     ctx.fill();
   }  
-
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
@@ -1423,6 +1413,8 @@ export class EnvmapComponent implements AfterViewInit {
     const dy = mouseY - transformedY; // Use transformed Y-coordinate
     return dx * dx + dy * dy <= radius * radius;
   }
+
+
   private plotAsset(x: number, y: number, assetType: string): void {
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
@@ -1463,7 +1455,7 @@ export class EnvmapComponent implements AfterViewInit {
   drawLayer(): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-    if (ctx && this.plottedPoints.length === this.maxZonePoints && this.zoneType) {
+    if (ctx && this.plottedPoints.length >= 3 && this.zoneType) {
         ctx.beginPath();
         ctx.moveTo(this.plottedPoints[0].x, this.plottedPoints[0].y);
 
@@ -1478,14 +1470,20 @@ export class EnvmapComponent implements AfterViewInit {
         const zoneColor = this.zoneColors[this.zoneType];
         ctx.fillStyle = zoneColor;
         ctx.fill();
+        this.plottedPoints = [];
 
     } else {
         console.error('Insufficient points or zone type not selected');
     }
-}
-
+  }
   onZoneTypeSelected(zoneType: ZoneType): void {
     this.zoneType = zoneType;
+
+    let zone  : Zone;
+    zone = {id : this.zoneCounter.toString(), pos : this.plottedPoints, type : this.zoneType};
+    this.zones.push(zone);
+    this.zoneCounter++;
+
     this.isPopupVisible = false; // Hide the popup
     this.drawLayer(); // Draw the layer with the selected zone color
   }
@@ -1496,17 +1494,31 @@ export class EnvmapComponent implements AfterViewInit {
       const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
       const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
-        if (this.isZonePlottingEnabled && this.plottedPoints.length < this.maxZonePoints) {
-        // Plot the point
-        this.plotZonePoint(x, y);
-        // Add the point to the array of plotted points
-        this.plottedPoints.push({ x, y });
-        // If six points are plotted, form the layer (polygon)
-        if (this.plottedPoints.length >= this.maxZonePoints) {
-          this.isZonePlottingEnabled = false;
-          this.showZoneTypePopup();
-          console.log('Zone plotting completed and layer formed');
-        }}
+        if (this.isZonePlottingEnabled) {
+          // Plot the point
+          if (this.firstPlottedPoint) {
+            let radius = 6;
+            if(Math.abs(x - this.firstPlottedPoint.x) <= radius && Math.abs(y - this.firstPlottedPoint.y) <= radius){
+              if(this.plottedPoints.length < 3) {
+                alert('should at least minimum 3 zone points to plot!');
+                return
+              }
+              this.isZonePlottingEnabled = false;
+              this.showZoneTypePopup(); // Show zone type popup after completing the polygon
+              this.firstPlottedPoint = null;
+              return;
+            }
+          }
+
+          this.plotZonePoint(x, y);
+          // Add the point to the array of plotted points
+          this.plottedPoints.push({ id : this.zonePosCounter,x, y });
+          this.zonePosCounter++;
+          // this.plottedPoints[0];
+          if (this.firstPlottedPoint === null) this.firstPlottedPoint = { id: this.zonePosCounter, x, y };
+          // If six points are plotted, form the layer (polygon)
+          // if (this.plottedPoints.length >= this.maxZonePoints) {  //
+        }
 
         if (this.selectedAssetType) {
         
@@ -1538,14 +1550,6 @@ export class EnvmapComponent implements AfterViewInit {
           break;
         }
       }
-
-      // if (this.selectedNode && nodeClicked) {
-      //     this.isDrawingLine = true;
-      //     this.lineStartX = x;
-      //     this.lineStartY = y;
-      //     this.lineEndX = x;
-      //     this.lineEndY = y;
-      // }
 
       if (!nodeClicked && this.isPlottingEnabled) {
         if (this.plottingMode === 'single') {
@@ -1700,8 +1704,9 @@ export class EnvmapComponent implements AfterViewInit {
     if (ctx) {
       this.cdRef.detectChanges(); // remove later..
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       this.nodes.forEach((node) => this.drawNode(node, 'blue', false));
-      // Redraw connections if needed
+
       this.edges.forEach((edge) => {
         const fromNode = this.nodes.find(
           (node) => node.id === edge.startNodeId
@@ -1720,6 +1725,13 @@ export class EnvmapComponent implements AfterViewInit {
 
       this.assets.forEach((asset)=>{
         this.plotAsset(asset.x, asset.y, asset.type);
+      })
+
+      this.zones.forEach((zone) => {
+        this.plottedPoints = zone.pos;
+        this.zoneType = zone.type;
+        this.drawLayer();
+        this.plottedPoints = [];
       })
     }
   }
