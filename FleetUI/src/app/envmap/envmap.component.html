@@ -353,10 +353,6 @@
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div>
-
-
-
-
       <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
         <div class="dropdown">
           <button class="dropdown-button">Add Node</button>
@@ -391,7 +387,7 @@
           (addRobot)="placeRobots($event)"
         ></app-robot-popup>
 
-        <button>Remove Robots</button>
+        <button (click)="removeRobots()">Remove Robots</button>
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
