@@ -25,56 +25,7 @@ export class Userlogscomponent {
   taskData: any[] = [];
 
   // Your robot data
-  robotData = [
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-      column6: 'Row 1 Col 3',
-    },
-  ];
+  robotData: any[] = [];
 
   // Your fleet data
   fleetData = [
@@ -155,24 +106,6 @@ export class Userlogscomponent {
     private projectService: ProjectService
   ) {
     this.mapData = this.projectService.getMapData();
-    this.taskData = [
-      {
-        dateTime: 'Sept 3, 3:30 AM',
-        taskId: 'Task_001',
-        taskName: 'drop packs',
-        errCode: 'Err_001',
-        criticality: 'medium',
-        desc: 'latency occured',
-      },
-      {
-        dateTime: 'Sept 3, 3:30 AM',
-        taskId: 'Task_001',
-        taskName: 'drop packs',
-        errCode: 'Err_001',
-        criticality: 'medium',
-        desc: 'latency occured',
-      },
-    ];
   }
 
   ngOnInit() {
@@ -181,6 +114,11 @@ export class Userlogscomponent {
       console.log('Seems no map has been selected');
       return;
     }
+    this.getTaskLogs();
+    this.getRoboLogs();
+  }
+
+  getTaskLogs() {
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-logs/task-logs/${this.mapData.id}`,
       {
@@ -210,6 +148,42 @@ export class Userlogscomponent {
           };
         });
         // console.log(taskLogs);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  getRoboLogs() {
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-logs/robo-logs/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          timeStamp1: '',
+          timeStamp2: '',
+        }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with the statusCode of ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        const { roboLogs } = data;
+
+        this.robotData = roboLogs.table[0].values.map((roboErr: any) => {
+          return {
+            dateTime: new Date().toDateString(),
+            roboId: roboErr.ROBOT_ID,
+            roboName: roboErr.ROBOT_NAME,
+            errCode: '100',
+            criticality: Math.floor(Math.random() * 10),
+            desc: roboErr.DESCRIPTION,
+          };
+        });
       })
       .catch((err) => {
         console.log(err);
