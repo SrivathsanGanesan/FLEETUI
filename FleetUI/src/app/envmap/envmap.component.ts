@@ -943,7 +943,7 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.drawImage(image, x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
   
       // Highlight the robot if selected
-        ctx.strokeStyle = 'blue';
+
         ctx.lineWidth = 2;
         ctx.strokeRect(x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
     }
@@ -1484,17 +1484,53 @@ export class EnvmapComponent implements AfterViewInit {
         console.error('Insufficient points or zone type not selected');
     }
   }
-  onZoneTypeSelected(zoneType: ZoneType): void {
-    this.zoneType = zoneType;
-
-    let zone  : Zone;
-    zone = {id : this.zoneCounter.toString(), pos : this.plottedPoints, type : this.zoneType};
-    this.zones.push(zone);
-    this.zoneCounter++;
-
-    this.isPopupVisible = false; // Hide the popup
-    this.drawLayer(); // Draw the layer with the selected zone color
+  // Function to check if two polygons overlap
+private isZoneOverlapping(newZonePoints: any[]): boolean {
+  for (const existingZone of this.zones) {
+    if (this.isPolygonOverlap(existingZone.pos, newZonePoints)) {
+      return true;
+    }
   }
+  return false;
+}
+
+// Simplified bounding box overlap check between two polygons
+private isPolygonOverlap(polygon1: any[], polygon2: any[]): boolean {
+  const [minX1, minY1, maxX1, maxY1] = this.getBoundingBox(polygon1);
+  const [minX2, minY2, maxX2, maxY2] = this.getBoundingBox(polygon2);
+
+  return !(minX1 > maxX2 || maxX1 < minX2 || minY1 > maxY2 || maxY1 < minY2);
+}
+
+// Get the bounding box of a polygon (minX, minY, maxX, maxY)
+private getBoundingBox(polygon: any[]): number[] {
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  
+  for (const point of polygon) {
+    if (point.x < minX) minX = point.x;
+    if (point.y < minY) minY = point.y;
+    if (point.x > maxX) maxX = point.x;
+    if (point.y > maxY) maxY = point.y;
+  }
+
+  return [minX, minY, maxX, maxY];
+}
+onZoneTypeSelected(zoneType: ZoneType): void {
+  this.zoneType = zoneType;
+
+  if (this.isZoneOverlapping(this.plottedPoints)) {
+    alert('Zone overlaps with an existing zone!');
+    return;  // Do not allow drawing
+  }
+
+  let zone: Zone;
+  zone = { id: this.zoneCounter.toString(), pos: this.plottedPoints, type: this.zoneType };
+  this.zones.push(zone);
+  this.zoneCounter++;
+
+  this.isPopupVisible = false; // Hide the popup
+  this.drawLayer(); // Draw the layer with the selected zone color
+}
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 25;
     return (
@@ -1504,6 +1540,17 @@ export class EnvmapComponent implements AfterViewInit {
       y <= robo.y + imageSize / 2
     );
   }
+  onCancel(): void {
+    // Clear the plotted points and reset the zone plotting state
+    this.plottedPoints = [];
+    this.isZonePlottingEnabled = false;
+    this.isPopupVisible = false;
+    this.firstPlottedPoint = null;
+  
+    // Redraw the canvas to remove the temporary zone points
+    this.redrawCanvas();
+  }
+  
   removeRobots(): void {
     // Remove selected robots
     this.robos = this.robos.filter(robo => robo.roboDet.id === this.selectedRobo?.roboDet.id);

@@ -370,6 +370,7 @@
           </div>
         </div>
         <button (click)="startZonePlotting()">Zones</button>
+
         <div class="dropdown">
           <button class="dropdown-button">Add Assets</button>
           <div class="dropdown-content">
@@ -392,19 +393,21 @@
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
             <!-- Popup for zone type selection -->
-            <div *ngIf="isPopupVisible" class="popup-overlay">
-              <div class="popup-content">
-                <h3>Select Zone Type</h3>
-                <select [(ngModel)]="zoneType">
-                  <option *ngFor="let zone of zoneTypeList" [value]="zone">{{ zone }}</option>
-                </select>
-                <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">Confirm</button>
-              </div>
-            </div>
+
     </div>
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
     </div>
+  </div>
+</div>
+<div *ngIf="isPopupVisible" class="popup-overlay">
+  <div class="popup-content">
+    <h3>Select Zone Type</h3>
+    <select [(ngModel)]="zoneType">
+      <option *ngFor="let zone of zoneTypeList" [value]="zone">{{ zone }}</option>
+    </select>
+    <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">Confirm</button>
+    <button (click)="onCancel()">Cancel</button>
   </div>
 </div>
