@@ -117,6 +117,7 @@ export class ConfigurationComponent implements AfterViewInit {
           })
           .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
         this.filteredEnvData = this.EnvData;
+        this.filteredEnvData.sort()
         this.cdRef.detectChanges();
         if (!this.projectService.getIsMapSet())
           this.selectedMap = this.EnvData[0];
