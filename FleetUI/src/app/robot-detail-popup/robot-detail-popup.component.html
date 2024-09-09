@@ -19,10 +19,10 @@
       <rect width="338" height="862" rx="15" fill="white" />
     </svg>
   </div>
-  <div class="frame-1597881870_1864-1806">
-    
-   <img [src]="data.imageUrl" alt="{{data.name}}" class="robot-image">
+  <div class="robot-image-container">
+    <img [src]="data.imageUrl" alt="{{data.name}}" class="robot-image">
   </div>
+  
   <div class="battery-frame_1864-1809">
     <div class="frame-1597881863_1864-1784">
       <div class="frame-1597881860_1864-1780">
@@ -269,54 +269,66 @@
   </div>
 </div>
 
+
+
     <!-- memory  -->
-<!-- Memory Section -->
-<div class="memory-section">
-  <div class="memory-details">
-    <div class="memory-icon-container">
-      <div class="memory-icon">
-        <svg
-          width="25"
-          height="26"
-          viewBox="0 0 25 26"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect y="0.5" width="25" height="25" fill="url(#pattern0)" />
-          <defs>
-            <pattern
-              id="pattern0"
-              patternContentUnits="objectBoundingBox"
-              width="1"
-              height="1"
-            >
-              <use xlink:href="#image0" transform="scale(0.02)" />
-            </pattern>
-            <image
-              id="image0"
-              width="50"
-              height="50"
-              xlink:href="data:image/png;base64,..."
-            />
-          </defs>
-        </svg>
-      </div>
-      <span class="memory-text">Memory</span>
+    <div class="memory-container">
+      <div class="memory-content">
+        <div class="memory-icon-container">
+          <div class="memory-icon">
+            <svg
+                width="25"
+                height="26"
+                viewBox="0 0 25 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <rect
+                  y="0.5"
+                  width="25"
+                  height="25"
+                  fill="url(#pattern0_1871_1872)"
+                />
+                <defs>
+                  <pattern
+                    id="pattern0_1871_1872"
+                    patternContentUnits="objectBoundingBox"
+                    width="1"
+                    height="1"
+                  >
+                    <use
+                      xlink:href="#image0_1871_1872"
+                      transform="scale(0.02)"
+                    />
+                  </pattern>
+                  <image
+                    id="image0_1871_1872"
+                    width="50"
+                    height="50"
+                    xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB1klEQVR4nO2ZvUoDQRSFU2uhlT8PoYLBqIXiGxhbg41R68TGPoURGyXkCTSxFwuF9IKNNttqFSWk0ELFIsIniyOMl1F3l8DOrvPBMMWZnZvDQHbn3EzG4XA4UgkwB1wALTXnhD4InCjdH2XDHtua3gQGwtToC0CN79SEvij0jmGPjlizEKZGXwDqokhd6EtC7xr26Io1S2Fq9AVgTxSpCj0r9FvDHrdizXSYGn0BGAbWgS01DxnW5JXujwmDPqnpy1Fq/F+AMWAT2LFkbACjYU2sAa/YxwtQCGpiFnjHXnrATBAj/ovKdo6DGLkxPNgGzoFH7OA6iBFPPHT59SkBjAP3xI8XxciG0A9JqJGq0M9IqJE3oATMA/vYgRfFiI14zohleO5ELMNzJ2IZnjuRGNhVL+GSeikn8kRO/wglEmPkQPwm/8qdSCNt/8qgJZhXUYyYLlZx8KRi04eoF6sG9nMUxMiMuuDbSs9PNf80oswUVPRiG8/AaiATmplRoAhU1N9fnKOiItSRUCZSDZ8Bc1EFzMUfQuwVLaSeNOhTmp6PUsOWtsKdWJONo61QT0ujp5aW1ltOxaYtNX8LktWnRFNrdpYMe5Q1vWFohuZ+q+FwOByZ1PABMqgh1DVa2hQAAAAASUVORK5CYII="
+                  />
+                </defs>
+              </svg>
+          </div>
+          <span class="memory-text">Memory</span>
     </div>
-    <span class="memory-percentage">82 %</span>
-  </div>
-</div>
+    <span class="memory-value">{{ data.memory }}</span>
+      </div>
+    </div>
+
+
 
 
 
     <!-- Cpu utilization -->
-    <div class="cpu_1871-1858">
-      <div class="frame-1597881876_1871-1859">
-        <div class="frame-1597881875_1871-1860">
-          
-          <div class="frame-1597881875_1871-1862">
-            <div class="microchip_1871-1863">
-              <svg
+    <!-- CPU utilization -->
+<div class="cpu-utilization-container">
+  <div class="cpu-utilization-content">
+    <div class="cpu-utilization-icon-text">
+      <div class="cpu-icon-background">
+        <div class="cpu-icon">
+          <svg
                 width="25"
                 height="25"
                 viewBox="0 0 25 25"
@@ -345,19 +357,19 @@
                   />
                 </defs>
               </svg>
-            </div>
-          </div>
-          <span class="text-cpu-utilization_1871-1861">CPU Utilization</span>
         </div>
-        <span class="text-100--_1871-1864">100 %</span>
       </div>
+      <span class="cpu-utilization-text">CPU Utilization</span>
     </div>
+    <span class="cpu-utilization-value">{{ data.cpuutilization }}</span>
+  </div>
+</div>
+
 
     <!-- Error -->
     <div class="cpu_1864-1820">
       <div class="frame-1597881876_1864-1821">
         <div class="frame-1597881875_1864-1822">
-         
           <div class="frame-1597881874_1864-1823">
             <div class="error_1864-1846">
               <svg
@@ -398,17 +410,24 @@
           </div>
           <span class="text-error_1864-1825">Error</span>
         </div>
-        <span class="text-37--_1864-1826">37 %</span>
+        <span class="error-value">{{ data.error }}</span>
+      </div>
+      <div class="button-container">
+        <button mat-button color="warn" (click)="onClose()">
+          <span class="button-text">Close</span>
+        </button>
       </div>
     </div>
   </div>
+    
 
   <!-- close button -->
-  <div class="frame-1597881852_1874-1901">
+  <!-- <div class="button-container">
     <button mat-button color="warn" (click)="onClose()">
-      <span class="text-close_1874-1902">Close</span>
+      <span class="button-text">Close</span>
     </button>
-  </div>
+</div> -->
+
   
   <div class="id-info-item">
     <strong>ID:</strong> {{data.id}}

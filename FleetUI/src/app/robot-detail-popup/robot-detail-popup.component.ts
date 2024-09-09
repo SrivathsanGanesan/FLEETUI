@@ -23,6 +23,11 @@ distanceLeft: string;
   temperature: string;
   networkstrength: string;
   robotutilization: string;
+  cpuutilization: string;
+  memory: string;
+
+  error: string;
+  
 }
 
 @Component({
