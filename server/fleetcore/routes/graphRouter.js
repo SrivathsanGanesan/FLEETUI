@@ -9,6 +9,6 @@ const {
 
 // throughputRouter.get("/:mapId", getFleetThroughput, throughput); // when switch to fleet test..
 graphRouter.post("/throughput/:mapId", throughput);
-graphRouter.post("starvationrate/:mapId", starvationRate);
+graphRouter.post("/starvationrate/:mapId", starvationRate);
 
 module.exports = graphRouter;
