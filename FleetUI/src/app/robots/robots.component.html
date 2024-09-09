@@ -47,12 +47,12 @@
                     <div class="menu-icon" (click)="toggleMenu(i)">
                       &#x22EE; <!-- HTML code for vertical ellipsis -->
                     </div>
-                    <div class="popup-menu" [class.show]="menuOpenIndex === i">
+                    <!-- <div class="popup-menu" [class.show]="menuOpenIndex === i">
                       <ul>
                         <li (click)="editRobot(i)" style="color: white;">Edit</li>
                         <li (click)="deleteRobot(i)" style="color: white;">Delete</li>
                       </ul>
-                    </div>
+                    </div> -->
                   </div>
                   <img [src]="robot.imageUrl" alt="{{ robot.name }}" class="robot-image">
                 </div>
@@ -79,7 +79,7 @@
           </div>
 
       <!-- Add Robot Popup -->
-      <div *ngIf="showPopup" class="popup-overlay" (click)="togglePopup()">
+      <!-- <div *ngIf="showPopup" class="popup-overlay" (click)="togglePopup()">
         <div class="popup" (click)="$event.stopPropagation()">
           <h2>Add New Robot</h2>
           <form (ngSubmit)="addRobot()">
@@ -108,20 +108,20 @@
               [(ngModel)]="newRobot.status"
               name="S.no"
               required
-            />
+            /> -->
 
             
 
-            <div class="flex">
+            <!-- <div class="flex">
               <button type="submit">Add Robot</button>
               <button type="button" (click)="togglePopup()">Cancel</button>
             </div>
           </form>
         </div>
-      </div>
+      </div> -->
 
       <!-- Edit Robot Popup -->
-      <div *ngIf="isEditPopupOpen" class="popup-overlay">
+      <!-- <div *ngIf="isEditPopupOpen" class="popup-overlay">
         <div class="popup">
           <h2>Edit Robot</h2>
           <form (ngSubmit)="saveRobot()">
@@ -168,7 +168,7 @@
             </div>
           </form>
         </div>
-      </div>
+      </div> -->
       
 
     </div>

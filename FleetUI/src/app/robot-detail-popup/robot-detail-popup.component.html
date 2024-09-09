@@ -1,26 +1,486 @@
 <div class="popup-content">
     <div class="popup-header">
       <h2>{{data.name}}</h2>
-      <button class="close-button" (click)="onClose()"> 
+      <!-- <button class="close-button" (click)="onClose()"> 
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
           <path fill="none" d="M0 0h24v24H0z"/>
           <path fill="red" d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"/>
         </svg>
-      </button>
+      </button> -->
     </div>
     <div class="robot-detail-container">
-      <div class="robot-image-container">
+      <svg
+      width="338"
+      height="862"
+      viewBox="0 0 338 862"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="338" height="862" rx="15" fill="white" />
+    </svg>
+  </div>
+  <div class="frame-1597881870_1864-1806">
+    
+   <img [src]="data.imageUrl" alt="{{data.name}}" class="robot-image">
+  </div>
+  <div class="battery-frame_1864-1809">
+    <div class="frame-1597881863_1864-1784">
+      <div class="frame-1597881860_1864-1780">
+        <span class="text-40-km_1864-1777">40 Km</span>
+        <span class="text-left_1864-1775">Left</span>
+      </div>
+      <div class="frame-1597881861_1864-1781">
+        <span class="text-82--_1864-1774">82 %</span>
+        <span class="text-battery_1864-1776">Battery</span>
+      </div>
+      <div class="frame-1597881862_1864-1782">
+        <span class="text-126_1864-1778">126</span>
+        <span class="text-average-charging-time_1864-1779"
+          >Average charging time
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="frame-1597881873_1864-1810">
+    <div class="frame-1597881865_1864-1792">
+      <span class="text-current-speed_1864-1785">Current speed</span>
+      <div class="frame-1597881864_1864-1791">
+        <span class="text-1-5_1864-1788">1.5</span>
+        <span class="text-m-s_1864-1789">m/s</span>
+      </div>
+    </div>
+    <div class="frame-1597881871_1864-1808">
+      <div class="frame-1597881867_1864-1798">
+        <div class="frame-1597881868_1864-1804">
+          <div class="frame-1597881866_1864-1797">
+            <span class="text-1-8_1864-1795">1.8 </span>
+            <span class="text-m-s_1864-1796">m/s</span>
+          </div>
+          <span class="text-average-speed_1864-1793">Average speed</span>
+        </div>
+      </div>
+      <div class="frame-1597881869_1864-1805">
+        <div class="frame-1597881866_1864-1799">
+          <span class="text-0-5_1864-1800">0.5 </span>
+          <span class="text-m-s_1864-1801">m/s</span>
+        </div>
+        <span class="text-maximum-speed_1864-1794">Maximum speed</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Details ( current task and map) -->
+  <div class="frame-1597881883_1874-1899">
+    <div class="frame-1597881882_1874-1898">
+      <div class="frame-1597881881_1874-1897">
+        <span class="text-details_1874-1891">Details</span>
+        <div class="frame-1597881880_1874-1896">
+          <div class="frame-1597881878_1874-1893">
+            <span class="text-current-task--_1871-1878">Current task :</span>
+            <span class="text--transporting-materials_1872-1883"
+              > Transporting materials
+            </span>
+          </div>
+          <div class="frame-1597881879_1874-1894">
+            <span class="text-current-map--_1871-1879">Current map :</span>
+            <span class="text-mate-unit-1_1872-1884">MATE Unit-1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOtal pick and drop -->
+    <div class="frame-1597881877_1874-1892">
+      <div class="pick---drop_1872-1890">
+        <div class="frame-1597881874_1872-1886">
+          <div class="fork-lift_1872-1888">
+            <svg
+              width="30"
+              height="30"
+              viewBox="0 0 30 30"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+            >
+              <rect width="30" height="30" fill="url(#pattern0_1872_1888)" />
+              <defs>
+                <pattern
+                  id="pattern0_1872_1888"
+                  patternContentUnits="objectBoundingBox"
+                  width="1"
+                  height="1"
+                >
+                  <use xlink:href="#image0_1872_1888" transform="scale(0.02)" />
+                </pattern>
+                <image
+                  id="image0_1872_1888"
+                  width="50"
+                  height="50"
+                  xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADR0lEQVR4nO2aTUhVQRiGj6H9FwlBGBGU1qYwqE1IW0GKfly4S7AW6i4IA5PAFrUo27jICCLChQsNd5aWLfoRIkgN2mRSEZQS2B94sT+eGJwLn9M55557nDn3GveFu/m+mXfmPWfmzHfecz2vgOwBbAWOAKu8pQpgC/CNedzzliqAGhai3FuKADYAP4SQlqQGXgHcBX6TGT+B90Cv3gNFAZxDos9IUkIOEh9PgR0+nM2izR+gLAkhdSwOX4B9BmeZFpBGcy6E1IX8GoBLwJTR5yOw0eAdEfmhxIV40fqsBG4aYq4ZbVqMvVXqTERcIbpfEXBHdFVPqk0iX24IrffyUYgCsNPYC+c8AWBc5Pq9fBWiAAyI7h+AEpFrF7lZYI2Xx0IOGUuoVuQqg3L5KETtlQlBMWzkX4lct9XJ2xSiOc4YV36XyHUYZ87yOGMkJaRU74E0OkWuyhBZbVWATSGa55ag+Q6s0/Fl+sBMo8uqAAdC9hpXvknkukR8WomzJsC2EM31TFC9FPFqQ2SVlck7FKJqMYkDOl4CzIh4hzUBjoSod5tPgq5H5LpF/I2VybsSovkuG8XiZh2vNe5WpRUBYuDjxgC9Pr+rwP6IfNv96i9gtfGIbrcpQj1pvhINanINMeqvSRHvF/Fxm0Iekh1SquKNwHvU6Ldbx+udOCzAHNnjSaZzQBlzxjI6JSoAtW/sOizEx+kI3M9F+ytOHRbiIxXwUJA/+V5/26nDQrJodeawkCx+iTNlxKrDQvI47MRhIXnU6XG3WXVYciVEAXhhzWHJsZDz1hyWHAjpceKw4H8+3AfGLEx6VHMpToljYvxJKw6LMcCUrH2Ak4sQcULwVOjX2zQGAxyWz9LcW4yQVp98nDsz6sNzVuRnQhyWwZBK4QawJ0hIys8sEPkHMYQM+/A0ifysiJsOSya8CxIiH4GPZFWrvkT5rO8oUH0qjMk+FvkxYw6dWXC/DRLSZjRUAzbq+LRRXvSF3PY+3SaNac3RqMv+wCUMrNd7JVMRGrq01gKvI1yJC74EC7kuRuCZcObIM7+EwsRcB4oj8BTrtmEi/vlwahX6zrTpp1RKb0D13l0T8w8DA5ojpc+TVqffRgoooID/D38BZcMzcWbJlJYAAAAASUVORK5CYII="
+                />
+              </defs>
+            </svg>
+          </div>
+        </div>
+        <span class="text-total-pick---drop_1872-1885">Total Pick / Drop</span>
+      </div>
+      <span class="text-27---24_1872-1889">27 / 24</span>
+    </div>
+
+    <!-- network strength -->
+    <!-- Network strength -->
+<div class="networkstrength-container">
+  <div class="networkstrength-content">
+    <div class="networkstrength-icon">
+      <div class="network-icon">
+        <svg
+          width="25"
+          height="26"
+          viewBox="0 0 25 26"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <rect
+            y="0.5"
+            width="25"
+            height="25"
+            fill="url(#pattern0)"
+          />
+          <defs>
+            <pattern
+              id="pattern0"
+              patternContentUnits="objectBoundingBox"
+              width="1"
+              height="1"
+            >
+              <use
+                xlink:href="#image0"
+                transform="scale(0.02)"
+              />
+            </pattern>
+            <image
+              id="image0"
+              width="50"
+              height="50"
+              xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAACbElEQVR4nO2YO2tUQRSAr1iYSCA20SSFFsEmoBYpkrVSTHwFC4uglVj5HzSx00JRO5W0kSjkAYplbDQQFAuf+PoDWsVsVFRc8snBU2yuMzdzd+c+FuaDgeUyc+58O48zc6MoEAgEAoESALQD+4AxYBy4AkwC01om9dm41pG67WXo+BbgKHAVeA7USE9N24rgEYmZp8B+4DawjH+WNXYlq85vAk4Az8iPl8AZYLMvCZk+bymON8DhZgR6gSnKw0NgZ1qJk8BXyscqcNpFoE0XW9m5ad3hgG3AE08vktF8ASwA97Us6DNfI/0Y6IxL9ACvmgj6GrgGjALbHUZ+h9a9rou5mZ2tpz7wIFBNGaSqHdnrtvISxSTL32iwD4PxYBXHQCvAhEzFZgUs0/uiYz+q1sTpIHN33VCub7tV9nvgMvAAeK+Z+rcW+f1O18slYETaJGz99xqS2EBGRmHMUv8gcAf4QXq+a646YIl9ytCXjSXqAgzVBfgA9BnqyL//FH8sAcOG9+wGPtZJDDlJxGQeAV2GHW6W7JgBumPv7NK+pJNIkBsGvpA9n4FDXjptkJCT6B/yowac8y3RrQs+b1bi08yHzEBGlykbVW9rwiDjmjRll7mlifOslgl99slRopKJhIPMTz2y9DvE6Ne6vwqRSJCZA3ZFKZE2wHwhEjEZOZKflzu95W6zBzgOHNPfbZbvARc0ViUqAtPBUROpJLVvlhvezH8nVkusQgA69FC55rCY1/SjXUdUJvg3PRZJz6JpWhZKA3kmuzyRo0x5JVLIlF/CQaZ1JBJkWk/CINO6ErETQDEZOxAIBAKByI2/DDEvW7dnkFoAAAAASUVORK5CYII="
+            />
+          </defs>
+        </svg>
+      </div>
+      <span class="networkstrength-label">Network Strength</span>
+    </div>
+    <span class="networkstrength-value">{{ data.networkstrength }}</span>
+  </div>
+</div>
+
+
+    <!-- Battery temperature -->
+<!-- Battery temperature -->
+<div class="batterytemperature-container">
+  <div class="batterytemperature-content">
+    <div class="batterytemperature-header">
+      <div class="temperature-icon-container">
+        <div class="temperature-icon">
+          <svg
+          width="25"
+          height="26"
+          viewBox="0 0 25 26"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <rect
+            y="0.5"
+            width="25"
+            height="25"
+            fill="url(#pattern0_1871_1869)"
+          />
+          <defs>
+            <pattern
+              id="pattern0_1871_1869"
+              patternContentUnits="objectBoundingBox"
+              width="1"
+              height="1"
+            >
+              <use
+                xlink:href="#image0_1871_1869"
+                transform="scale(0.02)"
+              />
+            </pattern>
+            <image
+              id="image0_1871_1869"
+              width="50"
+              height="50"
+              xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC0ElEQVR4nO2ayWtUQRCHO1ET3I2iuOEGgkHBxFP0ogjiIdEIjkIMJohBEDHxT/Col8QVFXH5B4zeogZzGkRwwwjiTcQVRAQ3FDSfFFMPiva9mUF0Xs84HzSE6nrD7zf9utKpjnNVqpQPwASgC7gCPNYhP++WOVcOAKuApyTzBFjpQgZoBD5QGMlZ4UIEqAUeGrFjwCWgQ8dljUXcl2dcaABbvG99e0xOxstpdaEBnDMCB/PkXTV5Z1xoADeNwL48eX0m74YLDSBrBHbmyes0eVlXIUZeAkd0ZFwZG/HZXFrV/85Ia2lV/z0jb7TanZUjjQuBit/swDqgJcGInMl26FjuQjUC7DSxTIE98h1oDtVIv4n1FzAidIRqZMDEBmKMfALuAXeBk0B9uRopj81OYSOyGsuApcB4V8ZGLK+AxZVgROiqBCN3gNlp+/jvN3vWhQaVUH7JdVBG/8DIaDCdFKAGOO1t3LY8Rtq83FMuBIBDnjBpQtTlMVLnNSqE3rRNLAQ+GkGD0XkJWAKMmLlbwCKdqweumTn5jAVpGjluxDwDpmp8D/CV3/kC7NKcacBzf8VKDjAOeGuEdGt8E/CTZH4A643hiNfymWkYafa+6ckat/3fJG5r7hRv5ZrSMNJuBDzS2HyKQ5rZs/QZW7a3pmGkxwgY1lgTxdOozwyb2N40jGwzAh5obI53dZCE7KGGmFexPe098s1ULHtUSWLEVC5pOkSsTutYIg22iB6Nt3jifMT0Gs3d51Wt2pIbUSEnjJAXwAxzDHkfY+Jd1N8FZmoTO+JYKiZUzDzgsxEjR4+JOtcAHNDrt4vAfmC6zk3yNrl0U+amZiTm4gZt7SS+61rZ5P7QctCFAHAhpioNiUC9W5TRC1yP+a1/3oUCuaP84SJLb8SYXvCE8feIBdiovapCyOu3wYUMudVZCxzV1yv6F44hXQEpzzVp66xSxRXHL7gOJelUu+IfAAAAAElFTkSuQmCC"
+            />
+          </defs>
+        </svg>
+        </div>
+      </div>
+      <span class="batterytemperature-label">Battery Temperature</span>
+    </div>
+    <span class="batterytemperature-value">{{ data.temperature }}</span>
+  </div>
+</div>
+
+
+
+    <!-- Robot utilization -->
+    <!-- Robot utilization -->
+<div class="robot-utilization-container">
+  <div class="robot-utilization-content">
+    <div class="robot-utilization-header">
+      <div class="utilization-icon-container">
+        <div class="utilization-icon">
+          <svg
+            width="25"
+            height="26"
+            viewBox="0 0 25 26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+          >
+            <rect y="0.5" width="25" height="25" fill="url(#utilization-pattern)" />
+            <defs>
+              <pattern
+                id="utilization-pattern"
+                patternContentUnits="objectBoundingBox"
+                width="1"
+                height="1"
+              >
+                <use xlink:href="#utilization-image" transform="scale(0.02)" />
+              </pattern>
+              <image
+                id="utilization-image"
+                width="50"
+                height="50"
+                xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO2ZvUscQRiHpwtBDMFCrYwfjf+DinYBTZEmcGrKgFqKH2WQw16xlDPp/RuS9EmwE4uQYAo/QfBObRT1CYMjTIbb3N7uOze7YX+wcLw78/7m2Xf2dndGKU8CXgGfgSvg0vyeUHkSsEq0yioP4qESjTSusi7gizXgc2ABWASqVvyTyrqAC2vAi1Z8yYrXQg5wAPgIHMWYOvVAlpvodwR8APqlIUb0VaR5VU0llhP2rwHDUhDPgBPC6RholwCZcxJvAiXgjTnKAoMtW/lKQMU5PyMBoufqo77WOd8FXKeA0H076+T9brXZkgDZthJuR7TRf7H3CSB0n/mkvk0pbkJgDFg37eMcuu1oWt/YEk8YypcCJJ0oKtLiqQW0AS+jXkPIQ0WAXuCHyXkDvPPui3BC4Dmw7zxP7oCpPFZkpc7D8cCrr1RC4EkDmN8+fEUTmnviJzAZAXMLvJb2VZIJDcS+NWAX5r0byxwI0AP8cqaQhnnr01c0YQREbBiyANIAIh8gCEAEB5GCCP1hJQYRDEQaIiSIXvfa+wfEpA9fX1NrUKISWbnZN4CzNJUIAgJ0Ay+cWAdwmgYiBMiCeY/qdeLdPn19gOyY+C7wNJlD874+QNaAaf39nSx7Mt9EKta1UoqiIhHSS/rWXP2mWiT+3laoSCScdZ7WFWejR/ooORdPbKOn/b/YetPSG5LOPnmrVAWGlKT0Gq0p+WELAA6MV58oRKFChVTu9QepzRwrzYBP9AAAAABJRU5ErkJggg=="
+              />
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <span class="robot-utilization-label">Robot Utilization</span>
+    </div>
+    <span class="robot-utilization-value">{{ data.robotutilization }}</span> 
+  </div>
+</div>
+
+    <!-- memory  -->
+<!-- Memory Section -->
+<div class="memory-section">
+  <div class="memory-details">
+    <div class="memory-icon-container">
+      <div class="memory-icon">
+        <svg
+          width="25"
+          height="26"
+          viewBox="0 0 25 26"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect y="0.5" width="25" height="25" fill="url(#pattern0)" />
+          <defs>
+            <pattern
+              id="pattern0"
+              patternContentUnits="objectBoundingBox"
+              width="1"
+              height="1"
+            >
+              <use xlink:href="#image0" transform="scale(0.02)" />
+            </pattern>
+            <image
+              id="image0"
+              width="50"
+              height="50"
+              xlink:href="data:image/png;base64,..."
+            />
+          </defs>
+        </svg>
+      </div>
+      <span class="memory-text">Memory</span>
+    </div>
+    <span class="memory-percentage">82 %</span>
+  </div>
+</div>
+
+
+
+    <!-- Cpu utilization -->
+    <div class="cpu_1871-1858">
+      <div class="frame-1597881876_1871-1859">
+        <div class="frame-1597881875_1871-1860">
+          
+          <div class="frame-1597881875_1871-1862">
+            <div class="microchip_1871-1863">
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <rect width="25" height="25" fill="url(#pattern0_1871_1863)" />
+                <defs>
+                  <pattern
+                    id="pattern0_1871_1863"
+                    patternContentUnits="objectBoundingBox"
+                    width="1"
+                    height="1"
+                  >
+                    <use
+                      xlink:href="#image0_1871_1863"
+                      transform="scale(0.02)"
+                    />
+                  </pattern>
+                  <image
+                    id="image0_1871_1863"
+                    width="50"
+                    height="50"
+                    xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABl0lEQVR4nO2asW7CMBCGMyBmkGBBbIWuDLxAhr5EqcQSqUseoCsSrdQ3QUJsjAwsPA1DZ9qBr7KUSu6RiKRx4uD6l27hbOwvd4njc4LAyxEBEfCh2Vb4e8KvrCfabIU/sgES81t74e9zqb5osxf+2IP8VS5FZAg8aDYV/rbwK2uLNlPhH9YOcrMC7oE3YAWsK7YV8AqMTUM8AV/Ur09gZjISNiB0mJEJEJVOtrU0AaLyVdcBeK/YDmLMlQkQdfPpWpT+0+tjLsSY6yKd58CzZoOmgQADMcd5Wuej6Bw2ECQUvx89CDcQkQ2w02xSJLWAbsq71TXrFgSZiDluilydvCDyauVRWASklDyIrYgAnSTPf6xVMiLnlD37uQwI0BJz7BhfR/I8UbLGaNQ6gge5FD4igUM3e5b8OpJPfmXPlDMvjfiNlXnhd4iBQ8WHLDUJxHSBTj0tXiq2XRUFOlUVd6JkOk4KybZ0Au5KgyQwM0swJ+DRCIQGM0rSrK6DnqWxSPwL4cphKA4dT8cepGERiZz4qMYrqEbfZa+n6y72FhEAAAAASUVORK5CYII="
+                  />
+                </defs>
+              </svg>
+            </div>
+          </div>
+          <span class="text-cpu-utilization_1871-1861">CPU Utilization</span>
+        </div>
+        <span class="text-100--_1871-1864">100 %</span>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="cpu_1864-1820">
+      <div class="frame-1597881876_1864-1821">
+        <div class="frame-1597881875_1864-1822">
+         
+          <div class="frame-1597881874_1864-1823">
+            <div class="error_1864-1846">
+              <svg
+                width="25"
+                height="26"
+                viewBox="0 0 25 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <rect
+                  y="0.5"
+                  width="25"
+                  height="25"
+                  fill="url(#pattern0_1864_1846)"
+                />
+                <defs>
+                  <pattern
+                    id="pattern0_1864_1846"
+                    patternContentUnits="objectBoundingBox"
+                    width="1"
+                    height="1"
+                  >
+                    <use
+                      xlink:href="#image0_1864_1846"
+                      transform="scale(0.02)"
+                    />
+                  </pattern>
+                  <image
+                    id="image0_1864_1846"
+                    width="50"
+                    height="50"
+                    xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAACDElEQVR4nO3YTYhNUQDA8cM0oUkkpRRRilIWFAuLsZtihxWy8rEhHzspGuzQ7Niyo1mSxShKMgsLI2WjlFIyaUryOcxPp568mHn3vvvOe+/eer86dXvdzj3/Xr137gmhp6easDeOUGXYjF+1sTVUEebhkb+exM9C1WC//+0LVYJFeDNLyFsMhKrABXMbDlWAVfjcIOQL1oSyw23ZboUyw3bMyGcwlBHm46n8nqEvlA0Oa96hUCZYjHcFQt5jSSgLXFHc5VAGWIdvLYR8x/oyhNzVujvdjhjKWOAPTNVGvG5kqFsR/XiZsbjhnNsWtbn6uxFyUrZzdfefz3H/iU5HLMOHNoRMYXknQ67nWFSRkOhapyI2Ylr7Qn5iUydCxnIuqGhI9KDdEXs0p2hItLtdEQvwSudCXmNhO0LONrmQVkOiM6kjVuCjzod8wsqUITcLLCJFSHQjVcSW2klht0JmsC3FaeHjggtIFRKNt3RKiYNakyokOlA0YqB2MtiKZna/WYqdUuKS1jXzPpLHxWYjVmecFnbLV6xtJmQ00YOn676RvBvNLKN5I3ZI53TdvKcSzjuYFdGHiYQPPF4397GE8040PKXEUWm1KyQ6MlfEUkxKK+5g79dGvE5pMq55tpAR1XP134gNiX7nO206vnrXh9xTXWN/Inapvp0x5IXqex5DHqq+8YZ/kD09obDfSx/r+Qgn+vUAAAAASUVORK5CYII="
+                  />
+                </defs>
+              </svg>
+            </div>
+          </div>
+          <span class="text-error_1864-1825">Error</span>
+        </div>
+        <span class="text-37--_1864-1826">37 %</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- close button -->
+  <div class="frame-1597881852_1874-1901">
+    <button mat-button color="warn" (click)="onClose()">
+      <span class="text-close_1874-1902">Close</span>
+    </button>
+  </div>
+  
+  <div class="id-info-item">
+    <strong>ID:</strong> {{data.id}}
+  </div>
+  
+  
+  <div class="wifi_1874-1914">
+    <div class="wi-fi_1874-1912">
+      <svg
+        width="50"
+        height="50"
+        viewBox="0 0 50 50"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <rect width="50" height="50" fill="url(#pattern0_1874_1912)" />
+        <defs>
+          <pattern
+            id="pattern0_1874_1912"
+            patternContentUnits="objectBoundingBox"
+            width="1"
+            height="1"
+          >
+            <use xlink:href="#image0_1874_1912" transform="scale(0.02)" />
+          </pattern>
+          <image
+            id="image0_1874_1912"
+            width="50"
+            height="50"
+            xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEA0lEQVR4nO1ZXYhVVRTeY2ZlVPZDaNEvhNFDLz2HBanTXeve0eA+hBlR6pNSM2etO0M9nHoz8CXrJXoJwYcanYRCxYeCEiQKK4MCC1QYKQvsoXHOWmO6Y525Tndmzr1z7t+cO3Q+2HA5Z/983+y11v7OHudy5MiRI8eShHd9gZQeC7T4Ciu+TYoHSfAUK54lwYssOGUt/j397FTcR3E3K7xsY22OTLgP+2duIy2+xIpjJPgHK/p2ms0xLQ5e3OX7b+26AIpwAyscIMGoXfJ1m8AkKY5WouL6jpIP/brlrLCFBb/rGvn6ok6yFp8v+/J1bYngqPA0C/yw6AJ0boOfKSr0Ny3gtYmNayxmsxeAs3NJcdS4pRJRiWAjK/6WNWmuH25/skCpYS6Q4rsseDVzsrqQmJjjXuM8Oxd86RZWPNLylgtcqebSXlLYHkTwVBAVHxrxcPsO/8T11uy3PbN31sf62ph4bMui4LBxn8mH6erQAnnFL4zUiN90p2sRQx7v4inYEc8lLYgSOBnnDSl80pwAjEjwfZbSWtdhsJTWksAHLChN7swhF/y9+W5S/CmVCIVPh6OBB12XMXgJ7iWBfWnylRR+malkQ5MD95HCmQYDzlpsN1zcb7iDpDhAinssdm2BuV6LFE9Pv8M91tfyZqFzjBTONRBxxrjPGjQSwcOsOJ4Qgx+96gdWJS0U+vIK0sILpHiUBC83n2c2Bg6bc7C5XAJsbTs/EsaPG+fEv8CQ4KOk8HtN7L2Z5Ex3+f4bWCAghfOtV5z5xFhwMFGQd32k8FYNrwvGtdFuOtLi49bRbHnS+0DwWQubDgqYEy54up4dMdtv3IxjQxEzA67V5hoM+vJNrPDeohyYglftcA79uhvTcEsNOydY4HjXBei8HPraqqrrBOw07mYopWi/Goe2hZiJJAHNSggJqHHoyK5UpPBcqvIq8A8JfEUCFZ6CJ1ngkcCvv9ma/a4+G7Y+1jdFaF22tV0nYbW+rheKLQW8QxOF1Wnniz2emcw6u03xWrCloyL+E4PbEqrWkeFJvL/VOYPJwgN2oM6tWqy4zXUTlQh21pTI3W1/Txu866uG3JVqSJFbDMQ5oLi1nqWo3nGNxdVOcMJatfKN2bt6locVt9rcLkuYbSHBN1jgrxRJfJEFXrcxrpfAl0r3kMCJpsur4LeWI65XRHCSa07fxm2OrHW42JnaF2PLBx5+GPpwmesFhD5cxgL7mxahODrvJiRrWBlmxY/TC4FDdrviehGhL69gxc8W3gk4lmTRewr23UKKnzfwY8fNe7mlgNDjShL8MsE/nWjrwyizfwYJfFNTnb5f6NakZ2FWJL7FFPzRbhTdUgZNFFY3Y+9z5MiR4/+BfwEMcQuM+AFtFgAAAABJRU5ErkJggg=="
+          />
+        </defs>
+      </svg>
+    </div>
+  </div>
+  <div class="frame-1597881884_1883-1920">
+    <svg
+      width="158"
+      height="262"
+      viewBox="0 0 158 262"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+      <rect width="158" height="262" fill="url(#pattern0_1883_1920)" />
+      <rect x="49" y="116" width="60" height="30" fill="#2AC74F" />
+      <defs>
+        <pattern
+          id="pattern0_1883_1920"
+          patternContentUnits="objectBoundingBox"
+          width="1"
+          height="1"
+        >
+          <use
+            xlink:href="#image0_1883_1920"
+            transform="matrix(0.00402482 0 0 0.00242718 -0.00712793 0)"
+          />
+        </pattern>
+        <image
+          id="image0_1883_1920"
+          width="252"
+          height="412"
+          xlink:href="data:image/png;base64,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"
+        />
+      </defs>
+    </svg>
+
+      <!-- <div class="robot-image-container">
         <img [src]="data.imageUrl" alt="{{data.name}}" class="robot-image">
         <div class="loader"></div>
-        <!-- <div class="battery-container">
-          <div class="battery-status">
-            <span>Battery</span>
-            <div class="battery">
-              <div class="battery-level" [style.width.%]="data.battery"></div>
-            </div>
-            <span>{{data.battery}}%</span>
-          </div>
-        </div> -->
+       
       </div>
       <div class="robot-info">
         <div class="robot-info-item">
@@ -38,21 +498,7 @@
         <div class="robot-info-item">
           <strong>Accuracy:</strong> {{data.accuracy}}
         </div>
-      </div>
-    </div>
-    <div class="popup-actions">
-      <!-- <button mat-button color="primary">Pause</button> -->
-      <button class="pushable">
-        <span class="shadow"></span>
-        <span class="edge"></span>
-        <span class="front">
-               Stop
-        </span>
-        </button>
-
-
-        
-      <button mat-button color="warn" (click)="onClose()">Cancel</button>
-    </div>
+      </div> -->
   </div>
+</div>
   
