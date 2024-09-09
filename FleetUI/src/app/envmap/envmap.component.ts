@@ -933,15 +933,24 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.stroke();
     }
   }
-  plotRobo(x: number, y: number): void {
+  // Function to plot robots, with an optional highlight for the selected robot
+  plotRobo(x: number, y: number, isSelected: boolean = false): void {
     const image = this.robotImages['robotB'];
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-  
+    
     if (image && ctx) {
       const imageSize = 25;
-      ctx.drawImage(image, x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
+      
+      // Highlight the selected robot with a border or background
+      if (isSelected) {
+        ctx.strokeStyle = 'red'; // Yellow border for highlighting
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x - imageSize / 2 - 5, y - imageSize / 2 - 5, imageSize + 10, imageSize + 10); // Highlight border
+      }
 
+      // Draw the robot image
+      ctx.drawImage(image, x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
     }
   }
   plotSingleNode(x: number, y: number): void {
@@ -1841,7 +1850,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.plottedPoints = [];
       })
 
-      this.robos.forEach(robo => this.plotRobo(robo.x, robo.y));
+      this.robos.forEach(robo => this.plotRobo(robo.x, robo.y, this.selectedRobo === robo));
     }
   }
   drawConnections(): void {
