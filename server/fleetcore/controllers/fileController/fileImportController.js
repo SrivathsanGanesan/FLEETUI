@@ -102,7 +102,8 @@ const restoreProject = async ({ target }) => {
   const { project } = JSON.parse(
     fs.readFileSync(target + "/projInfo.json", "utf-8")
   );
-  const doc = await new projectModel(project).save();
+
+  const doc = await new projectModel(project).save({ timestamps: false });
   return doc;
 };
 
@@ -253,7 +254,6 @@ const parseProjectFile = async (req, res, next) => {
     await restoreRobots({ target });
     await restoreMaps({ target });
     await restoreProject({ target });
-    return res.send("good");
     let userDet = await saveToUser({ req, project });
     if (!userDet)
       return handleError(
