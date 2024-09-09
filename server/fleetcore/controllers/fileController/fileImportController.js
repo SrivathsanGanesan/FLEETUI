@@ -285,11 +285,13 @@ const parseProjectFile = async (req, res, next) => {
     clearFiles({ target });
     if (err.code === 11000)
       return sendResponse(500, {
+        dupKeyErr: true,
         error: err.message,
         msg: "Trying to insert duplicate data to DB",
       });
 
     sendResponse(500, {
+      dupKeyErr: false,
       error: err,
       msg: "Internal server Error ( operation failed )",
       errMsg: err.message,

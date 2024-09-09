@@ -178,7 +178,10 @@ export class ProjectsetupComponent {
       let data = await response.json();
       console.log(data);
       if (data.conflicts) alert(data.msg);
-      if (data.error) {
+      if (data.dupKeyErr) {
+        alert(data.msg);
+        return;
+      } else if (data.error) {
         alert('Try submitting file again');
         return;
       } else if (data.idExist) {
