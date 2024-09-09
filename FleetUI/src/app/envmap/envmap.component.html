@@ -138,10 +138,8 @@
             Enter
           </button>
         </div>
-      </div>
-      
-      <canvas class="plottinglayer" #overlayCanvas ></canvas>
-      <div
+      </div>      
+      <canvas class="plottinglayer" #overlayCanvas [ngClass]="{'disable-pointer-events': showIntermediateNodesDialog}"></canvas>      <div
         #nodeDetailsPopup
         class="node-details-popup"
         [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
@@ -381,16 +379,14 @@
         </div>
         
         <button (click)="openRobotPopup()">Add Robots</button>
-        
-        <app-robot-popup
-          [isVisible]="isRobotPopupVisible"
-          (close)="closeRobotPopup()"
-          (addRobot)="placeRobots($event)"
-        ></app-robot-popup>
-
         <button (click)="removeRobots()">Remove Robots</button>
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
+        <app-robot-popup
+        [isVisible]="isRobotPopupVisible"
+        (close)="closeRobotPopup()"
+        (addRobot)="placeRobots($event)"
+      ></app-robot-popup>
       </div>
     </div>
     <div class="button-container" *ngIf="!showImage">

@@ -576,32 +576,10 @@ export class EnvmapComponent implements AfterViewInit {
       mapName: this.mapName,
       mpp: this.ratio,
       imgUrl: '',
-      zones: [
-        {
-          zoneName: 'low_speed_zone',
-          zoneCoordinates: [
-            {
-              x: 5,
-              y: 5,
-            },
-            {
-              x: 10,
-              y: 5,
-            },
-            {
-              x: 5,
-              y: 10,
-            },
-            {
-              x: 10,
-              y: 10,
-            },
-          ],
-        },
-      ],
-      edges: [this.edges],
-      nodes: [this.nodes],
-      stations: [],
+      zones: this.zones,
+      edges: this.edges,
+      nodes: this.nodes,
+      stations: this.assets,
     };
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
