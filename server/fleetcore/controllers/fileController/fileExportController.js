@@ -84,6 +84,7 @@ const copyImages = async ({ imgUrlArr, src, dest }) => {
     fs.copyFileSync(`${sourcePath}/${img}`, `${destPath}/${img}`);
   });
 };
+//..
 
 const createProjFiles = async (req, res, next) => {
   const projectName = req.params.project_name;
@@ -107,8 +108,16 @@ const createProjFiles = async (req, res, next) => {
     });
     const projDoc = await projectModel.findOne({ projectName });
     const robos = roboDoc.robots.map((robo) => robo.roboId);
-    const maps = mapDoc.sites.map((map) => map.maps);
-    let imgUrlArr = parseImgUrl({ maps });
+    const maps = [];
+    mapDoc.sites.map((site) => {
+      for (let map of site.maps) {
+        // console.log(map);
+        return map.mapId;
+      }
+      // return site.maps;
+    });
+    // let imgUrlArr = parseImgUrl({ maps });
+    return res.status(200).json({ robo: robos, map: maps });
     await copyImages({ imgUrlArr, src: "dashboardMap", dest: "tempDist" });
     await initiateProjFile({ projDoc, imgUrlArr });
     await initiateRoboFile({ robos });
