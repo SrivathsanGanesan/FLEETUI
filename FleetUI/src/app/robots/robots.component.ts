@@ -9,6 +9,9 @@ export interface Robot {
   status: string;
   battery: string;
   serialNumber: string;
+  temperature: string;  // Battery temperature field
+  networkstrength: string;
+  robotutilization: string;
   // Add other fields as needed
 }
 
@@ -28,11 +31,14 @@ export class RobotsComponent implements OnInit {
   robots: Robot[] = [
     {
       id: 1,
-      serialNumber: '1000000',
+      serialNumber: '50000',
       name: 'Forklift AGV',
       imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
+      temperature:'59 C',
+      networkstrength:'90 %',
+      robotutilization:' 43 %'
     },
     {
       id: 2,
@@ -41,6 +47,11 @@ export class RobotsComponent implements OnInit {
       imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
+      temperature:'57 C',
+      networkstrength:'80 %',
+      robotutilization:' 85 %'
+      
+
     },
     {
       id: 3,
@@ -49,6 +60,9 @@ export class RobotsComponent implements OnInit {
       imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
+      temperature:'01 C',
+      networkstrength:'70 %',
+      robotutilization:' 90 %'
     },
     {
       id: 4,
@@ -57,6 +71,9 @@ export class RobotsComponent implements OnInit {
       imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
+      temperature:'100 C',
+      networkstrength:'60 %',
+      robotutilization:' 60 %'
     },
     {
       id: 5,
@@ -65,6 +82,9 @@ export class RobotsComponent implements OnInit {
       imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
+      temperature:'55 C',
+      networkstrength:'50 %',
+      robotutilization:' 40 %'
     },
     {
       id: 6,
@@ -73,31 +93,36 @@ export class RobotsComponent implements OnInit {
       imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
+      temperature:'55 C',
+      networkstrength:'90 %',
+      robotutilization:' 23 %'
     },
     // Add more robots...
   ];
+
+  
 
   showPopup = false;
   isEditPopupOpen = false;
   menuOpenIndex: number | null = null;
 
-  newRobot: Robot = {
-    id: 0,
-    name: '',
-    imageUrl: '',
-    status: 'Active',
-    battery: '100%',
-    serialNumber: '',
-  };
+  // newRobot: Robot = {
+  //   id: 0,
+  //   name: '',
+  //   imageUrl: '',
+  //   status: 'Active',
+  //   battery: '100%',
+  //   serialNumber: ''
+  // };
 
-  editRobotData: Robot = {
-    id: 0,
-    name: '',
-    imageUrl: '',
-    status: 'Active',
-    battery: '100%',
-    serialNumber: '',
-  };
+  // editRobotData: Robot = {
+  //   id: 0,
+  //   name: '',
+  //   imageUrl: '',
+  //   status: 'Active',
+  //   battery: '100%',
+  //   serialNumber: ''
+  // };
   getImagePath(imageName: string): string {
     return `../../assets/robots/${imageName}`;
   }
@@ -122,65 +147,54 @@ export class RobotsComponent implements OnInit {
     this.menuOpenIndex = null;
   }
 
-  addRobot() {
-    if (
-      this.newRobot.name &&
-      this.newRobot.imageUrl &&
-      this.newRobot.serialNumber &&
-      this.newRobot.status &&
-      this.newRobot.battery
-    ) {
-      this.newRobot.id =
-        this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
-      this.robots.push({ ...this.newRobot });
-      this.newRobot = {
-        id: 0,
-        name: '',
-        imageUrl: '',
-        serialNumber: '',
-        status: 'Active',
-        battery: '100%',
-      };
-      this.togglePopup();
-    } else {
-      alert('Please fill out all fields.');
-    }
-  }
+  // addRobot() {
+  //   if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.serialNumber && this.newRobot.status && this.newRobot.battery) {
+  //     this.newRobot.id = this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
+  //     this.robots.push({ ...this.newRobot });
+  //     this.newRobot = { id: 0, name: '', imageUrl: '',  serialNumber: '',  status: 'Active', battery: '100%' };
+  //     this.togglePopup();
+  //   } else {
+  //     alert('Please fill out all fields.');
+  //   }
+  // }
 
-  editRobot(index: number) {
-    this.isEditPopupOpen = true;
-    this.editIndex = index;
-    this.editRobotData = { ...this.robots[index] };
-    this.menuOpenIndex = null;
-  }
+  // editRobot(index: number) {
+  //   this.isEditPopupOpen = true;
+  //   this.editIndex = index;
+  //   this.editRobotData = { ...this.robots[index] };
+  //   this.menuOpenIndex = null;
+  // }
 
-  saveRobot() {
-    if (this.editIndex !== null) {
-      this.robots[this.editIndex] = {
-        id: this.editRobotData.id,
-        name: this.editRobotData.name,
-        imageUrl: this.editRobotData.imageUrl,
-        serialNumber: this.editRobotData.serialNumber || 'DefaultSerialNumber',
+  // saveRobot() {
+  //   if (this.editIndex !== null) {
+  //     this.robots[this.editIndex] = {
+  //       id: this.editRobotData.id,
+  //       name: this.editRobotData.name,
+  //       imageUrl: this.editRobotData.imageUrl,
+  //       serialNumber: this.editRobotData.serialNumber || 'DefaultSerialNumber',
+       
+       
+  //       status: this.editRobotData.status,
+  //       battery: this.editRobotData.battery,
+        
+  //     };
+  //     this.closeEditPopup();
+  //   }
+  // }
 
-        status: this.editRobotData.status,
-        battery: this.editRobotData.battery,
-      };
-      this.closeEditPopup();
-    }
-  }
-
-  closeEditPopup() {
-    this.isEditPopupOpen = false;
-    this.editIndex = null;
-    this.editRobotData = {
-      id: 0,
-      name: '',
-      imageUrl: '',
-      serialNumber: '',
-      status: 'Active',
-      battery: '100%',
-    };
-  }
+  // closeEditPopup() {
+  //   this.isEditPopupOpen = false;
+  //   this.editIndex = null;
+  //   this.editRobotData = { 
+  //     id: 0, 
+  //     name: '', 
+  //     imageUrl: '', 
+  //     serialNumber: '' ,
+  //     status: 'Active', 
+  //     battery: '100%',
+      
+  //   };
+  // }
 
   deleteRobot(index: number) {
     this.robots.splice(index, 1);

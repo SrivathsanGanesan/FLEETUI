@@ -2,6 +2,15 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface Robot {
+networksrength: any;
+currentMap: any;
+currentTask: any;
+batteryDistance: any;
+currentSpeed: any;
+averageSpeed: any;
+distanceLeft: string;
+  batteryPercentage: string;
+  averageChargingTime: string;
   id: number;
   name: string;
   imageUrl: string;
@@ -11,6 +20,9 @@ export interface Robot {
   status: string;
   battery: string;
   serialNumber: string;
+  temperature: string;
+  networkstrength: string;
+  robotutilization: string;
 }
 
 @Component({
@@ -19,29 +31,22 @@ export interface Robot {
   styleUrls: ['./robot-detail-popup.component.css']
 })
 export class RobotDetailPopupComponent {
-
-  batteryClass: string;
+  
+  metrics: { title: string; value: string; icon: string }[] = [];
+  batteryData: any[] = [];  // Array to store battery data for each robot
+robot: any;
 
   constructor(
     public dialogRef: MatDialogRef<RobotDetailPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Robot
   ) {
-    this.batteryClass = this.getBatteryClass(this.data.battery);
+    
   }
 
-  getBatteryClass(batteryLevel: string): string {
-    const batteryPercentage = parseInt(batteryLevel, 10);
-    if (batteryPercentage >= 75) {
-      return 'battery-high';
-    } else if (batteryPercentage >= 50) {
-      return 'battery-medium';
-    } else if (batteryPercentage >= 25) {
-      return 'battery-low';
-    } else {
-      return 'battery-critical';
-    }
-  }
+ 
 
+  
+ 
   onClose(): void {
     this.dialogRef.close();
   }

@@ -290,6 +290,8 @@ body, .card, .popup-menu {
 
 .card .bottom-section .card-id-status p {
   margin: 3px 0;
+  color: rgba(255, 255, 255, 0.721);
+
 }
 
 .card .bottom-section .card-id-status .robot-status {
