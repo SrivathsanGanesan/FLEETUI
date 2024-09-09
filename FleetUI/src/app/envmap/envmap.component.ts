@@ -1548,7 +1548,7 @@ export class EnvmapComponent implements AfterViewInit {
   }  
   removeRobots(): void {
     // Remove selected robots
-    this.robos = this.robos.filter(robo => robo.roboDet.id === this.selectedRobo?.roboDet.id);
+    this.robos = this.robos.filter(robo => robo.roboDet.id !== this.selectedRobo?.roboDet.id);
     this.redrawCanvas();
   }
   showZoneTypePopup(): void {
@@ -1777,7 +1777,7 @@ export class EnvmapComponent implements AfterViewInit {
       })
       this.draggingRobo = false;
       // this.updateRoboPosition(this.selectedRobo.roboDet.id, x, y);
-      this.selectedRobo = null;
+      // this.selectedRobo = null;
     }
   }
   private isAssetClicked(asset: { x: number, y: number, type: string }, mouseX: number, mouseY: number): boolean {
