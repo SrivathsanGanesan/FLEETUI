@@ -50,20 +50,8 @@ export class ThroughputComponent {
   ) {
     const seriesData = {
       hourlyDataSeries1: {
-        picks: [
-          // 110, 91, 55, 101, 129, 122, 69, 91, 148
-        ],
-        datestime: [
-          // '2024-09-18T00:00:00.000Z',
-          // '2024-09-18T01:00:00.000Z',
-          // '2024-09-18T02:00:00.000Z',
-          // '2024-09-18T03:00:00.000Z',
-          // '2024-09-18T04:00:00.000Z',
-          // '2024-09-18T05:00:00.000Z',
-          // '2024-09-18T06:00:00.000Z',
-          // '2024-09-18T07:00:00.000Z',
-          // '2024-09-18T08:00:00.000Z',
-        ],
+        picks: [0], // 110, 91, 55, 101, 129, 122, 69, 91, 148
+        datestime: [],
       },
     };
 
@@ -138,6 +126,29 @@ export class ThroughputComponent {
   ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
     if (!this.ONBtn) return;
+    this.getThroughPut();
+  }
+
+  getThroughPutIfOn() {
+    if (this.ONBtn) {
+      // alter the logic, cz of toggling function in button..
+      // this.chartOptions.series = [0];
+      this.chartOptions = {
+        ...this.chartOptions,
+        series: [
+          {
+            name: 'Throughput',
+            data: [0],
+            color: '#ff7373',
+          },
+        ],
+        xaxis: {
+          // ...this.chartOptions.xaxis, // only if needed..
+          categories: this.x_axis_timeStamp,
+        },
+      };
+      return;
+    }
     this.getThroughPut();
   }
 
