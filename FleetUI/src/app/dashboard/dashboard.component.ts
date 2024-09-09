@@ -45,7 +45,7 @@ export class DashboardComponent implements AfterViewInit {
     private cdRef: ChangeDetectorRef
   ) {
     if (this.projectService.getIsMapSet()) return;
-    this.onInitMapImg();
+    this.onInitMapImg(); // yet to remove..
   }
 
   ngAfterViewInit() {
@@ -53,15 +53,17 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   // guess no need..
-  ngOnInit() {
+  async ngOnInit() {
     if (this.projectService.getIsMapSet()) return;
-    this.onInitMapImg();
+    await this.onInitMapImg();
     this.loadCanvas();
   }
 
   async onInitMapImg() {
     let project = this.projectService.getSelectedProject();
     let mapArr = [];
+    // console.log(project);
+
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-project/${project._id}`,
       { credentials: 'include' }
