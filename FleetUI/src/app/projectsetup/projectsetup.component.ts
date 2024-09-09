@@ -122,7 +122,7 @@ export class ProjectsetupComponent {
   }
 
   async logout() {
-    try {
+    /* try {
       const response = await fetch(
         'http://localhost:3000/fleet-project-file/download-project/project_2',
         {
@@ -146,7 +146,7 @@ export class ProjectsetupComponent {
       console.log('Err ra pans : ', error);
     }
 
-    return;
+    return; */
     fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`, {
       credentials: 'include',
     })

@@ -120,7 +120,7 @@ const mapSchema = new Schema(
     nodes: { type: mongoose.Schema.Types.Mixed, default: [] }, // type : [nodeSchema]
     edges: { type: mongoose.Schema.Types.Mixed, default: [] }, // type: [edgeSchema]
     stations: { type: [stationSchema], default: [] },
-    zones: { ctype: [zoneSchema], cdefault: [] },
+    zones: { type: mongoose.Schema.Types.Mixed, default: [] }, // type: [zoneSchema]
     robots: { type: [roboProjSchema], default: [] },
     logTime: { type: [logTimeSchema], default: [] },
     throughPut: {

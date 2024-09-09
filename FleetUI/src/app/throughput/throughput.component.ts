@@ -157,7 +157,7 @@ export class ThroughputComponent {
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/throughput/${this.selectedMap.id}`,
       {
-        method: 'GET',
+        method: 'POST',
         credentials: 'include',
       }
     );

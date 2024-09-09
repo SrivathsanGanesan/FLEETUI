@@ -34,7 +34,8 @@ const renameProjFile = async ({ res, target, alterName }) => {
 const clearFiles = ({ target }) => {
   const files = fs.readdirSync(target);
   for (const file of files) {
-    if (fs.existsSync(`${target}/${file}`)) fs.unlinkSync(`${target}/${file}`);
+    if (file !== ".gitkeep" && fs.existsSync(`${target}/${file}`))
+      fs.unlinkSync(`${target}/${file}`);
   }
 };
 
@@ -157,6 +158,7 @@ const handleConflict = (res, target, img, msg) => {
 //..
 
 const extractProjFile = async (req, res, next) => {
+  return next();
   if (req.role === "User")
     return res.status(403).json({
       status: false,
@@ -216,6 +218,7 @@ const parseProjectFile = async (req, res, next) => {
         msg: "Seems project already exists!(project with this Id already exist)",
       });
     }
+
     const data = await projectModel.exists({ projectName: projectName });
     if (data) {
       clearFiles({ target });
