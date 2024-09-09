@@ -215,6 +215,8 @@ export class EnvmapComponent implements AfterViewInit {
   };
   roboInitOffset : number = 60;
   draggingRobot: Robo | null = null; // Currently dragged robot
+  deselectTimeout: any = null;
+  highlightDuration = 2000; // Example: 2 seconds 
   
 
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
@@ -944,9 +946,11 @@ export class EnvmapComponent implements AfterViewInit {
       
       // Highlight the selected robot with a border or background
       if (isSelected) {
-        ctx.strokeStyle = 'red'; // Yellow border for highlighting
-        ctx.lineWidth = 3;
-        ctx.strokeRect(x - imageSize / 2 - 5, y - imageSize / 2 - 5, imageSize + 10, imageSize + 10); // Highlight border
+        ctx.beginPath();
+        ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
+        ctx.fill();
+        ctx.closePath();
       }
 
       // Draw the robot image
@@ -1646,6 +1650,18 @@ export class EnvmapComponent implements AfterViewInit {
           this.selectedRobo = robo
           this.draggingRobo = true;
           this.redrawCanvas();
+
+
+        // Clear any existing timeout
+        if (this.deselectTimeout) {
+          clearTimeout(this.deselectTimeout);
+        }
+
+        // Set a timeout to deselect the robot after the specified duration
+        this.deselectTimeout = setTimeout(() => {
+          this.selectedRobo = null;
+          this.redrawCanvas(); // Redraw the canvas to remove the highlight
+        }, this.highlightDuration);
           return;
         }
       }

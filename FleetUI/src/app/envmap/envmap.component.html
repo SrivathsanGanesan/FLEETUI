@@ -346,9 +346,8 @@
       </div>
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
-      <!-- Image canvas -->
       <button class="close-btn" (click)="close()">X</button>
-      <div class="options-container">
+      <div class="options-container" *ngIf="!isOptionsMenuVisible">
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
@@ -393,8 +392,6 @@
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
-            <!-- Popup for zone type selection -->
-
     </div>
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
