@@ -215,6 +215,8 @@ export class EnvmapComponent implements AfterViewInit {
   };
   roboInitOffset : number = 60;
   draggingRobot: Robo | null = null; // Currently dragged robot
+  deselectTimeout: any = null;
+  highlightDuration = 2000; // Example: 2 seconds 
   
 
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
@@ -574,32 +576,10 @@ export class EnvmapComponent implements AfterViewInit {
       mapName: this.mapName,
       mpp: this.ratio,
       imgUrl: '',
-      zones: [
-        {
-          zoneName: 'low_speed_zone',
-          zoneCoordinates: [
-            {
-              x: 5,
-              y: 5,
-            },
-            {
-              x: 10,
-              y: 5,
-            },
-            {
-              x: 5,
-              y: 10,
-            },
-            {
-              x: 10,
-              y: 10,
-            },
-          ],
-        },
-      ],
-      edges: [this.edges],
-      nodes: [this.nodes],
-      stations: [],
+      zones: this.zones,
+      edges: this.edges,
+      nodes: this.nodes,
+      stations: this.assets,
     };
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
@@ -933,15 +913,25 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.stroke();
     }
   }
-  plotRobo(x: number, y: number): void {
+  plotRobo(x: number, y: number, isSelected: boolean = false): void {
     const image = this.robotImages['robotB'];
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-  
+    
     if (image && ctx) {
-      const imageSize = 25;
-      ctx.drawImage(image, x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
+      const imageSize = 30;
+      
+      // Highlight the selected robot with a border or background
+      if (isSelected) {
+        ctx.beginPath();
+        ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
+        ctx.fill();
+        ctx.closePath();
+      }
 
+      // Draw the robot image
+      ctx.drawImage(image, x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
     }
   }
   plotSingleNode(x: number, y: number): void {
@@ -1548,7 +1538,7 @@ export class EnvmapComponent implements AfterViewInit {
   }  
   removeRobots(): void {
     // Remove selected robots
-    this.robos = this.robos.filter(robo => robo.roboDet.id === this.selectedRobo?.roboDet.id);
+    this.robos = this.robos.filter(robo => robo.roboDet.id !== this.selectedRobo?.roboDet.id);
     this.redrawCanvas();
   }
   showZoneTypePopup(): void {
@@ -1637,6 +1627,18 @@ export class EnvmapComponent implements AfterViewInit {
           this.selectedRobo = robo
           this.draggingRobo = true;
           this.redrawCanvas();
+
+
+        // Clear any existing timeout
+        if (this.deselectTimeout) {
+          clearTimeout(this.deselectTimeout);
+        }
+
+        // Set a timeout to deselect the robot after the specified duration
+        this.deselectTimeout = setTimeout(() => {
+          this.selectedRobo = null;
+          this.redrawCanvas(); // Redraw the canvas to remove the highlight
+        }, this.highlightDuration);
           return;
         }
       }
@@ -1777,7 +1779,7 @@ export class EnvmapComponent implements AfterViewInit {
       })
       this.draggingRobo = false;
       // this.updateRoboPosition(this.selectedRobo.roboDet.id, x, y);
-      this.selectedRobo = null;
+      // this.selectedRobo = null;
     }
   }
   private isAssetClicked(asset: { x: number, y: number, type: string }, mouseX: number, mouseY: number): boolean {
@@ -1841,7 +1843,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.plottedPoints = [];
       })
 
-      this.robos.forEach(robo => this.plotRobo(robo.x, robo.y));
+      this.robos.forEach(robo => this.plotRobo(robo.x, robo.y, this.selectedRobo === robo));
     }
   }
   drawConnections(): void {

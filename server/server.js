@@ -34,8 +34,8 @@ app.use("/fleet-config", configurationRouter);
 const liveStreamRouter = require("./fleetcore/routes/liveStreamRouter");
 app.use("/stream-data", liveStreamRouter);
 
-const throughputRouter = require("./fleetcore/routes/throughputRouter");
-app.use("/graph/throughput", throughputRouter);
+const graphRouter = require("./fleetcore/routes/graphRouter");
+app.use("/graph", graphRouter);
 
 // tasks..
 const tasksRouter = require("./fleetcore/routes/tasksRouter");

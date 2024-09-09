@@ -32,6 +32,8 @@ projectFileRouter.post(
   parseProjectFile
 );
 
+projectFileRouter.post("/upload-project", parseProjectFile);
+
 projectFileRouter.get(
   "/download-project/:project_name",
   validateToken,

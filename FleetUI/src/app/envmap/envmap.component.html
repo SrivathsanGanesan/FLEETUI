@@ -138,10 +138,8 @@
             Enter
           </button>
         </div>
-      </div>
-      
-      <canvas class="plottinglayer" #overlayCanvas ></canvas>
-      <div
+      </div>      
+      <canvas class="plottinglayer" #overlayCanvas [ngClass]="{'disable-pointer-events': showIntermediateNodesDialog}"></canvas>      <div
         #nodeDetailsPopup
         class="node-details-popup"
         [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
@@ -346,9 +344,8 @@
       </div>
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
-      <!-- Image canvas -->
       <button class="close-btn" (click)="close()">X</button>
-      <div class="options-container">
+      <div class="options-container" *ngIf="!isOptionsMenuVisible">
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
@@ -382,18 +379,15 @@
         </div>
         
         <button (click)="openRobotPopup()">Add Robots</button>
-        <app-robot-popup
-          [isVisible]="isRobotPopupVisible"
-          (close)="closeRobotPopup()"
-          (addRobot)="placeRobots($event)"
-        ></app-robot-popup>
-
         <button (click)="removeRobots()">Remove Robots</button>
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
+        <app-robot-popup
+        [isVisible]="isRobotPopupVisible"
+        (close)="closeRobotPopup()"
+        (addRobot)="placeRobots($event)"
+      ></app-robot-popup>
       </div>
-            <!-- Popup for zone type selection -->
-
     </div>
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>

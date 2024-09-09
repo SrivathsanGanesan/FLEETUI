@@ -98,4 +98,61 @@ const throughput = async (req, res, next) => {
   }
 };
 
-module.exports = { getFleetThroughput, throughput };
+const getStarvationRate = (req, res, next) => {
+  fetch(`http://fleetIp:8080/-----`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        req.responseStatus = "NOT_OK";
+        return next();
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      req.fleetData = data;
+    })
+    .catch((err) => {
+      req.fleetErr = err;
+    });
+  next();
+};
+
+const starvationRate = async (req, res) => {
+  const mapId = req.params.mapId;
+  try {
+    //..
+    let dummyStat = [];
+    const mapData = await Map.findOne({ _id: mapId });
+    // const mapData = await Map.findOneAndUpdate(
+    //   { _id: mapId },
+    //   {
+    //     $push: {
+    //       "throughPut.Stat": { $each: dummyStat }, // can push multiple entries to the array using $each
+    //       "throughPut.inProg": InProgress,
+    //     },
+    //   },
+    //   { new: true }
+    // );
+
+    return res.status(200).json({
+      msg: "data sent",
+      starvationRate: [],
+    });
+  } catch (err) {
+    console.log("error occured : ", err);
+    if (err.name === "CastError")
+      return res.status(400).json({ msg: "not valid map Id" });
+    res.status(500).json({ opt: "failed", error: err });
+  }
+};
+
+module.exports = {
+  getFleetThroughput,
+  throughput,
+  getStarvationRate,
+  starvationRate,
+};

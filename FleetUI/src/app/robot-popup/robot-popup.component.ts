@@ -14,9 +14,9 @@ export class RobotPopupComponent {
   //..
   showError: boolean = false; // To track if an error message should be shown
   availableRobots = [
-    { id: 1, name: 'Robot A', image: 'assets/CanvasRobo/robotB.svg', selected: false },
-    { id: 2, name: 'Robot B', image: 'assets/CanvasRobo/robotB.svg', selected: false },
-    { id: 3, name: 'Robot B', image: 'assets/CanvasRobo/robotB.svg', selected: false }
+    { id: 1, name: 'Robot 1', image: 'assets/CanvasRobo/robotB.svg', selected: false },
+    { id: 2, name: 'Robot 2', image: 'assets/CanvasRobo/robotB.svg', selected: false },
+    { id: 3, name: 'Robot 3', image: 'assets/CanvasRobo/robotB.svg', selected: false }
   ];
 
   closePopup() {

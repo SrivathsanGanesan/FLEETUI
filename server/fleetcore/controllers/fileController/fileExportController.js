@@ -80,10 +80,11 @@ const parseImgUrl = ({ maps }) => {
 const copyImages = async ({ imgUrlArr, src, dest }) => {
   const sourcePath = path.resolve(__dirname, `../../../proj_assets/${src}`);
   const destPath = path.resolve(__dirname, `../../../proj_assets/${dest}`);
-  imgUrlArr?.forEach((img) => {
+  for (let img of imgUrlArr) {
     fs.copyFileSync(`${sourcePath}/${img}`, `${destPath}/${img}`);
-  });
+  }
 };
+//..
 
 const createProjFiles = async (req, res, next) => {
   const projectName = req.params.project_name;
@@ -107,7 +108,9 @@ const createProjFiles = async (req, res, next) => {
     });
     const projDoc = await projectModel.findOne({ projectName });
     const robos = roboDoc.robots.map((robo) => robo.roboId);
-    const maps = mapDoc.sites.map((map) => map.maps);
+    const maps = mapDoc.sites.map((site) => {
+      return site.maps;
+    });
     let imgUrlArr = parseImgUrl({ maps });
     await copyImages({ imgUrlArr, src: "dashboardMap", dest: "tempDist" });
     await initiateProjFile({ projDoc, imgUrlArr });
@@ -121,17 +124,16 @@ const createProjFiles = async (req, res, next) => {
 };
 
 const compressProjectFile = async (req, res, next) => {
-  let target = path.resolve("proj_assets/tempDist/");
-  let toZip = path.resolve(
-    `proj_assets/projectFile/${req.params.project_name}.zip`
-  );
   try {
+    let target = path.resolve("proj_assets/tempDist/");
+    let toZip = path.resolve(
+      `proj_assets/projectFile/${req.params.project_name}.zip`
+    );
     const output = fs.createWriteStream(toZip);
     const archive = archiver("zip", { zlib: { level: 9 } });
     const files = fs.readdirSync(target);
 
     output.on("close", () => {
-      console.log("zip gonna sent");
       res.download(toZip, `/${req.params.project_name}.zip`, (err) => {
         if (err) {
           console.log("Error while downloading : ", err);
@@ -141,10 +143,12 @@ const compressProjectFile = async (req, res, next) => {
           });
         } else {
           console.log("zip has been sent");
-          files.forEach((file) => {
-            if (fs.existsSync(`${target}/${file}`))
+          // files.forEach((file) => {
+          for (let file of files) {
+            if (file !== ".gitkeep" && fs.existsSync(`${target}/${file}`))
               fs.unlinkSync(`${target}/${file}`);
-          });
+          }
+          // );
           fs.unlinkSync(toZip);
         }
       });
@@ -158,12 +162,15 @@ const compressProjectFile = async (req, res, next) => {
     });
     archive.pipe(output);
 
-    files.forEach((file) => {
+    // files.forEach((file) => {
+    for (let file of files) {
+      if (file === ".gitkeep") continue;
       const filePath = path.join(target, file);
       archive.append(fs.createReadStream(filePath), {
         name: path.basename(file),
       });
-    });
+    }
+    // );
     archive.finalize();
 
     /* res.on("finish", () => {
