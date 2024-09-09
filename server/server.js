@@ -41,6 +41,10 @@ app.use("/graph/throughput", throughputRouter);
 const tasksRouter = require("./fleetcore/routes/tasksRouter");
 app.use("/fleet-tasks", tasksRouter);
 
+// Err Logs..
+const errLogRouter = require("./fleetcore/routes/errorLogRouter");
+app.use("/fleet-logs", errLogRouter);
+
 app.listen(process.env.PORT, (err) => {
   err
     ? console.log("error while connecting : ", err)

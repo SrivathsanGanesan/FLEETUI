@@ -10,10 +10,13 @@ export class RobotPopupComponent {
   @Input() robots: any[] = []; // Robots data will be passed from parent
   @Output() close = new EventEmitter<void>();
   @Output() addRobot = new EventEmitter<any[]>(); // Emit an array of selected robots
+
+  //..
   showError: boolean = false; // To track if an error message should be shown
   availableRobots = [
-    { id: 1, name: 'Robot A', image: 'assets/CanvasRobo/robotA.svg', selected: false },
+    { id: 1, name: 'Robot A', image: 'assets/CanvasRobo/robotB.svg', selected: false },
     { id: 2, name: 'Robot B', image: 'assets/CanvasRobo/robotB.svg', selected: false },
+    { id: 3, name: 'Robot B', image: 'assets/CanvasRobo/robotB.svg', selected: false }
   ];
 
   closePopup() {

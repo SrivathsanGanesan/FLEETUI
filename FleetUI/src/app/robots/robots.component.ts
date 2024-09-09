@@ -15,14 +15,12 @@ export interface Robot {
   // Add other fields as needed
 }
 
-
 @Component({
   selector: 'app-robots',
   templateUrl: './robots.component.html',
-  styleUrls: ['./robots.component.css']
+  styleUrls: ['./robots.component.css'],
 })
 export class RobotsComponent implements OnInit {
-
   robotImages: string[] = [
     'agv1.png',
     'agv2.png',
@@ -30,13 +28,12 @@ export class RobotsComponent implements OnInit {
     // Add more images from assets/robots
   ];
 
-
   robots: Robot[] = [
     {
       id: 1,
       serialNumber: '50000',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
       temperature:'59 C',
@@ -47,7 +44,7 @@ export class RobotsComponent implements OnInit {
       id: 2,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
       temperature:'57 C',
@@ -60,7 +57,7 @@ export class RobotsComponent implements OnInit {
       id: 3,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
       temperature:'01 C',
@@ -71,7 +68,7 @@ export class RobotsComponent implements OnInit {
       id: 4,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
       temperature:'100 C',
@@ -82,7 +79,7 @@ export class RobotsComponent implements OnInit {
       id: 5,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
       temperature:'55 C',
@@ -90,10 +87,10 @@ export class RobotsComponent implements OnInit {
       robotutilization:' 40 %'
     },
     {
-      id: 6 ,
+      id: 6,
       serialNumber: '101589',
       name: 'Forklift AGV',
-      imageUrl: "../../assets/robots/agv1.png",
+      imageUrl: '../../assets/robots/agv1.png',
       status: 'Active',
       battery: '40%',
       temperature:'55 C',
@@ -129,7 +126,6 @@ export class RobotsComponent implements OnInit {
   getImagePath(imageName: string): string {
     return `../../assets/robots/${imageName}`;
   }
-
 
   editIndex: number | null = null;
   centerIndex: any;
@@ -224,7 +220,7 @@ export class RobotsComponent implements OnInit {
   openRobotDetail(robot: Robot): void {
     this.dialog.open(RobotDetailPopupComponent, {
       width: '70%',
-      data: robot
+      data: robot,
     });
   }
 }

@@ -353,7 +353,6 @@
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div>
-
       <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
         <div class="dropdown">
           <button class="dropdown-button">Add Node</button>
@@ -370,32 +369,18 @@
             <button (click)="setDirection('bi')">Bi-Directional</button>
           </div>
         </div>
-        <div class="dropdown">
-          <button class="dropdown-button">Zones</button>
-          <div class="dropdown-content">
-            <button (click)="setZoneColor('#cd2f2f54')">
-              High Speed Zones
-            </button>
-            <button (click)="setZoneColor('#2f79cd54')">
-              Medium Speed Zones
-            </button>
-            <button (click)="setZoneColor('#2b8f3e64')">
-              Slow Speed Zones</button>
-            <button (click)="setZoneColor('#2b8f3e64')">
-              Slow Speed Zones</button>   
-            <button (click)="setZoneColor('#2b8f3e64')">
-              Slow Speed Zones</button>         
-          </div>
-        </div>
+        <button (click)="startZonePlotting()">Zones</button>
 
         <div class="dropdown">
           <button class="dropdown-button">Add Assets</button>
           <div class="dropdown-content">
-            <button (click)="selectAsset('docking')">Docking Station</button>
-            <button (click)="selectAsset('charging')">Charging Station</button>
-            <button (click)="selectAsset('picking')">Picking Station</button>
+            <button (click)="selectAssetType('docking')">Docking Station</button>
+            <button (click)="selectAssetType('charging')">Charging Station</button>
+            <button (click)="selectAssetType('waiting')">Waiting Station</button>
+            <button (click)="selectAssetType('intermediate')">Intermediate Station</button>
           </div>
         </div>
+        
         <button (click)="openRobotPopup()">Add Robots</button>
         <app-robot-popup
           [isVisible]="isRobotPopupVisible"
@@ -403,14 +388,26 @@
           (addRobot)="placeRobots($event)"
         ></app-robot-popup>
 
-        <button>Remove Robots</button>
+        <button (click)="removeRobots()">Remove Robots</button>
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
+            <!-- Popup for zone type selection -->
+
     </div>
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
     </div>
+  </div>
+</div>
+<div *ngIf="isPopupVisible" class="popup-overlay">
+  <div class="popup-content">
+    <h3>Select Zone Type</h3>
+    <select [(ngModel)]="zoneType">
+      <option *ngFor="let zone of zoneTypeList" [value]="zone">{{ zone }}</option>
+    </select>
+    <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">Confirm</button>
+    <button (click)="onCancel()">Cancel</button>
   </div>
 </div>

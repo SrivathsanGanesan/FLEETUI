@@ -4,6 +4,7 @@ import {
   ViewChild,
   AfterViewInit,
   ChangeDetectorRef,
+  Input,
 } from '@angular/core';
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
@@ -12,7 +13,8 @@ import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-p
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-import { response } from 'express';
+import { EnvmapComponent } from '../envmap/envmap.component';
+
 interface Poll {
   ip: string;
   mac: string;

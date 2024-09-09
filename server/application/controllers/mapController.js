@@ -32,7 +32,8 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
           mapName: mapName,
         },
       },
-    }
+    },
+    {new : true}
   );
   return proj;
 };
@@ -66,9 +67,10 @@ const mapInsert = async (req, res) => {
         msg: "project name not exists!",
       });
     }
-    const siteDoc = await projectModel.exists({ "sites.siteName": siteName });
+    const siteDoc = await projectModel.exists({ projectName : projectName, "sites.siteName": siteName });
+    let updatedSite = null;
     if (!siteDoc)
-      await projectModel.findOneAndUpdate(
+      updatedSite = await projectModel.findOneAndUpdate(
         {
           projectName: projectName,
         },
@@ -76,8 +78,12 @@ const mapInsert = async (req, res) => {
           $push: {
             sites: new siteModel({ siteName: siteName }),
           },
-        }
+        },
+        {new : true}
       );
+
+    console.log(updatedSite);
+    
 
     if (req.file === undefined)
       return res.status(400).json({ msg: "file missing", isFileExist: false });
@@ -100,6 +106,7 @@ const mapInsert = async (req, res) => {
         succeded: false,
         msg: "operation failed while inserting ref Id of Map!",
         map: null,
+        site : updatedSite
       });
     }
     res.status(201).json({ exits: false, msg: "data inserted!", map: newMap });
