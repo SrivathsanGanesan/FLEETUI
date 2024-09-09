@@ -188,6 +188,13 @@
               id="nodeDescription"
               [(ngModel)]="nodeDetails.description"
             /><br />
+            <label for="Intermediate_Stn">Intermediate Node</label>
+            <input type="checkbox" id="Intermediate_Stn" [(ngModel)]="nodeDetails.intermediate_node"><br>
+            
+            <label for="Waiting_Stn">Waiting Node</label>
+            <input type="checkbox" id="Waiting_Stn" [(ngModel)]="nodeDetails.waiting_node">
+            
+            
           </div>
 
           <div class="action-form">
@@ -336,6 +343,7 @@
           </div>
         </div>
         <div class="Node-btn">
+          <button class="Delnode-btn" (click)="deleteSelectedNode()">Delete Node</button>
           <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
           <button class="closenode-btn" (click)="closeNodeDetailsPopup()">
             Close

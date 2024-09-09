@@ -39,7 +39,7 @@ const roboProjSchema = new Schema(
     },
     name: {
       type: String,
-      required: [true, "name of the robo required!"],
+      // required: [true, "name of the robo required!"], // need to uncomment..!
       trim: true,
     },
   },

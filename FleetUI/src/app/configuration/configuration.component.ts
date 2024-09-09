@@ -112,10 +112,15 @@ export class ConfigurationComponent implements AfterViewInit {
                 mapName: map.mapName,
                 siteName: sites.siteName,
                 date: createdAt,
+                createdAt: map.createdAt, // for sorting..
               };
             });
           })
           .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
+        this.EnvData.sort(
+          (a: any, b: any) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
         this.filteredEnvData = this.EnvData;
         this.cdRef.detectChanges();
         if (!this.projectService.getIsMapSet())

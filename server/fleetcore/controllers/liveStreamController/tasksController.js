@@ -81,6 +81,9 @@ const getTasks = async (req, res) => {
   try {
     //..
     let taskData = req.fleetData;
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(500).json({ msg: "map not exists", map: null });
     // Needed one!
     /* const mapData = await Map.findOneAndUpdate(
       { _id: mapId },

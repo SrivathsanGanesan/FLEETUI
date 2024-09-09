@@ -4,6 +4,7 @@ import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../environments/environment.development';
+import { error, log } from 'node:console';
 
 interface Project {
   _id: string;
@@ -172,7 +173,10 @@ export class ProjectsetupComponent {
           body: this.form,
         }
       );
+      // if (!response.ok)
+      //   throw new Error(`err with status code of ${response.status}`);
       let data = await response.json();
+      console.log(data);
       if (data.conflicts) alert(data.msg);
       if (data.error) {
         alert('Try submitting file again');
@@ -183,10 +187,10 @@ export class ProjectsetupComponent {
       } else if (!data.idExist && data.nameExist) {
         return true;
       } else if (!data.err && !data.conflicts && data.user) {
-        console.log(data.user);
-        console.log(data.project);
+        // console.log(data.user);
+        // console.log(data.project[0]);
         this.projectService.setProjectCreated(true); //
-        this.projectService.setSelectedProject(data.project); //
+        this.projectService.setSelectedProject(data.project[0]); //
         this.router.navigate(['/dashboard']);
       }
       return false;
@@ -205,6 +209,7 @@ export class ProjectsetupComponent {
       isRenamed: this.isRenamed, // false
       alterName: this.renamedProj, // ""
     };
+    if (this.form) this.form = null;
     this.form = new FormData();
     this.form.append('projFile', this.selectedFile);
     this.form.append('projRename', JSON.stringify(projRename));
@@ -331,7 +336,7 @@ export class ProjectsetupComponent {
           alert('Project does not exist on DB, try deleting it from the user');
           return;
         }
-        console.log(data.project);
+        // console.log(data.project);
         this.projectService.setSelectedProject(data.project);
         this.projectService.setProjectCreated(true);
         this.router.navigate(['/dashboard']);
