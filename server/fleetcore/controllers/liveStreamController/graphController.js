@@ -34,6 +34,9 @@ const throughput = async (req, res, next) => {
   const mapId = req.params.mapId;
   try {
     //..
+    const isMapExist = await Map.exists({ _id: mapId });
+    if (!isMapExist)
+      return res.status(500).json({ msg: "map not found!", map: null });
     let dummyStat = [
       {
         TotalNumberRobots: 5,
@@ -83,7 +86,7 @@ const throughput = async (req, res, next) => {
     //   },
     //   { new: true }
     // );
-    let throughput = mapData.throughPut;
+    // let throughput = mapData.throughPut;
 
     return res.status(200).json({
       msg: "data sent",

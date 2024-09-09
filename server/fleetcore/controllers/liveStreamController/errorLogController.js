@@ -92,11 +92,16 @@ const getFleetTaskErrLogs = (req, res, next) => {
 const getTaskErrLogs = async (req, res) => {
   const mapId = req.params.mapId;
   try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(500).json({ msg: "map not exists", map: null });
     const map = await Map.findOne({ _id: mapId });
     if (!map) return res.status(500).json({ map: map, msg: "Map not exists!" });
     return res.status(200).json({ taskLogs: errTaskLogs, msg: "data sent" });
   } catch (err) {
     console.error("Error in taskLogs:", err);
+    if (err.name === "CastError")
+      return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
   }
 };
@@ -128,6 +133,9 @@ const getFleetRoboErrLogs = (req, res, next) => {
 const getRoboErrLogs = async (req, res) => {
   const mapId = req.params.mapId;
   try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(500).json({ msg: "map not exists", map: null });
     const map = await Map.findOne({ _id: mapId });
     if (!map) return res.status(500).json({ map: map, msg: "Map not exists!" });
     return res
@@ -135,6 +143,8 @@ const getRoboErrLogs = async (req, res) => {
       .json({ roboLogs: errRoboLogs.stats, msg: "data sent" });
   } catch (err) {
     console.error("Error in taskLogs:", err);
+    if (err.name === "CastError")
+      return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
   }
 };

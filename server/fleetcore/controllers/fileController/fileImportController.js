@@ -49,6 +49,7 @@ const clearCopiedImg = ({ target, img }) => {
 const isRoboConflict = async ({ target }) => {
   let { robos } = JSON.parse(fs.readFileSync(target + "/roboInfo.json"));
 
+  if (!robos[0]) return [false, ""];
   for (const robo of robos) {
     const doc = await Robo.exists({ roboName: robo.roboName });
     if (doc)
@@ -63,6 +64,8 @@ const isRoboConflict = async ({ target }) => {
 
 const isMapConflict = async ({ target }) => {
   let { maps } = JSON.parse(fs.readFileSync(target + "/mapInfo.json"));
+
+  if (!maps[0]) return [false, ""];
 
   for (const map of maps) {
     const doc = await Map.exists({ mapName: map.mapName });
@@ -81,7 +84,7 @@ const restoreRobots = async ({ target }) => {
     fs.readFileSync(target + "/roboInfo.json", "utf-8")
   );
   for (const robo of robos) {
-    await new Robo(robo).save();
+    if (robo) await new Robo(robo).save();
   }
 };
 
@@ -91,7 +94,7 @@ const restoreMaps = async ({ target }) => {
   );
   // const doc = await Robo.insertMany(maps);
   for (const map of maps) {
-    await new Map(map).save();
+    if (map) await new Map(map).save();
   }
 };
 
@@ -99,7 +102,8 @@ const restoreProject = async ({ target }) => {
   const { project } = JSON.parse(
     fs.readFileSync(target + "/projInfo.json", "utf-8")
   );
-  const doc = await new projectModel(project).save();
+
+  const doc = await new projectModel(project).save({ timestamps: false });
   return doc;
 };
 
@@ -108,14 +112,19 @@ const clearInsertedData = async ({ target }) => {
   const { maps } = JSON.parse(fs.readFileSync(target + "/mapInfo.json"));
   const { project } = JSON.parse(fs.readFileSync(target + "/projInfo.json"));
   for (const robo of robos) {
-    let doc = await Robo.exists({ _id: robo._id });
-    if (doc) await Robo.deleteOne({ _id: robo._id });
+    if (robo) {
+      let doc = await Robo.exists({ _id: robo._id });
+      if (doc) await Robo.deleteOne({ _id: robo._id });
+    }
   }
   for (const map of maps) {
-    let doc = await Map.exists({ _id: map._id });
-    if (doc) await Map.deleteOne({ _id: map._id });
+    if (map) {
+      let doc = await Map.exists({ _id: map._id });
+      if (doc) await Map.deleteOne({ _id: map._id });
+    }
   }
-  let doc = await projectModel.exists({ _id: project._id });
+  let doc = null;
+  if (project) doc = await projectModel.exists({ _id: project._id });
   if (doc) await projectModel.deleteOne({ _id: project._id });
 };
 
@@ -158,7 +167,7 @@ const handleConflict = (res, target, img, msg) => {
 //..
 
 const extractProjFile = async (req, res, next) => {
-  return next();
+  // return next();
   if (req.role === "User")
     return res.status(403).json({
       status: false,
@@ -186,6 +195,7 @@ const extractProjFile = async (req, res, next) => {
 
 const parseProjectFile = async (req, res, next) => {
   const { isRenamed, alterName } = JSON.parse(req.body.projRename);
+
   // let isRenamed = false;
   // let alterName = "altered_name";
   const target = path.resolve("./proj_assets/projectFile/");
@@ -229,7 +239,7 @@ const parseProjectFile = async (req, res, next) => {
       });
     }
 
-    let res1 = await isRoboConflict({ target });
+    let res1 = await isRoboConflict({ target }, res);
     let res2 = await isMapConflict({ target });
     if (res1[0]) return handleConflict(res, target, img, res1[1]);
     if (res2[0]) return handleConflict(res, target, img, res2[1]);

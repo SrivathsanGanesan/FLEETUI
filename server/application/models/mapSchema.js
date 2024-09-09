@@ -117,10 +117,10 @@ const mapSchema = new Schema(
     imgUrl: { type: String, default: "" },
     mpp: { type: Number, default: 0.0 }, // resolution
     ppm: { type: Number, default: 0.0 },
-    nodes: { type: mongoose.Schema.Types.Mixed, default: [] }, // type : [nodeSchema]
-    edges: { type: mongoose.Schema.Types.Mixed, default: [] }, // type: [edgeSchema]
-    stations: { type: [stationSchema], default: [] },
-    zones: { type: mongoose.Schema.Types.Mixed, default: [] }, // type: [zoneSchema]
+    nodes: { type: Schema.Types.Mixed, default: [] }, // type : [nodeSchema]
+    edges: { type: Schema.Types.Mixed, default: [] }, // type: [edgeSchema]
+    stations: { type: Schema.Types.Mixed, default: [] }, // type: [stationSchema]
+    zones: { type: Schema.Types.Mixed, default: [] }, // type: [zoneSchema]
     robots: { type: [roboProjSchema], default: [] },
     logTime: { type: [logTimeSchema], default: [] },
     throughPut: {

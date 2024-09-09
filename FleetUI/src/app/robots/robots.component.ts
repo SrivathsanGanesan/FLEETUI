@@ -12,6 +12,9 @@ export interface Robot {
   temperature: string;  // Battery temperature field
   networkstrength: string;
   robotutilization: string;
+  cpuutilization: string;
+  memory: string;
+  error: string;
   // Add other fields as needed
 }
 
@@ -38,7 +41,10 @@ export class RobotsComponent implements OnInit {
       battery: '40%',
       temperature:'59 C',
       networkstrength:'90 %',
-      robotutilization:' 43 %'
+      robotutilization:' 43 %',
+      cpuutilization: '90 %',   
+      memory: '10 %',
+      error: '10'
     },
     {
       id: 2,
@@ -49,7 +55,10 @@ export class RobotsComponent implements OnInit {
       battery: '40%',
       temperature:'57 C',
       networkstrength:'80 %',
-      robotutilization:' 85 %'
+      robotutilization:' 85 %',
+      cpuutilization: '80 %',
+      memory: '20 %',
+      error: '20'
       
 
     },
@@ -62,7 +71,10 @@ export class RobotsComponent implements OnInit {
       battery: '40%',
       temperature:'01 C',
       networkstrength:'70 %',
-      robotutilization:' 90 %'
+      robotutilization:' 90 %',
+      cpuutilization: '70 %',
+      memory: '30 %',
+      error: '30'
     },
     {
       id: 4,
@@ -73,7 +85,10 @@ export class RobotsComponent implements OnInit {
       battery: '40%',
       temperature:'100 C',
       networkstrength:'60 %',
-      robotutilization:' 60 %'
+      robotutilization:' 60 %',
+      cpuutilization: '60 %',
+      memory: '40 %',
+      error: '40'
     },
     {
       id: 5,
@@ -84,7 +99,10 @@ export class RobotsComponent implements OnInit {
       battery: '40%',
       temperature:'55 C',
       networkstrength:'50 %',
-      robotutilization:' 40 %'
+      robotutilization:' 40 %',
+      cpuutilization: '50 %',
+      memory: '50 %',
+      error: '50'
     },
     {
       id: 6,
@@ -95,7 +113,10 @@ export class RobotsComponent implements OnInit {
       battery: '40%',
       temperature:'55 C',
       networkstrength:'90 %',
-      robotutilization:' 23 %'
+      robotutilization:' 23 %',
+      cpuutilization: '40 %',
+      memory: '60 %',
+      error: '60'
     },
     // Add more robots...
   ];

@@ -46,11 +46,24 @@ interface Edge {
   length: number; //Length of the path from startNode to endNode
   action: any[]; //Array of actionIds to be executed on the edge
 }
-interface asset {id : number, x: number, y: number, type: string }; // Array to track assets
+interface asset {
+  id: number;
+  x: number;
+  y: number;
+  type: string;
+} // Array to track assets
 
-interface Zone { id : string, pos : any[], type : ZoneType | null };
+interface Zone {
+  id: string;
+  pos: any[];
+  type: ZoneType | null;
+}
 
-interface Robo { roboDet : any, x : number, y : number };
+interface Robo {
+  roboDet: any;
+  x: number;
+  y: number;
+}
 
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -70,7 +83,7 @@ enum ZoneType {
   OBSTACLE_AVOIDANCE_ZONE = 'Obstacle Avoidance Zone',
   EMERGENCY_ZONE = 'Emergency Zone',
   MAINTENANCE_ZONE = 'Maintenance Zone',
-  PARKING_ZONE = 'Parking Zone'
+  PARKING_ZONE = 'Parking Zone',
 }
 @Component({
   selector: 'app-envmap',
@@ -107,9 +120,9 @@ export class EnvmapComponent implements AfterViewInit {
   orientationAngle: number = 0;
   nodes: Node[] = []; // Org_nodes
   edges: Edge[] = []; // Org_edges
-  assets: asset[] =[]; // Org_assets
-  zones : Zone[] = []; // Org_zones
-  robos : Robo[] = []; // Org_robos
+  assets: asset[] = []; // Org_assets
+  zones: Zone[] = []; // Org_zones
+  robos: Robo[] = []; // Org_robos
   Nodes: {
     id: number;
     x: number;
@@ -149,9 +162,9 @@ export class EnvmapComponent implements AfterViewInit {
   private nodeCounter: number = 1; // Counter to assign node numbers
   private edgeCounter: number = 1; // Counter to assign edge numbers
   private actionCounter: number = 1; // Counter to assign action numbers
-  private assetCounter : number = 1; // counter to assign asset numbers
-  private zoneCounter : number = 1; // counter to assigh zone numbers
-  private zonePosCounter : number = 1; // counter to assign zone numbers
+  private assetCounter: number = 1; // counter to assign asset numbers
+  private zoneCounter: number = 1; // counter to assigh zone numbers
+  private zonePosCounter: number = 1; // counter to assign zone numbers
   selectedNode: Node | null = null;
   lastSelectedNode: { x: number; y: number } | null = null;
   node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
@@ -190,39 +203,39 @@ export class EnvmapComponent implements AfterViewInit {
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
-  selectedRobo :Robo | null=null;
-  selectedAsset :asset | null = null
+  selectedRobo: Robo | null = null;
+  selectedAsset: asset | null = null;
   draggingAsset: boolean = false;
-  draggingRobo: boolean =false;
+  draggingRobo: boolean = false;
   isZonePlottingEnabled = false;
-  plottedPoints: { id : number, x: number, y: number }[] = [];
-  firstPlottedPoint : {id : number, x : number, y : number} | null = null;
+  plottedPoints: { id: number; x: number; y: number }[] = [];
+  firstPlottedPoint: { id: number; x: number; y: number } | null = null;
   zoneType: ZoneType | null = null; // Selected zone type
   isPopupVisible: boolean = false; // Popup visibility
   zoneColors: { [key in ZoneType]: string } = {
-    [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)',     // Red with 30% opacity
+    [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)', // Red with 30% opacity
     [ZoneType.MEDIUM_SPEED_ZONE]: 'rgba(255, 165, 0, 0.3)', // Orange with 30% opacity
-    [ZoneType.SLOW_SPEED_ZONE]: 'rgba(255, 255, 0, 0.3)',   // Yellow with 30% opacity
-    [ZoneType.MUTED_SPEED_ZONE]: 'rgba(0, 128, 0, 0.3)',    // Green with 30% opacity
-    [ZoneType.TURNING_SPEED_ZONE]: 'rgba(0, 0, 255, 0.3)',  // Blue with 30% opacity
+    [ZoneType.SLOW_SPEED_ZONE]: 'rgba(255, 255, 0, 0.3)', // Yellow with 30% opacity
+    [ZoneType.MUTED_SPEED_ZONE]: 'rgba(0, 128, 0, 0.3)', // Green with 30% opacity
+    [ZoneType.TURNING_SPEED_ZONE]: 'rgba(0, 0, 255, 0.3)', // Blue with 30% opacity
     [ZoneType.IN_PLACE_SPEED_ZONE]: 'rgba(75, 0, 130, 0.3)', // Indigo with 30% opacity
-    [ZoneType.CHARGING_ZONE]: 'rgba(238, 130, 238, 0.3)',   // Violet with 30% opacity
-    [ZoneType.PREFERRED_ZONE]: 'rgba(0, 255, 255, 0.3)',    // Cyan with 30% opacity
-    [ZoneType.UNPREFERRED_ZONE]: 'rgba(128, 0, 128, 0.3)',  // Purple with 30% opacity
-    [ZoneType.KEEPOUT_ZONE]: 'rgba(255, 69, 0, 0.3)',       // OrangeRed with 30% opacity
+    [ZoneType.CHARGING_ZONE]: 'rgba(238, 130, 238, 0.3)', // Violet with 30% opacity
+    [ZoneType.PREFERRED_ZONE]: 'rgba(0, 255, 255, 0.3)', // Cyan with 30% opacity
+    [ZoneType.UNPREFERRED_ZONE]: 'rgba(128, 0, 128, 0.3)', // Purple with 30% opacity
+    [ZoneType.KEEPOUT_ZONE]: 'rgba(255, 69, 0, 0.3)', // OrangeRed with 30% opacity
     [ZoneType.CRITICAL_SAFETY_ZONE]: 'rgba(255, 20, 147, 0.3)', // DeepPink with 30% opacity
     [ZoneType.BLIND_LOCALISATION_ZONE]: 'rgba(127, 255, 0, 0.3)', // Chartreuse with 30% opacity
-    [ZoneType.DENSE_ZONE]: 'rgba(220, 20, 60, 0.3)',        // Crimson with 30% opacity
-    [ZoneType.STRICTLY_PATH_ZONE]: 'rgba(0, 0, 139, 0.3)',  // DarkBlue with 30% opacity
+    [ZoneType.DENSE_ZONE]: 'rgba(220, 20, 60, 0.3)', // Crimson with 30% opacity
+    [ZoneType.STRICTLY_PATH_ZONE]: 'rgba(0, 0, 139, 0.3)', // DarkBlue with 30% opacity
     [ZoneType.OBSTACLE_AVOIDANCE_ZONE]: 'rgba(0, 100, 0, 0.3)', // DarkGreen with 30% opacity
-    [ZoneType.EMERGENCY_ZONE]: 'rgba(139, 0, 0, 0.3)',      // DarkRed with 30% opacity
+    [ZoneType.EMERGENCY_ZONE]: 'rgba(139, 0, 0, 0.3)', // DarkRed with 30% opacity
     [ZoneType.MAINTENANCE_ZONE]: 'rgba(184, 134, 11, 0.3)', // DarkGoldenRod with 30% opacity
-    [ZoneType.PARKING_ZONE]: 'rgba(47, 79, 79, 0.3)'        // DarkSlateGray with 30% opacity
+    [ZoneType.PARKING_ZONE]: 'rgba(47, 79, 79, 0.3)', // DarkSlateGray with 30% opacity
   };
-  roboInitOffset : number = 60;
+  roboInitOffset: number = 60;
   draggingRobot: Robo | null = null; // Currently dragged robot
   deselectTimeout: any = null;
-  highlightDuration = 5000; // Example: 2 seconds 
+  highlightDuration = 2000; // Example: 2 seconds 
   
 
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
@@ -238,6 +251,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
   }
+  
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
@@ -281,15 +295,17 @@ export class EnvmapComponent implements AfterViewInit {
     if (ctx) {
       this.assetImages['docking'] = new Image();
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
-    
+
       this.assetImages['charging'] = new Image();
-      this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
-    
+      this.assetImages['charging'].src =
+        'assets/Asseticon/charging-station.svg';
+
       this.assetImages['waiting'] = new Image();
       this.assetImages['waiting'].src = 'assets/Asseticon/waiting-station.svg';
 
       this.assetImages['intermediate'] = new Image();
-      this.assetImages['intermediate'].src = 'assets/Asseticon/intermediate-station.svg';
+      this.assetImages['intermediate'].src =
+        'assets/Asseticon/intermediate-station.svg';
 
       this.robotImages['robotA'] = new Image();
       this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
@@ -453,7 +469,7 @@ export class EnvmapComponent implements AfterViewInit {
   // Method to add an action to the list
   addAction(): void {
     if (this.selectedAction) {
-      let action : any;
+      let action: any;
 
       if (this.selectedAction === 'Move') {
         action = {
@@ -482,12 +498,11 @@ export class EnvmapComponent implements AfterViewInit {
       }
 
       this.actions.push(action);
-      this.nodes = this.nodes.map(node => {
+      this.nodes = this.nodes.map((node) => {
         console.log(this.selectedNode?.id, node.id);
-        if(this.selectedNode?.id === node.id)
-          node.actions.push(action);
+        if (this.selectedNode?.id === node.id) node.actions.push(action);
         return node;
-      })
+      });
       this.cdRef.detectChanges();
 
       // Hide the form after adding
@@ -627,7 +642,12 @@ export class EnvmapComponent implements AfterViewInit {
             mapName: data.map.mapName,
             siteName: this.siteName,
             date: createdAt,
+            createdAt: data.map.createdAt,
           });
+          this.EnvData.sort(
+            (a: any, b: any) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
           this.cdRef.detectChanges();
         }
 
@@ -639,7 +659,7 @@ export class EnvmapComponent implements AfterViewInit {
         console.error('Error occ : ', error);
       });
 
-      this.form = null
+    this.form = null;
   }
   confirmDistance(): void {
     if (
@@ -804,8 +824,12 @@ export class EnvmapComponent implements AfterViewInit {
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-    const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-    const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+    const x =
+      (event.clientX - rect.left) *
+      (this.overlayCanvas.nativeElement.width / rect.width);
+    const y =
+      (event.clientY - rect.top) *
+      (this.overlayCanvas.nativeElement.height / rect.height);
 
     // Check if a node is clicked
     for (const node of this.nodes) {
@@ -923,10 +947,10 @@ export class EnvmapComponent implements AfterViewInit {
     const image = this.robotImages['robotB'];
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-    
+
     if (image && ctx) {
       const imageSize = 30;
-      
+
       // Highlight the selected robot with a border or background
       if (isSelected) {
         ctx.beginPath();
@@ -937,7 +961,13 @@ export class EnvmapComponent implements AfterViewInit {
       }
 
       // Draw the robot image
-      ctx.drawImage(image, x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
+      ctx.drawImage(
+        image,
+        x - imageSize / 2,
+        y - imageSize / 2,
+        imageSize * 1.3,
+        imageSize
+      );
     }
   }
   plotSingleNode(x: number, y: number): void {
@@ -1229,10 +1259,18 @@ export class EnvmapComponent implements AfterViewInit {
       },
       actions: this.actions, // Include actions here
     }));
-  
-    // Log updated nodeDetails to the console
-    console.log(updatedNodeDetails);
-  
+
+    // Create a JSON object with the node details
+    const nodeDetails = this.nodes;
+
+    // Log the JSON object to the console
+    console.log(this.nodes);
+    console.log(this.edges);
+    console.log(this.assets);
+    console.log(this.zones);
+    
+    
+
     // Save the JSON object to a file
     const blob = new Blob([JSON.stringify(updatedNodeDetails, null, 2)], {
       type: 'application/json',
@@ -1391,17 +1429,20 @@ export class EnvmapComponent implements AfterViewInit {
     const headLength = 10; // Length of the arrowhead
     const offset = 5; // Distance to move the arrowhead away from the node
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
-  
+
     // Calculate the offset position for the arrowhead
     const offsetX = offset * Math.cos(angle);
     const offsetY = offset * Math.sin(angle);
-  
+
     // Adjust the end position of the arrowhead by the offset
     const adjustedToX = to.x - offsetX;
     const adjustedToY = to.y - offsetY;
-  
+
     ctx.beginPath();
-    ctx.moveTo(adjustedToX, this.overlayCanvas.nativeElement.height - adjustedToY);
+    ctx.moveTo(
+      adjustedToX,
+      this.overlayCanvas.nativeElement.height - adjustedToY
+    );
     ctx.lineTo(
       adjustedToX - headLength * Math.cos(angle - Math.PI / 6),
       this.overlayCanvas.nativeElement.height -
@@ -1412,10 +1453,13 @@ export class EnvmapComponent implements AfterViewInit {
       this.overlayCanvas.nativeElement.height -
         (adjustedToY - headLength * Math.sin(angle + Math.PI / 6))
     );
-    ctx.lineTo(adjustedToX, this.overlayCanvas.nativeElement.height - adjustedToY);
+    ctx.lineTo(
+      adjustedToX,
+      this.overlayCanvas.nativeElement.height - adjustedToY
+    );
     ctx.fillStyle = 'black';
     ctx.fill();
-  }  
+  }
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
@@ -1442,13 +1486,19 @@ export class EnvmapComponent implements AfterViewInit {
     const image = this.assetImages[assetType];
     if (image && ctx) {
       const imageSize = 50; // Set image size
-      ctx.drawImage(image, x - imageSize / 2,  y - imageSize / 2, imageSize, imageSize);
-      
+      ctx.drawImage(
+        image,
+        x - imageSize / 2,
+        y - imageSize / 2,
+        imageSize,
+        imageSize
+      );
+
       // Optionally, add this asset as a "node" for future reference
       // this.nodes.push({ id: this.generateNodeId(), pos: { x, y }, type: 'asset', assetType });
     }
     // this.redrawCanvas(); // Redraw other elements
-  } 
+  }
   startZonePlotting(): void {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;
@@ -1478,27 +1528,26 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx && this.plottedPoints.length >= 3 && this.zoneType) {
-        ctx.beginPath();
-        ctx.moveTo(this.plottedPoints[0].x, this.plottedPoints[0].y);
+      ctx.beginPath();
+      ctx.moveTo(this.plottedPoints[0].x, this.plottedPoints[0].y);
 
-        // Draw lines between points to form a polygon
-        for (let i = 1; i < this.plottedPoints.length; i++) {
-            ctx.lineTo(this.plottedPoints[i].x, this.plottedPoints[i].y);
-        }
+      // Draw lines between points to form a polygon
+      for (let i = 1; i < this.plottedPoints.length; i++) {
+        ctx.lineTo(this.plottedPoints[i].x, this.plottedPoints[i].y);
+      }
 
-        ctx.closePath();
+      ctx.closePath();
 
-        // Set the fill color based on the selected zone type
-        const zoneColor = this.zoneColors[this.zoneType];
-        ctx.fillStyle = zoneColor;
-        ctx.fill();
-        this.plottedPoints = [];
-
+      // Set the fill color based on the selected zone type
+      const zoneColor = this.zoneColors[this.zoneType];
+      ctx.fillStyle = zoneColor;
+      ctx.fill();
+      this.plottedPoints = [];
     } else {
-        console.error('Insufficient points or zone type not selected');
+      console.error('Insufficient points or zone type not selected');
     }
   }
-    // Function to check if two polygons overlap
+  // Function to check if two polygons overlap
   private isZoneOverlapping(newZonePoints: any[]): boolean {
     for (const existingZone of this.zones) {
       if (this.isPolygonOverlap(existingZone.pos, newZonePoints)) {
@@ -1518,8 +1567,11 @@ export class EnvmapComponent implements AfterViewInit {
 
   // Get the bounding box of a polygon (minX, minY, maxX, maxY)
   private getBoundingBox(polygon: any[]): number[] {
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity;
+
     for (const point of polygon) {
       if (point.x < minX) minX = point.x;
       if (point.y < minY) minY = point.y;
@@ -1534,11 +1586,15 @@ export class EnvmapComponent implements AfterViewInit {
 
     if (this.isZoneOverlapping(this.plottedPoints)) {
       alert('Zone overlaps with an existing zone!');
-      return;  // Do not allow drawing
+      return; // Do not allow drawing
     }
 
     let zone: Zone;
-    zone = { id: this.zoneCounter.toString(), pos: this.plottedPoints, type: this.zoneType };
+    zone = {
+      id: this.zoneCounter.toString(),
+      pos: this.plottedPoints,
+      type: this.zoneType,
+    };
     this.zones.push(zone);
     this.zoneCounter++;
 
@@ -1560,13 +1616,15 @@ export class EnvmapComponent implements AfterViewInit {
     this.isZonePlottingEnabled = false;
     this.isPopupVisible = false;
     this.firstPlottedPoint = null;
-  
+
     // Redraw the canvas to remove the temporary zone points
     this.redrawCanvas();
-  }  
+  }
   removeRobots(): void {
     // Remove selected robots
-    this.robos = this.robos.filter(robo => robo.roboDet.id !== this.selectedRobo?.roboDet.id);
+    this.robos = this.robos.filter(
+      (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
+    );
     this.redrawCanvas();
   }
   showZoneTypePopup(): void {
@@ -1580,19 +1638,19 @@ export class EnvmapComponent implements AfterViewInit {
   }
   placeRobots(selectedRobots: any[]): void {
     if (!this.overlayCanvas) return;
-  
+
     selectedRobots.forEach((robot) => {
       const x = 0 + this.roboInitOffset;
       const y = 100;
-  
-      if (this.robos.some(robo => robo.roboDet.id === robot.id)) {
+
+      if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
         alert('Robot already in map!');
         return;
       }
-  
+
       const robo: Robo = { roboDet: robot, x: x, y: y };
       this.robos.push(robo);
-  
+
       this.roboInitOffset += 60;
       this.plotRobo(x, y);
     });
@@ -1601,17 +1659,24 @@ export class EnvmapComponent implements AfterViewInit {
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+      const x =
+        (event.clientX - rect.left) *
+        (this.overlayCanvas.nativeElement.width / rect.width);
+      const y =
+        (event.clientY - rect.top) *
+        (this.overlayCanvas.nativeElement.height / rect.height);
 
       if (this.isZonePlottingEnabled) {
         // Plot the point
         if (this.firstPlottedPoint) {
           let radius = 6;
-          if(Math.abs(x - this.firstPlottedPoint.x) <= radius && Math.abs(y - this.firstPlottedPoint.y) <= radius){
-            if(this.plottedPoints.length < 3) {
+          if (
+            Math.abs(x - this.firstPlottedPoint.x) <= radius &&
+            Math.abs(y - this.firstPlottedPoint.y) <= radius
+          ) {
+            if (this.plottedPoints.length < 3) {
               alert('should at least minimum 3 zone points to plot!');
-              return
+              return;
             }
             this.isZonePlottingEnabled = false;
             this.showZoneTypePopup(); // Show zone type popup after completing the polygon
@@ -1622,28 +1687,34 @@ export class EnvmapComponent implements AfterViewInit {
 
         this.plotZonePoint(x, y);
         // Add the point to the array of plotted points
-        this.plottedPoints.push({ id : this.zonePosCounter,x, y });
+        this.plottedPoints.push({ id: this.zonePosCounter, x, y });
         this.zonePosCounter++;
         // this.plottedPoints[0];
-        if (this.firstPlottedPoint === null) this.firstPlottedPoint = { id: this.zonePosCounter, x, y };
+        if (this.firstPlottedPoint === null)
+          this.firstPlottedPoint = { id: this.zonePosCounter, x, y };
         // If six points are plotted, form the layer (polygon)
         // if (this.plottedPoints.length >= this.maxZonePoints) {  //
       }
 
       if (this.selectedAssetType) {
-      
-        let asset : asset;
-        asset = { id : this.assetCounter, x : x, y : y, type : this.selectedAssetType }
+        let asset: asset;
+        asset = {
+          id: this.assetCounter,
+          x: x,
+          y: y,
+          type: this.selectedAssetType,
+        };
         this.selectedAsset = asset;
-        this.assets.push(asset)
-        
+        this.assets.push(asset);
+
         this.plotAsset(x, y, this.selectedAssetType);
         this.selectedAssetType = null; // Reset after plotting
         this.assetCounter++;
         return;
       }
-      // Check if an asset is clicked for dragging 
-      for (const asset of this.assets) { // assuming `this.assets` is an array holding your plotted assets
+      // Check if an asset is clicked for dragging
+      for (const asset of this.assets) {
+        // assuming `this.assets` is an array holding your plotted assets
         if (this.isAssetClicked(asset, x, y)) {
           this.selectedAsset = asset;
           this.draggingAsset = true;
@@ -1652,21 +1723,20 @@ export class EnvmapComponent implements AfterViewInit {
       }
       for (const robo of this.robos) {
         if (this.isRobotClicked(robo, x, y)) {
-          this.selectedRobo = robo
+          this.selectedRobo = robo;
           this.draggingRobo = true;
           this.redrawCanvas();
 
+          // Clear any existing timeout
+          if (this.deselectTimeout) {
+            clearTimeout(this.deselectTimeout);
+          }
 
-        // Clear any existing timeout
-        if (this.deselectTimeout) {
-          clearTimeout(this.deselectTimeout);
-        }
-
-        // Set a timeout to deselect the robot after the specified duration
-        this.deselectTimeout = setTimeout(() => {
-          this.selectedRobo = null;
-          this.redrawCanvas(); // Redraw the canvas to remove the highlight
-        }, this.highlightDuration);
+          // Set a timeout to deselect the robot after the specified duration
+          this.deselectTimeout = setTimeout(() => {
+            this.selectedRobo = null;
+            this.redrawCanvas(); // Redraw the canvas to remove the highlight
+          }, this.highlightDuration);
           return;
         }
       }
@@ -1690,7 +1760,7 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
-// Method to handle zone type selection
+  // Method to handle zone type selection
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -1709,7 +1779,8 @@ export class EnvmapComponent implements AfterViewInit {
 
     if (this.isDrawingLine) {
       this.lineEndX = (event.clientX - rect.left) * (canvas.width / rect.width);
-      this.lineEndY = (event.clientY - rect.top) * (canvas.height / rect.height);
+      this.lineEndY =
+        (event.clientY - rect.top) * (canvas.height / rect.height);
 
       // Redraw the canvas to show the line preview
       this.redrawCanvas();
@@ -1723,7 +1794,7 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
 
-    if(this.draggingRobo && this.selectedRobo){
+    if (this.draggingRobo && this.selectedRobo) {
       this.redrawCanvas();
       this.plotRobo(x, y);
 
@@ -1738,7 +1809,11 @@ export class EnvmapComponent implements AfterViewInit {
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
 
-    if ( this.isDrawingLine && this.lineStartX !== null && this.lineStartY !== null ) {
+    if (
+      this.isDrawingLine &&
+      this.lineStartX !== null &&
+      this.lineStartY !== null
+    ) {
       this.isDrawingLine = false;
       const transformedY = canvas.height - y; // Flip the Y-axis
       // Finalize the line drawing
@@ -1775,16 +1850,16 @@ export class EnvmapComponent implements AfterViewInit {
       // const y = (event.clientY - rect.top) * (canvas.height / rect.height);
       if (this.selectedAssetType) {
         // let asset : asset;
-        this.assets = this.assets.map(asset => {
-          if(this.selectedAsset?.id === asset.id){
+        this.assets = this.assets.map((asset) => {
+          if (this.selectedAsset?.id === asset.id) {
             asset.x = x;
             asset.y = y;
             asset.type = this.selectedAsset.type;
             return asset;
           }
           return asset;
-        })
-        
+        });
+
         this.plotAsset(x, y, this.selectedAssetType);
         this.selectedAssetType = null; // Reset after plotting
         this.updateAssetPosition(this.selectedAsset.id, x, y);
@@ -1796,28 +1871,32 @@ export class EnvmapComponent implements AfterViewInit {
       this.selectedAsset = null;
     }
 
-    if(this.draggingRobo && this.selectedRobo){
-      this.robos = this.robos.map((robo)=>{
-        if(robo.roboDet.id === this.selectedRobo?.roboDet.id){
+    if (this.draggingRobo && this.selectedRobo) {
+      this.robos = this.robos.map((robo) => {
+        if (robo.roboDet.id === this.selectedRobo?.roboDet.id) {
           robo.x = x;
           robo.y = y;
           return robo;
         }
         return robo;
-      })
+      });
       this.draggingRobo = false;
       // this.updateRoboPosition(this.selectedRobo.roboDet.id, x, y);
       // this.selectedRobo = null;
     }
   }
-  private isAssetClicked(asset: { x: number, y: number, type: string }, mouseX: number, mouseY: number): boolean {
+  private isAssetClicked(
+    asset: { x: number; y: number; type: string },
+    mouseX: number,
+    mouseY: number
+  ): boolean {
     const radius = 25; // Adjust radius to match asset size
     const dx = mouseX - asset.x;
     const dy = mouseY - asset.y;
     return dx * dx + dy * dy <= radius * radius;
   }
   private updateRoboPosition(id: number, x: number, y: number): void {
-    const robo = this.robos.find(robo => robo.roboDet.id === id);
+    const robo = this.robos.find((robo) => robo.roboDet.id === id);
     if (robo) {
       robo.x = x;
       robo.y = y;
@@ -1827,7 +1906,7 @@ export class EnvmapComponent implements AfterViewInit {
   private updateAssetPosition(id: number, x: number, y: number): void {
     // Implement logic to update asset position in your data structure
     // Example: Find and update asset in this.assets
-    const asset = this.assets.find(asset => asset.id === id);
+    const asset = this.assets.find((asset) => asset.id === id);
     if (asset) {
       asset.x = x;
       asset.y = y;
@@ -1860,18 +1939,20 @@ export class EnvmapComponent implements AfterViewInit {
         }
       });
 
-      this.assets.forEach((asset)=>{
+      this.assets.forEach((asset) => {
         this.plotAsset(asset.x, asset.y, asset.type);
-      })
+      });
 
       this.zones.forEach((zone) => {
         this.plottedPoints = zone.pos;
         this.zoneType = zone.type;
         this.drawLayer();
         this.plottedPoints = [];
-      })
+      });
 
-      this.robos.forEach(robo => this.plotRobo(robo.x, robo.y, this.selectedRobo === robo));
+      this.robos.forEach((robo) =>
+        this.plotRobo(robo.x, robo.y, this.selectedRobo === robo)
+      );
     }
   }
   drawConnections(): void {
@@ -1917,5 +1998,4 @@ export class EnvmapComponent implements AfterViewInit {
   hideCalibrationLayer(): void {
     this.isOptionsMenuVisible = false;
   }
-
 }

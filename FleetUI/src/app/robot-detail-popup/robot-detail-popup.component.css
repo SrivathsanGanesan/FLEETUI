@@ -13,6 +13,15 @@
   padding: 20px;
 }
 
+
+.popup-header h2 {
+  margin: 0;
+  font-size: 28px; /* Adjust font size as needed */
+  font-family: Inter, sans-serif; /* Use a clean, modern font */
+  font-weight: 800; /* Slightly bolder text */
+  color: #DA2127; /* Dark color for readability */
+}
+
 .robot-detail-container {
   top: 22px;
   left: 948px;
@@ -21,15 +30,16 @@
   display: flex;
 }
 
-.frame-1597881870_1864-1806 {
+.robot-image-container {
   top: 68px;
-  left: 1010px;
+  left: 950px;
   position: absolute;
   display: flex;
   box-sizing: border-box;
-  width: 252px;
+  width: 152px;
   height: 368px;
 }
+
 .frame-1597881856_1861-1757 {
   top: 0px;
   left: 0px;
@@ -808,7 +818,7 @@
 } */
 
 /* memory */
-/* 
+
 .battery-temperature_1871-1851 {
   padding: 14px 18px 14px 18px;
   display: flex;
@@ -882,10 +892,10 @@
   text-align: left;
   text-wrap: wrap;
   width: -webkit-fill-available;
-} */
+} 
 
 
-/*  */
+/* 
 .cpu_1871-1858 {
   padding: 14px 18px 14px 18px;
   display: flex;
@@ -962,7 +972,10 @@
   text-align: left;
   text-wrap: wrap;
   width: -webkit-fill-available;
-}
+} */
+
+
+/* error */
 
 .cpu_1864-1820 {
   padding: 14px 18px 14px 18px;
@@ -975,8 +988,8 @@
   box-sizing: border-box;
   border-radius: 15px;
   background: #ffffff;
-  width: 232px;
-  height: 143px;
+  width: 200px;
+  height: 130px;
 }
 .frame-1597881876_1864-1821 {
   display: flex;
@@ -1033,15 +1046,21 @@
 .text-37--_1864-1826 {
   color: #000000;
   font-size: 48px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
+  font-family: Inter, sans-serif;
   font-weight: 500;
+  width: 100%;
   text-align: left;
-  text-wrap: wrap;
-  width: -webkit-fill-available;
-}
+} 
+.error-value{
+  color: #000000;
+  font-size: 48px;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
 
+}
+/* 
 .frame-1597881852_1874-1901 {
   padding: 21px 45px 21px 45px;
   top: 834px;
@@ -1069,6 +1088,32 @@
   font-weight: 700;
   text-align: left;
   text-wrap: nowrap;
+} */
+
+.button-container {
+  display: flex;
+  
+  padding: 14px 0;
+  margin-top: 40px;
+  right: 18px; /* Adjust the right position to your preference */
+  bottom: 14px; /* Adjust the bottom position to fit inside the container */
+  margin-top: 50px;
+}
+
+.button-container button {
+  background-color: #d30000;
+  border-radius: 10px;
+  width: 120px;
+  height: 50px;
+  color: #ffffff;
+}
+
+.button-text {
+  color: #ffffff;
+  font-size: 20px;
+  font-family: Inter, sans-serif;
+  font-weight: 700;
+  text-align: center;
 }
 
 .id-info-item {
@@ -1110,10 +1155,11 @@
   display: flex;
 }
 
+/* Battery image  */
 .frame-1597881884_1883-1920 {
   padding: 116px 49px 116px 49px;
-  top: 607px;
-  left: 962px;
+  top: 495px;
+  left: 912px;
   position: absolute;
   display: flex;
   display: flex;
@@ -1193,7 +1239,7 @@
   gap: 10px;
   border-radius: 15px;
   background: #ffffff;
-  width: 200px;
+  width: 180px;
   height: 100px;
 }
 
@@ -1306,7 +1352,7 @@
 }
 
 /* memory */
-.memory-section {
+.memory-container {
   padding: 14px 18px;
   display: flex;
   flex-direction: column;
@@ -1314,50 +1360,172 @@
   gap: 10px;
   border-radius: 15px;
   background: #ffffff;
-  width: 232px;
-  height: 143px;
-  box-sizing: border-box;
+  width: 200px;
+  height: 100px;
 }
 
-.memory-details {
+.memory-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  width: 193px;
+  gap: 26px;
+  width: 100%;
 }
 
 .memory-icon-container {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 14px;
   width: 100%;
-  flex-direction: row; /* Align icon and text in a row */
 }
 
 .memory-icon {
-  padding: 7px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  border-radius: 50px;
-  background: #08970e;
-  width: 25px;
-  height: 25px;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: #08970e; /* Example background color */
 }
 
 .memory-text {
-  color: #000;
+  color: #000000;
   font-size: 14px;
   font-family: Inter, sans-serif;
   font-weight: 500;
-  text-align: left;
 }
 
-.memory-percentage {
-  color: #000;
+.memory-value {
+  color: #000000;
   font-size: 48px;
   font-family: Inter, sans-serif;
   font-weight: 500;
+  width: 100%;
   text-align: left;
+}
+
+
+
+/* Cpu utilization */
+.cpu-utilization-container {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  background: #ffffff;
+  border-radius: 15px;
+  width: 180px;
+  height: 100px;
+}
+
+.cpu-utilization-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
 }
+
+.cpu-utilization-icon-text {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cpu-icon-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #3d42df;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+}
+
+.cpu-icon {
+  display: flex;
+}
+
+.cpu-utilization-text {
+  font-size: 14px;
+  font-family: Inter;
+  font-weight: 500;
+  color: #000000;
+}
+
+.cpu-utilization-percentage {
+  font-size: 48px;
+  font-family: Inter;
+  font-weight: 500;
+  color: #000000;
+}
+.cpu-utilization-value{
+  color: #000000;
+  font-size: 48px;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+}
+
+
+/* error */
+/* 
+.error-container {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  box-sizing: border-box;
+  border-radius: 15px;
+  background: #ffffff;
+  width: 180px;
+  height: 100px;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.error-icon-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.error-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  background: #ffbe00;
+  
+  width: 40px;
+  height: 40px;
+}
+
+
+.error-text {
+  color: #000000;
+  font-size: 14px;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+}
+
+.error-value {
+  color: #000000;
+  font-size: 48px;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+} */

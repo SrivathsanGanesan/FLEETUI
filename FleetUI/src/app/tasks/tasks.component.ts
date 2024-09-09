@@ -48,7 +48,7 @@ export class TasksComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.mapData = this.projectService.getMapData().id;
+    this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
 
     fetch(
