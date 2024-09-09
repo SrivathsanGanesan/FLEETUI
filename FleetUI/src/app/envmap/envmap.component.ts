@@ -935,14 +935,13 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.stroke();
     }
   }
-  // Function to plot robots, with an optional highlight for the selected robot
   plotRobo(x: number, y: number, isSelected: boolean = false): void {
     const image = this.robotImages['robotB'];
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     
     if (image && ctx) {
-      const imageSize = 25;
+      const imageSize = 30;
       
       // Highlight the selected robot with a border or background
       if (isSelected) {
