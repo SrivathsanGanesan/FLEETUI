@@ -941,11 +941,7 @@ export class EnvmapComponent implements AfterViewInit {
     if (image && ctx) {
       const imageSize = 25;
       ctx.drawImage(image, x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
-  
-      // Highlight the robot if selected
 
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x - imageSize / 2, y - imageSize / 2, imageSize * 1.3, imageSize);
     }
   }
   plotSingleNode(x: number, y: number): void {
@@ -1484,53 +1480,53 @@ export class EnvmapComponent implements AfterViewInit {
         console.error('Insufficient points or zone type not selected');
     }
   }
-  // Function to check if two polygons overlap
-private isZoneOverlapping(newZonePoints: any[]): boolean {
-  for (const existingZone of this.zones) {
-    if (this.isPolygonOverlap(existingZone.pos, newZonePoints)) {
-      return true;
+    // Function to check if two polygons overlap
+  private isZoneOverlapping(newZonePoints: any[]): boolean {
+    for (const existingZone of this.zones) {
+      if (this.isPolygonOverlap(existingZone.pos, newZonePoints)) {
+        return true;
+      }
     }
-  }
-  return false;
-}
-
-// Simplified bounding box overlap check between two polygons
-private isPolygonOverlap(polygon1: any[], polygon2: any[]): boolean {
-  const [minX1, minY1, maxX1, maxY1] = this.getBoundingBox(polygon1);
-  const [minX2, minY2, maxX2, maxY2] = this.getBoundingBox(polygon2);
-
-  return !(minX1 > maxX2 || maxX1 < minX2 || minY1 > maxY2 || maxY1 < minY2);
-}
-
-// Get the bounding box of a polygon (minX, minY, maxX, maxY)
-private getBoundingBox(polygon: any[]): number[] {
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-  
-  for (const point of polygon) {
-    if (point.x < minX) minX = point.x;
-    if (point.y < minY) minY = point.y;
-    if (point.x > maxX) maxX = point.x;
-    if (point.y > maxY) maxY = point.y;
+    return false;
   }
 
-  return [minX, minY, maxX, maxY];
-}
-onZoneTypeSelected(zoneType: ZoneType): void {
-  this.zoneType = zoneType;
+  // Simplified bounding box overlap check between two polygons
+  private isPolygonOverlap(polygon1: any[], polygon2: any[]): boolean {
+    const [minX1, minY1, maxX1, maxY1] = this.getBoundingBox(polygon1);
+    const [minX2, minY2, maxX2, maxY2] = this.getBoundingBox(polygon2);
 
-  if (this.isZoneOverlapping(this.plottedPoints)) {
-    alert('Zone overlaps with an existing zone!');
-    return;  // Do not allow drawing
+    return !(minX1 > maxX2 || maxX1 < minX2 || minY1 > maxY2 || maxY1 < minY2);
   }
 
-  let zone: Zone;
-  zone = { id: this.zoneCounter.toString(), pos: this.plottedPoints, type: this.zoneType };
-  this.zones.push(zone);
-  this.zoneCounter++;
+  // Get the bounding box of a polygon (minX, minY, maxX, maxY)
+  private getBoundingBox(polygon: any[]): number[] {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    
+    for (const point of polygon) {
+      if (point.x < minX) minX = point.x;
+      if (point.y < minY) minY = point.y;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y > maxY) maxY = point.y;
+    }
 
-  this.isPopupVisible = false; // Hide the popup
-  this.drawLayer(); // Draw the layer with the selected zone color
-}
+    return [minX, minY, maxX, maxY];
+  }
+  onZoneTypeSelected(zoneType: ZoneType): void {
+    this.zoneType = zoneType;
+
+    if (this.isZoneOverlapping(this.plottedPoints)) {
+      alert('Zone overlaps with an existing zone!');
+      return;  // Do not allow drawing
+    }
+
+    let zone: Zone;
+    zone = { id: this.zoneCounter.toString(), pos: this.plottedPoints, type: this.zoneType };
+    this.zones.push(zone);
+    this.zoneCounter++;
+
+    this.isPopupVisible = false; // Hide the popup
+    this.drawLayer(); // Draw the layer with the selected zone color
+  }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 25;
     return (
@@ -1549,12 +1545,39 @@ onZoneTypeSelected(zoneType: ZoneType): void {
   
     // Redraw the canvas to remove the temporary zone points
     this.redrawCanvas();
-  }
-  
+  }  
   removeRobots(): void {
     // Remove selected robots
     this.robos = this.robos.filter(robo => robo.roboDet.id === this.selectedRobo?.roboDet.id);
     this.redrawCanvas();
+  }
+  showZoneTypePopup(): void {
+    this.isPopupVisible = true;
+  }
+  openRobotPopup(): void {
+    this.isRobotPopupVisible = true;
+  }
+  closeRobotPopup(): void {
+    this.isRobotPopupVisible = false;
+  }
+  placeRobots(selectedRobots: any[]): void {
+    if (!this.overlayCanvas) return;
+  
+    selectedRobots.forEach((robot) => {
+      const x = 0 + this.roboInitOffset;
+      const y = 100;
+  
+      if (this.robos.some(robo => robo.roboDet.id === robot.id)) {
+        alert('Robot already in map!');
+        return;
+      }
+  
+      const robo: Robo = { roboDet: robot, x: x, y: y };
+      this.robos.push(robo);
+  
+      this.roboInitOffset += 60;
+      this.plotRobo(x, y);
+    });
   }
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
@@ -1636,9 +1659,6 @@ onZoneTypeSelected(zoneType: ZoneType): void {
         }
       }
     }
-  }
-  showZoneTypePopup(): void {
-    this.isPopupVisible = true;
   }
 // Method to handle zone type selection
   @HostListener('mousemove', ['$event'])
@@ -1867,29 +1887,5 @@ onZoneTypeSelected(zoneType: ZoneType): void {
   hideCalibrationLayer(): void {
     this.isOptionsMenuVisible = false;
   }
-  openRobotPopup(): void {
-    this.isRobotPopupVisible = true;
-  }
-  closeRobotPopup(): void {
-    this.isRobotPopupVisible = false;
-  }
-  placeRobots(selectedRobots: any[]): void {
-    if (!this.overlayCanvas) return;
-  
-    selectedRobots.forEach((robot) => {
-      const x = 0 + this.roboInitOffset;
-      const y = 100;
-  
-      if (this.robos.some(robo => robo.roboDet.id === robot.id)) {
-        alert('Robot already in map!');
-        return;
-      }
-  
-      const robo: Robo = { roboDet: robot, x: x, y: y };
-      this.robos.push(robo);
-  
-      this.roboInitOffset += 60;
-      this.plotRobo(x, y);
-    });
-  }
+
 }
