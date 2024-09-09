@@ -9,7 +9,7 @@ batteryDistance: any;
 currentSpeed: any;
 averageSpeed: any;
 distanceLeft: string;
-  batteryPercentage: string;
+  
   averageChargingTime: string;
   id: number;
   name: string;
@@ -27,6 +27,7 @@ distanceLeft: string;
   memory: string;
 
   error: string;
+  batteryPercentage: string;
   
 }
 

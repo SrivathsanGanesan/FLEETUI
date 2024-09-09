@@ -40,6 +40,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
+import { BatteryComponent } from './battery/battery.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { EnvmapModule } from './envmap/envmap.module';
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
+    BatteryComponent,
   ],
   imports: [
     NgApexchartsModule,

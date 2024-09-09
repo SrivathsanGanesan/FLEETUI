@@ -51,7 +51,7 @@ export class AreaChartComponent implements OnInit {
       chart: {
         height: 230,
         type: 'area',
-        background: '#FFFFFF', // Setting the background color to white
+        background: '#FFFFFF', 
       },
       xaxis: {
         categories: [

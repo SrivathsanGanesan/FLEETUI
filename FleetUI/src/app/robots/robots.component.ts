@@ -15,6 +15,7 @@ export interface Robot {
   cpuutilization: string;
   memory: string;
   error: string;
+  batterypercentage: string;
   // Add other fields as needed
 }
 
@@ -44,7 +45,8 @@ export class RobotsComponent implements OnInit {
       robotutilization:' 43 %',
       cpuutilization: '90 %',   
       memory: '10 %',
-      error: '10'
+      error: '10',
+      batterypercentage: '81'
     },
     {
       id: 2,
@@ -58,7 +60,8 @@ export class RobotsComponent implements OnInit {
       robotutilization:' 85 %',
       cpuutilization: '80 %',
       memory: '20 %',
-      error: '20'
+      error: '20',
+       batterypercentage: '81'
       
 
     },
@@ -74,7 +77,8 @@ export class RobotsComponent implements OnInit {
       robotutilization:' 90 %',
       cpuutilization: '70 %',
       memory: '30 %',
-      error: '30'
+      error: '30',
+       batterypercentage: '81'
     },
     {
       id: 4,
@@ -88,7 +92,8 @@ export class RobotsComponent implements OnInit {
       robotutilization:' 60 %',
       cpuutilization: '60 %',
       memory: '40 %',
-      error: '40'
+      error: '40',
+       batterypercentage: '81'
     },
     {
       id: 5,
@@ -102,7 +107,8 @@ export class RobotsComponent implements OnInit {
       robotutilization:' 40 %',
       cpuutilization: '50 %',
       memory: '50 %',
-      error: '50'
+      error: '50',
+       batterypercentage: '81'
     },
     {
       id: 6,
@@ -116,7 +122,8 @@ export class RobotsComponent implements OnInit {
       robotutilization:' 23 %',
       cpuutilization: '40 %',
       memory: '60 %',
-      error: '60'
+      error: '60',
+       batterypercentage: '81'
     },
     // Add more robots...
   ];
