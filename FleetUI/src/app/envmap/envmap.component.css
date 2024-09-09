@@ -186,7 +186,7 @@ h2 {
   position: relative;
 }
 
-.closenode-btn{
+.closenode-btn,.savenode-btn{
   margin-left: 20px;
 }
 

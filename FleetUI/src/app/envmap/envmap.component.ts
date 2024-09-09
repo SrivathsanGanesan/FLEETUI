@@ -23,6 +23,8 @@ interface Node {
   released: boolean;
   pos: { x: number; y: number; orientation: number };
   actions: any[];
+  intermediate_node:boolean;
+  Waiting_node:boolean;
 }
 
 interface Edge {
@@ -159,12 +161,16 @@ export class EnvmapComponent implements AfterViewInit {
     y: number;
     description: string;
     actions: string[]; // Can allow null if needed
+    intermediate_node:boolean;
+    waiting_node:boolean;
   } = {
     id: 1,
     x: 0,
     y: 0,
     description: '',
     actions: [], // Initialize with a non-null value
+    intermediate_node:false,
+    waiting_node:false
   };
   isMoveActionFormVisible: boolean = true;
   isDockActionFormVisible: boolean = true;
@@ -216,7 +222,7 @@ export class EnvmapComponent implements AfterViewInit {
   roboInitOffset : number = 60;
   draggingRobot: Robo | null = null; // Currently dragged robot
   deselectTimeout: any = null;
-  highlightDuration = 2000; // Example: 2 seconds 
+  highlightDuration = 5000; // Example: 2 seconds 
   
 
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
@@ -232,7 +238,6 @@ export class EnvmapComponent implements AfterViewInit {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
   }
-  
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
@@ -341,6 +346,8 @@ export class EnvmapComponent implements AfterViewInit {
     } else {
       console.log('No node selected to delete.');
     }
+    this.isNodeDetailsPopupVisible = false;
+
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
@@ -866,7 +873,6 @@ export class EnvmapComponent implements AfterViewInit {
         endX - startX
       );
       const angleDegrees = angleRadians * (180 / Math.PI);
-
       // Update the orientationAngle of the node
       const currentNode = this.nodes.find((node) => {
         if (Math.abs(node.pos.x - startX) <= 5)
@@ -946,6 +952,8 @@ export class EnvmapComponent implements AfterViewInit {
         description: '',
         released: true,
         pos: { x: x, y: transformedY, orientation: 0 },
+        intermediate_node : false,
+        Waiting_node : false,
         actions: [],
       },
       color,
@@ -958,6 +966,8 @@ export class EnvmapComponent implements AfterViewInit {
       y: transformedY * (this.ratio || 1),
       description: '',
       actions: [],
+      intermediate_node:false,
+      waiting_node:false
     };
     console.log(
       `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
@@ -970,11 +980,12 @@ export class EnvmapComponent implements AfterViewInit {
       released: true,
       pos: { x: x, y: transformedY, orientation: this.orientationAngle },
       actions: [],
+      intermediate_node : false,
+      Waiting_node : false
     };
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
     this.nodes.push(node);
     this.Nodes.push({ ...this.nodeDetails, type: 'single' });
-    console.log(this.nodes);
 
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
@@ -1016,6 +1027,8 @@ export class EnvmapComponent implements AfterViewInit {
         released: true,
         pos: { x: x, y: transformedY, orientation: 0 },
         actions: [],
+        intermediate_node :false,
+        Waiting_node :false
       },
       color,
       false
@@ -1044,6 +1057,8 @@ export class EnvmapComponent implements AfterViewInit {
       y: transformedY,
       description: '',
       actions: [],
+      intermediate_node:false,
+      waiting_node:false
     };
 
     if (this.firstNode === null) {
@@ -1055,6 +1070,8 @@ export class EnvmapComponent implements AfterViewInit {
         released: true,
         pos: { x: x, y: transformedY, orientation: 0 },
         actions: [],
+        intermediate_node :false,
+        Waiting_node :false
       };
       this.firstNode = firstnode;
       this.nodes.push(firstnode);
@@ -1067,6 +1084,8 @@ export class EnvmapComponent implements AfterViewInit {
         released: true,
         pos: { x: x, y: transformedY, orientation: 0 },
         actions: [],
+        intermediate_node :false,
+        Waiting_node :false
       };
       this.secondNode = secondnode;
       this.nodes.push(secondnode);
@@ -1099,6 +1118,8 @@ export class EnvmapComponent implements AfterViewInit {
           orientation: this.secondNode.pos.orientation,
         },
         actions: [],
+        intermediate_node :false,
+        Waiting_node :false
       };
       this.nodes.push(node);
     }
@@ -1143,6 +1164,8 @@ export class EnvmapComponent implements AfterViewInit {
             released: true,
             pos: { x: x, y: y, orientation: this.secondNode!.pos.orientation },
             actions: [],
+            intermediate_node :false,
+            Waiting_node :false
           };
           this.nodes.push(node);
 
@@ -1152,6 +1175,8 @@ export class EnvmapComponent implements AfterViewInit {
             y: y * (this.ratio || 1),
             description: 'Intermediate Node',
             actions: [],
+            intermediate_node:false,
+            waiting_node:false
           };
 
           this.drawNode(
@@ -1162,6 +1187,8 @@ export class EnvmapComponent implements AfterViewInit {
               released: true,
               pos: { x: x, y: y, orientation: 0 },
               actions: [],
+              intermediate_node :false,
+              Waiting_node :false
             },
             'blue',
             false
@@ -1180,11 +1207,20 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
   saveNodeDetails(): void {
+    // Ensure the nodeDetails object includes the checkbox values
+    const updatedNodeDetails = {
+      ...this.nodeDetails,  // Spread the existing details
+      intermediate_node: this.nodeDetails.intermediate_node,
+      waiting_node: this.nodeDetails.waiting_node,
+    };
+  
     // Transform Nodes array to NodeDetails format
     this.NodeDetails = this.nodes.map((node, index) => ({
       nodeID: `node_${String(node.id).padStart(3, '0')}`, // Format nodeID as a string
       sequenceId: index + 1, // SequenceId is based on the order of nodes
-      nodeDescription: '', // Set this as empty or assign a value if available
+      nodeDescription: this.nodeDetails.description || '', // Use node description
+      intermediate_node: this.nodeDetails.intermediate_node,  // Bind checkbox value
+      waiting_node: this.nodeDetails.waiting_node,  // Bind checkbox value
       released: true,
       nodePosition: {
         x: node.pos.x,
@@ -1193,24 +1229,16 @@ export class EnvmapComponent implements AfterViewInit {
       },
       actions: this.actions, // Include actions here
     }));
-
-    // Create a JSON object with the node details
-    const nodeDetails = this.nodes;
-
-    // Log the JSON object to the console
-    console.log(this.nodes);
-    console.log(this.edges);
-    console.log(this.assets);
-    console.log(this.zones);
-    
-    
-
+  
+    // Log updated nodeDetails to the console
+    console.log(updatedNodeDetails);
+  
     // Save the JSON object to a file
-    const blob = new Blob([JSON.stringify(nodeDetails, null, 2)], {
+    const blob = new Blob([JSON.stringify(updatedNodeDetails, null, 2)], {
       type: 'application/json',
     });
     saveAs(blob, 'node-details.json');
-
+  
     // Clear all the details for the previous node
     this.Nodes = []; // Clear the Nodes array
     this.resetParameters(); // Reset the parameters
