@@ -381,8 +381,6 @@
           <div class="dropdown-content">
             <button (click)="selectAssetType('docking')">Docking Station</button>
             <button (click)="selectAssetType('charging')">Charging Station</button>
-            <button (click)="selectAssetType('waiting')">Waiting Station</button>
-            <button (click)="selectAssetType('intermediate')">Intermediate Station</button>
           </div>
         </div>
         
@@ -403,6 +401,7 @@
     </div>
   </div>
 </div>
+
 <div *ngIf="isPopupVisible" class="popup-overlay">
   <div class="popup-content">
     <h3>Select Zone Type</h3>
@@ -413,3 +412,97 @@
     <button (click)="onCancel()">Cancel</button>
   </div>
 </div>
+
+
+<div *ngIf="showPopup" class="popup-overlay">
+  <div class="popup-content">
+    <form (ngSubmit)="submitEdgeDetails()">
+      <div class="form-row">
+        <label for="edgeId">Edge ID:</label>
+        <input id="edgeId" [(ngModel)]="currentEdge.edgeId" name="edgeId" required />
+      </div>
+
+      <div class="form-row">
+        <label for="sequenceId">Sequence ID:</label>
+        <input id="sequenceId" type="number" [(ngModel)]="currentEdge.sequenceId" name="sequenceId" required />
+      </div>
+
+      <div class="form-row">
+        <label for="edgeDescription">Description:</label>
+        <input id="edgeDescription" [(ngModel)]="currentEdge.edgeDescription" name="edgeDescription" />
+      </div>
+
+      <div class="form-row">
+        <label for="released">Released:</label>
+        <input id="released" type="checkbox" [(ngModel)]="currentEdge.released" name="released" />
+      </div>
+
+      <div class="form-row">
+        <label for="startNodeId">Start Node ID:</label>
+        <input id="startNodeId" [(ngModel)]="currentEdge.startNodeId" name="startNodeId" readonly />
+      </div>
+
+      <div class="form-row">
+        <label for="endNodeId">End Node ID:</label>
+        <input id="endNodeId" [(ngModel)]="currentEdge.endNodeId" name="endNodeId" readonly />
+      </div>
+
+      <div class="form-row">
+        <label for="maxSpeed">Max Speed (m/s):</label>
+        <input id="maxSpeed" type="number" [(ngModel)]="currentEdge.maxSpeed" name="maxSpeed" />
+      </div>
+
+      <div class="form-row">
+        <label for="maxHeight">Max Height (m):</label>
+        <input id="maxHeight" type="number" [(ngModel)]="currentEdge.maxHeight" name="maxHeight" />
+      </div>
+
+      <div class="form-row">
+        <label for="minHeight">Min Height (m):</label>
+        <input id="minHeight" type="number" [(ngModel)]="currentEdge.minHeight" name="minHeight" />
+      </div>
+
+      <div class="form-row">
+        <label for="orientation">Orientation (rad):</label>
+        <input id="orientation" type="number" [(ngModel)]="currentEdge.orientation" name="orientation" />
+      </div>
+
+      <div class="form-row">
+        <label for="orientationType">Orientation Type:</label>
+        <input id="orientationType" [(ngModel)]="currentEdge.orientationType" name="orientationType" />
+      </div>
+
+      <div class="form-row">
+        <label for="direction">Direction:</label>
+        <input id="direction" [(ngModel)]="currentEdge.direction" name="direction" />
+      </div>
+
+      <div class="form-row">
+        <label for="rotationAllowed">Rotation Allowed:</label>
+        <input id="rotationAllowed" type="checkbox" [(ngModel)]="currentEdge.rotationAllowed" name="rotationAllowed" />
+      </div>
+
+      <div class="form-row">
+        <label for="maxRotationSpeed">Max Rotation Speed (rad/s):</label>
+        <input id="maxRotationSpeed" type="number" [(ngModel)]="currentEdge.maxRotationSpeed" name="maxRotationSpeed" />
+      </div>
+
+      <div class="form-row">
+        <label for="length">Length:</label>
+        <input id="length" type="number" [(ngModel)]="currentEdge.length" name="length" />
+      </div>
+
+      <div class="form-row">
+        <label for="action">Actions:</label>
+        <input id="action" [(ngModel)]="currentEdge.action" name="action" />
+      </div>
+
+      <div class="form-buttons">
+        <button type="submit" id="formBTN" {}>Save</button>
+        <button type="button" id="formBTN" >Delete</button>
+        <button type="button" id="formBTN" (click)="hidePopup()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+

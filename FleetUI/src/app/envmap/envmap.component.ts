@@ -51,6 +51,7 @@ interface asset {
   x: number;
   y: number;
   type: string;
+  orientation : number
 } // Array to track assets
 
 interface Zone {
@@ -236,8 +237,42 @@ export class EnvmapComponent implements AfterViewInit {
   draggingRobot: Robo | null = null; // Currently dragged robot
   deselectTimeout: any = null;
   highlightDuration = 2000; // Example: 2 seconds 
-  
-
+  currentEdge : Edge = {
+      edgeId: '',
+      sequenceId: 0,
+      edgeDescription: '',
+      released: true,
+      startNodeId: '',
+      endNodeId: '',
+      maxSpeed: 0,
+      maxHeight: 0,
+      minHeight: 0,
+      orientation: 0,
+      orientationType: '',
+      direction: 'UN_DIRECTIONAL',
+      rotationAllowed: true,
+      maxRotationSpeed: 0,
+      length: 0,
+      action : [],
+    };
+  // selectedEdge = {
+  //   edgeId: '',
+  //   sequenceId: 0,
+  //   edgeDescription: '',
+  //   released: true,
+  //   startNodeId: '',
+  //   endNodeId: '',
+  //   maxSpeed: 0,
+  //   maxHeight: 0,
+  //   minHeight: 0,
+  //   orientation: 0,
+  //   orientationType: '',
+  //   direction: 'UN_DIRECTIONAL',
+  //   rotationAllowed: true,
+  //   maxRotationSpeed: 0,
+  //   length: 0,
+  // };
+  showPopup = false;
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
 
   setDirection(direction: 'uni' | 'bi'): void {
@@ -299,13 +334,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.assetImages['charging'] = new Image();
       this.assetImages['charging'].src =
         'assets/Asseticon/charging-station.svg';
-
-      this.assetImages['waiting'] = new Image();
-      this.assetImages['waiting'].src = 'assets/Asseticon/waiting-station.svg';
-
-      this.assetImages['intermediate'] = new Image();
-      this.assetImages['intermediate'].src =
-        'assets/Asseticon/intermediate-station.svg';
 
       this.robotImages['robotA'] = new Image();
       this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
@@ -824,20 +852,21 @@ export class EnvmapComponent implements AfterViewInit {
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-    const x =
-      (event.clientX - rect.left) *
-      (this.overlayCanvas.nativeElement.width / rect.width);
-    const y =
-      (event.clientY - rect.top) *
-      (this.overlayCanvas.nativeElement.height / rect.height);
-      
+    const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+    const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y)) {
         this.showNodeDetailsPopup();
-        break;
+        return;
       }
+    }
+    // Check if the click is on an edge
+    const clickedEdge = this.edges.find(edge => this.isPointOnEdge(edge, x, y));
+    if (clickedEdge) {
+      this.currentEdge = clickedEdge; // Set the current edge details
+      this.showPopup = true; // Show the popup
     }
   }
   showNodeDetailsPopup(): void {
@@ -1042,14 +1071,8 @@ export class EnvmapComponent implements AfterViewInit {
     this.lineStartX = x;
     this.lineStartY = y;
 
-    this.overlayCanvas.nativeElement.addEventListener(
-      'mousemove',
-      this.onMouseMove.bind(this)
-    );
-    this.overlayCanvas.nativeElement.addEventListener(
-      'mouseup',
-      this.onMouseUp.bind(this)
-    );
+    this.overlayCanvas.nativeElement.addEventListener( 'mousemove', this.onMouseMove.bind(this) );
+    this.overlayCanvas.nativeElement.addEventListener( 'mouseup', this.onMouseUp.bind(this) );
   }
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
@@ -1460,7 +1483,6 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.fillText(`${startNodeId} to ${endNodeId}`, midX, midY + 5); // Draw edge ID text
     }
   }
-   
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
@@ -1508,7 +1530,18 @@ export class EnvmapComponent implements AfterViewInit {
   
     ctx.fill();
   }
-  
+  updateEdge() {
+    if (this.currentEdge) {
+      this.edges = this.edges.map((edge) => {
+        if (this.currentEdge.edgeId === edge.edgeId) {
+          // Preserve color and direction
+          return { ...edge, ...this.currentEdge };
+        }
+        return edge;
+      });
+      this.redrawCanvas();
+    }
+  } 
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
@@ -1542,11 +1575,16 @@ export class EnvmapComponent implements AfterViewInit {
         imageSize,
         imageSize
       );
-
-      // Optionally, add this asset as a "node" for future reference
-      // this.nodes.push({ id: this.generateNodeId(), pos: { x, y }, type: 'asset', assetType });
     }
-    // this.redrawCanvas(); // Redraw other elements
+
+    this.assets = this.assets.map(asset =>{
+      if(this.selectedAsset?.id === asset.id)
+        asset.orientation = this.orientationAngle;
+      return asset
+    })
+
+    this.overlayCanvas.nativeElement.addEventListener( 'mousemove', this.onMouseMove.bind(this) );
+    this.overlayCanvas.nativeElement.addEventListener( 'mouseup', this.onMouseUp.bind(this) );
   }
   startZonePlotting(): void {
     this.toggleOptionsMenu();
@@ -1596,7 +1634,6 @@ export class EnvmapComponent implements AfterViewInit {
       console.error('Insufficient points or zone type not selected');
     }
   }
-  // Function to check if two polygons overlap
   private isZoneOverlapping(newZonePoints: any[]): boolean {
     for (const existingZone of this.zones) {
       if (this.isPolygonOverlap(existingZone.pos, newZonePoints)) {
@@ -1605,16 +1642,12 @@ export class EnvmapComponent implements AfterViewInit {
     }
     return false;
   }
-
-  // Simplified bounding box overlap check between two polygons
   private isPolygonOverlap(polygon1: any[], polygon2: any[]): boolean {
     const [minX1, minY1, maxX1, maxY1] = this.getBoundingBox(polygon1);
     const [minX2, minY2, maxX2, maxY2] = this.getBoundingBox(polygon2);
 
     return !(minX1 > maxX2 || maxX1 < minX2 || minY1 > maxY2 || maxY1 < minY2);
   }
-
-  // Get the bounding box of a polygon (minX, minY, maxX, maxY)
   private getBoundingBox(polygon: any[]): number[] {
     let minX = Infinity,
       minY = Infinity,
@@ -1708,12 +1741,8 @@ export class EnvmapComponent implements AfterViewInit {
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x =
-        (event.clientX - rect.left) *
-        (this.overlayCanvas.nativeElement.width / rect.width);
-      const y =
-        (event.clientY - rect.top) *
-        (this.overlayCanvas.nativeElement.height / rect.height);
+      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
       if (this.isZonePlottingEnabled) {
         // Plot the point
@@ -1752,11 +1781,17 @@ export class EnvmapComponent implements AfterViewInit {
           x: x,
           y: y,
           type: this.selectedAssetType,
+          orientation : 0
         };
         this.selectedAsset = asset;
         this.assets.push(asset);
-
+        
         this.plotAsset(x, y, this.selectedAssetType);
+        if(this.selectedAssetType === 'docking'){ 
+          this.isDrawingLine = true; //..
+          this.lineStartX = x;
+          this.lineStartY = y;
+        }
         this.selectedAssetType = null; // Reset after plotting
         this.assetCounter++;
         return;
@@ -1809,7 +1844,6 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
-  // Method to handle zone type selection
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -1828,8 +1862,7 @@ export class EnvmapComponent implements AfterViewInit {
 
     if (this.isDrawingLine) {
       this.lineEndX = (event.clientX - rect.left) * (canvas.width / rect.width);
-      this.lineEndY =
-        (event.clientY - rect.top) * (canvas.height / rect.height);
+      this.lineEndY = (event.clientY - rect.top) * (canvas.height / rect.height);
 
       // Redraw the canvas to show the line preview
       this.redrawCanvas();
@@ -1963,45 +1996,43 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
   private redrawCanvas(): void {
-    // Clear the canvas and redraw all elements (nodes, zones, lines, etc.)
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      this.cdRef.detectChanges(); // remove later..
+      this.cdRef.detectChanges;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
+      // Draw nodes
       this.nodes.forEach((node) => this.drawNode(node, 'blue', false));
-
+  
+      // Draw edges using the stored edge color and type
       this.edges.forEach((edge) => {
         const fromNode = this.nodes.find(
           (node) => node.id === edge.startNodeId
         );
         const toNode = this.nodes.find((node) => node.id === edge.endNodeId);
+  
         if (fromNode && toNode) {
+          // Pass the stored direction (either 'uni' or 'bi') to the drawEdge function
           this.drawEdge(
             fromNode.pos,
             toNode.pos,
-            edge.direction,
+            edge.direction === 'UN_DIRECTIONAL' ? 'uni' : 'bi', // Ensure correct direction is passed
             fromNode.id,
             toNode.id
           );
         }
       });
-
-      this.assets.forEach((asset) => {
-        this.plotAsset(asset.x, asset.y, asset.type);
-      });
-
+  
+      // Draw assets, zones, and robots
+      this.assets.forEach((asset) => this.plotAsset(asset.x, asset.y, asset.type));
       this.zones.forEach((zone) => {
         this.plottedPoints = zone.pos;
         this.zoneType = zone.type;
         this.drawLayer();
         this.plottedPoints = [];
       });
-
-      this.robos.forEach((robo) =>
-        this.plotRobo(robo.x, robo.y, this.selectedRobo === robo)
-      );
+      this.robos.forEach((robo) => this.plotRobo(robo.x, robo.y, this.selectedRobo === robo));
     }
   }
   drawConnections(): void {
@@ -2046,5 +2077,57 @@ export class EnvmapComponent implements AfterViewInit {
   }
   hideCalibrationLayer(): void {
     this.isOptionsMenuVisible = false;
+  }
+  isPointOnEdge(edge: Edge, x: number, y: number): boolean {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) return false;
+  
+    const startNode = this.nodes.find(node => node.id === edge.startNodeId);
+    const endNode = this.nodes.find(node => node.id === edge.endNodeId);
+    
+    if (!startNode || !endNode) return false;
+  
+    const startPos = { x: startNode.pos.x, y: canvas.height - startNode.pos.y };
+    const endPos = { x: endNode.pos.x, y: canvas.height - endNode.pos.y };
+    
+    // Calculate distance from point (x, y) to the line segment
+    const lineLength = Math.sqrt(Math.pow(endPos.x - startPos.x, 2) + Math.pow(endPos.y - startPos.y, 2));
+    const projection = ((x - startPos.x) * (endPos.x - startPos.x) + (y - startPos.y) * (endPos.y - startPos.y)) / Math.pow(lineLength, 2);
+    
+    const closestPoint = {
+      x: startPos.x + projection * (endPos.x - startPos.x),
+      y: startPos.y + projection * (endPos.y - startPos.y)
+    };
+    
+    const distance = Math.sqrt(Math.pow(x - closestPoint.x, 2) + Math.pow(y - closestPoint.y, 2));
+    
+    // Define a threshold distance for "close enough" to the line segment
+    const threshold = 10; // Adjust this threshold as needed
+  
+    return distance < threshold;
+  }
+
+  submitEdgeDetails(): void {
+    // Handle form submission, e.g., save edge details
+    this.showPopup = false;
+  }
+
+  hidePopup(): void {
+    this.showPopup = false;
+  }
+  // Method to delete the edge
+  deleteEdge(): void {
+    if (this.currentEdge) {
+      // Remove the edge from the edges array
+      this.edges = this.edges.filter(edge => edge.edgeId !== this.currentEdge?.edgeId);
+
+      // Redraw the canvas
+      this.redrawCanvas();
+
+      // Hide the popup
+      this.hidePopup();
+    }
   }
 }
