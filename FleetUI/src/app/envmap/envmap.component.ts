@@ -285,17 +285,20 @@ export class EnvmapComponent implements AfterViewInit {
   ) {}
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
-    if (!this.overlayCanvas) return;
-    setTimeout(() => {
-      console.log('ngAfterViewInit: overlayCanvas', this.overlayCanvas);
+    if (!this.overlayCanvas || !this.imageCanvas) return;
+
       const canvas = this.overlayCanvas?.nativeElement;
-      if (canvas) {
+      const imageCanvas = this.imageCanvas?.nativeElement;
+      if (canvas && imageCanvas) {
+        // Set the size of the overlay canvas to match the image canvas
+        canvas.width = imageCanvas.width;
+        canvas.height = imageCanvas.height;
+  
         this.setupCanvas();
         this.isCanvasInitialized = true; // Avoid re-initializing the canvas
       } else {
-        console.error('Canvas element still not found');
+        console.error('Canvas element(s) still not found');
       }
-    }, 0); // Adjust the delay if necessary
   }
   ngAfterViewChecked(): void {
     if (this.showImage && this.overlayCanvas && !this.isCanvasInitialized) {
@@ -308,27 +311,34 @@ export class EnvmapComponent implements AfterViewInit {
   }
   setupCanvas(): void {
     const canvas = this.getOverlayCanvas();
-    if (!canvas) {
+    const imageCanvas = this.imageCanvas?.nativeElement;
+    if (!canvas || !imageCanvas) {
       console.error('Canvas element not found');
       return;
     }
-    // Ensure the canvas has width and height
+  
+    // Set the overlay canvas size to match the image canvas size
+    canvas.width = imageCanvas.width;
+    canvas.height = imageCanvas.height;
+  
+    // Ensure the canvas has a valid width and height
     if (canvas.width === 0 || canvas.height === 0) {
       console.error('Canvas width or height is zero');
       return;
     }
+  
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      // Initialize assets and robots
       this.assetImages['docking'] = new Image();
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
-
+  
       this.assetImages['charging'] = new Image();
-      this.assetImages['charging'].src =
-        'assets/Asseticon/charging-station.svg';
-
+      this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
+  
       this.robotImages['robotA'] = new Image();
       this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
-
+  
       this.robotImages['robotB'] = new Image();
       this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
     } else {
@@ -387,7 +397,6 @@ export class EnvmapComponent implements AfterViewInit {
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
-  // Parameters for the 'Move' action
   moveParameters = {
     maxLinearVelocity: '',
     maxAngularVelocity: '',
@@ -485,7 +494,6 @@ export class EnvmapComponent implements AfterViewInit {
     this.showActionForm();
     this.actions.splice(index, 1); // Remove the action from the list
   }
-  // Method to add an action to the list
   addAction(): void {
     if (this.selectedAction) {
       let action: any;
@@ -539,7 +547,6 @@ export class EnvmapComponent implements AfterViewInit {
   closeNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = false;
   }
-  // Method to delete an action from the list
   removeAction(index: number): void {
     this.actions.splice(index, 1);
     this.hideActionForms();
@@ -547,7 +554,6 @@ export class EnvmapComponent implements AfterViewInit {
   isOptionDisabled(option: string): boolean {
     return this.actions.some((action) => action.actionType === option);
   }
-
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -602,7 +608,6 @@ export class EnvmapComponent implements AfterViewInit {
       Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
     );
   }
-  //  Saving all nodes and edges
   saveOpt() {
     console.log(this.Nodes);
     console.log(this.connections);
@@ -871,8 +876,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.DockPopup = true; // Show the popup
     }
   }
-
-
   savePopupData(): void {
     console.log(this.selectedAsset);
     
@@ -891,7 +894,6 @@ export class EnvmapComponent implements AfterViewInit {
     
     this.closePopup1();
   }
-
   closePopup1(): void {
     this.DockPopup = false;
     this.undockingDistance = '';
@@ -2162,4 +2164,5 @@ export class EnvmapComponent implements AfterViewInit {
       this.hidePopup();
     }
   }
+  
 }

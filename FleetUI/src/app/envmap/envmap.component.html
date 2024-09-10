@@ -1,5 +1,6 @@
 <div class="popup-overlay">
-  <div class="popup-content"  [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }">
+  <div class="popup-content"  [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }" [ngStyle]="{ 'pointer-events': showImage ? 'none' : 'auto' }">
+
     <h2 *ngIf="!showImage">Select and insert Map file</h2>
     <!-- Image for file upload -->
     <label for="fileInput" class="upload-image" *ngIf="!showImage">
@@ -118,7 +119,9 @@
         </div>
       </div>
     </div>
-    <div class="image-container" *ngIf="showImage">
+    <div class="image-container" *ngIf="showImage"  [ngStyle]="{ 'pointer-events': showImage ? 'auto' : 'none' }">
+      <button class="close-btn" (click)="close()">X</button>
+
       <div
         class="intermediate-nodes-dialog"
         *ngIf="showIntermediateNodesDialog"
@@ -138,8 +141,9 @@
             Enter
           </button>
         </div>
-      </div>      
-      <canvas class="plottinglayer" #overlayCanvas [ngClass]="{'disable-pointer-events': showIntermediateNodesDialog}"></canvas>      <div
+      </div> 
+      <canvas class="plottinglayer" #overlayCanvas *ngIf="showImage" ></canvas> 
+      <div
         #nodeDetailsPopup
         class="node-details-popup"
         [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
@@ -352,7 +356,7 @@
       </div>
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
-      <button class="close-btn" (click)="close()">X</button>
+
       <div class="options-container" *ngIf="!isOptionsMenuVisible">
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
@@ -506,17 +510,11 @@
   </div>
 </div>
 
-<<<<<<< Updated upstream
 <div *ngIf="DockPopup" class="popup-overlay">
-=======
-<!-- Popup HTML -->
-<div *ngIf="DockPopup"  class="popup-overlay">
->>>>>>> Stashed changes
   <div class="popup-content">
   <form>
     <div>
       <label for="undockingDistance">Undocking Distance:</label>
-<<<<<<< Updated upstream
       <input type="text" id="undockingDistance" name="undockingDistance" [(ngModel)]="undockingDistance" />
     </div>
     <div>
@@ -525,22 +523,8 @@
     </div>
     <div>
       <button type="button" (click)="savePopupData()">Save</button>
-=======
-      <input type="text" id="undockingDistance" [(ngModel)]="undockingDistance" />
-    </div>
-    <div>
-      <label for="description">Description:</label>
-      <input type="text" id="description" [(ngModel)]="description" />
-    </div>
-    <div>
-      <button type="button" >Save</button>
->>>>>>> Stashed changes
       <button type="button" (click)="closePopup1()">Cancel</button>
     </div>
   </form>
   </div>
 </div>
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes

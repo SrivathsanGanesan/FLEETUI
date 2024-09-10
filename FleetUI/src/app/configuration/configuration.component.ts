@@ -451,7 +451,7 @@ export class ConfigurationComponent implements AfterViewInit {
   setActiveButton(button: string) {
     this.activeButton = button;
     this.isTransitioning = true;
-    setTimeout(() => {
+   
       this.activeButton = button;
       this.activeHeader = this.getHeader(button);
       this.isTransitioning = false;
@@ -464,7 +464,6 @@ export class ConfigurationComponent implements AfterViewInit {
         this.currentTable = button;
         this.currentTab = button;
       }
-    }, 200); // 200ms matches the CSS transition duration
   }
 
   setFleetTab(tab: string): void {
