@@ -850,17 +850,28 @@ export class EnvmapComponent implements AfterViewInit {
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y)) {
         this.showNodeDetailsPopup();
+<<<<<<< Updated upstream
             return;
         }
+=======
+        return;
+      }
+
+>>>>>>> Stashed changes
     }
     // Check if the click is on an edge
     const clickedEdge = this.edges.find(edge => this.isPointOnEdge(edge, x, y));
     for (const asset of this.assets) {
       if (this.isAssetClicked(asset, x, y)) {
+<<<<<<< Updated upstream
         console.log('asset clicked');
         
         this.selectedAsset = asset;
         this.DockPopup = true; // Show the popup
+=======
+        this.DockPopup = true; // Show the popup
+        this.selectedAsset = asset;
+>>>>>>> Stashed changes
         // this.popupPosition = { x: event.clientX, y: event.clientY }; // Set popup position
         // this.selectedAssetId = asset.id; // Store selected asset ID
         return;
@@ -873,6 +884,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
 
+<<<<<<< Updated upstream
   savePopupData(): void {
     console.log(this.selectedAsset);
     
@@ -891,6 +903,21 @@ export class EnvmapComponent implements AfterViewInit {
     
     this.closePopup1();
   }
+=======
+  // savePopupData(): void {
+  //   if (this.selectedAsset) {
+  //     // Find the asset and update its properties
+  //     this.assets = this.assets.map(asset => {
+        
+  //     });
+  //     if (asset) {
+  //       asset.undockingDistance = this.undockingDistance;
+  //       asset.description = this.description;
+  //     }
+  //   }
+  //   this.closePopup1();
+  // }
+>>>>>>> Stashed changes
 
   closePopup1(): void {
     this.DockPopup = false;

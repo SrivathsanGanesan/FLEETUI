@@ -506,11 +506,17 @@
   </div>
 </div>
 
+<<<<<<< Updated upstream
 <div *ngIf="DockPopup" class="popup-overlay">
+=======
+<!-- Popup HTML -->
+<div *ngIf="DockPopup"  class="popup-overlay">
+>>>>>>> Stashed changes
   <div class="popup-content">
   <form>
     <div>
       <label for="undockingDistance">Undocking Distance:</label>
+<<<<<<< Updated upstream
       <input type="text" id="undockingDistance" name="undockingDistance" [(ngModel)]="undockingDistance" />
     </div>
     <div>
@@ -519,8 +525,22 @@
     </div>
     <div>
       <button type="button" (click)="savePopupData()">Save</button>
+=======
+      <input type="text" id="undockingDistance" [(ngModel)]="undockingDistance" />
+    </div>
+    <div>
+      <label for="description">Description:</label>
+      <input type="text" id="description" [(ngModel)]="description" />
+    </div>
+    <div>
+      <button type="button" >Save</button>
+>>>>>>> Stashed changes
       <button type="button" (click)="closePopup1()">Cancel</button>
     </div>
   </form>
   </div>
 </div>
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
