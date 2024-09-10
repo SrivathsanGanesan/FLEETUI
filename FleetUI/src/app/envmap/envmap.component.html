@@ -120,28 +120,9 @@
       </div>
     </div>
     <div class="image-container" *ngIf="showImage"  [ngStyle]="{ 'pointer-events': showImage ? 'auto' : 'none' }">
-      <button class="close-btn" (click)="close()">X</button>
+      <button class="close-btn" (click)="close()" *ngIf="!isPlottingEnabled && !isZonePlottingEnabled">X</button>
 
-      <div
-        class="intermediate-nodes-dialog"
-        *ngIf="showIntermediateNodesDialog"
-      >
-        <div class="dialog-content">
-          <h3>Enter Number of Nodes</h3>
-          <input
-            type="number"
-            [(ngModel)]="numberOfIntermediateNodes"
-            placeholder="Number of nodes"
-            (ngModelChange)="onInputChanged()"
-          />
-          <button
-            *ngIf="isEnterButtonVisible"
-            (click)="plotIntermediateNodes()"
-          >
-            Enter
-          </button>
-        </div>
-      </div> 
+
       <canvas class="plottinglayer" #overlayCanvas *ngIf="showImage" ></canvas> 
       <div
         #nodeDetailsPopup
@@ -357,7 +338,7 @@
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
 
-      <div class="options-container" *ngIf="!isOptionsMenuVisible" >
+      <div class="options-container" *ngIf="!isPlottingEnabled && !isOptionsMenuVisible" >
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
@@ -392,11 +373,7 @@
         <button (click)="removeRobots()">Remove Robots</button>
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
-        <app-robot-popup
-        [isVisible]="isRobotPopupVisible"
-        (close)="closeRobotPopup()"
-        (addRobot)="placeRobots($event)"
-      ></app-robot-popup>
+
       </div>
     </div>
     <div class="button-container" *ngIf="!showImage">
@@ -405,8 +382,15 @@
     </div>
   </div>
 </div>
-<div *ngIf="isPopupVisible" class="popup-overlay">
-  <div class="popup-content">
+
+<app-robot-popup
+[isVisible]="isRobotPopupVisible"
+(close)="closeRobotPopup()"
+(addRobot)="placeRobots($event)"
+></app-robot-popup>
+
+<div *ngIf="isPopupVisible" class="popup-overlay1">
+  <div class="popup-content1">
     <h3>Select Zone Type</h3>
     <select [(ngModel)]="zoneType">
       <option *ngFor="let zone of zoneTypeList" [value]="zone">{{ zone }}</option>
@@ -415,8 +399,9 @@
     <button (click)="onCancel()">Cancel</button>
   </div>
 </div>
-<div *ngIf="showPopup" class="popup-overlay">
-  <div class="popup-content">
+
+<div *ngIf="showPopup" class="popup-overlay1">
+  <div class="popup-content1">
     <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
       <div class="form-row">
         <label for="edgeId">Edge ID:</label>
@@ -507,8 +492,8 @@
   </div>
 </div>
 
-<div *ngIf="DockPopup" class="popup-overlay">
-  <div class="popup-content">
+<div *ngIf="DockPopup" class="popup-overlay1">
+  <div class="popup-content1">
   <form>
     <div>
       <label for="undockingDistance">Undocking Distance:</label>
@@ -525,3 +510,24 @@
   </form>
   </div>
 </div>
+
+<div
+class="popup-overlay1"
+*ngIf="showIntermediateNodesDialog"
+>
+<div class="popup-content1">
+  <h3>Enter Number of Nodes</h3>
+  <input
+    type="number"
+    [(ngModel)]="numberOfIntermediateNodes"
+    placeholder="Number of nodes"
+    (ngModelChange)="onInputChanged()"
+  />
+  <button
+    *ngIf="isEnterButtonVisible"
+    (click)="plotIntermediateNodes()"
+  >
+    Enter
+  </button>
+</div>
+</div> 
