@@ -299,6 +299,7 @@ export class EnvmapComponent implements AfterViewInit {
       } else {
         console.error('Canvas element(s) still not found');
       }
+      
   }
   ngAfterViewChecked(): void {
     if (this.showImage && this.overlayCanvas && !this.isCanvasInitialized) {

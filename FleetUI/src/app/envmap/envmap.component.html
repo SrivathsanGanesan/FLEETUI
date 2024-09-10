@@ -357,12 +357,12 @@
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
 
-      <div class="options-container" *ngIf="!isOptionsMenuVisible">
+      <div class="options-container" *ngIf="!isOptionsMenuVisible" >
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div>
-      <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
+      <div class="calibration-layer" *ngIf="isOptionsMenuVisible" >
         <div class="dropdown">
           <button class="dropdown-button">Add Node</button>
           <div class="dropdown-content">
@@ -405,7 +405,6 @@
     </div>
   </div>
 </div>
-
 <div *ngIf="isPopupVisible" class="popup-overlay">
   <div class="popup-content">
     <h3>Select Zone Type</h3>
@@ -416,8 +415,6 @@
     <button (click)="onCancel()">Cancel</button>
   </div>
 </div>
-
-
 <div *ngIf="showPopup" class="popup-overlay">
   <div class="popup-content">
     <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
