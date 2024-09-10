@@ -506,3 +506,21 @@
   </div>
 </div>
 
+<div *ngIf="DockPopup" class="popup-overlay">
+  <div class="popup-content">
+  <form>
+    <div>
+      <label for="undockingDistance">Undocking Distance:</label>
+      <input type="text" id="undockingDistance" name="undockingDistance" [(ngModel)]="undockingDistance" />
+    </div>
+    <div>
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" [(ngModel)]="description" />
+    </div>
+    <div>
+      <button type="button" (click)="savePopupData()">Save</button>
+      <button type="button" (click)="closePopup1()">Cancel</button>
+    </div>
+  </form>
+  </div>
+</div>
