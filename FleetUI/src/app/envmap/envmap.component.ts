@@ -255,23 +255,6 @@ export class EnvmapComponent implements AfterViewInit {
       length: 0,
       action : [],
     };
-  // selectedEdge = {
-  //   edgeId: '',
-  //   sequenceId: 0,
-  //   edgeDescription: '',
-  //   released: true,
-  //   startNodeId: '',
-  //   endNodeId: '',
-  //   maxSpeed: 0,
-  //   maxHeight: 0,
-  //   minHeight: 0,
-  //   orientation: 0,
-  //   orientationType: '',
-  //   direction: 'UN_DIRECTIONAL',
-  //   rotationAllowed: true,
-  //   maxRotationSpeed: 0,
-  //   length: 0,
-  // };
   showPopup = false;
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
 
@@ -864,6 +847,7 @@ export class EnvmapComponent implements AfterViewInit {
     }
     // Check if the click is on an edge
     const clickedEdge = this.edges.find(edge => this.isPointOnEdge(edge, x, y));
+    
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
       this.showPopup = true; // Show the popup
@@ -1461,10 +1445,8 @@ export class EnvmapComponent implements AfterViewInit {
       } else if (direction === 'bi') {
         ctx.strokeStyle = 'green'; // Bi-directional in green
       }
-      
       ctx.lineWidth = 2;
-      ctx.stroke();
-  
+      ctx.stroke();  
       this.drawArrowhead(ctx, startPos, endPos, direction);
   
       if (direction === 'bi') {
@@ -1535,12 +1517,15 @@ export class EnvmapComponent implements AfterViewInit {
       this.edges = this.edges.map((edge) => {
         if (this.currentEdge.edgeId === edge.edgeId) {
           // Preserve color and direction
-          return { ...edge, ...this.currentEdge };
+          edge = this.currentEdge;
+          // return { ...edge, ...this.currentEdge };
         }
         return edge;
       });
       this.redrawCanvas();
     }
+    console.log(this.edges);
+    
   } 
   resetSelection(): void {
     this.firstNode = null;

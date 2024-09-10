@@ -416,7 +416,7 @@
 
 <div *ngIf="showPopup" class="popup-overlay">
   <div class="popup-content">
-    <form (ngSubmit)="submitEdgeDetails()">
+    <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
       <div class="form-row">
         <label for="edgeId">Edge ID:</label>
         <input id="edgeId" [(ngModel)]="currentEdge.edgeId" name="edgeId" required />
@@ -498,11 +498,11 @@
       </div>
 
       <div class="form-buttons">
-        <button type="submit" id="formBTN" {}>Save</button>
+        <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
         <button type="button" id="formBTN" >Delete</button>
         <button type="button" id="formBTN" (click)="hidePopup()">Cancel</button>
       </div>
-    </form>
+    <!-- </form> -->
   </div>
 </div>
 
