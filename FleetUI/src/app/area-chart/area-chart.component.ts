@@ -34,8 +34,18 @@ export class AreaChartComponent implements OnInit {
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
   selectedMap: any | null = null;
+
   throughputArr: number[] = [0];
-  x_axis_timeStamp: string[] = [];
+  throughputXaxisSeries: string[] = [];
+
+  starvationArr: number[] = [0];
+  starvationXaxisSeries: string[] = [];
+
+  throuputTimeInterval: any | null = null;
+  starvationTimeInterval: any | null = null;
+  taskAllocationTimeInterval: any | null = null;
+  pickAccTimeInterval: any | null = null;
+  errRateTimeInterval: any | null = null;
 
   constructor(
     private projectService: ProjectService,
@@ -51,22 +61,12 @@ export class AreaChartComponent implements OnInit {
       chart: {
         height: 230,
         type: 'area',
-        background: '#FFFFFF', 
+        background: '#FFFFFF',
       },
       xaxis: {
-        categories: [
-          'Dec 01',
-          'Dec 02',
-          'Dec 03',
-          'Dec 04',
-          'Dec 05',
-          'Dec 06',
-          'Dec 07',
-          'Dec 08',
-          'Dec 09',
-          'Dec 10',
-          'Dec 11',
-        ], // Your default categories
+        // min: undefined,
+        // max: undefined,
+        categories: [], // Your default categories
         labels: {
           style: {
             colors: '#9aa0ac',
@@ -156,7 +156,9 @@ export class AreaChartComponent implements OnInit {
   }
 
   async updateThroughput() {
-    if (!this.selectedMap) return;
+    if (!this.selectedMap || this.throuputTimeInterval) return;
+    this.clearAllIntervals(this.throuputTimeInterval);
+
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/throughput/${this.selectedMap.id}`,
       {
@@ -169,57 +171,64 @@ export class AreaChartComponent implements OnInit {
     if (data.throughput && data.throughput.Stat)
       this.throughputArr = data.throughput.Stat.map((stat: any) => {
         let time = new Date(stat.TimeStamp).toLocaleString('en-IN', {
-          month: 'short',
           year: 'numeric',
+          month: 'short',
           day: 'numeric',
           hour: 'numeric',
           minute: 'numeric',
         });
 
-        // x_axis_timeStamp = [...x_axis_timeStamp, time];
-        this.x_axis_timeStamp.push(time);
+        this.throughputXaxisSeries = [...this.throughputXaxisSeries, time];
+        // this.throughputXaxisSeries.push(time);
         return stat.TotalThroughPutPerHour;
       });
 
-    this.chartOptions = {
-      ...this.chartOptions,
-      series: [
-        {
-          name: 'Series 1',
-          data: this.throughputArr,
-        },
-      ],
-      xaxis: {
-        ...this.chartOptions.xaxis,
-        categories: this.x_axis_timeStamp,
-      },
-    };
-    this.cdRef.detectChanges();
+    this.chartOptions.series = [{ data: this.throughputArr }];
+    this.chartOptions.xaxis = { categories: this.throughputXaxisSeries };
+
+    // this.cdRef.detectChanges();
   }
 
-  updateStarvationRate() {
-    this.chartOptions.series = [
-      {
-        name: 'Series 2',
-        data: [60, 75, 50, 80, 55, 70, 45, 60, 55, 75, 65],
-      },
-    ];
-    this.chartOptions.xaxis.categories = [
-      'Dec 01',
-      'Dec 02',
-      'Dec 03',
-      'Dec 04',
-      'Dec 05',
-      'Dec 06',
-      'Dec 07',
-      'Dec 08',
-      'Dec 09',
-      'Dec 10',
-      'Dec 11',
-    ];
+  async updateStarvationRate() {
+    if (!this.selectedMap || this.starvationTimeInterval) return;
+    this.clearAllIntervals(this.starvationTimeInterval);
+    try {
+      this.starvationTimeInterval = setInterval(async () => {
+        let response = await fetch(
+          `http://${environment.API_URL}:${environment.PORT}/graph/starvationrate/${this.selectedMap.id}`,
+          {
+            method: 'POST',
+            credentials: 'include',
+          }
+        );
+        let data = await response.json();
+        if (!data.map) {
+          clearInterval(this.starvationTimeInterval);
+          return;
+        }
+        this.starvationArr.push(data.starvation);
+        this.starvationXaxisSeries = [
+          ...this.starvationXaxisSeries,
+          new Date().toDateString(),
+        ];
+        if (this.starvationArr.length > 5) {
+          this.starvationArr.shift();
+          this.starvationXaxisSeries.shift();
+        }
+
+        this.chartOptions.series = [{ data: this.starvationArr }];
+        this.chartOptions.xaxis.categories = this.starvationXaxisSeries;
+
+        // this.cdRef.detectChanges();
+      }, 1000);
+    } catch (err) {
+      console.log('Err occured here : ', err);
+    }
   }
 
-  updateTaskAllocation() {
+  async updateTaskAllocation() {
+    if (!this.selectedMap || this.taskAllocationTimeInterval) return;
+    this.clearAllIntervals(this.taskAllocationTimeInterval);
     this.chartOptions.series = [
       {
         name: 'Series 3',
@@ -283,5 +292,28 @@ export class AreaChartComponent implements OnInit {
       'Dec 10',
       'Dec 11',
     ];
+  }
+
+  clearAllIntervals(currInterval: any) {
+    if (currInterval !== this.throuputTimeInterval) {
+      clearInterval(this.throuputTimeInterval);
+      this.throuputTimeInterval = 0;
+    }
+    if (currInterval !== this.starvationTimeInterval) {
+      clearInterval(this.starvationTimeInterval);
+      this.starvationTimeInterval = 0;
+    }
+    if (currInterval !== this.taskAllocationTimeInterval) {
+      clearInterval(this.taskAllocationTimeInterval);
+      this.taskAllocationTimeInterval = 0;
+    }
+    if (currInterval !== this.pickAccTimeInterval) {
+      clearInterval(this.pickAccTimeInterval);
+      this.pickAccTimeInterval = 0;
+    }
+    if (currInterval !== this.errRateTimeInterval) {
+      clearInterval(this.errRateTimeInterval);
+      this.errRateTimeInterval = 0;
+    }
   }
 }

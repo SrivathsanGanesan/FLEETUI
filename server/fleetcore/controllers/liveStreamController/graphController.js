@@ -101,7 +101,7 @@ const throughput = async (req, res, next) => {
   }
 };
 
-const getStarvationRate = (req, res, next) => {
+const getFleetStarvation = (req, res, next) => {
   fetch(`http://fleetIp:8080/-----`, {
     method: "POST",
     credentials: "include",
@@ -127,8 +127,9 @@ const getStarvationRate = (req, res, next) => {
 const starvationRate = async (req, res) => {
   const mapId = req.params.mapId;
   try {
-    //..
-    let dummyStat = [];
+    const isMapExist = await Map.exists({ _id: mapId });
+    if (!isMapExist)
+      return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
     // const mapData = await Map.findOneAndUpdate(
     //   { _id: mapId },
@@ -140,10 +141,12 @@ const starvationRate = async (req, res) => {
     //   },
     //   { new: true }
     // );
+    // let throughput = mapData.throughPut;
 
     return res.status(200).json({
       msg: "data sent",
-      starvationRate: [],
+      starvation: Math.floor(Math.random() * 30) + 10,
+      map: mapData,
     });
   } catch (err) {
     console.log("error occured : ", err);
@@ -156,6 +159,6 @@ const starvationRate = async (req, res) => {
 module.exports = {
   getFleetThroughput,
   throughput,
-  getStarvationRate,
+  getFleetStarvation,
   starvationRate,
 };

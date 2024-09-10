@@ -24,6 +24,7 @@ const roboSchema = new Schema(
     },
     batteryStatus: { type: Number, required: true, min: 0, max: 100 },
     roboTask: [{ type: String, _id: false }],
+    idleRate: { type: Number, default: 0 },
     error: {
       type: [{ type: String }],
       default: [],

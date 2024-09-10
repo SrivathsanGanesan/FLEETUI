@@ -17,26 +17,7 @@ export class TasksComponent implements OnInit {
   currentTable: string = 'task'; // Default table
   tasks: any[] = [];
 
-  taskData = [
-    {
-      taskId: 'task_001',
-      taskStatus: 'Row 1 Col 2',
-      taskAllocatedAT: 'Row 1 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: 'task_001',
-      taskStatus: 'Row 1 Col 2',
-      taskAllocatedAT: 'Row 1 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-  ];
+  // taskData = [];
 
   filteredTaskData = this.tasks;
 
@@ -91,9 +72,9 @@ export class TasksComponent implements OnInit {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
 
     if (!inputValue) {
-      this.filteredTaskData = this.taskData;
+      this.filteredTaskData = this.tasks;
     } else {
-      this.filteredTaskData = this.taskData.filter((item) =>
+      this.filteredTaskData = this.tasks.filter((item) =>
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(inputValue)
         )
@@ -116,7 +97,7 @@ export class TasksComponent implements OnInit {
   }
 
   exportData(format: string) {
-    const data = this.taskData;
+    const data = this.tasks;
     switch (format) {
       case 'csv':
         this.exportService.exportToCSV(data, `TaskDataExport`);
@@ -125,7 +106,7 @@ export class TasksComponent implements OnInit {
         this.exportService.exportToExcel(data, `TaskDataExport`);
         break;
       case 'pdf':
-        this.exportService.exportToPDF(data, `TaskDataExport`);
+        this.exportService.exportToPDF(data, 'TaskDataEXport');
         break;
       default:
         console.error('Invalid export format');

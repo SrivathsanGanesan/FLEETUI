@@ -2,8 +2,9 @@ const mqtt = require("mqtt");
 require("dotenv").config();
 
 let mqttClient = null;
+let endResponse = null;
 
-const initMqttConnection = (res) => {
+const initMqttConnection = () => {
   if (mqttClient) mqttClient.end();
   mqttClient = mqtt.connect(
     `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`
@@ -16,12 +17,12 @@ const initMqttConnection = (res) => {
   mqttClient.on("error", (err) => {
     console.log("Mqtt Err occured : ", err);
     mqttClient.end();
-    res.end();
+    endResponse.end();
   });
 
   mqttClient.on("disconnect", () => {
     console.log("Mqtt client disconnected");
-    res.end();
+    endResponse.end();
   });
 };
 
@@ -30,11 +31,12 @@ const eventStreamHeader = {
   "Cache-Control": "no-cache",
   Connection: "keep-alive",
 };
+initMqttConnection();
 
 const getAgvTelemetry = (req, res) => {
+  endResponse = res;
   try {
     res.writeHead(200, eventStreamHeader);
-    initMqttConnection(res);
 
     res.on("close", () => {
       res.end();
@@ -52,4 +54,4 @@ const getAgvTelemetry = (req, res) => {
   }
 };
 
-module.exports = { getAgvTelemetry };
+module.exports = { getAgvTelemetry, mqttClient };

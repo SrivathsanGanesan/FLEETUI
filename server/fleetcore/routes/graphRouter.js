@@ -3,7 +3,7 @@ const graphRouter = express.Router();
 const {
   getFleetThroughput,
   throughput,
-  getStarvationRate,
+  getFleetStarvation,
   starvationRate,
 } = require("../controllers/liveStreamController/graphController");
 
