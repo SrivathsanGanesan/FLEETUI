@@ -41,6 +41,10 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
 import { BatteryComponent } from './battery/battery.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -87,6 +91,10 @@ import { BatteryComponent } from './battery/battery.component';
     NgApexchartsModule,
     EnvmapModule,
     MatDialogModule,
+    MatFormFieldModule, // To use <mat-form-field>
+    MatInputModule, // To use <input matInput>
+    MatSelectModule, // To use <mat-select>
+    MatButtonModule // To use Angular Material buttons
   ],
   providers: [
     // provideClientHydration()

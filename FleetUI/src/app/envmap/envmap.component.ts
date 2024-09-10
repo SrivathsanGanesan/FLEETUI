@@ -830,6 +830,7 @@ export class EnvmapComponent implements AfterViewInit {
     const y =
       (event.clientY - rect.top) *
       (this.overlayCanvas.nativeElement.height / rect.height);
+      
 
     // Check if a node is clicked
     for (const node of this.nodes) {
@@ -846,7 +847,7 @@ export class EnvmapComponent implements AfterViewInit {
   private drawNode(node: Node, color: string, selected: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-
+  
     if (ctx) {
       const transformedY = canvas.height - node.pos.y; // Flip the Y-axis
       ctx.beginPath();
@@ -854,6 +855,13 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.fillStyle = selected ? color : 'blue';
       ctx.lineWidth = selected ? 3 : 1;
       ctx.fill();
+  
+      // Draw the node ID below the node
+      ctx.font = '12px Arial'; // Font size and type
+      ctx.fillStyle = 'black'; // Text color
+      ctx.textAlign = 'center'; // Center align text
+      ctx.textBaseline = 'top'; // Position text below the node
+      ctx.fillText(node.id, node.pos.x, transformedY + 10); // Draw node ID
     }
   }
   private drawArrowLine(
@@ -970,8 +978,17 @@ export class EnvmapComponent implements AfterViewInit {
       );
     }
   }
+  drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void {
+    ctx.font = '12px Arial'; // Set font size and family
+    ctx.fillStyle = 'black'; // Set text color
+    ctx.textAlign = 'center'; // Center align the text
+    ctx.textBaseline = 'top'; // Align text from the top
+    ctx.fillText(text, x, y); // Draw text at (x, y)
+  }
+  
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
     const transformedY = canvas.height - y; // Flip the Y-axis
 
     const color = 'blue'; // Color for single nodes
@@ -1016,6 +1033,7 @@ export class EnvmapComponent implements AfterViewInit {
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
     this.nodes.push(node);
     this.Nodes.push({ ...this.nodeDetails, type: 'single' });
+    
 
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
@@ -1398,8 +1416,7 @@ export class EnvmapComponent implements AfterViewInit {
         }
       }
     }
-  } 
-  
+  }   
   private drawEdge(
     startPos: { x: number; y: number },
     endPos: { x: number; y: number },
@@ -1431,8 +1448,19 @@ export class EnvmapComponent implements AfterViewInit {
         // Draw the reverse arrow for bi-directional
         this.drawArrowhead(ctx, endPos, startPos, direction);
       }
+  
+      // Draw edge ID in the middle of the line
+      const midX = (startPos.x + endPos.x) / 2;
+      const midY = (canvas.height - startPos.y + canvas.height - endPos.y) / 2;
+  
+      ctx.font = '12px Arial'; // Font size and type
+      ctx.fillStyle = 'black'; // Text color
+      ctx.textAlign = 'center'; // Center align text
+      ctx.textBaseline = 'top'; // Position text below the edge
+      ctx.fillText(`${startNodeId} to ${endNodeId}`, midX, midY + 5); // Draw edge ID text
     }
-  }  
+  }
+   
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
