@@ -17,6 +17,8 @@ export class TasksComponent implements OnInit {
   currentTable: string = 'task'; // Default table
   tasks: any[] = [];
 
+  
+
   taskData = [
     {
       taskId: 'task_001',
@@ -39,6 +41,8 @@ export class TasksComponent implements OnInit {
   ];
 
   filteredTaskData = this.tasks;
+paginatedTaskData: any;
+paginator: any;
 
   constructor(
     private exportService: ExportService,

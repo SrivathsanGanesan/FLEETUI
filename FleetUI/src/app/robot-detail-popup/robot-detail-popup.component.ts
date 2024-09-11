@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface Robot {
+isCharging: boolean;
 networksrength: any;
 currentMap: any;
 currentTask: any;
@@ -27,7 +28,7 @@ distanceLeft: string;
   memory: string;
 
   error: string;
-  batteryPercentage: string;
+  batteryPercentage: number;
   
 }
 
@@ -39,16 +40,84 @@ distanceLeft: string;
 export class RobotDetailPopupComponent {
   
   metrics: { title: string; value: string; icon: string }[] = [];
-  batteryData: any[] = [];  // Array to store battery data for each robot
-robot: any;
+  // batteryData: any[] = [];  
+  robot: any;
+
+ 
+  
+
+  getClassForCircle(percentage: number, threshold: number): string {
+    return percentage >= threshold ? 'filled' : '';
+  }
+
+ // Function to get battery color
+
+
+// get batteryPercentage(): number {
+//   return Number(this.data.batteryPercentage);
+// }
+
+// Getter for isCharging status
+// get isCharging(): boolean {
+//   return this.data.isCharging;
+// }
+
 
   constructor(
     public dialogRef: MatDialogRef<RobotDetailPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Robot
   ) {
     
+    
   }
 
+  getBatteryColor(batteryPercentage: number): string {
+    if (batteryPercentage >= 75) {
+      return 'high'; // Green for high battery
+    } else if (batteryPercentage >= 40) {
+      return 'medium';
+    } else {
+      return 'low'; // Red for low battery
+    }
+  }
+  
+  setWifiStatus(signalStrength: string) {
+    const circle1 = document.querySelector('.circle1') as HTMLElement;
+    const circle2 = document.querySelector('.circle2') as HTMLElement;
+    const circle3 = document.querySelector('.circle3') as HTMLElement;
+    const circle4 = document.querySelector('.circle4') as HTMLElement;
+  
+    if (signalStrength === 'full') {
+      circle1.style.borderTopColor = 'green';
+      circle2.style.borderTopColor = 'green';
+      circle3.style.borderTopColor = 'green';
+      circle4.style.backgroundColor = 'green';
+    } else if (signalStrength === 'medium') {
+      circle1.style.borderTopColor = 'green';
+      circle2.style.borderTopColor = 'green';
+      circle3.style.borderTopColor = 'green';
+      circle4.style.backgroundColor = 'grey';
+    } else if (signalStrength === 'weak') {
+      circle1.style.borderTopColor = 'green';
+      circle2.style.borderTopColor = 'grey';
+      circle3.style.borderTopColor = 'grey';
+      circle4.style.backgroundColor = 'grey';
+    } else {
+      circle1.style.borderTopColor = 'grey';
+      circle2.style.borderTopColor = 'grey';
+      circle3.style.borderTopColor = 'grey';
+      circle4.style.backgroundColor = 'grey';
+    }
+  }
+  
+  
+
+  ngOnInit(): void {
+
+    console.log('Battery Percentage:', this.data.batteryPercentage);
+    console.log('Is Charging:', this.data.isCharging);
+    
+  }
  
 
   

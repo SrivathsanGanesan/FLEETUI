@@ -139,39 +139,128 @@
   width: -webkit-fill-available;
 }
 
-.frame-1597881861_1864-1781 {
+/* battery container */
+
+.battery {
+  position: relative;
+  margin-left: 30px;
+  width: 120px; /* Narrower width for vertical orientation */
+  height: 200px; /* Taller height */
+  border: 3px solid #fff; /* White border for outer frame */
+border-radius: 15px; /* Rounded corners like in the image */
+background-color: transparent; /* Transparent background */
+margin-bottom: 8px;
+overflow: hidden;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Slight shadow for 3D effect */
+}
+
+.battery::after {
+  content: '';
+  position: absolute;
+  top: -10px; /* Slightly above the container */
+  left: 25%;
+  width: 50%;
+  height: 10px;
+  background-color: #fff; /* White battery cap */
+  border-radius: 2px;
+}
+
+.battery-level {
+  width: 100%; /* Full width */
+height: 100%; /* Full height, starts from bottom */
+/* background-color: #76c7c0; */
+transition: height 0.3s ease-in-out;
+position: absolute;
+bottom: 0; /* Fill from bottom to top */
+border-radius: 15px; /* Rounded edges matching the container */
+}
+
+.battery-level.low {
+  background-color: #ef2121; /* Red for low battery */
+}
+
+.battery-level.medium {
+  background-color: #ef2121; 
+}
+
+.battery-level.high {
+  background-color: #1de213; /* Green for high battery */
+}
+
+/* Charging Icon */
+.charging-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: charging-animation 1s infinite;
+  width: 100px; /* Adjust the size */
+  height: 100px; /* Adjust the size */
+}
+
+.charging-image {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes charging-animation {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Battery Container */
+/* .battery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.battery-percentage {
+  font-size: 14px;
+  margin-top: 8px;
+} */
+
+/* 
+batter percentage */
+.battery-status-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  flex-wrap: nowrap;
   align-items: flex-start;
-  gap: 0px;
   box-sizing: border-box;
   width: 59px;
 }
-.text-82--_1864-1774 {
+
+.battery-percentage {
   color: #000000;
   font-size: 24px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   text-align: center;
-  text-wrap: wrap;
-  width: -webkit-fill-available;
+  width: 100%; /* Make it responsive */
 }
 
-.text-battery_1864-1776 {
+.battery-label {
   color: #6e6e6e;
   font-size: 14px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   text-align: center;
-  text-wrap: wrap;
-  width: -webkit-fill-available;
+  width: 100%; /* Make it responsive */
 }
+
+
+/*  */
 
 .frame-1597881862_1864-1782 {
   display: flex;
@@ -1135,7 +1224,7 @@
 }
 
 
-.wifi_1874-1914 {
+/* .wifi_1874-1914 {
   padding: 20px;
   top: 85px;
   left: 794px;
@@ -1153,7 +1242,49 @@
 }
 .wi-fi_1874-1912 {
   display: flex;
+} */
+
+
+/* .wifi-container {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  padding: 20px;
+  top: 85px;
+  left: 794px;
+  position: absolute;
+  display: flex;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  border-radius: 15px;
+  background: #ffffff;
 }
+.wifi-icon {
+  display: block;
+  margin: 0 auto;
+}
+
+.wifi-signal {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.wifi-percentage-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  background-color: #23d029; 
+  z-index: 1;
+  border-radius: 50%; 
+} */
+
 
 /* Battery image  */
 /* .frame-1597881884_1883-1920 {
@@ -1529,3 +1660,134 @@
   width: 100%;
   text-align: left;
 } */
+@mixin getWifi($size) {
+  $anim: 1.5s linear infinite;
+  $border-width: $size/2.35;
+  $line-color: #444;
+  $line-color-weak: rgba($line-color, 0.4);
+  $trans: 0.3s linear;
+  
+  box-sizing: border-box;
+  background-color: transparent;
+  border: $size/2 solid transparent;
+  border-top-color: $line-color;
+  border-radius: $size / 2;
+  height: $size;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transition: border-top-color $trans;
+  width: $size;
+  
+  &:before,
+  &:after {
+    content: '';
+    box-sizing: border-box;
+    background-color: transparent;
+    border: $border-width/1.2 solid transparent;
+    border-top-color: $line-color;
+    position: absolute;
+    transition: border-top-color $trans;
+  }
+  
+  &:before {
+    border-radius: $size;
+    height: $size*2;
+    left: -$size;
+    top: -$size;
+    width: $size*2;
+  }
+  
+  &:after {
+    border-radius: $size*3;
+    height: $size*3;
+    left: -$size*1.5;
+    top: -$size*1.5;
+    width: $size*3;
+  }
+  
+  &.loading {
+    animation: blink-1 $anim;
+    
+    &:before {
+      animation: blink-2 $anim;
+    }
+    
+    &:after {
+      animation: blink-3 $anim;
+    }
+  }
+  
+  &.none:not(.loading) {
+    border-top-color: $line-color-weak;
+    
+    &:before,
+    &:after {
+      border-top-color: $line-color-weak;
+    }
+  }
+  
+  &.weak:not(.loading) {
+    &:before,
+    &:after {
+      border-top-color: $line-color-weak;
+    }
+  }
+  
+  &.medium:not(.loading) {
+    &:after {
+      border-top-color: $line-color-weak;
+    }
+  }
+  
+  @at-root {
+    @keyframes blink-1 {
+      0% {
+        border-top-color: $line-color-weak;
+      }
+
+      50%,
+      100% {
+        border-top-color: $line-color;
+      }
+    }
+    
+    @keyframes blink-2 {
+      0%,
+      100% {
+        border-top-color: $line-color;
+      }
+      
+      50% {
+        border-top-color: $line-color-weak;
+      }
+    }
+    
+    @keyframes blink-3 {
+      0%,
+      50% {
+        border-top-color: $line-color;
+      }
+      
+      100% {
+        border-top-color: $line-color-weak;
+      }
+    }
+  }
+}
+
+body {
+  background-color: #F0F32B;
+  color: #494949;
+  font-family: Raleway, Helvetica Neue, Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  margin: 1em;
+}
+
+.wifi {
+  @include getWifi(120px);
+  transform: translate(-25%);
+}

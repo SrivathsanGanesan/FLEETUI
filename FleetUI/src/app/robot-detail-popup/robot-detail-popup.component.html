@@ -24,9 +24,26 @@
   </div>
   
   <div class="battery-frame_1864-1809">
-
-    <!-- battery icon -->
-    <app-battery [batteryPercentage]="61" [isCharging]="true"></app-battery>
+    
+    
+    <div class="battery-container">
+      <div class="battery">
+        <div class="battery-level"
+             [ngStyle]="{'height': data.batteryPercentage + '%'}"
+             [ngClass]="getBatteryColor(data.batteryPercentage)">
+        </div>
+        <!-- Charging icon will only show if charging is true -->
+        <div *ngIf="data.isCharging" class="charging-icon">
+          <img class="charging-image" src="assets/icons/charging1.png" alt="Charging" />
+        </div>
+      </div>
+      <!-- <p class="battery-percentage">{{ data.batteryPercentage }}%</p> -->
+      <p>{{ data.isCharging ? 'Charging' : 'Not Charging' }}</p>
+    </div>
+    
+      
+    
+    
 
 
     <div class="frame-1597881863_1864-1784">
@@ -34,10 +51,11 @@
         <span class="text-40-km_1864-1777">40 Km</span>
         <span class="text-left_1864-1775">Left</span>
       </div>
-      <div class="frame-1597881861_1864-1781">
-        <span class="text-82--_1864-1774">82 %</span>
-        <span class="text-battery_1864-1776">Battery</span>
+      <div class="battery-status-container">
+        <span class="battery-percentage">{{ data.batteryPercentage }}%</span>
+        <span class="battery-label">Battery</span>
       </div>
+      
       <div class="frame-1597881862_1864-1782">
         <span class="text-126_1864-1778">126</span>
         <span class="text-average-charging-time_1864-1779"
@@ -439,36 +457,43 @@
   </div>
   
   
-  <div class="wifi_1874-1914">
-    <div class="wi-fi_1874-1912">
-      <svg
-        width="50"
-        height="50"
-        viewBox="0 0 50 50"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-      >
-        <rect width="50" height="50" fill="url(#pattern0_1874_1912)" />
-        <defs>
-          <pattern
-            id="pattern0_1874_1912"
-            patternContentUnits="objectBoundingBox"
-            width="1"
-            height="1"
-          >
-            <use xlink:href="#image0_1874_1912" transform="scale(0.02)" />
-          </pattern>
-          <image
-            id="image0_1874_1912"
-            width="50"
-            height="50"
-            xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEA0lEQVR4nO1ZXYhVVRTeY2ZlVPZDaNEvhNFDLz2HBanTXeve0eA+hBlR6pNSM2etO0M9nHoz8CXrJXoJwYcanYRCxYeCEiQKK4MCC1QYKQvsoXHOWmO6Y525Tndmzr1z7t+cO3Q+2HA5Z/983+y11v7OHudy5MiRI8eShHd9gZQeC7T4Ciu+TYoHSfAUK54lwYssOGUt/j397FTcR3E3K7xsY22OTLgP+2duIy2+xIpjJPgHK/p2ms0xLQ5e3OX7b+26AIpwAyscIMGoXfJ1m8AkKY5WouL6jpIP/brlrLCFBb/rGvn6ok6yFp8v+/J1bYngqPA0C/yw6AJ0boOfKSr0Ny3gtYmNayxmsxeAs3NJcdS4pRJRiWAjK/6WNWmuH25/skCpYS6Q4rsseDVzsrqQmJjjXuM8Oxd86RZWPNLylgtcqebSXlLYHkTwVBAVHxrxcPsO/8T11uy3PbN31sf62ph4bMui4LBxn8mH6erQAnnFL4zUiN90p2sRQx7v4inYEc8lLYgSOBnnDSl80pwAjEjwfZbSWtdhsJTWksAHLChN7swhF/y9+W5S/CmVCIVPh6OBB12XMXgJ7iWBfWnylRR+malkQ5MD95HCmQYDzlpsN1zcb7iDpDhAinssdm2BuV6LFE9Pv8M91tfyZqFzjBTONRBxxrjPGjQSwcOsOJ4Qgx+96gdWJS0U+vIK0sILpHiUBC83n2c2Bg6bc7C5XAJsbTs/EsaPG+fEv8CQ4KOk8HtN7L2Z5Ex3+f4bWCAghfOtV5z5xFhwMFGQd32k8FYNrwvGtdFuOtLi49bRbHnS+0DwWQubDgqYEy54up4dMdtv3IxjQxEzA67V5hoM+vJNrPDeohyYglftcA79uhvTcEsNOydY4HjXBei8HPraqqrrBOw07mYopWi/Goe2hZiJJAHNSggJqHHoyK5UpPBcqvIq8A8JfEUCFZ6CJ1ngkcCvv9ma/a4+G7Y+1jdFaF22tV0nYbW+rheKLQW8QxOF1Wnniz2emcw6u03xWrCloyL+E4PbEqrWkeFJvL/VOYPJwgN2oM6tWqy4zXUTlQh21pTI3W1/Txu866uG3JVqSJFbDMQ5oLi1nqWo3nGNxdVOcMJatfKN2bt6locVt9rcLkuYbSHBN1jgrxRJfJEFXrcxrpfAl0r3kMCJpsur4LeWI65XRHCSa07fxm2OrHW42JnaF2PLBx5+GPpwmesFhD5cxgL7mxahODrvJiRrWBlmxY/TC4FDdrviehGhL69gxc8W3gk4lmTRewr23UKKnzfwY8fNe7mlgNDjShL8MsE/nWjrwyizfwYJfFNTnb5f6NakZ2FWJL7FFPzRbhTdUgZNFFY3Y+9z5MiR4/+BfwEMcQuM+AFtFgAAAABJRU5ErkJggg=="
-          />
-        </defs>
-      </svg>
-    </div>
+  <!-- <div class="wifi-container">
+    <div class="wifi-symbol">
+      <div class="wifi-circle first" [ngClass]="{'green': wifiPercentage >= 100}"></div>
+      <div class="wifi-circle second" [ngClass]="{'green': wifiPercentage >= 75}"></div>
+      <div class="wifi-circle third" [ngClass]="{'green': wifiPercentage >= 50}"></div>
+      <div class="wifi-circle fourth"></div> 
+    
+    <p class="wifi-percentage">{{ wifiPercentage }}%</p>
   </div>
+   -->
+   <!-- <div class="wifi-container">
+    <div class="wifi-symbol">
+      <div class="wifi-circle first" [ngClass]="getClassForCircle(wifiPercentage, 100)"></div>
+      <div class="wifi-circle second" [ngClass]="getClassForCircle(wifiPercentage, 75)"></div>
+      <div class="wifi-circle third" [ngClass]="getClassForCircle(wifiPercentage, 50)"></div>
+      <div class="wifi-circle fourth" [ngClass]="getClassForCircle(wifiPercentage, 25)"></div>
+    </div>
+    
+    <p class="wifi-percentage">{{ wifiPercentage }}%</p>
+  </div> -->
+  
+  <h1>CSS Wifi Signal</h1>
+
+<div class="wifi-signal">
+  <div class="wifi"></div>
+</div>
+
+<div id="states" class="btn-group" role="group">
+  <button type="button" class="btn btn-default" data-class="none">No signal</button>
+  <button type="button" class="btn btn-default" data-class="weak">Weak</button>
+  <button type="button" class="btn btn-default" data-class="medium">Medium</button>
+  <button type="button" class="btn btn-default" data-class="">Full</button>
+  <button type="button" class="btn btn-default" data-class="loading">Searching</button>
+</div>
+
+
+  
   
 
       <!-- <div class="robot-image-container">

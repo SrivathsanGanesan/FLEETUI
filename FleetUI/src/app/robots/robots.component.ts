@@ -15,7 +15,9 @@ export interface Robot {
   cpuutilization: string;
   memory: string;
   error: string;
-  batterypercentage: string;
+  batteryPercentage: number;
+
+  isCharging: boolean // This will control whether the icon is shown
   // Add other fields as needed
 }
 
@@ -46,7 +48,9 @@ export class RobotsComponent implements OnInit {
       cpuutilization: '90 %',   
       memory: '10 %',
       error: '10',
-      batterypercentage: '81'
+      batteryPercentage: 87,
+      isCharging: true // This will control whether the icon is shown
+
     },
     {
       id: 2,
@@ -61,7 +65,9 @@ export class RobotsComponent implements OnInit {
       cpuutilization: '80 %',
       memory: '20 %',
       error: '20',
-       batterypercentage: '81'
+      batteryPercentage: 7,
+      isCharging: true // This will control whether the icon is shown
+       
       
 
     },
@@ -78,7 +84,8 @@ export class RobotsComponent implements OnInit {
       cpuutilization: '70 %',
       memory: '30 %',
       error: '30',
-       batterypercentage: '81'
+      batteryPercentage: 10,
+      isCharging: true // This will control whether the icon is shown
     },
     {
       id: 4,
@@ -93,7 +100,8 @@ export class RobotsComponent implements OnInit {
       cpuutilization: '60 %',
       memory: '40 %',
       error: '40',
-       batterypercentage: '81'
+      batteryPercentage: 40,
+      isCharging: true // This will control whether the icon is shown
     },
     {
       id: 5,
@@ -108,7 +116,8 @@ export class RobotsComponent implements OnInit {
       cpuutilization: '50 %',
       memory: '50 %',
       error: '50',
-       batterypercentage: '81'
+      batteryPercentage: 41,
+      isCharging: true // This will control whether the icon is shown
     },
     {
       id: 6,
@@ -123,12 +132,15 @@ export class RobotsComponent implements OnInit {
       cpuutilization: '40 %',
       memory: '60 %',
       error: '60',
-       batterypercentage: '81'
+      batteryPercentage: 90,
+      isCharging: false // This will control whether the icon is shown
     },
     // Add more robots...
   ];
 
-  
+  // ngOnInit(): void {
+  //   console.log(this.robots); // Debugging purpose
+  // }
 
   showPopup = false;
   isEditPopupOpen = false;
@@ -242,6 +254,7 @@ export class RobotsComponent implements OnInit {
 
   constructor(public dialog: MatDialog) {}
   ngOnInit(): void {
+    console.log(this.robots); // Debugging purpose
     throw new Error('Method not implemented.');
   }
 

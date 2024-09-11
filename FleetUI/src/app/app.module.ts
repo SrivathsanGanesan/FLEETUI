@@ -40,7 +40,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
-import { BatteryComponent } from './battery/battery.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 
 @NgModule({
   declarations: [
@@ -74,7 +75,7 @@ import { BatteryComponent } from './battery/battery.component';
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
-    BatteryComponent,
+    
   ],
   imports: [
     NgApexchartsModule,
@@ -87,6 +88,7 @@ import { BatteryComponent } from './battery/battery.component';
     NgApexchartsModule,
     EnvmapModule,
     MatDialogModule,
+    MatPaginatorModule,
   ],
   providers: [
     // provideClientHydration()

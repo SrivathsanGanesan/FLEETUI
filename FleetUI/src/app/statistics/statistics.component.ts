@@ -12,7 +12,7 @@ export class StatisticsComponent {
   robotActivities = [
     {
       id: 1,
-      name: 'AMR-001',
+      name: 'saibala ',
       task: 'Transporting materials',
       progress: 15,
       status: 'Actively Working',
@@ -54,6 +54,20 @@ export class StatisticsComponent {
     },
     {
       id: 7,
+      name: 'AMR-003',
+      task: 'Transporting materials',
+      progress: 90,
+      status: 'Actively Working',
+    },
+    {
+      id: 8,
+      name: 'AMR-003',
+      task: 'Transporting materials',
+      progress: 90,
+      status: 'Actively Working',
+    },
+    {
+      id: 9,
       name: 'AMR-003',
       task: 'Transporting materials',
       progress: 90,
