@@ -149,9 +149,54 @@ const getRoboErrLogs = async (req, res) => {
   }
 };
 
+//.. Fleet
+const getFleetCoreErrLogs = (req, res, next) => {
+  fetch(`http://fleetIp:8080/------`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        req.responseStatus = "NOT_OK";
+        return next();
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      req.fleetData = data;
+    })
+    .catch((err) => {
+      req.fleetErr = err;
+    });
+  next();
+};
+
+const getFleetErrLogs = async (req, res) => {
+  const mapId = req.params.mapId;
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(500).json({ msg: "map not exists", map: null });
+    const map = await Map.findOne({ _id: mapId });
+    if (!map) return res.status(500).json({ map: map, msg: "Map not exists!" });
+    return res
+      .status(200)
+      .json({ roboLogs: errRoboLogs.stats, msg: "data sent" });
+  } catch (err) {
+    console.error("Error in taskLogs:", err);
+    if (err.name === "CastError")
+      return res.status(400).json({ msg: "not valid map Id" });
+    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getFleetTaskErrLogs,
   getTaskErrLogs,
   getFleetRoboErrLogs,
   getRoboErrLogs,
+  getFleetCoreErrLogs,
+  getFleetErrLogs,
 };

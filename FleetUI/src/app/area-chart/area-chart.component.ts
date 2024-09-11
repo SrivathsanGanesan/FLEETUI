@@ -220,7 +220,7 @@ export class AreaChartComponent implements OnInit {
         this.chartOptions.xaxis.categories = this.starvationXaxisSeries;
 
         // this.cdRef.detectChanges();
-      }, 1000);
+      }, 1000 * 1.5);
     } catch (err) {
       console.log('Err occured here : ', err);
     }

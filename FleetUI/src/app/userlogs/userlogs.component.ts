@@ -43,62 +43,6 @@ export class Userlogscomponent {
       column4: 'Row 1 Col 3',
       column5: 'Row 1 Col 3',
     },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
   ];
 
   constructor(
@@ -116,6 +60,7 @@ export class Userlogscomponent {
     }
     this.getTaskLogs();
     this.getRoboLogs();
+    this.getFleetLogs();
   }
 
   getTaskLogs() {
@@ -190,15 +135,20 @@ export class Userlogscomponent {
       });
   }
 
+  getFleetLogs() {}
+
   togglePopup() {
     throw new Error('Method not implemented.');
   }
+
   exportAsPDF() {
     throw new Error('Method not implemented.');
   }
+
   exportAsExcel() {
     throw new Error('Method not implemented.');
   }
+
   exportAsCSV() {
     throw new Error('Method not implemented.');
   }
