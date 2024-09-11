@@ -66,4 +66,10 @@ export class ProjectService {
   clearIsMapSet() {
     this.cookieService.delete('_isMapSet', '/');
   }
+
+  setNode(){
+    this.cookieService.set('nodes', JSON.stringify(
+      [{id :1, name : 'node1'}]
+    ))
+  }
 }

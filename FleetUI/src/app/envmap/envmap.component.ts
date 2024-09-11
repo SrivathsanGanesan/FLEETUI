@@ -197,7 +197,7 @@ export class EnvmapComponent implements AfterViewInit {
   private lineStartY: number | null = null;
   private lineEndX: number | null = null;
   private lineEndY: number | null = null;
-  selectedAction: string = ''; // Initialize with an empty string or any other default value
+  selectedAction: string = 'Move'; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
   isDistanceConfirmed = false; // Flag to control the Save button
   isEnterButtonVisible = false;
@@ -1310,7 +1310,7 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
   saveNodeDetails(): void {
-
+    this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
     // const updatedNodeDetails = {
     //   ...this.nodeDetails,  // Spread the existing details
