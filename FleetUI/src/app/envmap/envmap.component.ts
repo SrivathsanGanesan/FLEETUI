@@ -114,18 +114,18 @@ export class EnvmapComponent implements AfterViewInit {
   form: FormData | null = null;
   selectedImage: File | null = null;
   fileName: string | null = null;
-  mapName: string = '';
-  siteName: string = '';
+  public mapName: string = '';
+  public siteName: string = '';
   height: number | null = null;
   width: number | null = null;
   showImage: boolean = false;
-  imageSrc: string | null = null;
+  public imageSrc: string | null = null;
   showOptionsLayer: boolean = false;
   orientationAngle: number = 0;
-  nodes: Node[] = []; // Org_nodes
-  edges: Edge[] = []; // Org_edges
-  assets: asset[] = []; // Org_assets
-  zones: Zone[] = []; // Org_zones
+  public nodes: Node[] = []; // Org_nodes
+  public edges: Edge[] = []; // Org_edges
+  public assets: asset[] = []; // Org_assets
+  public zones: Zone[] = []; // Org_zones
   robos: Robo[] = []; // Org_robos
   Nodes: {
     id: number;
@@ -144,7 +144,7 @@ export class EnvmapComponent implements AfterViewInit {
   }[] = []; // updated structure
   connections: { fromId: number; toId: number; type: 'uni' | 'bi' }[] = []; // connections
   isNodeDetailsPopupVisible = false; // Control popup visibility
-  ratio: number | null = null; // Store the resolution ratio (meters per pixel)
+  public ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   plottingMode: 'single' | 'multi' | null = null;
   isPlottingEnabled: boolean = false;
   isDrawing: boolean = false;
@@ -209,6 +209,7 @@ export class EnvmapComponent implements AfterViewInit {
   // selectedAsset: { x: number, y: number, type: string } | null = null;
   selectedRobo: Robo | null = null;
   selectedAsset: asset | null = null;
+  draggingNode:boolean=false;
   draggingAsset: boolean = false;
   draggingRobo: boolean = false;
   isZonePlottingEnabled = false;
@@ -265,6 +266,7 @@ export class EnvmapComponent implements AfterViewInit {
   undockingDistance: string = ''; // Input field for undocking distance
   description: string = ''; // Input field for description
   selectedAssetId: string | null = null; // Store the selected asset ID
+  private draggedNode: Node | null = null;
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -365,7 +367,20 @@ export class EnvmapComponent implements AfterViewInit {
     //   );
     // }
   }
+  isConfirmationVisible: boolean = false;
+
   deleteSelectedNode(): void {
+    if (this.selectedNode) {
+      // Show confirmation dialog
+      this.isConfirmationVisible = true;
+    } else {
+      console.log('No node selected to delete.');
+    }
+    this.isNodeDetailsPopupVisible = false;
+  }
+  
+  confirmDelete(): void {
+    // Proceed with node deletion if confirmed
     if (this.selectedNode) {
       // Remove from nodes array
       this.nodes = this.nodes.filter((node) => {
@@ -374,26 +389,30 @@ export class EnvmapComponent implements AfterViewInit {
           node.pos.y !== this.selectedNode?.pos.y
         );
       });
-
+  
       this.edges = this.edges.filter((edge) => {
         return (
           edge.startNodeId !== this.selectedNode?.id &&
           edge.endNodeId !== this.selectedNode?.id
         );
       });
+  
       console.log(this.edges);
-      // this.cdRef.detectChanges(); // remove in later..
-
       // Clear the selectedNode
       this.selectedNode = null;
       // Redraw the canvas
       this.redrawCanvas();
-    } else {
-      console.log('No node selected to delete.');
     }
-    this.isNodeDetailsPopupVisible = false;
-
+  
+    // Hide confirmation dialog
+    this.isConfirmationVisible = false;
   }
+  
+  cancelDelete(): void {
+    // Hide confirmation dialog without deleting
+    this.isConfirmationVisible = false;
+  }
+  
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
@@ -809,9 +828,10 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
 
-    this.ratio = Number(
-      (document.getElementById('resolution') as HTMLInputElement).value
-    );
+    if(!this.ratio)
+      this.ratio = Number(
+        (document.getElementById('resolution') as HTMLInputElement).value
+      );
 
     if (this.mapName && this.siteName && this.imageSrc) {
       this.fileName = null;
@@ -1045,8 +1065,7 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.textAlign = 'center'; // Center align the text
     ctx.textBaseline = 'top'; // Align text from the top
     ctx.fillText(text, x, y); // Draw text at (x, y)
-  }
-  
+  }  
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -1206,8 +1225,9 @@ export class EnvmapComponent implements AfterViewInit {
         this.onMouseUp.bind(this)
       );
 
-      this.showIntermediateNodesDialog = true;
       this.isPlottingEnabled = false; // Disable further plotting after two nodes
+      this.showIntermediateNodesDialog = true;
+
     } else {
       // Plotting additional nodes
       let node = {
@@ -1347,8 +1367,7 @@ export class EnvmapComponent implements AfterViewInit {
     console.log(this.nodes);
     console.log(this.edges);
     console.log(this.assets);
-    console.log(this.zones);
-    
+    console.log(this.zones); 
     
 
     // // Save the JSON object to a file
@@ -1831,6 +1850,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.assetCounter++;
         return;
       }
+      
       // Check if an asset is clicked for dragging
       for (const asset of this.assets) {
         // assuming `this.assets` is an array holding your plotted assets
@@ -1864,6 +1884,8 @@ export class EnvmapComponent implements AfterViewInit {
       for (const node of this.nodes) {
         if (this.isNodeClicked(node, x, y)) {
           this.onNodeClick(node.pos.x, node.pos.y);
+          this.selectedNode = node;
+          this.draggingNode = true;
           nodeClicked = true;
           break;
         }
@@ -1885,14 +1907,22 @@ export class EnvmapComponent implements AfterViewInit {
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+    const transformedY = canvas.height - y; // yet to remove..
 
     if (this.draggingAsset && this.selectedAsset) {
       // Update the position of the selected asset
-      this.redrawCanvas(); // Clear the canvas
+      this.redrawCanvas();
       this.plotAsset(x, y, this.selectedAsset.type); // Draw the asset at the new position
       // this.selectedAsset = { x, y, type: this.selectedAsset.type }; // Update position
       this.selectedAsset.x = x;
       this.selectedAsset.y = y;
+    }
+    
+
+    if(this.draggingNode && this.selectedNode){
+      this.selectedNode.pos.x = x;
+      this.selectedNode.pos.y = transformedY;
+      this.redrawCanvas();
     }
 
     if (this.isDrawingLine) {
@@ -1925,6 +1955,7 @@ export class EnvmapComponent implements AfterViewInit {
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+    const transformedY = canvas.height - y;
 
     if (
       this.isDrawingLine &&
@@ -2000,6 +2031,18 @@ export class EnvmapComponent implements AfterViewInit {
       this.draggingRobo = false;
       // this.updateRoboPosition(this.selectedRobo.roboDet.id, x, y);
       // this.selectedRobo = null;
+    }
+
+    if(this.draggingNode && this.selectedNode){
+      this.nodes = this.nodes.map((node) => {
+        if (node.id === this.selectedNode?.id) {
+          node.pos.x = this.selectedNode.pos.x;
+          node.pos.y =  this.selectedNode.pos.y;
+          return node;
+        }
+        return node;
+      });
+      this.draggingNode = false;
     }
   }
   private isAssetClicked(
