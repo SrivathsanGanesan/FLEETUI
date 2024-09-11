@@ -127,7 +127,8 @@ const mapInsert = async (req, res) => {
 const mapGet = async (req, res) => {
   const isExists = await Map.exists({ mapName: req.params.mapName });
   try {
-    if (!isExists) return res.status(404).json({ msg: "Map not found!" });
+    if (!isExists)
+      return res.status(404).json({ map: null, msg: "Map not found!" });
     let map = await Map.findOne({ mapName: req.params.mapName });
     return res.status(200).json({ map: map, isExists: true, msg: "Map sent!" });
   } catch (err) {
