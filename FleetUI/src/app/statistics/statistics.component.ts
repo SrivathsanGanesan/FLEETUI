@@ -106,9 +106,9 @@ export class StatisticsComponent {
       notification.message.toLowerCase().includes(query)
     );
   }
-
+  
   constructor(private router: Router) {}
-
+  
   setView(view: string): void {
     this.currentView = view;
     if (view === 'robot') {

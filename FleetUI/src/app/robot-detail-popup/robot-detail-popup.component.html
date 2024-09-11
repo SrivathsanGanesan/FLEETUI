@@ -201,10 +201,10 @@
 
 
     <!-- Battery temperature -->
-<!-- Battery temperature -->
-<div class="batterytemperature-container">
-  <div class="batterytemperature-content">
-    <div class="batterytemperature-header">
+<!-- Robot temperature -->
+<div class="robottemperature-container">
+  <div class="robottemperature-content">
+    <div class="robottemperature-header">
       <div class="temperature-icon-container">
         <div class="temperature-icon">
           <svg
@@ -243,9 +243,9 @@
         </svg>
         </div>
       </div>
-      <span class="batterytemperature-label">Battery Temperature</span>
+      <span class="robottemperature-label">Robot Temperature</span>
     </div>
-    <span class="batterytemperature-value">{{ data.temperature }}</span>
+    <span class="robottemperature-value">{{ data.temperature }}</span>
   </div>
 </div>
 
@@ -478,7 +478,7 @@
     <p class="wifi-percentage">{{ wifiPercentage }}%</p>
   </div> -->
   
-  <h1>CSS Wifi Signal</h1>
+  <!-- <h1>CSS Wifi Signal</h1>
 
 <div class="wifi-signal">
   <div class="wifi"></div>
@@ -491,11 +491,7 @@
   <button type="button" class="btn btn-default" data-class="">Full</button>
   <button type="button" class="btn btn-default" data-class="loading">Searching</button>
 </div>
-
-
-  
-  
-
+  -->
       <!-- <div class="robot-image-container">
         <img [src]="data.imageUrl" alt="{{data.name}}" class="robot-image">
         <div class="loader"></div>

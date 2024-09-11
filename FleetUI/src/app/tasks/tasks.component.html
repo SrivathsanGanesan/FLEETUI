@@ -4,9 +4,9 @@
     <div class="mainContent flex flex-col h-full justify-center items-center">
       <!-- Header section -->
       <div class="header-section">
-        <h1 class="header-title">{{ activeHeader }}</h1>
+        <h1 class="header-title">Tasks</h1>
         <div class="subheader-container">
-          <div class="subheader-text">Create and edit task reports</div>
+          <div class="subheader-text">view and edit tasks</div>
           <img
             src="../../assets/icons/i-icon.svg"
             alt="Icon"
@@ -73,68 +73,57 @@
 
       <!-- Table -->
 <div class="table-container">
-  <div
-    class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative"
-  >
-    <div class="overflow-y-auto max-h-[32rem] w-full">
+  <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
+    
+    <!-- Table container without scroll -->
+    <div class="w-full">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               S.no
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Task ID
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Task Name
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Robot Name
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Source and Destination
             </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let item of paginatedTaskData; index as i">
-            <td class="px-6 py-4 whitespace-nowrap">{{ i + 1 + (paginator.pageIndex * paginator.pageSize) }}</td>
+          <tr *ngFor="let item of paginatedData; index as i">
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ i + 1 + ((paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10)) }}
+            </td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.taskId }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ item.taskName }}
-            </td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.taskName }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.status }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ item.roboName }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              {{ item.sourceDestination }}
-            </td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.roboName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.sourceDestination }}</td>
           </tr>
         </tbody>
       </table>
     </div>
-
-    <!-- Paginator -->
-    <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
   </div>
 </div>
+
+    <!-- Paginator -->
+    <div class="paginator-container">
+      <mat-paginator [length]="filteredTaskData.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 15, 20]" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
+    </div>
+  
+
+
 
 
       <!-- Export -->

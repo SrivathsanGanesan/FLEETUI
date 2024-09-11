@@ -18,7 +18,7 @@
   margin: 0;
   font-size: 28px; /* Adjust font size as needed */
   font-family: Inter, sans-serif; /* Use a clean, modern font */
-  font-weight: 800; /* Slightly bolder text */
+  font-weight: 700; /* Slightly bolder text */
   color: #DA2127; /* Dark color for readability */
 }
 
@@ -1361,7 +1361,7 @@ batter percentage */
 
 /* Battery temperature */
 
-.batterytemperature-container {
+.robottemperature-container {
   padding: 14px 18px;
   display: flex;
   flex-direction: column;
@@ -1374,7 +1374,7 @@ batter percentage */
   height: 100px;
 }
 
-.batterytemperature-content {
+.robottemperature-content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -1383,7 +1383,7 @@ batter percentage */
   width: 193px;
 }
 
-.batterytemperature-header {
+.robottemperature-header {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -1408,7 +1408,7 @@ batter percentage */
   height: 25px;
 }
 
-.batterytemperature-label {
+.robottemperature-label {
   font-size: 14px;
   font-family: Inter, sans-serif;
   font-weight: 500;
@@ -1416,7 +1416,7 @@ batter percentage */
   white-space: nowrap;
 }
 
-.batterytemperature-value {
+.robottemperature-value {
   font-size: 45px;
   font-weight: medium;
   color: #000;
@@ -1660,134 +1660,57 @@ batter percentage */
   width: 100%;
   text-align: left;
 } */
-@mixin getWifi($size) {
-  $anim: 1.5s linear infinite;
-  $border-width: $size/2.35;
-  $line-color: #444;
-  $line-color-weak: rgba($line-color, 0.4);
-  $trans: 0.3s linear;
-  
-  box-sizing: border-box;
-  background-color: transparent;
-  border: $size/2 solid transparent;
-  border-top-color: $line-color;
-  border-radius: $size / 2;
-  height: $size;
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  transition: border-top-color $trans;
-  width: $size;
-  
-  &:before,
-  &:after {
-    content: '';
-    box-sizing: border-box;
-    background-color: transparent;
-    border: $border-width/1.2 solid transparent;
-    border-top-color: $line-color;
-    position: absolute;
-    transition: border-top-color $trans;
-  }
-  
-  &:before {
-    border-radius: $size;
-    height: $size*2;
-    left: -$size;
-    top: -$size;
-    width: $size*2;
-  }
-  
-  &:after {
-    border-radius: $size*3;
-    height: $size*3;
-    left: -$size*1.5;
-    top: -$size*1.5;
-    width: $size*3;
-  }
-  
-  &.loading {
-    animation: blink-1 $anim;
-    
-    &:before {
-      animation: blink-2 $anim;
-    }
-    
-    &:after {
-      animation: blink-3 $anim;
-    }
-  }
-  
-  &.none:not(.loading) {
-    border-top-color: $line-color-weak;
-    
-    &:before,
-    &:after {
-      border-top-color: $line-color-weak;
-    }
-  }
-  
-  &.weak:not(.loading) {
-    &:before,
-    &:after {
-      border-top-color: $line-color-weak;
-    }
-  }
-  
-  &.medium:not(.loading) {
-    &:after {
-      border-top-color: $line-color-weak;
-    }
-  }
-  
-  @at-root {
-    @keyframes blink-1 {
-      0% {
-        border-top-color: $line-color-weak;
-      }
-
-      50%,
-      100% {
-        border-top-color: $line-color;
-      }
-    }
-    
-    @keyframes blink-2 {
-      0%,
-      100% {
-        border-top-color: $line-color;
-      }
-      
-      50% {
-        border-top-color: $line-color-weak;
-      }
-    }
-    
-    @keyframes blink-3 {
-      0%,
-      50% {
-        border-top-color: $line-color;
-      }
-      
-      100% {
-        border-top-color: $line-color-weak;
-      }
-    }
-  }
-}
-
 body {
   background-color: #F0F32B;
-  color: #494949;
-  font-family: Raleway, Helvetica Neue, Helvetica, Arial, sans-serif;
   text-align: center;
+  font-family: Arial, sans-serif;
 }
 
 h1 {
-  margin: 1em;
+  margin: 20px 0;
+  color: #494949;
 }
 
-.wifi {
-  @include getWifi(120px);
-  transform: translate(-25%);
+.wifi-signal {
+  position: relative;
+  display: inline-block;
+}
+
+.wifi-circle {
+  position: absolute;
+  background-color: grey;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.circle1 {
+  width: 80px;
+  height: 80px;
+  top: 0;
+  left: 0;
+  border-top-color: grey;
+}
+
+.circle2 {
+  width: 60px;
+  height: 60px;
+  top: 10px;
+  left: 10px;
+  border-top-color: grey;
+}
+
+.circle3 {
+  width: 40px;
+  height: 40px;
+  top: 20px;
+  left: 20px;
+  border-top-color: grey;
+}
+
+.circle4 {
+  width: 20px;
+  height: 20px;
+  top: 30px;
+  left: 30px;
+  background-color: grey;
 }

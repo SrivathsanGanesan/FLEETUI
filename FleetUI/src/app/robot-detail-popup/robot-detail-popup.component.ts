@@ -81,42 +81,30 @@ export class RobotDetailPopupComponent {
     }
   }
   
-  setWifiStatus(signalStrength: string) {
-    const circle1 = document.querySelector('.circle1') as HTMLElement;
-    const circle2 = document.querySelector('.circle2') as HTMLElement;
-    const circle3 = document.querySelector('.circle3') as HTMLElement;
-    const circle4 = document.querySelector('.circle4') as HTMLElement;
-  
-    if (signalStrength === 'full') {
-      circle1.style.borderTopColor = 'green';
-      circle2.style.borderTopColor = 'green';
-      circle3.style.borderTopColor = 'green';
-      circle4.style.backgroundColor = 'green';
-    } else if (signalStrength === 'medium') {
-      circle1.style.borderTopColor = 'green';
-      circle2.style.borderTopColor = 'green';
-      circle3.style.borderTopColor = 'green';
-      circle4.style.backgroundColor = 'grey';
-    } else if (signalStrength === 'weak') {
-      circle1.style.borderTopColor = 'green';
-      circle2.style.borderTopColor = 'grey';
-      circle3.style.borderTopColor = 'grey';
-      circle4.style.backgroundColor = 'grey';
-    } else {
-      circle1.style.borderTopColor = 'grey';
-      circle2.style.borderTopColor = 'grey';
-      circle3.style.borderTopColor = 'grey';
-      circle4.style.backgroundColor = 'grey';
-    }
+  wifiClass: string = 'none'; // Default WiFi signal state
+
+  // Update this method to set the class based on signal strength
+  updateWifiSignal(signalStrength: string) {
+    this.updateWifiSignal('medium');
+
+    this.wifiClass = signalStrength;  // Set values like 'none', 'weak', 'medium', 'full', or 'loading'
   }
-  
+
+  // Example: Call this function to update the WiFi signal strength dynamically
+  simulateWifiSignal() {
+    setTimeout(() => this.updateWifiSignal('weak'), 1000);
+    setTimeout(() => this.updateWifiSignal('medium'), 2000);
+    setTimeout(() => this.updateWifiSignal('full'), 3000);
+    setTimeout(() => this.updateWifiSignal('none'), 4000);
+  }
+
   
 
   ngOnInit(): void {
 
     console.log('Battery Percentage:', this.data.batteryPercentage);
     console.log('Is Charging:', this.data.isCharging);
-    
+    this.simulateWifiSignal();
   }
  
 

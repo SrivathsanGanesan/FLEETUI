@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ExportService } from '../export.service';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
-
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+ 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -12,49 +13,57 @@ export class TasksComponent implements OnInit {
   mapData: any | null = null;
   searchQuery: string = '';
   isPopupVisible: boolean = false;
-  activeFilter: string = 'today'; // Default filter
-  activeHeader: string = 'Tasks'; // Default header
-  currentTable: string = 'task'; // Default table
+ 
   tasks: any[] = [];
-
-  
-
-  taskData = [
-    {
-      taskId: 'task_001',
-      taskStatus: 'Row 1 Col 2',
-      taskAllocatedAT: 'Row 1 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-    {
-      taskId: 'task_001',
-      taskStatus: 'Row 1 Col 2',
-      taskAllocatedAT: 'Row 1 Col 3',
-      completedAt: 'Row 1 Col 3',
-      sourceLocation: 'Row 1 Col 3',
-      taskType: 'Pickup',
-      roboId: 'Row 1 Col 3',
-    },
-  ];
-
+ 
+  // taskData = [];
+ 
   filteredTaskData = this.tasks;
-paginatedTaskData: any;
-paginator: any;
+ // Paginated data
+ paginatedData = this.tasks;
 
+ // Set paginator view child
+ @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+activeHeader: any;
+
+
+
+ // Method to handle pagination changes
+ setPaginatedData() {
+  if (this.paginator) {
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    this.paginatedData = this.filteredTaskData.slice(startIndex, startIndex + this.paginator.pageSize);
+  }
+}
+
+ // Called whenever the page is changed
+ onPageChange(event: PageEvent) {
+   this.setPaginatedData();
+ }
+ 
   constructor(
     private exportService: ExportService,
     private projectService: ProjectService
   ) {
     if (this.mapData) this.mapData = this.projectService.getMapData();
   }
-
+ 
   ngOnInit() {
+    let dum = {
+      taskId: 'task_001',
+      taskName: 'task_init',
+      status: 'online',
+      roboName:' agv_012',
+      sourceDestination: 'N/A',
+    };
+    for(let i = 1; i <= 100; i++){
+      this.tasks.push(dum)
+    }
+    this.filteredTaskData  = this.tasks;
+    return
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
-
+ 
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/${this.mapData.id}`,
       {
@@ -89,11 +98,13 @@ paginator: any;
       .catch((err) => {
         console.log(err);
       });
-  }
 
+      this.setPaginatedData();
+  }
+ 
   onSearch(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
-
+ 
     if (!inputValue) {
       this.filteredTaskData = this.tasks;
     } else {
@@ -104,12 +115,9 @@ paginator: any;
       );
     }
   }
-
-  setActiveFilter(filter: string) {
-    this.activeFilter = filter;
-    // Implement your filtering logic here
-  }
-
+ 
+ 
+ 
   onDateChange(event: Event): void {
     const startDate = (
       document.getElementById('start-date') as HTMLInputElement
@@ -118,7 +126,7 @@ paginator: any;
       .value;
     // Implement your date range filtering logic here
   }
-
+ 
   exportData(format: string) {
     const data = this.tasks;
     switch (format) {
@@ -135,12 +143,13 @@ paginator: any;
         console.error('Invalid export format');
     }
   }
-
+ 
   showPopup() {
     this.isPopupVisible = true;
   }
-
+ 
   onClose() {
     this.isPopupVisible = false;
   }
 }
+ 
