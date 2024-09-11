@@ -721,6 +721,7 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.imagePopupCanvas.nativeElement;
     // const dataURL = canvas.toDataURL('image/png');
     const link = document.createElement('a');
+    this.distanceBetweenPoints = null; // Reset distance if applicable
     // link.href = dataURL;
     // link.download = 'canvas-image.png';
     link.click();
@@ -2061,6 +2062,8 @@ export class EnvmapComponent implements AfterViewInit {
       // Draw assets, zones, and robots
       this.assets.forEach((asset) => this.plotAsset(asset.x, asset.y, asset.type));
       this.zones.forEach((zone) => {
+         // Re-plot the points of the zone
+        zone.pos.forEach((point) => this.plotZonePoint(point.x, point.y));
         this.plottedPoints = zone.pos;
         this.zoneType = zone.type;
         this.drawLayer();
