@@ -157,7 +157,7 @@
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.date }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="iconTable" >
                     <img
                       src="../../assets/ConfigurationOptions/Edit.svg"
                       alt="Edit"
@@ -171,7 +171,7 @@
                       class="icon"
                     />
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td  class="iconTable">
                     <button class="sel-btn" (click)="selectMap(item)">
                       <!-- [disabled]="isButtonDisabled(item)" -->
                       <!-- SELECT -->
@@ -222,7 +222,7 @@
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.column2 }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="iconTable">
                     <img
                       src="../../assets/ConfigurationOptions/Edit.svg"
                       alt="Edit"
@@ -296,7 +296,7 @@
               </thead>
               <tbody>
                 <tr *ngIf="ipScanData.length === 0">
-                  <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                  <td colspan="6" class="iconTable">
                     No data found
                   </td>
                 </tr>
