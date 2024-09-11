@@ -337,7 +337,7 @@
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
 
-      <div class="options-container" *ngIf="!isPlottingEnabled && !isOptionsMenuVisible" >
+      <div class="options-container" *ngIf="!isPlottingEnabled && !isOptionsMenuVisible && !isZonePlottingEnabled " >
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>

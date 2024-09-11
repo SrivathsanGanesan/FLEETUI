@@ -272,6 +272,9 @@ export class EnvmapComponent implements AfterViewInit {
   description: string = ''; // Input field for description
   selectedAssetId: string | null = null; // Store the selected asset ID
   private draggedNode: Node | null = null;
+  private draggingZonePoint: boolean = false;
+  private selectedZone: Zone | null = null;
+  private selectedZonePoint: { x: number, y: number } | null = null;
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -780,6 +783,7 @@ export class EnvmapComponent implements AfterViewInit {
     // link.download = 'canvas-image.png';
     link.click();
     this.showImagePopup = false;
+    this.isDistanceConfirmed = false; // Reset the state for future use
   }
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
@@ -1264,7 +1268,9 @@ export class EnvmapComponent implements AfterViewInit {
       );
 
       this.isPlottingEnabled = false; // Disable further plotting after two nodes
-      this.showIntermediateNodesDialog = true;
+      setTimeout(() => {
+        this.showIntermediateNodesDialog = true;
+      }, 1000);
 
     } else {
       // Plotting additional nodes
@@ -1283,6 +1289,7 @@ export class EnvmapComponent implements AfterViewInit {
         Waiting_node :false
       };
       this.nodes.push(node);
+      
     }
 
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
@@ -1828,6 +1835,13 @@ export class EnvmapComponent implements AfterViewInit {
       this.plotRobo(x, y);
     });
   }
+  private isPointTooClose(x: number, y: number, existingPoints: any[], threshold: number = 6): boolean {
+    return existingPoints.some(point => {
+      const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2);
+      return distance < threshold;
+    });
+  }
+  
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -1865,7 +1879,17 @@ export class EnvmapComponent implements AfterViewInit {
         // If six points are plotted, form the layer (polygon)
         // if (this.plottedPoints.length >= this.maxZonePoints) {  //
       }
-
+      for (const zone of this.zones) {
+        for (const point of zone.pos) {
+          const radius = 6;  // Same as the point's radius
+          if (Math.abs(x - point.x) <= radius && Math.abs(y - point.y) <= radius) {
+            this.selectedZone = zone;
+            this.selectedZonePoint = point;
+            this.draggingZonePoint = true;
+            return;  // Exit early if zone point is clicked
+          }
+        }
+      }
       if (this.selectedAssetType) {
         let asset: asset;
         asset = {
@@ -1959,7 +1983,18 @@ export class EnvmapComponent implements AfterViewInit {
       this.selectedAsset.y = y;
     }
     
-
+    if (this.draggingZonePoint && this.selectedZonePoint) {
+      if (this.isPointTooClose(x, y, this.plottedPoints)) {
+        // Optionally show an alert or message
+        console.warn('The point is too close to an existing zone point');
+        return;
+      }
+      // Update the position of the selected zone point
+      this.selectedZonePoint.x = x;
+      this.selectedZonePoint.y = y;
+      this.redrawCanvas();  // Redraw the canvas to reflect the updated position
+      return;
+    }
     if(this.draggingNode && this.selectedNode){
       this.selectedNode.pos.x = x;
       this.selectedNode.pos.y = transformedY;
@@ -2029,7 +2064,12 @@ export class EnvmapComponent implements AfterViewInit {
         this.onMouseUp.bind(this)
       );
     }
-
+  if (this.draggingZonePoint && this.selectedZonePoint) {
+    // Update the final position of the zone point
+    this.draggingZonePoint = false;
+    this.selectedZonePoint = null;
+    this.selectedZone = null;
+  }
     if (this.draggingAsset && this.selectedAsset) {
       // Finalize asset position
       this.draggingAsset = false;

@@ -65,6 +65,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredRobotData: any[] = [];
 
+  isScanning = false;
   EnvData: any[] = []; // map details..
 
   currEditMap: boolean = false;
@@ -285,6 +286,7 @@ export class ConfigurationComponent implements AfterViewInit {
   EndIP: string = '0.0.0.0';
 
   startScanning() {
+    
     this.ipScanData = [];
     this.startIP = (
       document.getElementById('ipRangeFrom') as HTMLInputElement
@@ -336,8 +338,10 @@ export class ConfigurationComponent implements AfterViewInit {
       console.error('SSE error:', error);
       this.eventSource.close();
     };
+    this.isScanning = true;
   }
   stopScanning() {
+    this.isScanning = false;
     this.eventSource.close();
     return;
   }
