@@ -1,5 +1,6 @@
 <div class="popup-overlay">
-  <div class="popup-content"  [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }">
+  <div class="popup-content"  [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }" [ngStyle]="{ 'pointer-events': showImage ? 'none' : 'auto' }">
+
     <h2 *ngIf="!showImage">Select and insert Map file</h2>
     <!-- Image for file upload -->
     <label for="fileInput" class="upload-image" *ngIf="!showImage">
@@ -118,28 +119,12 @@
         </div>
       </div>
     </div>
-    <div class="image-container" *ngIf="showImage">
+    <div class="image-container" *ngIf="showImage"  [ngStyle]="{ 'pointer-events': showImage ? 'auto' : 'none' }">
+      <button class="close-btn" (click)="close()" *ngIf="!isPlottingEnabled && !isZonePlottingEnabled">X</button>
+
+
+      <canvas class="plottinglayer" #overlayCanvas *ngIf="showImage" ></canvas> 
       <div
-        class="intermediate-nodes-dialog"
-        *ngIf="showIntermediateNodesDialog"
-      >
-        <div class="dialog-content">
-          <h3>Enter Number of Nodes</h3>
-          <input
-            type="number"
-            [(ngModel)]="numberOfIntermediateNodes"
-            placeholder="Number of nodes"
-            (ngModelChange)="onInputChanged()"
-          />
-          <button
-            *ngIf="isEnterButtonVisible"
-            (click)="plotIntermediateNodes()"
-          >
-            Enter
-          </button>
-        </div>
-      </div>      
-      <canvas class="plottinglayer" #overlayCanvas [ngClass]="{'disable-pointer-events': showIntermediateNodesDialog}"></canvas>      <div
         #nodeDetailsPopup
         class="node-details-popup"
         [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
@@ -192,8 +177,7 @@
             <input type="checkbox" id="Intermediate_Stn" [(ngModel)]="nodeDetails.intermediate_node"><br>
             
             <label for="Waiting_Stn">Waiting Node</label>
-            <input type="checkbox" id="Waiting_Stn" [(ngModel)]="nodeDetails.waiting_node">
-            
+            <input type="checkbox" id="Waiting_Stn" [(ngModel)]="nodeDetails.waiting_node">           
             
           </div>
 
@@ -352,13 +336,13 @@
       </div>
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
-      <button class="close-btn" (click)="close()">X</button>
-      <div class="options-container" *ngIf="!isOptionsMenuVisible">
+
+      <div class="options-container" *ngIf="!isPlottingEnabled && !isOptionsMenuVisible" >
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div>
-      <div class="calibration-layer" *ngIf="isOptionsMenuVisible">
+      <div class="calibration-layer" *ngIf="isOptionsMenuVisible" >
         <div class="dropdown">
           <button class="dropdown-button">Add Node</button>
           <div class="dropdown-content">
@@ -381,8 +365,6 @@
           <div class="dropdown-content">
             <button (click)="selectAssetType('docking')">Docking Station</button>
             <button (click)="selectAssetType('charging')">Charging Station</button>
-            <button (click)="selectAssetType('waiting')">Waiting Station</button>
-            <button (click)="selectAssetType('intermediate')">Intermediate Station</button>
           </div>
         </div>
         
@@ -390,11 +372,7 @@
         <button (click)="removeRobots()">Remove Robots</button>
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
-        <app-robot-popup
-        [isVisible]="isRobotPopupVisible"
-        (close)="closeRobotPopup()"
-        (addRobot)="placeRobots($event)"
-      ></app-robot-popup>
+
       </div>
     </div>
     <div class="button-container" *ngIf="!showImage">
@@ -403,8 +381,15 @@
     </div>
   </div>
 </div>
-<div *ngIf="isPopupVisible" class="popup-overlay">
-  <div class="popup-content">
+
+<app-robot-popup
+[isVisible]="isRobotPopupVisible"
+(close)="closeRobotPopup()"
+(addRobot)="placeRobots($event)"
+></app-robot-popup>
+
+<div *ngIf="isPopupVisible" class="popup-overlay1">
+  <div class="popup-content1">
     <h3>Select Zone Type</h3>
     <select [(ngModel)]="zoneType">
       <option *ngFor="let zone of zoneTypeList" [value]="zone">{{ zone }}</option>
@@ -413,3 +398,135 @@
     <button (click)="onCancel()">Cancel</button>
   </div>
 </div>
+
+<div *ngIf="showPopup" class="popup-overlay1">
+  <div class="popup-content1">
+    <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
+      <div class="form-row">
+        <label for="edgeId">Edge ID:</label>
+        <input id="edgeId" [(ngModel)]="currentEdge.edgeId" name="edgeId" required />
+      </div>
+
+      <div class="form-row">
+        <label for="sequenceId">Sequence ID:</label>
+        <input id="sequenceId" type="number" [(ngModel)]="currentEdge.sequenceId" name="sequenceId" required />
+      </div>
+
+      <div class="form-row">
+        <label for="edgeDescription">Description:</label>
+        <input id="edgeDescription" [(ngModel)]="currentEdge.edgeDescription" name="edgeDescription" />
+      </div>
+
+      <div class="form-row">
+        <label for="released">Released:</label>
+        <input id="released" type="checkbox" [(ngModel)]="currentEdge.released" name="released" />
+      </div>
+
+      <div class="form-row">
+        <label for="startNodeId">Start Node ID:</label>
+        <input id="startNodeId" [(ngModel)]="currentEdge.startNodeId" name="startNodeId" readonly />
+      </div>
+
+      <div class="form-row">
+        <label for="endNodeId">End Node ID:</label>
+        <input id="endNodeId" [(ngModel)]="currentEdge.endNodeId" name="endNodeId" readonly />
+      </div>
+
+      <div class="form-row">
+        <label for="maxSpeed">Max Speed (m/s):</label>
+        <input id="maxSpeed" type="number" [(ngModel)]="currentEdge.maxSpeed" name="maxSpeed" />
+      </div>
+
+      <div class="form-row">
+        <label for="maxHeight">Max Height (m):</label>
+        <input id="maxHeight" type="number" [(ngModel)]="currentEdge.maxHeight" name="maxHeight" />
+      </div>
+
+      <div class="form-row">
+        <label for="minHeight">Min Height (m):</label>
+        <input id="minHeight" type="number" [(ngModel)]="currentEdge.minHeight" name="minHeight" />
+      </div>
+
+      <div class="form-row">
+        <label for="orientation">Orientation (rad):</label>
+        <input id="orientation" type="number" [(ngModel)]="currentEdge.orientation" name="orientation" />
+      </div>
+
+      <div class="form-row">
+        <label for="orientationType">Orientation Type:</label>
+        <input id="orientationType" [(ngModel)]="currentEdge.orientationType" name="orientationType" />
+      </div>
+
+      <div class="form-row">
+        <label for="direction">Direction:</label>
+        <input id="direction" [(ngModel)]="currentEdge.direction" name="direction" />
+      </div>
+
+      <div class="form-row">
+        <label for="rotationAllowed">Rotation Allowed:</label>
+        <input id="rotationAllowed" type="checkbox" [(ngModel)]="currentEdge.rotationAllowed" name="rotationAllowed" />
+      </div>
+
+      <div class="form-row">
+        <label for="maxRotationSpeed">Max Rotation Speed (rad/s):</label>
+        <input id="maxRotationSpeed" type="number" [(ngModel)]="currentEdge.maxRotationSpeed" name="maxRotationSpeed" />
+      </div>
+
+      <div class="form-row">
+        <label for="length">Length:</label>
+        <input id="length" type="number" [(ngModel)]="currentEdge.length" name="length" />
+      </div>
+
+      <div class="form-row">
+        <label for="action">Actions:</label>
+        <input id="action" [(ngModel)]="currentEdge.action" name="action" />
+      </div>
+
+      <div class="form-buttons">
+        <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
+        <button type="button" id="formBTN" >Delete</button>
+        <button type="button" id="formBTN" (click)="hidePopup()">Cancel</button>
+      </div>
+    <!-- </form> -->
+  </div>
+</div>
+
+<div *ngIf="DockPopup" class="popup-overlay1">
+  <div class="popup-content1">
+  <form>
+    <div>
+      <label for="undockingDistance">Undocking Distance:</label>
+      <input type="text" id="undockingDistance" name="undockingDistance" [(ngModel)]="undockingDistance" />
+    </div>
+    <div>
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" [(ngModel)]="description" />
+    </div>
+    <div>
+      <button type="button" (click)="savePopupData()">Save</button>
+      <button type="button" (click)="closePopup1()">Cancel</button>
+    </div>
+  </form>
+  </div>
+</div>
+
+<div
+class="popup-overlay1"
+*ngIf="showIntermediateNodesDialog"
+>
+<div class="popup-content1">
+  <h3>Enter Number of Nodes</h3>
+  <input
+    type="number"
+    [(ngModel)]="numberOfIntermediateNodes"
+    placeholder="Number of nodes"
+    (ngModelChange)="onInputChanged()"
+  />
+  <button
+    *ngIf="isEnterButtonVisible"
+    (click)="plotIntermediateNodes()"
+  >
+    Enter
+  </button>
+</div>
+</div> 

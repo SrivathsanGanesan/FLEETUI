@@ -1,4 +1,5 @@
-<div class="popup" *ngIf="isVisible">
+<div class="popup-overlay1" *ngIf="isVisible">
+  <div class="popup-content">
   <h4>Select Robots</h4>
   <div *ngFor="let robot of availableRobots">
     <label>
@@ -12,4 +13,5 @@
   </div>
   <button (click)="addSelectedRobots()">Place</button>
   <button (click)="closePopup()">Close</button>
+  </div>
 </div>

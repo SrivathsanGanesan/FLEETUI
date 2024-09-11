@@ -46,11 +46,15 @@ interface Edge {
   length: number; //Length of the path from startNode to endNode
   action: any[]; //Array of actionIds to be executed on the edge
 }
+
 interface asset {
   id: number;
   x: number;
   y: number;
   type: string;
+  orientation : number,
+  undockingDistance : number,
+  desc : string
 } // Array to track assets
 
 interface Zone {
@@ -193,7 +197,7 @@ export class EnvmapComponent implements AfterViewInit {
   private lineStartY: number | null = null;
   private lineEndX: number | null = null;
   private lineEndY: number | null = null;
-  selectedAction: string = ''; // Initialize with an empty string or any other default value
+  selectedAction: string = 'Move'; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
   isDistanceConfirmed = false; // Flag to control the Save button
   isEnterButtonVisible = false;
@@ -236,9 +240,31 @@ export class EnvmapComponent implements AfterViewInit {
   draggingRobot: Robo | null = null; // Currently dragged robot
   deselectTimeout: any = null;
   highlightDuration = 2000; // Example: 2 seconds 
-  
-
+  currentEdge : Edge = {
+      edgeId: '',
+      sequenceId: 0,
+      edgeDescription: '',
+      released: true,
+      startNodeId: '',
+      endNodeId: '',
+      maxSpeed: 0,
+      maxHeight: 0,
+      minHeight: 0,
+      orientation: 0,
+      orientationType: '',
+      direction: 'UN_DIRECTIONAL',
+      rotationAllowed: true,
+      maxRotationSpeed: 0,
+      length: 0,
+      action : [],
+    };
+  showPopup = false;
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
+  DockPopup: boolean = false; // To control the popup visibility
+  popupPosition = { x: 0, y: 0 }; // To store the popup position
+  undockingDistance: string = ''; // Input field for undocking distance
+  description: string = ''; // Input field for description
+  selectedAssetId: string | null = null; // Store the selected asset ID
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -259,17 +285,20 @@ export class EnvmapComponent implements AfterViewInit {
   ) {}
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
-    if (!this.overlayCanvas) return;
-    setTimeout(() => {
-      console.log('ngAfterViewInit: overlayCanvas', this.overlayCanvas);
+    if (!this.overlayCanvas || !this.imageCanvas) return;
+
       const canvas = this.overlayCanvas?.nativeElement;
-      if (canvas) {
+      const imageCanvas = this.imageCanvas?.nativeElement;
+      if (canvas && imageCanvas) {
+        // Set the size of the overlay canvas to match the image canvas
+        canvas.width = imageCanvas.width;
+        canvas.height = imageCanvas.height;
+  
         this.setupCanvas();
         this.isCanvasInitialized = true; // Avoid re-initializing the canvas
       } else {
-        console.error('Canvas element still not found');
+        console.error('Canvas element(s) still not found');
       }
-    }, 0); // Adjust the delay if necessary
   }
   ngAfterViewChecked(): void {
     if (this.showImage && this.overlayCanvas && !this.isCanvasInitialized) {
@@ -282,34 +311,34 @@ export class EnvmapComponent implements AfterViewInit {
   }
   setupCanvas(): void {
     const canvas = this.getOverlayCanvas();
-    if (!canvas) {
+    const imageCanvas = this.imageCanvas?.nativeElement;
+    if (!canvas || !imageCanvas) {
       console.error('Canvas element not found');
       return;
     }
-    // Ensure the canvas has width and height
+  
+    // Set the overlay canvas size to match the image canvas size
+    canvas.width = imageCanvas.width;
+    canvas.height = imageCanvas.height;
+  
+    // Ensure the canvas has a valid width and height
     if (canvas.width === 0 || canvas.height === 0) {
       console.error('Canvas width or height is zero');
       return;
     }
+  
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      // Initialize assets and robots
       this.assetImages['docking'] = new Image();
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
-
+  
       this.assetImages['charging'] = new Image();
-      this.assetImages['charging'].src =
-        'assets/Asseticon/charging-station.svg';
-
-      this.assetImages['waiting'] = new Image();
-      this.assetImages['waiting'].src = 'assets/Asseticon/waiting-station.svg';
-
-      this.assetImages['intermediate'] = new Image();
-      this.assetImages['intermediate'].src =
-        'assets/Asseticon/intermediate-station.svg';
-
+      this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
+  
       this.robotImages['robotA'] = new Image();
       this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
-
+  
       this.robotImages['robotB'] = new Image();
       this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
     } else {
@@ -368,7 +397,6 @@ export class EnvmapComponent implements AfterViewInit {
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
-  // Parameters for the 'Move' action
   moveParameters = {
     maxLinearVelocity: '',
     maxAngularVelocity: '',
@@ -466,7 +494,6 @@ export class EnvmapComponent implements AfterViewInit {
     this.showActionForm();
     this.actions.splice(index, 1); // Remove the action from the list
   }
-  // Method to add an action to the list
   addAction(): void {
     if (this.selectedAction) {
       let action: any;
@@ -520,7 +547,6 @@ export class EnvmapComponent implements AfterViewInit {
   closeNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = false;
   }
-  // Method to delete an action from the list
   removeAction(index: number): void {
     this.actions.splice(index, 1);
     this.hideActionForms();
@@ -528,7 +554,6 @@ export class EnvmapComponent implements AfterViewInit {
   isOptionDisabled(option: string): boolean {
     return this.actions.some((action) => action.actionType === option);
   }
-
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -583,7 +608,6 @@ export class EnvmapComponent implements AfterViewInit {
       Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
     );
   }
-  //  Saving all nodes and edges
   saveOpt() {
     console.log(this.Nodes);
     console.log(this.connections);
@@ -697,6 +721,7 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.imagePopupCanvas.nativeElement;
     // const dataURL = canvas.toDataURL('image/png');
     const link = document.createElement('a');
+    this.distanceBetweenPoints = null; // Reset distance if applicable
     // link.href = dataURL;
     // link.download = 'canvas-image.png';
     link.click();
@@ -824,20 +849,57 @@ export class EnvmapComponent implements AfterViewInit {
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-    const x =
-      (event.clientX - rect.left) *
-      (this.overlayCanvas.nativeElement.width / rect.width);
-    const y =
-      (event.clientY - rect.top) *
-      (this.overlayCanvas.nativeElement.height / rect.height);
+    const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+    const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y)) {
         this.showNodeDetailsPopup();
-        break;
+            return;
+        }
+    }
+    // Check if the click is on an edge
+    const clickedEdge = this.edges.find(edge => this.isPointOnEdge(edge, x, y));
+    for (const asset of this.assets) {
+      if (this.isAssetClicked(asset, x, y)) {
+        console.log('asset clicked');
+        
+        this.selectedAsset = asset;
+        this.DockPopup = true; // Show the popup
+        // this.popupPosition = { x: event.clientX, y: event.clientY }; // Set popup position
+        // this.selectedAssetId = asset.id; // Store selected asset ID
+        return;
       }
     }
+    if (clickedEdge) {
+      this.currentEdge = clickedEdge; // Set the current edge details
+      this.DockPopup = true; // Show the popup
+    }
+  }
+  savePopupData(): void {
+    console.log(this.selectedAsset);
+    
+    if (this.selectedAsset) {
+      // Find the asset and update its properties
+      this.assets = this.assets.map((asset) => {
+        if (asset) {
+          asset.undockingDistance = parseInt(this.undockingDistance);
+          asset.desc = this.description; //this.selectedAsset?.desc ? this.selectedAsset?.desc : ''
+        }
+        return asset;
+      });
+     this.redrawCanvas()
+    }
+    console.log(this.assets);
+    
+    this.closePopup1();
+  }
+  closePopup1(): void {
+    this.DockPopup = false;
+    this.undockingDistance = '';
+    this.description = '';
+    this.selectedAssetId = null;
   }
   showNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = true;
@@ -846,7 +908,7 @@ export class EnvmapComponent implements AfterViewInit {
   private drawNode(node: Node, color: string, selected: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-
+  
     if (ctx) {
       const transformedY = canvas.height - node.pos.y; // Flip the Y-axis
       ctx.beginPath();
@@ -854,6 +916,13 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.fillStyle = selected ? color : 'blue';
       ctx.lineWidth = selected ? 3 : 1;
       ctx.fill();
+  
+      // Draw the node ID below the node
+      ctx.font = '12px Arial'; // Font size and type
+      ctx.fillStyle = 'black'; // Text color
+      ctx.textAlign = 'center'; // Center align text
+      ctx.textBaseline = 'top'; // Position text below the node
+      ctx.fillText(node.id, node.pos.x, transformedY + 10); // Draw node ID
     }
   }
   private drawArrowLine(
@@ -970,8 +1039,17 @@ export class EnvmapComponent implements AfterViewInit {
       );
     }
   }
+  drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void {
+    ctx.font = '12px Arial'; // Set font size and family
+    ctx.fillStyle = 'black'; // Set text color
+    ctx.textAlign = 'center'; // Center align the text
+    ctx.textBaseline = 'top'; // Align text from the top
+    ctx.fillText(text, x, y); // Draw text at (x, y)
+  }
+  
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d')!;
     const transformedY = canvas.height - y; // Flip the Y-axis
 
     const color = 'blue'; // Color for single nodes
@@ -1016,6 +1094,7 @@ export class EnvmapComponent implements AfterViewInit {
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
     this.nodes.push(node);
     this.Nodes.push({ ...this.nodeDetails, type: 'single' });
+    
 
     this.nodeCounter++; // Increment the node counter after assignment
     this.isPlottingEnabled = false; // Disable plotting after placing a single node
@@ -1024,14 +1103,8 @@ export class EnvmapComponent implements AfterViewInit {
     this.lineStartX = x;
     this.lineStartY = y;
 
-    this.overlayCanvas.nativeElement.addEventListener(
-      'mousemove',
-      this.onMouseMove.bind(this)
-    );
-    this.overlayCanvas.nativeElement.addEventListener(
-      'mouseup',
-      this.onMouseUp.bind(this)
-    );
+    this.overlayCanvas.nativeElement.addEventListener( 'mousemove', this.onMouseMove.bind(this) );
+    this.overlayCanvas.nativeElement.addEventListener( 'mouseup', this.onMouseUp.bind(this) );
   }
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
@@ -1237,13 +1310,23 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
   saveNodeDetails(): void {
+    this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
-    const updatedNodeDetails = {
-      ...this.nodeDetails,  // Spread the existing details
-      intermediate_node: this.nodeDetails.intermediate_node,
-      waiting_node: this.nodeDetails.waiting_node,
-    };
-  
+    // const updatedNodeDetails = {
+    //   ...this.nodeDetails,  // Spread the existing details
+    //   intermediate_node: this.nodeDetails.intermediate_node,
+    //   waiting_node: this.nodeDetails.waiting_node,
+    // };
+    if (this.selectedNode) {
+      const nodeIndex = this.nodes.findIndex(node => node.id === this.selectedNode!.id);
+
+
+    if (nodeIndex !== -1) {
+      this.nodes[nodeIndex].description = this.nodeDetails.description;
+      this.nodes[nodeIndex].intermediate_node = this.nodeDetails.intermediate_node;
+      this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
+    }
+  }
     // Transform Nodes array to NodeDetails format
     this.NodeDetails = this.nodes.map((node, index) => ({
       nodeID: `node_${String(node.id).padStart(3, '0')}`, // Format nodeID as a string
@@ -1260,9 +1343,6 @@ export class EnvmapComponent implements AfterViewInit {
       actions: this.actions, // Include actions here
     }));
 
-    // Create a JSON object with the node details
-    const nodeDetails = this.nodes;
-
     // Log the JSON object to the console
     console.log(this.nodes);
     console.log(this.edges);
@@ -1271,11 +1351,11 @@ export class EnvmapComponent implements AfterViewInit {
     
     
 
-    // Save the JSON object to a file
-    const blob = new Blob([JSON.stringify(updatedNodeDetails, null, 2)], {
-      type: 'application/json',
-    });
-    saveAs(blob, 'node-details.json');
+    // // Save the JSON object to a file
+    // const blob = new Blob([JSON.stringify(updatedNodeDetails, null, 2)], {
+    //   type: 'application/json',
+    // });
+    // saveAs(blob, 'node-details.json');
   
     // Clear all the details for the previous node
     this.Nodes = []; // Clear the Nodes array
@@ -1293,10 +1373,8 @@ export class EnvmapComponent implements AfterViewInit {
   private onNodeClick(x: number, y: number): void {
     // Find the clicked node
     let clickedNode: Node | undefined;
-    clickedNode = this.nodes.find(
-      (node) => node.pos.x === x && node.pos.y === y
-    );
-
+    clickedNode = this.nodes.find((node) => node.pos.x === x && node.pos.y === y);
+  
     if (clickedNode) {
       if (!this.firstNode) {
         this.firstNode = clickedNode;
@@ -1304,74 +1382,74 @@ export class EnvmapComponent implements AfterViewInit {
       } else if (!this.secondNode) {
         this.secondNode = clickedNode;
         this.drawNode(clickedNode, 'red', true); // Highlight the second node
-
-        // After selecting the second node, draw the line based on direction
-        if (this.direction === 'uni') {
-          let edge: Edge;
-          edge = {
-            edgeId: this.edgeCounter.toString(),
-            sequenceId: this.edgeCounter,
-            edgeDescription: '',
-            released: true,
-            startNodeId: this.firstNode.id,
-            endNodeId: this.secondNode.id,
-            maxSpeed: 0,
-            maxHeight: 0,
-            minHeight: 0,
-            orientation: 0,
-            orientationType: '',
-            direction: 'UN_DIRECTIONAL',
-            rotationAllowed: true,
-            maxRotationSpeed: 0,
-            // Trajectory trajectory,
-            length: 0,
-            action: [],
-          };
-          this.edges.push(edge);
-          this.drawEdge(
-            this.firstNode.pos,
-            this.secondNode.pos,
-            'uni',
-            this.firstNode.id,
-            this.secondNode.id
-          );
-        } else if (this.direction === 'bi') {
-          let edge: Edge;
-          edge = {
-            edgeId: this.edgeCounter.toString(),
-            sequenceId: this.edgeCounter,
-            edgeDescription: '',
-            released: true,
-            startNodeId: this.firstNode.id,
-            endNodeId: this.secondNode.id,
-            maxSpeed: 0,
-            maxHeight: 0,
-            minHeight: 0,
-            orientation: 0,
-            orientationType: '',
-            direction: 'BI_DIRECTIONAL',
-            rotationAllowed: true,
-            maxRotationSpeed: 0,
-            // Trajectory trajectory,
-            length: 0,
-            action: [],
-          };
-          this.edges.push(edge);
-          this.drawEdge(
-            this.firstNode.pos,
-            this.secondNode.pos,
-            'bi',
-            this.firstNode.id,
-            this.secondNode.id
-          );
+  
+        // Check if the edge between the selected nodes already exists
+        const existingEdge = this.edges.find(
+          (edge) =>
+            (edge.startNodeId === this.firstNode?.id && edge.endNodeId === this.secondNode?.id && edge.direction === 'UN_DIRECTIONAL' && this.direction === 'uni') ||
+            (edge.startNodeId === this.secondNode?.id && edge.endNodeId === this.firstNode?.id && edge.direction === 'UN_DIRECTIONAL' && this.direction === 'uni') ||
+            (edge.startNodeId === this.firstNode?.id && edge.endNodeId === this.secondNode?.id && edge.direction === 'BI_DIRECTIONAL' && this.direction === 'bi') ||
+            (edge.startNodeId === this.secondNode?.id && edge.endNodeId === this.firstNode?.id && edge.direction === 'BI_DIRECTIONAL' && this.direction === 'bi')
+        );
+  
+        // If the edge already exists in the same direction, show alert
+        if (existingEdge) {
+          alert(`The ${this.direction === 'uni' ? 'uni-directional' : 'bi-directional'} edge between these nodes already exists!`);
+        } else {
+          // If no existing edge, proceed to draw
+          if (this.direction === 'uni') {
+            let edge: Edge;
+            edge = {
+              edgeId: this.edgeCounter.toString(),
+              sequenceId: this.edgeCounter,
+              edgeDescription: '',
+              released: true,
+              startNodeId: this.firstNode.id,
+              endNodeId: this.secondNode.id,
+              maxSpeed: 0,
+              maxHeight: 0,
+              minHeight: 0,
+              orientation: 0,
+              orientationType: '',
+              direction: 'UN_DIRECTIONAL',
+              rotationAllowed: true,
+              maxRotationSpeed: 0,
+              length: 0,
+              action: [],
+            };
+            this.edges.push(edge);
+            this.drawEdge(this.firstNode.pos, this.secondNode.pos, 'uni', this.firstNode.id, this.secondNode.id);
+          } else if (this.direction === 'bi') {
+            let edge: Edge;
+            edge = {
+              edgeId: this.edgeCounter.toString(),
+              sequenceId: this.edgeCounter,
+              edgeDescription: '',
+              released: true,
+              startNodeId: this.firstNode.id,
+              endNodeId: this.secondNode.id,
+              maxSpeed: 0,
+              maxHeight: 0,
+              minHeight: 0,
+              orientation: 0,
+              orientationType: '',
+              direction: 'BI_DIRECTIONAL',
+              rotationAllowed: true,
+              maxRotationSpeed: 0,
+              length: 0,
+              action: [],
+            };
+            this.edges.push(edge);
+            this.drawEdge(this.firstNode.pos, this.secondNode.pos, 'bi', this.firstNode.id, this.secondNode.id);
+          }
+  
+          this.edgeCounter++;
         }
-
-        this.edgeCounter++;
-
+  
         // Reset after drawing
         this.resetSelection();
       }
-
+  
       if (this.selectedNode === clickedNode) {
         // If the same node is clicked again, deselect it
         this.deselectNode();
@@ -1385,7 +1463,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.selectedNode = clickedNode;
         this.drawNode(clickedNode, 'red', true); // Highlight the selected node
         console.log('Node selected:', x, y);
-
+  
         // Draw connections or perform any other actions
         if (this.lastSelectedNode) {
           this.drawConnections();
@@ -1393,7 +1471,7 @@ export class EnvmapComponent implements AfterViewInit {
         }
       }
     }
-  }
+  }   
   private drawEdge(
     startPos: { x: number; y: number },
     endPos: { x: number; y: number },
@@ -1403,21 +1481,36 @@ export class EnvmapComponent implements AfterViewInit {
   ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-
+  
     if (ctx) {
       ctx.beginPath();
       ctx.moveTo(startPos.x, canvas.height - startPos.y); // Start point (flip Y-axis)
       ctx.lineTo(endPos.x, canvas.height - endPos.y); // End point (flip Y-axis)
-      ctx.strokeStyle = 'black';
+  
+      // Change color based on direction
+      if (direction === 'uni') {
+        ctx.strokeStyle = 'black'; // Uni-directional in black
+      } else if (direction === 'bi') {
+        ctx.strokeStyle = 'green'; // Bi-directional in green
+      }
       ctx.lineWidth = 2;
-      ctx.stroke();
-
+      ctx.stroke();  
       this.drawArrowhead(ctx, startPos, endPos, direction);
-
+  
       if (direction === 'bi') {
         // Draw the reverse arrow for bi-directional
         this.drawArrowhead(ctx, endPos, startPos, direction);
       }
+  
+      // Draw edge ID in the middle of the line
+      const midX = (startPos.x + endPos.x) / 2;
+      const midY = (canvas.height - startPos.y + canvas.height - endPos.y) / 2;
+  
+      ctx.font = '12px Arial'; // Font size and type
+      ctx.fillStyle = 'black'; // Text color
+      ctx.textAlign = 'center'; // Center align text
+      ctx.textBaseline = 'top'; // Position text below the edge
+      ctx.fillText(`${startNodeId} to ${endNodeId}`, midX, midY + 5); // Draw edge ID text
     }
   }
   private drawArrowhead(
@@ -1429,15 +1522,15 @@ export class EnvmapComponent implements AfterViewInit {
     const headLength = 10; // Length of the arrowhead
     const offset = 5; // Distance to move the arrowhead away from the node
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
-
+  
     // Calculate the offset position for the arrowhead
     const offsetX = offset * Math.cos(angle);
     const offsetY = offset * Math.sin(angle);
-
+  
     // Adjust the end position of the arrowhead by the offset
     const adjustedToX = to.x - offsetX;
     const adjustedToY = to.y - offsetY;
-
+  
     ctx.beginPath();
     ctx.moveTo(
       adjustedToX,
@@ -1457,9 +1550,31 @@ export class EnvmapComponent implements AfterViewInit {
       adjustedToX,
       this.overlayCanvas.nativeElement.height - adjustedToY
     );
-    ctx.fillStyle = 'black';
+  
+    // Change arrowhead color based on direction
+    if (direction === 'uni') {
+      ctx.fillStyle = 'black'; // Uni-directional arrowhead in black
+    } else if (direction === 'bi') {
+      ctx.fillStyle = 'green'; // Bi-directional arrowhead in green
+    }
+  
     ctx.fill();
   }
+  updateEdge() {
+    if (this.currentEdge) {
+      this.edges = this.edges.map((edge) => {
+        if (this.currentEdge.edgeId === edge.edgeId) {
+          // Preserve color and direction
+          edge = this.currentEdge;
+          // return { ...edge, ...this.currentEdge };
+        }
+        return edge;
+      });
+      this.redrawCanvas();
+    }
+    console.log(this.edges);
+    
+  } 
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
@@ -1493,11 +1608,16 @@ export class EnvmapComponent implements AfterViewInit {
         imageSize,
         imageSize
       );
-
-      // Optionally, add this asset as a "node" for future reference
-      // this.nodes.push({ id: this.generateNodeId(), pos: { x, y }, type: 'asset', assetType });
     }
-    // this.redrawCanvas(); // Redraw other elements
+
+    this.assets = this.assets.map(asset =>{
+      if(this.selectedAsset?.id === asset.id)
+        asset.orientation = this.orientationAngle;
+      return asset
+    })
+
+    this.overlayCanvas.nativeElement.addEventListener( 'mousemove', this.onMouseMove.bind(this) );
+    this.overlayCanvas.nativeElement.addEventListener( 'mouseup', this.onMouseUp.bind(this) );
   }
   startZonePlotting(): void {
     this.toggleOptionsMenu();
@@ -1547,7 +1667,6 @@ export class EnvmapComponent implements AfterViewInit {
       console.error('Insufficient points or zone type not selected');
     }
   }
-  // Function to check if two polygons overlap
   private isZoneOverlapping(newZonePoints: any[]): boolean {
     for (const existingZone of this.zones) {
       if (this.isPolygonOverlap(existingZone.pos, newZonePoints)) {
@@ -1556,16 +1675,12 @@ export class EnvmapComponent implements AfterViewInit {
     }
     return false;
   }
-
-  // Simplified bounding box overlap check between two polygons
   private isPolygonOverlap(polygon1: any[], polygon2: any[]): boolean {
     const [minX1, minY1, maxX1, maxY1] = this.getBoundingBox(polygon1);
     const [minX2, minY2, maxX2, maxY2] = this.getBoundingBox(polygon2);
 
     return !(minX1 > maxX2 || maxX1 < minX2 || minY1 > maxY2 || maxY1 < minY2);
   }
-
-  // Get the bounding box of a polygon (minX, minY, maxX, maxY)
   private getBoundingBox(polygon: any[]): number[] {
     let minX = Infinity,
       minY = Infinity,
@@ -1659,12 +1774,8 @@ export class EnvmapComponent implements AfterViewInit {
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x =
-        (event.clientX - rect.left) *
-        (this.overlayCanvas.nativeElement.width / rect.width);
-      const y =
-        (event.clientY - rect.top) *
-        (this.overlayCanvas.nativeElement.height / rect.height);
+      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
       if (this.isZonePlottingEnabled) {
         // Plot the point
@@ -1703,11 +1814,19 @@ export class EnvmapComponent implements AfterViewInit {
           x: x,
           y: y,
           type: this.selectedAssetType,
+          orientation : 0,
+          undockingDistance : 0,
+          desc : ''
         };
         this.selectedAsset = asset;
         this.assets.push(asset);
-
+        
         this.plotAsset(x, y, this.selectedAssetType);
+        if(this.selectedAssetType === 'docking'){ 
+          this.isDrawingLine = true; //..
+          this.lineStartX = x;
+          this.lineStartY = y;
+        }
         this.selectedAssetType = null; // Reset after plotting
         this.assetCounter++;
         return;
@@ -1760,7 +1879,6 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
-  // Method to handle zone type selection
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -1779,8 +1897,7 @@ export class EnvmapComponent implements AfterViewInit {
 
     if (this.isDrawingLine) {
       this.lineEndX = (event.clientX - rect.left) * (canvas.width / rect.width);
-      this.lineEndY =
-        (event.clientY - rect.top) * (canvas.height / rect.height);
+      this.lineEndY = (event.clientY - rect.top) * (canvas.height / rect.height);
 
       // Redraw the canvas to show the line preview
       this.redrawCanvas();
@@ -1914,45 +2031,45 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
   private redrawCanvas(): void {
-    // Clear the canvas and redraw all elements (nodes, zones, lines, etc.)
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      this.cdRef.detectChanges(); // remove later..
+      this.cdRef.detectChanges;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
+      // Draw nodes
       this.nodes.forEach((node) => this.drawNode(node, 'blue', false));
-
+  
+      // Draw edges using the stored edge color and type
       this.edges.forEach((edge) => {
         const fromNode = this.nodes.find(
           (node) => node.id === edge.startNodeId
         );
         const toNode = this.nodes.find((node) => node.id === edge.endNodeId);
+  
         if (fromNode && toNode) {
+          // Pass the stored direction (either 'uni' or 'bi') to the drawEdge function
           this.drawEdge(
             fromNode.pos,
             toNode.pos,
-            edge.direction,
+            edge.direction === 'UN_DIRECTIONAL' ? 'uni' : 'bi', // Ensure correct direction is passed
             fromNode.id,
             toNode.id
           );
         }
       });
-
-      this.assets.forEach((asset) => {
-        this.plotAsset(asset.x, asset.y, asset.type);
-      });
-
+  
+      // Draw assets, zones, and robots
+      this.assets.forEach((asset) => this.plotAsset(asset.x, asset.y, asset.type));
       this.zones.forEach((zone) => {
+         // Re-plot the points of the zone
+        zone.pos.forEach((point) => this.plotZonePoint(point.x, point.y));
         this.plottedPoints = zone.pos;
         this.zoneType = zone.type;
         this.drawLayer();
         this.plottedPoints = [];
       });
-
-      this.robos.forEach((robo) =>
-        this.plotRobo(robo.x, robo.y, this.selectedRobo === robo)
-      );
+      this.robos.forEach((robo) => this.plotRobo(robo.x, robo.y, this.selectedRobo === robo));
     }
   }
   drawConnections(): void {
@@ -1997,5 +2114,57 @@ export class EnvmapComponent implements AfterViewInit {
   }
   hideCalibrationLayer(): void {
     this.isOptionsMenuVisible = false;
+  }
+  isPointOnEdge(edge: Edge, x: number, y: number): boolean {
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) return false;
+  
+    const startNode = this.nodes.find(node => node.id === edge.startNodeId);
+    const endNode = this.nodes.find(node => node.id === edge.endNodeId);
+    
+    if (!startNode || !endNode) return false;
+  
+    const startPos = { x: startNode.pos.x, y: canvas.height - startNode.pos.y };
+    const endPos = { x: endNode.pos.x, y: canvas.height - endNode.pos.y };
+    
+    // Calculate distance from point (x, y) to the line segment
+    const lineLength = Math.sqrt(Math.pow(endPos.x - startPos.x, 2) + Math.pow(endPos.y - startPos.y, 2));
+    const projection = ((x - startPos.x) * (endPos.x - startPos.x) + (y - startPos.y) * (endPos.y - startPos.y)) / Math.pow(lineLength, 2);
+    
+    const closestPoint = {
+      x: startPos.x + projection * (endPos.x - startPos.x),
+      y: startPos.y + projection * (endPos.y - startPos.y)
+    };
+    
+    const distance = Math.sqrt(Math.pow(x - closestPoint.x, 2) + Math.pow(y - closestPoint.y, 2));
+    
+    // Define a threshold distance for "close enough" to the line segment
+    const threshold = 10; // Adjust this threshold as needed
+  
+    return distance < threshold;
+  }
+
+  submitEdgeDetails(): void {
+    // Handle form submission, e.g., save edge details
+    this.showPopup = false;
+  }
+
+  hidePopup(): void {
+    this.showPopup = false;
+  }
+  // Method to delete the edge
+  deleteEdge(): void {
+    if (this.currentEdge) {
+      // Remove the edge from the edges array
+      this.edges = this.edges.filter(edge => edge.edgeId !== this.currentEdge?.edgeId);
+
+      // Redraw the canvas
+      this.redrawCanvas();
+
+      // Hide the popup
+      this.hidePopup();
+    }
   }
 }

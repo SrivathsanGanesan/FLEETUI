@@ -11,10 +11,25 @@
   overflow: auto; /* Enables vertical scrolling */
   justify-content: center;
   backdrop-filter: blur(5px);
+  pointer-events: none;
+}
+.popup-overlay1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 30px 30px 30px 30px;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  overflow: auto; /* Enables vertical scrolling */
+  justify-content: center;
+  backdrop-filter: blur(5px);
+
 }
 .popup-content {
   background: white;
-  padding: 15px;
   border-radius: 20px;
   width: auto;
   text-align: center;
@@ -22,17 +37,42 @@
   flex-direction: column;
   align-items: center;
   overflow: auto; /* Enables scrolling within the content */
+
+}
+.popup-content1 {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  gap: 20px;
+  width: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto; /* Enables scrolling within the content */
+
 }
 .popup-content.dynamic-size {
   width: auto;
   height: auto;
+  padding: 10px;
   max-width: 90%;
   max-height: 90%;
 }
 
 .popup-content.fixed-size {
-  width: 1420px;
-  height: 655px;
+  width: 1440px;
+  height: 620px;
+}
+#Edgepopupcontent{
+  max-width: 1000px;
+  gap:20px
+}
+.form-buttons{
+  margin: 20px 20px 0px 20px;
+}
+#formBTN{
+  margin-right: 10px;
 }
 h2 {
   font-size: 20px;
@@ -182,7 +222,7 @@ h2 {
 
 }
 .image-container {
-  margin-top: 20px;
+  margin-top: 10px;
   position: relative;
 }
 
@@ -193,8 +233,8 @@ h2 {
 
 canvas {
   border: 1px solid #ccc;
-  max-height: 85vh; /* Ensure content doesn't exceed viewport height */
-  max-width: 1400px;
+  max-height: 95vh; /* Ensure content doesn't exceed viewport height */
+  max-width: 1420px;
   /* width: 1400px;
   height: 580px; */
 }
@@ -203,8 +243,11 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  /* width: 1400px;
-  height: 580px; */
+  max-height: 95vh; /* Ensure content doesn't exceed viewport height */
+  max-width: 1420px;
+  /* width: 100px;
+  height: 50px; */
+  /* border: 5px solid red; */
   background-color: transparent;
   /* background-color: #ffffff; */
   z-index: 1;
@@ -215,8 +258,8 @@ canvas {
 }
 .close-btn {
   position: absolute;
-  top: -25px;
-  right: -5px;
+  top: -5px;
+  right: 2px;
   background-color: #dad8d8;
   color: #ff7373;
   font-size: 20px;

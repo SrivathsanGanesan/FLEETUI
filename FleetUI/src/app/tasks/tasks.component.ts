@@ -95,9 +95,9 @@ paginator: any;
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
 
     if (!inputValue) {
-      this.filteredTaskData = this.taskData;
+      this.filteredTaskData = this.tasks;
     } else {
-      this.filteredTaskData = this.taskData.filter((item) =>
+      this.filteredTaskData = this.tasks.filter((item) =>
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(inputValue)
         )
@@ -120,7 +120,7 @@ paginator: any;
   }
 
   exportData(format: string) {
-    const data = this.taskData;
+    const data = this.tasks;
     switch (format) {
       case 'csv':
         this.exportService.exportToCSV(data, `TaskDataExport`);
@@ -129,7 +129,7 @@ paginator: any;
         this.exportService.exportToExcel(data, `TaskDataExport`);
         break;
       case 'pdf':
-        this.exportService.exportToPDF(data, `TaskDataExport`);
+        this.exportService.exportToPDF(data, 'TaskDataEXport');
         break;
       default:
         console.error('Invalid export format');
