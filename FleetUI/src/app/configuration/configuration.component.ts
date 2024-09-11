@@ -5,6 +5,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Input,
+  viewChild,
 } from '@angular/core';
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
@@ -25,9 +26,10 @@ interface Poll {
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.css'],
+  styleUrls: ['./configuration.component.css']
 })
 export class ConfigurationComponent implements AfterViewInit {
+  // @ViewChild(EnvmapComponent) envmapComponent: EnvmapComponent; 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
@@ -421,13 +423,6 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isCalibrationLayerVisible = false;
   }
 
-  // saveMap() {
-  //   // here we go..
-  //   console.log(this.mapName, this.siteName);
-  //   console.log('Map Saved');
-  // }
-
-  // Add methods for each button's functionality
   addNode() {
     console.log('Add Node clicked');
   }
@@ -535,7 +530,32 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData(); // Apply filters whenever the date changes
   }
   editItem(item: any) {
-    console.log('Edit item:', item);
+    fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${item.mapName}`, {
+      method:'GET',
+      credentials:'include'
+    }).then((response) =>{
+      return response.json()
+    }).then((data)=>{
+      if(!data.map){
+        alert('Seems map not exist');
+        return;
+      }
+      if(data.error) {
+        console.log('Error while fetching map : ', data.error);
+        return;
+      }
+      const { map }= data;
+      console.log( map );
+      // this.envmapComponent.mapName = item.mapName;
+      // this.envmapComponent.siteName = item.siteName;
+      // this.envmapComponent.ratio = map.mpp;
+      // this.envmapComponent.imageSrc = map.imgUrl;
+      console.log(map.mapName, item.siteName, map.mpp, map.imgUrl);
+      
+      // this.envmapComponent.open()
+    }) .catch((err)=>{
+      console.log(err);
+    })
   }
 
   async deleteMap(map: any): Promise<boolean> {
