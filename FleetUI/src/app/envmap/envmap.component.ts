@@ -280,6 +280,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.firstNode = null;
     this.secondNode = null;
   }
+  public zonePointCount: number = 0; // Track the number of zone points plotted
   selectAssetType(assetType: string) {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
@@ -1679,22 +1680,23 @@ export class EnvmapComponent implements AfterViewInit {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;
     this.plottedPoints = []; // Reset previously plotted points
+    this.zonePointCount = 0; // Reset the point count for each new zone plotting session
   }
-  plotZonePoint(x: number, y: number): void {
+  plotZonePoint(x: number, y: number, isFirstPoint: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      // Draw outer black stroke
+      // Draw outer stroke
       ctx.beginPath();
       ctx.arc(x, y, 6, 0, 2 * Math.PI);
-      ctx.strokeStyle = 'red';
+      ctx.strokeStyle = isFirstPoint ? 'blue' : 'red'; // Violet for the first point, red for others
       ctx.lineWidth = 1;
       ctx.stroke();
-
-      // Draw inner violet circle
+  
+      // Draw inner circle
       ctx.beginPath();
       ctx.arc(x, y, 4, 0, 2 * Math.PI);
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = isFirstPoint ? 'blue' : 'red'; // Violet for the first point, red for others
       ctx.fill();
     } else {
       console.error('Failed to get canvas context');
@@ -1852,7 +1854,8 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
 
-        this.plotZonePoint(x, y);
+        const isFirstPoint = this.plottedPoints.length === 0;
+        this.plotZonePoint(x, y, isFirstPoint);  // Provide isFirstPoint argument
         // Add the point to the array of plotted points
         this.plottedPoints.push({ id: this.zonePosCounter, x, y });
         this.zonePosCounter++;
@@ -2129,11 +2132,10 @@ export class EnvmapComponent implements AfterViewInit {
         const toNode = this.nodes.find((node) => node.id === edge.endNodeId);
   
         if (fromNode && toNode) {
-          // Pass the stored direction (either 'uni' or 'bi') to the drawEdge function
           this.drawEdge(
             fromNode.pos,
             toNode.pos,
-            edge.direction === 'UN_DIRECTIONAL' ? 'uni' : 'bi', // Ensure correct direction is passed
+            edge.direction === 'UN_DIRECTIONAL' ? 'uni' : 'bi',
             fromNode.id,
             toNode.id
           );
@@ -2142,14 +2144,19 @@ export class EnvmapComponent implements AfterViewInit {
   
       // Draw assets, zones, and robots
       this.assets.forEach((asset) => this.plotAsset(asset.x, asset.y, asset.type));
+  
       this.zones.forEach((zone) => {
-         // Re-plot the points of the zone
-        zone.pos.forEach((point) => this.plotZonePoint(point.x, point.y));
+        zone.pos.forEach((point, index) => {
+          // Plot the first point in violet and others in red
+          const isFirstPoint = index === 0;
+          this.plotZonePoint(point.x, point.y, isFirstPoint);
+        });
         this.plottedPoints = zone.pos;
         this.zoneType = zone.type;
         this.drawLayer();
         this.plottedPoints = [];
       });
+  
       this.robos.forEach((robo) => this.plotRobo(robo.x, robo.y, this.selectedRobo === robo));
     }
   }
