@@ -31,9 +31,11 @@ const eventStreamHeader = {
   "Cache-Control": "no-cache",
   Connection: "keep-alive",
 };
-initMqttConnection();
+
+// initMqttConnection();
 
 const getAgvTelemetry = (req, res) => {
+  initMqttConnection();
   endResponse = res;
   try {
     res.writeHead(200, eventStreamHeader);
