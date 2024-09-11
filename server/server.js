@@ -43,7 +43,7 @@ app.use("/fleet-tasks", tasksRouter);
 
 // Err Logs..
 const errLogRouter = require("./fleetcore/routes/errorLogRouter");
-app.use("/fleet-logs", errLogRouter);
+app.use("/err-logs", errLogRouter);
 
 app.listen(process.env.PORT, (err) => {
   err

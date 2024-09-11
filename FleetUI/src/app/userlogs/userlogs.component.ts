@@ -28,22 +28,7 @@ export class Userlogscomponent {
   robotData: any[] = [];
 
   // Your fleet data
-  fleetData = [
-    {
-      column1: 'Row 1 Col 1',
-      column2: 'Row 1 Col 2',
-      column3: 'Row 1 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-    {
-      column1: 'Row 2 Col 1',
-      column2: 'Row 2 Col 2',
-      column3: 'Row 2 Col 3',
-      column4: 'Row 1 Col 3',
-      column5: 'Row 1 Col 3',
-    },
-  ];
+  fleetData: any[] = [];
 
   constructor(
     private exportService: ExportService,
@@ -65,7 +50,7 @@ export class Userlogscomponent {
 
   getTaskLogs() {
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-logs/task-logs/${this.mapData.id}`,
+      `http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs/${this.mapData.id}`,
       {
         method: 'POST',
         credentials: 'include',
@@ -101,7 +86,7 @@ export class Userlogscomponent {
 
   getRoboLogs() {
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-logs/robo-logs/${this.mapData.id}`,
+      `http://${environment.API_URL}:${environment.PORT}/err-logs/robo-logs/${this.mapData.id}`,
       {
         method: 'POST',
         credentials: 'include',
@@ -135,7 +120,40 @@ export class Userlogscomponent {
       });
   }
 
-  getFleetLogs() {}
+  getFleetLogs() {
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/err-logs/fleet-logs/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          timeStamp1: '',
+          timeStamp2: '',
+        }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with the statusCode of ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        const { fleetLogs } = data;
+
+        this.fleetData = fleetLogs.map((fleetErr: any) => {
+          return {
+            dateTime: new Date().toDateString(),
+            moduleName: fleetErr.moduleName,
+            errCode: fleetErr.errCode,
+            criticality: fleetErr.criticality,
+            desc: fleetErr.desc,
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   togglePopup() {
     throw new Error('Method not implemented.');

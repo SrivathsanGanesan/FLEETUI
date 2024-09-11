@@ -64,8 +64,6 @@ export class AreaChartComponent implements OnInit {
         background: '#FFFFFF',
       },
       xaxis: {
-        // min: undefined,
-        // max: undefined,
         categories: [], // Your default categories
         labels: {
           style: {
