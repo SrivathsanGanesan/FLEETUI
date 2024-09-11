@@ -380,7 +380,10 @@
             <app-envmap
               *ngIf="showImageUploadPopup"
               [EnvData]="this.EnvData"
+              [currEditMap]="this.currEditMap"
+              [currEditMapDet]="this.currEditMapDet"
               (closePopup)="closeImageUploadPopup()"
+              (currEditMapChange)="onCurrEditMapChange($event)"
             >
             </app-envmap>
           </div>
