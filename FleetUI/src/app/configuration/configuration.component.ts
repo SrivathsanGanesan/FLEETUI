@@ -86,6 +86,12 @@ export class ConfigurationComponent implements AfterViewInit {
   }
  
   ngOnInit() {
+    const today = new Date();
+    const pastFiveYears = new Date();
+    pastFiveYears.setFullYear(today.getFullYear() - 5);
+
+    this.minDate = this.formatDate(pastFiveYears);
+    this.maxDate = this.formatDate(today);
     let currMapData = this.projectService.getMapData();
     if (currMapData) this.selectedMap = currMapData;
  
@@ -218,31 +224,13 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
  
-  filterData() {
-    const term = this.searchTerm.toLowerCase();
- 
-    if (this.currentTable === 'Environment') {
-      this.filteredEnvData = this.EnvData.filter((item) => {
-        const date = new Date(item.date);
-        const withinDateRange =
-          (!this.startDate || date >= this.startDate) &&
-          (!this.endDate || date <= this.endDate);
- 
-        return (
-          (item.mapName.toLowerCase().includes(term) ||
-            item.siteName.toLowerCase().includes(term) ||
-            item.date.toLowerCase().includes(term)) &&
-          withinDateRange
-        );
-      });
-    } else if (this.currentTable === 'robot') {
-      this.filteredRobotData = this.robotData.filter(
-        (item) =>
-          item.column1.toLowerCase().includes(term) ||
-          item.column2.toLowerCase().includes(term)
-      );
-    }
+
+  
+  // Utility function to remove the time part of a date
+  normalizeDate(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
+  
  
   selectedrobotData = [
     { column1: '192.168.XX.XX', column2: ' ' },
@@ -471,7 +459,11 @@ export class ConfigurationComponent implements AfterViewInit {
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
- 
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+  minDate!: string;
+  maxDate!: string;
+  
   showTable(table: string) {
     this.currentTable = table;
       // Clear search term and reset date inputs when switching between tabs
@@ -490,6 +482,59 @@ export class ConfigurationComponent implements AfterViewInit {
     this.startDate = null; // Clear the start date
     this.endDate = null;   // Clear the end date
   }
+  }
+  filterData() {
+    const term = this.searchTerm.toLowerCase();
+  
+    if (this.currentTable === 'Environment') {
+      this.filteredEnvData = this.EnvData.filter((item) => {
+        const date = new Date(item.date);
+        const normalizedDate = this.normalizeDate(date);  // Normalize the item's date
+        const withinDateRange =
+          (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
+          (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate));  // Normalize the end date
+  
+        return (
+          (item.mapName.toLowerCase().includes(term) ||
+            item.siteName.toLowerCase().includes(term) ||
+            item.date.toLowerCase().includes(term)) &&
+          withinDateRange
+        );
+      });
+    } else if (this.currentTable === 'robot') {
+      this.filteredRobotData = this.robotData.filter(
+        (item) =>
+          item.column1.toLowerCase().includes(term) ||
+          item.column2.toLowerCase().includes(term)
+      );
+    }
+  }
+ 
+  onDateFilterChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const filter = selectElement?.value || '';
+    // Implement your date filter logic here
+  }
+
+   // Function to format date to 'YYYY-MM-DD' format for input type="date"
+   formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  onDateChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const id = input.id;
+    const value = input.value;
+
+    if (id === 'start-date') {
+      this.startDate = value ? new Date(value) : null;
+    } else if (id === 'end-date') {
+      this.endDate = value ? new Date(value) : null;
+    }
+
+    this.filterData(); // Apply filters whenever the date changes
   }
  
   setCurrentTable(table: string) {
@@ -530,27 +575,6 @@ export class ConfigurationComponent implements AfterViewInit {
     this.chosenImageName = '';
     this.imageHeight = 0;
     this.imageWidth = 0;
-  }
- 
-  onDateFilterChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const filter = selectElement?.value || '';
-    // Implement your date filter logic here
-  }
-  startDate: Date | null = null;
-  endDate: Date | null = null;
-  onDateChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const id = input.id;
-    const value = input.value;
- 
-    if (id === 'start-date') {
-      this.startDate = value ? new Date(value) : null;
-    } else if (id === 'end-date') {
-      this.endDate = value ? new Date(value) : null;
-    }
- 
-    this.filterData(); // Apply filters whenever the date changes
   }
   onCurrEditMapChange(currEditMap : boolean){
     this.currEditMap = currEditMap;
