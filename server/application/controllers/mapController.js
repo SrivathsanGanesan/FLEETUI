@@ -136,6 +136,21 @@ const mapGet = async (req, res) => {
   }
 };
 
+const mapUpdate = async (req, res) => {
+  const mapName = req.params.mapName;
+  return res.json(mapName);
+  try {
+  } catch (error) {
+    console.log("err occs : ", err);
+    if (err.code === 11000)
+      return res.status(400).json({
+        msg: "duplicate key error, might conflicts in field values",
+        map: null,
+      });
+    res.status(500).json({ msg: "error occured while inserting!", map: null });
+  }
+};
+
 const newRoboInMap = async (req, res, next) => {
   const { new_robo } = req.body;
   try {
@@ -294,6 +309,7 @@ const newMapImg = async (req, res, next) => {
 module.exports = {
   mapInsert,
   mapGet,
+  mapUpdate,
   newRoboInMap,
   deleteRoboInMap,
   deleteMap,

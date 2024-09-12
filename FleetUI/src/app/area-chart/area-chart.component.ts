@@ -188,8 +188,12 @@ export class AreaChartComponent implements OnInit {
   }
 
   async updateStarvationRate() {
+    let temp = [];
     if (!this.selectedMap || this.starvationTimeInterval) return;
     this.clearAllIntervals(this.starvationTimeInterval);
+    let startTime = new Date().setHours(0, 0, 0, 0); // set current time to starting time of the current day..
+    let endTime = new Date().setMilliseconds(0); // time in milliseconds..
+
     try {
       this.starvationTimeInterval = setInterval(async () => {
         let response = await fetch(
@@ -197,6 +201,11 @@ export class AreaChartComponent implements OnInit {
           {
             method: 'POST',
             credentials: 'include',
+            body: JSON.stringify({
+              timeSpan: 'Daily', // Weekly
+              startTime: startTime,
+              endTime: endTime,
+            }),
           }
         );
         let data = await response.json();
@@ -205,20 +214,16 @@ export class AreaChartComponent implements OnInit {
           return;
         }
         this.starvationArr.push(data.starvation);
-        this.starvationXaxisSeries = [
-          ...this.starvationXaxisSeries,
-          new Date().toDateString(),
-        ];
-        if (this.starvationArr.length > 5) {
-          this.starvationArr.shift();
-          this.starvationXaxisSeries.shift();
-        }
+        if (this.starvationArr.length > 5) temp = this.starvationArr.slice(-5);
+        else temp = [...this.starvationArr];
 
         this.chartOptions.series = [{ data: this.starvationArr }];
-        this.chartOptions.xaxis.categories = this.starvationXaxisSeries;
+        this.chartOptions.xaxis.categories = this.starvationXaxisSeries.map(
+          () => new Date().toDateString()
+        );
 
         // this.cdRef.detectChanges();
-      }, 1000 * 1.5);
+      }, 1000 * 2);
     } catch (err) {
       console.log('Err occured here : ', err);
     }
@@ -248,27 +253,7 @@ export class AreaChartComponent implements OnInit {
     ];
   }
 
-  updatePickAccuracy() {
-    this.chartOptions.series = [
-      {
-        name: 'Series 4',
-        data: [50, 60, 55, 70, 65, 80, 75, 85, 90, 95, 100],
-      },
-    ];
-    this.chartOptions.xaxis.categories = [
-      'Dec 01',
-      'Dec 02',
-      'Dec 03',
-      'Dec 04',
-      'Dec 05',
-      'Dec 06',
-      'Dec 07',
-      'Dec 08',
-      'Dec 09',
-      'Dec 10',
-      'Dec 11',
-    ];
-  }
+  updatePickAccuracy() {}
 
   updateErrorRate() {
     this.chartOptions.series = [

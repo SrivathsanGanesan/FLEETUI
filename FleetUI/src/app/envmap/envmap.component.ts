@@ -296,7 +296,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   ngOnInit(){
     if(this.currEditMap){ 
-      console.log(this.currEditMap);
+      console.log(this.currEditMapDet);
       this.showImage = true;
       this.mapName = this.currEditMapDet.mapName;
       this.siteName = this.currEditMapDet.siteName;
@@ -306,9 +306,9 @@ export class EnvmapComponent implements AfterViewInit {
       this.edges = this.currEditMapDet.edges;
       this.assets = this.currEditMapDet.assets;
       this.zones = this.currEditMapDet.zones;
-      this.nodeCounter = parseInt(this.nodes[this.nodes.length-1].id)+1;
-      this.edgeCounter = parseInt(this.edges[this.edges.length-1].edgeId)+1;
-      this.assetCounter = this.assets[this.assets.length-1].id+1;
+      this.nodeCounter = parseInt(this.nodes[this.nodes.length-1].id)+1 || this.nodeCounter;
+      this.edgeCounter = parseInt(this.edges[this.edges.length-1].edgeId)+1 || this.edgeCounter;
+      this.assetCounter = this.assets[this.assets.length-1]?.id+1 || this.assetCounter;
       this.zoneCounter = parseInt(this.zones[this.zones.length-1]?.id)+1 ? parseInt(this.zones[this.zones.length-1]?.id)+1 : this.zoneCounter;
       this.open();
     }
