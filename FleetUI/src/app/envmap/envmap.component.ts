@@ -167,12 +167,12 @@ export class EnvmapComponent implements AfterViewInit {
   showImagePopup: boolean = false;
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
-  private nodeCounter: number = 1; // Counter to assign node numbers
-  private edgeCounter: number = 1; // Counter to assign edge numbers
-  private actionCounter: number = 1; // Counter to assign action numbers
-  private assetCounter: number = 1; // counter to assign asset numbers
-  private zoneCounter: number = 1; // counter to assigh zone numbers
-  private zonePosCounter: number = 1; // counter to assign zone numbers
+  nodeCounter: number = 1; // Counter to assign node numbers
+  edgeCounter: number = 1; // Counter to assign edge numbers
+  actionCounter: number = 1; // Counter to assign action numbers
+  assetCounter: number = 1; // counter to assign asset numbers
+  zoneCounter: number = 1; // counter to assigh zone numbers
+  zonePosCounter: number = 1; // counter to assign zone numbers
   selectedNode: Node | null = null;
   lastSelectedNode: { x: number; y: number } | null = null;
   node: { id: number; x: number; y: number }[] = []; // Nodes with unique IDs
@@ -216,11 +216,15 @@ export class EnvmapComponent implements AfterViewInit {
   draggingNode:boolean=false;
   draggingAsset: boolean = false;
   draggingRobo: boolean = false;
+  private draggingZonePoint: boolean = false;
+  private selectedZone: Zone | null = null;
+  private selectedZonePoint: { x: number, y: number } | null = null;
   isZonePlottingEnabled = false;
   plottedPoints: { id: number; x: number; y: number }[] = [];
   firstPlottedPoint: { id: number; x: number; y: number } | null = null;
   zoneType: ZoneType | null = null; // Selected zone type
   isPopupVisible: boolean = false; // Popup visibility
+  public zonePointCount: number = 0; // Track the number of zone points plotted
   zoneColors: { [key in ZoneType]: string } = {
     [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)', // Red with 30% opacity
     [ZoneType.MEDIUM_SPEED_ZONE]: 'rgba(255, 165, 0, 0.3)', // Orange with 30% opacity
@@ -291,7 +295,8 @@ export class EnvmapComponent implements AfterViewInit {
     if(this.currEditMap) this.showImage = true;
   }
   ngOnInit(){
-    if(this.currEditMap){
+    if(this.currEditMap){ 
+      console.log(this.currEditMap);
       this.showImage = true;
       this.mapName = this.currEditMapDet.mapName;
       this.siteName = this.currEditMapDet.siteName;
@@ -304,7 +309,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodeCounter = parseInt(this.nodes[this.nodes.length-1].id)+1;
       this.edgeCounter = parseInt(this.edges[this.edges.length-1].edgeId)+1;
       this.assetCounter = this.assets[this.assets.length-1].id+1;
-      this.zoneCounter = parseInt(this.zones[this.zones.length-1].id)+1;
+      this.zoneCounter = parseInt(this.zones[this.zones.length-1]?.id)+1 ? parseInt(this.zones[this.zones.length-1]?.id)+1 : this.zoneCounter;
       this.open();
     }
   }
@@ -426,7 +431,9 @@ export class EnvmapComponent implements AfterViewInit {
       // Redraw the canvas
       this.redrawCanvas();
     }
-  
+    else {
+      console.log('No node selected to delete.');
+    }
     // Hide confirmation dialog
     this.isConfirmationVisible = false;
   }
@@ -776,6 +783,7 @@ export class EnvmapComponent implements AfterViewInit {
     // link.download = 'canvas-image.png';
     link.click();
     this.showImagePopup = false;
+    this.isDistanceConfirmed = false; // Reset the state for future use
   }
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
@@ -860,40 +868,41 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
 
-    if(!this.ratio)
-      this.ratio = Number(
-        (document.getElementById('resolution') as HTMLInputElement).value
-      );
-
+    if(!this.currEditMap)
+      if(!this.ratio)
+        this.ratio = Number(
+          (document.getElementById('resolution') as HTMLInputElement).value
+        );
     if (this.mapName && this.siteName && this.imageSrc) {
-      this.fileName = null;
-      this.showImage = true;
-
-      const img = new Image();
-      img.src = this.imageSrc;
-
-      img.onload = () => {
-        if (this.imageCanvas && this.imageCanvas.nativeElement) {
-          const canvas = this.imageCanvas.nativeElement;
-          const ctx = canvas.getContext('2d')!;
-
-          canvas.width = this.width || img.width;
-          canvas.height = this.height || img.height;
-
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
-            const overlay = this.overlayCanvas.nativeElement;
-            overlay.width = canvas.width;
-            overlay.height = canvas.height;
-          }
+          this.fileName = null;
+          this.showImage = true;
+    
+          const img = new Image();
+          img.src = this.imageSrc;
+    
+          img.onload = () => {
+            if (this.imageCanvas && this.imageCanvas.nativeElement) {
+              const canvas = this.imageCanvas.nativeElement;
+              const ctx = canvas.getContext('2d')!;
+    
+              canvas.width = this.width || img.width;
+              canvas.height = this.height || img.height;
+    
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    
+              if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
+                const overlay = this.overlayCanvas.nativeElement;
+                overlay.width = canvas.width;
+                overlay.height = canvas.height;
+                this.redrawCanvas();
+              }
+            }
+          };
+        } else {
+          alert('Please enter both Map Name and Site Name before clicking Open.');
         }
-      };
-    } else {
-      alert('Please enter both Map Name and Site Name before clicking Open.');
-    }
-  }
+      }
   close(): void {
     this.currEditMapChange.emit(false);
     this.showImage = true;
@@ -928,8 +937,8 @@ export class EnvmapComponent implements AfterViewInit {
     }
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
-      this.showPopup = true; // Show the popup
-      }
+      this.DockPopup = true; // Show the popup
+    }
   }
   savePopupData(): void {
     console.log(this.selectedAsset);
@@ -1260,7 +1269,9 @@ export class EnvmapComponent implements AfterViewInit {
       );
 
       this.isPlottingEnabled = false; // Disable further plotting after two nodes
-      this.showIntermediateNodesDialog = true;
+      setTimeout(() => {
+        this.showIntermediateNodesDialog = true;
+      }, 1000);
 
     } else {
       // Plotting additional nodes
@@ -1676,26 +1687,33 @@ export class EnvmapComponent implements AfterViewInit {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;
     this.plottedPoints = []; // Reset previously plotted points
+    this.zonePointCount = 0; // Reset the point count for each new zone plotting session
   }
-  plotZonePoint(x: number, y: number): void {
+  plotZonePoint(x: number, y: number, isFirstPoint: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      // Draw outer black stroke
+      // Draw outer stroke
       ctx.beginPath();
       ctx.arc(x, y, 6, 0, 2 * Math.PI);
-      ctx.strokeStyle = 'red';
+      ctx.strokeStyle = isFirstPoint ? 'blue' : 'red'; // Violet for the first point, red for others
       ctx.lineWidth = 1;
       ctx.stroke();
-
-      // Draw inner violet circle
+  
+      // Draw inner circle
       ctx.beginPath();
       ctx.arc(x, y, 4, 0, 2 * Math.PI);
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = isFirstPoint ? 'blue' : 'red'; // Violet for the first point, red for others
       ctx.fill();
     } else {
       console.error('Failed to get canvas context');
     }
+  }
+  private isPointTooClose(x: number, y: number, existingPoints: any[], threshold: number = 6): boolean {
+    return existingPoints.some(point => {
+      const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2);
+      return distance < threshold;
+    });
   }
   drawLayer(): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -1848,8 +1866,8 @@ export class EnvmapComponent implements AfterViewInit {
             return;
           }
         }
-
-        this.plotZonePoint(x, y);
+        const isFirstPoint = this.plottedPoints.length === 0;
+        this.plotZonePoint(x, y, isFirstPoint);  // Provide isFirstPoint argument
         // Add the point to the array of plotted points
         this.plottedPoints.push({ id: this.zonePosCounter, x, y });
         this.zonePosCounter++;
@@ -1892,6 +1910,17 @@ export class EnvmapComponent implements AfterViewInit {
           this.selectedAsset = asset;
           this.draggingAsset = true;
           break;
+        }
+      }
+      for (const zone of this.zones) {
+        for (const point of zone.pos) {
+          const radius = 6;  // Same as the point's radius
+          if (Math.abs(x - point.x) <= radius && Math.abs(y - point.y) <= radius) {
+            this.selectedZone = zone;
+            this.selectedZonePoint = point;
+            this.draggingZonePoint = true;
+            return;  // Exit early if zone point is clicked
+          }
         }
       }
       for (const robo of this.robos) {
@@ -1952,6 +1981,18 @@ export class EnvmapComponent implements AfterViewInit {
       this.selectedAsset.y = y;
     }
     
+    if (this.draggingZonePoint && this.selectedZonePoint) {
+      if (this.isPointTooClose(x, y, this.plottedPoints)) {
+        // Optionally show an alert or message
+        console.warn('The point is too close to an existing zone point');
+        return;
+      }
+      // Update the position of the selected zone point
+      this.selectedZonePoint.x = x;
+      this.selectedZonePoint.y = y;
+      this.redrawCanvas();  // Redraw the canvas to reflect the updated position
+      return;
+    }
 
     if(this.draggingNode && this.selectedNode){
       this.selectedNode.pos.x = x;
@@ -1990,7 +2031,12 @@ export class EnvmapComponent implements AfterViewInit {
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y;
-
+    if (this.draggingZonePoint && this.selectedZonePoint) {
+      // Update the final position of the zone point
+      this.draggingZonePoint = false;
+      this.selectedZonePoint = null;
+      this.selectedZone = null;
+    }
     if (
       this.isDrawingLine &&
       this.lineStartX !== null &&
@@ -2022,7 +2068,12 @@ export class EnvmapComponent implements AfterViewInit {
         this.onMouseUp.bind(this)
       );
     }
-
+    if (this.draggingZonePoint && this.selectedZonePoint) {
+      // Update the final position of the zone point
+      this.draggingZonePoint = false;
+      this.selectedZonePoint = null;
+      this.selectedZone = null;
+    }
     if (this.draggingAsset && this.selectedAsset) {
       // Finalize asset position
       this.draggingAsset = false;
@@ -2140,7 +2191,11 @@ export class EnvmapComponent implements AfterViewInit {
       this.assets.forEach((asset) => this.plotAsset(asset.x, asset.y, asset.type));
       this.zones.forEach((zone) => {
          // Re-plot the points of the zone
-        zone.pos.forEach((point) => this.plotZonePoint(point.x, point.y));
+         zone.pos.forEach((point, index) => {
+          // Plot the first point in violet and others in red
+          const isFirstPoint = index === 0;
+          this.plotZonePoint(point.x, point.y, isFirstPoint);
+        });
         this.plottedPoints = zone.pos;
         this.zoneType = zone.type;
         this.drawLayer();
