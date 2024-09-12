@@ -41,6 +41,8 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+
 
 
 @NgModule({
@@ -75,6 +77,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
+ 
     
   ],
   imports: [
@@ -89,6 +92,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     EnvmapModule,
     MatDialogModule,
     MatPaginatorModule,
+    MatTableModule,
+   
   ],
   providers: [
     // provideClientHydration()

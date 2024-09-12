@@ -114,126 +114,113 @@
       </div>
 
       <!-- Table -->
-      <div class="table-container">
-        <div
-          class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative"
-        >
-          <div class="overflow-y-auto max-h-[32rem] w-full">
-            <table
-              class="min-w-full divide-y divide-gray-200"
-              *ngIf="currentTable === 'task'"
-            >
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Date and time
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Task ID
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Task name
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Error code
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Criticality
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Description
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of taskData; index as i">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.dateTime }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ i + 1 }}
-                    <!-- {{ item.taskId }} -->
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.taskName }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.errCode }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.criticality }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ item.desc }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <table
-              class="min-w-full divide-y divide-gray-200"
-              *ngIf="currentTable === 'robot'"
-            >
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Date and time </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Robot ID </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Robot name </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Error code </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Criticality </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Description </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of robotData">
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.dateTime }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.roboId }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.roboName }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.errCode }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.criticality }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.desc }} </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <table
-              class="min-w-full divide-y divide-gray-200"
-              *ngIf="currentTable === 'fleet'"
-            >
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Date and time </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Module name </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Error code </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Criticality </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" > Description </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let item of fleetData">
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.dateTime }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.moduleName }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.errCode }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.criticality }} </td>
-                  <td class="px-6 py-4 whitespace-nowrap"> {{ item.desc }} </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <!-- Table -->
+<div class="table-container">
+  <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
+    <div class="overflow-y-auto max-h-[32rem] w-full">
+      <!-- Task table -->
+      <table mat-table [dataSource]="paginatedTaskData" *ngIf="activeTable === 'task'" class="mat-elevation-z8">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Error code</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let item of paginatedTaskData.data">
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.dateTime }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.taskId }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.taskName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.errCode }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.criticality }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.desc }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Paginator for Task table -->
+      <div class="paginator-container" *ngIf="activeTable === 'task'">
+        <mat-paginator
+          [length]="paginatedTaskData.data.length"
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 15, 20]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
       </div>
+
+      <!-- Robot table -->
+      <table mat-table [dataSource]="paginatedRobotData" *ngIf="activeTable === 'robot'" class="mat-elevation-z8">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Robot name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Error code</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let item of paginatedRobotData.data">
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.dateTime }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.roboId }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.roboName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.errCode }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.criticality }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.desc }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Paginator for Robot table -->
+      <div class="paginator-container" *ngIf="activeTable === 'robot'">
+        <mat-paginator
+          [length]="paginatedRobotData.data.length"
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 15, 20]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+
+      <!-- Fleet table -->
+      <table mat-table [dataSource]="paginatedFleetData" *ngIf="activeTable === 'fleet'" class="mat-elevation-z8">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date and time</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Module name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Error code</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criticality</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let item of paginatedFleetData.data">
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.dateTime }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.moduleName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.errCode }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.criticality }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ item.desc }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Paginator for Fleet table -->
+      <div class="paginator-container" *ngIf="activeTable === 'fleet'">
+        <mat-paginator
+          [length]="paginatedFleetData.data.length"
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 15, 20]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       <!-- Export -->
       <div class="export-button-container">

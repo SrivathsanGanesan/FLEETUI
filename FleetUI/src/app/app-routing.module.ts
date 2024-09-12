@@ -13,6 +13,7 @@ import { RobotsComponent } from './robots/robots.component';
 import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.component';
 import { TasksComponent } from './tasks/tasks.component';
 
+
 const routes: Routes = [
   {
     path: '',
@@ -56,6 +57,7 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard, ProjectGuard], // Ensure both guards are here
   },
+ 
 
   // { path: 'statistics/operation', component: StatisticsComponent },
   // { path: 'statistics/robot', component: RobotDashboardComponent },
