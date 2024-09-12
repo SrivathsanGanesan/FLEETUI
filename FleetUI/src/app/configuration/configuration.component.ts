@@ -474,6 +474,22 @@ export class ConfigurationComponent implements AfterViewInit {
  
   showTable(table: string) {
     this.currentTable = table;
+      // Clear search term and reset date inputs when switching between tabs
+  if (table === 'fleet') {
+    this.searchTerm = '';  // Clear the search term
+    this.startDate = null; // Clear the start date
+    this.endDate = null;   // Clear the end date
+  }
+  if (table === 'robot' ) {
+    this.searchTerm = '';  // Clear the search term
+    this.startDate = null; // Clear the start date
+    this.endDate = null;   // Clear the end date
+  }
+  if (table === 'environment' ) {
+    this.searchTerm = '';  // Clear the search term
+    this.startDate = null; // Clear the start date
+    this.endDate = null;   // Clear the end date
+  }
   }
  
   setCurrentTable(table: string) {
