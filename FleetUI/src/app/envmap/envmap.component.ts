@@ -15,6 +15,7 @@ import { environment } from '../../environments/environment.development';
 import { saveAs } from 'file-saver';
 import { ProjectService } from '../services/project.service';
 import { sequence } from '@angular/animations';
+import { parse } from 'path';
 
 interface Node {
   id: string;
@@ -300,6 +301,10 @@ export class EnvmapComponent implements AfterViewInit {
       this.edges = this.currEditMapDet.edges;
       this.assets = this.currEditMapDet.assets;
       this.zones = this.currEditMapDet.zones;
+      this.nodeCounter = parseInt(this.nodes[this.nodes.length-1].id)+1;
+      this.edgeCounter = parseInt(this.edges[this.edges.length-1].edgeId)+1;
+      this.assetCounter = this.assets[this.assets.length-1].id+1;
+      this.zoneCounter = parseInt(this.zones[this.zones.length-1].id)+1;
       this.open();
     }
   }
@@ -923,13 +928,8 @@ export class EnvmapComponent implements AfterViewInit {
     }
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
-<<<<<<< HEAD
-      this.showPopup = true; // Show the popup
-      }
-=======
       this.DockPopup = true; // Show the popup
     }
->>>>>>> parent of 5d6f51b22 (esfd)
   }
   savePopupData(): void {
     console.log(this.selectedAsset);
