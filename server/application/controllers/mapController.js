@@ -137,9 +137,26 @@ const mapGet = async (req, res) => {
 };
 
 const mapUpdate = async (req, res) => {
-  const mapName = req.params.mapName;
-  return res.json(mapName);
+  const queMapName = req.params.mapName;
+  const mapData = req.body;
   try {
+    const map = await Map.exists({ mapName: queMapName });
+    if (!map)
+      return res
+        .status(400)
+        .json({ exists: false, msg: "Map seems not exists" });
+    let isMapNameExists = await Map.exists({ mapName: mapData.mapName });
+    if (isMapNameExists)
+      return res
+        .status(400)
+        .json({ mapExists: true, msg: "Map with this name already exists" });
+    for (let key of Object.keys(mapData)) {
+      if (mapData[key] === null) delete mapData[key];
+    }
+    const doc = await Map.findOneAndUpdate({ mapName: queMapName }, mapData, {
+      new: true,
+    });
+    return res.status(200).json({ updatedData: doc, msg: "data updated" });
   } catch (error) {
     console.log("err occs : ", err);
     if (err.code === 11000)

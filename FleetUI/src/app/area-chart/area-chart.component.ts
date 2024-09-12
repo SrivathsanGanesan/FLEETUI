@@ -265,7 +265,10 @@ export class AreaChartComponent implements OnInit {
     ];
   }
 
-  updatePickAccuracy() {}
+  async updatePickAccuracy() {
+    if (!this.selectedMap || this.pickAccTimeInterval) return;
+    this.clearAllIntervals(this.pickAccTimeInterval);
+  }
 
   updateErrorRate() {
     this.chartOptions.series = [
