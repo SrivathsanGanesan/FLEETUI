@@ -6,7 +6,7 @@
       <div class="header-section">
         <h1 class="header-title">Tasks</h1>
         <div class="subheader-container">
-          <div class="subheader-text">view and edit tasks</div>
+          <div class="subheader-text">View and Edit Tasks</div>
           <img
             src="../../assets/icons/i-icon.svg"
             alt="Icon"
@@ -19,7 +19,7 @@
       <div class="search-filter-container">
         <!-- Search Bar -->
         <div class="search-box">
-          <input type="text" placeholder="Search For Something..." />
+          <input type="text" (input)="onSearch($event)" placeholder="Search For Something..." />
           <button class="search-btn">
             <img
               src="../../assets/icons/download-removebg-preview.png"
