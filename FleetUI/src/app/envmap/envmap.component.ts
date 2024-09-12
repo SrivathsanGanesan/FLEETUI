@@ -923,13 +923,8 @@ export class EnvmapComponent implements AfterViewInit {
     }
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
-<<<<<<< HEAD
       this.showPopup = true; // Show the popup
       }
-=======
-      this.DockPopup = true; // Show the popup
-    }
->>>>>>> parent of 5d6f51b22 (esfd)
   }
   savePopupData(): void {
     console.log(this.selectedAsset);
