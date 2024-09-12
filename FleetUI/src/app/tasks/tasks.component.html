@@ -6,7 +6,7 @@
       <div class="header-section">
         <h1 class="header-title">Tasks</h1>
         <div class="subheader-container">
-          <div class="subheader-text">View and Edit Tasks</div>
+          <div class="subheader-text">view and edit tasks</div>
           <img
             src="../../assets/icons/i-icon.svg"
             alt="Icon"
@@ -19,8 +19,7 @@
       <div class="search-filter-container">
         <!-- Search Bar -->
         <div class="search-box">
-          <input type="text" (input)="onSearch($event)" placeholder="Search For Something..." />
-
+          <input type="text" placeholder="Search For Something..." />
           <button class="search-btn">
             <img
               src="../../assets/icons/download-removebg-preview.png"
@@ -28,10 +27,51 @@
             />
           </button>
         </div>
+
+        <!-- Options Container -->
+        <!-- <div class="options-container">
+          <div class="filter-options">
+            <button
+              [class.active]="activeFilter === 'today'"
+              (click)="setActiveFilter('today')"
+            >
+              Today
+            </button>
+            <button
+              [class.active]="activeFilter === 'week'"
+              (click)="setActiveFilter('week')"
+            >
+              Week
+            </button>
+            <button
+              [class.active]="activeFilter === 'month'"
+              (click)="setActiveFilter('month')"
+            >
+              Month
+            </button>
+          </div>
+
+          <div class="date-inputs">
+            <label for="start-date" class="date-label"></label>
+            <input
+              type="date"
+              id="start-date"
+              (change)="onDateChange($event)"
+              class="date-input"
+            />
+
+            <label for="end-date" class="date-label"></label>
+            <input
+              type="date"
+              id="end-date"
+              (change)="onDateChange($event)"
+              class="date-input"
+            />
+          </div>
+        </div> -->
       </div>
 
-      
-<!-- Table -->
+      <!-- Table -->
 <div class="table-container">
   <div class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative">
     
@@ -58,32 +98,18 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Source and Destination
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let item of paginatedData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
+          <tr *ngFor="let item of paginatedData; index as i">
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ i + 1 + (paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10) }}
+              {{ i + 1 + ((paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10)) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.taskId }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.taskName }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.status }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.roboName }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.sourceDestination }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button 
-                class="btn-common" 
-                [ngClass]="{ 'paused-button': item.paused, 'active-button': !item.paused }"
-                [title]="item.paused ? 'Activate the task' : 'Pause the task'" 
-                (click)="onPause(item)">
-                {{ item.paused ? 'Activate' : 'Pause' }}
-              </button>
-
-             <button class="btn-common btn-cancel" (click)="onCancel(item)">Cancel</button>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -91,17 +117,10 @@
   </div>
 </div>
 
-<!-- Paginator -->
-<div class="paginator-container">
-  <mat-paginator
-    [length]="filteredTaskData.length"
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10]"
-    (page)="onPageChange($event)"
-    showFirstLastButtons
-  >
-  </mat-paginator>
-</div>
+    <!-- Paginator -->
+    <div class="paginator-container">
+      <mat-paginator [length]="filteredTaskData.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 15, 20]" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
+    </div>
   
 
 
@@ -130,7 +149,7 @@
             <div class="button-container">
               <button (click)="exportData('csv')">Export as CSV</button>
               <button (click)="exportData('excel')">Export as Excel</button>
-              <!-- <button (click)="exportData('pdf')">Export as PDF</button> -->
+              <button (click)="exportData('pdf')">Export as PDF</button>
             </div>
           </div>
         </div>

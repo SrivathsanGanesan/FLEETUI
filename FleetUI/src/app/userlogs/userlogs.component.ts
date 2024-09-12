@@ -1,161 +1,209 @@
 import { environment } from '../../environments/environment.development';
 import { ExportService } from '../export.service';
-import { ChangeDetectorRef, Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ProjectService } from '../services/project.service';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { PageEvent } from '@angular/material/paginator';
+import { timeStamp } from 'console';
 
 @Component({
   selector: 'app-userlogs',
   templateUrl: './userlogs.component.html',
-  styleUrls: ['./userlogs.component.css'], // Corrected styleUrl to styleUrls
+  styleUrl: './userlogs.component.css',
 })
-export class Userlogscomponent implements OnInit, AfterViewInit {
+export class Userlogscomponent {
   mapData: any | null = null;
+  activeFilter: any;
+  ONBtn: any;
   searchQuery: string = '';
-  isPopupVisible: boolean = false;
+  isPopupVisible: boolean | undefined;
   isTransitioning: boolean = false;
   activeButton: string = 'task'; // Default active button
   activeHeader: string = 'Task logs'; // Default header
-  currentTable: string = 'task';
-  @ViewChild(MatPaginator) paginator: MatPaginator | null = null;
+  currentTable = 'task';
+  currentTab: any;
 
-  displayedColumns: string[] = ['dateTime', 'taskId', 'taskName', 'errCode', 'criticality', 'desc'];
-  paginatedTaskData = new MatTableDataSource<any>([]);
-  paginatedRobotData = new MatTableDataSource<any>([]);
-  paginatedFleetData = new MatTableDataSource<any>([]);
-activeTable: any;
+  // Your task data
+  taskData: any[] = [];
+
+  // Your robot data
+  robotData: any[] = [];
+
+  // Your fleet data
+  fleetData: any[] = [];
 
   constructor(
     private exportService: ExportService,
     private projectService: ProjectService
-  ) {}
+  ) {
+    this.mapData = this.projectService.getMapData();
+  }
 
   ngOnInit() {
+    this.mapData = this.projectService.getMapData();
+    if (!this.mapData) {
+      console.log('Seems no map has been selected');
+      return;
+    }
     this.getTaskLogs();
     this.getRoboLogs();
     this.getFleetLogs();
   }
 
-  ngAfterViewInit() {
-    if (this.paginator) {
-      this.paginatedTaskData.paginator = this.paginator;
-      this.paginatedRobotData.paginator = this.paginator;
-      this.paginatedFleetData.paginator = this.paginator;
-    }
-  }
-
   getTaskLogs() {
-    fetch(`http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs/${this.mapData?.id}`, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ timeStamp1: '', timeStamp2: '' }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        const { taskLogs } = data;
-        this.paginatedTaskData.data = taskLogs.notifications.map((taskErr: any) => ({
-          dateTime: new Date().toDateString(),
-          taskId: 'task_001',
-          taskName: 'Pick Packs',
-          errCode: taskErr.name,
-          criticality: taskErr.criticality,
-          desc: taskErr.description,
-        }));
-        this.setPaginatedData();
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          timeStamp1: '',
+          timeStamp2: '',
+        }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with the statusCode of ${response.status}`);
+        return response.json();
       })
-      .catch(err => console.error(err));
+      .then((data) => {
+        const { taskLogs } = data;
+        this.taskData = taskLogs.notifications.map((taskErr: any) => {
+          return {
+            dateTime: new Date().toDateString(),
+            taskId: 'task_001',
+            taskName: 'Pick Packs',
+            errCode: taskErr.name,
+            criticality: taskErr.criticality,
+            desc: taskErr.description,
+          };
+        });
+        // console.log(taskLogs);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   getRoboLogs() {
-    fetch(`http://${environment.API_URL}:${environment.PORT}/err-logs/robo-logs/${this.mapData?.id}`, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ timeStamp1: '', timeStamp2: '' }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        const { roboLogs } = data;
-        this.paginatedRobotData.data = roboLogs.table[0].values.map((roboErr: any) => ({
-          dateTime: new Date().toDateString(),
-          roboId: roboErr.ROBOT_ID,
-          roboName: roboErr.ROBOT_NAME,
-          errCode: '100',
-          criticality: Math.floor(Math.random() * 10),
-          desc: roboErr.DESCRIPTION,
-        }));
-        this.setPaginatedData();
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/err-logs/robo-logs/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          timeStamp1: '',
+          timeStamp2: '',
+        }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with the statusCode of ${response.status}`);
+        return response.json();
       })
-      .catch(err => console.error(err));
+      .then((data) => {
+        const { roboLogs } = data;
+
+        this.robotData = roboLogs.table[0].values.map((roboErr: any) => {
+          return {
+            dateTime: new Date().toDateString(),
+            roboId: roboErr.ROBOT_ID,
+            roboName: roboErr.ROBOT_NAME,
+            errCode: '100',
+            criticality: Math.floor(Math.random() * 10),
+            desc: roboErr.DESCRIPTION,
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   getFleetLogs() {
-    fetch(`http://${environment.API_URL}:${environment.PORT}/err-logs/fleet-logs/${this.mapData?.id}`, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ timeStamp1: '', timeStamp2: '' }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        const { fleetLogs } = data;
-        this.paginatedFleetData.data = fleetLogs.map((fleetErr: any) => ({
-          dateTime: new Date().toDateString(),
-          moduleName: fleetErr.moduleName,
-          errCode: fleetErr.errCode,
-          criticality: fleetErr.criticality,
-          desc: fleetErr.desc,
-        }));
-        this.setPaginatedData();
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/err-logs/fleet-logs/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          timeStamp1: '',
+          timeStamp2: '',
+        }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with the statusCode of ${response.status}`);
+        return response.json();
       })
-      .catch(err => console.error(err));
+      .then((data) => {
+        const { fleetLogs } = data;
+
+        this.fleetData = fleetLogs.map((fleetErr: any) => {
+          return {
+            dateTime: new Date().toDateString(),
+            moduleName: fleetErr.moduleName,
+            errCode: fleetErr.errCode,
+            criticality: fleetErr.criticality,
+            desc: fleetErr.desc,
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
-  setPaginatedData() {
-    if (this.paginator) {
-      switch (this.currentTable) {
-        case 'task':
-          this.paginatedTaskData.paginator = this.paginator;
-          break;
-        case 'robot':
-          this.paginatedRobotData.paginator = this.paginator;
-          break;
-        case 'fleet':
-          this.paginatedFleetData.paginator = this.paginator;
-          break;
-        default:
-          break;
-      }
-      // Trigger update to reflect paginator changes
-      this.paginatedTaskData._updateChangeSubscription();
-      this.paginatedRobotData._updateChangeSubscription();
-      this.paginatedFleetData._updateChangeSubscription();
-    }
+  togglePopup() {
+    throw new Error('Method not implemented.');
+  }
+
+  exportAsPDF() {
+    throw new Error('Method not implemented.');
+  }
+
+  exportAsExcel() {
+    throw new Error('Method not implemented.');
+  }
+
+  exportAsCSV() {
+    throw new Error('Method not implemented.');
+  }
+
+  onTabChange(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
+
+  setActiveButton(button: string) {
+    this.activeButton = button;
+    this.isTransitioning = true;
+    setTimeout(() => {
+      this.activeButton = button;
+      this.activeHeader = this.getHeader(button);
+      this.isTransitioning = false;
+    }, 200); // 300ms matches the CSS transition duration
   }
 
   showTable(table: string) {
     this.currentTable = table;
-    this.setPaginatedData();
   }
 
-  onPageChange(event: PageEvent) {
-    // Handle page change if needed
+  setCurrentTable(table: string) {
+    this.currentTable = table;
   }
 
-  togglePopup() {
-    this.isPopupVisible = !this.isPopupVisible;
-  }
-
-  exportAsPDF() {
-    this.exportData('pdf');
-  }
-
-  exportAsExcel() {
-    this.exportData('excel');
-  }
-
-  exportAsCSV() {
-    this.exportData('csv');
+  getCurrentTableData() {
+    switch (this.currentTable) {
+      case 'task':
+        return this.taskData;
+      case 'robot':
+        return this.robotData;
+      case 'fleet':
+        return this.fleetData;
+      default:
+        return [];
+    }
   }
 
   exportData(format: string) {
@@ -165,7 +213,10 @@ activeTable: any;
         this.exportService.exportToCSV(data, `${this.currentTable}DataExport`);
         break;
       case 'excel':
-        this.exportService.exportToExcel(data, `${this.currentTable}DataExport`);
+        this.exportService.exportToExcel(
+          data,
+          `${this.currentTable}DataExport`
+        );
         break;
       case 'pdf':
         this.exportService.exportToPDF(data, `${this.currentTable}DataExport`);
@@ -196,26 +247,33 @@ activeTable: any;
     this.isPopupVisible = false;
   }
 
-  setActiveButton(button: string) {
-    this.activeButton = button;
-    this.isTransitioning = true;
-    setTimeout(() => {
-      this.activeButton = button;
-      this.activeHeader = this.getHeader(button);
-      this.isTransitioning = false;
-    }, 200); // 200ms to match CSS transition duration
+  setActiveFilter(filter: string) {
+    this.activeFilter = filter;
   }
 
-  getCurrentTableData() {
-    switch (this.currentTable) {
-      case 'task':
-        return this.paginatedTaskData.data;
-      case 'robot':
-        return this.paginatedRobotData.data;
-      case 'fleet':
-        return this.paginatedFleetData.data;
-      default:
-        return [];
-    }
+  onSearch(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const query = inputElement.value;
+    // Implement your search logic here
+  }
+
+  onDateFilterChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const filter = selectElement.value;
+    // Implement your date filter logic here
+  }
+
+  onDateChange(event: Event): void {
+    const startDateElement = document.getElementById(
+      'start-date'
+    ) as HTMLInputElement;
+    const endDateElement = document.getElementById(
+      'end-date'
+    ) as HTMLInputElement;
+
+    const startDate = startDateElement.value;
+    const endDate = endDateElement.value;
+
+    // Implement your date range filtering logic here
   }
 }

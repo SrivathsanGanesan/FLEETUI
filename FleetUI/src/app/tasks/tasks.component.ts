@@ -1,102 +1,110 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ExportService } from '../export.service';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-
+ 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css'],
+  styleUrls: ['./tasks.component.css'], // Note: changed to `styleUrls`
 })
-export class TasksComponent implements OnInit, AfterViewInit {
-i: any;
-// activeButton: number | null = null; 
-
-// handleClick(index: number): void {
-//   this.activeButton = index;
- 
-// }
-trackByTaskId(index: number, item: any): number {
-  return item.taskId; // or any unique identifier like taskId
-}
-onPause(item: any) {
-  // Toggle the paused state of the task
-  item.paused = !item.paused;
-
-  // Log the pause/activate action for the clicked item
-  const action = item.paused ? 'Paused' : 'Activated';
-  console.log(`${action} task: ${item.taskId}`);
-}
-
-onCancel(item: any) {
-  // Find the index of the item in the tasks array and remove it
-  const index = this.tasks.indexOf(item);
-  if (index > -1) {
-    this.tasks.splice(index, 1); // Remove the task from the tasks array
-  }
-
-  // Update the filteredTaskData and reapply pagination
-  this.filteredTaskData = [...this.tasks]; // Ensure it's updated
-  this.setPaginatedData();  // Recalculate the displayed paginated data
-}
-
+export class TasksComponent implements OnInit {
   mapData: any | null = null;
   searchQuery: string = '';
   isPopupVisible: boolean = false;
-
+ 
   tasks: any[] = [];
+ 
+  // taskData = [];
+ 
+  filteredTaskData = this.tasks;
+ // Paginated data
+ paginatedData = this.tasks;
 
-  filteredTaskData: any[] = [];
-  paginatedData: any[] = [];
+ // Set paginator view child
+ @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+activeHeader: any;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
+
+ // Method to handle pagination changes
+ setPaginatedData() {
+  if (this.paginator) {
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    this.paginatedData = this.filteredTaskData.slice(startIndex, startIndex + this.paginator.pageSize);
+  }
+}
+
+ // Called whenever the page is changed
+ onPageChange(event: PageEvent) {
+   this.setPaginatedData();
+ }
+ 
   constructor(
     private exportService: ExportService,
     private projectService: ProjectService
-  ) {}
-
-  ngOnInit() {
-    for (let i = 1; i <= 100; i++) {
-      // Create a new object for each task, ensuring they're distinct
-      let task = {
-        taskId: `task_${i.toString().padStart(3, '0')}`,
-        taskName: `task_${i}`,
-        status: 'online',
-        roboName: `agv_${(i + 10).toString().padStart(3, '0')}`,
-        sourceDestination: 'N/A',
-        paused: false // You may want to initialize `paused` as false
-      };
-      this.tasks.push(task); // Now each task is a unique object
-    }
-  
-    // Initially set the filtered data
-    this.filteredTaskData = this.tasks;
+  ) {
+    if (this.mapData) this.mapData = this.projectService.getMapData();
   }
-
-  // Ensure the paginator is initialized before setting paginated data
-  ngAfterViewInit() {
-    this.setPaginatedData(); // Set initial paginated data after view is initialized
-  }
-
-  setPaginatedData() {
-    if (this.paginator) {
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.filteredTaskData.slice(startIndex, startIndex + this.paginator.pageSize);
-    }
-  }
-
-  onPageChange(event: PageEvent) {
-    this.setPaginatedData();
-  }
-
  
+  ngOnInit() {
+    let dum = {
+      taskId: 'task_001',
+      taskName: 'task_init',
+      status: 'online',
+      roboName:' agv_012',
+      sourceDestination: 'N/A',
+    };
+    for(let i = 1; i <= 100; i++){
+      this.tasks.push(dum)
+    }
+    this.filteredTaskData  = this.tasks;
+    return
+    this.mapData = this.projectService.getMapData();
+    if (!this.mapData) return;
+ 
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ timeStamp1: '', timeStamp2: '' }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with status code of : ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        // console.log(data.tasks);
+        const { tasks } = data;
+        this.tasks = tasks.map((task: any) => {
+          return {
+            taskId: task.task_id,
+            taskName: task.sub_task[0]?.task_type
+              ? task.sub_task[0]?.task_type
+              : 'N/A',
+            status: task.task_status.status,
+            roboName: task.agent_name,
+            sourceDestination: task.sub_task[0]?.source_location
+              ? task.sub_task[0]?.source_location
+              : 'N/A',
+          };
+        });
+        this.filteredTaskData = this.tasks;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
-  // Search method
+      this.setPaginatedData();
+  }
+ 
   onSearch(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
-  
+ 
     if (!inputValue) {
       this.filteredTaskData = this.tasks;
     } else {
@@ -106,14 +114,19 @@ onCancel(item: any) {
         )
       );
     }
-  
-    // Reset the paginator after filtering
-    if (this.paginator) {
-      this.paginator.firstPage();
-    }
-  
-    this.setPaginatedData(); // Update paginated data after filtering
   }
+ 
+ 
+ 
+  onDateChange(event: Event): void {
+    const startDate = (
+      document.getElementById('start-date') as HTMLInputElement
+    ).value;
+    const endDate = (document.getElementById('end-date') as HTMLInputElement)
+      .value;
+    // Implement your date range filtering logic here
+  }
+ 
   exportData(format: string) {
     const data = this.tasks;
     switch (format) {
@@ -124,18 +137,19 @@ onCancel(item: any) {
         this.exportService.exportToExcel(data, `TaskDataExport`);
         break;
       case 'pdf':
-        this.exportService.exportToPDF(data, 'TaskDataExport');
+        this.exportService.exportToPDF(data, 'TaskDataEXport');
         break;
       default:
         console.error('Invalid export format');
     }
   }
-
+ 
   showPopup() {
     this.isPopupVisible = true;
   }
-
+ 
   onClose() {
     this.isPopupVisible = false;
   }
 }
+ 
