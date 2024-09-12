@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -9,6 +9,7 @@ import {
   ApexTooltip,
   ApexGrid,
   ApexStroke,
+  ChartComponent,
 } from 'ng-apexcharts';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
@@ -31,6 +32,7 @@ export type ChartOptions = {
   styleUrls: ['./area-chart.component.css'],
 })
 export class AreaChartComponent implements OnInit {
+  @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
   selectedMap: any | null = null;
@@ -189,8 +191,10 @@ export class AreaChartComponent implements OnInit {
 
   async updateStarvationRate() {
     let temp = [];
+    let tempTime = [];
     if (!this.selectedMap || this.starvationTimeInterval) return;
     this.clearAllIntervals(this.starvationTimeInterval);
+    this.chartOptions.xaxis.range = 12;
     let startTime = new Date().setHours(0, 0, 0, 0); // set current time to starting time of the current day..
     let endTime = new Date().setMilliseconds(0); // time in milliseconds..
 
@@ -213,16 +217,24 @@ export class AreaChartComponent implements OnInit {
           clearInterval(this.starvationTimeInterval);
           return;
         }
+
         this.starvationArr.push(data.starvation);
-        if (this.starvationArr.length > 5) temp = this.starvationArr.slice(-5);
+        tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+        if (this.starvationArr.length > 12)
+          temp = this.starvationArr.slice(-12);
         else temp = [...this.starvationArr];
 
-        this.chartOptions.series = [{ data: this.starvationArr }];
-        this.chartOptions.xaxis.categories = this.starvationXaxisSeries.map(
-          () => new Date().toDateString()
+        this.chartOptions.series = [{ data: temp }];
+        this.chart.updateOptions(
+          {
+            // series: [{ data: temp }],
+            xaxis: {
+              categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+            },
+          },
+          false, // Do not completely replot the chart
+          true // Allow smooth transitions
         );
-
-        // this.cdRef.detectChanges();
       }, 1000 * 2);
     } catch (err) {
       console.log('Err occured here : ', err);
