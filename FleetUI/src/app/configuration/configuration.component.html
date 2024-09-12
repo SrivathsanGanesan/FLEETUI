@@ -13,33 +13,27 @@
           />
         </div>
       </div>
-
+ 
       <div class="search-date-container">
         <!-- Search Bar -->
-        <div class="search-container">
+        <div class="search-filter-container">
+          <div class="search-box">
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search For Something..."
             class="search-input"
             [(ngModel)]="searchTerm"
             (ngModelChange)="searchTermChanged()"
           />
-          <button class="search-button">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M16.6937 14.7322H15.6255L15.2244 14.3973C16.4934 12.8573 17.2949 10.915 17.2949 8.70538C17.2948 3.88379 13.4214 0 8.6142 0C3.8728 0 0 3.88379 0 8.70538C0 13.527 3.8728 17.4107 8.68073 17.4107C10.8176 17.4107 12.8208 16.6071 14.3564 15.335L14.7569 15.6699V16.7411L21.4343 23.4375L23.4375 21.4286L16.6937 14.7322ZM8.68073 14.7322C5.34198 14.7322 2.67102 12.0535 2.67102 8.70538C2.67102 5.35712 5.34198 2.67865 8.68073 2.67865C12.0193 2.67865 14.6904 5.35712 14.6904 8.70538C14.6904 12.0535 12.0193 14.7322 8.68073 14.7322Z"
-                fill="white"
-              />
-            </svg>
+          <button class="search-btn">
+            <img
+              src="../../assets/icons/download-removebg-preview.png"
+              alt="Search"
+            />
           </button>
+          </div>
         </div>
-
+ 
         <!-- Date Filter and Date Inputs -->
         <div class="date-filters" *ngIf="currentTable === 'Environment'">
           <!-- <select (change)="onDateFilterChange($event)" class="date-filter">
@@ -47,7 +41,7 @@
             <option value="week">Week</option>
             <option value="month">Month</option>
           </select> -->
-
+ 
           <div class="date-inputs">
             <label for="start-date" class="date-label">Start Date:</label>
             <input
@@ -56,8 +50,8 @@
               (change)="onDateChange($event)"
               class="date-input"
             />
-
-            <label for="end-date" class="date-label">End Date:</label>
+ 
+            <label for="end-date" class="Enddate-label">End Date:</label>
             <input
               type="date"
               id="end-date"
@@ -67,7 +61,7 @@
           </div>
         </div>
       </div>
-
+ 
       <!-- Buttons -->
       <div class="button-container">
         <div class="button-frame">
@@ -107,7 +101,7 @@
           </div>
         </div>
       </div>
-
+ 
       <!-- Table -->
       <div class="table-container">
         <div
@@ -136,20 +130,19 @@
                     Last Created
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="iconTable"
                   >
                     Edit/Delete
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  class="iconTable"                  >
                     Pick Map
                   </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngIf="filteredEnvData.length === 0">
-                  <td colspan="5"  class="iconTable">
+                  <td colspan="5" class="px-6 py-4 text-center text-gray-500">
                     No data found
                   </td>
                 </tr>
@@ -163,7 +156,7 @@
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.date }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="iconTable" >
                     <img
                       src="../../assets/ConfigurationOptions/Edit.svg"
                       alt="Edit"
@@ -177,7 +170,7 @@
                       class="icon"
                     />
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td  class="iconTable">
                     <button class="sel-btn" (click)="selectMap(item)">
                       <!-- [disabled]="isButtonDisabled(item)" -->
                       <!-- SELECT -->
@@ -191,7 +184,7 @@
                 </tr>
               </tbody>
             </table>
-
+ 
             <table
               class="min-w-full divide-y divide-gray-200"
               *ngIf="currentTable === 'robot'"
@@ -209,7 +202,7 @@
                     IP Address
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="iconTable"
                   >
                     Edit/Delete
                   </th>
@@ -217,7 +210,7 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngIf="filteredRobotData.length === 0">
-                  <td colspan="3"  class="iconTable">
+                  <td colspan="3" class="px-6 py-4 text-center text-gray-500">
                     No data found
                   </td>
                 </tr>
@@ -228,7 +221,7 @@
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ item.column2 }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="iconTable">
                     <img
                       src="../../assets/ConfigurationOptions/Edit.svg"
                       alt="Edit"
@@ -252,7 +245,7 @@
             >
               Add Selected Robots
             </button> -->
-
+ 
             <div class="popup-overlay" *ngIf="showRobotParametersPopup">
               <app-robot-parameters-popup
                 (close)="closeRobotParametersPopup()"
@@ -264,7 +257,7 @@
               <input id="ipRangeFrom" type="text" placeholder="255.255.0.0" />
               <span>to: </span>
               <input id="ipRangeTo" type="text" placeholder="255.255.0.0" />
-
+ 
               <button
                 type="button"
                 class="start-button"
@@ -279,15 +272,16 @@
               >
                 Stop
               </button>
+              <div *ngIf="isScanning" class="loading-spinner"></div>
             </div>
-
+ 
             <div class="popup-overlay" *ngIf="showIPScannerPopup">
               <app-ipscanner
                 *ngIf="showIPScannerPopup"
                 (close)="closeIPScanner()"
               ></app-ipscanner>
             </div>
-
+ 
             <table *ngIf="currentTable === 'robot'">
               <thead>
                 <tr>
@@ -296,11 +290,12 @@
                   <th>Hostname</th>
                   <th>Ping</th>
                   <th>Status</th>
+                  <th>Option</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngIf="ipScanData.length === 0">
-                  <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                  <td colspan="6" class="iconTable">
                     No data found
                   </td>
                 </tr>
@@ -310,9 +305,17 @@
                   <td>{{ item.host }}</td>
                   <td>{{ item.ping }}</td>
                   <td>{{ item.Status }}</td>
+                  <td>
+                    <!-- Add icon -->
+                    <button (click)="addItem(item)" class="icon-button">
+                      <!-- You can use Font Awesome or any other icon library -->
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
+           
             <div *ngIf="currentTab === 'fleet'">
               <ul class="tab-menu">
                 <li
@@ -346,7 +349,7 @@
                   Communication
                 </li>
               </ul>
-
+ 
               <div *ngIf="fleetTab === 'general'">
                 <h2>Edit the Fleet Parameters</h2>
                 <!-- Add content for the General tab -->
@@ -367,7 +370,7 @@
                 <h2>Communication Settings</h2>
               </div>
             </div>
-
+ 
             <div class="Create-button-container">
               <button
                 class="Create-button"
@@ -380,7 +383,10 @@
             <app-envmap
               *ngIf="showImageUploadPopup"
               [EnvData]="this.EnvData"
+              [currEditMap]="this.currEditMap"
+              [currEditMapDet]="this.currEditMapDet"
               (closePopup)="closeImageUploadPopup()"
+              (currEditMapChange)="onCurrEditMapChange($event)"
             >
             </app-envmap>
           </div>

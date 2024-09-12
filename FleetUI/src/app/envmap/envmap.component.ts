@@ -15,6 +15,7 @@ import { environment } from '../../environments/environment.development';
 import { saveAs } from 'file-saver';
 import { ProjectService } from '../services/project.service';
 import { sequence } from '@angular/animations';
+import { parse } from 'path';
 
 interface Node {
   id: string;
@@ -96,6 +97,9 @@ enum ZoneType {
 })
 export class EnvmapComponent implements AfterViewInit {
   @Input() EnvData: any[] = [];
+  @Input() currEditMap:boolean = false;
+  @Input() currEditMapDet:any|null = null;
+  @Output() currEditMapChange  = new EventEmitter<any>();
   @Input() addEnvToEnvData!: (data: any) => void;
 
   @Output() closePopup = new EventEmitter<void>();
@@ -279,23 +283,42 @@ export class EnvmapComponent implements AfterViewInit {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
   }
-  
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
     private projectService: ProjectService
-  ) {}
+  ) {
+    if(this.currEditMap) this.showImage = true;
+  }
+  ngOnInit(){
+    if(this.currEditMap){
+      this.showImage = true;
+      this.mapName = this.currEditMapDet.mapName;
+      this.siteName = this.currEditMapDet.siteName;
+      this.ratio = this.currEditMapDet.ratio;
+      this.imageSrc = this.currEditMapDet.imgUrl;
+      this.nodes = this.currEditMapDet.nodes;
+      this.edges = this.currEditMapDet.edges;
+      this.assets = this.currEditMapDet.assets;
+      this.zones = this.currEditMapDet.zones;
+      this.nodeCounter = parseInt(this.nodes[this.nodes.length-1].id)+1;
+      this.edgeCounter = parseInt(this.edges[this.edges.length-1].edgeId)+1;
+      this.assetCounter = this.assets[this.assets.length-1].id+1;
+      this.zoneCounter = parseInt(this.zones[this.zones.length-1].id)+1;
+      this.open();
+    }
+  }
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
     if (!this.overlayCanvas || !this.imageCanvas) return;
-
+ 
       const canvas = this.overlayCanvas?.nativeElement;
       const imageCanvas = this.imageCanvas?.nativeElement;
       if (canvas && imageCanvas) {
         // Set the size of the overlay canvas to match the image canvas
         canvas.width = imageCanvas.width;
         canvas.height = imageCanvas.height;
-  
+ 
         this.setupCanvas();
         this.isCanvasInitialized = true; // Avoid re-initializing the canvas
       } else {
@@ -627,7 +650,15 @@ export class EnvmapComponent implements AfterViewInit {
       Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
     );
   }
+  updateEditedMap(){
+    alert('wanna implement updateOpt');
+}
+
   saveOpt() {
+    if(this.currEditMap) {
+      this.updateEditedMap();
+      return
+    }
     console.log(this.Nodes);
     console.log(this.connections);
     if (!this.selectedImage) {
@@ -819,6 +850,7 @@ export class EnvmapComponent implements AfterViewInit {
     console.log('Node details:', nodesJson);
   }
   open(): void {
+    if(!this.currEditMap)
     if (this.mapName && this.siteName) {
       for (let map of this.EnvData) {
         if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
@@ -863,6 +895,8 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
   close(): void {
+    this.currEditMapChange.emit(false);
+    this.showImage = true;
     this.closePopup.emit(); // Then close the popup
   }
   @HostListener('document:contextmenu', ['$event'])
@@ -894,8 +928,8 @@ export class EnvmapComponent implements AfterViewInit {
     }
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
-      this.DockPopup = true; // Show the popup
-    }
+      this.showPopup = true; // Show the popup
+      }
   }
   savePopupData(): void {
     console.log(this.selectedAsset);

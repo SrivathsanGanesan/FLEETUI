@@ -15,7 +15,7 @@ import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { EnvmapComponent } from '../envmap/envmap.component';
-
+ 
 interface Poll {
   ip: string;
   mac: string;
@@ -29,12 +29,12 @@ interface Poll {
   styleUrls: ['./configuration.component.css']
 })
 export class ConfigurationComponent implements AfterViewInit {
-  // @ViewChild(EnvmapComponent) envmapComponent: EnvmapComponent; 
+  // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayLayer', { static: false }) overlayLayer!: ElementRef;
-
+ 
   nodes: Array<{ x: number; y: number; id: number }> = [];
   selectedNode: { x: number; y: number; id: number } | null = null;
   nodeIdCounter: number = 0; // Counter to generate unique IDs for each node
@@ -60,18 +60,22 @@ export class ConfigurationComponent implements AfterViewInit {
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
   selectedMap: any = null;
   mapData: any = null;
-
+ 
   searchTerm: string = '';
   filteredEnvData: any[] = [];
   filteredRobotData: any[] = [];
-
+ 
+  isScanning = false;
   EnvData: any[] = []; // map details..
-
+ 
+  currEditMap: boolean = false;
+  currEditMapDet : any | null = null;
+ 
   robotData: any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
     { column1: 'Robot 2', column2: '192.168.XX.XX' },
   ];
-
+ 
   constructor(
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
@@ -80,11 +84,11 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
   }
-
+ 
   ngOnInit() {
     let currMapData = this.projectService.getMapData();
     if (currMapData) this.selectedMap = currMapData;
-
+ 
     this.mapData = this.projectService.getSelectedProject(); // _id
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
@@ -108,7 +112,7 @@ export class ConfigurationComponent implements AfterViewInit {
                 minute: 'numeric',
                 second: 'numeric',
               });
-
+ 
               return {
                 id: map.mapId,
                 mapName: map.mapName,
@@ -131,10 +135,10 @@ export class ConfigurationComponent implements AfterViewInit {
       .catch((error) => {
         console.log(error);
       });
-
+ 
     if (!this.EnvData.length) return;
     // console.log(this.EnvData);
-
+ 
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
     )
@@ -159,7 +163,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.searchTerm = '';
     this.searchTermChanged();
   }
-
+ 
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {
       // Deselect if the same map is clicked again
@@ -175,7 +179,7 @@ export class ConfigurationComponent implements AfterViewInit {
       let data = await response.json();
       let { map } = data;
       this.ngOnInit();
-
+ 
       if (this.projectService.getIsMapSet()) return;
       this.projectService.setIsMapSet(true);
       return;
@@ -190,16 +194,16 @@ export class ConfigurationComponent implements AfterViewInit {
     if (!response.ok)
       console.error('Error while fetching map data : ', response.status);
     let data = await response.json();
-
+ 
     this.projectService.setMapData({
       ...map,
       imgUrl: data.map.imgUrl,
     });
-
+ 
     if (this.projectService.getIsMapSet()) return;
     this.projectService.setIsMapSet(true);
   }
-
+ 
   isButtonDisabled(item: any): boolean {
     if (
       this.selectedMap?.id === item.id &&
@@ -209,21 +213,21 @@ export class ConfigurationComponent implements AfterViewInit {
     return true;
     // return this.selectedMap && this.selectedMap !== item;
   }
-
+ 
   ngOnChanges() {
     this.filterData();
   }
-
+ 
   filterData() {
     const term = this.searchTerm.toLowerCase();
-
+ 
     if (this.currentTable === 'Environment') {
       this.filteredEnvData = this.EnvData.filter((item) => {
         const date = new Date(item.date);
         const withinDateRange =
           (!this.startDate || date >= this.startDate) &&
           (!this.endDate || date <= this.endDate);
-
+ 
         return (
           (item.mapName.toLowerCase().includes(term) ||
             item.siteName.toLowerCase().includes(term) ||
@@ -239,39 +243,39 @@ export class ConfigurationComponent implements AfterViewInit {
       );
     }
   }
-
+ 
   selectedrobotData = [
     { column1: '192.168.XX.XX', column2: ' ' },
     { column1: '192.168.XX.XX', column2: ' ' },
   ];
   ipScanData: Poll[] = [];
-
+ 
   loadData() {
     // Fetch or initialize data here
     this.EnvData = []; // Replace with actual data fetching
     this.filterData(); // Initial filter application
   }
-
+ 
   ngAfterViewInit() {}
-
+ 
   drawConnectivity() {
     const canvas = this.uploadedCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
-
+ 
     if (!canvas || !ctx) return;
-
+ 
     const [start, end] = this.connectivityPoints;
     if (start && end) {
       // Draw a line between the two points
       ctx.beginPath();
       ctx.moveTo(start.x, start.y);
       ctx.lineTo(end.x, end.y);
-
+ 
       // Set line style
       ctx.strokeStyle = 'orange';
       ctx.lineWidth = 2;
       ctx.stroke();
-
+ 
       // Draw arrow or other indication if needed
       // (optional, for visualization)
     }
@@ -280,8 +284,9 @@ export class ConfigurationComponent implements AfterViewInit {
   eventSource!: EventSource;
   startIP: string = '0.0.0.0';
   EndIP: string = '0.0.0.0';
-
+ 
   startScanning() {
+   
     this.ipScanData = [];
     this.startIP = (
       document.getElementById('ipRangeFrom') as HTMLInputElement
@@ -299,11 +304,11 @@ export class ConfigurationComponent implements AfterViewInit {
       alert('not valid IP. Try again');
       return;
     }
-
+ 
     const URL = `http://${environment.API_URL}:${environment.PORT}/fleet-config/scan-ip/${this.startIP}-${this.EndIP}`;
-
+ 
     if (this.eventSource) this.eventSource.close();
-
+ 
     this.eventSource = new EventSource(URL);
     this.eventSource.onmessage = (event) => {
       try {
@@ -320,7 +325,7 @@ export class ConfigurationComponent implements AfterViewInit {
           Status: data.status,
         };
         // console.log(poll);
-
+ 
         if (poll.Status === 'online')
           this.ipScanData = [...this.ipScanData, poll];
         this.cdRef.detectChanges();
@@ -328,27 +333,29 @@ export class ConfigurationComponent implements AfterViewInit {
         console.error('Error parsing SSE data:', error);
       }
     };
-
+ 
     this.eventSource.onerror = (error) => {
       console.error('SSE error:', error);
       this.eventSource.close();
     };
+    this.isScanning = true;
   }
   stopScanning() {
+    this.isScanning = false;
     this.eventSource.close();
     return;
   }
-
+ 
   robots = [
     { id: 1, name: 'Robot A' },
     { id: 2, name: 'Robot B' },
   ];
-
+ 
   selectedRobots: any[] = [];
   showRobotPopup() {
     this.isRobotPopupVisible = true;
   }
-
+ 
   closeRobotPopup() {
     this.isRobotPopupVisible = false;
   }
@@ -363,7 +370,7 @@ export class ConfigurationComponent implements AfterViewInit {
   openImageUploadPopup(): void {
     this.showImageUploadPopup = true;
   }
-
+ 
   closeImageUploadPopup(): void {
     this.showImageUploadPopup = false;
   }
@@ -378,21 +385,21 @@ export class ConfigurationComponent implements AfterViewInit {
       this.filteredEnvData.push(newEntry);
     }
   }
-
+ 
   searchTermChanged() {
     this.filterData();
   }
-
+ 
   showIPScannerPopup = false;
-
+ 
   openIPScanner() {
     this.showIPScannerPopup = true;
   }
-
+ 
   closeIPScanner() {
     this.showIPScannerPopup = false;
   }
-
+ 
   connectivity() {
     this.isConnectivityModeActive = true; // Enable connectivity mode
     this.connectivityPoints = []; // Clear previous points
@@ -401,48 +408,48 @@ export class ConfigurationComponent implements AfterViewInit {
   connectivityMode: 'none' | 'bi-directional' | 'uni-directional' = 'none';
   firstPoint: { x: number; y: number } | null = null;
   secondPoint: { x: number; y: number } | null = null;
-
+ 
   addEnvironmentData() {
     const newEntry = {
       // mapName: this.mapName,
       // siteName: this.siteName,
       date: formatDate(new Date(), 'MMM d, yyyy. HH:mm:ss', 'en-US'),
     };
-
+ 
     this.EnvData.push(newEntry);
     this.filteredEnvData = [...this.EnvData];
   }
-
+ 
   isCalibrationLayerVisible = false;
-
+ 
   showCalibrationLayer() {
     this.isCalibrationLayerVisible = true;
   }
-
+ 
   hideCalibrationLayer() {
     this.isCalibrationLayerVisible = false;
   }
-
+ 
   addNode() {
     console.log('Add Node clicked');
   }
-
+ 
   zones() {
     console.log('Zones clicked');
   }
-
+ 
   addAssets() {
     console.log('Add Assets clicked');
   }
-
+ 
   addRobots() {
     console.log('Add Robots clicked');
   }
-
+ 
   removeRobots() {
     console.log('Remove Robots clicked');
   }
-
+ 
   setActiveButton(button: string) {
     this.activeButton = button;
     this.isTransitioning = true;
@@ -450,7 +457,7 @@ export class ConfigurationComponent implements AfterViewInit {
       this.activeButton = button;
       this.activeHeader = this.getHeader(button);
       this.isTransitioning = false;
-
+ 
       // Set the current table and tab based on the button
       if (button === 'fleet') {
         this.currentTable = 'fleet';
@@ -460,25 +467,19 @@ export class ConfigurationComponent implements AfterViewInit {
         this.currentTab = button;
       }
   }
-
+ 
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
-
+ 
   showTable(table: string) {
-    this.currentTable = table;    
-        // Clear search term and reset date inputs when switching between tabs
-    if (table === 'robot' || table === 'fleet') {
-      this.searchTerm = '';  // Clear the search term
-      this.startDate = null; // Clear the start date
-      this.endDate = null;   // Clear the end date
-    }
-    }
-
+    this.currentTable = table;
+  }
+ 
   setCurrentTable(table: string) {
     this.currentTable = table;
   }
-
+ 
   getCurrentTableData() {
     switch (this.currentTable) {
       case 'Environment':
@@ -489,7 +490,7 @@ export class ConfigurationComponent implements AfterViewInit {
         return [];
     }
   }
-
+ 
   getHeader(button: string): string {
     switch (button) {
       case 'Environment':
@@ -502,11 +503,11 @@ export class ConfigurationComponent implements AfterViewInit {
         return 'Environment';
     }
   }
-
+ 
   showPopup() {
     this.isPopupVisible = true;
   }
-
+ 
   closePopup() {
     this.isPopupVisible = false;
     this.isImageOpened = false;
@@ -514,7 +515,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.imageHeight = 0;
     this.imageWidth = 0;
   }
-
+ 
   onDateFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const filter = selectElement?.value || '';
@@ -522,19 +523,21 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   startDate: Date | null = null;
   endDate: Date | null = null;
-  
   onDateChange(event: Event) {
     const input = event.target as HTMLInputElement;
     const id = input.id;
     const value = input.value;
-
+ 
     if (id === 'start-date') {
       this.startDate = value ? new Date(value) : null;
     } else if (id === 'end-date') {
       this.endDate = value ? new Date(value) : null;
     }
-
+ 
     this.filterData(); // Apply filters whenever the date changes
+  }
+  onCurrEditMapChange(currEditMap : boolean){
+    this.currEditMap = currEditMap;
   }
   editItem(item: any) {
     fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${item.mapName}`, {
@@ -552,19 +555,24 @@ export class ConfigurationComponent implements AfterViewInit {
         return;
       }
       const { map }= data;
-      console.log( map );
-      // this.envmapComponent.mapName = item.mapName;
-      // this.envmapComponent.siteName = item.siteName;
-      // this.envmapComponent.ratio = map.mpp;
-      // this.envmapComponent.imageSrc = map.imgUrl;
-      console.log(map.mapName, item.siteName, map.mpp, map.imgUrl);
-      
-      // this.envmapComponent.open()
+      this.currEditMapDet = {
+        mapName : map.mapName,
+        siteName : item.siteName,
+        ratio : map.mpp,
+        imgUrl : `http://${map.imgUrl}`,
+        nodes : map.nodes,
+        edges : map.edges,
+        assets : map.stations,
+        zones : map.zones
+      }
+      this.currEditMap = true;
+      this.showImageUploadPopup = true;
+      // console.log(map.mapName, item.siteName, map.mpp, map.imgUrl);
     }) .catch((err)=>{
       console.log(err);
     })
   }
-
+ 
   async deleteMap(map: any): Promise<boolean> {
     try {
       const response = await fetch(
@@ -593,11 +601,11 @@ export class ConfigurationComponent implements AfterViewInit {
       return false;
     }
   }
-
+ 
   deleteItem(item: any) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent);
     let isDeleted = false;
-
+ 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) isDeleted = await this.deleteMap(item);
       if (isDeleted) {
@@ -618,11 +626,11 @@ export class ConfigurationComponent implements AfterViewInit {
       }
     });
   }
-
+ 
   addItem(item: any) {
     console.log('Add item:', item);
   }
-
+ 
   blockItem(item: any) {
     console.log('Block item:', item);
   }
