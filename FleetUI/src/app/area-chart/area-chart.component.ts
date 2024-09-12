@@ -47,6 +47,9 @@ export class AreaChartComponent implements OnInit {
   pickAccTimeInterval: any | null = null;
   errRateTimeInterval: any | null = null;
 
+  fullStarvationArr: any;
+  fullStarvationXaxisSeries: any;
+
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -190,6 +193,8 @@ export class AreaChartComponent implements OnInit {
   async updateStarvationRate() {
     if (!this.selectedMap || this.starvationTimeInterval) return;
     this.clearAllIntervals(this.starvationTimeInterval);
+    let fullStarvationArr = [];
+    let fullStarvationXaxisSeries = [];
     try {
       this.starvationTimeInterval = setInterval(async () => {
         let response = await fetch(
@@ -204,18 +209,20 @@ export class AreaChartComponent implements OnInit {
           clearInterval(this.starvationTimeInterval);
           return;
         }
-        this.starvationArr.push(data.starvation);
-        this.starvationXaxisSeries = [
-          ...this.starvationXaxisSeries,
-          new Date().toDateString(),
-        ];
-        if (this.starvationArr.length > 5) {
-          this.starvationArr.shift();
-          this.starvationXaxisSeries.shift();
-        }
+        fullStarvationArr.push(data.starvation);
+        fullStarvationXaxisSeries.push(new Date().toDateString());
+        // this.starvationArr.push(data.starvation);
+        // this.starvationXaxisSeries = [
+        //   ...this.starvationXaxisSeries,
+        //   new Date().toDateString(),
+        // ];
+        // if (this.starvationArr.length > 5) {
+        //   this.starvationArr.shift();
+        //   this.starvationXaxisSeries.shift();
+        // }
 
-        this.chartOptions.series = [{ data: this.starvationArr }];
-        this.chartOptions.xaxis.categories = this.starvationXaxisSeries;
+        this.chartOptions.series = [{ data: fullStarvationArr.slice(-5) }];
+        this.chartOptions.xaxis.categories = fullStarvationXaxisSeries;
 
         // this.cdRef.detectChanges();
       }, 1000 * 1.5);
@@ -248,27 +255,7 @@ export class AreaChartComponent implements OnInit {
     ];
   }
 
-  updatePickAccuracy() {
-    this.chartOptions.series = [
-      {
-        name: 'Series 4',
-        data: [50, 60, 55, 70, 65, 80, 75, 85, 90, 95, 100],
-      },
-    ];
-    this.chartOptions.xaxis.categories = [
-      'Dec 01',
-      'Dec 02',
-      'Dec 03',
-      'Dec 04',
-      'Dec 05',
-      'Dec 06',
-      'Dec 07',
-      'Dec 08',
-      'Dec 09',
-      'Dec 10',
-      'Dec 11',
-    ];
-  }
+  updatePickAccuracy() {}
 
   updateErrorRate() {
     this.chartOptions.series = [

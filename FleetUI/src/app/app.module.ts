@@ -41,8 +41,8 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { UserManagementComponent } from './user-management/user-management.component';
 import { MatTableModule } from '@angular/material/table';
-
 
 
 @NgModule({
@@ -77,8 +77,7 @@ import { MatTableModule } from '@angular/material/table';
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
- 
-    
+    UserManagementComponent    
   ],
   imports: [
     NgApexchartsModule,
