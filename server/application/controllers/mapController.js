@@ -153,6 +153,7 @@ const mapUpdate = async (req, res) => {
     for (let key of Object.keys(mapData)) {
       if (mapData[key] === null) delete mapData[key];
     }
+
     const doc = await Map.findOneAndUpdate({ mapName: queMapName }, mapData, {
       new: true,
     });

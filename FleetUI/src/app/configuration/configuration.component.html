@@ -305,8 +305,7 @@
                   <td>{{ item.Status }}</td>
                   <td class="iconTable">
                     <!-- Add icon -->
-                    <button (click)="addItem(item)" class="icon-button">
-                      <!-- You can use Font Awesome or any other icon library -->
+                    <button (click)="addItem(item); openPopup(item)" class="icon-button">                      <!-- You can use Font Awesome or any other icon library -->
                       <img src="../../assets/icons/add.svg">
                     </button>
                   </td>
@@ -391,5 +390,31 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+
+<!-- Popup form -->
+<div *ngIf="isPopupOpen" class="popup-overlay">
+  <div class="robopopup-content">
+    <h3>Add New Item</h3>
+    <form (ngSubmit)="saveItem()">
+      <div>
+        <label for="ip">IP:</label>
+        <input type="text" id="ip" [(ngModel)]="newItem.ip" name="ip">
+      </div>
+      <div>
+        <label for="mac">MAC:</label>
+        <input type="text" id="mac" [(ngModel)]="newItem.mac" name="mac">
+      </div>
+      <div>
+        <label for="host">Host:</label>
+        <input type="text" id="host" [(ngModel)]="newItem.host" name="host">
+      </div>
+      <!-- Add other form fields as necessary -->
+      
+      <button type="submit">Save</button>
+      <button type="button" (click)="closeroboPopup()">Close</button>
+    </form>
   </div>
 </div>

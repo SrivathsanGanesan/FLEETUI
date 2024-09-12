@@ -679,4 +679,21 @@ export class ConfigurationComponent implements AfterViewInit {
   blockItem(item: any) {
     console.log('Block item:', item);
   }
+  isPopupOpen = false;
+  newItem: any = {};
+
+  openPopup(item: any) {
+    this.isPopupOpen = true;
+    this.newItem = { ...item }; // Initialize with the clicked item's data
+  }
+  closeroboPopup() {
+    this.isPopupOpen = false;
+  }
+
+  saveItem() {
+    // Perform the save action (e.g., push to array, send to API, etc.)
+    console.log('Item saved:', this.newItem);
+    
+    this.closePopup(); // Close the popup after saving
+  }
 }

@@ -16,6 +16,7 @@ import { saveAs } from 'file-saver';
 import { ProjectService } from '../services/project.service';
 import { sequence } from '@angular/animations';
 import { parse } from 'path';
+import { response } from 'express';
 
 interface Node {
   id: string;
@@ -306,17 +307,10 @@ export class EnvmapComponent implements AfterViewInit {
       this.edges = this.currEditMapDet.edges;
       this.assets = this.currEditMapDet.assets;
       this.zones = this.currEditMapDet.zones;
-      this.nodeCounter =
-        parseInt(this.nodes[this.nodes.length - 1].id) + 1 || this.nodeCounter;
-      this.edgeCounter =
-        parseInt(this.edges[this.edges.length - 1].edgeId) + 1 ||
-        this.edgeCounter;
-      this.assetCounter =
-        this.assets[this.assets.length - 1]?.id + 1 || this.assetCounter;
-      this.zoneCounter =
-        parseInt(this.zones[this.zones.length - 1]?.id) + 1
-          ? parseInt(this.zones[this.zones.length - 1]?.id) + 1
-          : this.zoneCounter;
+      this.nodeCounter = parseInt(this.nodes[this.nodes.length - 1]?.id) + 1 ? parseInt(this.nodes[this.nodes.length - 1]?.id) + 1 : this.nodeCounter;
+      this.edgeCounter = parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1 ?  parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1 : this.edgeCounter;
+      this.assetCounter = this.assets[this.assets.length - 1]?.id + 1 ? this.assets[this.assets.length - 1]?.id + 1 : this.zoneCounter;
+      this.zoneCounter = parseInt(this.zones[this.zones.length - 1]?.id) + 1 ? parseInt(this.zones[this.zones.length - 1]?.id) + 1 : this.zoneCounter;
       this.open();
     }
   }
@@ -665,7 +659,30 @@ export class EnvmapComponent implements AfterViewInit {
     );
   }
   updateEditedMap() {
-    alert('wanna implement updateOpt');
+    let editedMap = {
+      mapName : null,
+      siteName : null,
+      mpp : null,
+      origin : null,
+      nodes : this.nodes,
+      edges : this.edges,
+      zones : this.zones,
+      stations : this.assets
+    }
+    fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.mapName}`,{
+      method:'POST',
+      credentials:'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editedMap)
+    }).then((response)=>{
+      return response.json();
+    }).then((data)=>{ 
+      const { updatedData } = data;
+      this.nodes = updatedData.nodes;
+      this.edges = updatedData.edges;
+      this.assets = updatedData.stations;
+      this.zones = updatedData.zones;
+    })
   }
 
   saveOpt() {
