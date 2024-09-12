@@ -86,6 +86,14 @@ export class ConfigurationComponent implements AfterViewInit {
   }
  
   ngOnInit() {
+    this.ipScanData.push({
+      ip: '12.12.12.12',
+      mac:'00:00:00:00:00:00',
+      host: 'host',
+      ping: '0.0ms',
+      Status: 'online',
+    })
+    this.cdRef.detectChanges()
     const today = new Date();
     const pastFiveYears = new Date();
     pastFiveYears.setFullYear(today.getFullYear() - 5);

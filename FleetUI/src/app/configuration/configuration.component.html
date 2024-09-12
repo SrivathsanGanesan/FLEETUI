@@ -288,7 +288,7 @@
                   <th>Hostname</th>
                   <th>Ping</th>
                   <th>Status</th>
-                  <th>Option</th>
+                  <th class="iconTable">Option</th>
                 </tr>
               </thead>
               <tbody>
@@ -303,11 +303,11 @@
                   <td>{{ item.host }}</td>
                   <td>{{ item.ping }}</td>
                   <td>{{ item.Status }}</td>
-                  <td>
+                  <td class="iconTable">
                     <!-- Add icon -->
                     <button (click)="addItem(item)" class="icon-button">
                       <!-- You can use Font Awesome or any other icon library -->
-                      <i class="fa fa-plus" aria-hidden="true"></i>
+                      <img src="../../assets/icons/add.svg">
                     </button>
                   </td>
                 </tr>

@@ -68,7 +68,7 @@ table {
  
 th, td {
   border: 1px solid #ffffff;
-  padding: 5px;
+  padding:5px 5px 5px 0px;
   height: 30px;
 }
 td{
@@ -94,7 +94,7 @@ th {
 .iconTable{
   text-align: center;
   justify-content: center;
-  padding: 0px;
+
 }
 td {
   font-size: 13px;
@@ -529,7 +529,10 @@ h2 {
 .dropdown:hover .dropdown-button {
   background-color: #544d4d17; /* Darker green */
 }
- 
+.icon-button{
+background-color: transparent;
+border: none;
+}
 .calibrate-button {
   position: absolute;
   bottom: 10px; /* Adjust this value as needed */
