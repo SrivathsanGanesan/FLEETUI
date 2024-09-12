@@ -14,7 +14,7 @@
   }
 /* CSS for the active tab */
   .active {
-    background-color: #8e8a8a72; /* Optional: Add background color if needed */
+    background-color: #e0d6d672; /* Optional: Add background color if needed */
     border-radius: 20px;
     color: white; /* Change the text color to white */
   }
@@ -117,7 +117,7 @@
   }
   
   .icons {
-    margin: 25px 0 0 15px;
+    margin: 25px 0 0 10px;
     width: 180px;
     /* filter: drop-shadow(10px 10px 5px rgba(52, 49, 49, 0.308)); */
   }
@@ -136,10 +136,14 @@
     border-radius: 10px;
   }
   
-  .icon1 img, .icon2 img, .icon3 img, .icon4 img, .icon5 img, .logout-icon img {
+  .icon1 img, .icon2 img, .icon3 img, .icon4 img, .icon5 img {
     margin-right: 10px;
+    margin-left: 10px;
   }
-  
+  .logout-icon img{
+    margin-right: 10px;
+    margin-left: 5px;
+  }
   .icons .label {
     display: none;
     white-space: nowrap; /* Prevents text from wrapping */
