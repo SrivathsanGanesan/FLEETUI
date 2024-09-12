@@ -390,17 +390,21 @@
 
 <div *ngIf="isPopupVisible" class="popup-overlay1">
   <div class="popup-content1">
-    <h3>Select Zone Type</h3>
+    <h4>Select Zone Type</h4>
     <select [(ngModel)]="zoneType">
       <option *ngFor="let zone of zoneTypeList" [value]="zone">{{ zone }}</option>
     </select>
+    <div>
     <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">Confirm</button>
+    <button (click)="onDeleteZone()">Delete</button>
     <button (click)="onCancel()">Cancel</button>
+  </div>
   </div>
 </div>
 
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
+    <h3>Edge Details</h3>
     <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
       <div class="form-row">
         <label for="edgeId">Edge ID:</label>
@@ -459,7 +463,10 @@
 
       <div class="form-row">
         <label for="direction">Direction:</label>
-        <input id="direction" [(ngModel)]="currentEdge.direction" name="direction" />
+        <select id="direction" [(ngModel)]="currentEdge.direction" name="direction">
+          <option value="UN_DIRECTIONAL">Uni-directional</option>
+          <option value="BI_DIRECTIONAL">Bi-directional</option>
+        </select>
       </div>
 
       <div class="form-row">
@@ -484,7 +491,7 @@
 
       <div class="form-buttons">
         <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
-        <button type="button" id="formBTN" >Delete</button>
+        <button type="button" id="formBTN" (click)="deleteEdge()">Delete</button>
         <button type="button" id="formBTN" (click)="hidePopup()">Cancel</button>
       </div>
     <!-- </form> -->
@@ -503,6 +510,7 @@
       <input type="text" id="description" name="description" [(ngModel)]="description" />
     </div>
     <div>
+      <button type="button" (click)="deleteSelectedAsset()">Delete</button>
       <button type="button" (click)="savePopupData()">Save</button>
       <button type="button" (click)="closePopup1()">Cancel</button>
     </div>
@@ -534,7 +542,9 @@ class="popup-overlay1"
 <div *ngIf="isConfirmationVisible" class="popup-overlay1">
   <div class="popup-content1">
   <p>Are you sure you want to delete this node?</p>
-  <button (click)="confirmDelete()">Yes</button>
-  <button (click)="cancelDelete()">No</button>
+  <div>
+  <button type="button" (click)="confirmDelete()">Confirm</button>
+  <button type="button" (click)="cancelDelete()">Cancel</button>
+</div>
 </div>
 </div>

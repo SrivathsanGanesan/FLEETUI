@@ -684,7 +684,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.zones = updatedData.zones;
     })
   }
-
   saveOpt() {
     if (this.currEditMap) {
       this.updateEditedMap();
@@ -943,6 +942,14 @@ export class EnvmapComponent implements AfterViewInit {
       (event.clientY - rect.top) *
       (this.overlayCanvas.nativeElement.height / rect.height);
 
+      for (const zone of this.zones) {
+        if (this.isPointInZone(x, y, zone.pos)) {
+          this.selectedZone = zone; // Store the selected zone
+          this.zoneType = zone.type;
+          this.showZoneTypePopup();
+          return;
+        }
+      }
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y)) {
@@ -955,21 +962,47 @@ export class EnvmapComponent implements AfterViewInit {
       this.isPointOnEdge(edge, x, y)
     );
     for (const asset of this.assets) {
-      if (this.isAssetClicked(asset, x, y)) {
-        console.log('asset clicked');
-
+      if (this.isAssetClicked(asset, x, y) && asset.type === 'docking') {
+        console.log('Docking station clicked');
+        
         this.selectedAsset = asset;
-        this.DockPopup = true; // Show the popup
-        // this.popupPosition = { x: event.clientX, y: event.clientY }; // Set popup position
-        // this.selectedAssetId = asset.id; // Store selected asset ID
-        return;
+        this.DockPopup = true; // Show the popup for docking stations only
+        return; // Exit early after handling docking station
       }
+
     }
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
       this.showPopup = true; // Show the popup
     }
   }
+
+  private isPointInZone(x: number, y: number, zonePoints: any[]): boolean {
+    const ctx = this.overlayCanvas.nativeElement.getContext('2d');
+    if (!ctx) return false;
+  
+    ctx.beginPath();
+    ctx.moveTo(zonePoints[0].x, zonePoints[0].y);
+    for (let i = 1; i < zonePoints.length; i++) {
+      ctx.lineTo(zonePoints[i].x, zonePoints[i].y);
+    }
+    ctx.closePath();
+  
+    // Use canvas's isPointInPath method to check if the click is inside the zone
+    return ctx.isPointInPath(x, y);
+  }
+
+onDeleteZone(): void {
+  if (this.selectedZone) {
+    // Remove the selected zone from the zones array
+    this.zones = this.zones.filter(zone => zone !== this.selectedZone);
+    this.selectedZone = null;
+    
+    // Hide the popup and redraw the canvas to reflect the deletion
+    this.isPopupVisible = false;
+    this.redrawCanvas();
+  }
+}
   savePopupData(): void {
     console.log(this.selectedAsset);
 
@@ -1707,6 +1740,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.redrawCanvas();
     }
     console.log(this.edges);
+    this.showPopup = false;
   }
   resetSelection(): void {
     this.firstNode = null;
@@ -1849,23 +1883,29 @@ export class EnvmapComponent implements AfterViewInit {
   }
   onZoneTypeSelected(zoneType: ZoneType): void {
     this.zoneType = zoneType;
-
+  
     if (this.isZoneOverlapping(this.plottedPoints)) {
       alert('Zone overlaps with an existing zone!');
       return; // Do not allow drawing
     }
-
-    let zone: Zone;
-    zone = {
-      id: this.zoneCounter.toString(),
-      pos: this.plottedPoints,
-      type: this.zoneType,
-    };
-    this.zones.push(zone);
-    this.zoneCounter++;
-
+  
+    if (this.selectedZone) {
+      // Update the zone's type if a zone is selected
+      this.selectedZone.type = zoneType;
+    } else {
+      // Create a new zone if no zone is selected
+      let zone: Zone;
+      zone = {
+        id: this.zoneCounter.toString(),
+        pos: this.plottedPoints,
+        type: this.zoneType,
+      };
+      this.zones.push(zone);
+      this.zoneCounter++;
+    }
+  
     this.isPopupVisible = false; // Hide the popup
-    this.drawLayer(); // Draw the layer with the selected zone color
+    this.redrawCanvas();         // Redraw the canvas to reflect the updated zone
   }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 25;
@@ -1894,6 +1934,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.redrawCanvas();
   }
   showZoneTypePopup(): void {
+    this.zoneType=null;
     this.isPopupVisible = true;
   }
   openRobotPopup(): void {
@@ -2246,6 +2287,21 @@ export class EnvmapComponent implements AfterViewInit {
       this.redrawCanvas(); // Redraw canvas to show the updated position
     }
   }
+  // Method to delete the currently selected asset
+  deleteSelectedAsset(): void {
+    if (this.selectedAsset) {
+      // Filter out the selected asset from the assets array
+      this.assets = this.assets.filter(asset => asset.id !== this.selectedAsset!.id);
+
+      // Set selected asset to null as it's now deleted
+      this.selectedAsset = null;
+      this.DockPopup = false;
+
+      // Redraw the canvas to reflect the updated assets
+      this.redrawCanvas();
+    }
+  }
+
   private redrawCanvas(): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
