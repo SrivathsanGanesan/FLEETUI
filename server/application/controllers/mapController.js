@@ -137,6 +137,14 @@ const mapGet = async (req, res) => {
   }
 };
 
+const mapUpdate = async (req, res) => {
+  const mapName = req.params.mapName;
+  console.log(mapName);
+  return res.json(mapName);
+  try {
+  } catch (error) {}
+};
+
 const newRoboInMap = async (req, res, next) => {
   const { new_robo } = req.body;
   try {
@@ -300,4 +308,5 @@ module.exports = {
   deleteMap,
   delMapImg,
   newMapImg,
+  mapUpdate,
 };
