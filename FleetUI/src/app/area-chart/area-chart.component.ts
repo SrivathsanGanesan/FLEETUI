@@ -65,24 +65,6 @@ export class AreaChartComponent implements OnInit {
         height: 230,
         type: 'area',
         background: '#FFFFFF',
-        /* events: {
-          zoomed: (chartContext, { xaxis }) => {
-            // When zooming out, display the full dataset
-            this.chartOptions.series = [{ data: this.fullStarvationArr }];
-            this.chartOptions.xaxis.categories = this.fullStarvationXaxisSeries;
-
-            // Optional: Trigger change detection if needed
-            // this.cdRef.detectChanges();
-          },
-          zoomReset: (chartContext) => {
-            // Reset to full data when zoom is reset
-            this.chartOptions.series = [{ data: this.fullStarvationArr }];
-            this.chartOptions.xaxis.categories = this.fullStarvationXaxisSeries;
-
-            // Optional: Trigger change detection if needed
-            // this.cdRef.detectChanges();
-          },
-        }, */
       },
       xaxis: {
         categories: [], // Your default categories
