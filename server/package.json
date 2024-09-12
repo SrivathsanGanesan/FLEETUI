@@ -14,7 +14,6 @@
   "dependencies": {
     "archiver": "^7.0.1",
     "bcryptjs": "^2.4.3",
-    "cont_with-next": "file:",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "decompress": "^4.2.1",

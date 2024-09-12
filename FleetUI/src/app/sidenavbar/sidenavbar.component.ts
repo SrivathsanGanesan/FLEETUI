@@ -17,11 +17,8 @@ export class SidenavbarComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private projectService: ProjectService,
-    
-  ) {
-    
-  }
+    private projectService: ProjectService
+  ) {}
 
   ngOnInit() {
     const user = this.authService.getUser();
