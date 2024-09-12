@@ -32,38 +32,31 @@
     <img src="../../assets/Motherson_logo.svg" class="Logo" />
 
     <div class="icons">
-      <div class="icon1" routerLink="/dashboard">
+      <div class="icon1" routerLink="/dashboard" routerLinkActive="active">
         <img src="../../assets/icons/dashboard_icon copy.svg" class="Dlogo" />
         <span class="label">Dashboard</span>
       </div>
-      <div class="icon2" routerLink="/statistics">
+      <div class="icon2" routerLink="/statistics" routerLinkActive="active">
         <img src="../../assets/icons/Statistics.svg" class="Slogo" />
         <span class="label">Statistics</span>
       </div>
-      <div class="icon3" routerLink="/robots">
+      <div class="icon3" routerLink="/robots" routerLinkActive="active">
         <img src="../../assets/icons/Statistics_icon.svg" class="Slogo" />
         <span class="label">Robots</span>
       </div>
-      <div class="icon4" routerLink="/configuration">
+      <div class="icon4" routerLink="/configuration" routerLinkActive="active">
         <img src="../../assets/icons/Configuration_icons.svg" class="Clogo" />
         <span class="label">Configuration</span>
       </div>
-      <div class="icon5" routerLink="/Reports">
-        <img
-          src="../../assets/icons/Logs_icons.svg"
-          routerLink="/Reports"
-          class="Llogo"
-        />
+      <div class="icon5" routerLink="/Reports" routerLinkActive="active">
+        <img src="../../assets/icons/Logs_icons.svg" class="Llogo" />
         <span class="label">Error logs</span>
       </div>
-      <div class="icon4" routerLink="/tasks">
-        <img
-          src="../../assets/icons/Tasks_icons.svg"
-          routerLink="/tasks"
-          class="Llogo"
-        />
+      <div class="icon4" routerLink="/tasks" routerLinkActive="active">
+        <img src="../../assets/icons/Tasks_icons.svg" class="Llogo" />
         <span class="label">Tasks</span>
       </div>
+    </div>
       <!-- <div class="icon5" routerLink="/usermanagement">
       <img
         src="../../assets/icons/Usermanagement_icons.svg"
@@ -72,7 +65,6 @@
       />
       <span class="label">User Management</span>
     </div> -->
-    </div>
     <div class="icons logout-icon" (click)="logout()">
       <img src="../../assets/icons/Logout_icon.svg" class="Outlogo" />
       <span class="label">Logout</span>

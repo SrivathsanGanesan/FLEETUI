@@ -17,6 +17,8 @@ import { saveAs } from 'file-saver';
 import { ProjectService } from '../services/project.service';
 import { sequence } from '@angular/animations';
 import { parse } from 'path';
+import { response } from 'express';
+import { error } from 'console';
 
 interface Node {
   id: string;
@@ -658,7 +660,18 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   updateEditedMap(){
-      alert('wanna implement updateOpt');
+      fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.mapName}`,{
+        method:'POST',
+        credentials:'include',
+        body:JSON.stringify({})
+      }).then((response)=>{
+        if(!response.ok) throw new Error(`Error with status code of ${response.status}`);
+        return response.json();
+      }).then((data)=>{
+        console.log(data);
+      }).catch((error)=>{
+        console.log("Err occured : ",error);
+      })
   }
 
   saveOpt() {
