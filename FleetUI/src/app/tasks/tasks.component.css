@@ -41,8 +41,8 @@
   /* Table Container Styling */
   .table-container {
     border-radius: 10px;
-    margin-top: 60px;
-    max-height: 23.5rem;
+    margin-top: 10px;
+    max-height: 29rem;
     overflow-y: auto;
   }
   
@@ -281,103 +281,106 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   
-  .options-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .dropbtn {
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #ffffff;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .dropbtn:hover {
-    background-color: #ececec;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #ffffff;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    border-radius: 5px;
-  }
-  
-  .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    transition: background-color 0.3s;
-  }
-  
-  .dropdown-content a:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-  .filter-options {
-    display: flex;
-    gap: 10px; /* Increased gap between buttons */
-  }
-  
-  .filter-options button {
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #ffffff;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    transition: background-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .filter-options button.active {
-    background-color: #ff5c5c;
-    color: white;
-    border: none;
-  }
-  
-  .filter-options button:hover:not(.active) {
-    background-color: #ececec;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  
-  .date-inputs {
-    display: flex;
-    gap: 0.3rem; /* Space between date inputs */
-    align-items: center;
-  }
-  
-  .date-input {
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #ccc;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .date-input:focus {
-    outline: none;
-    box-shadow: 0px 0px 0px 2px #D30000;
-  }
-  
-  .date-label {
-    color: #333;
-  }
+
+/* tasks.component.css */
+
+/* tasks.component.css */
+
+/* tasks.component.css */
+
+/* Container for paginator */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Paginator wrapper */
+.mat-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Spacing between buttons */
+}
+
+/* Paginator buttons */
+.mat-paginator .mat-paginator-navigation-previous,
+.mat-paginator .mat-paginator-navigation-next {
+  width: 40px;
+  height: 40px;
+  background-color: #e0e0e0; /* Grey background for disabled state */
+  border-radius: 8px; /* Rounded corners */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: not-allowed;
+  border: none;
+}
+
+.mat-paginator .mat-paginator-navigation-previous.mat-button-disabled,
+.mat-paginator .mat-paginator-navigation-next.mat-button-disabled {
+  background-color: #e0e0e0; /* Grey background for disabled state */
+  color: #a0a0a0; /* Disabled color */
+}
+
+.mat-paginator .mat-paginator-navigation-previous:not(.mat-button-disabled),
+.mat-paginator .mat-paginator-navigation-next:not(.mat-button-disabled) {
+  cursor: pointer;
+  background-color: #ffffff; /* White background for active state */
+  border: 1px solid #dcdcdc;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.mat-paginator .mat-paginator-navigation-previous:hover:not(.mat-button-disabled),
+.mat-paginator .mat-paginator-navigation-next:hover:not(.mat-button-disabled) {
+  background-color: #f0f0f0; /* Hover effect */
+  border-color: #c0c0c0;
+}
+
+/* Paginator numbers */
+.mat-paginator .mat-paginator-range-label,
+.mat-paginator .mat-paginator-page-size,
+.mat-paginator .mat-paginator-icon {
+  display: none; /* Hide unwanted elements like range and page-size selectors */
+}
+
+.mat-paginator .mat-page-number {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.mat-paginator .mat-page-number.active {
+  border: 2px solid #6c3eff; /* Purple border for the active page */
+  color: #6c3eff;
+}
+
+.mat-paginator .mat-page-number:hover {
+  background-color: #f5f5f5;
+}
+
+/* Ellipsis */
+.mat-paginator .ellipsis {
+  font-size: 18px;
+  color: #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+}
+
+/* Hide paginator buttons when not needed */
+.mat-paginator .mat-paginator-navigation-previous.mat-button-disabled,
+.mat-paginator .mat-paginator-navigation-next.mat-button-disabled {
+  pointer-events: none; /* Disabled cursor when inactive */
+}

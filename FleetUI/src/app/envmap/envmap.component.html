@@ -337,7 +337,7 @@
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
 
-      <div class="options-container" *ngIf="!isPlottingEnabled && !isOptionsMenuVisible" >
+      <div class="options-container" *ngIf="!isPlottingEnabled && !isOptionsMenuVisible && !isZonePlottingEnabled " >
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
@@ -530,3 +530,11 @@ class="popup-overlay1"
   </button>
 </div>
 </div> 
+
+<div *ngIf="isConfirmationVisible" class="popup-overlay1">
+  <div class="popup-content1">
+  <p>Are you sure you want to delete this node?</p>
+  <button (click)="confirmDelete()">Yes</button>
+  <button (click)="cancelDelete()">No</button>
+</div>
+</div>

@@ -65,6 +65,29 @@ let errRoboLogs = {
   },
 };
 
+let errFleetLogs = {
+  fleetStats: [
+    {
+      moduleName: "inspection",
+      errCode: 1,
+      criticality: 3,
+      desc: "need to get verify",
+    },
+    {
+      moduleName: "maintanence",
+      errCode: 4,
+      criticality: 4,
+      desc: "N/A",
+    },
+    {
+      moduleName: "N/A",
+      errCode: 0,
+      criticality: 0,
+      desc: "N/A",
+    },
+  ],
+};
+
 //.. Task
 const getFleetTaskErrLogs = (req, res, next) => {
   fetch(`http://fleetIp:8080/fms/amr/get_tasks_list`, {
@@ -183,7 +206,7 @@ const getFleetErrLogs = async (req, res) => {
     if (!map) return res.status(500).json({ map: map, msg: "Map not exists!" });
     return res
       .status(200)
-      .json({ roboLogs: errRoboLogs.stats, msg: "data sent" });
+      .json({ fleetLogs: errFleetLogs.fleetStats, msg: "data sent" });
   } catch (err) {
     console.error("Error in taskLogs:", err);
     if (err.name === "CastError")

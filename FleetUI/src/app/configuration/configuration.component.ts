@@ -5,6 +5,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Input,
+  viewChild,
 } from '@angular/core';
 import { ExportService } from '../export.service';
 import { formatDate } from '@angular/common';
@@ -25,9 +26,10 @@ interface Poll {
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.css'],
+  styleUrls: ['./configuration.component.css']
 })
 export class ConfigurationComponent implements AfterViewInit {
+  // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent; 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
@@ -63,7 +65,11 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredRobotData: any[] = [];
 
+  isScanning = false;
   EnvData: any[] = []; // map details..
+
+  currEditMap: boolean = false;
+  currEditMapDet : any | null = null;
 
   robotData: any[] = [
     { column1: 'Robot 1', column2: '192.168.XX.XX' },
@@ -280,6 +286,7 @@ export class ConfigurationComponent implements AfterViewInit {
   EndIP: string = '0.0.0.0';
 
   startScanning() {
+    
     this.ipScanData = [];
     this.startIP = (
       document.getElementById('ipRangeFrom') as HTMLInputElement
@@ -331,8 +338,10 @@ export class ConfigurationComponent implements AfterViewInit {
       console.error('SSE error:', error);
       this.eventSource.close();
     };
+    this.isScanning = true;
   }
   stopScanning() {
+    this.isScanning = false;
     this.eventSource.close();
     return;
   }
@@ -421,13 +430,6 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isCalibrationLayerVisible = false;
   }
 
-  // saveMap() {
-  //   // here we go..
-  //   console.log(this.mapName, this.siteName);
-  //   console.log('Map Saved');
-  // }
-
-  // Add methods for each button's functionality
   addNode() {
     console.log('Add Node clicked');
   }
@@ -534,8 +536,41 @@ export class ConfigurationComponent implements AfterViewInit {
 
     this.filterData(); // Apply filters whenever the date changes
   }
+  onCurrEditMapChange(currEditMap : boolean){
+    this.currEditMap = currEditMap;
+  }
   editItem(item: any) {
-    console.log('Edit item:', item);
+    fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${item.mapName}`, {
+      method:'GET',
+      credentials:'include'
+    }).then((response) =>{
+      return response.json()
+    }).then((data)=>{
+      if(!data.map){
+        alert('Seems map not exist');
+        return;
+      }
+      if(data.error) {
+        console.log('Error while fetching map : ', data.error);
+        return;
+      }
+      const { map }= data;
+      this.currEditMapDet = {
+        mapName : map.mapName,
+        siteName : item.siteName,
+        ratio : map.mpp,
+        imgUrl : `http://${map.imgUrl}`,
+        nodes : map.nodes,
+        edges : map.edges,
+        assets : map.stations,
+        zones : map.zones
+      }
+      this.currEditMap = true;
+      this.showImageUploadPopup = true;
+      // console.log(map.mapName, item.siteName, map.mpp, map.imgUrl);
+    }) .catch((err)=>{
+      console.log(err);
+    })
   }
 
   async deleteMap(map: any): Promise<boolean> {

@@ -18,7 +18,7 @@
   margin: 0;
   font-size: 28px; /* Adjust font size as needed */
   font-family: Inter, sans-serif; /* Use a clean, modern font */
-  font-weight: 800; /* Slightly bolder text */
+  font-weight: 700; /* Slightly bolder text */
   color: #DA2127; /* Dark color for readability */
 }
 
@@ -139,39 +139,128 @@
   width: -webkit-fill-available;
 }
 
-.frame-1597881861_1864-1781 {
+/* battery container */
+
+.battery {
+  position: relative;
+  margin-left: 30px;
+  width: 120px; /* Narrower width for vertical orientation */
+  height: 200px; /* Taller height */
+  border: 3px solid #fff; /* White border for outer frame */
+border-radius: 15px; /* Rounded corners like in the image */
+background-color: transparent; /* Transparent background */
+margin-bottom: 8px;
+overflow: hidden;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Slight shadow for 3D effect */
+}
+
+.battery::after {
+  content: '';
+  position: absolute;
+  top: -10px; /* Slightly above the container */
+  left: 25%;
+  width: 50%;
+  height: 10px;
+  background-color: #fff; /* White battery cap */
+  border-radius: 2px;
+}
+
+.battery-level {
+  width: 100%; /* Full width */
+height: 100%; /* Full height, starts from bottom */
+/* background-color: #76c7c0; */
+transition: height 0.3s ease-in-out;
+position: absolute;
+bottom: 0; /* Fill from bottom to top */
+border-radius: 15px; /* Rounded edges matching the container */
+}
+
+.battery-level.low {
+  background-color: #ef2121; /* Red for low battery */
+}
+
+.battery-level.medium {
+  background-color: #ef2121; 
+}
+
+.battery-level.high {
+  background-color: #1de213; /* Green for high battery */
+}
+
+/* Charging Icon */
+.charging-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: charging-animation 1s infinite;
+  width: 100px; /* Adjust the size */
+  height: 100px; /* Adjust the size */
+}
+
+.charging-image {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes charging-animation {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Battery Container */
+/* .battery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.battery-percentage {
+  font-size: 14px;
+  margin-top: 8px;
+} */
+
+/* 
+batter percentage */
+.battery-status-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  flex-wrap: nowrap;
   align-items: flex-start;
-  gap: 0px;
   box-sizing: border-box;
   width: 59px;
 }
-.text-82--_1864-1774 {
+
+.battery-percentage {
   color: #000000;
   font-size: 24px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   text-align: center;
-  text-wrap: wrap;
-  width: -webkit-fill-available;
+  width: 100%; /* Make it responsive */
 }
 
-.text-battery_1864-1776 {
+.battery-label {
   color: #6e6e6e;
   font-size: 14px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   text-align: center;
-  text-wrap: wrap;
-  width: -webkit-fill-available;
+  width: 100%; /* Make it responsive */
 }
+
+
+/*  */
 
 .frame-1597881862_1864-1782 {
   display: flex;
@@ -1135,7 +1224,7 @@
 }
 
 
-.wifi_1874-1914 {
+/* .wifi_1874-1914 {
   padding: 20px;
   top: 85px;
   left: 794px;
@@ -1153,7 +1242,49 @@
 }
 .wi-fi_1874-1912 {
   display: flex;
+} */
+
+
+/* .wifi-container {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  padding: 20px;
+  top: 85px;
+  left: 794px;
+  position: absolute;
+  display: flex;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  border-radius: 15px;
+  background: #ffffff;
 }
+.wifi-icon {
+  display: block;
+  margin: 0 auto;
+}
+
+.wifi-signal {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.wifi-percentage-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  background-color: #23d029; 
+  z-index: 1;
+  border-radius: 50%; 
+} */
+
 
 /* Battery image  */
 /* .frame-1597881884_1883-1920 {
@@ -1230,7 +1361,7 @@
 
 /* Battery temperature */
 
-.batterytemperature-container {
+.robottemperature-container {
   padding: 14px 18px;
   display: flex;
   flex-direction: column;
@@ -1243,7 +1374,7 @@
   height: 100px;
 }
 
-.batterytemperature-content {
+.robottemperature-content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -1252,7 +1383,7 @@
   width: 193px;
 }
 
-.batterytemperature-header {
+.robottemperature-header {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -1277,7 +1408,7 @@
   height: 25px;
 }
 
-.batterytemperature-label {
+.robottemperature-label {
   font-size: 14px;
   font-family: Inter, sans-serif;
   font-weight: 500;
@@ -1285,7 +1416,7 @@
   white-space: nowrap;
 }
 
-.batterytemperature-value {
+.robottemperature-value {
   font-size: 45px;
   font-weight: medium;
   color: #000;
@@ -1529,3 +1660,57 @@
   width: 100%;
   text-align: left;
 } */
+body {
+  background-color: #F0F32B;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  margin: 20px 0;
+  color: #494949;
+}
+
+.wifi-signal {
+  position: relative;
+  display: inline-block;
+}
+
+.wifi-circle {
+  position: absolute;
+  background-color: grey;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.circle1 {
+  width: 80px;
+  height: 80px;
+  top: 0;
+  left: 0;
+  border-top-color: grey;
+}
+
+.circle2 {
+  width: 60px;
+  height: 60px;
+  top: 10px;
+  left: 10px;
+  border-top-color: grey;
+}
+
+.circle3 {
+  width: 40px;
+  height: 40px;
+  top: 20px;
+  left: 20px;
+  border-top-color: grey;
+}
+
+.circle4 {
+  width: 20px;
+  height: 20px;
+  top: 30px;
+  left: 30px;
+  background-color: grey;
+}

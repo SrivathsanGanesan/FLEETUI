@@ -31,9 +31,9 @@
         </div>
    
         <!-- Action Buttons -->
-        <div class="action-buttons">
+        <!-- <div class="action-buttons">
           <button (click)="togglePopup()" class="add-robots-button">+ Add Robots</button>
-        </div>
+        </div> -->
    
         <!-- Card Container -->
         <!-- <div class="card" *ngFor="let robot of robots" (click)="openRobotDetail(robot)"> -->
@@ -78,7 +78,11 @@
               </div>
             </div>
           </div>
-
+          <!-- <div *ngFor="let robot of robots">
+           
+            <app-battery [batteryPercentage]="robot.batteryPercentage" [isCharging]="robot.ischarging"></app-battery>
+          </div> -->
+          
       <!-- Add Robot Popup -->
       <!-- <div *ngIf="showPopup" class="popup-overlay" (click)="togglePopup()">
         <div class="popup" (click)="$event.stopPropagation()">

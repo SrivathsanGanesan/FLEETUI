@@ -40,11 +40,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
-import { BatteryComponent } from './battery/battery.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 
 @NgModule({
   declarations: [
@@ -78,7 +75,7 @@ import { MatButtonModule } from '@angular/material/button';
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
-    BatteryComponent,
+    
   ],
   imports: [
     NgApexchartsModule,
@@ -91,10 +88,7 @@ import { MatButtonModule } from '@angular/material/button';
     NgApexchartsModule,
     EnvmapModule,
     MatDialogModule,
-    MatFormFieldModule, // To use <mat-form-field>
-    MatInputModule, // To use <input matInput>
-    MatSelectModule, // To use <mat-select>
-    MatButtonModule // To use Angular Material buttons
+    MatPaginatorModule,
   ],
   providers: [
     // provideClientHydration()
