@@ -89,7 +89,7 @@ th {
   color: #000000;
   font-size: 13px;
   border-bottom: 1px solid #ddd;
-  /* text-align: left; */
+  text-align: left;
 }
 .iconTable{
   text-align: center;
