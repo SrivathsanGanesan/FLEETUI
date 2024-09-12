@@ -937,7 +937,7 @@ export class EnvmapComponent implements AfterViewInit {
     }
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
-      this.DockPopup = true; // Show the popup
+      this.showPopup = true; // Show the popup
     }
   }
   savePopupData(): void {
