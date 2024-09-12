@@ -473,8 +473,14 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   showTable(table: string) {
-    this.currentTable = table;
-  }
+    this.currentTable = table;    
+        // Clear search term and reset date inputs when switching between tabs
+    if (table === 'robot' || table === 'fleet') {
+      this.searchTerm = '';  // Clear the search term
+      this.startDate = null; // Clear the start date
+      this.endDate = null;   // Clear the end date
+    }
+    }
 
   setCurrentTable(table: string) {
     this.currentTable = table;
@@ -523,6 +529,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   startDate: Date | null = null;
   endDate: Date | null = null;
+  
   onDateChange(event: Event) {
     const input = event.target as HTMLInputElement;
     const id = input.id;
