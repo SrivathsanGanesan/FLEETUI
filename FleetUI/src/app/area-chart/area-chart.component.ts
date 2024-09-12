@@ -43,6 +43,12 @@ export class AreaChartComponent implements OnInit {
   starvationArr: number[] = [0];
   starvationXaxisSeries: string[] = [];
 
+  pickAccuracyArr: number[] = [0];
+  pickAccXaxisSeries: string[] = [];
+
+  errRateArr: number[] = [0];
+  errRateXaxisSeries: string[] = [];
+
   throuputTimeInterval: any | null = null;
   starvationTimeInterval: any | null = null;
   taskAllocationTimeInterval: any | null = null;
@@ -241,6 +247,7 @@ export class AreaChartComponent implements OnInit {
     }
   }
 
+  // yet to remove..
   async updateTaskAllocation() {
     if (!this.selectedMap || this.taskAllocationTimeInterval) return;
     this.clearAllIntervals(this.taskAllocationTimeInterval);
@@ -266,30 +273,106 @@ export class AreaChartComponent implements OnInit {
   }
 
   async updatePickAccuracy() {
+    let temp = [];
+    let tempTime = [];
     if (!this.selectedMap || this.pickAccTimeInterval) return;
     this.clearAllIntervals(this.pickAccTimeInterval);
+    this.chartOptions.xaxis.range = 12;
+    let startTime = new Date().setHours(0, 0, 0, 0); // set current time to starting time of the current day..
+    let endTime = new Date().setMilliseconds(0); // time in milliseconds..
+
+    try {
+      this.pickAccTimeInterval = setInterval(async () => {
+        let response = await fetch(
+          `http://${environment.API_URL}:${environment.PORT}/graph/pickaccuracy/${this.selectedMap.id}`,
+          {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({
+              timeSpan: 'Daily', // Weekly
+              startTime: startTime,
+              endTime: endTime,
+            }),
+          }
+        );
+        let data = await response.json();
+        if (!data.map) {
+          clearInterval(this.pickAccTimeInterval);
+          return;
+        }
+
+        this.pickAccuracyArr.push(data.pickAccuracy);
+        tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+        if (this.pickAccuracyArr.length > 12)
+          temp = this.pickAccuracyArr.slice(-12);
+        else temp = [...this.pickAccuracyArr];
+
+        this.chartOptions.series = [{ data: temp }];
+        this.chart.updateOptions(
+          {
+            // series: [{ data: temp }],
+            xaxis: {
+              categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+            },
+          },
+          false, // Do not completely replot the chart
+          true // Allow smooth transitions
+        );
+      }, 1000 * 2);
+    } catch (err) {
+      console.log('Err occured here : ', err);
+    }
   }
 
-  updateErrorRate() {
-    this.chartOptions.series = [
-      {
-        name: 'Series 5',
-        data: [25, 35, 45, 55, 65, 75, 85, 95, 100, 110, 120],
-      },
-    ];
-    this.chartOptions.xaxis.categories = [
-      'Dec 01',
-      'Dec 02',
-      'Dec 03',
-      'Dec 04',
-      'Dec 05',
-      'Dec 06',
-      'Dec 07',
-      'Dec 08',
-      'Dec 09',
-      'Dec 10',
-      'Dec 11',
-    ];
+  async updateErrorRate() {
+    let temp = [];
+    let tempTime = [];
+    if (!this.selectedMap || this.errRateTimeInterval) return;
+    this.clearAllIntervals(this.errRateTimeInterval);
+    this.chartOptions.xaxis.range = 12;
+    let startTime = new Date().setHours(0, 0, 0, 0); // set current time to starting time of the current day..
+    let endTime = new Date().setMilliseconds(0); // time in milliseconds..
+
+    try {
+      this.errRateTimeInterval = setInterval(async () => {
+        let response = await fetch(
+          `http://${environment.API_URL}:${environment.PORT}/graph/err-rate/${this.selectedMap.id}`,
+          {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({
+              timeSpan: 'Daily', // Weekly
+              startTime: startTime,
+              endTime: endTime,
+            }),
+          }
+        );
+        let data = await response.json();
+        if (!data.map) {
+          clearInterval(this.errRateTimeInterval);
+          return;
+        }
+
+        this.errRateArr.push(data.errRate);
+        tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+        if (this.errRateArr.length > 12) temp = this.errRateArr.slice(-12);
+        else temp = [...this.errRateArr];
+
+        this.chartOptions.series = [{ data: temp }];
+        this.chart.updateOptions(
+          {
+            // series: [{ data: temp }],
+            xaxis: {
+              categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+            },
+          },
+          false, // Do not completely replot the chart
+          true // Allow smooth transitions
+        );
+      }, 1000 * 2);
+    } catch (err) {
+      console.log('Err occured here : ', err);
+    }
   }
 
   clearAllIntervals(currInterval: any) {
