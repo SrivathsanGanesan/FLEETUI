@@ -467,21 +467,18 @@ export class ConfigurationComponent implements AfterViewInit {
   showTable(table: string) {
     this.currentTable = table;
       // Clear search term and reset date inputs when switching between tabs
-  if (table === 'fleet') {
-    this.searchTerm = '';  // Clear the search term
-    this.startDate = null; // Clear the start date
-    this.endDate = null;   // Clear the end date
+  // Clear search term and reset date inputs when switching between tabs
+  this.searchTerm = ''; // Clear the search term
+  this.startDate = null; // Clear the start date
+  this.endDate = null; // Clear the end date
+  
+  // Clear filtered data based on the current table
+  if (this.currentTable === 'environment') {
+    this.filteredEnvData = [...this.EnvData]; // Reset to the original data
+  } else if (this.currentTable === 'robot') {
+    this.filteredRobotData = [...this.robotData]; // Reset to the original data
   }
-  if (table === 'robot' ) {
-    this.searchTerm = '';  // Clear the search term
-    this.startDate = null; // Clear the start date
-    this.endDate = null;   // Clear the end date
-  }
-  if (table === 'environment' ) {
-    this.searchTerm = '';  // Clear the search term
-    this.startDate = null; // Clear the start date
-    this.endDate = null;   // Clear the end date
-  }
+  this.filterData();
   }
   filterData() {
     const term = this.searchTerm.toLowerCase();
