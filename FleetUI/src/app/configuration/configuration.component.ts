@@ -679,21 +679,161 @@ export class ConfigurationComponent implements AfterViewInit {
   blockItem(item: any) {
     console.log('Block item:', item);
   }
-  isPopupOpen = false;
+  isPPPopupOpen = false;
   newItem: any = {};
+  isPopupOpen = false;
+  isPhysicalParametersFormVisible = false;
+  isTypeSpecificationFormVisible = false;
+  isProtocolLimitsFormVisible = false;
+  isProtocolFeaturesFormVisible = false;
+  isAGVGeometryFormVisible = false;
+  isLoadSpecificationFormVisible = false;
+  isLocalizationParametersFormVisible = false;
 
+  formData = {
+    manufacturer: '',
+    serialNumber: '',
+    typeSpecification: {
+      seriesName: '',
+      seriesDescription: '',
+      agvKinematic: '',
+      agvClass: '',
+      maxLoadMass: 0,
+      localizationTypes: '',
+      navigationTypes: ''
+    },
+    protocolLimits: {
+      maxStringLens: '',
+      maxArrayLens: '',
+      timing: ''
+    },
+    protocolFeatures: {
+      optionalParameters: '',
+      actionScopes: '',
+      actionParameters: '',
+      resultDescription: ''
+    },
+    agvGeometry: {
+      wheelDefinitions: '',
+      envelopes2d: '',
+      envelopes3d: ''
+    },
+    loadSpecification: {
+      loadPositions: '',
+      loadSets: ''
+    },
+    localizationParameters: {
+      type: '',
+      description: ''
+    }
+  };
+
+  toggleTypeSpecificationForm(event: Event): void {
+    event.preventDefault();
+    this.isTypeSpecificationFormVisible = !this.isTypeSpecificationFormVisible;
+  }
+
+  closeTypeSpecificationForm(): void {
+    this.isTypeSpecificationFormVisible = false;
+  }
+
+  saveTypeSpecification(): void {
+    // Implement save logic
+    console.log('Type Specification saved:', this.formData.typeSpecification);
+    this.closeTypeSpecificationForm();
+  }
+
+  toggleProtocolLimitsForm(event: Event): void {
+    event.preventDefault();
+    this.isProtocolLimitsFormVisible = !this.isProtocolLimitsFormVisible;
+  }
+
+  closeProtocolLimitsForm(): void {
+    this.isProtocolLimitsFormVisible = false;
+  }
+
+  saveProtocolLimits(): void {
+    // Implement save logic
+    console.log('Protocol Limits saved:', this.formData.protocolLimits);
+    this.closeProtocolLimitsForm();
+  }
+
+  toggleProtocolFeaturesForm(event: Event): void {
+    event.preventDefault();
+    this.isProtocolFeaturesFormVisible = !this.isProtocolFeaturesFormVisible;
+  }
+
+  closeProtocolFeaturesForm(): void {
+    this.isProtocolFeaturesFormVisible = false;
+  }
+
+  saveProtocolFeatures(): void {
+    // Implement save logic
+    console.log('Protocol Features saved:', this.formData.protocolFeatures);
+    this.closeProtocolFeaturesForm();
+  }
+
+  toggleAGVGeometryForm(event: Event): void {
+    event.preventDefault();
+    this.isAGVGeometryFormVisible = !this.isAGVGeometryFormVisible;
+  }
+
+  closeAGVGeometryForm(): void {
+    this.isAGVGeometryFormVisible = false;
+  }
+
+  saveAGVGeometry(): void {
+    // Implement save logic
+    console.log('AGV Geometry saved:', this.formData.agvGeometry);
+    this.closeAGVGeometryForm();
+  }
+
+  toggleLoadSpecificationForm(event: Event): void {
+    event.preventDefault();
+    this.isLoadSpecificationFormVisible = !this.isLoadSpecificationFormVisible;
+  }
+
+  closeLoadSpecificationForm(): void {
+    this.isLoadSpecificationFormVisible = false;
+  }
+
+  saveLoadSpecification(): void {
+    // Implement save logic
+    console.log('Load Specification saved:', this.formData.loadSpecification);
+    this.closeLoadSpecificationForm();
+  }
+
+  toggleLocalizationParametersForm(event: Event): void {
+    event.preventDefault();
+    this.isLocalizationParametersFormVisible = !this.isLocalizationParametersFormVisible;
+  }
+
+  closeLocalizationParametersForm(): void {
+    this.isLocalizationParametersFormVisible = false;
+  }
+
+  saveLocalizationParameters(): void {
+    // Implement save logic
+    console.log('Localization Parameters saved:', this.formData.localizationParameters);
+    this.closeLocalizationParametersForm();
+  }
+
+  saveItem(): void {
+    // Implement form submission logic
+    console.log('Item saved:', this.formData);
+    this.isPopupOpen = false;
+  }
+
+  closeroboPopup(): void {
+    this.isPopupOpen = false;
+  }
   openPopup(item: any) {
     this.isPopupOpen = true;
     this.newItem = { ...item }; // Initialize with the clicked item's data
   }
-  closeroboPopup() {
-    this.isPopupOpen = false;
-  }
-
-  saveItem() {
-    // Perform the save action (e.g., push to array, send to API, etc.)
-    console.log('Item saved:', this.newItem);
-    
-    this.closePopup(); // Close the popup after saving
-  }
+  closePPPopup() {
+  this.isPhysicalParametersFormVisible = !this.isPhysicalParametersFormVisible;  }
+  savePPItem(){
+  this.isPhysicalParametersFormVisible = !this.isPhysicalParametersFormVisible;  }
+ 
 }
