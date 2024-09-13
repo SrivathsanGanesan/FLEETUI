@@ -427,7 +427,6 @@ export class EnvmapComponent implements AfterViewInit {
         );
       });
 
-      console.log(this.edges);
       // Clear the selectedNode
       this.selectedNode = null;
       // Redraw the canvas
@@ -1854,7 +1853,7 @@ onDeleteZone(): void {
   }
   private isZoneOverlapping(newZonePoints: any[]): boolean {
     for (const existingZone of this.zones) {
-      if (this.isPolygonOverlap(existingZone.pos, newZonePoints)) {
+      if (this.isPolygonOverlap(existingZone.pos, newZonePoints) && this.selectedZone?.id !== existingZone.id) {
         return true;
       }
     }
@@ -1962,6 +1961,8 @@ onDeleteZone(): void {
       this.plotRobo(x, y);
     });
   }
+  private originalZonePointPosition: { x: number; y: number } | null = null;
+
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -2046,6 +2047,7 @@ onDeleteZone(): void {
           ) {
             this.selectedZone = zone;
             this.selectedZonePoint = point;
+            // this.originalZonePointPosition = { x: point.x, y: point.y };
             this.draggingZonePoint = true;
             return; // Exit early if zone point is clicked
           }
@@ -2115,6 +2117,13 @@ onDeleteZone(): void {
         console.warn('The point is too close to an existing zone point');
         return;
       }
+      if (this.isZoneOverlapping([{ x, y }])) {
+        // alert('Zone point overlaps with another zone!');
+        // this.draggingZonePoint = false;
+        // this.selectedZonePoint = null;
+        this.redrawCanvas();
+        return;
+      }
       // Update the position of the selected zone point
       this.selectedZonePoint.x = x;
       this.selectedZonePoint.y = y;
@@ -2166,11 +2175,7 @@ onDeleteZone(): void {
       this.selectedZonePoint = null;
       this.selectedZone = null;
     }
-    if (
-      this.isDrawingLine &&
-      this.lineStartX !== null &&
-      this.lineStartY !== null
-    ) {
+    if ( this.isDrawingLine && this.lineStartX !== null && this.lineStartY !== null ) {
       this.isDrawingLine = false;
       const transformedY = canvas.height - y; // Flip the Y-axis
       // Finalize the line drawing
@@ -2197,12 +2202,12 @@ onDeleteZone(): void {
         this.onMouseUp.bind(this)
       );
     }
-    if (this.draggingZonePoint && this.selectedZonePoint) {
-      // Update the final position of the zone point
+
+    if (this.draggingZonePoint) {
       this.draggingZonePoint = false;
-      this.selectedZonePoint = null;
-      this.selectedZone = null;
+      this.originalZonePointPosition = null;  // Clear original position
     }
+
     if (this.draggingAsset && this.selectedAsset) {
       // Finalize asset position
       this.draggingAsset = false;
@@ -2259,6 +2264,7 @@ onDeleteZone(): void {
       this.draggingNode = false;
     }
   }
+
   private isAssetClicked(
     asset: { x: number; y: number; type: string },
     mouseX: number,
