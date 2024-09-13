@@ -149,9 +149,9 @@ export class AreaChartComponent implements OnInit {
       case 'data2':
         this.updateStarvationRate();
         break;
-      case 'data3':
+      /* case 'data3':
         this.updateTaskAllocation();
-        break;
+        break; */
       case 'data4':
         this.updatePickAccuracy();
         break;
@@ -248,29 +248,7 @@ export class AreaChartComponent implements OnInit {
   }
 
   // yet to remove..
-  async updateTaskAllocation() {
-    if (!this.selectedMap || this.taskAllocationTimeInterval) return;
-    this.clearAllIntervals(this.taskAllocationTimeInterval);
-    this.chartOptions.series = [
-      {
-        name: 'Series 3',
-        data: [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
-      },
-    ];
-    this.chartOptions.xaxis.categories = [
-      'Dec 01',
-      'Dec 02',
-      'Dec 03',
-      'Dec 04',
-      'Dec 05',
-      'Dec 06',
-      'Dec 07',
-      'Dec 08',
-      'Dec 09',
-      'Dec 10',
-      'Dec 11',
-    ];
-  }
+  // async updateTaskAllocation() {}
 
   async updatePickAccuracy() {
     let temp = [];
