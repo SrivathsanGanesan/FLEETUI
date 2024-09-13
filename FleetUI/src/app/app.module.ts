@@ -6,6 +6,8 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 import { LoginComponent } from './login/login.component';
 import { ProjectsetupComponent } from './projectsetup/projectsetup.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -42,7 +44,8 @@ import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { UserManagementComponent } from './user-management/user-management.component';
-
+import { ConfigurationModule } from './configuration/configuration.module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
   declarations: [
@@ -76,7 +79,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
-    UserManagementComponent
+UserManagementComponent
   ],
   imports: [
     NgApexchartsModule,
@@ -90,13 +93,16 @@ import { UserManagementComponent } from './user-management/user-management.compo
     EnvmapModule,
     MatDialogModule,
     MatPaginatorModule,
+    ConfigurationModule,
+    InputTextModule,
+    ButtonModule,
   ],
   providers: [
     // provideClientHydration()
 
     provideAnimationsAsync(),
   ],
-
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -13,7 +13,7 @@
           />
         </div>
       </div>
- 
+
       <div class="search-date-container">
         <!-- Search Bar -->
         <div class="search-filter-container">
@@ -33,7 +33,7 @@
           </button>
           </div>
         </div>
- 
+
         <!-- Date Filter and Date Inputs -->
         <div class="date-filters" *ngIf="currentTable === 'Environment'">
           <div class="date-inputs">
@@ -46,7 +46,7 @@
               [min]="minDate"
               [max]="maxDate"
             />
-      
+
             <label for="end-date" class="Enddate-label">End Date:</label>
             <input
               type="date"
@@ -59,7 +59,7 @@
           </div>
         </div>
       </div>
- 
+
       <!-- Buttons -->
       <div class="button-container">
         <div class="button-frame">
@@ -99,7 +99,7 @@
           </div>
         </div>
       </div>
- 
+
       <!-- Table -->
       <div class="table-container">
         <div
@@ -182,7 +182,7 @@
                 </tr>
               </tbody>
             </table>
- 
+
             <table
               class="min-w-full divide-y divide-gray-200"
               *ngIf="currentTable === 'robot'"
@@ -243,7 +243,7 @@
             >
               Add Selected Robots
             </button> -->
- 
+
             <div class="popup-overlay" *ngIf="showRobotParametersPopup">
               <app-robot-parameters-popup
                 (close)="closeRobotParametersPopup()"
@@ -255,7 +255,7 @@
               <input id="ipRangeFrom" type="text" placeholder="255.255.0.0" />
               <span>to: </span>
               <input id="ipRangeTo" type="text" placeholder="255.255.0.0" />
- 
+
               <button
                 type="button"
                 class="start-button"
@@ -272,14 +272,14 @@
               </button>
               <div *ngIf="isScanning" class="loading-spinner"></div>
             </div>
- 
+
             <div class="popup-overlay" *ngIf="showIPScannerPopup">
               <app-ipscanner
                 *ngIf="showIPScannerPopup"
                 (close)="closeIPScanner()"
               ></app-ipscanner>
             </div>
- 
+
             <table *ngIf="currentTable === 'robot'">
               <thead>
                 <tr>
@@ -312,7 +312,7 @@
                 </tr>
               </tbody>
             </table>
-           
+
             <div *ngIf="currentTab === 'fleet'">
               <ul class="tab-menu">
                 <li
@@ -346,28 +346,33 @@
                   Communication
                 </li>
               </ul>
- 
+
               <div *ngIf="fleetTab === 'general'">
-                <h2>Edit the Fleet Parameters</h2>
+                <!-- <h2>Edit the Fleet Parameters</h2> -->
                 <!-- Add content for the General tab -->
+                 <app-general></app-general>
               </div>
               <div *ngIf="fleetTab === 'plannar'">
-                <h2>Plannar Settings</h2>
+                <!-- <h2>Plannar Settings</h2> -->
                 <!-- Add content for the Plannar tab -->
+                 <app-planner></app-planner>
               </div>
               <div *ngIf="fleetTab === 'task'">
-                <h2>Task Management</h2>
+                <!-- <h2>Task Management</h2> -->
                 <!-- Add content for the Task tab -->
+                 <app-task></app-task>
               </div>
               <div *ngIf="fleetTab === 'battery'">
-                <h2>Battery Information</h2>
+                <!-- <h2>Battery Information</h2> -->
                 <!-- Add content for the Battery tab -->
+                 <app-battery></app-battery>
               </div>
               <div *ngIf="fleetTab === 'communication'">
-                <h2>Communication Settings</h2>
+                <!-- <h2>Communication Settings</h2> -->
+                <app-communication></app-communication>
               </div>
             </div>
- 
+
             <div class="Create-button-container">
               <button
                 class="Create-button"
@@ -403,12 +408,12 @@
         <label for="manufacturer">Manufacturer:</label>
         <input type="text" id="manufacturer" [(ngModel)]="formData.manufacturer" name="manufacturer" required>
       </div>
-      
+
       <div class="rob-inp">
         <label for="serialNumber">Serial Number:</label>
         <input type="text" id="serialNumber" [(ngModel)]="formData.serialNumber" name="serialNumber" required>
       </div>
-    
+
       <div class="rob-inp">
         <label for="typeSpecification">Type Specification:</label>
         <a href="#" (click)="toggleTypeSpecificationForm($event)" id="typeSpecificationLink">

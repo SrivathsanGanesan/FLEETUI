@@ -1,0 +1,45 @@
+<div class="container1">
+  <div class="content-fluid1">
+    <div class="general">
+      <!-- <form> -->
+        <div class="container">
+          <div class="form-control">
+            <div class="field">
+              <label for="name">Minimum Battery :  </label>
+              <input class="input" type="number" min="0"  placeholder="Enter" pInputText required/>
+            </div>
+            <div class="field">
+              <label for="name">Maximum Battery : </label>
+              <input type="text" placeholder="Enter IP" minlength="7" maxlength="15" size="15"  pInputText/>
+            </div>
+            <div class="field">
+              <label for="name">Warning Battery :  </label>
+              <input class="input" placeholder="Enter Port" type="number" min="1000" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" max="9999"  placeholder="Enter" pInputText required/>
+            </div>
+          </div>
+
+          <div class="form2">
+            <div class="field">
+              <label for="ip">Warning Voltage : </label>
+              <input type="text" Enter IP placeholder="Enter IP" minlength="7" maxlength="15" size="15"  pInputText/>
+            </div>
+            <div class="field">
+              <label for="type">Minimum Voltage</label><br>
+              <input type="text" Enter IP placeholder="Enter IP" minlength="7" maxlength="15" size="15"  pInputText/>
+            </div>
+          </div>
+          <div class="field mt-1">
+            <p-button
+              label="Apply Filter"
+              type="submit"
+              class="block mt-1 pt-2 button"
+              icon="pi pi-search"
+              styleClass="p-button-danger"
+              [style]="{'margin-top':'10rem','margin-right':'5rem'}"
+            ></p-button>
+          </div>
+        </div>
+      <!-- </form> -->
+    </div>
+  </div>
+</div>
