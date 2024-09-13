@@ -273,6 +273,8 @@ export class Userlogscomponent {
 
     const startDate = startDateElement.value;
     const endDate = endDateElement.value;
+    console.log(startDate, endDate);
+    
 
     // Implement your date range filtering logic here
   }

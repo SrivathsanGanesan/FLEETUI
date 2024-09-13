@@ -98,18 +98,42 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Source and Destination
             </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let item of paginatedData; index as i">
+          <tr *ngFor="let item of paginatedData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ i + 1 + ((paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10)) }}
+              {{ i + 1 + (paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.taskId }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.taskName }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.status }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.roboName }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ item.sourceDestination }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <!-- Switch Container -->
+              <div class="switch-container">
+                <!-- Switch -->
+                <label class="switch">
+                  <input type="checkbox" class="chbox" [checked]="!item.paused" (click)="onPause(item)">
+                  <span class="slider slider--0" [ngClass]="{ 'slider--0': !item.paused }">
+                    {{ item.paused ? 'Activate' : 'Pause' }}
+                  </span>
+                  <div class="slider slider--1">
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <div class="slider slider--2"></div>
+                  <div class="slider slider--3"> Activate</div>
+                </label>
+            
+                <!-- Cancel Button -->
+                <button class="btn-common btn-cancel" (click)="onCancel(item)">Cancel</button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -117,9 +141,17 @@
   </div>
 </div>
 
-    <!-- Paginator -->
+
+        <!-- Paginator -->
     <div class="paginator-container">
-      <mat-paginator [length]="filteredTaskData.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 15, 20]" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
+      <mat-paginator
+        [length]="filteredTaskData.length"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
     </div>
   
 
@@ -149,7 +181,7 @@
             <div class="button-container">
               <button (click)="exportData('csv')">Export as CSV</button>
               <button (click)="exportData('excel')">Export as Excel</button>
-              <button (click)="exportData('pdf')">Export as PDF</button>
+              <!-- <button (click)="exportData('pdf')">Export as PDF</button> -->
             </div>
           </div>
         </div>

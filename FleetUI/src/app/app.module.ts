@@ -43,6 +43,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { UserManagementComponent } from './user-management/user-management.component';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
@@ -78,7 +79,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
-
+UserManagementComponent
   ],
   imports: [
     NgApexchartsModule,
