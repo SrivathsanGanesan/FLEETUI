@@ -410,6 +410,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   confirmDelete(): void {
+    
     // Proceed with node deletion if confirmed
     if (this.selectedNode) {
       // Remove from nodes array
@@ -968,6 +969,9 @@ export class EnvmapComponent implements AfterViewInit {
         this.DockPopup = true; // Show the popup for docking stations only
         return; // Exit early after handling docking station
       }
+      if (this.isAssetClicked(asset, x, y) && asset.type === 'charging') {
+        this.isConfirmationVisible = true;
+      }
 
     }
     if (clickedEdge) {
@@ -1002,7 +1006,28 @@ onDeleteZone(): void {
     this.redrawCanvas();
   }
 }
+
+validationMessage: string | null = null;
+
+
   savePopupData(): void {
+    this.validationMessage = null;
+    // Convert undockingDistance to number for validation
+    const undockingDistanceNumber = Number(this.undockingDistance);
+
+    // Validate if undockingDistance is within range and both fields are filled
+    if (!undockingDistanceNumber || undockingDistanceNumber < 1 || undockingDistanceNumber > 1000) {
+      this.validationMessage = 'Undocking Distance must be between 1 and 1000.';
+      return;
+    }
+
+    if (!this.description || this.description.trim() === '') {
+      this.validationMessage = 'Please enter a description.';
+      return;
+    }
+
+    // If validation passes, proceed with saving the data
+    console.log('Data saved:', { undockingDistance: this.undockingDistance, description: this.description });
     console.log(this.selectedAsset);
 
     if (this.selectedAsset) {
