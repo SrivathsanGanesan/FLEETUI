@@ -11,7 +11,9 @@
   <div *ngIf="showError" class="error-message">
     Please select at least one robot.
   </div>
-  <button (click)="addSelectedRobots()">Place</button>
-  <button (click)="closePopup()">Close</button>
+  <div>
+  <button type="button" (click)="addSelectedRobots()">Place</button>
+  <button type="button" (click)="closePopup()">Close</button>
+ </div>
   </div>
 </div>
