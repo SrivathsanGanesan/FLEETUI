@@ -542,7 +542,7 @@ h2 {
   font-family: Arial, Helvetica, sans-serif;
 }
  
-.start-button {
+.stop-button {
   margin-left: 10px;
   background-color: #da2127;
   color: white;
@@ -554,7 +554,19 @@ h2 {
   font-size: 20px;
   font-weight: bold;
 }
- 
+.start-button {
+  margin-left: 10px;
+  background-color: white;
+  color: #da2127;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  border: 1px solid #da2127;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+}
  
 /* Dropdown links */
 .dropdown-content button {

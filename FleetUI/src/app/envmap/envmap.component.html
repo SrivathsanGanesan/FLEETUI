@@ -500,23 +500,45 @@
 
 <div *ngIf="DockPopup" class="popup-overlay1">
   <div class="popup-content1">
-  <form>
-    <div>
-      <label for="undockingDistance">Undocking Distance:</label>
-      <input type="text" id="undockingDistance" name="undockingDistance" [(ngModel)]="undockingDistance" />
-    </div>
-    <div>
-      <label for="description">Description:</label>
-      <input type="text" id="description" name="description" [(ngModel)]="description" />
-    </div>
-    <div>
-      <button type="button" (click)="deleteSelectedAsset()">Delete</button>
-      <button type="button" (click)="savePopupData()">Save</button>
-      <button type="button" (click)="closePopup1()">Cancel</button>
-    </div>
-  </form>
+    <form>
+      <!-- Validation Message -->
+      <h4>Docking Station Details</h4>
+
+      <div class="UDform">
+        <label for="undockingDistance">Undocking Distance:</label>
+        <input 
+          type="number" 
+          id="undockingDistance" 
+          name="undockingDistance" 
+          [(ngModel)]="undockingDistance" 
+          min="1" 
+          max="1000" 
+          required 
+        />
+      </div>
+      
+      <div class="UDform">
+        <label for="description">Description:</label>
+        <input 
+          type="text" 
+          id="description" 
+          name="description" 
+          [(ngModel)]="description" 
+          required
+        />
+      </div>
+      <div *ngIf="validationMessage" class="validation-message" style="color: red;font:10px sans-serif;">
+        {{ validationMessage }}
+      </div>
+      <div>
+        <button type="button" (click)="deleteSelectedAsset()">Delete</button>
+        <button type="button" (click)="savePopupData()">Save</button>
+        <button type="button" (click)="closePopup1()">Cancel</button>
+      </div>
+    </form>
   </div>
 </div>
+
 
 <div
 class="popup-overlay1"
