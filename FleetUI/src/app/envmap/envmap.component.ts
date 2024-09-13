@@ -275,7 +275,7 @@ export class EnvmapComponent implements AfterViewInit {
   undockingDistance: string = ''; // Input field for undocking distance
   description: string = ''; // Input field for description
   selectedAssetId: string | null = null; // Store the selected asset ID
-  private draggedNode: Node | null = null;
+  // private draggedNode: Node | null = null;
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -980,7 +980,28 @@ export class EnvmapComponent implements AfterViewInit {
     }
     // Check if a node is clicked
     for (const node of this.nodes) {
-      if (this.isNodeClicked(node, x, y)) {
+      if (this.isNodeClicked(node, x, y) && this.selectedNode) {
+        this.nodeDetails.description = this.selectedNode.description;
+        this.nodeDetails.intermediate_node =
+          this.selectedNode.intermediate_node;
+        this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
+        this.actions = this.selectedNode.actions;
+        for (let action of this.actions) {
+          if (action.actionType === 'Move') {
+            this.moveParameters = action.parameters;
+            continue;
+            // break;
+          }
+          if (action.actionType === 'Dock') {
+            this.dockParameters = action.parameters;
+            continue;
+          }
+          if (action.actionType === 'Undock') {
+            this.undockParameters = action.parameters;
+            continue;
+          }
+        }
+        // this.cdRef.detectChanges();
         this.showNodeDetailsPopup();
         return;
       }
@@ -994,6 +1015,8 @@ export class EnvmapComponent implements AfterViewInit {
         console.log('Docking station clicked');
 
         this.selectedAsset = asset;
+        this.undockingDistance = asset.undockingDistance.toString();
+        this.description = asset.desc;
         this.DockPopup = true; // Show the popup for docking stations only
         return; // Exit early after handling docking station
       }
@@ -1057,13 +1080,6 @@ export class EnvmapComponent implements AfterViewInit {
       return;
     }
 
-    // If validation passes, proceed with saving the data
-    console.log('Data saved:', {
-      undockingDistance: this.undockingDistance,
-      description: this.description,
-    });
-    console.log(this.selectedAsset);
-
     if (this.selectedAsset) {
       // Find the asset and update its properties
       this.assets = this.assets.map((asset) => {
@@ -1075,7 +1091,6 @@ export class EnvmapComponent implements AfterViewInit {
       });
       this.redrawCanvas();
     }
-    console.log(this.assets);
 
     this.closePopup1();
   }
