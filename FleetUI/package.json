@@ -63,8 +63,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ngx-cookie-service": "^18.0.0",
-    "postcss": "^8.4.40",
-    "tailwindcss": "^3.4.7",
+    "postcss": "^8.4.45",
+    "tailwindcss": "^3.4.11",
     "typescript": "~5.4.2"
   }
 }
