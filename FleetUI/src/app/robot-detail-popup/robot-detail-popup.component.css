@@ -31,7 +31,7 @@
 }
 
 .robot-image-container {
-  top: 68px;
+  top: 28px;
   left: 950px;
   position: absolute;
   display: flex;
@@ -42,11 +42,20 @@
 
 
 /* connect and disconnect */
-/* From Uiverse.io by faxriddin20 */ 
+/* From Uiverse.io by faxriddin20 */
+
+.connect{
+  width: 7em;
+  height: 7em;
+  top: 320px;
+  left: 1000px;
+  position: relative;
+
+}
 .container {
   width: 7em;
   height: 7em;
-  top: 15px;
+  top: 25px;
   left: 800px;
   position: relative;
 }
