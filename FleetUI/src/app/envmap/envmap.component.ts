@@ -307,10 +307,22 @@ export class EnvmapComponent implements AfterViewInit {
       this.edges = this.currEditMapDet.edges;
       this.assets = this.currEditMapDet.assets;
       this.zones = this.currEditMapDet.zones;
-      this.nodeCounter = parseInt(this.nodes[this.nodes.length - 1]?.id) + 1 ? parseInt(this.nodes[this.nodes.length - 1]?.id) + 1 : this.nodeCounter;
-      this.edgeCounter = parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1 ?  parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1 : this.edgeCounter;
-      this.assetCounter = this.assets[this.assets.length - 1]?.id + 1 ? this.assets[this.assets.length - 1]?.id + 1 : this.zoneCounter;
-      this.zoneCounter = parseInt(this.zones[this.zones.length - 1]?.id) + 1 ? parseInt(this.zones[this.zones.length - 1]?.id) + 1 : this.zoneCounter;
+      this.nodeCounter =
+        parseInt(this.nodes[this.nodes.length - 1]?.id) + 1
+          ? parseInt(this.nodes[this.nodes.length - 1]?.id) + 1
+          : this.nodeCounter;
+      this.edgeCounter =
+        parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
+          ? parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
+          : this.edgeCounter;
+      this.assetCounter =
+        this.assets[this.assets.length - 1]?.id + 1
+          ? this.assets[this.assets.length - 1]?.id + 1
+          : this.zoneCounter;
+      this.zoneCounter =
+        parseInt(this.zones[this.zones.length - 1]?.id) + 1
+          ? parseInt(this.zones[this.zones.length - 1]?.id) + 1
+          : this.zoneCounter;
       this.open();
     }
   }
@@ -410,7 +422,18 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   confirmDelete(): void {
-    
+    if (this.selectedAsset) {
+      this.assets = this.assets.filter(
+        (asset) => this.selectedAsset?.id !== asset.id
+      );
+      this.redrawCanvas();
+    }
+    if (this.selectedRobo) {
+      this.robos = this.robos.filter(
+        (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
+      );
+      this.redrawCanvas();
+    }
     // Proceed with node deletion if confirmed
     if (this.selectedNode) {
       // Remove from nodes array
@@ -660,29 +683,34 @@ export class EnvmapComponent implements AfterViewInit {
   }
   updateEditedMap() {
     let editedMap = {
-      mapName : null,
-      siteName : null,
-      mpp : null,
-      origin : null,
-      nodes : this.nodes,
-      edges : this.edges,
-      zones : this.zones,
-      stations : this.assets
-    }
-    fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.mapName}`,{
-      method:'POST',
-      credentials:'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editedMap)
-    }).then((response)=>{
-      return response.json();
-    }).then((data)=>{ 
-      const { updatedData } = data;
-      this.nodes = updatedData.nodes;
-      this.edges = updatedData.edges;
-      this.assets = updatedData.stations;
-      this.zones = updatedData.zones;
-    })
+      mapName: null,
+      siteName: null,
+      mpp: null,
+      origin: null,
+      nodes: this.nodes,
+      edges: this.edges,
+      zones: this.zones,
+      stations: this.assets,
+    };
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.mapName}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editedMap),
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const { updatedData } = data;
+        this.nodes = updatedData.nodes;
+        this.edges = updatedData.edges;
+        this.assets = updatedData.stations;
+        this.zones = updatedData.zones;
+      });
   }
   saveOpt() {
     if (this.currEditMap) {
@@ -942,14 +970,14 @@ export class EnvmapComponent implements AfterViewInit {
       (event.clientY - rect.top) *
       (this.overlayCanvas.nativeElement.height / rect.height);
 
-      for (const zone of this.zones) {
-        if (this.isPointInZone(x, y, zone.pos)) {
-          this.selectedZone = zone; // Store the selected zone
-          this.zoneType = zone.type;
-          this.showZoneTypePopup();
-          return;
-        }
+    for (const zone of this.zones) {
+      if (this.isPointInZone(x, y, zone.pos)) {
+        this.selectedZone = zone; // Store the selected zone
+        this.zoneType = zone.type;
+        this.showZoneTypePopup();
+        return;
       }
+    }
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y)) {
@@ -964,15 +992,15 @@ export class EnvmapComponent implements AfterViewInit {
     for (const asset of this.assets) {
       if (this.isAssetClicked(asset, x, y) && asset.type === 'docking') {
         console.log('Docking station clicked');
-        
+
         this.selectedAsset = asset;
         this.DockPopup = true; // Show the popup for docking stations only
         return; // Exit early after handling docking station
       }
       if (this.isAssetClicked(asset, x, y) && asset.type === 'charging') {
+        this.selectedAsset = asset;
         this.isConfirmationVisible = true;
       }
-
     }
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
@@ -983,32 +1011,31 @@ export class EnvmapComponent implements AfterViewInit {
   private isPointInZone(x: number, y: number, zonePoints: any[]): boolean {
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     if (!ctx) return false;
-  
+
     ctx.beginPath();
     ctx.moveTo(zonePoints[0].x, zonePoints[0].y);
     for (let i = 1; i < zonePoints.length; i++) {
       ctx.lineTo(zonePoints[i].x, zonePoints[i].y);
     }
     ctx.closePath();
-  
+
     // Use canvas's isPointInPath method to check if the click is inside the zone
     return ctx.isPointInPath(x, y);
   }
 
-onDeleteZone(): void {
-  if (this.selectedZone) {
-    // Remove the selected zone from the zones array
-    this.zones = this.zones.filter(zone => zone !== this.selectedZone);
-    this.selectedZone = null;
-    
-    // Hide the popup and redraw the canvas to reflect the deletion
-    this.isPopupVisible = false;
-    this.redrawCanvas();
+  onDeleteZone(): void {
+    if (this.selectedZone) {
+      // Remove the selected zone from the zones array
+      this.zones = this.zones.filter((zone) => zone !== this.selectedZone);
+      this.selectedZone = null;
+
+      // Hide the popup and redraw the canvas to reflect the deletion
+      this.isPopupVisible = false;
+      this.redrawCanvas();
+    }
   }
-}
 
-validationMessage: string | null = null;
-
+  validationMessage: string | null = null;
 
   savePopupData(): void {
     this.validationMessage = null;
@@ -1016,7 +1043,11 @@ validationMessage: string | null = null;
     const undockingDistanceNumber = Number(this.undockingDistance);
 
     // Validate if undockingDistance is within range and both fields are filled
-    if (!undockingDistanceNumber || undockingDistanceNumber < 1 || undockingDistanceNumber > 1000) {
+    if (
+      !undockingDistanceNumber ||
+      undockingDistanceNumber < 1 ||
+      undockingDistanceNumber > 1000
+    ) {
       this.validationMessage = 'Undocking Distance must be between 1 and 1000.';
       return;
     }
@@ -1027,7 +1058,10 @@ validationMessage: string | null = null;
     }
 
     // If validation passes, proceed with saving the data
-    console.log('Data saved:', { undockingDistance: this.undockingDistance, description: this.description });
+    console.log('Data saved:', {
+      undockingDistance: this.undockingDistance,
+      description: this.description,
+    });
     console.log(this.selectedAsset);
 
     if (this.selectedAsset) {
@@ -1878,53 +1912,64 @@ validationMessage: string | null = null;
   }
   private isZoneOverlapping(newZonePoints: any[]): boolean {
     for (const existingZone of this.zones) {
-      if (this.isPolygonOverlap(existingZone.pos, newZonePoints) && this.selectedZone?.id !== existingZone.id) {
+      if (
+        this.isPolygonOverlap(existingZone.pos, newZonePoints) &&
+        this.selectedZone?.id !== existingZone.id
+      ) {
         return true;
       }
     }
     return false;
   }
   private isPolygonOverlap(polygon1: any[], polygon2: any[]): boolean {
-    return this.satCheck(polygon1, polygon2) && this.satCheck(polygon2, polygon1);
+    return (
+      this.satCheck(polygon1, polygon2) && this.satCheck(polygon2, polygon1)
+    );
   }
   private satCheck(polygon1: any[], polygon2: any[]): boolean {
     for (let i = 0; i < polygon1.length; i++) {
-        // Get the edge from the current vertex to the next
-        const p1 = polygon1[i];
-        const p2 = polygon1[(i + 1) % polygon1.length];
+      // Get the edge from the current vertex to the next
+      const p1 = polygon1[i];
+      const p2 = polygon1[(i + 1) % polygon1.length];
 
-        // Calculate the normal (perpendicular) to the edge
-        const edge = { x: p2.x - p1.x, y: p2.y - p1.y };
-        const normal = { x: -edge.y, y: edge.x };
+      // Calculate the normal (perpendicular) to the edge
+      const edge = { x: p2.x - p1.x, y: p2.y - p1.y };
+      const normal = { x: -edge.y, y: edge.x };
 
-        // Project both polygons onto the normal axis
-        const projection1 = this.projectPolygon(polygon1, normal);
-        const projection2 = this.projectPolygon(polygon2, normal);
+      // Project both polygons onto the normal axis
+      const projection1 = this.projectPolygon(polygon1, normal);
+      const projection2 = this.projectPolygon(polygon2, normal);
 
-        // Check for overlap on this axis
-        if (projection1.max < projection2.min || projection2.max < projection1.min) {
-            // No overlap on this axis, so polygons do not intersect
-            return false;
-        }
+      // Check for overlap on this axis
+      if (
+        projection1.max < projection2.min ||
+        projection2.max < projection1.min
+      ) {
+        // No overlap on this axis, so polygons do not intersect
+        return false;
+      }
     }
     // No separating axis found, polygons intersect
     return true;
-}
+  }
 
-private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: number; max: number } {
-  let min = (polygon[0].x * axis.x) + (polygon[0].y * axis.y);
-  let max = min;
-  for (let i = 1; i < polygon.length; i++) {
-      const projection = (polygon[i].x * axis.x) + (polygon[i].y * axis.y);
+  private projectPolygon(
+    polygon: any[],
+    axis: { x: number; y: number }
+  ): { min: number; max: number } {
+    let min = polygon[0].x * axis.x + polygon[0].y * axis.y;
+    let max = min;
+    for (let i = 1; i < polygon.length; i++) {
+      const projection = polygon[i].x * axis.x + polygon[i].y * axis.y;
       if (projection < min) {
-          min = projection;
+        min = projection;
       }
       if (projection > max) {
-          max = projection;
+        max = projection;
       }
+    }
+    return { min, max };
   }
-  return { min, max };
-}
 
   private getBoundingBox(polygon: any[]): number[] {
     let minX = Infinity,
@@ -1943,12 +1988,12 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
   }
   onZoneTypeSelected(zoneType: ZoneType): void {
     this.zoneType = zoneType;
-  
+
     if (this.isZoneOverlapping(this.plottedPoints)) {
       alert('Zone overlaps with an existing zone!');
       return; // Do not allow drawing
     }
-  
+
     if (this.selectedZone) {
       // Update the zone's type if a zone is selected
       this.selectedZone.type = zoneType;
@@ -1963,9 +2008,9 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
       this.zones.push(zone);
       this.zoneCounter++;
     }
-  
+
     this.isPopupVisible = false; // Hide the popup
-    this.redrawCanvas();         // Redraw the canvas to reflect the updated zone
+    this.redrawCanvas(); // Redraw the canvas to reflect the updated zone
   }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 25;
@@ -1987,14 +2032,16 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
     this.redrawCanvas();
   }
   removeRobots(): void {
+    this.isConfirmationVisible = true;
+
     // Remove selected robots
-    this.robos = this.robos.filter(
-      (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
-    );
-    this.redrawCanvas();
+    // this.robos = this.robos.filter(
+    //   (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
+    // );
+    // this.redrawCanvas();
   }
   showZoneTypePopup(): void {
-    this.zoneType=null;
+    this.zoneType = null;
     this.isPopupVisible = true;
   }
   openRobotPopup(): void {
@@ -2181,7 +2228,7 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
 
       // if (this.isZoneOverlapping(this.selectedZone.pos)) {
       //   this.draggingZonePoint = false;
-        
+
       //   this.selectedZonePoint.x = this.originalZonePointPosition?.x ? this.originalZonePointPosition?.x : x;
       //   this.selectedZonePoint.y = this.originalZonePointPosition?.y ? this.originalZonePointPosition?.y : y;
       //   alert('Zone point overlaps with another zone!');
@@ -2246,9 +2293,13 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
     if (this.draggingZonePoint && this.selectedZonePoint && this.selectedZone) {
       if (this.isZoneOverlapping(this.selectedZone.pos)) {
         this.draggingZonePoint = false;
-        
-        this.selectedZonePoint.x = this.originalZonePointPosition?.x ? this.originalZonePointPosition?.x : x;
-        this.selectedZonePoint.y = this.originalZonePointPosition?.y ? this.originalZonePointPosition?.y : y;
+
+        this.selectedZonePoint.x = this.originalZonePointPosition?.x
+          ? this.originalZonePointPosition?.x
+          : x;
+        this.selectedZonePoint.y = this.originalZonePointPosition?.y
+          ? this.originalZonePointPosition?.y
+          : y;
         alert('Zone point overlaps with another zone!');
         // this.selectedZonePoint = null;
         this.redrawCanvas();
@@ -2260,7 +2311,11 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
       this.selectedZone = null;
     }
 
-    if ( this.isDrawingLine && this.lineStartX !== null && this.lineStartY !== null ) {
+    if (
+      this.isDrawingLine &&
+      this.lineStartX !== null &&
+      this.lineStartY !== null
+    ) {
       this.isDrawingLine = false;
       const transformedY = canvas.height - y; // Flip the Y-axis
       // Finalize the line drawing
@@ -2290,7 +2345,7 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
 
     if (this.draggingZonePoint) {
       this.draggingZonePoint = false;
-      this.originalZonePointPosition = null;  // Clear original position
+      this.originalZonePointPosition = null; // Clear original position
     }
 
     if (this.draggingAsset && this.selectedAsset) {
@@ -2320,7 +2375,7 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
       }
       // Update asset position
       this.updateAssetPosition(this.selectedAsset.id, x, y);
-      this.selectedAsset = null;
+      // this.selectedAsset = null; // yet to uncomment..
     }
 
     if (this.draggingRobo && this.selectedRobo) {
@@ -2382,7 +2437,9 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
   deleteSelectedAsset(): void {
     if (this.selectedAsset) {
       // Filter out the selected asset from the assets array
-      this.assets = this.assets.filter(asset => asset.id !== this.selectedAsset!.id);
+      this.assets = this.assets.filter(
+        (asset) => asset.id !== this.selectedAsset!.id
+      );
 
       // Set selected asset to null as it's now deleted
       this.selectedAsset = null;
