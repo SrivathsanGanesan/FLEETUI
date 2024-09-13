@@ -1860,11 +1860,47 @@ onDeleteZone(): void {
     return false;
   }
   private isPolygonOverlap(polygon1: any[], polygon2: any[]): boolean {
-    const [minX1, minY1, maxX1, maxY1] = this.getBoundingBox(polygon1);
-    const [minX2, minY2, maxX2, maxY2] = this.getBoundingBox(polygon2);
-
-    return !(minX1 > maxX2 || maxX1 < minX2 || minY1 > maxY2 || maxY1 < minY2);
+    return this.satCheck(polygon1, polygon2) && this.satCheck(polygon2, polygon1);
   }
+  private satCheck(polygon1: any[], polygon2: any[]): boolean {
+    for (let i = 0; i < polygon1.length; i++) {
+        // Get the edge from the current vertex to the next
+        const p1 = polygon1[i];
+        const p2 = polygon1[(i + 1) % polygon1.length];
+
+        // Calculate the normal (perpendicular) to the edge
+        const edge = { x: p2.x - p1.x, y: p2.y - p1.y };
+        const normal = { x: -edge.y, y: edge.x };
+
+        // Project both polygons onto the normal axis
+        const projection1 = this.projectPolygon(polygon1, normal);
+        const projection2 = this.projectPolygon(polygon2, normal);
+
+        // Check for overlap on this axis
+        if (projection1.max < projection2.min || projection2.max < projection1.min) {
+            // No overlap on this axis, so polygons do not intersect
+            return false;
+        }
+    }
+    // No separating axis found, polygons intersect
+    return true;
+}
+
+private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: number; max: number } {
+  let min = (polygon[0].x * axis.x) + (polygon[0].y * axis.y);
+  let max = min;
+  for (let i = 1; i < polygon.length; i++) {
+      const projection = (polygon[i].x * axis.x) + (polygon[i].y * axis.y);
+      if (projection < min) {
+          min = projection;
+      }
+      if (projection > max) {
+          max = projection;
+      }
+  }
+  return { min, max };
+}
+
   private getBoundingBox(polygon: any[]): number[] {
     let minX = Infinity,
       minY = Infinity,
@@ -2047,7 +2083,7 @@ onDeleteZone(): void {
           ) {
             this.selectedZone = zone;
             this.selectedZonePoint = point;
-            // this.originalZonePointPosition = { x: point.x, y: point.y };
+            this.originalZonePointPosition = { x: point.x, y: point.y };
             this.draggingZonePoint = true;
             return; // Exit early if zone point is clicked
           }
@@ -2111,19 +2147,24 @@ onDeleteZone(): void {
       this.selectedAsset.y = y;
     }
 
-    if (this.draggingZonePoint && this.selectedZonePoint) {
+    if (this.draggingZonePoint && this.selectedZonePoint && this.selectedZone) {
       if (this.isPointTooClose(x, y, this.plottedPoints)) {
         // Optionally show an alert or message
         console.warn('The point is too close to an existing zone point');
         return;
       }
-      if (this.isZoneOverlapping([{ x, y }])) {
-        // alert('Zone point overlaps with another zone!');
-        // this.draggingZonePoint = false;
-        // this.selectedZonePoint = null;
-        this.redrawCanvas();
-        return;
-      }
+
+      // if (this.isZoneOverlapping(this.selectedZone.pos)) {
+      //   this.draggingZonePoint = false;
+        
+      //   this.selectedZonePoint.x = this.originalZonePointPosition?.x ? this.originalZonePointPosition?.x : x;
+      //   this.selectedZonePoint.y = this.originalZonePointPosition?.y ? this.originalZonePointPosition?.y : y;
+      //   alert('Zone point overlaps with another zone!');
+      //   // this.selectedZonePoint = null;
+      //   this.redrawCanvas();
+      //   return;
+      // }
+
       // Update the position of the selected zone point
       this.selectedZonePoint.x = x;
       this.selectedZonePoint.y = y;
@@ -2169,12 +2210,31 @@ onDeleteZone(): void {
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y;
-    if (this.draggingZonePoint && this.selectedZonePoint) {
-      // Update the final position of the zone point
+
+    // if (this.draggingZonePoint && this.selectedZonePoint) { // yet to insert again..
+    //   // Update the final position of the zone point
+    //   this.draggingZonePoint = false;
+    //   this.selectedZonePoint = null;
+    //   this.selectedZone = null;
+    // }
+
+    if (this.draggingZonePoint && this.selectedZonePoint && this.selectedZone) {
+      if (this.isZoneOverlapping(this.selectedZone.pos)) {
+        this.draggingZonePoint = false;
+        
+        this.selectedZonePoint.x = this.originalZonePointPosition?.x ? this.originalZonePointPosition?.x : x;
+        this.selectedZonePoint.y = this.originalZonePointPosition?.y ? this.originalZonePointPosition?.y : y;
+        alert('Zone point overlaps with another zone!');
+        // this.selectedZonePoint = null;
+        this.redrawCanvas();
+        return;
+      }
+
       this.draggingZonePoint = false;
       this.selectedZonePoint = null;
       this.selectedZone = null;
     }
+
     if ( this.isDrawingLine && this.lineStartX !== null && this.lineStartY !== null ) {
       this.isDrawingLine = false;
       const transformedY = canvas.height - y; // Flip the Y-axis
