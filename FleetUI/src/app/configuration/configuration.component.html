@@ -13,7 +13,7 @@
           />
         </div>
       </div>
-
+    
       <div class="search-date-container">
         <!-- Search Bar -->
         <div class="search-container">
@@ -348,23 +348,28 @@
               </ul>
 
               <div *ngIf="fleetTab === 'general'">
-                <h2>Edit the Fleet Parameters</h2>
+                <!-- <h2>Edit the Fleet Parameters</h2> -->
                 <!-- Add content for the General tab -->
+                 <app-general></app-general>
               </div>
               <div *ngIf="fleetTab === 'plannar'">
-                <h2>Plannar Settings</h2>
+                <!-- <h2>Plannar Settings</h2> -->
                 <!-- Add content for the Plannar tab -->
+                 <app-planner></app-planner>
               </div>
               <div *ngIf="fleetTab === 'task'">
-                <h2>Task Management</h2>
+                <!-- <h2>Task Management</h2> -->
                 <!-- Add content for the Task tab -->
+                 <app-task></app-task>
               </div>
               <div *ngIf="fleetTab === 'battery'">
-                <h2>Battery Information</h2>
+                <!-- <h2>Battery Information</h2> -->
                 <!-- Add content for the Battery tab -->
+                 <app-battery></app-battery>
               </div>
               <div *ngIf="fleetTab === 'communication'">
-                <h2>Communication Settings</h2>
+                <!-- <h2>Communication Settings</h2> -->
+                <app-communication></app-communication>
               </div>
             </div>
 
