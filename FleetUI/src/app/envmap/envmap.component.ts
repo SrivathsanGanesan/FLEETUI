@@ -361,7 +361,10 @@ export class EnvmapComponent implements AfterViewInit {
     return this.overlayCanvas?.nativeElement;
   }
   MuldelMode(){
-    this.isDeleteModeEnabled = true;
+    this.isDeleteModeEnabled = !this.isDeleteModeEnabled;
+    this.selectionStart = null;
+    this.selectionEnd = null;
+    this.redrawCanvas(); // Clear any leftover selection box or drawing
   }
   setupCanvas(): void {
     const canvas = this.getOverlayCanvas();
@@ -2156,8 +2159,6 @@ export class EnvmapComponent implements AfterViewInit {
         (event.clientY - rect.top) *
         (this.overlayCanvas.nativeElement.height / rect.height);
         if (this.isDeleteModeEnabled) {
-          
-          
           // Start drawing the selection box
           this.selectionStart = { x, y };
           this.selectionEnd = null;
