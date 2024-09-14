@@ -1041,6 +1041,7 @@ export class EnvmapComponent implements AfterViewInit {
         // this.cdRef.detectChanges();
         this.showNodeDetailsPopup();
         return;
+        
       }
     }
     // Check if the click is on an edge

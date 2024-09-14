@@ -141,10 +141,15 @@
 
       <canvas class="plottinglayer" #overlayCanvas *ngIf="showImage"></canvas>
       <div
+        *ngIf="isNodeDetailsPopupVisible"
+        class="nodepopup-overlay"
+      >
+      <div
         #nodeDetailsPopup
         class="node-details-popup"
         [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
       >
+      
         <div class="sampleCSS">
           <div class="node_details">
             <p>Node Details</p>
@@ -203,6 +208,18 @@
               id="Waiting_Stn"
               [(ngModel)]="nodeDetails.waiting_node"
             />
+            <div class="Node-btn">
+              <div *ngIf="validationError" class="validation-error">
+                {{ validationError }}
+              </div>
+              <button class="Delnode-btn" (click)="deleteSelectedNode()">
+                Delete Node
+              </button>
+              <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
+              <button class="closenode-btn" (click)="closeNodeDetailsPopup()">
+                Close
+              </button>
+            </div>
           </div>
 
           <div class="action-form">
@@ -386,19 +403,10 @@
             </div>
           </div>
         </div>
-        <div *ngIf="validationError" class="validation-error">
-          {{ validationError }}
-        </div>
-        <div class="Node-btn">
-          <button class="Delnode-btn" (click)="deleteSelectedNode()">
-            Delete Node
-          </button>
-          <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
-          <button class="closenode-btn" (click)="closeNodeDetailsPopup()">
-            Close
-          </button>
-        </div>
+
+
       </div>
+    </div>
       <!-- Transparent canvas for plotting points -->
       <canvas class="maplayer" #imageCanvas></canvas>
 

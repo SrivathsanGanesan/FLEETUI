@@ -239,8 +239,8 @@ h2 {
   position: relative;
 }
 
-.closenode-btn,.savenode-btn{
-  margin-left: 20px;
+.closenode-btn,.savenode-btn,.Delnode-btn{
+  margin: 5px;
 }
 
 
@@ -307,7 +307,7 @@ canvas {
 
 .options-container {
   margin: 0px;
-  text-align: center;
+
   position: absolute;
   bottom: 13px;
   left: 5px;
@@ -333,8 +333,6 @@ canvas {
   padding: 15px;
   flex-direction: column;
   border-radius: 10px;
-  justify-content: center;
-  align-items: center;
 }
 .action-div{
   margin: 10px;
@@ -343,8 +341,21 @@ canvas {
   display: inline;
   margin: 5px;
 }
+.nodepopup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  backdrop-filter: blur(8px); /* Blur effect */
+  z-index: 999; /* Make sure it’s behind the popup */
+
+}
+
 .node-details-popup {
-  position: absolute; /* Position relative to the viewport */
+  position: fixed; /* Position relative to the viewport */
   top: 50%;        /* Center vertically */
   left: 50%;       /* Center horizontally */
   transform: translate(-50%, -50%); /* Adjust for exact centering */
@@ -352,10 +363,11 @@ canvas {
   border-radius: 20px;
   padding: 20px;
   box-shadow: 0px 2px 10px rgb(0, 0, 0);
-  z-index: 1000; /* Ensure it's above other content */
+  z-index: 1000; /* Ensure it's above the overlay */
   display: flex;
   gap:10px;  
 }
+
 .node-details-popup p{
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
@@ -372,12 +384,10 @@ canvas {
   border-bottom: 1px solid black;
   border-radius: 3px;
   background-color: transparent;
-  text-align: center;
 }
 .sampleCSS {
   display: flex;
-  justify-content: center;
-  align-items: center;
+
   font-size: 10px;
   font-weight: bold;
 }
