@@ -46,6 +46,8 @@
           <div class="Res1">
             <input
               type="number"
+                              min="0"
+                max="1000"
               id="resolution"
               #resolutionInput
               placeholder="Enter Resolution"
@@ -110,6 +112,8 @@
             <h3>Enter Distance Between Points</h3>
             <input
               type="number"
+                min="0"
+                max="1000"
               [(ngModel)]="distanceBetweenPoints"
               placeholder="Distance in meters"
             />
@@ -144,7 +148,7 @@
         <div class="sampleCSS">
           <div class="node_details">
             <p>Node Details</p>
-            <div class="node-id">Node ID: {{ nodeDetails.id }}</div>
+            <!-- <div class="node-id">Node ID: {{ nodeDetails.id }}</div> -->
             <div class="action-container">
               <label for="nodeAction">Add Action:</label>
               <select
@@ -210,26 +214,36 @@
               <label>Max Linear Velocity:</label>
               <input
                 type="number"
+                                min="0"
+                max="1000"
                 [(ngModel)]="moveParameters.maxLinearVelocity"
               /><br />
               <label>Max Angular Velocity:</label>
               <input
                 type="number"
+                                min="0"
+                max="1000"
                 [(ngModel)]="moveParameters.maxAngularVelocity"
               /><br />
               <label>Max Tolerance at Goal X:</label>
               <input
                 type="number"
+                                min="0"
+                max="1000"
                 [(ngModel)]="moveParameters.maxToleranceAtGoalX"
               /><br />
               <label>Max Tolerance at Goal Y:</label>
               <input
                 type="number"
+                                min="0"
+                max="1000"
                 [(ngModel)]="moveParameters.maxToleranceAtGoalY"
               /><br />
               <label>Max Tolerance at Goal Orientation:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation"
               /><br />
               <label>End Point Orientation:</label>
@@ -254,36 +268,50 @@
               <label>Max Linear Velocity:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="dockParameters.maxAngularVelocity"
               /><br />
               <label>Max Tolerance at Goal X:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalX"
               /><br />
               <label>Max Tolerance at Goal Y:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalY"
               /><br />
               <label>Max Tolerance at Goal Orientation:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalOrientation"
               /><br />
               <label>Goal offset X</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="dockParameters.goalOffsetX"
               /><br />
               <label>Goal offset Y</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="dockParameters.goalOffsetY"
               /><br />
               <label>Goal offset Orientation</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="dockParameters.goalOffsetOrientation"
               /><br />
               <label>End Point Orientation:</label>
@@ -308,26 +336,36 @@
               <label>Max Linear Velocity:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="undockParameters.maxLinearVelocity"
               /><br />
               <label>Max Angular Velocity:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="undockParameters.maxAngularVelocity"
               /><br />
               <label>Max Tolerance at Goal X:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalX"
               /><br />
               <label>Max Tolerance at Goal Y:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalY"
               /><br />
               <label>Max Tolerance at Goal Orientation:</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalOrientation"
               /><br />
               <label>End Point Orientation:</label>
@@ -338,6 +376,8 @@
               <label>Undocking Distance</label>
               <input
                 type="number"
+                min="0"
+                max="1000"
                 [(ngModel)]="undockParameters.undockingDistance"
               /><br />
 
@@ -345,6 +385,9 @@
               <button (click)="addAction()">Add</button>
             </div>
           </div>
+        </div>
+        <div *ngIf="validationError" class="validation-error">
+          {{ validationError }}
         </div>
         <div class="Node-btn">
           <button class="Delnode-btn" (click)="deleteSelectedNode()">
@@ -453,6 +496,8 @@
       <input
         id="sequenceId"
         type="number"
+        min="0"
+        max="1000"
         [(ngModel)]="currentEdge.sequenceId"
         name="sequenceId"
         required
@@ -503,6 +548,8 @@
       <input
         id="maxSpeed"
         type="number"
+        min="0"
+        max="1000"
         [(ngModel)]="currentEdge.maxSpeed"
         name="maxSpeed"
       />
@@ -513,6 +560,8 @@
       <input
         id="maxHeight"
         type="number"
+        min="0"
+        max="1000"
         [(ngModel)]="currentEdge.maxHeight"
         name="maxHeight"
       />
@@ -523,6 +572,8 @@
       <input
         id="minHeight"
         type="number"
+        min="0"
+        max="1000"
         [(ngModel)]="currentEdge.minHeight"
         name="minHeight"
       />
@@ -533,6 +584,8 @@
       <input
         id="orientation"
         type="number"
+        min="0"
+        max="1000"
         [(ngModel)]="currentEdge.orientation"
         name="orientation"
       />
@@ -574,6 +627,8 @@
       <input
         id="maxRotationSpeed"
         type="number"
+        min="0"
+        max="100"
         [(ngModel)]="currentEdge.maxRotationSpeed"
         name="maxRotationSpeed"
       />
@@ -584,6 +639,8 @@
       <input
         id="length"
         type="number"
+        min="0"
+        max="100"
         [(ngModel)]="currentEdge.length"
         name="length"
       />
@@ -653,6 +710,8 @@
     <h3>Enter Number of Nodes</h3>
     <input
       type="number"
+      min="1"
+      max="100"
       [(ngModel)]="numberOfIntermediateNodes"
       placeholder="Number of nodes"
       (ngModelChange)="onInputChanged()"

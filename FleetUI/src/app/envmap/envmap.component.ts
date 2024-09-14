@@ -202,7 +202,7 @@ export class EnvmapComponent implements AfterViewInit {
   private lineStartY: number | null = null;
   private lineEndX: number | null = null;
   private lineEndY: number | null = null;
-  selectedAction: string = 'Move'; // Initialize with an empty string or any other default value
+  selectedAction: string = ''; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
   isDistanceConfirmed = false; // Flag to control the Save button
   isEnterButtonVisible = false;
@@ -635,7 +635,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.actionCounter++;
       }
 
-      this.actions.push(action);
+      // this.actions.push(action);
       this.nodes = this.nodes.map((node) => {
         console.log(this.selectedNode?.id, node.id);
         if (this.selectedNode?.id === node.id) node.actions.push(action);
@@ -646,8 +646,7 @@ export class EnvmapComponent implements AfterViewInit {
       // Hide the form after adding
       this.hideActionForms();
 
-      // Reset the selected action
-      this.selectedAction = '';
+
     }
   }
   openMoveActionForm(): void {
@@ -1554,7 +1553,32 @@ export class EnvmapComponent implements AfterViewInit {
       this.closeIntermediateNodesDialog();
     }
   }
+  validationError: string = '';
   saveNodeDetails(): void {
+
+    this.validationError = '';
+
+    // Example validation: Check if all required fields are filled
+    if (!this.nodeDetails.description) {
+      this.validationError = 'Node Description is required.';
+    } else if (this.selectedAction === 'Move') {
+      if (!this.moveParameters.maxLinearVelocity || !this.moveParameters.maxAngularVelocity) {
+        this.validationError = 'All Move Action fields are required.';
+      }
+    } else if (this.selectedAction === 'Dock') {
+      if (!this.dockParameters.maxAngularVelocity || !this.dockParameters.goalOffsetX) {
+        this.validationError = 'All Dock Action fields are required.';
+      }
+    } else if (this.selectedAction === 'Undock') {
+      if (!this.undockParameters.maxLinearVelocity || !this.undockParameters.maxToleranceAtGoalX) {
+        this.validationError = 'All Undock Action fields are required.';
+      }
+    }
+
+    // If there is a validation error, don't save the details
+    if (this.validationError) {
+      return;
+    }
     this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
     // const updatedNodeDetails = {
