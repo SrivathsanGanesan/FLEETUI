@@ -140,9 +140,6 @@ export class EnvmapComponent implements AfterViewInit {
     type: string;
   }[] = [];
   private isDeleteModeEnabled: boolean = false;
-
-
-
   NodeDetails: {
     nodeID: string;
     sequenceId: number;
@@ -434,7 +431,6 @@ export class EnvmapComponent implements AfterViewInit {
     }
     this.isNodeDetailsPopupVisible = false;
   }
-
   confirmDelete(): void {
     if (this.nodesToDelete.length > 0) {
       // Remove selected nodes from the nodes array
@@ -504,13 +500,11 @@ export class EnvmapComponent implements AfterViewInit {
   
     // Hide confirmation dialog
     this.isConfirmationVisible = false;
-  }
-  
+  }  
   cancelDelete(): void {
     // Hide confirmation dialog without deleting
     this.isConfirmationVisible = false;
   }
-
   closeImagePopup(): void {
     this.showImagePopup = false;
   }
@@ -1074,7 +1068,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.showPopup = true; // Show the popup
     }
   }
-
   private isPointInZone(x: number, y: number, zonePoints: any[]): boolean {
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     if (!ctx) return false;
@@ -1089,7 +1082,6 @@ export class EnvmapComponent implements AfterViewInit {
     // Use canvas's isPointInPath method to check if the click is inside the zone
     return ctx.isPointInPath(x, y);
   }
-
   onDeleteZone(): void {
     if (this.selectedZone) {
       // Remove the selected zone from the zones array
@@ -1101,7 +1093,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.redrawCanvas();
     }
   }
-
   validationMessage: string | null = null;
 
   savePopupData(): void {
@@ -1763,6 +1754,7 @@ export class EnvmapComponent implements AfterViewInit {
     startNodeId: string,
     endNodeId: string
   ): void {
+    
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
 
@@ -2011,7 +2003,6 @@ export class EnvmapComponent implements AfterViewInit {
     // No separating axis found, polygons intersect
     return true;
   }
-
   private projectPolygon(
     polygon: any[],
     axis: { x: number; y: number }
@@ -2029,7 +2020,6 @@ export class EnvmapComponent implements AfterViewInit {
     }
     return { min, max };
   }
-
   private getBoundingBox(polygon: any[]): number[] {
     let minX = Infinity,
       minY = Infinity,
@@ -2146,8 +2136,7 @@ export class EnvmapComponent implements AfterViewInit {
         );
         ctx.setLineDash([]);
     }
-}
-
+  }
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -2522,7 +2511,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.draggingNode = false;
     }
   }
-
   private isAssetClicked(
     asset: { x: number; y: number; type: string },
     mouseX: number,
@@ -2567,7 +2555,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.redrawCanvas();
     }
   }
-
   private redrawCanvas(): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
@@ -2698,12 +2685,10 @@ export class EnvmapComponent implements AfterViewInit {
 
     return distance < threshold;
   }
-
   submitEdgeDetails(): void {
     // Handle form submission, e.g., save edge details
     this.showPopup = false;
   }
-
   hidePopup(): void {
     this.showPopup = false;
   }
