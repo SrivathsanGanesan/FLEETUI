@@ -53,9 +53,19 @@
   width: auto;
   text-align: center;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   overflow: auto; /* Enables scrolling within the content */
+}
+.rob-btn{
+  width: 400px;
+}
+.validation-error {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.error-msg {
+  color: red;
+  font-size: 12px;
 }
 .robopopup-content button{
  margin: 10px;

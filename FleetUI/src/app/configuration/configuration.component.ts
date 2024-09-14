@@ -728,6 +728,13 @@ export class ConfigurationComponent implements AfterViewInit {
   };
 
   toggleTypeSpecificationForm(event: Event): void {
+    this.isProtocolLimitsFormVisible = false;
+    this.isProtocolFeaturesFormVisible = false;
+    this.isAGVGeometryFormVisible = false;
+    this.isLocalizationParametersFormVisible = false;
+    this.isLoadSpecificationFormVisible = false;
+
+
     event.preventDefault();
     this.isTypeSpecificationFormVisible = !this.isTypeSpecificationFormVisible;
   }
@@ -743,7 +750,14 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   toggleProtocolLimitsForm(event: Event): void {
-    event.preventDefault();
+    event.preventDefault();    
+    this.isProtocolFeaturesFormVisible = false;
+    this.isAGVGeometryFormVisible = false;
+    this.isLocalizationParametersFormVisible = false;
+    this.isTypeSpecificationFormVisible = false;
+    this.isProtocolLimitsFormVisible = false;
+
+    this.closeTypeSpecificationForm();
     this.isProtocolLimitsFormVisible = !this.isProtocolLimitsFormVisible;
   }
 
@@ -758,7 +772,14 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   toggleProtocolFeaturesForm(event: Event): void {
-    event.preventDefault();
+    event.preventDefault();    
+    this.isProtocolLimitsFormVisible = false;
+    this.isAGVGeometryFormVisible = false;
+    this.isLocalizationParametersFormVisible = false;
+    this.isLoadSpecificationFormVisible = false;
+    this.isTypeSpecificationFormVisible = false;
+
+    this.closeTypeSpecificationForm();
     this.isProtocolFeaturesFormVisible = !this.isProtocolFeaturesFormVisible;
   }
 
@@ -774,6 +795,13 @@ export class ConfigurationComponent implements AfterViewInit {
 
   toggleAGVGeometryForm(event: Event): void {
     event.preventDefault();
+    this.closeTypeSpecificationForm();
+    this.isProtocolLimitsFormVisible = false;
+    this.isLoadSpecificationFormVisible = false;
+    this.isProtocolFeaturesFormVisible = false;
+    this.isLocalizationParametersFormVisible = false;
+    this.isLoadSpecificationFormVisible = false;
+
     this.isAGVGeometryFormVisible = !this.isAGVGeometryFormVisible;
   }
 
@@ -788,7 +816,13 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   toggleLoadSpecificationForm(event: Event): void {
-    event.preventDefault();
+    event.preventDefault();    
+    this.isProtocolFeaturesFormVisible = false;
+    this.isAGVGeometryFormVisible = false;
+    this.isProtocolLimitsFormVisible = false;
+    this.isLocalizationParametersFormVisible = false;
+    this.isTypeSpecificationFormVisible =false;
+    this.closeTypeSpecificationForm();
     this.isLoadSpecificationFormVisible = !this.isLoadSpecificationFormVisible;
   }
 
@@ -804,6 +838,13 @@ export class ConfigurationComponent implements AfterViewInit {
 
   toggleLocalizationParametersForm(event: Event): void {
     event.preventDefault();
+    this.isProtocolFeaturesFormVisible = false;
+    this.isAGVGeometryFormVisible = false;
+    this.isProtocolLimitsFormVisible = false;
+    this.isLoadSpecificationFormVisible = false;
+    this.isTypeSpecificationFormVisible =false;
+    this.closeTypeSpecificationForm();
+
     this.isLocalizationParametersFormVisible = !this.isLocalizationParametersFormVisible;
   }
 
@@ -818,6 +859,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   saveItem(): void {
+    
     // Implement form submission logic
     console.log('Item saved:', this.formData);
     this.isPopupOpen = false;
