@@ -1018,7 +1018,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.showImage = true;
     this.closePopup.emit(); // Then close the popup
   }
-    private isPointInZone(x: number, y: number, zonePoints: any[]): boolean {
+  private isPointInZone(x: number, y: number, zonePoints: any[]): boolean {
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     if (!ctx) return false;
 
@@ -1033,6 +1033,9 @@ export class EnvmapComponent implements AfterViewInit {
     return ctx.isPointInPath(x, y);
   }
   private isPointNearFirstZonePoint(x: number, y: number, firstPoint: any, threshold: number = 6): boolean {
+    const ctx = this.overlayCanvas.nativeElement.getContext('2d');
+    if (!ctx) return false;
+    ctx.beginPath();
     const distance = Math.sqrt((x - firstPoint.x) ** 2 + (y - firstPoint.y) ** 2);
     return distance < threshold;
   }
@@ -2082,32 +2085,32 @@ export class EnvmapComponent implements AfterViewInit {
     // No separating axis found, polygons intersect
     return true;
   }
-private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: number; max: number } {
-  if (!polygon || polygon.length === 0) {
-    console.error("Invalid polygon data");
-    return { min: 0, max: 0 };
+  private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: number; max: number } {
+    if (!polygon || polygon.length === 0) {
+      console.error("Invalid polygon data");
+      return { min: 0, max: 0 };
+    }
+
+    let min = polygon[0]?.x * axis.x + polygon[0]?.y * axis.y;
+    let max = min;
+
+    for (let i = 1; i < polygon.length; i++) {
+      if (!polygon[i] || polygon[i].x === undefined || polygon[i].y === undefined) {
+        console.error("Invalid polygon point:", polygon[i]);
+        continue;  // Skip invalid points
+      }
+
+      const projection = polygon[i].x * axis.x + polygon[i].y * axis.y;
+      if (projection < min) {
+        min = projection;
+      }
+      if (projection > max) {
+        max = projection;
+      }
+    }
+
+    return { min, max };
   }
-
-  let min = polygon[0]?.x * axis.x + polygon[0]?.y * axis.y;
-  let max = min;
-
-  for (let i = 1; i < polygon.length; i++) {
-    if (!polygon[i] || polygon[i].x === undefined || polygon[i].y === undefined) {
-      console.error("Invalid polygon point:", polygon[i]);
-      continue;  // Skip invalid points
-    }
-
-    const projection = polygon[i].x * axis.x + polygon[i].y * axis.y;
-    if (projection < min) {
-      min = projection;
-    }
-    if (projection > max) {
-      max = projection;
-    }
-  }
-
-  return { min, max };
-}
 
   private getBoundingBox(polygon: any[]): number[] {
     let minX = Infinity,
@@ -2208,7 +2211,6 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
     });
   }
   private originalZonePointPosition: { x: number; y: number } | null = null;
-
   private drawSelectionBox(
     start: { x: number; y: number },
     end: { x: number; y: number }
@@ -2229,6 +2231,19 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
       ctx.setLineDash([]);
     }
   }
+  isOverlappingWithOtherRobos(currentRobo: Robo): boolean {
+    const threshold = 30; // Adjust this value as needed for the distance to consider as overlap
+    for (const robo of this.robos) {
+      if (robo.roboDet.id !== currentRobo.roboDet.id) {
+        const distance = Math.sqrt(Math.pow(robo.x - currentRobo.x, 2) + Math.pow(robo.y - currentRobo.y, 2));
+        if (distance < threshold) {
+          return true; // Overlap found
+        }
+      }
+    }
+    return false; // No overlap
+  }
+  originalRoboPosition: { x: number; y: number } | null = null;
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -2328,10 +2343,8 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
         if (this.isRobotClicked(robo, x, y)) {
           this.selectedRobo = robo;
           this.draggingRobo = true;
+          this.originalRoboPosition = { x: robo.x, y: robo.y };
           this.redrawCanvas();
-
-          // Clear any existing timeout
-
           return;
         }
       }
@@ -2577,18 +2590,22 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
       // this.selectedAsset = null; // yet to uncomment..
     }
 
+
     if (this.draggingRobo && this.selectedRobo) {
-      this.robos = this.robos.map((robo) => {
-        if (robo.roboDet.id === this.selectedRobo?.roboDet.id) {
-          robo.x = x;
-          robo.y = y;
-          return robo;
-        }
-        return robo;
-      });
+      // Update the position of the selected robot
+      this.selectedRobo.x = x;
+      this.selectedRobo.y = y;
+  
+      // Check if the robot is overlapping with another one
+      if (this.isOverlappingWithOtherRobos(this.selectedRobo)) {
+        // Reset the robot to its original position if overlapping
+        this.selectedRobo.x = this.originalRoboPosition!.x;
+        this.selectedRobo.y = this.originalRoboPosition!.y;
+        alert('Overlapping detected! Robot has been reset to its original position.');
+      }
+  
+      this.redrawCanvas();
       this.draggingRobo = false;
-      // this.updateRoboPosition(this.selectedRobo.roboDet.id, x, y);
-      // this.selectedRobo = null;
     }
 
     if (this.draggingNode && this.selectedNode) {
