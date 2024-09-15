@@ -362,6 +362,19 @@ export class EnvmapComponent implements AfterViewInit {
     this.selectionEnd = null;
     this.redrawCanvas(); // Clear any leftover selection box or drawing
   }
+//   private isPositionOccupied(x: number, y: number): boolean {
+//     // Check if the position is occupied by any existing node
+//     const isNodeOccupied = this.nodes.some(node => 
+//         Math.abs(node.pos.x - x)  && Math.abs(node.pos.y - y)
+//     );
+
+//     // Check if the position is occupied by any existing asset
+//     const isAssetOccupied = this.assets.some(asset => 
+//         Math.abs(asset.x - x)  && Math.abs(asset.y - y) 
+//     );
+
+//     return isNodeOccupied || isAssetOccupied;
+// }
   setupCanvas(): void {
     const canvas = this.getOverlayCanvas();
     const imageCanvas = this.imageCanvas?.nativeElement;
@@ -1001,6 +1014,13 @@ export class EnvmapComponent implements AfterViewInit {
     this.showImage = true;
     this.closePopup.emit(); // Then close the popup
   }
+  private isPointClicked(x: number, y: number, point: { x: number; y: number }): boolean {
+    const radius = 6; // Adjust radius as needed
+    const dx = x - point.x;
+    const dy = y - point.y;
+    return dx * dx + dy * dy <= radius * radius; // Check if within radius
+  }
+  
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
@@ -1012,14 +1032,17 @@ export class EnvmapComponent implements AfterViewInit {
       (event.clientY - rect.top) *
       (this.overlayCanvas.nativeElement.height / rect.height);
 
-    for (const zone of this.zones) {
-      if (this.isPointInZone(x, y, zone.pos)) {
+  // Check if a zone point is clicked
+  for (const zone of this.zones) {
+    for (const point of zone.pos) {
+      if (this.isPointClicked(x, y, point)) {
         this.selectedZone = zone; // Store the selected zone
         this.zoneType = zone.type;
-        this.showZoneTypePopup();
+        this.showZoneTypePopup(); // Show the zone settings
         return;
       }
     }
+  }
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y) && this.selectedNode) {
@@ -1293,6 +1316,10 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
     const transformedY = canvas.height - y; // Flip the Y-axis
+  //   if (this.isPositionOccupied(x, y)) {
+  //     alert('This position is already occupied by a node or asset. Please choose a different location.');
+  //     return;
+  // }
 
     const color = 'blue'; // Color for single nodes
     this.drawNode(
@@ -1383,7 +1410,10 @@ export class EnvmapComponent implements AfterViewInit {
       color,
       false
     );
-
+  //   if (this.isPositionOccupied(x, y)) {
+  //     alert('This position is already occupied by a node or asset. Please choose a different location.');
+  //     return;
+  // }
     console.log(
       `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
       { x, y: transformedY }
@@ -1920,6 +1950,10 @@ export class EnvmapComponent implements AfterViewInit {
   private plotAsset(x: number, y: number, assetType: string): void {
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
+  //   if (this.isPositionOccupied(x, y)) {
+  //     alert('This position is already occupied by a node or asset. Please choose a different location.');
+  //     return;
+  // }
     if (image && ctx) {
       const imageSize = 50; // Set image size
       ctx.drawImage(
