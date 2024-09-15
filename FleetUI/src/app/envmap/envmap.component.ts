@@ -506,6 +506,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   cancelDelete(): void {
     // Hide confirmation dialog without deleting
+    // this.isDeleteModeEnabled = false;
     this.isConfirmationVisible = false;
   }
   closeImagePopup(): void {
@@ -2408,11 +2409,17 @@ export class EnvmapComponent implements AfterViewInit {
       const maxX = Math.max(this.selectionStart.x, this.selectionEnd.x);
       const minY = Math.min(this.selectionStart.y, this.selectionEnd.y);
       const maxY = Math.max(this.selectionStart.y, this.selectionEnd.y);
+      // let x1 = this.selectionStart.x;
+      // let y1 = this.selectionStart.y;
+      // let x2 = this.selectionEnd.x;
+      // let y2 = this.selectionEnd.y;
 
       // Find nodes inside the selection box
       this.nodesToDelete = this.nodes.filter((node) => {
         const nodeX = node.pos.x;
         const nodeY = node.pos.y;
+
+        // return nodeX >= x1 && nodeY >= y1 && nodeX <= x2 && nodeY <= y2;
         return nodeX >= minX && nodeX <= maxX && nodeY >= minY && nodeY <= maxY;
       });
 
@@ -2543,6 +2550,10 @@ export class EnvmapComponent implements AfterViewInit {
       });
       this.draggingNode = false;
     }
+
+    // yet to remove..
+    this.selectionStart = null;
+    this.selectionEnd = null;
   }
   private isAssetClicked(
     asset: { x: number; y: number; type: string },
