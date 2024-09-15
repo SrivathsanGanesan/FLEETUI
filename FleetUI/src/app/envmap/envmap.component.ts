@@ -95,6 +95,7 @@ enum ZoneType {
   selector: 'app-envmap',
   templateUrl: './envmap.component.html',
   styleUrls: ['./envmap.component.css'],
+  preserveWhitespaces: true
 })
 export class EnvmapComponent implements AfterViewInit {
   @Input() EnvData: any[] = [];
@@ -278,6 +279,7 @@ export class EnvmapComponent implements AfterViewInit {
   private selectionStart: { x: number; y: number } | null = null;
   private selectionEnd: { x: number; y: number } | null = null;
   private nodesToDelete: Node[] = [];
+  isOpen: boolean = false;
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -298,6 +300,7 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.currEditMap) this.showImage = true;
   }
   ngOnInit() {
+    
     if (this.currEditMap) {
       console.log(this.currEditMapDet);
       this.showImage = true;
@@ -328,6 +331,7 @@ export class EnvmapComponent implements AfterViewInit {
           : this.zoneCounter;
       this.open();
     }
+    
   }
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();

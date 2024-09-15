@@ -364,6 +364,7 @@ export class ConfigurationComponent implements AfterViewInit {
   showImageUploadPopup = false;
   openImageUploadPopup(): void {
     this.showImageUploadPopup = true;
+    
   }
  
   closeImageUploadPopup(): void {
