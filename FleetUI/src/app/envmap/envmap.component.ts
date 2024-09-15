@@ -328,11 +328,10 @@ export class EnvmapComponent implements AfterViewInit {
           : this.zoneCounter;
       this.open();
     }
-    
   }
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
-    
+
     if (!this.overlayCanvas || !this.imageCanvas) return;
 
     const canvas = this.overlayCanvas?.nativeElement;
@@ -357,7 +356,7 @@ export class EnvmapComponent implements AfterViewInit {
   getOverlayCanvas(): HTMLCanvasElement | null {
     return this.overlayCanvas?.nativeElement;
   }
-  MuldelMode(){
+  MuldelMode() {
     this.isDeleteModeEnabled = !this.isDeleteModeEnabled;
     this.selectionStart = null;
     this.selectionEnd = null;
@@ -434,24 +433,26 @@ export class EnvmapComponent implements AfterViewInit {
   confirmDelete(): void {
     if (this.nodesToDelete.length > 0) {
       // Remove selected nodes from the nodes array
-      this.nodes = this.nodes.filter((node) => !this.nodesToDelete.includes(node));
-  
+      this.nodes = this.nodes.filter(
+        (node) => !this.nodesToDelete.includes(node)
+      );
+
       // Remove edges related to deleted nodes
       this.edges = this.edges.filter((edge) => {
-        return (
-          !this.nodesToDelete.some((node) => edge.startNodeId === node.id || edge.endNodeId === node.id)
+        return !this.nodesToDelete.some(
+          (node) => edge.startNodeId === node.id || edge.endNodeId === node.id
         );
       });
-  
+
       // Clear the selected nodes
       this.nodesToDelete = [];
-      
+
       // Redraw the canvas
       this.redrawCanvas();
     } else {
       console.log('No nodes selected for deletion.');
     }
-  
+
     if (this.selectedAsset) {
       this.assets = this.assets.filter(
         (asset) => this.selectedAsset?.id !== asset.id
@@ -464,12 +465,14 @@ export class EnvmapComponent implements AfterViewInit {
       );
       this.redrawCanvas();
     }
-    
+
     // Proceed with node deletion if confirmed
     if (this.selectedNode) {
       // Remove the node by its unique ID
-      this.nodes = this.nodes.filter((node) => node.id !== this.selectedNode?.id);
-      
+      this.nodes = this.nodes.filter(
+        (node) => node.id !== this.selectedNode?.id
+      );
+
       // Remove from nodes array
       this.nodes = this.nodes.filter((node) => {
         return (
@@ -477,7 +480,7 @@ export class EnvmapComponent implements AfterViewInit {
           node.pos.y !== this.selectedNode?.pos.y
         );
       });
-  
+
       // Remove edges related to the deleted node
       this.edges = this.edges.filter((edge) => {
         return (
@@ -485,24 +488,25 @@ export class EnvmapComponent implements AfterViewInit {
           edge.endNodeId !== this.selectedNode?.id
         );
       });
-  
+
       // Clear the selected node
       this.selectedNode = null;
-      
+
       // Redraw the canvas
       this.redrawCanvas();
     } else {
       console.log('No node selected to delete.');
     }
-  
+
     // Disable delete mode after confirmation
     this.isDeleteModeEnabled = false;
-  
+
     // Hide confirmation dialog
     this.isConfirmationVisible = false;
-  }  
+  }
   cancelDelete(): void {
     // Hide confirmation dialog without deleting
+    // this.isDeleteModeEnabled = false;
     this.isConfirmationVisible = false;
   }
   closeImagePopup(): void {
@@ -645,8 +649,6 @@ export class EnvmapComponent implements AfterViewInit {
 
       // Hide the form after adding
       this.hideActionForms();
-
-
     }
   }
   openMoveActionForm(): void {
@@ -1041,7 +1043,6 @@ export class EnvmapComponent implements AfterViewInit {
         // this.cdRef.detectChanges();
         this.showNodeDetailsPopup();
         return;
-        
       }
     }
     // Check if the click is on an edge
@@ -1556,22 +1557,30 @@ export class EnvmapComponent implements AfterViewInit {
   }
   validationError: string = '';
   saveNodeDetails(): void {
-
     this.validationError = '';
 
     // Example validation: Check if all required fields are filled
     if (!this.nodeDetails.description) {
       this.validationError = 'Node Description is required.';
     } else if (this.selectedAction === 'Move') {
-      if (!this.moveParameters.maxLinearVelocity || !this.moveParameters.maxAngularVelocity) {
+      if (
+        !this.moveParameters.maxLinearVelocity ||
+        !this.moveParameters.maxAngularVelocity
+      ) {
         this.validationError = 'All Move Action fields are required.';
       }
     } else if (this.selectedAction === 'Dock') {
-      if (!this.dockParameters.maxAngularVelocity || !this.dockParameters.goalOffsetX) {
+      if (
+        !this.dockParameters.maxAngularVelocity ||
+        !this.dockParameters.goalOffsetX
+      ) {
         this.validationError = 'All Dock Action fields are required.';
       }
     } else if (this.selectedAction === 'Undock') {
-      if (!this.undockParameters.maxLinearVelocity || !this.undockParameters.maxToleranceAtGoalX) {
+      if (
+        !this.undockParameters.maxLinearVelocity ||
+        !this.undockParameters.maxToleranceAtGoalX
+      ) {
         this.validationError = 'All Undock Action fields are required.';
       }
     }
@@ -1779,7 +1788,6 @@ export class EnvmapComponent implements AfterViewInit {
     startNodeId: string,
     endNodeId: string
   ): void {
-    
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
 
@@ -2154,22 +2162,25 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
     });
   }
   private originalZonePointPosition: { x: number; y: number } | null = null;
-  
-  private drawSelectionBox(start: { x: number; y: number }, end: { x: number; y: number }): void {
+
+  private drawSelectionBox(
+    start: { x: number; y: number },
+    end: { x: number; y: number }
+  ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-    
+
     if (ctx && start && end) {
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]); // Dashed lines for selection box
-        ctx.strokeRect(
-            start.x,
-            start.y, // Flip Y-axis
-            end.x - start.x,
-            end.y - start.y // Flip Y-axis
-        );
-        ctx.setLineDash([]);
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]); // Dashed lines for selection box
+      ctx.strokeRect(
+        start.x,
+        start.y, // Flip Y-axis
+        end.x - start.x,
+        end.y - start.y // Flip Y-axis
+      );
+      ctx.setLineDash([]);
     }
   }
   @HostListener('mousedown', ['$event'])
@@ -2182,12 +2193,12 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
       const y =
         (event.clientY - rect.top) *
         (this.overlayCanvas.nativeElement.height / rect.height);
-        if (this.isDeleteModeEnabled) {
-          // Start drawing the selection box
-          this.selectionStart = { x, y };
-          this.selectionEnd = null;
+      if (this.isDeleteModeEnabled) {
+        // Start drawing the selection box
+        this.selectionStart = { x, y };
+        this.selectionEnd = null;
       }
-      
+
       if (this.isZonePlottingEnabled) {
         // Plot the point
         if (this.firstPlottedPoint) {
@@ -2317,14 +2328,12 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
     const transformedY = canvas.height - y; // yet to remove..
 
     if (this.isDeleteModeEnabled && this.selectionStart) {
-      
-
       this.selectionEnd = { x, y };
 
       // Redraw canvas with selection box
       this.redrawCanvas();
       this.drawSelectionBox(this.selectionStart, this.selectionEnd);
-  }
+    }
     if (this.draggingAsset && this.selectedAsset) {
       // Update the position of the selected asset
       this.redrawCanvas();
@@ -2410,25 +2419,31 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
       const maxX = Math.max(this.selectionStart.x, this.selectionEnd.x);
       const minY = Math.min(this.selectionStart.y, this.selectionEnd.y);
       const maxY = Math.max(this.selectionStart.y, this.selectionEnd.y);
-  
+      // let x1 = this.selectionStart.x;
+      // let y1 = this.selectionStart.y;
+      // let x2 = this.selectionEnd.x;
+      // let y2 = this.selectionEnd.y;
+
       // Find nodes inside the selection box
       this.nodesToDelete = this.nodes.filter((node) => {
         const nodeX = node.pos.x;
         const nodeY = node.pos.y;
+
+        // return nodeX >= x1 && nodeY >= y1 && nodeX <= x2 && nodeY <= y2;
         return nodeX >= minX && nodeX <= maxX && nodeY >= minY && nodeY <= maxY;
       });
-  
+
       console.log('Nodes selected for deletion:', this.nodesToDelete);
-  
+
       // Display the confirmation dialog
       if (this.nodesToDelete.length > 0) {
         this.isConfirmationVisible = true;
       }
-  
+
       // Reset selection start and end
       this.selectionStart = null;
       this.selectionEnd = null;
-  
+
       // Redraw the canvas without the selection box
       this.redrawCanvas();
     }
@@ -2545,6 +2560,10 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
       });
       this.draggingNode = false;
     }
+
+    // yet to remove..
+    this.selectionStart = null;
+    this.selectionEnd = null;
   }
   private isAssetClicked(
     asset: { x: number; y: number; type: string },
