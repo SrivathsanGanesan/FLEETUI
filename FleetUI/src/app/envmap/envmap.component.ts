@@ -249,7 +249,6 @@ export class EnvmapComponent implements AfterViewInit {
   roboInitOffset: number = 60;
   draggingRobot: Robo | null = null; // Currently dragged robot
   deselectTimeout: any = null;
-  highlightDuration = 2000; // Example: 2 seconds
   currentEdge: Edge = {
     edgeId: '',
     sequenceId: 0,
@@ -310,10 +309,11 @@ export class EnvmapComponent implements AfterViewInit {
       this.edges = this.currEditMapDet.edges;
       this.assets = this.currEditMapDet.assets;
       this.zones = this.currEditMapDet.zones;
-      this.nodeCounter =
-        parseInt(this.nodes[this.nodes.length - 1]?.id) + 1
-          ? parseInt(this.nodes[this.nodes.length - 1]?.id) + 1
-          : this.nodeCounter;
+      // this.nodeCounter =
+      //   parseInt(this.nodes[this.nodes.length - 1]?.id) + 1
+      //     ? parseInt(this.nodes[this.nodes.length - 1]?.id) + 1
+      //     : this.nodeCounter;
+      this.nodeCounter=1;
       this.edgeCounter =
         parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
           ? parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
@@ -730,6 +730,7 @@ export class EnvmapComponent implements AfterViewInit {
       edges: this.edges,
       zones: this.zones,
       stations: this.assets,
+      robos: this.robos
     };
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.mapName}`,
@@ -749,7 +750,8 @@ export class EnvmapComponent implements AfterViewInit {
         this.edges = updatedData.edges;
         this.assets = updatedData.stations;
         this.zones = updatedData.zones;
-      });
+        this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];    
+        });
   }
   saveOpt() {
     if (this.currEditMap) {
@@ -773,6 +775,7 @@ export class EnvmapComponent implements AfterViewInit {
       edges: this.edges,
       nodes: this.nodes,
       stations: this.assets,
+      robos: this.robos
     };
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
@@ -1869,7 +1872,16 @@ export class EnvmapComponent implements AfterViewInit {
 
     ctx.fill();
   }
+  showEdgeError = false;
   updateEdge() {
+    if (!this.currentEdge.edgeId || !this.currentEdge.sequenceId || !this.currentEdge.minHeight || !this.currentEdge.orientation || !this.currentEdge.orientationType || !this.currentEdge.maxRotationSpeed) {
+      this.showEdgeError = true; // Show error message
+      return; // Stop saving if validation fails
+    }
+
+    // If validation passes, hide the error message
+    this.showEdgeError = false;
+
     if (this.currentEdge) {
       this.edges = this.edges.map((edge) => {
         if (this.currentEdge.edgeId === edge.edgeId) {
@@ -2285,19 +2297,10 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
           this.redrawCanvas();
 
           // Clear any existing timeout
-          if (this.deselectTimeout) {
-            clearTimeout(this.deselectTimeout);
-          }
 
-          // Set a timeout to deselect the robot after the specified duration
-          this.deselectTimeout = setTimeout(() => {
-            this.selectedRobo = null;
-            this.redrawCanvas(); // Redraw the canvas to remove the highlight
-          }, this.highlightDuration);
           return;
         }
       }
-
       let nodeClicked = false;
       for (const node of this.nodes) {
         if (this.isNodeClicked(node, x, y)) {
@@ -2397,6 +2400,11 @@ private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: n
 
       this.selectedRobo.x = x;
       this.selectedRobo.y = y;
+      const roboIndex = this.robos.findIndex(robo => robo.roboDet === this.selectedRobo?.roboDet);
+      if (roboIndex !== -1) {
+        this.robos[roboIndex].x = x;
+        this.robos[roboIndex].y = y;
+      }
     }
   }
   @HostListener('mouseup', ['$event'])

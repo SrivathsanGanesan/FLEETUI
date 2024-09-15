@@ -658,7 +658,9 @@
       <label for="action">Actions:</label>
       <input id="action" [(ngModel)]="currentEdge.action" name="action" />
     </div>
-
+    <div *ngIf="showEdgeError" class="error-message">
+      All required fields must be provided.
+    </div>
     <div class="form-buttons">
       <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
       <button type="button" id="formBTN" (click)="deleteEdge()">Delete</button>
