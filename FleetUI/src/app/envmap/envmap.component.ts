@@ -2028,23 +2028,33 @@ export class EnvmapComponent implements AfterViewInit {
     // No separating axis found, polygons intersect
     return true;
   }
-  private projectPolygon(
-    polygon: any[],
-    axis: { x: number; y: number }
-  ): { min: number; max: number } {
-    let min = polygon[0].x * axis.x + polygon[0].y * axis.y;
-    let max = min;
-    for (let i = 1; i < polygon.length; i++) {
-      const projection = polygon[i].x * axis.x + polygon[i].y * axis.y;
-      if (projection < min) {
-        min = projection;
-      }
-      if (projection > max) {
-        max = projection;
-      }
-    }
-    return { min, max };
+private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: number; max: number } {
+  if (!polygon || polygon.length === 0) {
+    console.error("Invalid polygon data");
+    return { min: 0, max: 0 };
   }
+
+  let min = polygon[0]?.x * axis.x + polygon[0]?.y * axis.y;
+  let max = min;
+
+  for (let i = 1; i < polygon.length; i++) {
+    if (!polygon[i] || polygon[i].x === undefined || polygon[i].y === undefined) {
+      console.error("Invalid polygon point:", polygon[i]);
+      continue;  // Skip invalid points
+    }
+
+    const projection = polygon[i].x * axis.x + polygon[i].y * axis.y;
+    if (projection < min) {
+      min = projection;
+    }
+    if (projection > max) {
+      max = projection;
+    }
+  }
+
+  return { min, max };
+}
+
   private getBoundingBox(polygon: any[]): number[] {
     let minX = Infinity,
       minY = Infinity,

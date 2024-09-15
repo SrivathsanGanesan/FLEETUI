@@ -403,22 +403,16 @@
 <div *ngIf="isPopupOpen" class="popup-overlay">
   <div class="robopopup-content">
  <div>
-    <form (ngSubmit)="saveItem()" #robotForm="ngForm">
+    <form (ngSubmit)="saveItem()">
       <h4>Add Robot</h4>
       <div class="rob-inp">
         <label for="manufacturer">Manufacturer:</label>
-        <input type="text" id="manufacturer" [(ngModel)]="formData.manufacturer" name="manufacturer" required #manufacturer="ngModel">
-        <div *ngIf="manufacturer.invalid && manufacturer.touched" class="error-msg">
-          Manufacturer is required.
-        </div>
+        <input type="text" id="manufacturer" [(ngModel)]="formData.manufacturer" name="manufacturer" required>
       </div>
 
       <div class="rob-inp">
         <label for="serialNumber">Serial Number:</label>
-        <input type="text" id="serialNumber" [(ngModel)]="formData.serialNumber" name="serialNumber" required #serialNumber="ngModel">
-        <div *ngIf="serialNumber.invalid && serialNumber.touched" class="error-msg">
-          Serial Number is required.
-        </div>
+        <input type="text" id="serialNumber" [(ngModel)]="formData.serialNumber" name="serialNumber" required>
       </div>
 
       <div class="rob-btn">
@@ -464,9 +458,7 @@
 
       </div>
       </div>
-      <div *ngIf="robotForm.submitted && robotForm.invalid" class="validation-error">
-        <p>Please fill out all required fields before saving.</p>
-      </div>
+
       <div class="btn-rob">
         <button type="submit">Save</button>
         <button type="button" (click)="closeroboPopup()">Close</button>

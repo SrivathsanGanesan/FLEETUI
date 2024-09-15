@@ -859,7 +859,6 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   saveItem(): void {
-    
     // Implement form submission logic
     console.log('Item saved:', this.formData);
     this.isPopupOpen = false;
