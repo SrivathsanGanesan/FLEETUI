@@ -1014,13 +1014,24 @@ export class EnvmapComponent implements AfterViewInit {
     this.showImage = true;
     this.closePopup.emit(); // Then close the popup
   }
-  private isPointClicked(x: number, y: number, point: { x: number; y: number }): boolean {
-    const radius = 6; // Adjust radius as needed
-    const dx = x - point.x;
-    const dy = y - point.y;
-    return dx * dx + dy * dy <= radius * radius; // Check if within radius
+    private isPointInZone(x: number, y: number, zonePoints: any[]): boolean {
+    const ctx = this.overlayCanvas.nativeElement.getContext('2d');
+    if (!ctx) return false;
+
+    ctx.beginPath();
+    ctx.moveTo(zonePoints[0].x, zonePoints[0].y);
+    for (let i = 1; i < zonePoints.length; i++) {
+      ctx.lineTo(zonePoints[i].x, zonePoints[i].y);
+    }
+    ctx.closePath();
+
+    // Use canvas's isPointInPath method to check if the click is inside the zone
+    return ctx.isPointInPath(x, y);
   }
-  
+  private isPointNearFirstZonePoint(x: number, y: number, firstPoint: any, threshold: number = 6): boolean {
+    const distance = Math.sqrt((x - firstPoint.x) ** 2 + (y - firstPoint.y) ** 2);
+    return distance < threshold;
+  }
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
@@ -1032,17 +1043,15 @@ export class EnvmapComponent implements AfterViewInit {
       (event.clientY - rect.top) *
       (this.overlayCanvas.nativeElement.height / rect.height);
 
-  // Check if a zone point is clicked
-  for (const zone of this.zones) {
-    for (const point of zone.pos) {
-      if (this.isPointClicked(x, y, point)) {
+    for (const zone of this.zones) {
+      const firstPoint = zone.pos[0]; // The first point of the zone
+      if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
         this.selectedZone = zone; // Store the selected zone
         this.zoneType = zone.type;
-        this.showZoneTypePopup(); // Show the zone settings
+        this.showZoneTypePopup();
         return;
       }
     }
-  }
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y) && this.selectedNode) {
@@ -1095,20 +1104,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.showPopup = true; // Show the popup
     }
   }
-  private isPointInZone(x: number, y: number, zonePoints: any[]): boolean {
-    const ctx = this.overlayCanvas.nativeElement.getContext('2d');
-    if (!ctx) return false;
 
-    ctx.beginPath();
-    ctx.moveTo(zonePoints[0].x, zonePoints[0].y);
-    for (let i = 1; i < zonePoints.length; i++) {
-      ctx.lineTo(zonePoints[i].x, zonePoints[i].y);
-    }
-    ctx.closePath();
-
-    // Use canvas's isPointInPath method to check if the click is inside the zone
-    return ctx.isPointInPath(x, y);
-  }
   onDeleteZone(): void {
     if (this.selectedZone) {
       // Remove the selected zone from the zones array
