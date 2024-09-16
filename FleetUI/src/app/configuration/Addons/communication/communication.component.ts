@@ -9,22 +9,18 @@ interface DB {
   styleUrl: './communication.component.css'
 })
 export class CommunicationComponent {
-  dtype: DB[] | undefined;
-  iptype: DB[] | undefined;
+  selectedCategory: any = null;
 
-    selectedDb: DB | undefined;
+    categories: any[] = [
+        { name: 'FastDDS', key: 'A' },
+        { name: 'MarkFastDDSNATeting', key: 'M' },
+        { name: 'Simulation', key: 'P' },
+        { name: 'SimulationSocket', key: 'R' },
+        { name: 'Socket', key: 'S' },
+        { name: 'MQTT', key: 'Q' },
+    ];
 
     ngOnInit() {
-        this.dtype = [
-            { name: 'PostgreSQL', code: 'NY' },
-            { name: 'MongoDB', code: 'RM' },
-            { name: 'SQL', code: 'LDN' },
-        ];
-        this.iptype = [
-          { name: 'PostgreSQL', code: 'NY' },
-          { name: 'MongoDB', code: 'RM' },
-          { name: 'SQL', code: 'LDN' },
-      ];
+        this.selectedCategory = this.categories[1];
     }
-
 }

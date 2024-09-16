@@ -17,6 +17,8 @@ import { ProjectService } from '../services/project.service';
 import { sequence } from '@angular/animations';
 import { parse } from 'path';
 import { response } from 'express';
+import { CookieService } from 'ngx-cookie-service';
+import { MapService } from '../map.service';
 
 interface Node {
   id: string;
@@ -295,7 +297,8 @@ export class EnvmapComponent implements AfterViewInit {
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private mapService:MapService
   ) {
     if (this.currEditMap) this.showImage = true;
   }
@@ -984,9 +987,9 @@ export class EnvmapComponent implements AfterViewInit {
           (document.getElementById('resolution') as HTMLInputElement).value
         );
     if (this.mapName && this.siteName && this.imageSrc) {
+      // this.mapService.setOnCreateMapImg('')
       this.fileName = null;
       this.showImage = true;
-
       const img = new Image();
       img.src = this.imageSrc;
 

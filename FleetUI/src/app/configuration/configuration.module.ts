@@ -18,7 +18,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DropdownModule } from 'primeng/dropdown';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 
 @NgModule({
@@ -41,6 +41,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
     InputMaskModule,
     InputGroupAddonModule,
     DropdownModule,
+    RadioButtonModule,
 
   ],
   exports: [

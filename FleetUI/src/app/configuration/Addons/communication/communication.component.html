@@ -4,40 +4,54 @@
       <!-- <form> -->
         <div class="container">
           <div class="form-control">
-            <div class="field">
-              <label for="name">Minimum Battery :  </label>
-              <input class="input" type="number" min="0"  placeholder="Enter" pInputText required/>
+            <div class="head1">
+              <h4>WES Communications:</h4>
+              <div class="field">
+                <label for="name">External Inteface IP :  </label>
+                <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+              </div>
+              <div class="field">
+                <label for="name">External Inteface Type : </label>
+                <input type="text" placeholder="Enter IP"  pInputText/>
+              </div>
             </div>
-            <div class="field">
-              <label for="name">Maximum Battery : </label>
-              <input type="text" placeholder="Enter IP" minlength="7" maxlength="15" size="15"  pInputText/>
+            <div class="head2">
+              <h4>Communication </h4>
+              <div class="field">
+                <label for="name">Robot Inteface IP :  </label>
+                <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+              </div>
+              <div class="field">
+                <label for="name">Robot Inteface Type : </label>
+                <input type="text" placeholder="Enter IP"  pInputText/>
+              </div>
             </div>
-            <div class="field">
-              <label for="name">Warning Battery :  </label>
-              <input class="input" placeholder="Enter Port" type="number" min="1000" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" max="9999"  placeholder="Enter" pInputText required/>
-            </div>
+            <div class="radio">
+              <h4>Robot Communications:</h4>
+                <h3>Select an option:</h3>
+                <div class="flex flex-wrap gap-3">
+                  <div class="flex align-items-center">
+              <div *ngFor="let category of categories" class="field-checkbox">
+                  <p-radioButton 
+                      [inputId]="category.key"
+                      name="category" 
+                      [value]="category" 
+                      [(ngModel)]="selectedCategory" />
+                  <label [for]="category.key" class="ml-2">
+                      {{ category.name }}
+                  </label>
+                  </div>
+              </div>
           </div>
-
-          <div class="form2">
-            <div class="field">
-              <label for="ip">Warning Voltage : </label>
-              <input type="text" Enter IP placeholder="Enter IP" minlength="7" maxlength="15" size="15"  pInputText/>
-            </div>
-            <div class="field">
-              <label for="type">Minimum Voltage</label><br>
-              <input type="text" Enter IP placeholder="Enter IP" minlength="7" maxlength="15" size="15"  pInputText/>
-            </div>
-          </div>
-          <div class="field mt-1">
-            <p-button
-              label="Apply Filter"
-              type="submit"
-              class="block mt-1 pt-2 button"
-              icon="pi pi-search"
-              styleClass="p-button-danger"
-              [style]="{'margin-top':'10rem','margin-right':'5rem'}"
-            ></p-button>
-          </div>
+        </div>
+        <div class="field mt-1">
+          <p-button
+            label="Apply Filter"
+            type="submit"
+            class="block mt-1 pt-2 button"
+            icon="pi pi-search"
+            styleClass="p-button-danger"
+          ></p-button>
         </div>
       <!-- </form> -->
     </div>
