@@ -36,15 +36,14 @@
   margin-top: 3%;
   width: 100%;
   max-width: 15%;
-  height: 7vh; 
+  height: 7vh;
   gap: 2%;
-  font-size: 2.5vw;
+  font-size: 1.0vw;
   border-radius: 6px;
   overflow: hidden;
   position: relative;
   z-index: 2;
 }
- 
 .slider-buttons button {
   flex: 1;
   padding: 2%;

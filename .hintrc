@@ -34,7 +34,8 @@
           "max-height: fit-content",
           "width: fit-content",
           "height: fit-content",
-          "-webkit-tap-highlight-color"
+          "-webkit-tap-highlight-color",
+          "user-select"
         ]
       }
     ]

@@ -38,7 +38,7 @@
   max-width: 15%;
   height: 7vh;
   gap: 2%;
-  font-size: 2.5vw;
+  font-size: 1.0vw;
   border-radius: 6px;
   overflow: hidden;
   position: relative;
@@ -440,30 +440,29 @@ h2 {
   width: 100%;
   gap: 1%; /* Space between the area chart and the donut chart */
 }
- 
+
 /* Area chart container */
 .area-chart-container {
-  flex-grow: 2; /* Area chart takes up more space */
+  flex: 2 1 60%; /* Flex-grow 2, flex-shrink 1, takes 60% of available space */
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   padding: 1%;
-  width: 60%; /* Ensures full width within the flex container */
-  height: 270px; /* Set a fixed height or use percentage */
+  height: auto; /* Height will adjust based on content */
+  min-height: 270px; /* Ensures a minimum height for smaller screens */
 }
- 
-
 
 /* Donut chart container */
 .donut-chart-container {
-  flex-grow: 1; /* Donut chart takes up less space */
+  flex: 2 1 38%; /* Flex-grow 1, flex-shrink 1, takes 35% of available space */
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   padding: 1%;
-  width: 35%; /* Ensures full width within the flex container */
-  height: 270px; /* Set a fixed height or use percentage */
+  height: auto; /* Height will adjust based on content */
+  min-height: 270px; /* Ensures a minimum height for smaller screens */
 }
+
  
 /* Responsive adjustments */
 @media (max-width: 1200px) {

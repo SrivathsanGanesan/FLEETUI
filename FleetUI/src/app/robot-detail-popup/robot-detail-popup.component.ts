@@ -10,6 +10,7 @@ batteryDistance: any;
 currentSpeed: any;
 averageSpeed: any;
 distanceLeft: string;
+
   
   averageChargingTime: string;
   id: number;
@@ -26,6 +27,8 @@ distanceLeft: string;
   robotutilization: string;
   cpuutilization: string;
   memory: string;
+ totalPicks: string;
+ totalDrops:string;
 
   error: string;
   batteryPercentage: number;
@@ -42,8 +45,14 @@ export class RobotDetailPopupComponent {
   metrics: { title: string; value: string; icon: string }[] = [];
   // batteryData: any[] = [];  
   robot: any;
+  
 
- 
+
+  isConnected: boolean = false; // Initial state
+  toggleLabel() {
+    // This method will be called whenever the checkbox changes state
+    this.isConnected = !this.isConnected;
+  }
   
 
   getClassForCircle(percentage: number, threshold: number): string {

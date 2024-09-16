@@ -16,6 +16,8 @@ export interface Robot {
   memory: string;
   error: string;
   batteryPercentage: number;
+  totalPicks: string;
+ totalDrops:string;
 
   isCharging: boolean // This will control whether the icon is shown
   // Add other fields as needed
@@ -49,7 +51,9 @@ export class RobotsComponent implements OnInit {
       memory: '10 %',
       error: '10',
       batteryPercentage: 87,
-      isCharging: true // This will control whether the icon is shown
+      isCharging: true, // This will control whether the icon is shown
+      totalPicks: '31',
+      totalDrops:'28'
 
     },
     {
@@ -66,7 +70,9 @@ export class RobotsComponent implements OnInit {
       memory: '20 %',
       error: '20',
       batteryPercentage: 7,
-      isCharging: true // This will control whether the icon is shown
+      isCharging: true, // This will control whether the icon is shown
+       totalPicks: '31',
+      totalDrops:'28'
        
       
 
@@ -85,7 +91,9 @@ export class RobotsComponent implements OnInit {
       memory: '30 %',
       error: '30',
       batteryPercentage: 10,
-      isCharging: true // This will control whether the icon is shown
+      isCharging: true ,// This will control whether the icon is shown
+       totalPicks: '31',
+      totalDrops:'28'
     },
     {
       id: 4,
@@ -101,7 +109,9 @@ export class RobotsComponent implements OnInit {
       memory: '40 %',
       error: '40',
       batteryPercentage: 40,
-      isCharging: true // This will control whether the icon is shown
+      isCharging: true, // This will control whether the icon is shown
+       totalPicks: '31',
+      totalDrops:'28'
     },
     {
       id: 5,
@@ -117,7 +127,9 @@ export class RobotsComponent implements OnInit {
       memory: '50 %',
       error: '50',
       batteryPercentage: 41,
-      isCharging: true // This will control whether the icon is shown
+      isCharging: true ,// This will control whether the icon is shown
+       totalPicks: '31',
+      totalDrops:'28'
     },
     {
       id: 6,
@@ -133,7 +145,9 @@ export class RobotsComponent implements OnInit {
       memory: '60 %',
       error: '60',
       batteryPercentage: 90,
-      isCharging: false // This will control whether the icon is shown
+      isCharging: false ,// This will control whether the icon is shown
+      totalPicks: '31',
+      totalDrops:'28'
     },
     // Add more robots...
   ];

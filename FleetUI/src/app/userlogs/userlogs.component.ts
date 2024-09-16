@@ -3,6 +3,7 @@ import { ExportService } from '../export.service';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ProjectService } from '../services/project.service';
 import { timeStamp } from 'console';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-userlogs',
@@ -20,6 +21,13 @@ export class Userlogscomponent {
   activeHeader: string = 'Task logs'; // Default header
   currentTable = 'task';
   currentTab: any;
+  filteredTaskData: any[] = [];
+  onPageChange(event: PageEvent) {
+    this.setPaginatedData();
+  }
+  setPaginatedData() {
+    throw new Error('Method not implemented.');
+  }
 
   // Your task data
   taskData: any[] = [];
