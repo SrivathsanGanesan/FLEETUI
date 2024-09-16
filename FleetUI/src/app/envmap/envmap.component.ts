@@ -21,11 +21,11 @@ import { CookieService } from 'ngx-cookie-service';
 import { MapService } from '../map.service';
 
 interface Node {
-  id: string;
+  nodeId: string;
   sequenceId: number;
-  description: string;
+  nodeDescription: string;
   released: boolean;
-  pos: { x: number; y: number; orientation: number };
+  nodePosition: { x: number; y: number; orientation: number };
   actions: any[];
   intermediate_node: boolean;
   Waiting_node: boolean;
@@ -315,11 +315,11 @@ export class EnvmapComponent implements AfterViewInit {
       this.edges = this.currEditMapDet.edges;
       this.assets = this.currEditMapDet.assets;
       this.zones = this.currEditMapDet.zones;
-      // this.nodeCounter =
-      //   parseInt(this.nodes[this.nodes.length - 1]?.id) + 1
-      //     ? parseInt(this.nodes[this.nodes.length - 1]?.id) + 1
-      //     : this.nodeCounter;
-      this.nodeCounter=1;
+      this.nodeCounter =
+        parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
+          ? parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
+          : this.nodeCounter;
+      // this.nodeCounter=1;
       this.edgeCounter =
         parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
           ? parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
@@ -429,7 +429,7 @@ export class EnvmapComponent implements AfterViewInit {
       (event.clientY - rect.top) * (canvas.height / rect.height);
 
     const selected = this.nodes.find(
-      (node) => Math.abs(node.pos.x - x) < 5 && Math.abs(node.pos.y - y) < 5
+      (node) => Math.abs(node.nodePosition.x - x) < 5 && Math.abs(node.nodePosition.y - y) < 5
     );
 
     // if (selected) {
@@ -460,7 +460,7 @@ export class EnvmapComponent implements AfterViewInit {
       // Remove edges related to deleted nodes
       this.edges = this.edges.filter((edge) => {
         return !this.nodesToDelete.some(
-          (node) => edge.startNodeId === node.id || edge.endNodeId === node.id
+          (node) => edge.startNodeId === node.nodeId || edge.endNodeId === node.nodeId
         );
       });
 
@@ -490,22 +490,22 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.selectedNode) {
       // Remove the node by its unique ID
       this.nodes = this.nodes.filter(
-        (node) => node.id !== this.selectedNode?.id
+        (node) => node.nodeId !== this.selectedNode?.nodeId
       );
 
       // Remove from nodes array
       this.nodes = this.nodes.filter((node) => {
         return (
-          node.pos.x !== this.selectedNode?.pos.x &&
-          node.pos.y !== this.selectedNode?.pos.y
+          node.nodePosition.x !== this.selectedNode?.nodePosition.x &&
+          node.nodePosition.y !== this.selectedNode?.nodePosition.y
         );
       });
 
       // Remove edges related to the deleted node
       this.edges = this.edges.filter((edge) => {
         return (
-          edge.startNodeId !== this.selectedNode?.id &&
-          edge.endNodeId !== this.selectedNode?.id
+          edge.startNodeId !== this.selectedNode?.nodeId &&
+          edge.endNodeId !== this.selectedNode?.nodeId
         );
       });
 
@@ -661,8 +661,8 @@ export class EnvmapComponent implements AfterViewInit {
 
       // this.actions.push(action);
       this.nodes = this.nodes.map((node) => {
-        console.log(this.selectedNode?.id, node.id);
-        if (this.selectedNode?.id === node.id) node.actions.push(action);
+        console.log(this.selectedNode?.nodeId, node?.nodeId);
+        if (this.selectedNode?.nodeId === node?.nodeId) node.actions.push(action);
         return node;
       });
       this.cdRef.detectChanges();
@@ -686,11 +686,21 @@ export class EnvmapComponent implements AfterViewInit {
   isOptionDisabled(option: string): boolean {
     return this.actions.some((action) => action.actionType === option);
   }
+  imageBase64: string | null = null;
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      this.selectedImage = input.files[0];
+      this.selectedImage = input.files[0];      
       const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.imageBase64 = e.target.result;
+          console.log(this.imageBase64);          
+          // if(this.imageBase64) this.mapService.setOnCreateMapImg(this.imageBase64);  // Save to cookie after conversion
+        };
+        reader.readAsDataURL(file);
+      }
       this.fileName = file.name;
       this.showImage = false;
 
@@ -700,6 +710,9 @@ export class EnvmapComponent implements AfterViewInit {
       };
       reader.readAsDataURL(file);
     }
+  }
+  saveToCookie(imageBase64: string) {
+    document.cookie = `image=${imageBase64}; path=/;`;
   }
   openImagePopup(): void {
     if (this.imageSrc) {
@@ -987,7 +1000,6 @@ export class EnvmapComponent implements AfterViewInit {
           (document.getElementById('resolution') as HTMLInputElement).value
         );
     if (this.mapName && this.siteName && this.imageSrc) {
-      // this.mapService.setOnCreateMapImg('')
       this.fileName = null;
       this.showImage = true;
       const img = new Image();
@@ -1012,6 +1024,9 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
       };
+      if (this.imageBase64) {
+        this.mapService.setOnCreateMapImg(this.imageBase64);  // Save the Base64 image in the cookie
+      }
     } else {
       alert('Please enter both Map Name and Site Name before clicking Open.');
     }
@@ -1065,7 +1080,7 @@ export class EnvmapComponent implements AfterViewInit {
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y) && this.selectedNode) {
-        this.nodeDetails.description = this.selectedNode.description;
+        this.nodeDetails.description = this.selectedNode.nodeDescription;
         this.nodeDetails.intermediate_node =
           this.selectedNode.intermediate_node;
         this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
@@ -1177,9 +1192,9 @@ export class EnvmapComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-      const transformedY = canvas.height - node.pos.y; // Flip the Y-axis
+      const transformedY = canvas.height - node.nodePosition.y; // Flip the Y-axis
       ctx.beginPath();
-      ctx.arc(node.pos.x, transformedY, 7, 0, 2 * Math.PI);
+      ctx.arc(node.nodePosition.x, transformedY, 7, 0, 2 * Math.PI);
       ctx.fillStyle = selected ? color : 'blue';
       ctx.lineWidth = selected ? 3 : 1;
       ctx.fill();
@@ -1189,7 +1204,7 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.fillStyle = 'black'; // Text color
       ctx.textAlign = 'center'; // Center align text
       ctx.textBaseline = 'top'; // Position text below the node
-      ctx.fillText(node.id, node.pos.x, transformedY + 10); // Draw node ID
+      ctx.fillText(node.nodeId, node.nodePosition.x, transformedY + 10); // Draw node ID
     }
   }
   private drawArrowLine(
@@ -1235,14 +1250,14 @@ export class EnvmapComponent implements AfterViewInit {
       const angleDegrees = angleRadians * (180 / Math.PI);
       // Update the orientationAngle of the node
       const currentNode = this.nodes.find((node) => {
-        if (Math.abs(node.pos.x - startX) <= 5)
-          node.pos.orientation = angleDegrees;
+        if (Math.abs(node.nodePosition.x - startX) <= 5)
+          node.nodePosition.orientation = angleDegrees;
       });
 
       this.orientationAngle = angleDegrees;
-      if (this.secondNode) this.secondNode.pos.orientation = angleDegrees;
+      if (this.secondNode) this.secondNode.nodePosition.orientation = angleDegrees;
       if (currentNode) {
-        currentNode.pos.orientation = angleDegrees;
+        currentNode.nodePosition.orientation = angleDegrees;
       }
 
       console.log(
@@ -1330,11 +1345,11 @@ export class EnvmapComponent implements AfterViewInit {
     const color = 'blue'; // Color for single nodes
     this.drawNode(
       {
-        id: '',
+        nodeId: '',
         sequenceId: 0,
-        description: '',
+        nodeDescription: '',
         released: true,
-        pos: { x: x, y: transformedY, orientation: 0 },
+        nodePosition: { x: x, y: transformedY, orientation: 0 },
         intermediate_node: false,
         Waiting_node: false,
         actions: [],
@@ -1357,11 +1372,11 @@ export class EnvmapComponent implements AfterViewInit {
       { x, y: transformedY }
     );
     let node = {
-      id: this.nodeCounter.toString(),
+      nodeId: this.nodeCounter.toString(),
       sequenceId: this.nodeCounter,
-      description: '',
+      nodeDescription: '',
       released: true,
-      pos: { x: x, y: transformedY, orientation: this.orientationAngle },
+      nodePosition: { x: x, y: transformedY, orientation: this.orientationAngle },
       actions: [],
       intermediate_node: false,
       Waiting_node: false,
@@ -1404,11 +1419,11 @@ export class EnvmapComponent implements AfterViewInit {
     const color = 'blue'; // Color for multi-nodes
     this.drawNode(
       {
-        id: '',
+        nodeId: '',
         sequenceId: 0,
-        description: '',
+        nodeDescription: '',
         released: true,
-        pos: { x: x, y: transformedY, orientation: 0 },
+        nodePosition: { x: x, y: transformedY, orientation: 0 },
         actions: [],
         intermediate_node: false,
         Waiting_node: false,
@@ -1450,11 +1465,11 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.firstNode === null) {
       // Plotting the first node
       let firstnode = {
-        id: this.nodeCounter.toString(),
+        nodeId: this.nodeCounter.toString(),
         sequenceId: this.nodeCounter,
-        description: '',
+        nodeDescription: '',
         released: true,
-        pos: { x: x, y: transformedY, orientation: 0 },
+        nodePosition: { x: x, y: transformedY, orientation: 0 },
         actions: [],
         intermediate_node: false,
         Waiting_node: false,
@@ -1464,11 +1479,11 @@ export class EnvmapComponent implements AfterViewInit {
     } else if (this.secondNode === null) {
       // Plotting the second node
       let secondnode = {
-        id: this.nodeCounter.toString(),
+        nodeId: this.nodeCounter.toString(),
         sequenceId: this.nodeCounter,
-        description: '',
+        nodeDescription: '',
         released: true,
-        pos: { x: x, y: transformedY, orientation: 0 },
+        nodePosition: { x: x, y: transformedY, orientation: 0 },
         actions: [],
         intermediate_node: false,
         Waiting_node: false,
@@ -1496,14 +1511,14 @@ export class EnvmapComponent implements AfterViewInit {
     } else {
       // Plotting additional nodes
       let node = {
-        id: this.nodeCounter.toString(),
+        nodeId: this.nodeCounter.toString(),
         sequenceId: this.nodeCounter,
-        description: '',
+        nodeDescription: '',
         released: true,
-        pos: {
+        nodePosition: {
           x: x,
           y: transformedY,
-          orientation: this.secondNode.pos.orientation,
+          orientation: this.secondNode.nodePosition.orientation,
         },
         actions: [],
         intermediate_node: false,
@@ -1528,29 +1543,29 @@ export class EnvmapComponent implements AfterViewInit {
         this.numberOfIntermediateNodes > 0
       ) {
         const dx =
-          (this.secondNode.pos.x - this.firstNode.pos.x) /
+          (this.secondNode.nodePosition.x - this.firstNode.nodePosition.x) /
           (this.numberOfIntermediateNodes + 1);
         const dy =
-          (this.secondNode.pos.y - this.firstNode.pos.y) /
+          (this.secondNode.nodePosition.y - this.firstNode.nodePosition.y) /
           (this.numberOfIntermediateNodes + 1);
 
         for (let node of this.nodes) {
           if (
-            node.pos.x == this.firstNode?.pos.x &&
-            node.pos.y == this.firstNode?.pos.y
+            node.nodePosition.x == this.firstNode?.nodePosition.x &&
+            node.nodePosition.y == this.firstNode?.nodePosition.y
           )
-            node.pos.orientation = this.secondNode!.pos.orientation;
+            node.nodePosition.orientation = this.secondNode!.nodePosition.orientation;
         }
 
         for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
-          const x = this.firstNode.pos.x + i * dx;
-          const y = this.firstNode.pos.y + i * dy;
+          const x = this.firstNode.nodePosition.x + i * dx;
+          const y = this.firstNode.nodePosition.y + i * dy;
           let node = {
-            id: this.nodeCounter.toString(),
+            nodeId: this.nodeCounter.toString(),
             sequenceId: this.nodeCounter,
-            description: '',
+            nodeDescription: '',
             released: true,
-            pos: { x: x, y: y, orientation: this.secondNode!.pos.orientation },
+            nodePosition: { x: x, y: y, orientation: this.secondNode!.nodePosition.orientation },
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
@@ -1569,11 +1584,11 @@ export class EnvmapComponent implements AfterViewInit {
 
           this.drawNode(
             {
-              id: '',
+              nodeId: '',
               sequenceId: 0,
-              description: '',
+              nodeDescription: '',
               released: true,
-              pos: { x: x, y: y, orientation: 0 },
+              nodePosition: { x: x, y: y, orientation: 0 },
               actions: [],
               intermediate_node: false,
               Waiting_node: false,
@@ -1637,11 +1652,11 @@ export class EnvmapComponent implements AfterViewInit {
     // };
     if (this.selectedNode) {
       const nodeIndex = this.nodes.findIndex(
-        (node) => node.id === this.selectedNode!.id
+        (node) => node.nodeId === this.selectedNode!.nodeId
       );
 
       if (nodeIndex !== -1) {
-        this.nodes[nodeIndex].description = this.nodeDetails.description;
+        this.nodes[nodeIndex].nodeDescription = this.nodeDetails.description;
         this.nodes[nodeIndex].intermediate_node =
           this.nodeDetails.intermediate_node;
         this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
@@ -1649,16 +1664,16 @@ export class EnvmapComponent implements AfterViewInit {
     }
     // Transform Nodes array to NodeDetails format
     this.NodeDetails = this.nodes.map((node, index) => ({
-      nodeID: `node_${String(node.id).padStart(3, '0')}`, // Format nodeID as a string
+      nodeID: `node_${String(node.nodeId).padStart(3, '0')}`, // Format nodeID as a string
       sequenceId: index + 1, // SequenceId is based on the order of nodes
       nodeDescription: this.nodeDetails.description || '', // Use node description
       intermediate_node: this.nodeDetails.intermediate_node, // Bind checkbox value
       waiting_node: this.nodeDetails.waiting_node, // Bind checkbox value
       released: true,
       nodePosition: {
-        x: node.pos.x,
-        y: node.pos.y,
-        orientation: node.pos.orientation, // Use the latest orientation angle here
+        x: node.nodePosition.x,
+        y: node.nodePosition.y,
+        orientation: node.nodePosition.orientation, // Use the latest orientation angle here
       },
       actions: this.actions, // Include actions here
     }));
@@ -1692,7 +1707,7 @@ export class EnvmapComponent implements AfterViewInit {
     // Find the clicked node
     let clickedNode: Node | undefined;
     clickedNode = this.nodes.find(
-      (node) => node.pos.x === x && node.pos.y === y
+      (node) => node.nodePosition.x === x && node.nodePosition.y === y
     );
 
     if (clickedNode) {
@@ -1706,20 +1721,20 @@ export class EnvmapComponent implements AfterViewInit {
         // Check if the edge between the selected nodes already exists
         const existingEdge = this.edges.find(
           (edge) =>
-            (edge.startNodeId === this.firstNode?.id &&
-              edge.endNodeId === this.secondNode?.id &&
+            (edge.startNodeId === this.firstNode?.nodeId &&
+              edge.endNodeId === this.secondNode?.nodeId &&
               edge.direction === 'UN_DIRECTIONAL' &&
               this.direction === 'uni') ||
-            (edge.startNodeId === this.secondNode?.id &&
-              edge.endNodeId === this.firstNode?.id &&
+            (edge.startNodeId === this.secondNode?.nodeId &&
+              edge.endNodeId === this.firstNode?.nodeId &&
               edge.direction === 'UN_DIRECTIONAL' &&
               this.direction === 'uni') ||
-            (edge.startNodeId === this.firstNode?.id &&
-              edge.endNodeId === this.secondNode?.id &&
+            (edge.startNodeId === this.firstNode?.nodeId &&
+              edge.endNodeId === this.secondNode?.nodeId &&
               edge.direction === 'BI_DIRECTIONAL' &&
               this.direction === 'bi') ||
-            (edge.startNodeId === this.secondNode?.id &&
-              edge.endNodeId === this.firstNode?.id &&
+            (edge.startNodeId === this.secondNode?.nodeId &&
+              edge.endNodeId === this.firstNode?.nodeId &&
               edge.direction === 'BI_DIRECTIONAL' &&
               this.direction === 'bi')
         );
@@ -1740,8 +1755,8 @@ export class EnvmapComponent implements AfterViewInit {
               sequenceId: this.edgeCounter,
               edgeDescription: '',
               released: true,
-              startNodeId: this.firstNode.id,
-              endNodeId: this.secondNode.id,
+              startNodeId: this.firstNode.nodeId,
+              endNodeId: this.secondNode.nodeId,
               maxSpeed: 0,
               maxHeight: 0,
               minHeight: 0,
@@ -1755,11 +1770,11 @@ export class EnvmapComponent implements AfterViewInit {
             };
             this.edges.push(edge);
             this.drawEdge(
-              this.firstNode.pos,
-              this.secondNode.pos,
+              this.firstNode.nodePosition,
+              this.secondNode.nodePosition,
               'uni',
-              this.firstNode.id,
-              this.secondNode.id
+              this.firstNode.nodeId,
+              this.secondNode.nodeId
             );
           } else if (this.direction === 'bi') {
             let edge: Edge;
@@ -1768,8 +1783,8 @@ export class EnvmapComponent implements AfterViewInit {
               sequenceId: this.edgeCounter,
               edgeDescription: '',
               released: true,
-              startNodeId: this.firstNode.id,
-              endNodeId: this.secondNode.id,
+              startNodeId: this.firstNode.nodeId,
+              endNodeId: this.secondNode.nodeId,
               maxSpeed: 0,
               maxHeight: 0,
               minHeight: 0,
@@ -1783,11 +1798,11 @@ export class EnvmapComponent implements AfterViewInit {
             };
             this.edges.push(edge);
             this.drawEdge(
-              this.firstNode.pos,
-              this.secondNode.pos,
+              this.firstNode.nodePosition,
+              this.secondNode.nodePosition,
               'bi',
-              this.firstNode.id,
-              this.secondNode.id
+              this.firstNode.nodeId,
+              this.secondNode.nodeId            
             );
           }
 
@@ -1947,9 +1962,9 @@ export class EnvmapComponent implements AfterViewInit {
   private isNodeClicked(node: Node, mouseX: number, mouseY: number): boolean {
     const radius = 6; // Node radius
     const canvas = this.overlayCanvas.nativeElement;
-    const transformedY = canvas.height - node.pos.y; // Flip the Y-axis for node.y
+    const transformedY = canvas.height - node.nodePosition.y; // Flip the Y-axis for node.y
 
-    const dx = mouseX - node.pos.x;
+    const dx = mouseX - node.nodePosition.x;
     const dy = mouseY - transformedY; // Use transformed Y-coordinate
     return dx * dx + dy * dy <= radius * radius;
   }
@@ -2357,7 +2372,7 @@ export class EnvmapComponent implements AfterViewInit {
       let nodeClicked = false;
       for (const node of this.nodes) {
         if (this.isNodeClicked(node, x, y)) {
-          this.onNodeClick(node.pos.x, node.pos.y);
+          this.onNodeClick(node.nodePosition.x, node.nodePosition.y);
           this.selectedNode = node;
           this.draggingNode = true;
           nodeClicked = true;
@@ -2425,8 +2440,8 @@ export class EnvmapComponent implements AfterViewInit {
     }
 
     if (this.draggingNode && this.selectedNode) {
-      this.selectedNode.pos.x = x;
-      this.selectedNode.pos.y = transformedY;
+      this.selectedNode.nodePosition.x = x;
+      this.selectedNode.nodePosition.y = transformedY;
       this.redrawCanvas();
     }
 
@@ -2487,8 +2502,8 @@ export class EnvmapComponent implements AfterViewInit {
 
       // Find nodes inside the selection box
       this.nodesToDelete = this.nodes.filter((node) => {
-        const nodeX = node.pos.x;
-        const nodeY = node.pos.y;
+        const nodeX = node.nodePosition.x;
+        const nodeY = node.nodePosition.y;
 
         // return nodeX >= x1 && nodeY >= y1 && nodeX <= x2 && nodeY <= y2;
         return nodeX >= minX && nodeX <= maxX && nodeY >= minY && nodeY <= maxY;
@@ -2618,9 +2633,9 @@ export class EnvmapComponent implements AfterViewInit {
 
     if (this.draggingNode && this.selectedNode) {
       this.nodes = this.nodes.map((node) => {
-        if (node.id === this.selectedNode?.id) {
-          node.pos.x = this.selectedNode.pos.x;
-          node.pos.y = this.selectedNode.pos.y;
+        if (node.nodeId === this.selectedNode?.nodeId) {
+          node.nodePosition.x = this.selectedNode.nodePosition.x;
+          node.nodePosition.y = this.selectedNode.nodePosition.y;
           return node;
         }
         return node;
@@ -2689,18 +2704,18 @@ export class EnvmapComponent implements AfterViewInit {
       // Draw edges using the stored edge color and type
       this.edges.forEach((edge) => {
         const fromNode = this.nodes.find(
-          (node) => node.id === edge.startNodeId
+          (node) => node.nodeId === edge.startNodeId
         );
-        const toNode = this.nodes.find((node) => node.id === edge.endNodeId);
+        const toNode = this.nodes.find((node) => node.nodeId === edge.endNodeId);
 
         if (fromNode && toNode) {
           // Pass the stored direction (either 'uni' or 'bi') to the drawEdge function
           this.drawEdge(
-            fromNode.pos,
-            toNode.pos,
+            fromNode.nodePosition,
+            toNode.nodePosition,
             edge.direction === 'UN_DIRECTIONAL' ? 'uni' : 'bi', // Ensure correct direction is passed
-            fromNode.id,
-            toNode.id
+            fromNode.nodeId,
+            toNode.nodeId
           );
         }
       });
@@ -2734,8 +2749,8 @@ export class EnvmapComponent implements AfterViewInit {
 
     const fromId = this.getNodeId(this.lastSelectedNode);
     const toId = this.getNodeId({
-      x: this.selectedNode.pos.x,
-      y: this.selectedNode.pos.y,
+      x: this.selectedNode.nodePosition.x,
+      y: this.selectedNode.nodePosition.y,
     });
 
     console.log('Drawing connection between nodes with IDs:', fromId, toId);
@@ -2754,14 +2769,14 @@ export class EnvmapComponent implements AfterViewInit {
     // Draw line between the nodes
     ctx.beginPath();
     ctx.moveTo(this.lastSelectedNode.x, this.lastSelectedNode.y);
-    ctx.lineTo(this.selectedNode.pos.x, this.selectedNode.pos.y);
+    ctx.lineTo(this.selectedNode.nodePosition.x, this.selectedNode.nodePosition.y);
     ctx.stroke();
   }
   private getNodeId(node: { x: number; y: number }): number {
     const foundNode = this.nodes.find(
-      (n) => n.pos.x === node.x && n.pos.y === node.y
+      (n) => n.nodePosition.x === node.x && n.nodePosition.y === node.y
     );
-    return foundNode ? parseInt(foundNode.id) : -1; // Return -1 if the node is not found
+    return foundNode ? parseInt(foundNode.nodeId) : -1; // Return -1 if the node is not found
   }
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
@@ -2775,13 +2790,13 @@ export class EnvmapComponent implements AfterViewInit {
 
     if (!ctx) return false;
 
-    const startNode = this.nodes.find((node) => node.id === edge.startNodeId);
-    const endNode = this.nodes.find((node) => node.id === edge.endNodeId);
+    const startNode = this.nodes.find((node) => node.nodeId === edge.startNodeId);
+    const endNode = this.nodes.find((node) => node.nodeId === edge.endNodeId);
 
     if (!startNode || !endNode) return false;
 
-    const startPos = { x: startNode.pos.x, y: canvas.height - startNode.pos.y };
-    const endPos = { x: endNode.pos.x, y: canvas.height - endNode.pos.y };
+    const startPos = { x: startNode.nodePosition.x, y: canvas.height - startNode.nodePosition.y };
+    const endPos = { x: endNode.nodePosition.x, y: canvas.height - endNode.nodePosition.y };
 
     // Calculate distance from point (x, y) to the line segment
     const lineLength = Math.sqrt(

@@ -10,6 +10,6 @@ export class MapService {
   constructor(private cookieService : CookieService) {}
 
   setOnCreateMapImg(imgUrl : string){
-    this.cookieService.set('temp-mapImg', JSON.stringify({imgUrl}));
+    this.cookieService.set('temp-mapImg', imgUrl);
   }
 }
