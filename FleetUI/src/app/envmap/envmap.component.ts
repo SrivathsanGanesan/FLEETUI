@@ -1957,6 +1957,7 @@ export class EnvmapComponent implements AfterViewInit {
   //     alert('This position is already occupied by a node or asset. Please choose a different location.');
   //     return;
   // }
+  
     if (image && ctx) {
       const imageSize = 50; // Set image size
       ctx.drawImage(
@@ -2211,6 +2212,8 @@ export class EnvmapComponent implements AfterViewInit {
     });
   }
   private originalZonePointPosition: { x: number; y: number } | null = null;
+  // Helper function to check if a node overlaps with another node or asset
+
   private drawSelectionBox(
     start: { x: number; y: number },
     end: { x: number; y: number }
@@ -2607,6 +2610,8 @@ export class EnvmapComponent implements AfterViewInit {
       this.redrawCanvas();
       this.draggingRobo = false;
     }
+     // Reset originalRoboPosition after the drag ends
+     this.originalRoboPosition = null;
 
     if (this.draggingNode && this.selectedNode) {
       this.nodes = this.nodes.map((node) => {
