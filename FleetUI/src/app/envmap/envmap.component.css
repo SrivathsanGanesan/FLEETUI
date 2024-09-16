@@ -543,7 +543,8 @@ button {
   position: absolute;
   bottom: 0px; /* Adjust as needed */
   right: 70px; /* Adjust as needed */
-  background-color: #ff33335e;
+  background-color: #ff3333;
+  margin-bottom: 10px;
   z-index: 1030;
 }
 .save-btn {
@@ -588,13 +589,14 @@ button {
   margin-bottom: 10px;
   font-size: 15px;
   font-weight: bold;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .distance-dialog input {
   margin-bottom: 10px;
   width: 80%;
   padding: 8px;
+  border-radius: 20px;
   font-size: 10px;
   border: 1px solid black;
 

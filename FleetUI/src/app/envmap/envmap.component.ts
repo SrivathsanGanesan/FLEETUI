@@ -2284,6 +2284,7 @@ export class EnvmapComponent implements AfterViewInit {
     }
     return false;
   }
+  
   originalRoboPosition: { x: number; y: number } | null = null;
   originalAssetPosition: { x : number; y: number } | null = null;
   originalNodePosition: { x : number; y: number } | null = null;
