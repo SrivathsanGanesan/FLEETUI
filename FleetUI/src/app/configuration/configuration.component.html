@@ -155,18 +155,20 @@
                     {{ item.date }}
                   </td>
                   <td class="iconTable" >
-                    <img
-                      src="../../assets/ConfigurationOptions/Edit.svg"
-                      alt="Edit"
-                      (click)="editItem(item)"
-                      class="icon"
-                    />
-                    <img
-                      src="../../assets/ConfigurationOptions/Delete.svg"
-                      alt="Delete"
-                      (click)="deleteItem(item)"
-                      class="icon"
-                    />
+                    <div class="edit">
+                      <img
+                        src="../../assets/ConfigurationOptions/Edit.svg"
+                        alt="Edit"
+                        (click)="editItem(item)"
+                        class="icon"
+                      />
+                      <img
+                        src="../../assets/ConfigurationOptions/Delete.svg"
+                        alt="Delete"
+                        (click)="deleteItem(item)"
+                        class="icon"
+                      />
+                    </div>
                   </td>
                   <td  class="iconTable">
                     <button class="sel-btn" (click)="selectMap(item)">

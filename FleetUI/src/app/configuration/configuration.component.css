@@ -136,7 +136,7 @@ table {
  
 th, td {
   border: 1px solid #ffffff;
-  padding:5px 5px 5px 0px;
+  padding:10px 5px 10px 0px;
   height: 30px;
 }
 td{
@@ -164,6 +164,10 @@ th {
   justify-content: center;
   margin: 0px;
   padding: 0px;
+}
+.edit{
+  display: flex !important;
+  justify-content: center;
 }
 td {
   font-size: 13px;
@@ -519,6 +523,7 @@ h2 {
   font-weight: bold;
   color: #da2127;
 }
+
 .close-button {
   position: absolute;
   top: 10px;

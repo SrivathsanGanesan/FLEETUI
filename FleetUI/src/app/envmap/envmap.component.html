@@ -22,16 +22,15 @@
       <!-- Form for additional details -->
       <div class="form-container" *ngIf="fileName && !showImage">
         <label for="mapName">Map Name</label>
-        <input
+        <input pInputText
           type="text"
           id="mapName"
           [(ngModel)]="mapName"
           placeholder="Enter map name"
-          (keyup.enter)="open()"
         />
 
         <label for="siteName">Site Name</label>
-        <input
+        <input pInputText
           type="text"
           id="siteName"
           [(ngModel)]="siteName"
@@ -44,9 +43,9 @@
         <div class="Res">
           <label for="resolution">Resolution</label>
           <div class="Res1">
-            <input
+            <input 
               type="number"
-                              min="0"
+                min="0"
                 max="1000"
               id="resolution"
               #resolutionInput
@@ -55,7 +54,7 @@
             />
             <p id="or">or</p>
             <button class="OpenandLocate" (click)="openImagePopup()">
-              Open and Locate
+              Locate
             </button>
           </div>
         </div>
