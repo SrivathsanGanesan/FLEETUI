@@ -30,7 +30,6 @@ interface Node {
   intermediate_node: boolean;
   Waiting_node: boolean;
 }
-
 interface Edge {
   edgeId: string; //Unique edge identification
   sequenceId: number; //Number to track the sequence of nodes and edges in an order and to simplify order updates
@@ -50,7 +49,6 @@ interface Edge {
   length: number; //Length of the path from startNode to endNode
   action: any[]; //Array of actionIds to be executed on the edge
 }
-
 interface asset {
   id: number;
   x: number;
@@ -59,20 +57,17 @@ interface asset {
   orientation: number;
   undockingDistance: number;
   desc: string;
-} // Array to track assets
-
+}
 interface Zone {
   id: string;
   pos: any[];
   type: ZoneType | null;
 }
-
 interface Robo {
   roboDet: any;
   x: number;
   y: number;
 }
-
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -305,7 +300,6 @@ export class EnvmapComponent implements AfterViewInit {
   ngOnInit() {
     
     if (this.currEditMap) {
-      console.log(this.currEditMapDet);
       this.showImage = true;
       this.mapName = this.currEditMapDet.mapName;
       this.siteName = this.currEditMapDet.siteName;
@@ -327,7 +321,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.assetCounter =
         this.assets[this.assets.length - 1]?.id + 1
           ? this.assets[this.assets.length - 1]?.id + 1
-          : this.zoneCounter;
+          : this.assetCounter;
       this.zoneCounter =
         parseInt(this.zones[this.zones.length - 1]?.id) + 1
           ? parseInt(this.zones[this.zones.length - 1]?.id) + 1
@@ -1129,7 +1123,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.showPopup = true; // Show the popup
     }
   }
-
   onDeleteZone(): void {
     if (this.selectedZone) {
       // Remove the selected zone from the zones array
@@ -1720,33 +1713,17 @@ export class EnvmapComponent implements AfterViewInit {
 
         // Check if the edge between the selected nodes already exists
         const existingEdge = this.edges.find(
-          (edge) =>
-            (edge.startNodeId === this.firstNode?.nodeId &&
-              edge.endNodeId === this.secondNode?.nodeId &&
-              edge.direction === 'UN_DIRECTIONAL' &&
-              this.direction === 'uni') ||
-            (edge.startNodeId === this.secondNode?.nodeId &&
-              edge.endNodeId === this.firstNode?.nodeId &&
-              edge.direction === 'UN_DIRECTIONAL' &&
-              this.direction === 'uni') ||
-            (edge.startNodeId === this.firstNode?.nodeId &&
-              edge.endNodeId === this.secondNode?.nodeId &&
-              edge.direction === 'BI_DIRECTIONAL' &&
-              this.direction === 'bi') ||
-            (edge.startNodeId === this.secondNode?.nodeId &&
-              edge.endNodeId === this.firstNode?.nodeId &&
-              edge.direction === 'BI_DIRECTIONAL' &&
-              this.direction === 'bi')
+          (edge) => {
+            let cond1 = edge.startNodeId === this.firstNode?.nodeId && edge.endNodeId === this.secondNode?.nodeId;
+            let cond2 = edge.startNodeId === this.secondNode?.nodeId && edge.endNodeId === this.firstNode?.nodeId;
+            return cond1 || cond2;
+          }
         );
 
         // If the edge already exists in the same direction, show alert
-        if (existingEdge) {
-          alert(
-            `The ${
-              this.direction === 'uni' ? 'uni-directional' : 'bi-directional'
-            } edge between these nodes already exists!`
-          );
-        } else {
+        // if (existingEdge) alert('Edge already exists!');
+
+        if(!existingEdge){
           // If no existing edge, proceed to draw
           if (this.direction === 'uni') {
             let edge: Edge;
@@ -1840,16 +1817,34 @@ export class EnvmapComponent implements AfterViewInit {
     endPos: { x: number; y: number },
     direction: string,
     startNodeId: string,
-    endNodeId: string
+    endNodeId: string,
+    nodeRadius: number = 10, // Define a radius or threshold value for nodes
+    threshold: number = 5   // Define a padding/threshold for the line
   ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-
-    if (ctx) {
+  
+    // Find the corresponding Edge based on startNodeId and endNodeId
+    const edge = this.edges.find(
+      (e) => e.startNodeId === startNodeId && e.endNodeId === endNodeId
+    );
+  
+    if (ctx && edge) {
+      // Calculate the distance between the start and end points
+      const dx = endPos.x - startPos.x;
+      const dy = endPos.y - startPos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+  
+      // Calculate new start and end points with the threshold
+      const startX = startPos.x + (dx * threshold) / distance;
+      const startY = startPos.y + (dy * threshold) / distance;
+      const endX = endPos.x - (dx * threshold) / distance;
+      const endY = endPos.y - (dy * threshold) / distance;
+  
       ctx.beginPath();
-      ctx.moveTo(startPos.x, canvas.height - startPos.y); // Start point (flip Y-axis)
-      ctx.lineTo(endPos.x, canvas.height - endPos.y); // End point (flip Y-axis)
-
+      ctx.moveTo(startX, canvas.height - startY); // Start point (flip Y-axis)
+      ctx.lineTo(endX, canvas.height - endY); // End point (flip Y-axis)
+  
       // Change color based on direction
       if (direction === 'uni') {
         ctx.strokeStyle = 'black'; // Uni-directional in black
@@ -1858,32 +1853,35 @@ export class EnvmapComponent implements AfterViewInit {
       }
       ctx.lineWidth = 2;
       ctx.stroke();
-      this.drawArrowhead(ctx, startPos, endPos, direction);
-
+  
+      this.drawArrowhead(ctx, { x: startX, y: startY }, { x: endX, y: endY }, direction);
+  
       if (direction === 'bi') {
         // Draw the reverse arrow for bi-directional
-        this.drawArrowhead(ctx, endPos, startPos, direction);
+        this.drawArrowhead(ctx, { x: endX, y: endY }, { x: startX, y: startY }, direction);
       }
-
+  
       // Draw edge ID in the middle of the line
-      const midX = (startPos.x + endPos.x) / 2;
-      const midY = (canvas.height - startPos.y + canvas.height - endPos.y) / 2;
-
+      const midX = (startX + endX) / 2;
+      const midY = (canvas.height - startY + canvas.height - endY) / 2;
+  
       ctx.font = '12px Arial'; // Font size and type
       ctx.fillStyle = 'black'; // Text color
       ctx.textAlign = 'center'; // Center align text
       ctx.textBaseline = 'top'; // Position text below the edge
-      ctx.fillText(`${startNodeId} to ${endNodeId}`, midX, midY + 5); // Draw edge ID text
+  
+      // Draw the edge ID instead of startNodeId and endNodeId
+      ctx.fillText(`${edge.edgeId}`, midX, midY + 5);
     }
-  }
+  }    
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
     to: { x: number; y: number },
     direction: string
   ): void {
-    const headLength = 10; // Length of the arrowhead
-    const offset = 5; // Distance to move the arrowhead away from the node
+    const headLength = 15; // Length of the arrowhead
+    const offset = 0; // Distance to move the arrowhead away from the node
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
 
     // Calculate the offset position for the arrowhead
@@ -2130,7 +2128,6 @@ export class EnvmapComponent implements AfterViewInit {
 
     return { min, max };
   }
-
   private getBoundingBox(polygon: any[]): number[] {
     let minX = Infinity,
       minY = Infinity,
@@ -2231,7 +2228,6 @@ export class EnvmapComponent implements AfterViewInit {
   }
   private originalZonePointPosition: { x: number; y: number } | null = null;
   // Helper function to check if a node overlaps with another node or asset
-
   private drawSelectionBox(
     start: { x: number; y: number },
     end: { x: number; y: number }
@@ -2264,7 +2260,33 @@ export class EnvmapComponent implements AfterViewInit {
     }
     return false; // No overlap
   }
+  isOverlappingwithOtherAssets(currAsset: asset):boolean{
+    let threshold = 30; // Adjust this value as needed for the precisson..
+    for (const asset of this.assets) {
+      if (asset.id !== currAsset.id) {
+        const distance = Math.sqrt(Math.pow(asset.x - currAsset.x, 2) + Math.pow(asset.y - currAsset.y, 2));
+        if (distance < threshold) {
+          return true; // Overlap found
+        }
+      }
+    }
+    return false; // No overlap
+  }
+  isOverLappingWithOtherNodes(currNode : Node):boolean{
+    const threshold = 15;
+    for (const node of this.nodes) {
+      if (node.nodeId !== currNode.nodeId) {
+        const distance = Math.sqrt(Math.pow(node.nodePosition.x - currNode.nodePosition.x, 2) + Math.pow(node.nodePosition.y - currNode.nodePosition.y, 2));
+        if (distance < threshold) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
   originalRoboPosition: { x: number; y: number } | null = null;
+  originalAssetPosition: { x : number; y: number } | null = null;
+  originalNodePosition: { x : number; y: number } | null = null;
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
@@ -2341,6 +2363,7 @@ export class EnvmapComponent implements AfterViewInit {
         // assuming `this.assets` is an array holding your plotted assets
         if (this.isAssetClicked(asset, x, y)) {
           this.selectedAsset = asset;
+          this.originalAssetPosition = {x : asset.x, y : asset.y};
           this.draggingAsset = true;
           break;
         }
@@ -2374,6 +2397,7 @@ export class EnvmapComponent implements AfterViewInit {
         if (this.isNodeClicked(node, x, y)) {
           this.onNodeClick(node.nodePosition.x, node.nodePosition.y);
           this.selectedNode = node;
+          this.originalNodePosition = { x : node.nodePosition.x, y : node.nodePosition.y };
           this.draggingNode = true;
           nodeClicked = true;
           break;
@@ -2483,12 +2507,6 @@ export class EnvmapComponent implements AfterViewInit {
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y;
 
-    // if (this.draggingZonePoint && this.selectedZonePoint) { // yet to insert again..
-    //   // Update the final position of the zone point
-    //   this.draggingZonePoint = false;
-    //   this.selectedZonePoint = null;
-    //   this.selectedZone = null;
-    // }
     if (this.isDeleteModeEnabled && this.selectionStart && this.selectionEnd) {
       // Calculate selection box bounds
       const minX = Math.min(this.selectionStart.x, this.selectionEnd.x);
@@ -2566,14 +2584,8 @@ export class EnvmapComponent implements AfterViewInit {
       this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
 
       // Remove the mousemove and mouseup event listeners
-      this.overlayCanvas.nativeElement.removeEventListener(
-        'mousemove',
-        this.onMouseMove.bind(this)
-      );
-      this.overlayCanvas.nativeElement.removeEventListener(
-        'mouseup',
-        this.onMouseUp.bind(this)
-      );
+      this.overlayCanvas.nativeElement.removeEventListener( 'mousemove', this.onMouseMove.bind(this) );
+      this.overlayCanvas.nativeElement.removeEventListener( 'mouseup', this.onMouseUp.bind(this) );
     }
 
     if (this.draggingZonePoint) {
@@ -2582,12 +2594,8 @@ export class EnvmapComponent implements AfterViewInit {
     }
 
     if (this.draggingAsset && this.selectedAsset) {
-      // Finalize asset position
+      
       this.draggingAsset = false;
-      // const canvas = this.overlayCanvas.nativeElement;
-      // const rect = canvas.getBoundingClientRect();
-      // const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-      // const y = (event.clientY - rect.top) * (canvas.height / rect.height);
       if (this.selectedAssetType) {
         // let asset : asset;
         this.assets = this.assets.map((asset) => {
@@ -2608,9 +2616,15 @@ export class EnvmapComponent implements AfterViewInit {
       }
       // Update asset position
       this.updateAssetPosition(this.selectedAsset.id, x, y);
+      if(this.isOverlappingwithOtherAssets(this.selectedAsset)){
+        this.selectedAsset.x = this.originalAssetPosition!.x;
+        this.selectedAsset.y = this.originalAssetPosition!.y;
+        alert('Overlapping detected! Asset has been reset to its original position.');
+        this.redrawCanvas();
+      }
+      
       // this.selectedAsset = null; // yet to uncomment..
     }
-
 
     if (this.draggingRobo && this.selectedRobo) {
       // Update the position of the selected robot
@@ -2624,7 +2638,6 @@ export class EnvmapComponent implements AfterViewInit {
         this.selectedRobo.y = this.originalRoboPosition!.y;
         alert('Overlapping detected! Robot has been reset to its original position.');
       }
-  
       this.redrawCanvas();
       this.draggingRobo = false;
     }
@@ -2632,6 +2645,13 @@ export class EnvmapComponent implements AfterViewInit {
      this.originalRoboPosition = null;
 
     if (this.draggingNode && this.selectedNode) {
+
+      if(this.isOverLappingWithOtherNodes(this.selectedNode)){
+        this.selectedNode.nodePosition.x = this.originalNodePosition!.x;
+        this.selectedNode.nodePosition.y = this.originalNodePosition!.y;
+        alert('Overlapping detected! node has been reset to its original position.');
+      }
+      this.redrawCanvas();
       this.nodes = this.nodes.map((node) => {
         if (node.nodeId === this.selectedNode?.nodeId) {
           node.nodePosition.x = this.selectedNode.nodePosition.x;
@@ -2720,10 +2740,6 @@ export class EnvmapComponent implements AfterViewInit {
         }
       });
 
-      // Draw assets, zones, and robots
-      this.assets.forEach((asset) =>
-        this.plotAsset(asset.x, asset.y, asset.type)
-      );
       this.zones.forEach((zone) => {
         // Re-plot the points of the zone
         zone.pos.forEach((point, index) => {
@@ -2736,8 +2752,14 @@ export class EnvmapComponent implements AfterViewInit {
         this.drawLayer();
         this.plottedPoints = [];
       });
+
       this.robos.forEach((robo) =>
         this.plotRobo(robo.x, robo.y, this.selectedRobo === robo)
+      );
+
+      // Draw assets, zones, and robots
+      this.assets.forEach((asset) =>
+        this.plotAsset(asset.x, asset.y, asset.type)
       );
     }
   }

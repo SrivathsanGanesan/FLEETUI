@@ -411,7 +411,7 @@
 
       <div
         class="options-container"
-        *ngIf="!isPlottingEnabled && !isOptionsMenuVisible"
+        *ngIf="!isPlottingEnabled && !isOptionsMenuVisible && !isZonePlottingEnabled "
       >
         <button (click)="toggleOptionsMenu()">
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
@@ -425,7 +425,7 @@
             <button (click)="setPlottingMode('multi')">Multi Node</button>
           </div>
         </div>
-        <button class="mul-del" (click)="MuldelMode()">Delete Node</button>
+        <button class="mul-del" (click)="MuldelMode()">Delete Multiple Nodes</button>
         <div class="dropdown">
           <button class="dropdown-button">Connectivity</button>
           <div class="dropdown-content">
@@ -716,7 +716,7 @@
 
 <div class="popup-overlay1" *ngIf="showIntermediateNodesDialog">
   <div class="popup-content1">
-    <h3>Enter Number of Nodes</h3>
+    <p>Enter Number of Nodes</p>
     <input
       type="number"
       min="1"
