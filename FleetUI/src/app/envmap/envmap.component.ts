@@ -1369,7 +1369,7 @@ export class EnvmapComponent implements AfterViewInit {
       sequenceId: this.nodeCounter,
       nodeDescription: '',
       released: true,
-      nodePosition: { x: x, y: transformedY, orientation: this.orientationAngle },
+      nodePosition: { x: x * (this.ratio || 1), y:  transformedY * (this.ratio || 1), orientation: this.orientationAngle },
       actions: [],
       intermediate_node: false,
       Waiting_node: false,
