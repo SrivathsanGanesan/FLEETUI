@@ -312,7 +312,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
           ? parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
-          : this.nodeCounter;
+          : this.nodeCounter+ 1;
       // this.nodeCounter=1;
       this.edgeCounter =
         parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
@@ -1530,78 +1530,45 @@ export class EnvmapComponent implements AfterViewInit {
   }
   plotIntermediateNodes(): void {
     if (this.numberOfIntermediateNodes && this.numberOfIntermediateNodes > 0) {
-      if (
-        this.firstNode &&
-        this.secondNode &&
-        this.numberOfIntermediateNodes > 0
-      ) {
-        const dx =
-          (this.secondNode.nodePosition.x - this.firstNode.nodePosition.x) /
-          (this.numberOfIntermediateNodes + 1);
-        const dy =
-          (this.secondNode.nodePosition.y - this.firstNode.nodePosition.y) /
-          (this.numberOfIntermediateNodes + 1);
-
-        for (let node of this.nodes) {
-          if (
-            node.nodePosition.x == this.firstNode?.nodePosition.x &&
-            node.nodePosition.y == this.firstNode?.nodePosition.y
-          )
-            node.nodePosition.orientation = this.secondNode!.nodePosition.orientation;
-        }
-
+      if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
+        const dx = (this.secondNode.nodePosition.x - this.firstNode.nodePosition.x) / (this.numberOfIntermediateNodes + 1);
+        const dy = (this.secondNode.nodePosition.y - this.firstNode.nodePosition.y) / (this.numberOfIntermediateNodes + 1);
+  
         for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
           const x = this.firstNode.nodePosition.x + i * dx;
           const y = this.firstNode.nodePosition.y + i * dy;
+          
           let node = {
             nodeId: this.nodeCounter.toString(),
             sequenceId: this.nodeCounter,
-            nodeDescription: '',
+            nodeDescription: 'Intermediate Node',
             released: true,
             nodePosition: { x: x, y: y, orientation: this.secondNode!.nodePosition.orientation },
             actions: [],
-            intermediate_node: false,
+            intermediate_node: true, // Marking it as intermediate
             Waiting_node: false,
           };
+  
           this.nodes.push(node);
-
-          this.nodeDetails = {
-            id: this.nodeCounter,
-            x: x * (this.ratio || 1), // Adjust for ratio if present
-            y: y * (this.ratio || 1),
-            description: 'Intermediate Node',
-            actions: [],
-            intermediate_node: false,
-            waiting_node: false,
-          };
-
-          this.drawNode(
-            {
-              nodeId: '',
-              sequenceId: 0,
-              nodeDescription: '',
-              released: true,
-              nodePosition: { x: x, y: y, orientation: 0 },
-              actions: [],
-              intermediate_node: false,
-              Waiting_node: false,
-            },
-            'blue',
-            false
-          ); // Set the initial color and no outline
-          console.log(
-            `Type: Intermediate Node, Node Number: ${this.nodeCounter}, Position:`,
-            { x, y }
-          );
-
+  
+          // Draw the node
+          this.drawNode(node, 'blue', false);
+  
+          // Draw the text label for the node
+          const canvas = this.overlayCanvas.nativeElement;
+          const ctx = canvas.getContext('2d')!;
+  
+          console.log(`Intermediate Node ${this.nodeCounter} plotted at:`, { x, y });
+  
           this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
-
+  
           this.nodeCounter++; // Increment the node counter
         }
       }
       this.closeIntermediateNodesDialog();
     }
   }
+  
   validationError: string = '';
   saveNodeDetails(): void {
     this.validationError = '';
@@ -2284,7 +2251,6 @@ export class EnvmapComponent implements AfterViewInit {
     }
     return false;
   }
-  
   originalRoboPosition: { x: number; y: number } | null = null;
   originalAssetPosition: { x : number; y: number } | null = null;
   originalNodePosition: { x : number; y: number } | null = null;
