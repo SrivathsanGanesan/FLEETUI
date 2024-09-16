@@ -2195,26 +2195,25 @@ export class EnvmapComponent implements AfterViewInit {
   }
   private originalZonePointPosition: { x: number; y: number } | null = null;
   // Helper function to check if a node overlaps with another node or asset
-  private drawSelectionBox(
-    start: { x: number; y: number },
-    end: { x: number; y: number }
-  ): void {
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx && start && end) {
-      ctx.strokeStyle = 'red';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]); // Dashed lines for selection box
-      ctx.strokeRect(
-        start.x,
-        start.y, // Flip Y-axis
-        end.x - start.x,
-        end.y - start.y // Flip Y-axis
-      );
-      ctx.setLineDash([]);
-    }
+  drawSelectionBox(start: { x: number, y: number }, end: { x: number, y: number }): void {
+    const ctx = this.overlayCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+  
+    const minX = Math.min(start.x, end.x);
+    const minY = Math.min(start.y, end.y);
+    const width = Math.abs(end.x - start.x);
+    const height = Math.abs(end.y - start.y);
+  
+    // Set the style for the selection box
+    ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]); // Create dashed lines
+  
+    // Draw the selection rectangle
+    ctx.strokeRect(minX, minY, width, height);
+    ctx.setLineDash([]); // Reset line dash after drawing
   }
+  
   isOverlappingWithOtherRobos(currentRobo: Robo): boolean {
     const threshold = 30; // Adjust this value as needed for the distance to consider as overlap
     for (const robo of this.robos) {
@@ -2480,31 +2479,25 @@ export class EnvmapComponent implements AfterViewInit {
       const maxX = Math.max(this.selectionStart.x, this.selectionEnd.x);
       const minY = Math.min(this.selectionStart.y, this.selectionEnd.y);
       const maxY = Math.max(this.selectionStart.y, this.selectionEnd.y);
-      // let x1 = this.selectionStart.x;
-      // let y1 = this.selectionStart.y;
-      // let x2 = this.selectionEnd.x;
-      // let y2 = this.selectionEnd.y;
-
+  
       // Find nodes inside the selection box
       this.nodesToDelete = this.nodes.filter((node) => {
         const nodeX = node.nodePosition.x;
-        const nodeY = node.nodePosition.y;
-
-        // return nodeX >= x1 && nodeY >= y1 && nodeX <= x2 && nodeY <= y2;
+        const nodeY = node.nodePosition.y;  
         return nodeX >= minX && nodeX <= maxX && nodeY >= minY && nodeY <= maxY;
       });
-
+  
       console.log('Nodes selected for deletion:', this.nodesToDelete);
-
-      // Display the confirmation dialog
+  
+      // Show confirmation dialog if nodes are selected
       if (this.nodesToDelete.length > 0) {
         this.isConfirmationVisible = true;
       }
-
+  
       // Reset selection start and end
       this.selectionStart = null;
       this.selectionEnd = null;
-
+  
       // Redraw the canvas without the selection box
       this.redrawCanvas();
     }
