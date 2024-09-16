@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import {
   BrowserModule,
   provideClientHydration,
@@ -44,8 +44,9 @@ import { TasksComponent } from './tasks/tasks.component';
 import { EnvmapModule } from './envmap/envmap.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { UserManagementComponent } from './user-management/user-management.component';
+import { FullscreenButtonComponent } from './fullscreen-button/fullscreen-button.component';
 import { ConfigurationModule } from './configuration/configuration.module';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     RobotDetailPopupComponent,
     ConfirmationDialogComponent,
     TasksComponent,
-UserManagementComponent
+    UserManagementComponent,
+    FullscreenButtonComponent
   ],
   imports: [
     NgApexchartsModule,

@@ -1,14 +1,24 @@
 /* Main Content Styling */
-.mainContent {
-  position: absolute;
-  top: 30px;
-  left: 70px;
-  width: calc(100% - 70px);
-  padding: 16px;
-  overflow: hidden;
-  box-sizing: border-box;
-  background-color: white;
+.layout-container {
+  display: flex;
+  height: 100vh; /* Full-screen height */
 }
+
+.content-container {
+  flex-grow: 1; /* Allows the content to grow */
+  margin-left: 2rem; /* Equivalent to ml-64 (256px) */
+  padding: 3rem; /* Equivalent to p-8 */
+  height: 100vh;
+  overflow: hidden;
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  }
 
 /* Header section styles */
 .header-section {
@@ -175,6 +185,7 @@ tr:nth-child(even) {
   display: block;
   margin: 20px auto;
   padding: 10px 20px;
+  font-size: 18px;
   border: none;
   border-radius: 4px;
   background-color: #dedede;
@@ -226,10 +237,10 @@ tr:nth-child(even) {
 
 /* Main container for the search bar and filters */
 /* Main container for search bar and date filters */
-
+  
 .search-filter-container {
   position: absolute;
-  top: 30px;
+  top: 60px;
   right: 20px;
   display: flex;
   flex-direction: column;
@@ -277,7 +288,7 @@ tr:nth-child(even) {
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 .search-btn img {
-  width: 40px; /* Adjust size as needed */
+  width: 50px; /* Adjust size as needed */
   height: 24px; /* Adjust size as needed */
 }
 .search-btn:hover {
@@ -384,4 +395,102 @@ tr:nth-child(even) {
 
 .date-label {
   color: #333;
+}
+
+
+/* Container for paginator */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+/* Paginator wrapper */
+.mat-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Spacing between buttons */
+}
+
+/* Paginator buttons */
+.mat-paginator .mat-paginator-navigation-previous,
+.mat-paginator .mat-paginator-navigation-next {
+  width: 40px;
+  height: 40px;
+  background-color: #e0e0e0; /* Grey background for disabled state */
+  border-radius: 8px; /* Rounded corners */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: not-allowed;
+  border: none;
+}
+
+.mat-paginator .mat-paginator-navigation-previous.mat-button-disabled,
+.mat-paginator .mat-paginator-navigation-next.mat-button-disabled {
+  background-color: #e0e0e0; /* Grey background for disabled state */
+  color: #a0a0a0; /* Disabled color */
+}
+
+.mat-paginator .mat-paginator-navigation-previous:not(.mat-button-disabled),
+.mat-paginator .mat-paginator-navigation-next:not(.mat-button-disabled) {
+  cursor: pointer;
+  background-color: #ffffff; /* White background for active state */
+  border: 1px solid #dcdcdc;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.mat-paginator .mat-paginator-navigation-previous:hover:not(.mat-button-disabled),
+.mat-paginator .mat-paginator-navigation-next:hover:not(.mat-button-disabled) {
+  background-color: #f0f0f0; /* Hover effect */
+  border-color: #c0c0c0;
+}
+
+/* Paginator numbers */
+.mat-paginator .mat-paginator-range-label,
+.mat-paginator .mat-paginator-page-size,
+.mat-paginator .mat-paginator-icon {
+  display: none; /* Hide unwanted elements like range and page-size selectors */
+}
+
+.mat-paginator .mat-page-number {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.mat-paginator .mat-page-number.active {
+  border: 2px solid #6c3eff; /* Purple border for the active page */
+  color: #6c3eff;
+}
+
+.mat-paginator .mat-page-number:hover {
+  background-color: #f5f5f5;
+}
+
+/* Ellipsis */
+.mat-paginator .ellipsis {
+  font-size: 18px;
+  color: #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+}
+
+/* Hide paginator buttons when not needed */
+.mat-paginator .mat-paginator-navigation-previous.mat-button-disabled,
+.mat-paginator .mat-paginator-navigation-next.mat-button-disabled {
+  pointer-events: none; /* Disabled cursor when inactive */
 }
