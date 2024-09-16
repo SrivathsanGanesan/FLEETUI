@@ -97,6 +97,7 @@
 .rob-inp input {
   margin-left: 10px;
   text-align: center;
+  border: 1px solid black;
 }
 .subheader-container {
   display: flex;
