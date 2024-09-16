@@ -40,8 +40,8 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 //..
 
 const mapInsert = async (req, res) => {
-  /* // const mapData = JSON.parse(req.body.mapData);
-  let dest = path.resolve(`proj_assets/nodeGraph/nodeGraph.txt`);
+  const mapData = JSON.parse(req.body.mapData);
+  /* let dest = path.resolve(`proj_assets/nodeGraph/nodeGraph.txt`);
   await fs.writeFileSync(dest, JSON.stringify(req.body, null, 2), (err) => {});
   // console.log(req.body);
   return; // yet to remove.. */
