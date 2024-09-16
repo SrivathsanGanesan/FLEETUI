@@ -44,10 +44,11 @@
 </div>
 
 <apx-chart
+  #chart
   [series]="chartOptions.series"
   [chart]="chartOptions.chart"
   [xaxis]="chartOptions.xaxis"
-  [yaxis]="chartOptions.yaxis ? chartOptions.yaxis : {}"
+  [yaxis]="chartOptions.yaxis"
   [fill]="chartOptions.fill"
   [dataLabels]="chartOptions.dataLabels"
   [stroke]="chartOptions.stroke"

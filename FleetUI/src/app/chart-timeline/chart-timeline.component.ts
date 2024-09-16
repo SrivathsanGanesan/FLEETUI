@@ -13,14 +13,12 @@ import {
 } from 'ng-apexcharts';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
-import { timeStamp } from 'console';
-import { timestamp } from 'rxjs';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   xaxis: ApexXAxis;
-  yaxis?: ApexYAxis;
+  yaxis: ApexYAxis;
   dataLabels: ApexDataLabels;
   markers: ApexMarkers;
   tooltip: ApexTooltip;
@@ -100,10 +98,22 @@ export class ChartTimelineComponent implements OnInit {
         size: 0,
       },
       xaxis: {
-        type: 'datetime',
-        tickAmount: 6,
+        categories: [], // Your default categories
+        labels: {
+          style: {
+            colors: '#9aa0ac',
+            fontSize: '12px',
+          },
+        },
       },
-      yaxis: {},
+      yaxis: {
+        labels: {
+          style: {
+            colors: '#9aa0ac',
+            fontSize: '12px',
+          },
+        },
+      },
       tooltip: {
         x: {
           format: 'dd MMM yyyy',
@@ -206,7 +216,9 @@ export class ChartTimelineComponent implements OnInit {
     let temp = [];
     let tempTime = [];
     let data;
-    setInterval(async () => {
+    if (!this.selectedMap || this.cpuUtilTimeInterval) return;
+    this.clearAllIntervals(this.cpuUtilTimeInterval);
+    this.cpuUtilTimeInterval = setInterval(async () => {
       data = await this.fetchSeriesData('cpu-utilization'); // data.cpuUtil..
       this.cpuUtilArr.push(data.cpuUtil);
       tempTime.push(new Date().toLocaleTimeString()); // yet to take..
@@ -225,28 +237,191 @@ export class ChartTimelineComponent implements OnInit {
       );
     }, 1000 * 2);
   }
+
   async updateRoboUtil() {
-    let data = await this.fetchSeriesData('robo-utilization');
-    console.log(data);
+    let temp = [];
+    let tempTime = [];
+    let data;
+    if (!this.selectedMap || this.roboUtilTimeInterval) return;
+    this.clearAllIntervals(this.roboUtilTimeInterval);
+    this.roboUtilTimeInterval = setInterval(async () => {
+      data = await this.fetchSeriesData('robo-utilization'); // data.cpuUtil..
+      this.roboUtilArr.push(data.roboUtil);
+      tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+      if (this.roboUtilArr.length > 12) temp = this.roboUtilArr.slice(-12);
+      else temp = [...this.roboUtilArr];
+
+      this.chartOptions.series = [{ data: temp }];
+      this.chart.updateOptions(
+        {
+          xaxis: {
+            categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+          },
+        },
+        false,
+        true
+      );
+    }, 1000 * 2);
   }
+
   async updateBattery() {
-    let data = await this.fetchSeriesData('battery');
-    console.log(data);
+    let temp = [];
+    let tempTime = [];
+    let data;
+    if (!this.selectedMap || this.batteryTimeInterval) return;
+    this.clearAllIntervals(this.batteryTimeInterval);
+    this.batteryTimeInterval = setInterval(async () => {
+      data = await this.fetchSeriesData('battery'); // data.cpuUtil..
+      this.batteryArr.push(data.batteryStat);
+      tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+      if (this.batteryArr.length > 12) temp = this.batteryArr.slice(-12);
+      else temp = [...this.batteryArr];
+
+      this.chartOptions.series = [{ data: temp }];
+      this.chart.updateOptions(
+        {
+          xaxis: {
+            categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+          },
+        },
+        false,
+        true
+      );
+    }, 1000 * 2);
   }
+
   async updateMemory() {
-    let data = await this.fetchSeriesData('memory');
-    console.log(data);
+    let temp = [];
+    let tempTime = [];
+    let data;
+    if (!this.selectedMap || this.memoryTimeInterval) return;
+    this.clearAllIntervals(this.memoryTimeInterval);
+    this.memoryTimeInterval = setInterval(async () => {
+      data = await this.fetchSeriesData('memory'); // data.cpuUtil..
+      this.memoryArr.push(data.memoryStat);
+      tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+      if (this.memoryArr.length > 12) temp = this.memoryArr.slice(-12);
+      else temp = [...this.memoryArr];
+
+      this.chartOptions.series = [{ data: temp }];
+      this.chart.updateOptions(
+        {
+          xaxis: {
+            categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+          },
+        },
+        false,
+        true
+      );
+    }, 1000 * 2);
   }
+
   async updateNetwork() {
-    let data = await this.fetchSeriesData('network');
-    console.log(data);
+    let temp = [];
+    let tempTime = [];
+    let data;
+    if (!this.selectedMap || this.networkTimeInterval) return;
+    this.clearAllIntervals(this.networkTimeInterval);
+    this.networkTimeInterval = setInterval(async () => {
+      data = await this.fetchSeriesData('network'); // data.cpuUtil..
+      this.networkArr.push(data.networkStat);
+      tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+      if (this.networkArr.length > 12) temp = this.networkArr.slice(-12);
+      else temp = [...this.networkArr];
+
+      this.chartOptions.series = [{ data: temp }];
+      this.chart.updateOptions(
+        {
+          xaxis: {
+            categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+          },
+        },
+        false,
+        true
+      );
+    }, 1000 * 2);
   }
+
   async updateIdleTime() {
-    let data = await this.fetchSeriesData('idle-time');
-    console.log(data);
+    let temp = [];
+    let tempTime = [];
+    let data;
+    if (!this.selectedMap || this.idleTimeInterval) return;
+    this.clearAllIntervals(this.idleTimeInterval);
+    this.idleTimeInterval = setInterval(async () => {
+      data = await this.fetchSeriesData('idle-time'); // data.cpuUtil..
+      this.idleTimeArr.push(data.idleTime);
+      tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+      if (this.idleTimeArr.length > 12) temp = this.idleTimeArr.slice(-12);
+      else temp = [...this.idleTimeArr];
+
+      this.chartOptions.series = [{ data: temp }];
+      this.chart.updateOptions(
+        {
+          xaxis: {
+            categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+          },
+        },
+        false,
+        true
+      );
+    }, 1000 * 2);
   }
+
   async updateErr() {
-    let data = await this.fetchSeriesData('robo-err');
-    console.log(data);
+    let temp = [];
+    let tempTime = [];
+    let data;
+    if (!this.selectedMap || this.errTimeInterval) return;
+    this.clearAllIntervals(this.errTimeInterval);
+    this.errTimeInterval = setInterval(async () => {
+      data = await this.fetchSeriesData('robo-err'); // data.cpuUtil..
+      this.errorArr.push(data.roboErr);
+      tempTime.push(new Date().toLocaleTimeString()); // yet to take..
+      if (this.errorArr.length > 12) temp = this.errorArr.slice(-12);
+      else temp = [...this.errorArr];
+
+      this.chartOptions.series = [{ data: temp }];
+      this.chart.updateOptions(
+        {
+          xaxis: {
+            categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
+          },
+        },
+        false,
+        true
+      );
+    }, 1000 * 2);
+  }
+
+  clearAllIntervals(currInterval: any) {
+    if (currInterval !== this.cpuUtilTimeInterval) {
+      clearInterval(this.cpuUtilTimeInterval);
+      this.cpuUtilTimeInterval = 0;
+    }
+    if (currInterval !== this.roboUtilTimeInterval) {
+      clearInterval(this.roboUtilTimeInterval);
+      this.roboUtilTimeInterval = 0;
+    }
+    if (currInterval !== this.batteryTimeInterval) {
+      clearInterval(this.batteryTimeInterval);
+      this.batteryTimeInterval = 0;
+    }
+    if (currInterval !== this.memoryTimeInterval) {
+      clearInterval(this.memoryTimeInterval);
+      this.memoryTimeInterval = 0;
+    }
+    if (currInterval !== this.networkTimeInterval) {
+      clearInterval(this.networkTimeInterval);
+      this.networkTimeInterval = 0;
+    }
+    if (currInterval !== this.idleTimeInterval) {
+      clearInterval(this.idleTimeInterval);
+      this.idleTimeInterval = 0;
+    }
+    if (currInterval !== this.errTimeInterval) {
+      clearInterval(this.errTimeInterval);
+      this.errTimeInterval = 0;
+    }
   }
 }
