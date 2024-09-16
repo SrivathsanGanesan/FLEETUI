@@ -1,7 +1,7 @@
 <div class="flex h-screen">
   <app-sidenavbar class="fixed top-0 left-0 h-full"></app-sidenavbar>
-  <div class="flex-grow ml-64 p-8 h-screen overflow-hidden">
-    <div class="mainContent flex flex-col h-full justify-center items-center">
+  <div >
+    <div class="mainContent ">
       <div class="header-section">
         <h1 class="header-title">{{ activeHeader }}</h1>
         <div class="subheader-container">
@@ -103,27 +103,27 @@
       <!-- Table -->
       <div class="table-container">
         <div
-          class="w-full max-w-6xl flex flex-col p-10 items-center justify-center gap-10 relative"
+          
         >
-          <div class="overflow-y-auto max-h-[32rem] w-full">
+          <div >
             <table
-              class="min-w-full divide-y divide-gray-200"
+             
               *ngIf="currentTable === 'Environment' && !imageUploaded"
             >
-              <thead class="bg-gray-50">
+              <thead >
                 <tr>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    
                   >
                     Map Name
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    
                   >
                     Site Name
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    
                   >
                     Last Created
                   </th>
@@ -138,20 +138,20 @@
                   </th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
+              <tbody >
                 <tr *ngIf="filteredEnvData.length === 0">
                   <td colspan="5" class="iconTable">
                     No data found
                   </td>
                 </tr>
                 <tr *ngFor="let item of filteredEnvData">
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td >
                     {{ item.mapName }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td >
                     {{ item.siteName }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td >
                     {{ item.date }}
                   </td>
                   <td class="iconTable" >
@@ -184,18 +184,18 @@
             </table>
 
             <table
-              class="min-w-full divide-y divide-gray-200"
+              
               *ngIf="currentTable === 'robot'"
             >
               <thead class="bg-gray-50">
                 <tr>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                   
                   >
                     Robot Name
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    
                   >
                     IP Address
                   </th>
@@ -206,17 +206,17 @@
                   </th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
+              <tbody >
                 <tr *ngIf="filteredRobotData.length === 0">
                   <td colspan="3" class="iconTable">
                     No data found
                   </td>
                 </tr>
                 <tr *ngFor="let item of filteredRobotData">
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td >
                     {{ item.column1 }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td >
                     {{ item.column2 }}
                   </td>
                   <td class="iconTable">
@@ -305,7 +305,7 @@
                   <td>{{ item.Status }}</td>
                   <td class="iconTable">
                     <!-- Add icon -->
-                    <button (click)="addItem(item); openPopup(item)" class="icon-button">                      <!-- You can use Font Awesome or any other icon library -->
+                    <button (click)="openPopup(item)" class="icon-button">                      <!-- You can use Font Awesome or any other icon library -->
                       <img src="../../assets/icons/add.svg">
                     </button>
                   </td>
