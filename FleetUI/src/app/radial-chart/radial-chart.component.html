@@ -1,0 +1,10 @@
+<div id="chart">
+    <h1>Robots</h1>
+    <apx-chart
+      [series]="chartOptions.series ?? []"
+      [chart]="chartOptions.chart ?? { type: 'radialBar', height: 300 }"
+      [plotOptions]="chartOptions.plotOptions ?? {}"
+      [labels]="chartOptions.labels ?? []"
+    ></apx-chart>
+  </div>
+  

@@ -40,7 +40,7 @@
     background: linear-gradient(45deg, #f1494e, #DA2127); /* Gradient background */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Button-like shadow */
     cursor: pointer;
-    width: 150px; /* Fixed width for the dropdown button */
+    width: 200px; /* Fixed width for the dropdown button */
     text-align: center; /* Center the text inside the button */
   }
   

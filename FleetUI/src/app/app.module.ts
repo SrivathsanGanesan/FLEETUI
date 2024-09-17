@@ -46,6 +46,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { FullscreenButtonComponent } from './fullscreen-button/fullscreen-button.component';
 import { ConfigurationModule } from './configuration/configuration.module';
+import { RadialChartComponent } from './radial-chart/radial-chart.component';
 
 
 @NgModule({
@@ -81,7 +82,8 @@ import { ConfigurationModule } from './configuration/configuration.module';
     ConfirmationDialogComponent,
     TasksComponent,
     UserManagementComponent,
-    FullscreenButtonComponent
+    FullscreenButtonComponent,
+    RadialChartComponent
   ],
   imports: [
     NgApexchartsModule,

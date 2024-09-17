@@ -391,6 +391,16 @@ h2 {
   height: 270px;
 }
 
+.radial{
+  flex-grow: 1;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1%;
+  width: 35%;
+  height: 270px;
+
+}
 /* The operation pie chart should directly apply these styles */
 app-operation-pie {
   
