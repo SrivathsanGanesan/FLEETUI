@@ -70,11 +70,36 @@ const getGrossTaskStatus = async (req, res) => {
     }
     return res
       .status(200)
-      .json({ map: map, tasksStatus: tasksStatus, msg: "data sent!" });
+      .json({ tasksStatus: tasksStatus, map: map, msg: "data sent!" });
   } catch (error) {
     console.error("Error in getting tasks status :", err);
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
   }
 };
 
-module.exports = { getAgvTelemetry, getGrossTaskStatus, mqttClient };
+const getRoboStateCount = async (req, res) => {
+  const mapId = req.params.mapId;
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(400).json({ msg: "Map not found!", map: null });
+    const map = await Map.findOne({ _id: mapId });
+    let roboStates = [];
+    for (let i of [1, 2, 3]) {
+      roboStates.push(Math.floor(Math.random() * 60));
+    }
+    return res
+      .status(200)
+      .json({ roboStates: roboStates, map: map, msg: "data sent!" });
+  } catch (error) {
+    console.error("Error in getting tasks status :", err);
+    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  getAgvTelemetry,
+  getGrossTaskStatus,
+  getRoboStateCount,
+  mqttClient,
+};

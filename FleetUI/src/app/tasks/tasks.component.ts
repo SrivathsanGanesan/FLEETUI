@@ -57,48 +57,41 @@ export class TasksComponent implements OnInit, AfterViewInit {
     private projectService: ProjectService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
-    fetch(
+    const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/${this.mapData.id}`,
       {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ timeStamp1: '', timeStamp2: '' }),
       }
-    )
-      .then((response) => {
-        // if (!response.ok)
-        //   throw new Error(`Error with status code of : ${response.status}`);
-        return response.json();
-      })
-      .then((data) => {
-        const { tasks } = data;
-        this.tasks = tasks.map((task: any) => {
-          return {
-            taskId: task.task_id,
-            taskName: task.sub_task[0]?.task_type
-              ? task.sub_task[0]?.task_type
-              : 'N/A',
-            status: task.task_status.status,
-            roboName: task.agent_name,
-            sourceDestination: task.sub_task[0]?.source_location
-              ? task.sub_task[0]?.source_location
-              : 'N/A',
-          };
-        });
-        this.filteredTaskData = this.tasks;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    );
+    // if (!response.ok)
+    //   throw new Error(`Error with status code of : ${response.status}`);
+    let data = await response.json();
+    const { tasks } = data;
+    this.tasks = tasks.map((task: any) => {
+      return {
+        taskId: task.task_id,
+        taskName: task.sub_task[0]?.task_type
+          ? task.sub_task[0]?.task_type
+          : 'N/A',
+        status: task.task_status.status,
+        roboName: task.agent_name,
+        sourceDestination: task.sub_task[0]?.source_location
+          ? task.sub_task[0]?.source_location
+          : 'N/A',
+      };
+    });
     this.filteredTaskData = this.tasks;
+    this.setPaginatedData();
   }
 
   // Ensure the paginator is initialized before setting paginated data
   ngAfterViewInit() {
-    this.setPaginatedData(); // Set initial paginated data after view is initialized
+    //   this.setPaginatedData(); // Set initial paginated data after view is initialized
   }
 
   setPaginatedData() {
