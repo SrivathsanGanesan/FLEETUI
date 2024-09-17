@@ -1,4 +1,4 @@
-.container {
+#container {
   display: flex;
   height: 100vh; /* Ensure the container takes up the full viewport height */
   width: auto;
@@ -10,7 +10,7 @@
   opacity: 1;
 }
 app-sidenavbar{
-  z-index: 10;
+  z-index: 12;
 }
 
 .mainContent {
@@ -117,7 +117,7 @@ canvas {
   cursor: pointer;
 }
 
-.Expand:hover, .Layout:hover, .Save:hover, .Pointer:hover, .Zoom:hover, .ZoomOut:hover, .Capture:hover {
+.Expand:hover, .Layout:hover, .Save:hover, .Pointer:hover, .Zoom:hover, .ZoomOut:hover, .Capture:hover,.ModelCanvas:hover {
   filter: drop-shadow(0 2px 2px #ff0d0d3c);
 }
 
