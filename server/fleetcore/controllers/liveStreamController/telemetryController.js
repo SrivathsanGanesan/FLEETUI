@@ -64,9 +64,13 @@ const getGrossTaskStatus = async (req, res) => {
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
     const map = await Map.findOne({ _id: mapId });
+    let tasksStatus = [];
+    for (let i of [1, 2, 3, 4, 5]) {
+      tasksStatus.push(Math.floor(Math.random() * 10));
+    }
     return res
       .status(200)
-      .json({ map: map, tasksStatus: [1, 2, 3, 4, 5], msg: "data sent!" });
+      .json({ map: map, tasksStatus: tasksStatus, msg: "data sent!" });
   } catch (error) {
     console.error("Error in getting tasks status :", err);
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });

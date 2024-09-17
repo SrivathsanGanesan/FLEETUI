@@ -1,4 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -142,5 +148,11 @@ export class GradientDonutComponent implements OnInit {
       },
       responsive: this.responsive,
     };
+  }
+
+  ngOnChanges() {
+    // changes: SimpleChanges
+    // called when a binded input data property of a component changes..
+    this.chartOptions.series = this.series;
   }
 }

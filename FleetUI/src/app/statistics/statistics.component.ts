@@ -109,36 +109,37 @@ export class StatisticsComponent {
     }
   }
 
-  ngOnInit(): void {
-    this.operationPie = [1, 2, 3, 4, 5];
+  async ngOnInit() {
     this.router.navigate(['/statistics/operation']); // Default to operation view
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) return;
-    fetch(
+    this.operationPie = await this.fetchTasksStatus();
+    setInterval(async () => {
+      this.operationPie = await this.fetchTasksStatus();
+    }, 1000 * 2);
+  }
+
+  async fetchTasksStatus(): Promise<number[]> {
+    let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-tasks-status/${this.selectedMap.id}`,
       {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({}),
       }
-    )
-      .then((response) => {
-        // if(!response.ok) throw new Error(`Error occured with status code of : ${response.status}`)
-        return response.json();
-      })
-      .then((data) => {
-        if (data.error) return;
-        if (!data.map) {
-          alert(data.msg);
-          return;
-        }
-        this.operationPie = data.tasksStatus;
-        this.cdRef.detectChanges();
-        console.log(this.operationPie, data.tasksStatus);
-      })
-      .catch((error) => {
-        console.log('Err occured while getting tasks status : ', error);
-      });
+    );
+    // if(!response.ok) throw new Error(`Error occured with status code of : ${response.status}`)
+    let data = await response.json();
+    if (data.error) {
+      console.log('Err occured while getting tasks status : ', data.error);
+      return [0, 0, 0, 0, 0];
+    }
+    if (!data.map) {
+      alert(data.msg);
+      return [0, 0, 0, 0, 0];
+    }
+    if (data.tasksStatus) return data.tasksStatus;
+    return [0, 0, 0, 0, 0];
   }
 
   onSearch(event: Event): void {

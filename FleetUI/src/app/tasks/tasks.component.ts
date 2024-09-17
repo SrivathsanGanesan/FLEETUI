@@ -10,36 +10,36 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
   styleUrls: ['./tasks.component.css'],
 })
 export class TasksComponent implements OnInit, AfterViewInit {
-i: any;
-// activeButton: number | null = null; 
+  i: any;
+  // activeButton: number | null = null;
 
-// handleClick(index: number): void {
-//   this.activeButton = index;
- 
-// }
-trackByTaskId(index: number, item: any): number {
-  return item.taskId; // or any unique identifier like taskId
-}
-onPause(item: any) {
-  // Toggle the paused state of the task
-  item.paused = !item.paused;
+  // handleClick(index: number): void {
+  //   this.activeButton = index;
 
-  // Log the pause/activate action for the clicked item
-  const action = item.paused ? 'Paused' : 'Activated';
-  console.log(`${action} task: ${item.taskId}`);
-}
+  // }
+  trackByTaskId(index: number, item: any): number {
+    return item.taskId; // or any unique identifier like taskId
+  }
+  onPause(item: any) {
+    // Toggle the paused state of the task
+    item.paused = !item.paused;
 
-onCancel(item: any) {
-  // Find the index of the item in the tasks array and remove it
-  const index = this.tasks.indexOf(item);
-  if (index > -1) {
-    this.tasks.splice(index, 1); // Remove the task from the tasks array
+    // Log the pause/activate action for the clicked item
+    const action = item.paused ? 'Paused' : 'Activated';
+    console.log(`${action} task: ${item.taskId}`);
   }
 
-  // Update the filteredTaskData and reapply pagination
-  this.filteredTaskData = [...this.tasks]; // Ensure it's updated
-  this.setPaginatedData();  // Recalculate the displayed paginated data
-}
+  onCancel(item: any) {
+    // Find the index of the item in the tasks array and remove it
+    const index = this.tasks.indexOf(item);
+    if (index > -1) {
+      this.tasks.splice(index, 1); // Remove the task from the tasks array
+    }
+
+    // Update the filteredTaskData and reapply pagination
+    this.filteredTaskData = [...this.tasks]; // Ensure it's updated
+    this.setPaginatedData(); // Recalculate the displayed paginated data
+  }
 
   mapData: any | null = null;
   searchQuery: string = '';
@@ -57,22 +57,42 @@ onCancel(item: any) {
     private projectService: ProjectService
   ) {}
 
-
   ngOnInit() {
-    for (let i = 1; i <= 100; i++) {
-      // Create a new object for each task, ensuring they're distinct
-      let task = {
-        taskId: `task_${i.toString().padStart(3, '0')}`,
-        taskName: `task_${i}`,
-        status: 'online',
-        roboName: `agv_${(i + 10).toString().padStart(3, '0')}`,
-        sourceDestination: 'N/A',
-        paused: false // You may want to initialize `paused` as false
-      };
-      this.tasks.push(task); // Now each task is a unique object
-    }
-  
-    // Initially set the filtered data
+    this.mapData = this.projectService.getMapData();
+    if (!this.mapData) return;
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/${this.mapData.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ timeStamp1: '', timeStamp2: '' }),
+      }
+    )
+      .then((response) => {
+        // if (!response.ok)
+        //   throw new Error(`Error with status code of : ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        const { tasks } = data;
+        this.tasks = tasks.map((task: any) => {
+          return {
+            taskId: task.task_id,
+            taskName: task.sub_task[0]?.task_type
+              ? task.sub_task[0]?.task_type
+              : 'N/A',
+            status: task.task_status.status,
+            roboName: task.agent_name,
+            sourceDestination: task.sub_task[0]?.source_location
+              ? task.sub_task[0]?.source_location
+              : 'N/A',
+          };
+        });
+        this.filteredTaskData = this.tasks;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     this.filteredTaskData = this.tasks;
   }
 
@@ -84,7 +104,10 @@ onCancel(item: any) {
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.filteredTaskData.slice(startIndex, startIndex + this.paginator.pageSize);
+      this.paginatedData = this.filteredTaskData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
     }
   }
 
@@ -92,12 +115,10 @@ onCancel(item: any) {
     this.setPaginatedData();
   }
 
- 
-
   // Search method
   onSearch(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
-  
+
     if (!inputValue) {
       this.filteredTaskData = this.tasks;
     } else {
@@ -107,12 +128,12 @@ onCancel(item: any) {
         )
       );
     }
-  
+
     // Reset the paginator after filtering
     if (this.paginator) {
       this.paginator.firstPage();
     }
-  
+
     this.setPaginatedData(); // Update paginated data after filtering
   }
   exportData(format: string) {
@@ -139,7 +160,4 @@ onCancel(item: any) {
   onClose() {
     this.isPopupVisible = false;
   }
-
-  
-  
 }
