@@ -1,6 +1,9 @@
-<div class="container" class="flex h-screen">
+
+<div class="container" >
   <app-sidenavbar></app-sidenavbar>
   <div class="mainContent">
+    <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas>
+
     <canvas id="myCanvas" (mousedown)="panStart($event)"></canvas>
     <div class="ONBtn" (click)="startStopOpt()">
       <img [src]="getOnBtnImage()" (click)="toggleONBtn()" />
@@ -62,8 +65,16 @@
         />
         <span class="tooltiptext">Dashboard</span>
       </div>
-    </div>
+      <div class="tooltip">
+        <img
+          src="../../assets/CanvasOptions/Model.svg"
+          class="ModelCanvas"
+          (click)="toggleModelCanvas()"
+        />
+        <span class="tooltiptext">Show Map Option</span>
+      </div>
 
+    </div>
     <div class="GraphAndCharts" *ngIf="showDashboard">
       <div class="Chart2_Chart3">
         <div class="Chart2-container">

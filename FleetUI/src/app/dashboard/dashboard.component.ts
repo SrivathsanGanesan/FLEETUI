@@ -3,7 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   ViewChild,
-  viewChild,
+  
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
@@ -39,7 +39,7 @@ export class DashboardComponent implements AfterViewInit {
   recording = false;
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
-
+  showModelCanvas: boolean = false;  // Initially hide the modelCanvas
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -115,7 +115,15 @@ export class DashboardComponent implements AfterViewInit {
       ? '../../assets/icons/off.svg'
       : '../../assets/icons/on.svg';
   }
+  toggleModelCanvas() {
+    this.showModelCanvas = !this.showModelCanvas;
+  }
 
+  // Rest of your existing component methods like panStart(), toggleONBtn(), etc.
+  panStartModelCanvas(event: MouseEvent) {
+    // Handle pan start for modelCanvas
+    console.log('Panning on Model Canvas', event);
+  }
   getliveAmrPos() {
     const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos`;
     if (this.eventSource) this.eventSource.close();
@@ -235,13 +243,14 @@ export class DashboardComponent implements AfterViewInit {
 
   captureCanvas() {
     const element = document.getElementsByClassName('container')[0];
+    console.log('Container element:', element); // Log the container to check if it exists
     if (element) {
       domtoimage
         .toPng(element)
         .then((dataUrl: string) => {
           const link = document.createElement('a');
           link.href = dataUrl;
-          link.download = 'page_capture.png';
+          link.download = 'page_capture.png'; 
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -249,8 +258,11 @@ export class DashboardComponent implements AfterViewInit {
         .catch((error: Error) => {
           console.error('Error capturing page:', error);
         });
+    } else {
+      console.error('Container element not found.');
     }
   }
+  
 
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;

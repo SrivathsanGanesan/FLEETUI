@@ -778,6 +778,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.assets = updatedData.stations;
         this.zones = updatedData.zones;
         this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];    
+        this.closePopup.emit();
         });
   }
   saveOpt() {
