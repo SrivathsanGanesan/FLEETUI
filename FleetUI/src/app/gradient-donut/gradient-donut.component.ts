@@ -49,7 +49,7 @@ export class GradientDonutComponent implements OnInit {
       breakpoint: 480,
       options: {
         chart: {
-          width: 200,
+          width: 220,
         },
         legend: {
           position: 'bottom',
@@ -94,7 +94,7 @@ export class GradientDonutComponent implements OnInit {
               },
               value: {
                 show: true,
-                fontSize: '1.2em',
+                fontSize: '1.5em',
                 fontWeight: 'bold',
                 color: '#121212',
                 offsetY: 6,

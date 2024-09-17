@@ -27,17 +27,17 @@ export class RadialChartComponent implements OnInit {
     this.chartOptions = {
       series: [44, 55, 67],
       chart: {
-        height: 320,
+        height: 350,
         type: 'radialBar'
       },
       plotOptions: {
         radialBar: {
           dataLabels: {
             name: {
-              fontSize: '22px'
+              fontSize: '40px'
             },
             value: {
-              fontSize: '16px'
+              fontSize: '30px'
             },
             total: {
               show: true,

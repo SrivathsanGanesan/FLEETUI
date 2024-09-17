@@ -138,7 +138,11 @@
                 <app-chart-timeline></app-chart-timeline>
               </div>
               <div class="radial">
-                <app-radial-chart></app-radial-chart>
+                <app-radial-chart>
+                  [labels]="['Completed', 'Inprogress', 'ToDo', 'Error', 'Cancelled']"
+                  [legendFontSize]="'14px'"
+                  [dataLabelFontSize]="'14px'"
+                </app-radial-chart>
               </div>
               
             </div>

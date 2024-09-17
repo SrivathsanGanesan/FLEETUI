@@ -67,7 +67,7 @@ export class AreaChartComponent implements OnInit {
         },
       ],
       chart: {
-        height: 230,
+        height: 250,
         type: 'area',
         background: '#FFFFFF',
       },

@@ -91,7 +91,7 @@ export class ChartTimelineComponent implements OnInit {
       chart: {
         id: 'area-datetime',
         type: 'area',
-        height: 230,
+        height: 250,
         zoom: {
           autoScaleYaxis: true,
         },
