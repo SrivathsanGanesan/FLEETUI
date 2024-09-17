@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment.development';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-statistics',
@@ -8,6 +10,8 @@ import { Router } from '@angular/router';
 })
 export class StatisticsComponent {
   currentView: string = 'operation'; // Default to 'operation'
+  operationPie: number[] = [0, 0, 0, 0, 0];
+  selectedMap: any;
 
   robotActivities = [
     {
@@ -88,6 +92,55 @@ export class StatisticsComponent {
   filteredRobotActivities = this.robotActivities;
   filteredNotifications = this.notifications;
 
+  constructor(
+    private router: Router,
+    private projectService: ProjectService,
+    private cdRef: ChangeDetectorRef
+  ) {
+    if (!this.selectedMap) this.selectedMap = this.projectService.getMapData();
+  }
+
+  setView(view: string): void {
+    this.currentView = view;
+    if (view === 'robot') {
+      this.router.navigate(['/statistics/robot']);
+    } else {
+      this.router.navigate(['/statistics/operation']);
+    }
+  }
+
+  ngOnInit(): void {
+    this.operationPie = [1, 2, 3, 4, 5];
+    this.router.navigate(['/statistics/operation']); // Default to operation view
+    this.selectedMap = this.projectService.getMapData();
+    if (!this.selectedMap) return;
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-tasks-status/${this.selectedMap.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({}),
+      }
+    )
+      .then((response) => {
+        // if(!response.ok) throw new Error(`Error occured with status code of : ${response.status}`)
+        return response.json();
+      })
+      .then((data) => {
+        if (data.error) return;
+        if (!data.map) {
+          alert(data.msg);
+          return;
+        }
+        this.operationPie = data.tasksStatus;
+        this.cdRef.detectChanges();
+        console.log(this.operationPie, data.tasksStatus);
+      })
+      .catch((error) => {
+        console.log('Err occured while getting tasks status : ', error);
+      });
+  }
+
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     const query = input.value.toLowerCase();
@@ -105,20 +158,5 @@ export class StatisticsComponent {
     this.filteredNotifications = this.notifications.filter((notification) =>
       notification.message.toLowerCase().includes(query)
     );
-  }
-  
-  constructor(private router: Router) {}
-  
-  setView(view: string): void {
-    this.currentView = view;
-    if (view === 'robot') {
-      this.router.navigate(['/statistics/robot']);
-    } else {
-      this.router.navigate(['/statistics/operation']);
-    }
-  }
-
-  ngOnInit(): void {
-    this.router.navigate(['/statistics/operation']); // Default to operation view
   }
 }

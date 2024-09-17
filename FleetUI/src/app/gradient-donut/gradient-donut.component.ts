@@ -1,13 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { 
-  ApexNonAxisChartSeries, 
-  ApexResponsive, 
-  ApexChart, 
-  ApexPlotOptions, 
-  ApexDataLabels, 
-  ApexFill, 
-  ApexLegend, 
-  ApexTitleSubtitle 
+import {
+  ApexNonAxisChartSeries,
+  ApexResponsive,
+  ApexChart,
+  ApexPlotOptions,
+  ApexDataLabels,
+  ApexFill,
+  ApexLegend,
+  ApexTitleSubtitle,
 } from 'ng-apexcharts';
 
 export type ChartOptions = {
@@ -25,11 +25,11 @@ export type ChartOptions = {
 @Component({
   selector: 'app-gradient-donut',
   templateUrl: './gradient-donut.component.html',
-  styleUrls: ['./gradient-donut.component.css']
+  styleUrls: ['./gradient-donut.component.css'],
 })
 export class GradientDonutComponent implements OnInit {
   @Input() series: ApexNonAxisChartSeries = [];
-  @Input() labels: string[] = [];  // Labels for each segment
+  @Input() labels: string[] = []; // Labels for each segment
   @Input() chartWidth: number = 400;
   @Input() startAngle: number = -90;
   @Input() endAngle: number = 270;
@@ -38,19 +38,24 @@ export class GradientDonutComponent implements OnInit {
   @Input() titleText: string = 'Total activities';
   @Input() legendFontSize: string = '17px';
   @Input() dataLabelFontSize: string = '14px';
-  @Input() responsive: ApexResponsive[] = [{
-    breakpoint: 480,
-    options: {
-      chart: {
-        width: 200
+  @Input() responsive: ApexResponsive[] = [
+    {
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 200,
+        },
+        legend: {
+          position: 'bottom',
+        },
       },
-      legend: {
-        position: 'bottom'
-      }
-    }
-  }];
-  @Input() legendFormatter: (val: string, opts: any) => string = (val: string, opts: any) => {
-    return val + " - " + opts.w.globals.series[opts.seriesIndex];
+    },
+  ];
+  @Input() legendFormatter: (val: string, opts: any) => string = (
+    val: string,
+    opts: any
+  ) => {
+    return val + ' - ' + opts.w.globals.series[opts.seriesIndex];
   };
 
   public chartOptions: Partial<ChartOptions> | any;
@@ -132,7 +137,7 @@ export class GradientDonutComponent implements OnInit {
         floating: false,
         style: {
           fontSize: '1.2em',
-          color: '#263238'
+          color: '#263238',
         },
       },
       responsive: this.responsive,

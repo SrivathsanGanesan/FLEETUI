@@ -1,4 +1,5 @@
 const mqtt = require("mqtt");
+const { Map, Robo } = require("../../../application/models/mapSchema");
 require("dotenv").config();
 
 let mqttClient = null;
@@ -33,8 +34,8 @@ const eventStreamHeader = {
 };
 
 // initMqttConnection();
-
 const getAgvTelemetry = (req, res) => {
+  const mapId = req.params.mapId;
   initMqttConnection();
   endResponse = res;
   try {
@@ -56,4 +57,20 @@ const getAgvTelemetry = (req, res) => {
   }
 };
 
-module.exports = { getAgvTelemetry, mqttClient };
+const getGrossTaskStatus = async (req, res) => {
+  const mapId = req.params.mapId;
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(400).json({ msg: "Map not found!", map: null });
+    const map = await Map.findOne({ _id: mapId });
+    return res
+      .status(200)
+      .json({ map: map, tasksStatus: [1, 2, 3, 4, 5], msg: "data sent!" });
+  } catch (error) {
+    console.error("Error in getting tasks status :", err);
+    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+  }
+};
+
+module.exports = { getAgvTelemetry, getGrossTaskStatus, mqttClient };
