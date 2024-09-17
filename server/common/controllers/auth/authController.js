@@ -98,7 +98,8 @@ const logout = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { name, role, password } = req.body.user;
+  const { name, role, password, createdBy } = req.body.user;
+
   try {
     const alterPass = name + password;
     const hashhedPassword = await bcrypt.hash(alterPass, 2);
@@ -109,6 +110,7 @@ const register = async (req, res) => {
         password: hashhedPassword,
         role: role,
         priority: role === "Administrator" ? 1 : role === "Maintainer" ? 2 : 3,
+        createdBy: createdBy,
       });
 
       const updatedDoc = await newData.save();
@@ -120,6 +122,7 @@ const register = async (req, res) => {
           id: updatedDoc._id,
           password: password,
           projects: updatedDoc.projects,
+          createdBy: updatedDoc.createdBy,
         },
       });
     }
