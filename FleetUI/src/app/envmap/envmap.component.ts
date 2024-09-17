@@ -777,7 +777,9 @@ export class EnvmapComponent implements AfterViewInit {
         this.edges = updatedData.edges;
         this.assets = updatedData.stations;
         this.zones = updatedData.zones;
-        this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];    
+        this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : []; 
+        alert("Updated Successfully")
+   
         this.closePopup.emit();
         });
   }
@@ -854,7 +856,7 @@ export class EnvmapComponent implements AfterViewInit {
         }
 
         console.log(this.EnvData);
-
+        alert("Saved Successfully")
         this.closePopup.emit();
       })
       .catch((error) => {
@@ -1327,14 +1329,34 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.textBaseline = 'top'; // Align text from the top
     ctx.fillText(text, x, y); // Draw text at (x, y)
   }
+  private isPositionOccupied(x: number, y: number, type : string ): boolean {
+    // Check if the position is occupied by an existing node
+    let nodeOccupied = false;
+    let assetOccupied = false;
+    if(type !== 'node')
+      nodeOccupied = this.nodes.some(node => {
+        const distance = Math.sqrt(Math.pow(node.nodePosition.x - x, 2) + Math.pow(node.nodePosition.y - y, 2));
+        return distance < 25; // A threshold of 10 pixels for proximity
+      });
+  
+    // Check if the position is occupied by an existing asset
+    if(type !== 'asset')
+      assetOccupied = this.assets.some(asset => {
+        const distance = Math.sqrt(Math.pow(asset.x - x, 2) + Math.pow(asset.y - y, 2));
+        return distance < 20; // A threshold of 10 pixels for proximity
+      });
+  
+    return  nodeOccupied || assetOccupied;
+  }
+  
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
     const transformedY = canvas.height - y; // Flip the Y-axis
-  //   if (this.isPositionOccupied(x, y)) {
-  //     alert('This position is already occupied by a node or asset. Please choose a different location.');
-  //     return;
-  // }
+    if (this.isPositionOccupied(x, y, 'node')) {
+      alert('This position is already occupied by a node or asset. Please choose a different location.');
+      return;
+    }
 
     const color = 'blue'; // Color for single nodes
     this.drawNode(
@@ -1410,6 +1432,10 @@ export class EnvmapComponent implements AfterViewInit {
     const canvas = this.overlayCanvas.nativeElement;
     const transformedY = canvas.height - y; // Flip the Y-axis
 
+    if (this.isPositionOccupied(x, y, 'node')) {
+      alert('This position is already occupied by a node or asset. Please choose a different location.');
+      return;
+    }
     const color = 'blue'; // Color for multi-nodes
     this.drawNode(
       {
@@ -1425,10 +1451,6 @@ export class EnvmapComponent implements AfterViewInit {
       color,
       false
     );
-  //   if (this.isPositionOccupied(x, y)) {
-  //     alert('This position is already occupied by a node or asset. Please choose a different location.');
-  //     return;
-  // }
     console.log(
       `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
       { x, y: transformedY }
@@ -1499,9 +1521,9 @@ export class EnvmapComponent implements AfterViewInit {
       );
 
       this.isPlottingEnabled = false; // Disable further plotting after two nodes
-      setTimeout(() => {
-        this.showIntermediateNodesDialog = true;
-      }, 1000);
+      // setTimeout(() => {
+        // this.showIntermediateNodesDialog = true;
+      // }, 1000);
     } else {
       // Plotting additional nodes
       let node = {
@@ -1538,6 +1560,13 @@ export class EnvmapComponent implements AfterViewInit {
         for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
           const x = this.firstNode.nodePosition.x + i * dx;
           const y = this.firstNode.nodePosition.y + i * dy;
+          const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
+          if (this.isPositionOccupied(x, transformedY, 'node')) {
+            this.showIntermediateNodesDialog = false;
+            
+            alert('This position is already occupied by a node or asset. Please choose a different location.');
+            return;
+          }
           
           let node = {
             nodeId: this.nodeCounter.toString(),
@@ -1568,8 +1597,7 @@ export class EnvmapComponent implements AfterViewInit {
       }
       this.closeIntermediateNodesDialog();
     }
-  }
-  
+  }  
   validationError: string = '';
   saveNodeDetails(): void {
     this.validationError = '';
@@ -1935,12 +1963,14 @@ export class EnvmapComponent implements AfterViewInit {
     return dx * dx + dy * dy <= radius * radius;
   }
   private plotAsset(x: number, y: number, assetType: string): void {
+    const canvas = this.overlayCanvas.nativeElement;
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
-  //   if (this.isPositionOccupied(x, y)) {
-  //     alert('This position is already occupied by a node or asset. Please choose a different location.');
-  //     return;
-  // }
+    const transformedY = canvas.height - y; // Flip the Y-axis
+    // if (this.isPositionOccupied(x, transformedY)) {
+    //   alert('This position is already occupied by a node or asset. Please choose a different location.');
+    //   return;
+    // }
   
     if (image && ctx) {
       const imageSize = 50; // Set image size
@@ -2213,8 +2243,7 @@ export class EnvmapComponent implements AfterViewInit {
     // Draw the selection rectangle
     ctx.strokeRect(minX, minY, width, height);
     ctx.setLineDash([]); // Reset line dash after drawing
-  }
-  
+  }  
   isOverlappingWithOtherRobos(currentRobo: Robo): boolean {
     const threshold = 30; // Adjust this value as needed for the distance to consider as overlap
     for (const robo of this.robos) {
@@ -2258,12 +2287,8 @@ export class EnvmapComponent implements AfterViewInit {
   onMouseDown(event: MouseEvent): void {
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x =
-        (event.clientX - rect.left) *
-        (this.overlayCanvas.nativeElement.width / rect.width);
-      const y =
-        (event.clientY - rect.top) *
-        (this.overlayCanvas.nativeElement.height / rect.height);
+      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
       if (this.isDeleteModeEnabled) {
         // Start drawing the selection box
         this.selectionStart = { x, y };
@@ -2373,9 +2398,11 @@ export class EnvmapComponent implements AfterViewInit {
 
       if (!nodeClicked && this.isPlottingEnabled) {
         if (this.plottingMode === 'single') {
+          this.selectedAsset = null;
           this.plotSingleNode(x, y);
         }
         if (this.plottingMode === 'multi') {
+          this.selectedAsset = null;
           this.plotMultiNode(x, y);
         }
       }
@@ -2549,6 +2576,8 @@ export class EnvmapComponent implements AfterViewInit {
       this.overlayCanvas.nativeElement.removeEventListener( 'mouseup', this.onMouseUp.bind(this) );
     }
 
+    if(this.plottingMode === 'multi' && this.secondNode) this.showIntermediateNodesDialog = true;
+
     if (this.draggingZonePoint) {
       this.draggingZonePoint = false;
       this.originalZonePointPosition = null; // Clear original position
@@ -2577,6 +2606,12 @@ export class EnvmapComponent implements AfterViewInit {
       }
       // Update asset position
       this.updateAssetPosition(this.selectedAsset.id, x, y);
+      if(this.isPositionOccupied(x,transformedY,'asset')){
+        this.selectedAsset.x = this.originalAssetPosition!.x;
+        this.selectedAsset.y = this.originalAssetPosition!.y;
+        alert('Overlapping detected! Asset has been reset to its original position.');
+        this.redrawCanvas();
+      }
       if(this.isOverlappingwithOtherAssets(this.selectedAsset)){
         this.selectedAsset.x = this.originalAssetPosition!.x;
         this.selectedAsset.y = this.originalAssetPosition!.y;
@@ -2606,6 +2641,11 @@ export class EnvmapComponent implements AfterViewInit {
      this.originalRoboPosition = null;
 
     if (this.draggingNode && this.selectedNode) {
+      if(this.isPositionOccupied(x, y,'node')){
+        this.selectedNode.nodePosition.x = this.originalNodePosition!.x;
+        this.selectedNode.nodePosition.y = this.originalNodePosition!.y;
+        alert('node lapping with other assets');
+      }
 
       if(this.isOverLappingWithOtherNodes(this.selectedNode)){
         this.selectedNode.nodePosition.x = this.originalNodePosition!.x;
