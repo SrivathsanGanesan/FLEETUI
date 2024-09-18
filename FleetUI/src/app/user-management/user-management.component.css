@@ -1,6 +1,3 @@
-/* @import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities'; */
 
 .mainContent {
   position: absolute;
@@ -12,6 +9,34 @@
   box-sizing: border-box;
   background-color: white;
 }
+
+  /* Header section styles */
+  .header-section {
+    margin-bottom: 10px;
+  }
+  
+  .header-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #DA2127;
+    margin: 0;
+  }
+  
+  .subheader-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .subheader-text {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .subheader-icon {
+    width: 23px;
+    height: 13px;
+  }
 
 .bg-blur
 {
@@ -164,3 +189,115 @@ border-radius: 20px;
   transform: translateY(0px);
   transition-duration: 0.3s;
  }
+
+
+
+/* Table Container */
+.table-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
+/* Table Header */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFCDCD;
+  height: 45px;
+  width: 100%;
+  padding: 0 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.column-title {
+  color: black;
+  font-size: 14px;
+}
+
+.name-column {
+  width: 30%;
+  text-align: left;
+}
+
+.column-group {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+}
+
+/* Table Body */
+.table-body {
+  width: 100%;
+  max-height: 420px;
+  padding: 6px;
+  overflow-y: auto;
+  gap: 5px;
+}
+
+/* No data found message */
+.no-data {
+  color: #9e9e9e;
+  font-size: 14px;
+  padding: 20px;
+}
+
+/* Table Rows */
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: box-shadow 0.3s;
+}
+
+.table-row:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Table Cells */
+.table-cell {
+  width: 100%;
+  text-align: left;
+}
+
+.table-cell-group {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.options-column {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Buttons */
+.edit-button,
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-icon,
+.delete-icon {
+  width: 20px;
+  height: 20px;
+  fill: black;
+}
+
+.edit-icon:hover,
+.delete-icon:hover {
+  fill: red;
+}

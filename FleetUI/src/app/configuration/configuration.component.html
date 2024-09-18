@@ -33,31 +33,6 @@
           </button>
           </div>
         </div>
-
-        <!-- Date Filter and Date Inputs -->
-        <div class="date-filters" *ngIf="currentTable === 'Environment'">
-          <div class="date-inputs">
-            <label for="start-date" class="date-label">Start Date:</label>
-            <input
-              type="date"
-              id="start-date"
-              (change)="onDateChange($event)"
-              class="date-input"
-              [min]="minDate"
-              [max]="maxDate"
-            />
-
-            <label for="end-date" class="Enddate-label">End Date:</label>
-            <input
-              type="date"
-              id="end-date"
-              (change)="onDateChange($event)"
-              class="date-input"
-              [min]="minDate"
-              [max]="maxDate"
-            />
-          </div>
-        </div>
       </div>
 
       <!-- Buttons -->

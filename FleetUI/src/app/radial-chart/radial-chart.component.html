@@ -1,6 +1,39 @@
 <div id="chart">
     <h1>Robots</h1>
+    <!-- <div class="body">
+      <div class="tabs">
+        <input
+          checked
+          value="today"
+          name="filter"
+          id="today"
+          type="radio"
+          class="input"
+          (click)="applyFilter('today')"
+        />
+        <label for="today" class="label">Today</label>
     
+        <input
+          value="week"
+          name="filter"
+          id="week"
+          type="radio"
+          class="input"
+          (click)="applyFilter('week')"
+        />
+        <label for="week" class="label">Week</label>
+    
+        <input
+          value="month"
+          name="filter"
+          id="month"
+          type="radio"
+          class="input"
+          (click)="applyFilter('month')"
+        />
+        <label for="month" class="label">Month</label>
+      </div>
+    </div> -->
 
     <apx-chart
       [series]="chartOptions.series ?? []"
@@ -8,5 +41,5 @@
       [plotOptions]="chartOptions.plotOptions ?? {}"
       [labels]="chartOptions.labels ?? []"
     ></apx-chart>
-  </div>
+</div>
   
