@@ -1563,7 +1563,7 @@ export class EnvmapComponent implements AfterViewInit {
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
           if (this.isPositionOccupied(x, transformedY, 'node')) {
             this.showIntermediateNodesDialog = false;
-            
+            //..
             alert('This position is already occupied by a node or asset. Please choose a different location.');
             return;
           }

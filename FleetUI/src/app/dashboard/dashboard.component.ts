@@ -26,7 +26,7 @@ export class DashboardComponent implements AfterViewInit {
   showDashboard = false;
   selectedFloor = 'Floor 1';
   floors = ['Floor 1'];
-  zoomLevel = 1.1;
+  zoomLevel = 0.8;
   isPanning = false;
   lastX = 0;
   lastY = 0;
@@ -57,10 +57,10 @@ export class DashboardComponent implements AfterViewInit {
     
     this.loadCanvas();
     await this.getMapDetails();
-    if (this.showModelCanvas) {
-      // this.cdRef.detectChanges(); // Detect changes to ensure DOM is ready
-      this.loadModelCanvas();     // Safely load the modelCanvas
-    }
+    // if (this.showModelCanvas) {
+    //   // this.cdRef.detectChanges(); // Detect changes to ensure DOM is ready
+    //   this.loadModelCanvas();     // Safely load the modelCanvas
+    // }
   }
 
   async getMapDetails() {
@@ -189,39 +189,39 @@ export class DashboardComponent implements AfterViewInit {
       };
     }
   }
-  loadModelCanvas() {
-    const canvas = document.getElementById('modelCanvas') as HTMLCanvasElement;
-    if (!canvas) {
-      console.error('modelCanvas element not found in the DOM');
-      return;
-    }
-    const ctx = canvas.getContext('2d');
-    console.log(ctx);
+  // loadModelCanvas() {
+  //   const canvas = document.getElementById('modelCanvas') as HTMLCanvasElement;
+  //   if (!canvas) {
+  //     console.error('modelCanvas element not found in the DOM');
+  //     return;
+  //   }
+  //   const ctx = canvas.getContext('2d');
+  //   console.log(ctx);
     
     
-    if (ctx) {
-      // Set canvas dimensions
-      canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-      canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+  //   if (ctx) {
+  //     // Set canvas dimensions
+  //     canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+  //     canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
   
-      // Clear any previous drawings
-      // ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //     // Clear any previous drawings
+  //     // ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-      // Draw nodes (assuming each node has properties like x, y, and nodeType or id)
-      this.nodes.forEach((node) => {
-        console.log( node.nodePosition.x, node.nodePosition.y, node.nodeId);
-        this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
-      });
+  //     // Draw nodes (assuming each node has properties like x, y, and nodeType or id)
+  //     this.nodes.forEach((node) => {
+  //       console.log( node.nodePosition.x, node.nodePosition.y, node.nodeId);
+  //       this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
+  //     });
       
-    } else {
-      console.error('2D context not available');
-    }
-  }
+  //   } else {
+  //     console.error('2D context not available');
+  //   }
+  // }
   
   drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
     // Set node style (for example, circle)
     ctx.beginPath();
-    ctx.arc(x, y, 10, 0, 2 * Math.PI); // Draw circle with radius 10
+    ctx.arc(x, y, 6, 0, 2 * Math.PI); // Draw circle with radius 10
     ctx.fillStyle = '#00f'; // Blue color
     ctx.fill();
   
