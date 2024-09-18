@@ -320,20 +320,18 @@ tr:nth-child(even) {
 /* Export Button Container */
 .Create-button-container {
   position: fixed;
-  bottom: 50px;
-  right: 50px;
-  font-size: 20px;
+    bottom: 20px;
+    right: 50px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
 
 .Create-button {
-  padding: 10px;
+  padding: 10px 20px;
   background-color: #ff3333;
   color: #fff;
-  font-size: 25px;
   border: none;
-  border-radius: 10px;
+  border-radius: 4px;
   cursor: pointer;
 }
 .Open-button {
