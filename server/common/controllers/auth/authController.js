@@ -99,7 +99,6 @@ const logout = async (req, res) => {
 
 const register = async (req, res) => {
   const { name, role, password, createdBy } = req.body.user;
-
   try {
     const alterPass = name + password;
     const hashhedPassword = await bcrypt.hash(alterPass, 2);
