@@ -30,9 +30,8 @@ canvas {
   top: 0;
   height: 800;
   width: 1350;
-  background-color: rgba(193, 81, 81, 0.447);
+  background-color: rgba(212, 125, 125, 0.447);
   left: 0;
-  overflow: none;
 }
 
 .ONBtn {

@@ -11,12 +11,33 @@ import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
+enum ZoneType {
+  HIGH_SPEED_ZONE = 'High Speed Zone',
+  MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
+  SLOW_SPEED_ZONE = 'Slow Speed Zone',
+  MUTED_SPEED_ZONE = 'Muted Speed Zone',
+  TURNING_SPEED_ZONE = 'Turning Speed Zone',
+  IN_PLACE_SPEED_ZONE = 'In Place Speed Zone',
+  CHARGING_ZONE = 'Charging Zone',
+  PREFERRED_ZONE = 'Preferred Zone',
+  UNPREFERRED_ZONE = 'Unpreferred Zone',
+  KEEPOUT_ZONE = 'Keepout Zone',
+  CRITICAL_SAFETY_ZONE = 'Critical Safety Zone',
+  BLIND_LOCALISATION_ZONE = 'Blind Localisation Zone',
+  DENSE_ZONE = 'Dense Zone',
+  STRICTLY_PATH_ZONE = 'Strictly Path Zone',
+  OBSTACLE_AVOIDANCE_ZONE = 'Obstacle Avoidance Zone',
+  EMERGENCY_ZONE = 'Emergency Zone',
+  MAINTENANCE_ZONE = 'Maintenance Zone',
+  PARKING_ZONE = 'Parking Zone',
+}
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
+
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
@@ -26,7 +47,7 @@ export class DashboardComponent implements AfterViewInit {
   showDashboard = false;
   selectedFloor = 'Floor 1';
   floors = ['Floor 1'];
-  zoomLevel = 0.8;
+  zoomLevel = 0.9;
   isPanning = false;
   lastX = 0;
   lastY = 0;
@@ -37,10 +58,34 @@ export class DashboardComponent implements AfterViewInit {
   edges:any[]=[];
   zones:any[]=[];
   assets:any[]=[];
-
+  plottedPoints: { id: number; x: number; y: number }[] = [];
+  zoneType: ZoneType | null = null; // Selected zone type
+  startX = 0;
+  startY = 0;
   showChart2 = true; // Controls blur effect for Chart2
   showChart3 = true;
-
+  assetImages: { [key: string]: HTMLImageElement } = {};
+  zoneColors: { [key in ZoneType]: string } = {
+    [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)', // Red with 30% opacity
+    [ZoneType.MEDIUM_SPEED_ZONE]: 'rgba(255, 165, 0, 0.3)', // Orange with 30% opacity
+    [ZoneType.SLOW_SPEED_ZONE]: 'rgba(255, 255, 0, 0.3)', // Yellow with 30% opacity
+    [ZoneType.MUTED_SPEED_ZONE]: 'rgba(0, 128, 0, 0.3)', // Green with 30% opacity
+    [ZoneType.TURNING_SPEED_ZONE]: 'rgba(0, 0, 255, 0.3)', // Blue with 30% opacity
+    [ZoneType.IN_PLACE_SPEED_ZONE]: 'rgba(75, 0, 130, 0.3)', // Indigo with 30% opacity
+    [ZoneType.CHARGING_ZONE]: 'rgba(238, 130, 238, 0.3)', // Violet with 30% opacity
+    [ZoneType.PREFERRED_ZONE]: 'rgba(0, 255, 255, 0.3)', // Cyan with 30% opacity
+    [ZoneType.UNPREFERRED_ZONE]: 'rgba(128, 0, 128, 0.3)', // Purple with 30% opacity
+    [ZoneType.KEEPOUT_ZONE]: 'rgba(255, 69, 0, 0.3)', // OrangeRed with 30% opacity
+    [ZoneType.CRITICAL_SAFETY_ZONE]: 'rgba(255, 20, 147, 0.3)', // DeepPink with 30% opacity
+    [ZoneType.BLIND_LOCALISATION_ZONE]: 'rgba(127, 255, 0, 0.3)', // Chartreuse with 30% opacity
+    [ZoneType.DENSE_ZONE]: 'rgba(220, 20, 60, 0.3)', // Crimson with 30% opacity
+    [ZoneType.STRICTLY_PATH_ZONE]: 'rgba(0, 0, 139, 0.3)', // DarkBlue with 30% opacity
+    [ZoneType.OBSTACLE_AVOIDANCE_ZONE]: 'rgba(0, 100, 0, 0.3)', // DarkGreen with 30% opacity
+    [ZoneType.EMERGENCY_ZONE]: 'rgba(139, 0, 0, 0.3)', // DarkRed with 30% opacity
+    [ZoneType.MAINTENANCE_ZONE]: 'rgba(184, 134, 11, 0.3)', // DarkGoldenRod with 30% opacity
+    [ZoneType.PARKING_ZONE]: 'rgba(47, 79, 79, 0.3)', // DarkSlateGray with 30% opacity
+  };
+  zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
   recording = false;
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
@@ -49,6 +94,7 @@ export class DashboardComponent implements AfterViewInit {
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
   ) {
+
     if (this.projectService.getIsMapSet()) return;
     this.onInitMapImg(); // yet to remove..
   }
@@ -61,6 +107,14 @@ export class DashboardComponent implements AfterViewInit {
     //   // this.cdRef.detectChanges(); // Detect changes to ensure DOM is ready
     //   this.loadModelCanvas();     // Safely load the modelCanvas
     // }
+    
+    // Initialize asset images in the constructor
+    this.assetImages = {
+      'docking': new Image(),
+      'charging': new Image()
+    };
+    this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
+    this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
   }
 
   async getMapDetails() {
@@ -73,10 +127,10 @@ export class DashboardComponent implements AfterViewInit {
     
     this.nodes = mapData.nodes;
     this.edges = mapData.edges;
-    this.assets = mapData.assets;
+    this.assets = mapData.stations;
     this.zones = mapData.zones;
+    
   }
-  
 
   // guess no need..
   async ngOnInit() {
@@ -140,11 +194,15 @@ export class DashboardComponent implements AfterViewInit {
       ? '../../assets/icons/off.svg'
       : '../../assets/icons/on.svg';
   }
-  toggleModelCanvas() {
+
+  async toggleModelCanvas() {
     this.showModelCanvas = !this.showModelCanvas;
+    if(!this.showModelCanvas) {
+      this.nodes = [];
+    }
+    else await this.getMapDetails()
     this.loadCanvas();  // Redraw the canvas based on the updated state
   }
-
 
   getliveAmrPos() {
     const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos`;
@@ -166,57 +224,195 @@ export class DashboardComponent implements AfterViewInit {
     };
   }
 
-  loadCanvas() {
+ 
+  draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Calculate the position to center the image
+    const imgWidth = img.width * this.zoomLevel;
+    const imgHeight = img.height * this.zoomLevel;
+
+    const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+    const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
+    // Apply transformation for panning and zooming
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.scale(this.zoomLevel, this.zoomLevel);
+
+    // Draw the image
+    ctx.drawImage(img, 0, 0);
+
+    if(!this.showModelCanvas) return;
+    // Draw nodes on the image
+    this.nodes.forEach((node) => {
+      const transformedY = img.height - node.nodePosition.y;
+      this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+    });
+    
+    // Draw edges between nodes
+    this.edges.forEach((edge) => {
+      const startNode = this.nodes.find(n => n.nodeId === edge.startNodeId);
+      const endNode = this.nodes.find(n => n.nodeId === edge.endNodeId);
+      if (startNode && endNode) {
+        const startPos = { x: startNode.nodePosition.x, y: startNode.nodePosition.y };
+        const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+        const transformedStartY = img.height - startPos.y;
+        const transformedEndY = img.height - endPos.y;
+        this.drawEdge(ctx,
+          { x: startPos.x, y: transformedStartY }, 
+          { x: endPos.x, y: transformedEndY }, 
+          edge.direction, 
+          edge.startNodeId, 
+          edge.endNodeId            
+        );          
+      }
+
+    });
+
+
+
+    this.zones.forEach((zone) => {
+      // Re-plot the points of the zone
+      // zone.pos.forEach((point, index) => {
+      //   // Plot the first point in violet and others in red
+      //   const isFirstPoint = index === 0;
+      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
+      // });
+      this.plottedPoints = zone.pos;
+      this.zoneType = zone.type;
+      this.drawLayer(ctx);
+      this.plottedPoints = [];
+    });
+    
+    
+    this.assets.forEach((asset) =>
+      this.plotAsset(ctx,asset.x, asset.y, asset.type)
+    );
+    // ctx.restore(); // Reset transformation after drawing
+  }
+
+  private plotAsset(ctx : CanvasRenderingContext2D,x: number, y: number, assetType: string): void {
+    // const canvas = this.overlayCanvas.nativeElement;
+    // const ctx = this.overlayCanvas.nativeElement.getContext('2d');
+    const image = this.assetImages[assetType];
+    // const transformedY = img.height - y; // Flip the Y-axis
+    // if (this.isPositionOccupied(x, transformedY)) {
+    //   alert('This position is already occupied by a node or asset. Please choose a different location.');
+    //   return;
+    // }
   
-    if (ctx) {
-      const img = new Image();
-      let imgName = this.projectService.getMapData();
-      img.src = `http://${imgName.imgUrl}`;
-  
-      img.onload = () => {
-        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
-        this.drawImageScaled(ctx, img);
-  
-        // Conditionally draw nodes based on showModelCanvas flag
-        if (this.showModelCanvas) {
-          this.nodes.forEach((node) => {
-            this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
-          });
-        }
-      };
+    if (image && ctx) {
+      const imageSize = 50; // Set image size
+      ctx.drawImage(
+        image,
+        x - imageSize / 2,
+        y - imageSize / 2,
+        imageSize,
+        imageSize
+      );
+    }
+
+    // this.assets = this.assets.map((asset) => {
+    //   if (this.selectedAsset?.id === asset.id)
+    //     asset.orientation = this.orientationAngle;
+    //   return asset;
+    // });
+  }
+
+  drawLayer(ctx : CanvasRenderingContext2D): void {
+    // const canvas = this.overlayCanvas.nativeElement;
+    // const ctx = canvas.getContext('2d');
+    if (ctx && this.plottedPoints.length >= 3 && this.zoneType) {
+      ctx.beginPath();
+      ctx.moveTo(this.plottedPoints[0].x, this.plottedPoints[0].y);
+
+      // Draw lines between points to form a polygon
+      for (let i = 1; i < this.plottedPoints.length; i++) {
+        ctx.lineTo(this.plottedPoints[i].x, this.plottedPoints[i].y);
+      }
+
+      ctx.closePath();
+
+
+      // Set the fill color based on the selected zone type
+      const zoneColor = this.zoneColors[this.zoneType];
+      ctx.fillStyle = zoneColor;
+      ctx.fill();
+      this.plottedPoints = [];
+    } else {
+      console.error('Insufficient points or zone type not selected');
     }
   }
-  // loadModelCanvas() {
-  //   const canvas = document.getElementById('modelCanvas') as HTMLCanvasElement;
-  //   if (!canvas) {
-  //     console.error('modelCanvas element not found in the DOM');
-  //     return;
-  //   }
-  //   const ctx = canvas.getContext('2d');
-  //   console.log(ctx);
+  private drawEdge(
+    ctx: CanvasRenderingContext2D,
+    startPos: { x: number; y: number },
+    endPos: { x: number; y: number },
+    direction: string,
+    nodeRadius: number = 10,
+    threshold: number = 5
+  ): void {
+    const dx = endPos.x - startPos.x;
+    const dy = endPos.y - startPos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    const startX = startPos.x + (dx * threshold) / distance;
+    const startY = startPos.y + (dy * threshold) / distance;
+    const endX = endPos.x - (dx * threshold) / distance;
+    const endY = endPos.y - (dy * threshold) / distance;
+
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
     
+    if (direction === 'UN_DIRECTIONAL') {
+      ctx.strokeStyle = 'black'; // Uni-directional in black
+    } else if (direction === 'BI_DIRECTIONAL') {
+      ctx.strokeStyle = 'green'; // Bi-directional in green
+    }
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    this.drawArrowhead(ctx, { x: startX, y: startY }, { x: endX, y: endY }, direction);
+
+    if (direction === 'BI_DIRECTIONAL') {
+      this.drawArrowhead(ctx, { x: endX, y: endY }, { x: startX, y: startY }, direction);
+    }
     
-  //   if (ctx) {
-  //     // Set canvas dimensions
-  //     canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-  //     canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+  }  
+  private drawArrowhead(
+    ctx: CanvasRenderingContext2D,
+    from: { x: number; y: number },
+    to: { x: number; y: number },
+    direction: string
+  ): void {
+    const headLength = 15; // Length of the arrowhead
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
   
-  //     // Clear any previous drawings
-  //     // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Calculate the arrowhead points
+    const arrowheadPoint1 = {
+      x: to.x - headLength * Math.cos(angle - Math.PI / 6),
+      y: to.y - headLength * Math.sin(angle - Math.PI / 6),
+    };
+    const arrowheadPoint2 = {
+      x: to.x - headLength * Math.cos(angle + Math.PI / 6),
+      y: to.y - headLength * Math.sin(angle + Math.PI / 6),
+    };
   
-  //     // Draw nodes (assuming each node has properties like x, y, and nodeType or id)
-  //     this.nodes.forEach((node) => {
-  //       console.log( node.nodePosition.x, node.nodePosition.y, node.nodeId);
-  //       this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
-  //     });
-      
-  //   } else {
-  //     console.error('2D context not available');
-  //   }
-  // }
+    ctx.beginPath();
+    ctx.moveTo(to.x, to.y);
+    ctx.lineTo(arrowheadPoint1.x, arrowheadPoint1.y);
+    ctx.lineTo(arrowheadPoint2.x, arrowheadPoint2.y);
+    ctx.lineTo(to.x, to.y);
+  
+    // Change arrowhead color based on direction
+    if (direction === 'UN_DIRECTIONAL') {
+      ctx.fillStyle = 'black'; // Uni-directional arrowhead in black
+    } else if (direction === 'BI_DIRECTIONAL') {
+      ctx.fillStyle = 'green'; // Bi-directional arrowhead in green
+    }
+  
+    ctx.fill();
+  }
   
   drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
     // Set node style (for example, circle)
@@ -229,19 +425,6 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillStyle = '#000'; // Black text color
     ctx.font = '12px Arial';
     ctx.fillText(label, x + 12, y); // Place label slightly right to the node
-  }
-    
-  drawImageScaled(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-  
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.save();
-    ctx.translate(canvasWidth / 2 + this.offsetX, canvasHeight / 2 + this.offsetY);
-    ctx.scale(this.zoomLevel, this.zoomLevel);
-    ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
-    ctx.restore();
   }
 
   getFloorMap(floor: string): string {
@@ -304,14 +487,52 @@ export class DashboardComponent implements AfterViewInit {
       document.body.style.cursor = 'default';
     }
   };
+  handleZoom(event: WheelEvent) {
+    event.preventDefault();
+    const zoomIntensity = 0.1;
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
 
+    const mouseX = event.clientX - canvas.offsetLeft;
+    const mouseY = event.clientY - canvas.offsetTop;
+    const zoom = event.deltaY > 0 ? 1 - zoomIntensity : 1 + zoomIntensity;
+
+    this.offsetX -= (mouseX - this.offsetX) * (zoom - 1);
+    this.offsetY -= (mouseY - this.offsetY) * (zoom - 1);
+    this.zoomLevel *= zoom;
+
+    if (ctx) this.draw(ctx, new Image());
+  }
   togglePan() {
     this.isPanning = !this.isPanning;
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
 
+  loadCanvas() {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+  
+      if (ctx) {
+      const img = new Image();
+      let imgName = this.projectService.getMapData();
+      img.src = `http://${imgName.imgUrl}`;
+
+      img.onload = () => {
+        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+        this.draw(ctx, img);
+      
+        // // Conditionally draw nodes based on showModelCanvas flag
+        // if (this.showModelCanvas) {
+        //   this.nodes.forEach((node) => {
+        //     this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
+        //   });
+        // }
+      };
+    }
+  }
   captureCanvas() {
-    const element = document.getElementsByClassName('container')[0];
+    const element = document.getElementById('container');
     console.log('Container element:', element); // Log the container to check if it exists
     if (element) {
       domtoimage
@@ -332,7 +553,6 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
   
-
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;
   }

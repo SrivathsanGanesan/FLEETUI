@@ -1,3 +1,6 @@
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
 /* Main Content Styling */
 .mainContent {
   position: absolute;
@@ -127,7 +130,7 @@
   top: 10px;    /* Keep icon at the top */
   font-size: 24px;
   cursor: pointer;
-  color: #000;  /* Adjust color as needed */
+  /* color: #000;  Adjust color as needed */
 }
 
 /* Make modal responsive */
@@ -226,6 +229,7 @@ table {
   border-spacing: 0;
   overflow: auto;
   border: 1px solid #ccc;
+  border-radius: 10px;
 }
 
 th, td {
@@ -320,20 +324,51 @@ tr:nth-child(even) {
 /* Export Button Container */
 .Create-button-container {
   position: fixed;
-  bottom: 50px;
-  right: 50px;
-  font-size: 20px;
+    bottom: 20px;
+    right: 50px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
 
+
+  /* Close Button Styles */
+  .close-button {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background-color: white;
+    border: 2px solid red;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; /* Ensure it appears above other elements */
+  }
+
+  .close-button svg {
+    width: 20px;
+    height: 20px;
+    fill: red; /* Color for the close icon */
+  }
+
+  .close-button:hover {
+    background-color: #da2127;
+  }
+
+  .close-button:hover svg {
+    fill: white; /* Change color on hover */
+  }
+
 .Create-button {
-  padding: 10px;
+  padding: 10px 20px;
   background-color: #ff3333;
   color: #fff;
-  font-size: 25px;
   border: none;
-  border-radius: 10px;
+  border-radius: 4px;
   cursor: pointer;
 }
 .Open-button {
@@ -409,7 +444,7 @@ tr:nth-child(even) {
   z-index: 1;
 }
 
-.close-button {
+/* .close-button {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -417,7 +452,7 @@ tr:nth-child(even) {
   border-radius: 20px;
   border: none;
   z-index: 2;
-}
+} */
 .Details  input{
   border: none;
   border-bottom: 2px solid #000000;
@@ -618,15 +653,15 @@ h2 {
   color: #da2127;
 }
 
-.close-button {
+/* .close-button {
   position: absolute;
   top: 10px;
   right: 10px;
   background-color: transparent;
-  border: none;
+  border: 1px solid red;
   font-size: 16px;
   cursor: pointer;
-}
+} */
 
 .close-button:hover {
   color: red; /* Optional: Change color on hover */
@@ -766,4 +801,115 @@ border: none;
   100% {
     transform: rotate(360deg);
   }
+}
+
+
+/* Container for paginator */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+/* Paginator wrapper */
+.mat-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Spacing between buttons */
+}
+
+/* Paginator buttons */
+.mat-paginator .mat-paginator-navigation-previous,
+.mat-paginator .mat-paginator-navigation-next {
+  width: 40px;
+  height: 40px;
+  background-color: #e0e0e0; /* Grey background for disabled state */
+  border-radius: 8px; /* Rounded corners */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: not-allowed;
+  border: none;
+}
+
+.mat-paginator .mat-paginator-navigation-previous.mat-button-disabled,
+.mat-paginator .mat-paginator-navigation-next.mat-button-disabled {
+  background-color: #e0e0e0; /* Grey background for disabled state */
+  color: #a0a0a0; /* Disabled color */
+}
+
+.mat-paginator .mat-paginator-navigation-previous:not(.mat-button-disabled),
+.mat-paginator .mat-paginator-navigation-next:not(.mat-button-disabled) {
+  cursor: pointer;
+  background-color: #ffffff; /* White background for active state */
+  border: 1px solid #dcdcdc;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.mat-paginator .mat-paginator-navigation-previous:hover:not(.mat-button-disabled),
+.mat-paginator .mat-paginator-navigation-next:hover:not(.mat-button-disabled) {
+  background-color: #f0f0f0; /* Hover effect */
+  border-color: #c0c0c0;
+}
+
+/* Paginator numbers */
+.mat-paginator .mat-paginator-range-label,
+.mat-paginator .mat-paginator-page-size,
+.mat-paginator .mat-paginator-icon {
+  display: none; /* Hide unwanted elements like range and page-size selectors */
+}
+
+.mat-paginator .mat-page-number {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.mat-paginator .mat-page-number.active {
+  border: 2px solid #6c3eff; /* Purple border for the active page */
+  color: #6c3eff;
+}
+
+.mat-paginator .mat-page-number:hover {
+  background-color: #f5f5f5;
+}
+
+/* Ellipsis */
+.mat-paginator .ellipsis {
+  font-size: 18px;
+  color: #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+}
+
+/* Hide paginator buttons when not needed */
+.mat-paginator .mat-paginator-navigation-previous.mat-button-disabled,
+.mat-paginator .mat-paginator-navigation-next.mat-button-disabled {
+  pointer-events: none; /* Disabled cursor when inactive */
+}
+
+
+::ng-deep .mat-mdc-paginator-container{
+  display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 8px;
+    flex-wrap: wrap;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    min-height: var(--mat-paginator-container-size);
 }

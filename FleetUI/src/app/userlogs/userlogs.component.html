@@ -131,6 +131,9 @@
           </tr>
         </thead>
         <tbody class="table-body">
+          <tr *ngIf="taskData.length === 0">
+            <td colspan="6" class="iconTable">No data found</td>
+          </tr>
           <tr *ngFor="let item of taskData; index as i">
             <td class="table-cell">{{ item.dateTime }}</td>
             <td class="table-cell">{{ i + 1 }}</td>
@@ -155,6 +158,9 @@
           </tr>
         </thead>
         <tbody class="table-body">
+          <tr *ngIf="robotData.length === 0">
+            <td colspan="6" class="iconTable">No data found</td>
+          </tr>
           <tr *ngFor="let item of robotData">
             <td class="table-cell">{{ item.dateTime }}</td>
             <td class="table-cell">{{ item.roboId }}</td>
@@ -178,6 +184,9 @@
           </tr>
         </thead>
         <tbody class="table-body">
+          <tr *ngIf="fleetData.length === 0">
+            <td colspan="6" class="iconTable">No data found</td>
+          </tr>
           <tr *ngFor="let item of fleetData">
             <td class="table-cell">{{ item.dateTime }}</td>
             <td class="table-cell">{{ item.moduleName }}</td>
@@ -225,7 +234,7 @@
             <div class="button-container">
               <button (click)="exportData('csv')">Export as CSV</button>
               <button (click)="exportData('excel')">Export as Excel</button>
-             
+
             </div>
           </div>
         </div>
