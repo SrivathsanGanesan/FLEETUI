@@ -982,9 +982,10 @@ export class EnvmapComponent implements AfterViewInit {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
     const targetElement = event.target as HTMLElement;
     // Check if the click was on the "Clear" button, and if so, return early
-    if (targetElement.classList.contains('clear-btn')) {
+    if (targetElement.classList.contains('clear-btn') || targetElement.classList.contains('close-btn')) {
       return;
     }
+
     const canvas = this.imagePopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
@@ -1028,9 +1029,16 @@ export class EnvmapComponent implements AfterViewInit {
     const nodesJson = JSON.stringify(this.Nodes, null, 2);
     console.log('Node details:', nodesJson);
   }
+
+  
+  resolution: number | null = null;
+  originX: number | null = null;
+  originY: number | null = null;
+
   open(): void {
+    
     if (!this.currEditMap)
-      if (this.mapName && this.siteName) {
+      if (this.mapName && this.siteName ) {
         for (let map of this.EnvData) {
           if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
             alert('Map name seems already exists, try another');
@@ -1044,7 +1052,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.ratio = Number(
           (document.getElementById('resolution') as HTMLInputElement).value
         );
-    if (this.mapName && this.siteName && this.imageSrc) {
+    if (this.mapName && this.siteName && this.imageSrc && this.resolution && this.originX && this.originY) {
       this.fileName = null;
       this.showImage = true;
       const img = new Image();
@@ -1073,8 +1081,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.mapService.setOnCreateMapImg(this.imageBase64);  // Save the Base64 image in the cookie
       }
     } else {
-      alert('Please enter both Map Name and Site Name before clicking Open.');
-    }
+      this.validationMessage = 'Please fill in all the required fields.';    }
   }
   close(): void {
     this.currEditMapChange.emit(false);

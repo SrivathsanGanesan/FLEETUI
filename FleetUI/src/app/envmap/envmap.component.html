@@ -45,7 +45,7 @@
           <div class="Res1">
             <input 
               type="number"
-
+              [(ngModel)]="resolution"
               id="resolution"
               #resolutionInput
               placeholder="Resolution"
@@ -62,8 +62,8 @@
           class="origin-coor"
           style="display: flex; align-items: center; gap: 10px"
         >
-          <input type="number" id="X" placeholder="X" (keyup.enter)="open()" />
-          <input type="number" id="Y" placeholder="Y" (keyup.enter)="open()" />
+          <input type="number" id="X" placeholder="X" [(ngModel)]="originX" (keyup.enter)="open()" />
+          <input type="number" id="Y" placeholder="Y" [(ngModel)]="originY" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
@@ -115,6 +115,7 @@
               [(ngModel)]="distanceBetweenPoints"
               placeholder="Distance in meters"
             />
+            <br>
             <!-- Display error message conditionally -->
             <div *ngIf="showError" class="distance-error-message">
               Please enter distance between two points in meters.
@@ -451,6 +452,9 @@
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
+    </div>
+    <div *ngIf="validationMessage" class="validation-error">
+      {{ validationMessage }}
     </div>
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
