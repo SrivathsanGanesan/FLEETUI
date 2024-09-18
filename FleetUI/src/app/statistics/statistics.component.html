@@ -158,12 +158,11 @@
           <button class="view-all-btn">View All</button>
         </div>
         <table class="activity-table">
-          <tr *ngFor="let activity of filteredRobotActivities">
-            <td>{{ activity.id }}</td>
-            <td>
-              {{ activity.name }} - {{ activity.task }} -
-              {{ activity.progress }}% - {{ activity.status }}
-            </td>
+          <tr *ngFor="let activity of this.filteredOperationActivities">
+            <td>{{ activity.taskId }}</td>
+            <td>{{ activity.taskName }}</td>
+            <td>{{ activity.status }}</td>
+            <!-- - {{ acctivity.progress }}% - {{ activity.status }} -->
           </tr>
         </table>
       </div>
