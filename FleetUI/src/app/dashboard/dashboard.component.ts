@@ -32,8 +32,6 @@ enum ZoneType {
   PARKING_ZONE = 'Parking Zone',
 }
 
-
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -66,6 +64,7 @@ export class DashboardComponent implements AfterViewInit {
   startY = 0;
   showChart2 = true; // Controls blur effect for Chart2
   showChart3 = true;
+  assetImages: { [key: string]: HTMLImageElement } = {};
   zoneColors: { [key in ZoneType]: string } = {
     [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)', // Red with 30% opacity
     [ZoneType.MEDIUM_SPEED_ZONE]: 'rgba(255, 165, 0, 0.3)', // Orange with 30% opacity
@@ -95,6 +94,7 @@ export class DashboardComponent implements AfterViewInit {
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
   ) {
+
     if (this.projectService.getIsMapSet()) return;
     this.onInitMapImg(); // yet to remove..
   }
@@ -107,6 +107,14 @@ export class DashboardComponent implements AfterViewInit {
     //   // this.cdRef.detectChanges(); // Detect changes to ensure DOM is ready
     //   this.loadModelCanvas();     // Safely load the modelCanvas
     // }
+    
+    // Initialize asset images in the constructor
+    this.assetImages = {
+      'docking': new Image(),
+      'charging': new Image()
+    };
+    this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
+    this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
   }
 
   async getMapDetails() {
@@ -119,10 +127,10 @@ export class DashboardComponent implements AfterViewInit {
     
     this.nodes = mapData.nodes;
     this.edges = mapData.edges;
-    this.assets = mapData.assets;
+    this.assets = mapData.stations;
     this.zones = mapData.zones;
+    
   }
-  
 
   // guess no need..
   async ngOnInit() {
@@ -196,7 +204,6 @@ export class DashboardComponent implements AfterViewInit {
     this.loadCanvas();  // Redraw the canvas based on the updated state
   }
 
-
   getliveAmrPos() {
     const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos`;
     if (this.eventSource) this.eventSource.close();
@@ -241,67 +248,100 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
  
-    draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
-      const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Calculate the position to center the image
-      const imgWidth = img.width * this.zoomLevel;
-      const imgHeight = img.height * this.zoomLevel;
+  draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Calculate the position to center the image
+    const imgWidth = img.width * this.zoomLevel;
+    const imgHeight = img.height * this.zoomLevel;
 
-      const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
-      const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
-      // Apply transformation for panning and zooming
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.scale(this.zoomLevel, this.zoomLevel);
+    const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+    const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
+    // Apply transformation for panning and zooming
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.scale(this.zoomLevel, this.zoomLevel);
 
-      // Draw the image
-      ctx.drawImage(img, 0, 0);
+    // Draw the image
+    ctx.drawImage(img, 0, 0);
 
-      if(!this.showModelCanvas) return;
-      // Draw nodes on the image
-      this.nodes.forEach((node) => {
-        const transformedY = img.height - node.nodePosition.y;
-        this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
-      });
-      
-      // Draw edges between nodes
-      this.edges.forEach((edge) => {
-        const startNode = this.nodes.find(n => n.nodeId === edge.startNodeId);
-        const endNode = this.nodes.find(n => n.nodeId === edge.endNodeId);
-        if (startNode && endNode) {
-          const startPos = { x: startNode.nodePosition.x, y: startNode.nodePosition.y };
-          const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
-          const transformedStartY = img.height - startPos.y;
-          const transformedEndY = img.height - endPos.y;
-          this.drawEdge(ctx,
-            { x: startPos.x, y: transformedStartY }, 
-            { x: endPos.x, y: transformedEndY }, 
-            edge.direction, 
-            edge.startNodeId, 
-            edge.endNodeId            
-          );          
-        }
-
-      });
-
-
-
-      this.zones.forEach((zone) => {
-        // Re-plot the points of the zone
-        // zone.pos.forEach((point, index) => {
-        //   // Plot the first point in violet and others in red
-        //   const isFirstPoint = index === 0;
-        //   this.plotZonePoint(point.x, point.y, isFirstPoint);
-        // });
-        this.plottedPoints = zone.pos;
-        this.zoneType = zone.type;
-        this.drawLayer(ctx);
-        this.plottedPoints = [];
-      });
+    if(!this.showModelCanvas) return;
+    // Draw nodes on the image
+    this.nodes.forEach((node) => {
+      const transformedY = img.height - node.nodePosition.y;
+      this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+    });
     
+    // Draw edges between nodes
+    this.edges.forEach((edge) => {
+      const startNode = this.nodes.find(n => n.nodeId === edge.startNodeId);
+      const endNode = this.nodes.find(n => n.nodeId === edge.endNodeId);
+      if (startNode && endNode) {
+        const startPos = { x: startNode.nodePosition.x, y: startNode.nodePosition.y };
+        const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+        const transformedStartY = img.height - startPos.y;
+        const transformedEndY = img.height - endPos.y;
+        this.drawEdge(ctx,
+          { x: startPos.x, y: transformedStartY }, 
+          { x: endPos.x, y: transformedEndY }, 
+          edge.direction, 
+          edge.startNodeId, 
+          edge.endNodeId            
+        );          
+      }
+
+    });
+
+
+
+    this.zones.forEach((zone) => {
+      // Re-plot the points of the zone
+      // zone.pos.forEach((point, index) => {
+      //   // Plot the first point in violet and others in red
+      //   const isFirstPoint = index === 0;
+      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
+      // });
+      this.plottedPoints = zone.pos;
+      this.zoneType = zone.type;
+      this.drawLayer(ctx);
+      this.plottedPoints = [];
+    });
+    
+    
+    this.assets.forEach((asset) =>
+      this.plotAsset(ctx,asset.x, asset.y, asset.type)
+    );
     // ctx.restore(); // Reset transformation after drawing
   }
+
+  private plotAsset(ctx : CanvasRenderingContext2D,x: number, y: number, assetType: string): void {
+    // const canvas = this.overlayCanvas.nativeElement;
+    // const ctx = this.overlayCanvas.nativeElement.getContext('2d');
+    const image = this.assetImages[assetType];
+    // const transformedY = img.height - y; // Flip the Y-axis
+    // if (this.isPositionOccupied(x, transformedY)) {
+    //   alert('This position is already occupied by a node or asset. Please choose a different location.');
+    //   return;
+    // }
+  
+    if (image && ctx) {
+      const imageSize = 50; // Set image size
+      ctx.drawImage(
+        image,
+        x - imageSize / 2,
+        y - imageSize / 2,
+        imageSize,
+        imageSize
+      );
+    }
+
+    // this.assets = this.assets.map((asset) => {
+    //   if (this.selectedAsset?.id === asset.id)
+    //     asset.orientation = this.orientationAngle;
+    //   return asset;
+    // });
+  }
+
   drawLayer(ctx : CanvasRenderingContext2D): void {
     // const canvas = this.overlayCanvas.nativeElement;
     // const ctx = canvas.getContext('2d');
@@ -513,7 +553,6 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
   
-
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;
   }
