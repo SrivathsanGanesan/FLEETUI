@@ -1,3 +1,7 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
 
 .mainContent {
   position: absolute;
@@ -14,25 +18,25 @@
   .header-section {
     margin-bottom: 10px;
   }
-  
+
   .header-title {
     font-size: 36px;
     font-weight: bold;
     color: #DA2127;
     margin: 0;
   }
-  
+
   .subheader-container {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
   }
-  
+
   .subheader-text {
     font-size: 16px;
     color: #333;
   }
-  
+
   .subheader-icon {
     width: 23px;
     height: 13px;

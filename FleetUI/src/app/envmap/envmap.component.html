@@ -43,7 +43,7 @@
         <div class="Res">
           <label for="resolution">Resolution</label>
           <div class="Res1">
-            <input 
+            <input
               type="number"
                 min="0"
                 max="1000"
@@ -82,7 +82,7 @@
         placeholder="Enter height"
         (keyup.enter)="open()"
       />
-      
+
       <label for="width">Enter Width (m)</label>
       <input
         type="number"
@@ -148,7 +148,7 @@
         class="node-details-popup"
         [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
       >
-      
+
         <div class="sampleCSS">
           <div class="node_details">
             <p>Node Details</p>
@@ -453,9 +453,23 @@
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
     </div>
+    <!-- <button class="close-button" (click)="close()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="24"
+        height="24"
+      >
+        <path fill="none" d="M0 0h24v24H0z" />
+        <path
+          d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"
+        />
+      </svg>
+    </button> -->
     <div class="button-container" *ngIf="!showImage">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
+
     </div>
   </div>
 </div>

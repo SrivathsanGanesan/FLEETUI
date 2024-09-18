@@ -91,6 +91,7 @@
     color: #000000;
     font-size: 13px;
     border-bottom: 1px solid #ddd;
+    text-align: left;
   }
 
   td {
@@ -274,6 +275,16 @@
   }
   .search-box input::placeholder {
     color: #aaa;
+  }
+
+  th, td {
+    border: 1px solid #ffffff;
+    padding:10px 5px 10px 10px;
+    height: 30px;
+  }
+  td{
+    text-align: center;
+    padding-left: 20px;
   }
 
   .search-btn {

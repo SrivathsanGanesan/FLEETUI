@@ -1,4 +1,4 @@
-<div class="flex h-screen">
+<div class="">
   <app-sidenavbar></app-sidenavbar>
   <div>
     <div class="mainContent">
@@ -38,7 +38,7 @@
       <!-- Buttons -->
       <div class="button-container">
         <div class="button-frame">
-          <div class="mb-4">
+          <div class="">
             <button
               class="button"
               [ngClass]="{
@@ -157,12 +157,22 @@
                 </tr>
               </tbody>
             </table>
+            <div class="paginator-container" *ngIf="currentTable === 'Environment' && !imageUploaded">
+              <mat-paginator
+                [length]="filteredTaskData.length"
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 15]"
+                (page)="onPageChange($event)"
+                showFirstLastButtons
+              >
+              </mat-paginator>
+            </div>
 
             <table
 
               *ngIf="currentTable === 'robot'"
             >
-              <thead class="bg-gray-50">
+              <thead >
                 <tr>
                   <th
 
@@ -209,6 +219,16 @@
                 </tr>
               </tbody>
             </table>
+            <div class="paginator-container" *ngIf="currentTable === 'robot' && !imageUploaded" >
+              <mat-paginator
+                [length]="filteredTaskData.length"
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 15]"
+                (page)="onPageChange($event)"
+                showFirstLastButtons
+              >
+              </mat-paginator>
+            </div>
             <!-- <button
               class="ASR-button"
               *ngIf="currentTable === 'robot'"
@@ -253,7 +273,7 @@
               ></app-ipscanner>
             </div>
 
-            <table *ngIf="currentTable === 'robot'">
+            <table *ngIf="currentTable === 'robot'" >
               <thead>
                 <tr>
                   <th>IP</th>
@@ -284,6 +304,16 @@
                 </tr>
               </tbody>
             </table>
+            <div class="paginator-container" *ngIf="currentTable === 'robot' && !imageUploaded" >
+              <mat-paginator
+                [length]="filteredTaskData.length"
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 15]"
+                (page)="onPageChange($event)"
+                showFirstLastButtons
+              >
+              </mat-paginator>
+            </div>
 
             <div *ngIf="currentTab === 'fleet'">
               <ul class="tab-menu">
@@ -376,7 +406,18 @@
  <div>
     <form (ngSubmit)="saveItem()">
       <div class="modal-header">
-        <span class="close-icon" (click)="closeroboPopup()">&#10005;</span>
+        <span class="close-icon close-button" (click)="closeroboPopup()">
+        <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+              >
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                  d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"
+                />
+              </svg></span>
         <h2>Add Robot</h2>
       </div>
 

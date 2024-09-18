@@ -4,6 +4,7 @@ import {
   ViewChild,
   AfterViewInit,
   ChangeDetectorRef,
+  ViewEncapsulation,
   Input,
   viewChild,
 } from '@angular/core';
@@ -16,6 +17,7 @@ import { ProjectService } from '../services/project.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { EnvmapComponent } from '../envmap/envmap.component';
 import { AnyAaaaRecord } from 'node:dns';
+import { PageEvent } from '@angular/material/paginator';
 
 interface Poll {
   ip: string;
@@ -27,7 +29,8 @@ interface Poll {
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.css']
+  styleUrls: ['./configuration.component.css'],
+  // encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
 })
 export class ConfigurationComponent implements AfterViewInit {
   // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
@@ -64,11 +67,18 @@ export class ConfigurationComponent implements AfterViewInit {
 
   searchTerm: string = '';
   filteredEnvData: any[] = [];
+  filteredTaskData: any[] = [];
   filteredRobotData: any[] = [];
 
   isScanning = false;
   EnvData: any[] = []; // map details..
 
+  onPageChange(event: PageEvent) {
+    this.setPaginatedData();
+  }
+  setPaginatedData() {
+    throw new Error('Method not implemented.');
+  }
   currEditMap: boolean = false;
   currEditMapDet : any | null = null;
   agvKinematicsOptions: any[] =  [
