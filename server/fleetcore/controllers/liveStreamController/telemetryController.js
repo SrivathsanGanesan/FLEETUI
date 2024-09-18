@@ -97,9 +97,42 @@ const getRoboStateCount = async (req, res) => {
   }
 };
 
+const getRoboActivities = async (req, res) => {
+  const { mapId } = req.body;
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(400).json({ msg: "Map not found!", map: null });
+    const map = await Map.findOne({ _id: mapId });
+    let roboActivities = [
+      {
+        roboId: 1,
+        roboName: "AMR-001",
+        task: "PICK SCREWS",
+        taskStatus: "In Progress",
+        desc: "N/A",
+      },
+      {
+        roboId: 2,
+        roboName: "AMR-002",
+        task: "DROP SCREWS",
+        taskStatus: "In Progress",
+        desc: "N/A",
+      },
+    ];
+    return res
+      .status(200)
+      .json({ roboActivities: roboActivities, map: map, msg: "data sent!" });
+  } catch (error) {
+    console.error("Error in getting tasks status :", err);
+    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getAgvTelemetry,
   getGrossTaskStatus,
   getRoboStateCount,
+  getRoboActivities,
   mqttClient,
 };

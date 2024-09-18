@@ -1,4 +1,5 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
+
 const fleetTasks = {
   tasks: [
     {
@@ -77,7 +78,7 @@ const getFleetTask = (req, res, next) => {
 };
 
 const getTasks = async (req, res) => {
-  const mapId = req.params.mapId;
+  const { mapId } = req.body;
   try {
     //..
     let taskData = req.fleetData;
@@ -107,4 +108,50 @@ const getTasks = async (req, res) => {
   }
 };
 
-module.exports = { getFleetTask, getTasks };
+const getCurrTasksActivities = async (req, res) => {
+  //yet to remove..
+  const currFleetTasks = {
+    taskDet: [
+      {
+        taskId: Math.floor(Math.random() * 10),
+        taskName: "PICK SCREWS",
+        status: "TaskInProgress",
+      },
+      {
+        taskId: Math.floor(Math.random() * 10),
+        taskName: "DROP SCREWS",
+        status: "ToDo",
+      },
+    ],
+  };
+  const { mapId } = req.body;
+  try {
+    //..
+    // let taskData = req.fleetData;
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(500).json({ msg: "map not exists", map: null });
+    // Needed one!
+    /* const mapData = await Map.findOneAndUpdate(
+      { _id: mapId },
+      {
+        $push: {
+          tasks: { $each: fleetTasks.tasks }, // can push multiple entries to the array using $each
+        },
+      }
+      // { new: true } // which returns the updated document of the Map..
+    ); */
+
+    return res.status(200).json({
+      msg: "data sent",
+      tasks: currFleetTasks.taskDet,
+    });
+  } catch (err) {
+    console.log("error occured : ", err);
+    if (err.name === "CastError")
+      return res.status(400).json({ msg: "not valid map Id" });
+    res.status(500).json({ opt: "failed", error: err });
+  }
+};
+
+module.exports = { getFleetTask, getTasks, getCurrTasksActivities };

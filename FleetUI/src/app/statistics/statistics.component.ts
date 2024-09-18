@@ -11,73 +11,12 @@ import { ProjectService } from '../services/project.service';
 export class StatisticsComponent {
   currentView: string = 'operation'; // Default to 'operation'
   operationPie: number[] = [0, 0, 0, 0, 0];
-  selectedMap: any;
+  selectedMap: any | null = null;
+  operationActivities: any[] = [];
 
-  robotActivities = [
-    {
-      id: 1,
-      name: 'saibala ',
-      task: 'Transporting materials',
-      progress: 15,
-      status: 'Actively Working',
-    },
-    {
-      id: 2,
-      name: 'AMR-002',
-      task: 'Transporting materials',
-      progress: 42,
-      status: 'Actively Working',
-    },
-    {
-      id: 3,
-      name: 'AMR-003',
-      task: 'Transporting materials',
-      progress: 90,
-      status: 'Actively Working',
-    },
-    {
-      id: 4,
-      name: 'AMR-003',
-      task: 'Transporting materials',
-      progress: 90,
-      status: 'Actively Working',
-    },
-    {
-      id: 5,
-      name: 'AMR-002',
-      task: 'Transporting materials',
-      progress: 42,
-      status: 'Actively Working',
-    },
-    {
-      id: 6,
-      name: 'AMR-003',
-      task: 'Transporting materials',
-      progress: 90,
-      status: 'Actively Working',
-    },
-    {
-      id: 7,
-      name: 'AMR-003',
-      task: 'Transporting materials',
-      progress: 90,
-      status: 'Actively Working',
-    },
-    {
-      id: 8,
-      name: 'AMR-003',
-      task: 'Transporting materials',
-      progress: 90,
-      status: 'Actively Working',
-    },
-    {
-      id: 9,
-      name: 'AMR-003',
-      task: 'Transporting materials',
-      progress: 90,
-      status: 'Actively Working',
-    },
-  ];
+  // this.operationActivities = [
+  // { taskId: 9, taskName: 'AMR-003', task: 'Transporting materials', progress: 90, status: 'Actively Working', },
+  // ];
 
   notifications = [
     { message: 'Low Battery - AMR-001', timestamp: '2024-08-16 14:32' },
@@ -86,10 +25,10 @@ export class StatisticsComponent {
     { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
     { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
     { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
-    { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
+    // { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   ];
 
-  filteredRobotActivities = this.robotActivities;
+  filteredOperationActivities = this.operationActivities;
   filteredNotifications = this.notifications;
 
   constructor(
@@ -117,6 +56,37 @@ export class StatisticsComponent {
     setInterval(async () => {
       this.operationPie = await this.fetchTasksStatus();
     }, 1000 * 2);
+    this.operationActivities = await this.fetchCurrTasksStatus();
+    this.filteredOperationActivities = this.operationActivities;
+    setInterval(async () => {
+      let currTasks = await this.fetchCurrTasksStatus();
+      this.filteredOperationActivities.push(currTasks[0]);
+      // console.log(this.operationActivities);
+      // this.filteredOperationActivities = [
+      //   ...this.filteredNotifications,
+      //   currTasks[0],
+      // ];
+    }, 1000 * 10);
+  }
+
+  async fetchCurrTasksStatus(): Promise<number[]> {
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/curr-task-activities`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mapId: this.selectedMap.id }),
+      }
+    );
+    // if(!response.ok) throw new Error(`Error occured with status code of : ${response.status}`)
+    let data = await response.json();
+    if (data.error) {
+      console.log('Err occured while getting tasks status : ', data.error);
+      return [];
+    }
+    if (data.tasks) return data.tasks;
+    return [];
   }
 
   async fetchTasksStatus(): Promise<number[]> {
@@ -145,10 +115,10 @@ export class StatisticsComponent {
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     const query = input.value.toLowerCase();
-    this.filteredRobotActivities = this.robotActivities.filter(
+    this.filteredOperationActivities = this.operationActivities.filter(
       (activity) =>
-        activity.name.toLowerCase().includes(query) ||
-        activity.task.toLowerCase().includes(query) ||
+        activity.taskName.toLowerCase().includes(query) ||
+        activity.taskId.toString().toLowerCase().includes(query) ||
         activity.status.toLowerCase().includes(query)
     );
   }
