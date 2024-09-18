@@ -935,8 +935,9 @@ export class ConfigurationComponent implements AfterViewInit {
 
   // handle the data here..
   saveRoboInfo(): void {
-    // console.log(this.currentRoboDet);
-    // console.log(this.formData);
+    console.log(this.currentRoboDet);
+    console.log(this.formData);
+    this.isPopupOpen = false;
   }
 
   closeroboPopup(): void {
