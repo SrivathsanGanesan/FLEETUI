@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { AuthService } from '../auth.service';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-user-management',
@@ -8,6 +9,10 @@ import { AuthService } from '../auth.service';
   styleUrl: './user-management.component.css',
 })
 export class UserManagementComponent implements OnInit {
+onPageChange($event: PageEvent) {
+throw new Error('Method not implemented.');
+}
+filteredTaskData: any;
   constructor(private authService: AuthService) {}
 
   userId = 0;
