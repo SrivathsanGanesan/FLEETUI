@@ -61,11 +61,16 @@ export class TasksComponent implements OnInit, AfterViewInit {
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
     const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/${this.mapData.id}`,
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks`,
       {
         method: 'POST',
         credentials: 'include',
-        body: JSON.stringify({ timeStamp1: '', timeStamp2: '' }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.mapData.id,
+          timeStamp1: '',
+          timeStamp2: '',
+        }),
       }
     );
     // if (!response.ok)

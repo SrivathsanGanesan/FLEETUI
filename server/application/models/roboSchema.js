@@ -16,15 +16,16 @@ const roboSchema = new Schema(
     ipAdd: { type: String, default: "" },
     imgUrl: { type: String, default: "" },
     macAdd: { type: String, default: "" }, // make it unique..
-    status: { type: String, required: true, default: "idle" },
+    status: { type: String, default: "idle" },
     location: {
       type: [{ x: Number, y: Number, _id: false }],
       _id: false,
       default: [{ x: 0, y: 0 }],
     },
-    batteryStatus: { type: Number, required: true, min: 0, max: 100 },
+    batteryStatus: { type: Number, min: 0, max: 100 },
     roboTask: [{ type: String, _id: false }],
     idleRate: { type: Number, default: 0 },
+    grossInfo: { type: Schema.Types.Mixed, default: {} },
     error: {
       type: [{ type: String }],
       default: [],

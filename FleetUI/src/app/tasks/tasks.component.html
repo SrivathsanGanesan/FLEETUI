@@ -75,7 +75,7 @@
       <!-- Table -->
       <div class="table-container">
         <div class="table-wrapper">
-          
+
           <!-- Table container without scroll -->
           <div class="table-responsive">
             <table class="table">
@@ -91,6 +91,9 @@
                 </tr>
               </thead>
               <tbody>
+                <tr *ngIf="paginatedData.length === 0">
+                  <td colspan="6" class="iconTable">No data found</td>
+                </tr>
                 <tr *ngFor="let item of paginatedData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td>{{ i + 1 + (paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10) }}</td>
                   <td>{{ item.taskId }}</td>
@@ -114,8 +117,8 @@
                         <div class="slider slider--2"></div>
                         <div class="slider slider--3"> Activate</div>
                       </label>
-                  
-      
+
+
                       <!-- Cancel Button -->
                       <button class="btn-common btn-cancel" (click)="onCancel(item)">Cancel</button>
                     </div>
@@ -126,7 +129,7 @@
           </div>
         </div>
       </div>
-      
+
 
 
         <!-- Paginator -->
@@ -140,7 +143,7 @@
       >
       </mat-paginator>
     </div>
-  
+
 
 
 

@@ -91,9 +91,11 @@ th {
   color: #000000;
   font-size: 13px;
   border-bottom: 1px solid #ddd;
+  text-align: left;
 }
 
 td {
+  text-align: center;
   font-size: 13px;
 }
 
