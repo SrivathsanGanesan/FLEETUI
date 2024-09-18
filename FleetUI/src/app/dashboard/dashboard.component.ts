@@ -26,7 +26,7 @@ export class DashboardComponent implements AfterViewInit {
   showDashboard = false;
   selectedFloor = 'Floor 1';
   floors = ['Floor 1'];
-  zoomLevel = 0.8;
+  zoomLevel = 0.9;
   isPanning = false;
   lastX = 0;
   lastY = 0;
@@ -37,7 +37,8 @@ export class DashboardComponent implements AfterViewInit {
   edges:any[]=[];
   zones:any[]=[];
   assets:any[]=[];
-
+  startX = 0;
+  startY = 0;
   showChart2 = true; // Controls blur effect for Chart2
   showChart3 = true;
 
@@ -140,8 +141,13 @@ export class DashboardComponent implements AfterViewInit {
       ? '../../assets/icons/off.svg'
       : '../../assets/icons/on.svg';
   }
-  toggleModelCanvas() {
+
+  async toggleModelCanvas() {
     this.showModelCanvas = !this.showModelCanvas;
+    if(!this.showModelCanvas) {
+      this.nodes = [];
+    }
+    else await this.getMapDetails()
     this.loadCanvas();  // Redraw the canvas based on the updated state
   }
 
@@ -170,54 +176,52 @@ export class DashboardComponent implements AfterViewInit {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
   
-    if (ctx) {
+      if (ctx) {
       const img = new Image();
       let imgName = this.projectService.getMapData();
       img.src = `http://${imgName.imgUrl}`;
-  
+
       img.onload = () => {
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
         canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
-        this.drawImageScaled(ctx, img);
-  
-        // Conditionally draw nodes based on showModelCanvas flag
-        if (this.showModelCanvas) {
-          this.nodes.forEach((node) => {
-            this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
-          });
-        }
+        this.draw(ctx, img);
+      
+        // // Conditionally draw nodes based on showModelCanvas flag
+        // if (this.showModelCanvas) {
+        //   this.nodes.forEach((node) => {
+        //     this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
+        //   });
+        // }
       };
     }
   }
-  // loadModelCanvas() {
-  //   const canvas = document.getElementById('modelCanvas') as HTMLCanvasElement;
-  //   if (!canvas) {
-  //     console.error('modelCanvas element not found in the DOM');
-  //     return;
-  //   }
-  //   const ctx = canvas.getContext('2d');
-  //   console.log(ctx);
-    
-    
-  //   if (ctx) {
-  //     // Set canvas dimensions
-  //     canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-  //     canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
-  
-  //     // Clear any previous drawings
-  //     // ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  //     // Draw nodes (assuming each node has properties like x, y, and nodeType or id)
-  //     this.nodes.forEach((node) => {
-  //       console.log( node.nodePosition.x, node.nodePosition.y, node.nodeId);
-  //       this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
-  //     });
-      
-  //   } else {
-  //     console.error('2D context not available');
-  //   }
-  // }
-  
+ 
+    draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
+      const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Calculate the position to center the image
+      const imgWidth = img.width * this.zoomLevel;
+      const imgHeight = img.height * this.zoomLevel;
+
+      const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+      const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
+      // Apply transformation for panning and zooming
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.scale(this.zoomLevel, this.zoomLevel);
+
+      // Draw the image
+      ctx.drawImage(img, 0, 0);
+
+      if(!this.showModelCanvas) return;
+      // Draw nodes on the image
+      this.nodes.forEach((node) => {
+        const transformedY = img.height - node.nodePosition.y;
+        this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+      });
+
+    // ctx.restore(); // Reset transformation after drawing
+  }
   drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
     // Set node style (for example, circle)
     ctx.beginPath();
@@ -231,18 +235,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillText(label, x + 12, y); // Place label slightly right to the node
   }
     
-  drawImageScaled(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-  
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.save();
-    ctx.translate(canvasWidth / 2 + this.offsetX, canvasHeight / 2 + this.offsetY);
-    ctx.scale(this.zoomLevel, this.zoomLevel);
-    ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
-    ctx.restore();
-  }
+
 
   getFloorMap(floor: string): string {
     switch (floor) {
@@ -304,7 +297,22 @@ export class DashboardComponent implements AfterViewInit {
       document.body.style.cursor = 'default';
     }
   };
+  handleZoom(event: WheelEvent) {
+    event.preventDefault();
+    const zoomIntensity = 0.1;
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
 
+    const mouseX = event.clientX - canvas.offsetLeft;
+    const mouseY = event.clientY - canvas.offsetTop;
+    const zoom = event.deltaY > 0 ? 1 - zoomIntensity : 1 + zoomIntensity;
+
+    this.offsetX -= (mouseX - this.offsetX) * (zoom - 1);
+    this.offsetY -= (mouseY - this.offsetY) * (zoom - 1);
+    this.zoomLevel *= zoom;
+
+    if (ctx) this.draw(ctx, new Image());
+  }
   togglePan() {
     this.isPanning = !this.isPanning;
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
