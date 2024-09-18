@@ -7,11 +7,11 @@ const roboProjSchema = new Schema(
     roboId: {
       type: Schema.Types.ObjectId,
       ref: "Robo",
-      required: true,
+      // required: true,
     },
     name: {
       type: String,
-      required: [true, "name of the robo required!"],
+      // required: [true, "name of the robo required!"],
       trim: true,
     },
   },
@@ -121,6 +121,7 @@ const mapSchema = new Schema(
     edges: { type: Schema.Types.Mixed, default: [] }, // type: [edgeSchema]
     stations: { type: Schema.Types.Mixed, default: [] }, // type: [stationSchema]
     zones: { type: Schema.Types.Mixed, default: [] }, // type: [zoneSchema]
+    roboPos: { type: Schema.Types.Mixed, default: [] },
     robots: { type: [roboProjSchema], default: [] },
     logTime: { type: [logTimeSchema], default: [] },
     throughPut: {

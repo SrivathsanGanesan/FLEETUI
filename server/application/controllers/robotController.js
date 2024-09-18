@@ -1,4 +1,4 @@
-const { Robo } = require("../models/mapSchema");
+const { Map, Robo } = require("../models/mapSchema");
 const { projectModel } = require("../../fleetcore/models/projectSchema");
 
 const eventStreamHeader = {
@@ -7,27 +7,41 @@ const eventStreamHeader = {
   Connection: "keep-alive",
 };
 
-const insertRoboId = async ({ roboId, roboName, projectName }) => {
+const insertRoboIdInProj = async ({ roboId, roboName, projectName }) => {
   const proj = await projectModel.findOneAndUpdate(
     { projectName: projectName }, // wanna add robo name.. to the ref
     {
       $push: { robots: { roboId, name: roboName } },
-    }
+    },
+    { new: true }
   );
   return proj;
+};
+
+const insertRoboIdInMap = async ({ roboId, roboName, mapId, mapName }) => {
+  const map = await Map.findOneAndUpdate(
+    { _id: mapId },
+    {
+      $push: { robots: { roboId: roboId, name: roboName } },
+    },
+    { new: true }
+  );
+
+  return map;
 };
 //..
 
 const createRobo = async (req, res, next) => {
-  const { projectName, roboName, ipAdd, macAdd, batteryStatus, roboTask } =
-    JSON.parse(req.body.roboData);
+  const { projectName, mapId, mapName, roboName, ipAdd, macAdd, grossInfo } =
+    req.body;
   try {
     const doc = await Robo.exists({ roboName: roboName });
+    const doc1 = await Map.exists({ _id: mapId });
     const doc2 = await projectModel.exists({ projectName: projectName });
-    if (!doc2)
+    if (!doc1 || !doc2)
       return res.status(400).json({
         exists: false,
-        msg: "invadlid project name or name not doesn't exists!",
+        msg: "invadlid project name or map, which doesn't exists!",
       });
     if (doc)
       return res
@@ -37,20 +51,38 @@ const createRobo = async (req, res, next) => {
       roboName,
       ipAdd,
       macAdd,
-      imgUrl: `localhost:3000/roboSpecification/${req.file.filename}`,
-      batteryStatus,
-      roboTask,
+      // imgUrl: `localhost:3000/roboSpecification/${req.file.filename}`,
+      // grossInfo
     }).save();
     const roboId = robo._id;
-    const resultDoc = await insertRoboId({ roboId, roboName, projectName });
+    const resultDoc = await insertRoboIdInProj({
+      roboId,
+      roboName,
+      projectName,
+    });
+    const isIdInserted = await insertRoboIdInMap({
+      roboId,
+      roboName,
+      mapId,
+      mapName,
+    });
+    if (!resultDoc || !isIdInserted)
+      await Robo.deleteOne({ roboName: roboName });
     if (!resultDoc)
-      return res
-        .status(400)
-        .json({ succeded: false, msg: "project name not exists!" });
+      return res.status(500).json({
+        succeded: false,
+        msg: "Robo refernce Id does not inserted in Project",
+      });
+    // 422 - Unprocessable Entity (could not processed properly due to invalid data provided)
+    if (!isIdInserted)
+      return res.status(422).json({
+        succeded: false,
+        msg: "Robo refernce Id does not inserted in Map",
+      });
     return res.status(201).json({ exits: false, msg: "data inserted!" });
   } catch (err) {
     console.log("err occs : ", err);
-    res.status(500).json({ msg: "error occured while inserting!" });
+    res.status(500).json({ error: err, msg: "error occured while inserting!" });
   }
 };
 
