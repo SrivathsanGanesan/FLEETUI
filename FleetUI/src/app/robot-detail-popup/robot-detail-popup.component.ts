@@ -48,12 +48,9 @@ export class RobotDetailPopupComponent {
   
 
 
-  isConnected: boolean = false; // Initial state
-  toggleLabel() {
-    // This method will be called whenever the checkbox changes state
-    this.isConnected = !this.isConnected;
+  onEmergencyStop() {
+    alert('Emergency Stop Pressed!');
   }
-  
 
   getClassForCircle(percentage: number, threshold: number): string {
     return percentage >= threshold ? 'filled' : '';

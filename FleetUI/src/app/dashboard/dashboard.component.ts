@@ -3,7 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   ViewChild,
-  viewChild,
+  
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
@@ -32,6 +32,11 @@ export class DashboardComponent implements AfterViewInit {
   lastY = 0;
   offsetX = 0;
   offsetY = 0;
+  mapDetails:any | null = null;
+  nodes:any[]= [];
+  edges:any[]=[];
+  zones:any[]=[];
+  assets:any[]=[];
 
   showChart2 = true; // Controls blur effect for Chart2
   showChart3 = true;
@@ -39,7 +44,7 @@ export class DashboardComponent implements AfterViewInit {
   recording = false;
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
-
+  showModelCanvas: boolean = false;  // Initially hide the modelCanvas
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -48,9 +53,30 @@ export class DashboardComponent implements AfterViewInit {
     this.onInitMapImg(); // yet to remove..
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
+    
     this.loadCanvas();
+    await this.getMapDetails();
+    if (this.showModelCanvas) {
+      // this.cdRef.detectChanges(); // Detect changes to ensure DOM is ready
+      this.loadModelCanvas();     // Safely load the modelCanvas
+    }
   }
+
+  async getMapDetails() {
+    let mapData = this.projectService.getMapData();
+    let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapData.mapName}`);
+    if (!response.ok) throw new Error(`Error with status code of ${response.status}`);
+    let data = await response.json();
+    if (!data.map) return;
+    mapData = data.map;
+    
+    this.nodes = mapData.nodes;
+    this.edges = mapData.edges;
+    this.assets = mapData.assets;
+    this.zones = mapData.zones;
+  }
+  
 
   // guess no need..
   async ngOnInit() {
@@ -90,7 +116,6 @@ export class DashboardComponent implements AfterViewInit {
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapArr[0].mapName}`
     );
     let mapData = await mapResponse.json();
-
     this.projectService.setMapData({
       ...mapArr[0],
       imgUrl: mapData.map.imgUrl,
@@ -115,6 +140,11 @@ export class DashboardComponent implements AfterViewInit {
       ? '../../assets/icons/off.svg'
       : '../../assets/icons/on.svg';
   }
+  toggleModelCanvas() {
+    this.showModelCanvas = !this.showModelCanvas;
+    this.loadCanvas();  // Redraw the canvas based on the updated state
+  }
+
 
   getliveAmrPos() {
     const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos`;
@@ -139,33 +169,76 @@ export class DashboardComponent implements AfterViewInit {
   loadCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-
+  
     if (ctx) {
       const img = new Image();
-      // img.src = this.getFloorMap(this.selectedFloor);
       let imgName = this.projectService.getMapData();
       img.src = `http://${imgName.imgUrl}`;
-
+  
       img.onload = () => {
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height =
-          canvas.parentElement?.clientHeight || window.innerHeight;
+        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
         this.drawImageScaled(ctx, img);
+  
+        // Conditionally draw nodes based on showModelCanvas flag
+        if (this.showModelCanvas) {
+          this.nodes.forEach((node) => {
+            this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
+          });
+        }
       };
     }
   }
-
+  loadModelCanvas() {
+    const canvas = document.getElementById('modelCanvas') as HTMLCanvasElement;
+    if (!canvas) {
+      console.error('modelCanvas element not found in the DOM');
+      return;
+    }
+    const ctx = canvas.getContext('2d');
+    console.log(ctx);
+    
+    
+    if (ctx) {
+      // Set canvas dimensions
+      canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+      canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+  
+      // Clear any previous drawings
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      // Draw nodes (assuming each node has properties like x, y, and nodeType or id)
+      this.nodes.forEach((node) => {
+        console.log( node.nodePosition.x, node.nodePosition.y, node.nodeId);
+        this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
+      });
+      
+    } else {
+      console.error('2D context not available');
+    }
+  }
+  
+  drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
+    // Set node style (for example, circle)
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, 2 * Math.PI); // Draw circle with radius 10
+    ctx.fillStyle = '#00f'; // Blue color
+    ctx.fill();
+  
+    // Add a label to the node
+    ctx.fillStyle = '#000'; // Black text color
+    ctx.font = '12px Arial';
+    ctx.fillText(label, x + 12, y); // Place label slightly right to the node
+  }
+    
   drawImageScaled(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
-
+  
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.save();
-    ctx.translate(
-      canvasWidth / 2 + this.offsetX,
-      canvasHeight / 2 + this.offsetY
-    );
+    ctx.translate(canvasWidth / 2 + this.offsetX, canvasHeight / 2 + this.offsetY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
     ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
     ctx.restore();
@@ -203,7 +276,11 @@ export class DashboardComponent implements AfterViewInit {
       document.body.style.cursor = 'grabbing';
     }
   }
-
+  // Rest of your existing component methods like panStart(), toggleONBtn(), etc.
+  panStartModelCanvas(event: MouseEvent) {
+    // Handle pan start for modelCanvas
+    console.log('Panning on Model Canvas', event);
+  }
   panMove = (event: MouseEvent) => {
     if (this.isPanning) {
       const deltaX = event.clientX - this.lastX;
@@ -235,13 +312,14 @@ export class DashboardComponent implements AfterViewInit {
 
   captureCanvas() {
     const element = document.getElementsByClassName('container')[0];
+    console.log('Container element:', element); // Log the container to check if it exists
     if (element) {
       domtoimage
         .toPng(element)
         .then((dataUrl: string) => {
           const link = document.createElement('a');
           link.href = dataUrl;
-          link.download = 'page_capture.png';
+          link.download = 'page_capture.png'; 
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -249,8 +327,11 @@ export class DashboardComponent implements AfterViewInit {
         .catch((error: Error) => {
           console.error('Error capturing page:', error);
         });
+    } else {
+      console.error('Container element not found.');
     }
   }
+  
 
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;

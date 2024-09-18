@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -33,6 +39,9 @@ export type ChartOptions = {
   styleUrls: ['./chart-timeline.component.css'],
 })
 export class ChartTimelineComponent implements OnInit {
+applyFilter(arg0: string) {
+throw new Error('Method not implemented.');
+}
   // @ViewChild('chart') chart: ChartComponent | undefined;
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
@@ -85,7 +94,7 @@ export class ChartTimelineComponent implements OnInit {
       chart: {
         id: 'area-datetime',
         type: 'area',
-        height: 230,
+        height: 250,
         zoom: {
           autoScaleYaxis: true,
         },

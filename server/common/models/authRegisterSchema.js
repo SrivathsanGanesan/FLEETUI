@@ -37,6 +37,10 @@ const authRegisterSchema = new Schema(
       min: 1,
       max: 3,
     },
+    createdBy: {
+      type: String,
+      default: "",
+    },
     projects: {
       type: [userProjListschema],
       default: [],

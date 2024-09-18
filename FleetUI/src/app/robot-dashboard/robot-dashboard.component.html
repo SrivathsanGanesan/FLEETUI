@@ -119,7 +119,8 @@
             
             
             <div class="charts-container">
-              <app-operation-pie></app-operation-pie>
+              
+
               
               <!-- <app-operation-pie
                 [series]="[310, 142, 240]"
@@ -136,6 +137,14 @@
                 
                 <app-chart-timeline></app-chart-timeline>
               </div>
+              <div class="radial">
+                <app-radial-chart>
+                  [labels]="['Completed', 'Inprogress', 'ToDo', 'Error', 'Cancelled']"
+                  [legendFontSize]="'14px'"
+                  [dataLabelFontSize]="'14px'"
+                </app-radial-chart>
+              </div>
+              
             </div>
 
 

@@ -5,8 +5,18 @@ const {
   logout,
   register,
 } = require("../controllers/auth/authController");
+const {
+  getUsers,
+  deleteUser,
+} = require("../controllers/userCredentials/fetchUsers");
 
+// auth..
 authRouter.post("/login", login);
-authRouter.post("/register", register);
 authRouter.get("/logout", logout);
+authRouter.post("/register", register);
+
+// fetch users..
+authRouter.get("/fetch-users", getUsers);
+authRouter.delete("/delete-user", deleteUser);
+
 module.exports = authRouter;

@@ -1,7 +1,7 @@
 <div class="flex h-screen">
-  <app-sidenavbar ></app-sidenavbar>
-  <div >
-    <div class="mainContent ">
+  <app-sidenavbar></app-sidenavbar>
+  <div>
+    <div class="mainContent">
       <div class="header-section">
         <h1 class="header-title">{{ activeHeader }}</h1>
         <div class="subheader-container">
@@ -18,44 +18,19 @@
         <!-- Search Bar -->
         <div class="search-filter-container">
           <div class="search-box">
-          <input
-            type="text"
-            placeholder="Search For Something..."
-            class="search-input"
-            [(ngModel)]="searchTerm"
-            (ngModelChange)="searchTermChanged()"
-          />
-          <button class="search-btn">
-            <img
-              src="../../assets/icons/download-removebg-preview.png"
-              alt="Search"
-            />
-          </button>
-          </div>
-        </div>
-
-        <!-- Date Filter and Date Inputs -->
-        <div class="date-filters" *ngIf="currentTable === 'Environment'">
-          <div class="date-inputs">
-            <label for="start-date" class="date-label">Start Date:</label>
             <input
-              type="date"
-              id="start-date"
-              (change)="onDateChange($event)"
-              class="date-input"
-              [min]="minDate"
-              [max]="maxDate"
+              type="text"
+              placeholder="Search For Something..."
+              class="search-input"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="searchTermChanged()"
             />
-
-            <label for="end-date" class="Enddate-label">End Date:</label>
-            <input
-              type="date"
-              id="end-date"
-              (change)="onDateChange($event)"
-              class="date-input"
-              [min]="minDate"
-              [max]="maxDate"
-            />
+            <button class="search-btn">
+              <img
+                src="../../assets/icons/download-removebg-preview.png"
+                alt="Search"
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -138,23 +113,21 @@
                   </th>
                 </tr>
               </thead>
-              <tbody >
+              <tbody>
                 <tr *ngIf="filteredEnvData.length === 0">
-                  <td colspan="5" class="iconTable">
-                    No data found
-                  </td>
+                  <td colspan="5" class="iconTable">No data found</td>
                 </tr>
                 <tr *ngFor="let item of filteredEnvData">
-                  <td >
+                  <td>
                     {{ item.mapName }}
                   </td>
-                  <td >
+                  <td>
                     {{ item.siteName }}
                   </td>
-                  <td >
+                  <td>
                     {{ item.date }}
                   </td>
-                  <td class="iconTable" >
+                  <td class="iconTable">
                     <div class="edit">
                       <img
                         src="../../assets/ConfigurationOptions/Edit.svg"
@@ -170,7 +143,7 @@
                       />
                     </div>
                   </td>
-                  <td  class="iconTable">
+                  <td class="iconTable">
                     <button class="sel-btn" (click)="selectMap(item)">
                       <!-- [disabled]="isButtonDisabled(item)" -->
                       <!-- SELECT -->
@@ -208,17 +181,15 @@
                   </th>
                 </tr>
               </thead>
-              <tbody >
+              <tbody>
                 <tr *ngIf="filteredRobotData.length === 0">
-                  <td colspan="3" class="iconTable">
-                    No data found
-                  </td>
+                  <td colspan="3" class="iconTable">No data found</td>
                 </tr>
                 <tr *ngFor="let item of filteredRobotData">
-                  <td >
+                  <td>
                     {{ item.column1 }}
                   </td>
-                  <td >
+                  <td>
                     {{ item.column2 }}
                   </td>
                   <td class="iconTable">
@@ -295,9 +266,7 @@
               </thead>
               <tbody>
                 <tr *ngIf="ipScanData.length === 0">
-                  <td colspan="6" class="iconTable">
-                    No data found
-                  </td>
+                  <td colspan="6" class="iconTable">No data found</td>
                 </tr>
                 <tr *ngFor="let item of ipScanData">
                   <td>{{ item.ip }}</td>
@@ -307,8 +276,9 @@
                   <td>{{ item.Status }}</td>
                   <td class="iconTable">
                     <!-- Add icon -->
-                    <button (click)="openPopup(item)" class="icon-button">                      <!-- You can use Font Awesome or any other icon library -->
-                      <img src="../../assets/icons/add.svg">
+                    <button (click)="openPopup(item)" class="icon-button">
+                      <!-- You can use Font Awesome or any other icon library -->
+                      <img src="../../assets/icons/add.svg" />
                     </button>
                   </td>
                 </tr>
@@ -352,22 +322,22 @@
               <div *ngIf="fleetTab === 'general'">
                 <!-- <h2>Edit the Fleet Parameters</h2> -->
                 <!-- Add content for the General tab -->
-                 <app-general></app-general>
+                <app-general></app-general>
               </div>
               <div *ngIf="fleetTab === 'plannar'">
                 <!-- <h2>Plannar Settings</h2> -->
                 <!-- Add content for the Plannar tab -->
-                 <app-planner></app-planner>
+                <app-planner></app-planner>
               </div>
               <div *ngIf="fleetTab === 'task'">
                 <!-- <h2>Task Management</h2> -->
                 <!-- Add content for the Task tab -->
-                 <app-task></app-task>
+                <app-task></app-task>
               </div>
               <div *ngIf="fleetTab === 'battery'">
                 <!-- <h2>Battery Information</h2> -->
                 <!-- Add content for the Battery tab -->
-                 <app-battery></app-battery>
+                <app-battery></app-battery>
               </div>
               <div *ngIf="fleetTab === 'communication'">
                 <!-- <h2>Communication Settings</h2> -->
@@ -399,7 +369,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- Popup form -->
 <div *ngIf="isPopupOpen" class="popup-overlay">

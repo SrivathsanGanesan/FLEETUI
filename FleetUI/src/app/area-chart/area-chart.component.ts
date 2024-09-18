@@ -32,6 +32,9 @@ export type ChartOptions = {
   styleUrls: ['./area-chart.component.css'],
 })
 export class AreaChartComponent implements OnInit {
+
+ currentFilter: string = 'today'; // To track the selected filter
+
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
@@ -67,7 +70,7 @@ export class AreaChartComponent implements OnInit {
         },
       ],
       chart: {
-        height: 230,
+        height: 250,
         type: 'area',
         background: '#FFFFFF',
       },
@@ -161,6 +164,14 @@ export class AreaChartComponent implements OnInit {
     }
   }
 
+   // Apply filter function when a filter is selected
+   applyFilter(filter: string) {
+    this.currentFilter = filter; // Update the current filter
+    this.updateChartWithFilter(); // Re-fetch data with the new filter
+  }
+  updateChartWithFilter() {
+    throw new Error('Method not implemented.');
+  }
   async updateThroughput() {
     if (!this.selectedMap || this.throuputTimeInterval) return;
     this.clearAllIntervals(this.throuputTimeInterval);

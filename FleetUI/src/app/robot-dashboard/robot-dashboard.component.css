@@ -87,7 +87,7 @@
   right: 1%;
   display: flex;
   justify-content: space-between;
-  gap: 1%;
+  gap: 2%;
 }
  
 .stat-card,.sale-card {
@@ -101,8 +101,6 @@
   position: relative;
   margin-bottom: 1%;
 }
- 
-
  
 .stat-value {
   font-size: 1.3vw;
@@ -193,11 +191,11 @@ h2 {
  
 /* Specific styling for Stat Card 3 (green color) */
 .stat-card-3 .loading svg polyline#back {
-  stroke: #4c57af33;
+  stroke: #4caf5033;
 }
  
 .stat-card-3 .loading svg polyline#front {
-  stroke: #212dd3;;
+  stroke: #4caf50;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
@@ -205,11 +203,11 @@ h2 {
 
 /* Specific styling for Stat Card 3 (green color) */
 .stat-card-4 .loading svg polyline#back {
-  stroke: #4caf5033;
+  stroke: #4c57af33;
 }
  
 .stat-card-4 .loading svg polyline#front {
-  stroke: #4caf50;
+  stroke: #212dd3;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
@@ -226,13 +224,12 @@ h2 {
 }
 
 
-
 /* Table stylings */
 .dashboard-container {
   display: flex;
   justify-content: space-between;
-  gap: 1%;
-  margin-top: 1%;
+  gap: 2%;
+  margin-top: 2%;
   padding: 0;
   width: 100%;
   box-sizing: border-box;
@@ -303,7 +300,7 @@ h2 {
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 0.5rem;
+  padding: 0.2rem;
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -317,7 +314,7 @@ h2 {
   width: 100%;
   border-collapse: collapse;
   margin: 0;
-  max-height: 6rem; /* Adjust height as needed */
+  max-height: 10rem; /* Adjust height as needed */
   overflow-y: auto;
   display: block;
 }
@@ -376,21 +373,31 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-top: 5%;
+  margin-top: 6%;
   width: 100%;
-  gap: 1%;
+  gap: 2%;
 }
 
 .robot-uptime-chart {
-  flex-grow: 2;
+  flex: 2 1 60%; /* Flex-grow 2, flex-shrink 1, takes 60% of available space */
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   padding: 1%;
-  width: 60%;
-  height: 270px;
+  height: auto; /* Height will adjust based on content */
+  min-height: 270px; /* Ensures a minimum height for smaller screens */
 }
 
+.radial{
+  flex-grow: 1;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1%;
+  width: 35%;
+  min-height: 270px; /* Ensures a minimum height for smaller screens */
+
+}
 /* The operation pie chart should directly apply these styles */
 app-operation-pie {
   

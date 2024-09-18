@@ -46,7 +46,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { FullscreenButtonComponent } from './fullscreen-button/fullscreen-button.component';
 import { ConfigurationModule } from './configuration/configuration.module';
-import { DropdownModule } from 'primeng/dropdown';
+import { DropdownModule } from 'primeng/dropdown';import { RadialChartComponent } from './radial-chart/radial-chart.component';
+
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { DropdownModule } from 'primeng/dropdown';
     ConfirmationDialogComponent,
     TasksComponent,
     UserManagementComponent,
-    FullscreenButtonComponent
+    FullscreenButtonComponent,
+    RadialChartComponent
   ],
   imports: [
     NgApexchartsModule,
