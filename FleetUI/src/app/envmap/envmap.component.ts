@@ -305,10 +305,25 @@ export class EnvmapComponent implements AfterViewInit {
       this.siteName = this.currEditMapDet.siteName;
       this.ratio = this.currEditMapDet.ratio;
       this.imageSrc = this.currEditMapDet.imgUrl;
-      this.nodes = this.currEditMapDet.nodes;
+      this.nodes = this.currEditMapDet.nodes.map((node : Node)=>{
+        node.nodePosition.x = node.nodePosition.x / (this.ratio || 1);
+        node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
+        return node;
+      });
       this.edges = this.currEditMapDet.edges;
-      this.assets = this.currEditMapDet.assets;
-      this.zones = this.currEditMapDet.zones;
+      this.assets = this.currEditMapDet.assets.map((asset : asset)=>{
+        asset.x = asset.x / (this.ratio || 1);
+        asset.y = asset.y / (this.ratio || 1);
+        return asset;
+      });
+      this.zones = this.currEditMapDet.zones.map((zone : Zone)=>{
+        zone.pos = zone.pos.map((pos)=>{
+          pos.x = pos.x / (this.ratio || 1);
+          pos.y = pos.y / (this.ratio || 1);
+          return pos;
+        })
+        return zone;
+      });
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
           ? parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
@@ -747,6 +762,24 @@ export class EnvmapComponent implements AfterViewInit {
     );
   }
   updateEditedMap() {
+    this.nodes = this.nodes.map((node)=>{
+      node.nodePosition.x = node.nodePosition.x * (this.ratio || 1);
+      node.nodePosition.y = node.nodePosition.y * (this.ratio || 1);
+      return node;
+    }); // convert pix to meter..
+    this.assets = this.assets.map((asset)=>{
+      asset.x = asset.x * (this.ratio || 1);
+      asset.y = asset.y * (this.ratio || 1);
+      return asset;
+    }); // convert pix to meter..
+    this.zones = this.zones.map((zone)=>{
+      zone.pos = zone.pos.map((pos)=>{
+        pos.x = pos.x * (this.ratio || 1);
+        pos.y = pos.y * (this.ratio || 1);
+        return pos;
+      })
+      return zone;
+    })
     let editedMap = {
       mapName: null,
       siteName: null,
@@ -787,12 +820,28 @@ export class EnvmapComponent implements AfterViewInit {
       this.updateEditedMap();
       return;
     }
-    console.log(this.Nodes);
-    console.log(this.connections);
     if (!this.selectedImage) {
       alert('file missing!');
       return;
     }
+    this.nodes = this.nodes.map((node)=>{
+      node.nodePosition.x = node.nodePosition.x * (this.ratio || 1);
+      node.nodePosition.y = node.nodePosition.y * (this.ratio || 1);
+      return node;
+    }); // convert pix to meter..
+    this.assets = this.assets.map((asset)=>{
+      asset.x = asset.x * (this.ratio || 1);
+      asset.y = asset.y * (this.ratio || 1);
+      return asset;
+    }); // convert pix to meter..
+    this.zones = this.zones.map((zone)=>{
+      zone.pos = zone.pos.map((pos)=>{
+        pos.x = pos.x * (this.ratio || 1);
+        pos.y = pos.y * (this.ratio || 1);
+        return pos;
+      })
+      return zone;
+    })
     this.form = new FormData();
     let mapData = {
       projectName: this.projData.projectName,
@@ -1795,8 +1844,8 @@ export class EnvmapComponent implements AfterViewInit {
           this.deselectNode();
         }
         // Select the new node
-        this.selectedNode = clickedNode;
         this.drawNode(clickedNode, 'red', true); // Highlight the selected node
+        this.selectedNode = clickedNode;
         console.log('Node selected:', x, y);
 
         // Draw connections or perform any other actions
