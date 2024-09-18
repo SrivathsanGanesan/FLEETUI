@@ -3,7 +3,6 @@ import {
   ApexNonAxisChartSeries,
   ApexChart,
   ApexPlotOptions,
-  ApexDataLabels,
 } from 'ng-apexcharts';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
@@ -24,6 +23,7 @@ export class RadialChartComponent implements OnInit {
   public chartOptions!: Partial<ChartOptions>;
   roboStatePie: number[] = [0, 0, 0];
   selectedMap: any | null = null;
+  currentFilter: string = 'today'; // To track the selected filter
 
   constructor(private projectService: ProjectService) {
     this.chartOptions = {
@@ -45,9 +45,6 @@ export class RadialChartComponent implements OnInit {
               show: true,
               label: 'Total',
               formatter: this.getTotalRoboCounts,
-              /* formatter: () => {
-              return '249';
-            }, */
             },
           },
         },
@@ -67,11 +64,25 @@ export class RadialChartComponent implements OnInit {
     }, 1000 * 3);
   }
 
+  // Apply filter function when a filter is selected
+  applyFilter(filter: string) {
+    this.currentFilter = filter; // Update the current filter
+    this.updateChartWithFilter(); // Re-fetch data with the new filter
+  }
+
+  async updateChartWithFilter() {
+    // Fetch filtered robot states
+    this.roboStatePie = await this.getRobosStates();
+    this.chartOptions.series = this.roboStatePie;
+  }
+
   getTotalRoboCounts() {
-    return '32';
+    return '32'; // Example value
   }
 
   async getRobosStates(): Promise<number[]> {
+    let filterParam = this.currentFilter; // Pass filter to backend
+
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-robos-state/${this.selectedMap.id}`,
       {
@@ -80,10 +91,10 @@ export class RadialChartComponent implements OnInit {
         body: JSON.stringify({}),
       }
     );
-    // if(!response.ok) throw new Error(`Error occured with status code of : ${response.status}`)
+    
     let data = await response.json();
     if (data.error) {
-      console.log('Err occured while getting tasks status : ', data.error);
+      console.log('Err occurred while getting tasks status:', data.error);
       return [0, 0, 0];
     }
     if (!data.map) {

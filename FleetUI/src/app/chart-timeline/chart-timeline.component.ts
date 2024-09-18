@@ -39,6 +39,9 @@ export type ChartOptions = {
   styleUrls: ['./chart-timeline.component.css'],
 })
 export class ChartTimelineComponent implements OnInit {
+applyFilter(arg0: string) {
+throw new Error('Method not implemented.');
+}
   // @ViewChild('chart') chart: ChartComponent | undefined;
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;

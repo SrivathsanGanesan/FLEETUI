@@ -257,6 +257,18 @@ export class UserManagementComponent implements OnInit {
       createdBy: this.currUserName, // Replace with actual user if applicable
     };
 
+    this.userCredentials.forEach((user) => {
+      let username = user.userName;
+      let userRole = user.userRole;
+      if (
+        username.toLowerCase() === this.userName.toLowerCase() &&
+        userRole.toLowerCase() === this.userRole.toLowerCase()
+      ) {
+        alert('User with this credential already exists');
+        return;
+      }
+    });
+
     // Send POST request to backend
     fetch(`http://${environment.API_URL}:${environment.PORT}/auth/register`, {
       method: 'POST',
