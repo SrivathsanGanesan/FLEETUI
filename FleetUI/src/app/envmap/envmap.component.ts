@@ -539,6 +539,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
+    this.distanceBetweenPoints = null; // Clear the input field
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -1052,7 +1053,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.ratio = Number(
           (document.getElementById('resolution') as HTMLInputElement).value
         );
-    if (this.mapName && this.siteName && this.imageSrc && this.resolution && this.originX && this.originY) {
+    if (this.mapName && this.siteName && this.imageSrc && this.resolution) {
       this.fileName = null;
       this.showImage = true;
       const img = new Image();
@@ -1083,6 +1084,7 @@ export class EnvmapComponent implements AfterViewInit {
     } else {
       this.validationMessage = 'Please fill in all the required fields.';    }
   }
+  
   close(): void {
     this.currEditMapChange.emit(false);
     this.showImage = true;

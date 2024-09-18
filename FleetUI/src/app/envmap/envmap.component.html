@@ -62,8 +62,8 @@
           class="origin-coor"
           style="display: flex; align-items: center; gap: 10px"
         >
-          <input type="number" id="X" placeholder="X" [(ngModel)]="originX" (keyup.enter)="open()" />
-          <input type="number" id="Y" placeholder="Y" [(ngModel)]="originY" (keyup.enter)="open()" />
+          <input type="number" id="X" placeholder="X" min="0" [(ngModel)]="originX" (keyup.enter)="open()" />
+          <input type="number" id="Y" placeholder="Y" min="0" [(ngModel)]="originY" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
