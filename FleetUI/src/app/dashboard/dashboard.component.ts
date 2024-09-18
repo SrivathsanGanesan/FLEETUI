@@ -220,8 +220,26 @@ export class DashboardComponent implements AfterViewInit {
         this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
       });
 
-    // ctx.restore(); // Reset transformation after drawing
+  // Draw assets on the image
+      this.assets.forEach((asset) => {
+        const transformedY = img.height - asset.assetPosition.y;
+        this.drawAsset(ctx, asset.assetPosition.x, transformedY, asset.assetId);
+      });
+    ctx.restore(); // Reset transformation after drawing
   }
+  drawAsset(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) {
+    // Example: Drawing a square for an asset
+    ctx.beginPath();
+    ctx.rect(x - 10, y - 10, 20, 20); // Draw a square with width and height of 20px
+    ctx.fillStyle = '#f00'; // Red color for assets
+    ctx.fill();
+  
+    // Add a label to the asset
+    ctx.fillStyle = '#000'; // Black text color
+    ctx.font = '12px Arial';
+    ctx.fillText(label, x + 12, y); // Place label slightly right to the asset
+  }
+  
   drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
     // Set node style (for example, circle)
     ctx.beginPath();
@@ -234,8 +252,6 @@ export class DashboardComponent implements AfterViewInit {
     ctx.font = '12px Arial';
     ctx.fillText(label, x + 12, y); // Place label slightly right to the node
   }
-    
-
 
   getFloorMap(floor: string): string {
     switch (floor) {
