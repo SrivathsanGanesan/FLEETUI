@@ -103,27 +103,27 @@
       <!-- Table -->
       <div class="table-container">
         <div
-          
+
         >
           <div >
             <table
-             
+
               *ngIf="currentTable === 'Environment' && !imageUploaded"
             >
               <thead >
                 <tr>
                   <th
-                    
+
                   >
                     Map Name
                   </th>
                   <th
-                    
+
                   >
                     Site Name
                   </th>
                   <th
-                    
+
                   >
                     Last Created
                   </th>
@@ -186,18 +186,18 @@
             </table>
 
             <table
-              
+
               *ngIf="currentTable === 'robot'"
             >
               <thead class="bg-gray-50">
                 <tr>
                   <th
-                   
+
                   >
                     Robot Name
                   </th>
                   <th
-                    
+
                   >
                     IP Address
                   </th>
@@ -254,9 +254,9 @@
             <!-- Add this in your main component HTML -->
             <div class="form-group" *ngIf="currentTable === 'robot'">
               <label for="ipRangeFrom">IP Range:</label>
-              <input pInputTextid="ipRangeFrom" type="text" placeholder="255.255.0.0" />
+              <input pInputText id="ipRangeFrom" type="text" placeholder="255.255.0.0" />
               <span>to: </span>
-              <input pInputTextid="ipRangeTo" type="text" placeholder="255.255.0.0" />
+              <input pInputText id="ipRangeTo" type="text" placeholder="255.255.0.0" />
 
               <button
                 type="button"
@@ -406,65 +406,66 @@
   <div class="robopopup-content">
  <div>
     <form (ngSubmit)="saveItem()">
-      <h4>Add Robot</h4>
+      <div class="modal-header">
+        <span class="close-icon" (click)="closeroboPopup()">&#10005;</span>
+        <h2>Add Robot</h2>
+      </div>
+
       <div class="rob-inp">
         <label for="manufacturer">Manufacturer:</label>
-        <input type="text" id="manufacturer" [(ngModel)]="formData.manufacturer" name="manufacturer" required>
-      </div>
+        <input pInputText type="text" id="manufacturer" [(ngModel)]="formData.manufacturer" name="manufacturer" required>
 
-      <div class="rob-inp">
         <label for="serialNumber">Serial Number:</label>
-        <input type="text" id="serialNumber" [(ngModel)]="formData.serialNumber" name="serialNumber" required>
+        <input pInputText type="text" id="serialNumber" [(ngModel)]="formData.serialNumber" name="serialNumber" required>
       </div>
-
-      <div class="rob-btn">
+      <div class="flex">
       <div class="robBTN-inp">
-        <Button (click)="toggleTypeSpecificationForm($event)" id="typeSpecificationLink">
+        <button class="rob-btn" [ngClass]="{'active-btn': isTypeSpecificationFormVisible}"
+                (click)="toggleTypeSpecificationForm($event)" id="typeSpecificationLink">
            Type Specification
-        </Button>
-
+        </button>
       </div>
 
       <div class="robBTN-inp">
-        <button href="#" (click)="toggleProtocolLimitsForm($event)" id="protocolLimitsLink">
+        <button class="rob-btn" [ngClass]="{'active-btn': isProtocolLimitsFormVisible}"
+                (click)="toggleProtocolLimitsForm($event)" id="protocolLimitsLink">
            Protocol Limits
         </button>
-
       </div>
 
       <div class="robBTN-inp">
-        <button href="#" (click)="toggleProtocolFeaturesForm($event)" id="protocolFeaturesLink">
+        <button class="rob-btn" [ngClass]="{'active-btn': isProtocolFeaturesFormVisible}"
+                (click)="toggleProtocolFeaturesForm($event)" id="protocolFeaturesLink">
            Protocol Features
         </button>
-
       </div>
 
       <div class="robBTN-inp">
-        <button href="#" (click)="toggleAGVGeometryForm($event)" id="agvGeometryLink">
+        <button class="rob-btn" [ngClass]="{'active-btn': isAGVGeometryFormVisible}"
+                (click)="toggleAGVGeometryForm($event)" id="agvGeometryLink">
            AGV Geometry
         </button>
-
       </div>
 
       <div class="robBTN-inp">
-        <button href="#" (click)="toggleLoadSpecificationForm($event)" id="loadSpecificationLink">
+        <button class="rob-btn" [ngClass]="{'active-btn': isLoadSpecificationFormVisible}"
+                (click)="toggleLoadSpecificationForm($event)" id="loadSpecificationLink">
            Load Specification
         </button>
-
       </div>
 
       <div class="robBTN-inp">
-        <button href="#" (click)="toggleLocalizationParametersForm($event)" id="localizationParametersLink">
+        <button class="rob-btn" [ngClass]="{'active-btn': isLocalizationParametersFormVisible}"
+                (click)="toggleLocalizationParametersForm($event)" id="localizationParametersLink">
            Localization Parameters
         </button>
-
-      </div>
       </div>
 
-      <div class="btn-rob">
-        <button type="submit">Save</button>
-        <button type="button" (click)="closeroboPopup()">Close</button>
       </div>
+      <!-- <div class="btn-rob">
+        <button pButton class="p-button1" type="submit">Save</button>
+        <button pButton class="p-button1" type="button" (click)="closeroboPopup()">Close</button>
+      </div> -->
     </form>
   </div>
     <div class="Sub-form">
@@ -472,15 +473,14 @@
       <!-- Localization Parameters form fields here -->
       <div class="rob-inp">
         <label for="localizationType">Localization Type:</label>
-        <input type="text" id="localizationType" [(ngModel)]="formData.localizationParameters.type" name="localizationType">
-      </div>
-      <div class="rob-inp">
+        <input pInputText type="text" id="localizationType" [(ngModel)]="formData.localizationParameters.type" name="localizationType">
+
         <label for="localizationDescription">Localization Description:</label>
-        <input type="text" id="localizationDescription" [(ngModel)]="formData.localizationParameters.description" name="localizationDescription">
+        <input  pInputText  type="text" id="localizationDescription" [(ngModel)]="formData.localizationParameters.description" name="localizationDescription">
       </div>
-      <div>
-        <button type="button" (click)="saveLocalizationParameters()">Save</button>
-        <button type="button" (click)="closeLocalizationParametersForm()">Close</button>
+      <div >
+        <button pButton type="button"  (click)="saveLocalizationParameters()">Save</button>
+        <button pButton type="button"  (click)="closeLocalizationParametersForm()">Close</button>
       </div>
     </div>
 
@@ -489,15 +489,14 @@
       <!-- Load Specification form fields here -->
       <div class="rob-inp">
         <label for="loadPositions">Load Positions:</label>
-        <input type="text" id="loadPositions" [(ngModel)]="formData.loadSpecification.loadPositions" name="loadPositions">
-      </div>
-      <div class="rob-inp">
+        <input  pInputText  type="text" id="loadPositions" [(ngModel)]="formData.loadSpecification.loadPositions" name="loadPositions">
+
         <label for="loadSets">Load Sets:</label>
-        <input type="text" id="loadSets" [(ngModel)]="formData.loadSpecification.loadSets" name="loadSets">
+        <input  pInputText  type="text" id="loadSets" [(ngModel)]="formData.loadSpecification.loadSets" name="loadSets">
       </div>
       <div>
-        <button type="button" (click)="saveLoadSpecification()">Save</button>
-        <button type="button" (click)="closeLoadSpecificationForm()">Close</button>
+        <button pButton type="button" (click)="saveLoadSpecification()">Save</button>
+        <button pButton type="button" (click)="closeLoadSpecificationForm()">Close</button>
       </div>
     </div>
 
@@ -505,43 +504,40 @@
       <!-- AGV Geometry form fields here -->
       <div class="rob-inp">
         <label for="wheelDefinitions">Wheel Definitions:</label>
-        <input type="text" id="wheelDefinitions" [(ngModel)]="formData.agvGeometry.wheelDefinitions" name="wheelDefinitions">
-      </div>
-      <div class="rob-inp">
+        <input  pInputText  type="text" id="wheelDefinitions" [(ngModel)]="formData.agvGeometry.wheelDefinitions" name="wheelDefinitions">
+
         <label for="envelopes2d">Envelopes 2D:</label>
-        <input type="text" id="envelopes2d" [(ngModel)]="formData.agvGeometry.envelopes2d" name="envelopes2d">
+        <input  pInputText  type="text" id="envelopes2d" [(ngModel)]="formData.agvGeometry.envelopes2d" name="envelopes2d">
       </div>
-      <div class="rob-inp">
+      <div class="rob-inp3">
         <label for="envelopes3d">Envelopes 3D:</label>
-        <input type="text" id="envelopes3d" [(ngModel)]="formData.agvGeometry.envelopes3d" name="envelopes3d">
+        <input  pInputText  type="text" id="envelopes3d" [(ngModel)]="formData.agvGeometry.envelopes3d" name="envelopes3d">
       </div>
       <div>
-        <button type="button" (click)="saveAGVGeometry()">Save</button>
-        <button type="button" (click)="closeAGVGeometryForm()">Close</button>
+        <button pButton type="button" (click)="saveAGVGeometry()">Save</button>
+        <button pButton type="button" (click)="closeAGVGeometryForm()">Close</button>
       </div>
     </div>
 
     <div *ngIf="isProtocolFeaturesFormVisible" class="protocol-features-form">
       <!-- Protocol Features form fields here -->
-      <div class="rob-inp">
+      <div class="rob-inp2">
         <label for="optionalParameters">Optional Parameters:</label>
-        <input type="text" id="optionalParameters" [(ngModel)]="formData.protocolFeatures.optionalParameters" name="optionalParameters">
-      </div>
-      <div class="rob-inp">
+        <input  pInputText  type="text" id="optionalParameters" [(ngModel)]="formData.protocolFeatures.optionalParameters" name="optionalParameters">
+
         <label for="actionScopes">Action Scopes:</label>
-        <input type="text" id="actionScopes" [(ngModel)]="formData.protocolFeatures.actionScopes" name="actionScopes">
+        <input  pInputText  type="text" id="actionScopes" [(ngModel)]="formData.protocolFeatures.actionScopes" name="actionScopes">
       </div>
-      <div class="rob-inp">
+      <div class="rob-inp2" style="margin-left: 23px;">
         <label for="actionParameters">Action Parameters:</label>
-        <input type="text" id="actionParameters" [(ngModel)]="formData.protocolFeatures.actionParameters" name="actionParameters">
-      </div>
-      <div class="rob-inp">
+        <input  pInputText  type="text" id="actionParameters" [(ngModel)]="formData.protocolFeatures.actionParameters" name="actionParameters">
+
         <label for="resultDescription">Result Description:</label>
-        <input type="text" id="resultDescription" [(ngModel)]="formData.protocolFeatures.resultDescription" name="resultDescription">
+        <input  pInputText  type="text" id="resultDescription" [(ngModel)]="formData.protocolFeatures.resultDescription" name="resultDescription">
       </div>
       <div>
-        <button type="button" (click)="saveProtocolFeatures()">Save</button>
-        <button type="button" (click)="closeProtocolFeaturesForm()">Close</button>
+        <button pButton type="button" (click)="saveProtocolFeatures()">Save</button>
+        <button pButton type="button" (click)="closeProtocolFeaturesForm()">Close</button>
       </div>
     </div>
 
@@ -549,57 +545,62 @@
       <!-- Protocol Limits form fields here -->
       <div class="rob-inp">
         <label for="maxStringLens">Max String Lengths:</label>
-        <input type="text" id="maxStringLens" [(ngModel)]="formData.protocolLimits.maxStringLens" name="maxStringLens">
-      </div>
-      <div class="rob-inp">
+        <input  pInputText  type="text" id="maxStringLens" [(ngModel)]="formData.protocolLimits.maxStringLens" name="maxStringLens">
+
         <label for="maxArrayLens">Max Array Lengths:</label>
-        <input type="text" id="maxArrayLens" [(ngModel)]="formData.protocolLimits.maxArrayLens" name="maxArrayLens">
+        <input  pInputText  type="text" id="maxArrayLens" [(ngModel)]="formData.protocolLimits.maxArrayLens" name="maxArrayLens">
       </div>
-      <div class="rob-inp">
+      <div class="rob-inp3">
         <label for="timing">Timing:</label>
-        <input type="text" id="timing" [(ngModel)]="formData.protocolLimits.timing" name="timing">
+        <input  pInputText  type="text" id="timing" [(ngModel)]="formData.protocolLimits.timing" name="timing">
       </div>
       <div>
-        <button type="button" (click)="saveProtocolLimits()">Save</button>
-        <button type="button" (click)="closeProtocolLimitsForm()">Close</button>
+        <button pButton type="button" (click)="saveProtocolLimits()">Save</button>
+        <button pButton type="button" (click)="closeProtocolLimitsForm()">Close</button>
       </div>
     </div>
 
     <div *ngIf="isTypeSpecificationFormVisible" class="type-specification-form">
       <div class="rob-inp">
-        <label for="seriesName">Series Name:</label>
-        <input type="text" id="seriesName" [(ngModel)]="formData.typeSpecification.seriesName" name="seriesName">
-      </div>
-      <div class="rob-inp">
+        <label for="seriesName" style="margin-right: 4rem;">Series Name:</label>
+        <input  pInputText  type="text" id="seriesName" [(ngModel)]="formData.typeSpecification.seriesName" name="seriesName">
+
         <label for="seriesDescription">Series Description:</label>
-        <input type="text" id="seriesDescription" [(ngModel)]="formData.typeSpecification.seriesDescription" name="seriesDescription">
+        <input  pInputText  type="text" id="seriesDescription" [(ngModel)]="formData.typeSpecification.seriesDescription" name="seriesDescription">
       </div>
-      <div class="rob-inp">
+      <div class="rob-inp1">
         <label for="agvKinematic">AGV Kinematic:</label>
-        <input type="text" id="agvKinematic" [(ngModel)]="formData.typeSpecification.agvKinematic" name="agvKinematic">
-      </div>
-      <div class="rob-inp">
+        <!-- <input  pInputText  type="text" id="agvKinematic" [(ngModel)]="formData.typeSpecification.agvKinematic" name="agvKinematic"> -->
+        <p-dropdown [options]="agvKinematicsOptions" id="seriesDescription" optionLabel="name" optionValue="value"  placeholder="Select AGV Kinematic"/>
+
+
         <label for="agvClass">AGV Class:</label>
-        <input type="text" id="agvClass" [(ngModel)]="formData.typeSpecification.agvClass" name="agvClass">
+
+        <p-dropdown [options]="agvClassOptions" id="seriesDescription" optionLabel="name" optionValue="value"  placeholder="Select AGV Class"/>
+
       </div>
-      <div class="rob-inp">
-        <label for="maxLoadMass">Max Load Mass (Kg):</label>
-        <input type="number" id="maxLoadMass" [(ngModel)]="formData.typeSpecification.maxLoadMass" name="maxLoadMass">
-      </div>
-      <div class="rob-inp">
+      <div class="rob-inp2">
+        <label for="maxLoadMass" >Max Load Mass (Kg):</label>
+        <input  pInputText  type="number" id="maxLoadMass" [(ngModel)]="formData.typeSpecification.maxLoadMass" name="maxLoadMass">
+
         <label for="localizationTypes">Localization Types:</label>
-        <input type="text" id="localizationTypes" [(ngModel)]="formData.typeSpecification.localizationTypes" name="localizationTypes">
+        <!-- <input  pInputText  type="text" id="localizationTypes" [(ngModel)]="formData.typeSpecification.localizationTypes" name="localizationTypes"> -->
+        <p-dropdown [options]="localizationTypes" id="localizationTypes" optionLabel="name" optionValue="value"  placeholder="Select LocalizationTypes"/>
       </div>
-      <div class="rob-inp">
-        <label for="navigationTypes">Navigation Types:</label>
-        <input type="text" id="navigationTypes" [(ngModel)]="formData.typeSpecification.navigationTypes" name="navigationTypes">
+      <div class="rob-inp3">
+        <label for="navigationTypes" style="margin-right: 5rem;">Navigation Types:</label>
+        <!-- <input  pInputText  type="text" id="navigationTypes" [(ngModel)]="formData.typeSpecification.navigationTypes" name="navigationTypes"> -->
+        <p-dropdown [options]="navigationTypes" id="navigationTypes" optionLabel="name" optionValue="value"  placeholder="Select LocalizationTypes"/>
       </div>
-      <div>
-        <button type="button" (click)="saveTypeSpecification()">Save</button>
-        <button type="button" (click)="closeTypeSpecificationForm()">Close</button>
-      </div>
+        <button pButton  type="button" (click)="saveTypeSpecification()">Save</button>
+        <button pButton type="button" (click)="closeTypeSpecificationForm()">Close</button>
+
     </div>
 
+  </div>
+  <div class="btn-rob">
+    <button pButton class="p-button1" type="submit">Save</button>
+    <!-- <button pButton class="p-button1" type="button" (click)="closeroboPopup()">Close</button> -->
   </div>
   </div>
 </div>

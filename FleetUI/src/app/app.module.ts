@@ -46,7 +46,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { FullscreenButtonComponent } from './fullscreen-button/fullscreen-button.component';
 import { ConfigurationModule } from './configuration/configuration.module';
-
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [
@@ -98,6 +98,7 @@ import { ConfigurationModule } from './configuration/configuration.module';
     ConfigurationModule,
     InputTextModule,
     ButtonModule,
+    DropdownModule
   ],
   providers: [
     // provideClientHydration()

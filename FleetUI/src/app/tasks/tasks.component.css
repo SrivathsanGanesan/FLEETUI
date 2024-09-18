@@ -19,47 +19,47 @@
   align-items: center;
   height: 100%;
   }
-  
+
   /* Header section styles */
   .header-section {
     margin-bottom: 20px;
   }
-  
+
   .header-title {
     font-size: 36px;
     font-weight: bold;
     color: #DA2127;
     margin: 0;
   }
-  
+
   .subheader-container {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
   }
-  
+
   .subheader-text {
     font-size: 16px;
     color: #333;
   }
-  
+
   .subheader-icon {
     width: 23px;
     height: 13px;
   }
-  
+
   /* Table Container Styling */
   .table-container {
-    
+    width: 103%;
     border-radius: 10px;
     margin-top: 20px;
     max-height: 30rem;
     overflow-y: auto;
   }
-  
+
   /* Table Styling */
   table {
-    
+
 
     border-collapse: collapse;
     width: 100%;
@@ -70,21 +70,21 @@
   thead {
     position: sticky;
     top: 0;
-    
+
     background-color: #FFCDCD; /* Ensure the header has a background color */
   }
   tbody {
     border-radius: 0 0 10px 10px; /* Bottom corners rounded */
   }
-  
-  
+
+
   th, td {
     border: 1px solid #ffffff;
     padding: 5px;
     height: 30px;
     text-align: center;
   }
-  
+
   th {
     background-color: #FFCDCD;
     padding: 10px 20px;
@@ -92,24 +92,24 @@
     font-size: 13px;
     border-bottom: 1px solid #ddd;
   }
-  
+
   td {
     font-size: 13px;
   }
-  
+
   tr:hover {
     background-color: #f2f2f2;
   }
-  
+
   tr:nth-child(even) {
     background-color: #FFF1F1;
   }
-  
+
   /* Button Container Styling */
   .button-container {
     margin-top: 10px;
   }
-  
+
   .button {
     background-color: #FFFFFF;
     color: #000000;
@@ -117,23 +117,23 @@
     height: 50px;
     border-radius: 0.5rem;
     border: 1px solid #ccc;
-    padding: 10px 20px; 
+    padding: 10px 20px;
     font-size: 17px;
     cursor: pointer;
     margin-right: 20px;
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
   }
-  
+
   .button:last-child {
     margin-right: 0;
   }
-  
+
   .active-button {
     background-color: #ff3333;
     color: #FFFFFF;
     transform: scale(1.05);
   }
-  
+
   .transition-active {
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
   }
@@ -144,7 +144,7 @@
     bottom: 20px;
     right: 20px;
   }
-  
+
   .export-button {
     padding: 10px 20px;
     background-color: #ff3333;
@@ -153,7 +153,7 @@
     border-radius: 4px;
     cursor: pointer;
   }
-  
+
   /* Export Popup Styles */
   .export-popup {
     display: flex;
@@ -167,7 +167,7 @@
     justify-content: center;
     align-items: center;
   }
-  
+
   .popup-content {
     position: relative; /* Important for positioning the close button */
     font-size: 36px; /* Ensures that the font size stays large */
@@ -183,7 +183,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-  
+
   .popup-content .button-container button {
     display: block;
     margin: 20px auto;
@@ -198,12 +198,12 @@
     text-align: center;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
   }
-  
+
   .popup-content .button-container button:hover {
     background-color: #ff3333;
     color: #fdfdfd;
   }
-  
+
   /* Close Button Styles */
   .close-button {
     position: absolute;
@@ -221,24 +221,24 @@
     justify-content: center;
     z-index: 10; /* Ensure it appears above other elements */
   }
-  
+
   .close-button svg {
     width: 20px;
     height: 20px;
     fill: red; /* Color for the close icon */
   }
-  
+
   .close-button:hover {
     background-color: #da2127;
   }
-  
+
   .close-button:hover svg {
     fill: white; /* Change color on hover */
   }
-  
+
   /* Main container for the search bar and filters */
   /* Main container for search bar and date filters */
-  
+
   .search-filter-container {
     position: absolute;
     top: 60px;
@@ -263,7 +263,7 @@
     width: 100%;
     max-width: 500px; /* Adjust as needed */
   }
-  
+
   .search-box input {
     border: none;
     padding: 10px 15px;
@@ -275,7 +275,7 @@
   .search-box input::placeholder {
     color: #aaa;
   }
-  
+
   .search-btn {
     background-color: #ff5c5c;
     color: white;
@@ -296,7 +296,7 @@
     background-color: #e64e4e;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
-  
+
 
 /* tasks.component.css */
 
@@ -409,10 +409,10 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  min-width: 90px; 
+  min-width: 90px;
   text-align: center;
-  margin-right: 10px; 
-  position: relative; 
+  margin-right: 10px;
+  position: relative;
 } */
 
 
@@ -424,7 +424,7 @@
   justify-content: center; /* Horizontal centering */
   gap: 10px; /* Space between the switch and the button */
   width: 100%; /* Ensures container spans the full width of the table cell */
- 
+
 
 }
 .btn-cancel {
@@ -448,7 +448,7 @@
   background-color: #d32f2f;
 }
 
-/* 
+/*
 new button */
 
 .switch {
@@ -464,7 +464,7 @@ new button */
   text-align: center;
   margin-right: 10px; /* Space between buttons */
   position: relative; /* Remove z-index to avoid stacking issues */
- 
+
 }
 
 .switch input {

@@ -16,7 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    
+
   ],
   imports: [
     CommonModule,
