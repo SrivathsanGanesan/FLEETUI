@@ -183,13 +183,12 @@ export class DashboardComponent implements AfterViewInit {
         // Conditionally draw nodes based on showModelCanvas flag
         if (this.showModelCanvas) {
           this.nodes.forEach((node) => {
-            this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId, img);
+            this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
           });
         }
       };
     }
   }
-  
   // loadModelCanvas() {
   //   const canvas = document.getElementById('modelCanvas') as HTMLCanvasElement;
   //   if (!canvas) {
@@ -219,29 +218,18 @@ export class DashboardComponent implements AfterViewInit {
   //   }
   // }
   
-  drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string, img: HTMLImageElement) {
-    // Calculate the correct node position relative to the image
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-  
-    const imgScaledWidth = img.width * this.zoomLevel;
-    const imgScaledHeight = img.height * this.zoomLevel;
-  
-    // Adjust x and y based on the image scaling and canvas centering
-    const nodeX = (x * imgScaledWidth) / img.width - img.width / 2 + this.offsetX;
-    const nodeY = (y * imgScaledHeight) / img.height - img.height / 2 + this.offsetY;
-  
+  drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
     // Set node style (for example, circle)
     ctx.beginPath();
-    ctx.arc(nodeX, nodeY, 10, 0, 2 * Math.PI); // Draw circle with radius 10
+    ctx.arc(x, y, 10, 0, 2 * Math.PI); // Draw circle with radius 10
     ctx.fillStyle = '#00f'; // Blue color
     ctx.fill();
   
     // Add a label to the node
     ctx.fillStyle = '#000'; // Black text color
     ctx.font = '12px Arial';
-    ctx.fillText(label, nodeX + 12, nodeY); // Place label slightly right to the node
+    ctx.fillText(label, x + 12, y); // Place label slightly right to the node
   }
-  
     
   drawImageScaled(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -255,7 +243,6 @@ export class DashboardComponent implements AfterViewInit {
     ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
     ctx.restore();
   }
-  
 
   getFloorMap(floor: string): string {
     switch (floor) {
