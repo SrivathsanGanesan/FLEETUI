@@ -219,25 +219,99 @@ export class DashboardComponent implements AfterViewInit {
         const transformedY = img.height - node.nodePosition.y;
         this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
       });
-
-  // Draw assets on the image
-      this.assets.forEach((asset) => {
-        const transformedY = img.height - asset.assetPosition.y;
-        this.drawAsset(ctx, asset.assetPosition.x, transformedY, asset.assetId);
+      
+      // Draw edges between nodes
+      this.edges.forEach((edge) => {
+        const startNode = this.nodes.find(n => n.nodeId === edge.startNodeId);
+        const endNode = this.nodes.find(n => n.nodeId === edge.endNodeId);
+        if (startNode && endNode) {
+          const startPos = { x: startNode.nodePosition.x, y: startNode.nodePosition.y };
+          const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+          const transformedStartY = img.height - startPos.y;
+          const transformedEndY = img.height - endPos.y;
+          this.drawEdge(ctx,
+            { x: startPos.x, y: transformedStartY }, 
+            { x: endPos.x, y: transformedEndY }, 
+            edge.direction, 
+            edge.startNodeId, 
+            edge.endNodeId,
+            
+          );
+          
+        }
+        console.log(edge.direction)
       });
-    ctx.restore(); // Reset transformation after drawing
+    // ctx.restore(); // Reset transformation after drawing
   }
-  drawAsset(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) {
-    // Example: Drawing a square for an asset
+  private drawEdge(
+    ctx: CanvasRenderingContext2D,
+    startPos: { x: number; y: number },
+    endPos: { x: number; y: number },
+    direction: string,
+    nodeRadius: number = 10,
+    threshold: number = 5
+  ): void {
+    const dx = endPos.x - startPos.x;
+    const dy = endPos.y - startPos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    const startX = startPos.x + (dx * threshold) / distance;
+    const startY = startPos.y + (dy * threshold) / distance;
+    const endX = endPos.x - (dx * threshold) / distance;
+    const endY = endPos.y - (dy * threshold) / distance;
+
     ctx.beginPath();
-    ctx.rect(x - 10, y - 10, 20, 20); // Draw a square with width and height of 20px
-    ctx.fillStyle = '#f00'; // Red color for assets
-    ctx.fill();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    
+    if (direction === 'UN_DIRECTIONAL') {
+      ctx.strokeStyle = 'black'; // Uni-directional in black
+    } else if (direction === 'BI_DIRECTIONAL') {
+      ctx.strokeStyle = 'green'; // Bi-directional in green
+    }
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    this.drawArrowhead(ctx, { x: startX, y: startY }, { x: endX, y: endY }, direction);
+
+    if (direction === 'BI_DIRECTIONAL') {
+      this.drawArrowhead(ctx, { x: endX, y: endY }, { x: startX, y: startY }, direction);
+    }
+    
+  }  
+  private drawArrowhead(
+    ctx: CanvasRenderingContext2D,
+    from: { x: number; y: number },
+    to: { x: number; y: number },
+    direction: string
+  ): void {
+    const headLength = 15; // Length of the arrowhead
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
   
-    // Add a label to the asset
-    ctx.fillStyle = '#000'; // Black text color
-    ctx.font = '12px Arial';
-    ctx.fillText(label, x + 12, y); // Place label slightly right to the asset
+    // Calculate the arrowhead points
+    const arrowheadPoint1 = {
+      x: to.x - headLength * Math.cos(angle - Math.PI / 6),
+      y: to.y - headLength * Math.sin(angle - Math.PI / 6),
+    };
+    const arrowheadPoint2 = {
+      x: to.x - headLength * Math.cos(angle + Math.PI / 6),
+      y: to.y - headLength * Math.sin(angle + Math.PI / 6),
+    };
+  
+    ctx.beginPath();
+    ctx.moveTo(to.x, to.y);
+    ctx.lineTo(arrowheadPoint1.x, arrowheadPoint1.y);
+    ctx.lineTo(arrowheadPoint2.x, arrowheadPoint2.y);
+    ctx.lineTo(to.x, to.y);
+  
+    // Change arrowhead color based on direction
+    if (direction === 'UN_DIRECTIONAL') {
+      ctx.fillStyle = 'black'; // Uni-directional arrowhead in black
+    } else if (direction === 'BI_DIRECTIONAL') {
+      ctx.fillStyle = 'green'; // Bi-directional arrowhead in green
+    }
+  
+    ctx.fill();
   }
   
   drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
