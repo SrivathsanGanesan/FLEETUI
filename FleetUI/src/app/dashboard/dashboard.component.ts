@@ -224,29 +224,6 @@ export class DashboardComponent implements AfterViewInit {
     };
   }
 
-  loadCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-  
-      if (ctx) {
-      const img = new Image();
-      let imgName = this.projectService.getMapData();
-      img.src = `http://${imgName.imgUrl}`;
-
-      img.onload = () => {
-        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
-        this.draw(ctx, img);
-      
-        // // Conditionally draw nodes based on showModelCanvas flag
-        // if (this.showModelCanvas) {
-        //   this.nodes.forEach((node) => {
-        //     this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
-        //   });
-        // }
-      };
-    }
-  }
  
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -531,8 +508,31 @@ export class DashboardComponent implements AfterViewInit {
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
 
+  loadCanvas() {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+  
+      if (ctx) {
+      const img = new Image();
+      let imgName = this.projectService.getMapData();
+      img.src = `http://${imgName.imgUrl}`;
+
+      img.onload = () => {
+        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+        this.draw(ctx, img);
+      
+        // // Conditionally draw nodes based on showModelCanvas flag
+        // if (this.showModelCanvas) {
+        //   this.nodes.forEach((node) => {
+        //     this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
+        //   });
+        // }
+      };
+    }
+  }
   captureCanvas() {
-    const element = document.getElementsByClassName('container')[0];
+    const element = document.getElementById('container');
     console.log('Container element:', element); // Log the container to check if it exists
     if (element) {
       domtoimage
