@@ -221,7 +221,7 @@ export class DashboardComponent implements AfterViewInit {
   drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
     // Set node style (for example, circle)
     ctx.beginPath();
-    ctx.arc(x, y, 10, 0, 2 * Math.PI); // Draw circle with radius 10
+    ctx.arc(x, y, 6, 0, 2 * Math.PI); // Draw circle with radius 10
     ctx.fillStyle = '#00f'; // Blue color
     ctx.fill();
   
