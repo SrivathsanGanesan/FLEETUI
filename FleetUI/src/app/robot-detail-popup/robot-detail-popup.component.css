@@ -1,9 +1,9 @@
 .popup-content {
-  width: 90vw; /* 80% of the viewport width */
-  height: 85vh; /* 80% of the viewport height */
+  width: 85vw; /* 80% of the viewport width */
+  height: 90vh; /* 80% of the viewport height */
   position: fixed;
-  top: 10vh; /* Centered vertically */
-  left: 5vw; /* Centered horizontally */
+  top: 5vh; /* Centered vertically */
+  left: 10vw; /* Centered horizontally */
   right:5vw;
   background-color: rgb(232, 230, 230); /* Adjust background if needed */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -67,7 +67,7 @@
 
 .robot-detail-container {
   top: 22px;
-  left: 948px;
+  left: 748px;
   position: absolute;
   display: flex;
   display: flex;
@@ -75,7 +75,7 @@
 
 .robot-image-container {
   top: 28px;
-  left: 1000px;
+  left: 800px;
   position: absolute;
   display: flex;
   box-sizing: border-box;
@@ -89,7 +89,7 @@
   position: relative;
   margin: 25px 20px;
   top: -55px;
-  left: 700px;
+  left: 530px;
   position: relative;
  }
 
@@ -109,7 +109,7 @@
 
 .switch.demo3 {
   width: 130px;
-  height: 40px;
+  height: 30px;
 }
 
 .switch.demo3 label {
@@ -350,8 +350,8 @@ h1 {
 .connect{
   width: 7em;
   height: 7em;
-  top: 150px;
-  left: 1000px;
+  top: 120px;
+  left: 830px;
   position: relative;
 
 }
@@ -402,9 +402,9 @@ h1 {
   width: 184px;
 }
 
-.battery-frame_1864-1809 {
+.battery-frame {
   top: 655px;
-  left: 944px;
+  left: 744px;
   position: absolute;
   display: flex;
   box-sizing: border-box;
@@ -789,112 +789,76 @@ border-radius: 15px; /* Rounded edges matching the container */
   box-sizing: border-box;
   width: 822px;
 }
-.frame-1597881882_1874-1898 {
+.details-container {
   position: relative;
   box-sizing: border-box;
   border-radius: 15px;
   background: #ff7373;
-  width: 527px;
-  height: 188px;
+  width: 427px;
+  height: 158px;
 }
-.frame-1597881881_1874-1897 {
+
+.details-content {
   top: 19px;
   left: 25px;
   position: absolute;
   display: flex;
-  display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  flex-wrap: nowrap;
   align-items: flex-start;
   gap: 25px;
   box-sizing: border-box;
   width: 388px;
 }
-.text-details_1874-1891 {
+
+.details-title {
   color: #ffffff;
-  font-size: 32px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
+  font-size: 24px;
+  font-family: Inter, sans-serif; /* Added fallback */
   font-weight: 500;
   text-align: left;
-  text-wrap: wrap;
   width: -webkit-fill-available;
 }
 
-.frame-1597881880_1874-1896 {
+.details-info {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  flex-wrap: nowrap;
   align-items: flex-start;
   gap: 29px;
   box-sizing: border-box;
   width: -webkit-fill-available;
 }
-.frame-1597881878_1874-1893 {
+
+.current-task,
+.current-map {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  flex-wrap: nowrap;
   align-items: center;
   gap: 36px;
   box-sizing: border-box;
   width: -webkit-fill-available;
 }
-.text-current-task--_1871-1878 {
+
+.current-task-label,
+.current-map-label {
   color: #ffffff;
-  font-size: 20px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
+  font-size: 16px;
+  font-family: Inter, sans-serif; /* Added fallback */
   font-weight: 500;
   text-align: left;
-  text-wrap: nowrap;
 }
 
-.text--transporting-materials_1872-1883 {
+.current-task-value,
+.current-map-value {
   color: #ffffff;
-  font-size: 20px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
+  font-size: 16px;
+  font-family: Inter, sans-serif; /* Added fallback */
   font-weight: 500;
   text-align: left;
-  text-wrap: nowrap;
 }
 
-.frame-1597881879_1874-1894 {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 35px;
-  box-sizing: border-box;
-}
-.text-current-map--_1871-1879 {
-  color: #ffffff;
-  font-size: 20px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
-  font-weight: 500;
-  text-align: left;
-  text-wrap: nowrap;
-}
-
-.text-mate-unit-1_1872-1884 {
-  color: #ffffff;
-  font-size: 20px;
-  font-family: Inter;
-  letter-spacing: 0%;
-  text-decoration: none;
-  font-weight: 500;
-  text-align: left;
-  text-wrap: nowrap;
-}
 
 
 
@@ -1421,8 +1385,8 @@ border-radius: 15px; /* Rounded edges matching the container */
   box-sizing: border-box;
   border-radius: 15px;
   background: #ffffff;
-  width: 220px;
-  height: 170px;
+  width: 190px;
+  height: 158px;
 }
 
 .pick-drop-info {
@@ -1434,7 +1398,7 @@ border-radius: 15px; /* Rounded edges matching the container */
 }
 
 .fork-lift-icon {
-  padding: 10px;
+  padding: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1444,7 +1408,7 @@ border-radius: 15px; /* Rounded edges matching the container */
 
 .pick-drop-label {
   color: #000000;
-  font-size: 20px;
+  font-size: 14px;
   font-family: Inter, sans-serif;
   font-weight: 500;
   text-align: left;
@@ -1456,7 +1420,7 @@ border-radius: 15px; /* Rounded edges matching the container */
   font-size: 44px;
   font-family: Inter, sans-serif;
   font-weight: 500;
-  margin-top: 30px;
+  margin-top: 40px;
   text-align: left;
   width: 100%;
   white-space: nowrap; /* Prevent text from wrapping */
@@ -1469,12 +1433,12 @@ emergency stop */
 .speed-container {
   display: flex;
   position: relative;
-  top: 80px;
-  left: 953px;
+  top: 10px;
+  left: 753px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 17px;
+  gap: 0px;
   width: 299px; /* Adjust width as needed */
   box-sizing: border-box;
 }
@@ -1510,7 +1474,7 @@ emergency stop */
 /* Speed value styling */
 .speed-value {
   color: #000000;
-  font-size: 24px;
+  font-size: 18px;
   font-family: Inter;
   font-weight: 600;
   text-align: center;
@@ -1606,7 +1570,7 @@ emergency stop */
 /* Docking time value styling */
 .time-value {
   color: #000000;
-  font-size: 24px;
+  font-size: 18px;
   font-family: Inter;
   font-weight: 600;
   text-align: center;
