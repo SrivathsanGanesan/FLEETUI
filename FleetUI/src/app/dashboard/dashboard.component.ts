@@ -11,12 +11,35 @@ import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
+enum ZoneType {
+  HIGH_SPEED_ZONE = 'High Speed Zone',
+  MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
+  SLOW_SPEED_ZONE = 'Slow Speed Zone',
+  MUTED_SPEED_ZONE = 'Muted Speed Zone',
+  TURNING_SPEED_ZONE = 'Turning Speed Zone',
+  IN_PLACE_SPEED_ZONE = 'In Place Speed Zone',
+  CHARGING_ZONE = 'Charging Zone',
+  PREFERRED_ZONE = 'Preferred Zone',
+  UNPREFERRED_ZONE = 'Unpreferred Zone',
+  KEEPOUT_ZONE = 'Keepout Zone',
+  CRITICAL_SAFETY_ZONE = 'Critical Safety Zone',
+  BLIND_LOCALISATION_ZONE = 'Blind Localisation Zone',
+  DENSE_ZONE = 'Dense Zone',
+  STRICTLY_PATH_ZONE = 'Strictly Path Zone',
+  OBSTACLE_AVOIDANCE_ZONE = 'Obstacle Avoidance Zone',
+  EMERGENCY_ZONE = 'Emergency Zone',
+  MAINTENANCE_ZONE = 'Maintenance Zone',
+  PARKING_ZONE = 'Parking Zone',
+}
+
+
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
+
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
@@ -37,11 +60,33 @@ export class DashboardComponent implements AfterViewInit {
   edges:any[]=[];
   zones:any[]=[];
   assets:any[]=[];
+  plottedPoints: { id: number; x: number; y: number }[] = [];
+  zoneType: ZoneType | null = null; // Selected zone type
   startX = 0;
   startY = 0;
   showChart2 = true; // Controls blur effect for Chart2
   showChart3 = true;
-
+  zoneColors: { [key in ZoneType]: string } = {
+    [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)', // Red with 30% opacity
+    [ZoneType.MEDIUM_SPEED_ZONE]: 'rgba(255, 165, 0, 0.3)', // Orange with 30% opacity
+    [ZoneType.SLOW_SPEED_ZONE]: 'rgba(255, 255, 0, 0.3)', // Yellow with 30% opacity
+    [ZoneType.MUTED_SPEED_ZONE]: 'rgba(0, 128, 0, 0.3)', // Green with 30% opacity
+    [ZoneType.TURNING_SPEED_ZONE]: 'rgba(0, 0, 255, 0.3)', // Blue with 30% opacity
+    [ZoneType.IN_PLACE_SPEED_ZONE]: 'rgba(75, 0, 130, 0.3)', // Indigo with 30% opacity
+    [ZoneType.CHARGING_ZONE]: 'rgba(238, 130, 238, 0.3)', // Violet with 30% opacity
+    [ZoneType.PREFERRED_ZONE]: 'rgba(0, 255, 255, 0.3)', // Cyan with 30% opacity
+    [ZoneType.UNPREFERRED_ZONE]: 'rgba(128, 0, 128, 0.3)', // Purple with 30% opacity
+    [ZoneType.KEEPOUT_ZONE]: 'rgba(255, 69, 0, 0.3)', // OrangeRed with 30% opacity
+    [ZoneType.CRITICAL_SAFETY_ZONE]: 'rgba(255, 20, 147, 0.3)', // DeepPink with 30% opacity
+    [ZoneType.BLIND_LOCALISATION_ZONE]: 'rgba(127, 255, 0, 0.3)', // Chartreuse with 30% opacity
+    [ZoneType.DENSE_ZONE]: 'rgba(220, 20, 60, 0.3)', // Crimson with 30% opacity
+    [ZoneType.STRICTLY_PATH_ZONE]: 'rgba(0, 0, 139, 0.3)', // DarkBlue with 30% opacity
+    [ZoneType.OBSTACLE_AVOIDANCE_ZONE]: 'rgba(0, 100, 0, 0.3)', // DarkGreen with 30% opacity
+    [ZoneType.EMERGENCY_ZONE]: 'rgba(139, 0, 0, 0.3)', // DarkRed with 30% opacity
+    [ZoneType.MAINTENANCE_ZONE]: 'rgba(184, 134, 11, 0.3)', // DarkGoldenRod with 30% opacity
+    [ZoneType.PARKING_ZONE]: 'rgba(47, 79, 79, 0.3)', // DarkSlateGray with 30% opacity
+  };
+  zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
   recording = false;
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
@@ -234,14 +279,52 @@ export class DashboardComponent implements AfterViewInit {
             { x: endPos.x, y: transformedEndY }, 
             edge.direction, 
             edge.startNodeId, 
-            edge.endNodeId,
-            
-          );
-          
+            edge.endNodeId            
+          );          
         }
-        console.log(edge.direction)
+
       });
+
+
+
+      this.zones.forEach((zone) => {
+        // Re-plot the points of the zone
+        // zone.pos.forEach((point, index) => {
+        //   // Plot the first point in violet and others in red
+        //   const isFirstPoint = index === 0;
+        //   this.plotZonePoint(point.x, point.y, isFirstPoint);
+        // });
+        this.plottedPoints = zone.pos;
+        this.zoneType = zone.type;
+        this.drawLayer(ctx);
+        this.plottedPoints = [];
+      });
+    
     // ctx.restore(); // Reset transformation after drawing
+  }
+  drawLayer(ctx : CanvasRenderingContext2D): void {
+    // const canvas = this.overlayCanvas.nativeElement;
+    // const ctx = canvas.getContext('2d');
+    if (ctx && this.plottedPoints.length >= 3 && this.zoneType) {
+      ctx.beginPath();
+      ctx.moveTo(this.plottedPoints[0].x, this.plottedPoints[0].y);
+
+      // Draw lines between points to form a polygon
+      for (let i = 1; i < this.plottedPoints.length; i++) {
+        ctx.lineTo(this.plottedPoints[i].x, this.plottedPoints[i].y);
+      }
+
+      ctx.closePath();
+
+
+      // Set the fill color based on the selected zone type
+      const zoneColor = this.zoneColors[this.zoneType];
+      ctx.fillStyle = zoneColor;
+      ctx.fill();
+      this.plottedPoints = [];
+    } else {
+      console.error('Insufficient points or zone type not selected');
+    }
   }
   private drawEdge(
     ctx: CanvasRenderingContext2D,
