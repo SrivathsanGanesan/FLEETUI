@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 
+interface DB {
+  name: string;
+  code: string;
+}
 @Component({
   selector: 'app-planner',
   templateUrl: './planner.component.html',
@@ -7,4 +11,13 @@ import { Component } from '@angular/core';
 })
 export class PlannerComponent {
 
+  dtype: DB[] | undefined;
+  selectedDb: DB | undefined;
+
+  ngOnInit() {
+    this.dtype = [
+        { name: 'ASipp', code: 'ASipp' },
+        { name: 'NodeGraph', code: 'NodeGraph' },
+    ];
+  }
 }

@@ -51,7 +51,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
      BatteryComponent,
      CommunicationComponent,
      InputGroupModule,
-     InputTextModule
+     InputTextModule,
 ],
 schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

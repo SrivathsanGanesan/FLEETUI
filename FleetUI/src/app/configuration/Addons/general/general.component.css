@@ -18,14 +18,36 @@
   margin-bottom: 15px;
 }
 
+
+/* Button styling */
+.button {
+  /* width: 70%; */
+  height: 31px;
+  padding: 0.5rem 1rem;
+  margin-top: 20rem;
+  font-size: 0.8rem;
+}
+
+/* Button class specific to p-button-danger */
+::ng-deep .p-button.p-button-danger {
+  /* width: 70% !important; */
+  height: 31px !important;
+  /* margin-top: 19rem; */
+}
+
+::ng-deep .p-button {
+  padding: 0.5rem 1rem !important;
+  font-size: 0.8rem !important;
+}
+
 label {
-  font-weight: bold;
+  /* font-weight: bold; */
   margin-right: 10px;
 }
 
-input {
+/* input {
   width: 100%;
-}
+} */
 
 input[type="text"],
 input[type="number"] {

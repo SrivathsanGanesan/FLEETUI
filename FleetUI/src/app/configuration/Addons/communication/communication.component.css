@@ -3,22 +3,22 @@
   border: 1px solid #000;
   border-radius: 15px;
   padding: 20px;
-  background-color: #f9f9f9;
+  /* background-color: #f9f9f9; */
 }
 
 /* Main content area */
 .content-fluid1 {
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   align-items: center;
 }
 
 /* Form control sections */
 .form-control {
-  display: flex;
+  /* display: flex; */
   flex-direction: row;
-  width: 100%;
-  margin-bottom: 20px;
+  /* width: 100%; */
+  /* margin-bottom: 20px; */
   flex-wrap: wrap;
   justify-content: space-between;
 }
@@ -31,15 +31,11 @@
 }
 
 /* Styling for each field within the form */
-.field {
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-}
+
 
 /* Label styling */
 label {
-  font-weight: bold;
+  /* font-weight: bold; */
   margin-right: 10px;
 }
 
@@ -49,7 +45,7 @@ input[type="number"] {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ccc;
-  width: 100%;
+  /* width: 100%; */
 }
 
 /* Section headings */
@@ -82,19 +78,53 @@ h4 {
 
 /* Button styling */
 .button {
-  width: 70%;
+  /* width: 70%; */
   height: 31px;
   padding: 0.5rem 1rem;
+  margin-top: 20rem;
   font-size: 0.8rem;
 }
 
 /* Button class specific to p-button-danger */
 ::ng-deep .p-button.p-button-danger {
-  width: 70% !important;
+  /* width: 70% !important; */
   height: 31px !important;
+  margin-top: 19rem;
 }
 
 ::ng-deep .p-button {
   padding: 0.5rem 1rem !important;
   font-size: 0.8rem !important;
+}
+
+.category-container {
+  display: flex;
+  gap: 15px; /* Space between radio buttons */
+  align-items: center; /* Vertically center the items */
+  flex-wrap: wrap; /* Allow wrapping to the next row if necessary */
+}
+
+.field-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.category-label {
+  margin-left: 8px; /* Space between the radio button and the label */
+  font-size: 1rem;
+  color: #4a4a4a;
+}
+
+/* Styling for the radio button */
+p-radioButton {
+  margin-right: 5px;
+}
+
+/* Optional: Add some hover effects or focus styles */
+.category-container .field-checkbox:hover label {
+  color: #007bff; /* Change label color on hover */
+}
+
+.category-container .field-checkbox input:focus-visible {
+  outline: 2px solid #007bff; /* Highlight the radio button when focused */
 }
