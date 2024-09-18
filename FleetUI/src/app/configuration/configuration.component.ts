@@ -30,7 +30,7 @@ interface Poll {
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.css'],
-  // encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
+  encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
 })
 export class ConfigurationComponent implements AfterViewInit {
   // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
