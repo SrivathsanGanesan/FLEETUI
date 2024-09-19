@@ -9,7 +9,7 @@
     
     <!-- Canvases -->
     <!-- <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas> -->
-    <canvas id="myCanvas" (mousedown)="panStart($event)"></canvas>
+    <canvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
     
     <!-- ON Button -->
     <div class="ONBtn" (click)="startStopOpt()">

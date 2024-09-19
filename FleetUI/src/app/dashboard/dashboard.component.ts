@@ -91,6 +91,7 @@ export class DashboardComponent implements AfterViewInit {
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
   showModelCanvas: boolean = false;  // Initially hide the modelCanvas
+  
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -98,6 +99,7 @@ export class DashboardComponent implements AfterViewInit {
 
     if (this.projectService.getIsMapSet()) return;
     this.onInitMapImg(); // yet to remove..
+    
     this.assetImages = {
       'docking': new Image(),
       'charging': new Image()
@@ -457,7 +459,10 @@ export class DashboardComponent implements AfterViewInit {
     this.zoomLevel /= 1.2;
     this.loadCanvas();
   }
-
+  onMouseLeave() {
+    this.isPanning = false;
+    document.body.style.cursor = 'default'; // Ensure the cursor resets when mouse leaves the canvas
+  }
   panStart(event: MouseEvent) {
     if (this.isPanning) {
       this.lastX = event.clientX;

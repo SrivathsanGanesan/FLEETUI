@@ -99,6 +99,10 @@
   position: relative;
   margin: 0px 0px 0x 0px;
 }
+.ProjDiv3 option{
+  max-height: 60px;
+  overflow: auto;
+}
 .Sitename,
 .Projectname {
   width: 180px;
