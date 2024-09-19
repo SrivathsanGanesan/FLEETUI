@@ -2,6 +2,7 @@ import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { AuthService } from '../auth.service';
 import { PageEvent } from '@angular/material/paginator';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-user-management',
@@ -13,7 +14,7 @@ onPageChange($event: PageEvent) {
 throw new Error('Method not implemented.');
 }
 filteredTaskData: any;
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private messageService: MessageService) {}
 
   userId = 0;
   userName = '';
@@ -296,6 +297,7 @@ filteredTaskData: any;
           alert('Person with this credentials already exist');
           return;
         }
+        this.messageService.add({ severity: 'success', summary:`${this.userName}`, detail: 'User Created Successfully', life: 4000 });
         console.log('User created successfully:', data);
 
         // Fetch updated user list after successful creation
@@ -400,7 +402,7 @@ filteredTaskData: any;
     // console.log('CPASS State: ', this.confrimPasswordState);
   }
 
-  userCreatePopUpOpen() {
+  userCreatePopUpOpen(isCancel: boolean = false) {
     this.userRoleOCstate = false;
     this.userCreatePopUp = !this.userCreatePopUp;
     this.errorMessage = '';
@@ -409,6 +411,16 @@ filteredTaskData: any;
     this.confrimPassword = '';
     this.userRole = 'User';
     this.resetPassword();
+
+    if (isCancel) {
+      // Display a toast indicating that the user creation was canceled
+      this.messageService.add({
+        severity: 'error',
+        summary: 'User Creation Failed',
+        detail: 'User creation process was canceled.',
+        life: 4000
+      });
+    }
     console.log(this.passwordState, this.confrimPasswordState);
   }
 
