@@ -44,7 +44,7 @@
           <label for="resolution">Resolution</label>
           <!-- [(ngModel)]="resolution" -->
           <div class="Res1">
-            <input
+            <input pInputText
               type="number"
               id="resolution"
               #resolutionInput
@@ -62,8 +62,8 @@
           class="origin-coor"
           style="display: flex; align-items: center; gap: 10px"
         >
-          <input type="number" id="X" placeholder="X" min="0" (keyup.enter)="open()" />
-          <input type="number" id="Y" placeholder="Y" min="0" (keyup.enter)="open()" />
+          <input pInputText type="number" id="X" placeholder="X" min="0" (keyup.enter)="open()" />
+          <input pInputText type="number" id="Y" placeholder="Y" min="0" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
@@ -108,7 +108,7 @@
         <div *ngIf="showDistanceDialog" class="distance-dialog-overlay">
           <div class="distance-dialog">
             <h3>Enter Distance Between Points</h3>
-            <input
+            <input pInputText
               type="number"
                 min="0"
 
@@ -189,20 +189,20 @@
             </div>
 
             <label for="nodeDescription">Node Description:</label>
-            <input
+            <input pInputText
               type="text"
               id="nodeDescription"
               [(ngModel)]="nodeDetails.description"
             /><br />
             <label for="Intermediate_Stn">Intermediate Node</label>
-            <input
+            <input pInputText
               type="checkbox"
               id="Intermediate_Stn"
               [(ngModel)]="nodeDetails.intermediate_node"
             /><br />
 
             <label for="Waiting_Stn">Waiting Node</label>
-            <input
+            <input pInputText
               type="checkbox"
               id="Waiting_Stn"
               [(ngModel)]="nodeDetails.waiting_node"
@@ -228,35 +228,35 @@
             >
               <p>Move Action Parameters</p>
               <label>Max Linear Velocity:</label>
-              <input
+              <input pInputText
                 type="number"
                                 min="0"
                 max="1000"
                 [(ngModel)]="moveParameters.maxLinearVelocity"
               /><br />
               <label>Max Angular Velocity:</label>
-              <input
+              <input pInputText
                 type="number"
                                 min="0"
                 max="1000"
                 [(ngModel)]="moveParameters.maxAngularVelocity"
               /><br />
               <label>Max Tolerance at Goal X:</label>
-              <input
+              <input pInputText
                 type="number"
                                 min="0"
                 max="1000"
                 [(ngModel)]="moveParameters.maxToleranceAtGoalX"
               /><br />
               <label>Max Tolerance at Goal Y:</label>
-              <input
+              <input pInputText
                 type="number"
                                 min="0"
                 max="1000"
                 [(ngModel)]="moveParameters.maxToleranceAtGoalY"
               /><br />
               <label>Max Tolerance at Goal Orientation:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
@@ -282,49 +282,49 @@
             >
               <p>Dock Action Parameters</p>
               <label>Max Linear Velocity:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.maxAngularVelocity"
               /><br />
               <label>Max Tolerance at Goal X:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalX"
               /><br />
               <label>Max Tolerance at Goal Y:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalY"
               /><br />
               <label>Max Tolerance at Goal Orientation:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalOrientation"
               /><br />
               <label>Goal offset X</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.goalOffsetX"
               /><br />
               <label>Goal offset Y</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.goalOffsetY"
               /><br />
               <label>Goal offset Orientation</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
@@ -350,47 +350,47 @@
             >
               <p>Undock Action Parameters</p>
               <label>Max Linear Velocity:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="undockParameters.maxLinearVelocity"
               /><br />
               <label>Max Angular Velocity:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="undockParameters.maxAngularVelocity"
               /><br />
               <label>Max Tolerance at Goal X:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalX"
               /><br />
               <label>Max Tolerance at Goal Y:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalY"
               /><br />
               <label>Max Tolerance at Goal Orientation:</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalOrientation"
               /><br />
               <label>End Point Orientation:</label>
-              <input
+              <input pInputText
                 type="checkbox"
                 [(ngModel)]="undockParameters.endPointOrientation"
               /><br />
               <label>Undocking Distance</label>
-              <input
+              <input pInputText
                 type="number"
                 min="0"
                 max="1000"
@@ -471,7 +471,7 @@
       {{ validationError }}
     </div>
     <div class="button-container" *ngIf="!showImage">
-      
+
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
     </div>
@@ -508,7 +508,7 @@
     <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
     <div class="form-row">
       <label for="edgeId">Edge ID:</label>
-      <input
+      <input pInputText
         id="edgeId"
         [(ngModel)]="currentEdge.edgeId"
         name="edgeId"
@@ -518,7 +518,7 @@
 
     <div class="form-row">
       <label for="sequenceId">Sequence ID:</label>
-      <input
+      <input pInputText
         id="sequenceId"
         type="number"
         min="0"
@@ -531,7 +531,7 @@
 
     <div class="form-row">
       <label for="edgeDescription">Description:</label>
-      <input
+      <input pInputText
         id="edgeDescription"
         [(ngModel)]="currentEdge.edgeDescription"
         name="edgeDescription"
@@ -540,7 +540,7 @@
 
     <div class="form-row">
       <label for="released">Released:</label>
-      <input
+      <input pInputText
         id="released"
         type="checkbox"
         [(ngModel)]="currentEdge.released"
@@ -550,7 +550,7 @@
 
     <div class="form-row">
       <label for="startNodeId">Start Node ID:</label>
-      <input
+      <input pInputText
         id="startNodeId"
         [(ngModel)]="currentEdge.startNodeId"
         name="startNodeId"
@@ -560,7 +560,7 @@
 
     <div class="form-row">
       <label for="endNodeId">End Node ID:</label>
-      <input
+      <input pInputText
         id="endNodeId"
         [(ngModel)]="currentEdge.endNodeId"
         name="endNodeId"
@@ -570,7 +570,7 @@
 
     <div class="form-row">
       <label for="maxSpeed">Max Speed (m/s):</label>
-      <input
+      <input pInputText
         id="maxSpeed"
         type="number"
         min="0"
@@ -582,7 +582,7 @@
 
     <div class="form-row">
       <label for="maxHeight">Max Height (m):</label>
-      <input
+      <input pInputText
         id="maxHeight"
         type="number"
         min="0"
@@ -594,7 +594,7 @@
 
     <div class="form-row">
       <label for="minHeight">Min Height (m):</label>
-      <input
+      <input pInputText
         id="minHeight"
         type="number"
         min="0"
@@ -606,7 +606,7 @@
 
     <div class="form-row">
       <label for="orientation">Orientation (rad):</label>
-      <input
+      <input pInputText
         id="orientation"
         type="number"
         min="0"
@@ -618,7 +618,7 @@
 
     <div class="form-row">
       <label for="orientationType">Orientation Type:</label>
-      <input
+      <input pInputText
         id="orientationType"
         [(ngModel)]="currentEdge.orientationType"
         name="orientationType"
@@ -627,7 +627,7 @@
 
     <div class="form-row">
       <label for="direction">Direction:</label>
-      <select
+      <select pInputText
         id="direction"
         [(ngModel)]="currentEdge.direction"
         name="direction"
@@ -639,7 +639,7 @@
 
     <div class="form-row">
       <label for="rotationAllowed">Rotation Allowed:</label>
-      <input
+      <input pInputText
         id="rotationAllowed"
         type="checkbox"
         [(ngModel)]="currentEdge.rotationAllowed"
@@ -649,7 +649,7 @@
 
     <div class="form-row">
       <label for="maxRotationSpeed">Max Rotation Speed (rad/s):</label>
-      <input
+      <input pInputText
         id="maxRotationSpeed"
         type="number"
         min="0"
@@ -661,7 +661,7 @@
 
     <div class="form-row">
       <label for="length">Length:</label>
-      <input
+      <input pInputText
         id="length"
         type="number"
         min="0"
@@ -673,7 +673,7 @@
 
     <div class="form-row">
       <label for="action">Actions:</label>
-      <input id="action" [(ngModel)]="currentEdge.action" name="action" />
+      <input pInputText id="action" [(ngModel)]="currentEdge.action" name="action" />
     </div>
     <div *ngIf="showEdgeError" class="error-message">
       All required fields must be provided.
@@ -695,7 +695,7 @@
 
       <div class="UDform">
         <label for="undockingDistance">Undocking Distance:</label>
-        <input
+        <input pInputText
           type="number"
           id="undockingDistance"
           name="undockingDistance"
@@ -708,7 +708,7 @@
 
       <div class="UDform">
         <label for="description">Description:</label>
-        <input
+        <input pInputText
           type="text"
           id="description"
           name="description"
@@ -735,7 +735,7 @@
 <div class="popup-overlay1" *ngIf="showIntermediateNodesDialog">
   <div class="popup-content1">
     <p>Enter Number of Nodes</p>
-    <input
+    <input pInputText
       type="number"
       min="1"
       max="100"
