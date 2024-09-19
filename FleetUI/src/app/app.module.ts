@@ -46,8 +46,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { FullscreenButtonComponent } from './fullscreen-button/fullscreen-button.component';
 import { ConfigurationModule } from './configuration/configuration.module';
-import { DropdownModule } from 'primeng/dropdown';
-import { RadialChartComponent } from './radial-chart/radial-chart.component';
+import { DropdownModule } from 'primeng/dropdown';import { RadialChartComponent } from './radial-chart/radial-chart.component';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { AppServerModule } from './app.module.server';
+import { SupportComponent } from './support/support.component';
 
 
 
@@ -86,7 +89,7 @@ import { RadialChartComponent } from './radial-chart/radial-chart.component';
     UserManagementComponent,
     FullscreenButtonComponent,
     RadialChartComponent,
-  
+    SupportComponent
   ],
   imports: [
     NgApexchartsModule,
@@ -103,12 +106,15 @@ import { RadialChartComponent } from './radial-chart/radial-chart.component';
     ConfigurationModule,
     InputTextModule,
     ButtonModule,
-    DropdownModule
+    DropdownModule,
+    ToastModule,
+    AppServerModule
   ],
   providers: [
     // provideClientHydration()
 
     provideAnimationsAsync(),
+    MessageService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],

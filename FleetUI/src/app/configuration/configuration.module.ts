@@ -19,6 +19,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { ToastModule } from 'primeng/toast';
 
 
 @NgModule({
@@ -28,7 +29,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
              TaskComponent,
              BatteryComponent,
              CommunicationComponent,
-             
+
   ],
   imports: [
     CommonModule,
@@ -42,6 +43,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     InputGroupAddonModule,
     DropdownModule,
     RadioButtonModule,
+    ToastModule
 
   ],
   exports: [

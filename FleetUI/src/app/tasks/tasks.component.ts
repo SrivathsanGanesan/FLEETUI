@@ -3,6 +3,7 @@ import { ExportService } from '../export.service';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-tasks',
@@ -54,7 +55,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   constructor(
     private exportService: ExportService,
-    private projectService: ProjectService
+    private projectService: ProjectService, private messageService: MessageService
   ) {}
 
   async ngOnInit() {
@@ -136,20 +137,56 @@ export class TasksComponent implements OnInit, AfterViewInit {
   }
   exportData(format: string) {
     const data = this.tasks;
-    switch (format) {
-      case 'csv':
-        this.exportService.exportToCSV(data, 'TaskDataExport');
-        break;
-      case 'excel':
-        this.exportService.exportToExcel(data, `TaskDataExport`);
-        break;
-      case 'pdf':
-        this.exportService.exportToPDF(data, 'TaskDataExport');
-        break;
-      default:
-        console.error('Invalid export format');
+
+    try {
+      switch (format) {
+        case 'csv':
+          this.exportService.exportToCSV(data, 'TaskDataExport');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Export Successful',
+            detail: 'Data exported to CSV successfully!',
+            life: 3000
+          });
+          break;
+        case 'excel':
+          this.exportService.exportToExcel(data, 'TaskDataExport');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Export Successful',
+            detail: 'Data exported to Excel successfully!',
+            life: 3000
+          });
+          break;
+        case 'pdf':
+          this.exportService.exportToPDF(data, 'TaskDataExport');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Export Successful',
+            detail: 'Data exported to PDF successfully!',
+            life: 3000
+          });
+          break;
+        default:
+          console.error('Invalid export format');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Export Failed',
+            detail: 'Invalid export format specified.',
+            life: 3000
+          });
+      }
+    } catch (error) {
+      console.error('Export error:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Export Failed',
+        detail: 'An error occurred while exporting data.',
+        life: 3000
+      });
     }
   }
+
 
   showPopup() {
     this.isPopupVisible = true;

@@ -19,7 +19,7 @@
       </div>
 
       <!-- Button -->
-      <span (click)="userCreatePopUpOpen()">
+      <span (click)="userCreatePopUpOpen(false)">
         <button class="px-10 py-3 text-[14px] rounded-md bg-[#ff3333] font-semibold text-white">Create User</button>
       </span>
     </div>
@@ -142,7 +142,7 @@
 
         <div class="flex gap-7 mt-10">
           <button (click)="createUser()" class="w-[120px] py-[8px] rounded-md bg-[#D30000] text-[14px] text-white font-semibold">Create User</button>
-          <button (click)="userCreatePopUpOpen()" class="w-[120px] py-[8px] rounded-md border-2 border-[#D30000] text-[14px] text-[#D30000] font-semibold">Cancel</button>
+          <button (click)="userCreatePopUpOpen(true)" class="w-[120px] py-[8px] rounded-md border-2 border-[#D30000] text-[14px] text-[#D30000] font-semibold">Cancel</button>
         </div>
       </div>
     </div>

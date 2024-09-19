@@ -91,6 +91,7 @@ export class DashboardComponent implements AfterViewInit {
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
   showModelCanvas: boolean = false;  // Initially hide the modelCanvas
+  
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -98,18 +99,7 @@ export class DashboardComponent implements AfterViewInit {
 
     if (this.projectService.getIsMapSet()) return;
     this.onInitMapImg(); // yet to remove..
-  }
-
-  async ngAfterViewInit() {
     
-    this.loadCanvas();
-    await this.getMapDetails();
-    // if (this.showModelCanvas) {
-    //   // this.cdRef.detectChanges(); // Detect changes to ensure DOM is ready
-    //   this.loadModelCanvas();     // Safely load the modelCanvas
-    // }
-    
-    // Initialize asset images in the constructor
     this.assetImages = {
       'docking': new Image(),
       'charging': new Image()
@@ -117,6 +107,8 @@ export class DashboardComponent implements AfterViewInit {
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
   }
+
+  ngAfterViewInit(): void {}
 
   async getMapDetails() {
     let mapData = this.projectService.getMapData();
@@ -467,7 +459,10 @@ export class DashboardComponent implements AfterViewInit {
     this.zoomLevel /= 1.2;
     this.loadCanvas();
   }
-
+  onMouseLeave() {
+    this.isPanning = false;
+    document.body.style.cursor = 'default'; // Ensure the cursor resets when mouse leaves the canvas
+  }
   panStart(event: MouseEvent) {
     if (this.isPanning) {
       this.lastX = event.clientX;
