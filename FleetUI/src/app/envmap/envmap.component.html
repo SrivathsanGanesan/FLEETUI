@@ -42,10 +42,10 @@
       <div class="form1-container" *ngIf="fileName && !showImage">
         <div class="Res">
           <label for="resolution">Resolution</label>
+          <!-- [(ngModel)]="resolution" -->
           <div class="Res1">
             <input
               type="number"
-              [(ngModel)]="resolution"
               id="resolution"
               #resolutionInput
               placeholder="Resolution"
@@ -62,8 +62,8 @@
           class="origin-coor"
           style="display: flex; align-items: center; gap: 10px"
         >
-          <input type="number" id="X" placeholder="X" min="0" [(ngModel)]="originX" (keyup.enter)="open()" />
-          <input type="number" id="Y" placeholder="Y" min="0" [(ngModel)]="originY" (keyup.enter)="open()" />
+          <input type="number" id="X" placeholder="X" min="0" (keyup.enter)="open()" />
+          <input type="number" id="Y" placeholder="Y" min="0" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
