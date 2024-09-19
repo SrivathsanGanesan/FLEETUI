@@ -178,7 +178,7 @@ export class ProjectsetupComponent {
       let data = await response.json();
       console.log(data);
       if (data.conflicts) alert(data.msg);
-      if (data.dupKeyErr) {
+      if (data.dupKeyErr || data.isZipValidate === false) {
         alert(data.msg);
         return;
       } else if (data.error) {

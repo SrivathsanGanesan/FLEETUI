@@ -15,7 +15,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-roboSpecificationRouter.post("/", upload.single("roboImg"), createRobo);
+// roboSpecificationRouter.post("/", upload.single("roboImg"), createRobo);
+roboSpecificationRouter.post("/", createRobo);
 roboSpecificationRouter.put("/:queRoboName", updateRobo);
 
 module.exports = roboSpecificationRouter;

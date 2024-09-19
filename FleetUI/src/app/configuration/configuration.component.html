@@ -271,9 +271,9 @@
             <!-- Add this in your main component HTML -->
             <div class="form-group" *ngIf="currentTable === 'robot'">
               <label for="ipRangeFrom">IP Range:</label>
-              <input pInputText id="ipRangeFrom" type="text" placeholder="255.255.0.0" />
+              <input pInputText id="ipRangeFrom" type="text" placeholder="255.255.0.0" [(ngModel)]="startIP"/>
               <span>to: </span>
-              <input pInputText id="ipRangeTo" type="text" placeholder="255.255.0.0" />
+              <input pInputText id="ipRangeTo" type="text" placeholder="255.255.0.0" [(ngModel)]="EndIP"/>
 
               <button
                 type="button"
@@ -635,7 +635,7 @@
 
   </div>
   <div class="btn-rob">
-    <button pButton class="p-button1" type="submit">Save</button>
+    <button pButton class="p-button1" type="submit" (click)="saveRoboInfo()">Save</button>
     <!-- <button pButton class="p-button1" type="button" (click)="closeroboPopup()">Close</button> -->
   </div>
   </div>

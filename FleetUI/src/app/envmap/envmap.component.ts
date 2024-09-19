@@ -305,10 +305,25 @@ export class EnvmapComponent implements AfterViewInit {
       this.siteName = this.currEditMapDet.siteName;
       this.ratio = this.currEditMapDet.ratio;
       this.imageSrc = this.currEditMapDet.imgUrl;
-      this.nodes = this.currEditMapDet.nodes;
+      this.nodes = this.currEditMapDet.nodes.map((node : Node)=>{
+        node.nodePosition.x = node.nodePosition.x / (this.ratio || 1);
+        node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
+        return node;
+      });
       this.edges = this.currEditMapDet.edges;
-      this.assets = this.currEditMapDet.assets;
-      this.zones = this.currEditMapDet.zones;
+      this.assets = this.currEditMapDet.assets.map((asset : asset)=>{
+        asset.x = asset.x / (this.ratio || 1);
+        asset.y = asset.y / (this.ratio || 1);
+        return asset;
+      });
+      this.zones = this.currEditMapDet.zones.map((zone : Zone)=>{
+        zone.pos = zone.pos.map((pos)=>{
+          pos.x = pos.x / (this.ratio || 1);
+          pos.y = pos.y / (this.ratio || 1);
+          return pos;
+        })
+        return zone;
+      });
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
           ? parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
@@ -524,6 +539,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
+    this.distanceBetweenPoints = null; // Clear the input field
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -747,6 +763,24 @@ export class EnvmapComponent implements AfterViewInit {
     );
   }
   updateEditedMap() {
+    this.nodes = this.nodes.map((node)=>{
+      node.nodePosition.x = node.nodePosition.x * (this.ratio || 1);
+      node.nodePosition.y = node.nodePosition.y * (this.ratio || 1);
+      return node;
+    }); // convert pix to meter..
+    this.assets = this.assets.map((asset)=>{
+      asset.x = asset.x * (this.ratio || 1);
+      asset.y = asset.y * (this.ratio || 1);
+      return asset;
+    }); // convert pix to meter..
+    this.zones = this.zones.map((zone)=>{
+      zone.pos = zone.pos.map((pos)=>{
+        pos.x = pos.x * (this.ratio || 1);
+        pos.y = pos.y * (this.ratio || 1);
+        return pos;
+      })
+      return zone;
+    })
     let editedMap = {
       mapName: null,
       siteName: null,
@@ -787,12 +821,28 @@ export class EnvmapComponent implements AfterViewInit {
       this.updateEditedMap();
       return;
     }
-    console.log(this.Nodes);
-    console.log(this.connections);
     if (!this.selectedImage) {
       alert('file missing!');
       return;
     }
+    this.nodes = this.nodes.map((node)=>{
+      node.nodePosition.x = node.nodePosition.x * (this.ratio || 1);
+      node.nodePosition.y = node.nodePosition.y * (this.ratio || 1);
+      return node;
+    }); // convert pix to meter..
+    this.assets = this.assets.map((asset)=>{
+      asset.x = asset.x * (this.ratio || 1);
+      asset.y = asset.y * (this.ratio || 1);
+      return asset;
+    }); // convert pix to meter..
+    this.zones = this.zones.map((zone)=>{
+      zone.pos = zone.pos.map((pos)=>{
+        pos.x = pos.x * (this.ratio || 1);
+        pos.y = pos.y * (this.ratio || 1);
+        return pos;
+      })
+      return zone;
+    })
     this.form = new FormData();
     let mapData = {
       projectName: this.projData.projectName,
@@ -933,9 +983,10 @@ export class EnvmapComponent implements AfterViewInit {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
     const targetElement = event.target as HTMLElement;
     // Check if the click was on the "Clear" button, and if so, return early
-    if (targetElement.classList.contains('clear-btn')) {
+    if (targetElement.classList.contains('clear-btn') || targetElement.classList.contains('close-btn')) {
       return;
     }
+
     const canvas = this.imagePopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
@@ -979,9 +1030,16 @@ export class EnvmapComponent implements AfterViewInit {
     const nodesJson = JSON.stringify(this.Nodes, null, 2);
     console.log('Node details:', nodesJson);
   }
+
+  
+  resolution: number | null = null;
+  originX: number | null = null;
+  originY: number | null = null;
+
   open(): void {
+    
     if (!this.currEditMap)
-      if (this.mapName && this.siteName) {
+      if (this.mapName && this.siteName ) {
         for (let map of this.EnvData) {
           if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
             alert('Map name seems already exists, try another');
@@ -995,7 +1053,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.ratio = Number(
           (document.getElementById('resolution') as HTMLInputElement).value
         );
-    if (this.mapName && this.siteName && this.imageSrc) {
+    if (this.mapName && this.siteName && this.imageSrc && this.resolution) {
       this.fileName = null;
       this.showImage = true;
       const img = new Image();
@@ -1024,9 +1082,9 @@ export class EnvmapComponent implements AfterViewInit {
         this.mapService.setOnCreateMapImg(this.imageBase64);  // Save the Base64 image in the cookie
       }
     } else {
-      alert('Please enter both Map Name and Site Name before clicking Open.');
-    }
+      this.validationMessage = 'Please fill in all the required fields.';    }
   }
+  
   close(): void {
     this.currEditMapChange.emit(false);
     this.showImage = true;
@@ -1795,8 +1853,8 @@ export class EnvmapComponent implements AfterViewInit {
           this.deselectNode();
         }
         // Select the new node
-        this.selectedNode = clickedNode;
         this.drawNode(clickedNode, 'red', true); // Highlight the selected node
+        this.selectedNode = clickedNode;
         console.log('Node selected:', x, y);
 
         // Draw connections or perform any other actions
