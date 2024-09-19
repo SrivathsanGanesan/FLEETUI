@@ -154,6 +154,8 @@ export class LoginComponent {
       });
   }
 
+
+
   onContainerClick(event: Event) {
     const target = event.currentTarget as HTMLElement;
     if (this.focusedContainer && this.focusedContainer !== target) {
