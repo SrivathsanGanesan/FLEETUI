@@ -66,7 +66,9 @@ const scanIp = async (req, res) => {
     }
     res.end();
   } catch (error) {
-    console.error("Error occurred in SSE :", error);
+    console.error("Error occurred in SSE :", error.message); // consider "error" as an obj of Error class for next time..
+    if (error.message && error.message.includes("Too many IPs in range"))
+      return res.status(422).json({ msg: "Ip range too hight" });
     res.status(500).send("Internal Server Error, might Ip range is so High!");
   }
 };
