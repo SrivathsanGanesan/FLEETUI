@@ -47,6 +47,10 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { FullscreenButtonComponent } from './fullscreen-button/fullscreen-button.component';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { DropdownModule } from 'primeng/dropdown';import { RadialChartComponent } from './radial-chart/radial-chart.component';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { AppServerModule } from './app.module.server';
+
 
 
 @NgModule({
@@ -100,12 +104,15 @@ import { DropdownModule } from 'primeng/dropdown';import { RadialChartComponent 
     ConfigurationModule,
     InputTextModule,
     ButtonModule,
-    DropdownModule
+    DropdownModule,
+    ToastModule,
+    AppServerModule
   ],
   providers: [
     // provideClientHydration()
 
     provideAnimationsAsync(),
+    MessageService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
