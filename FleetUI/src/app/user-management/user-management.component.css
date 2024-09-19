@@ -22,7 +22,7 @@
   p {
     margin: 0px;
   }
-  
+
   .header-title {
     font-size: 36px;
     font-weight: bold;
@@ -245,7 +245,7 @@ border-radius: 20px;
 }
 
 .twoColors:nth-child(even){
-  background-color: #EFEFEF;
+  background-color: #ffeeee;
 }
 
 .twoColors:nth-child(odd) {
