@@ -18,6 +18,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { EnvmapComponent } from '../envmap/envmap.component';
 import { AnyAaaaRecord } from 'node:dns';
 import { PageEvent } from '@angular/material/paginator';
+import { log } from 'node:console';
 
 interface Poll {
   ip: string;
@@ -30,7 +31,7 @@ interface Poll {
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.css'],
-  // encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
+  encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
 })
 export class ConfigurationComponent implements AfterViewInit {
   // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
@@ -70,47 +71,40 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredTaskData: any[] = [];
   filteredRobotData: any[] = [];
 
+  isPopupOpen: boolean = false;
   isScanning = false;
   EnvData: any[] = []; // map details..
+  currentRoboDet: any | null = null;
 
-  onPageChange(event: PageEvent) {
-    this.setPaginatedData();
-  }
-  setPaginatedData() {
-    throw new Error('Method not implemented.');
-  }
   currEditMap: boolean = false;
-  currEditMapDet : any | null = null;
-  agvKinematicsOptions: any[] =  [
+  currEditMapDet: any | null = null;
+  agvKinematicsOptions: any[] = [
     { name: 'DIFF', value: 'DIFF' },
     { name: 'OMNI', value: 'OMNI' },
     { name: 'THREEWHEEL', value: 'THREEWHEEL' },
   ];
-  agvClassOptions: any[] =  [
+  agvClassOptions: any[] = [
     { name: 'NOT_SET', value: 'NOT_SET' },
     { name: 'FORKLIFT', value: 'FORKLIFT' },
     { name: 'CONVEYOR', value: 'CONVEYOR' },
     { name: 'TUGGER', value: 'TUGGER' },
-    { name: 'CARRIER', value: 'CARRIER' }
+    { name: 'CARRIER', value: 'CARRIER' },
   ];
-  localizationTypes: any[] =  [
+  localizationTypes: any[] = [
     { name: 'NATURAL', value: 'NATURAL' },
     { name: 'REFLECTOR', value: 'REFLECTOR' },
     { name: 'RFID', value: 'RFID' },
     { name: 'DMC', value: 'DMC' },
     { name: 'SPOT', value: 'SPOT' },
-    { name: 'GRID', value: 'GRID' }
+    { name: 'GRID', value: 'GRID' },
   ];
-  navigationTypes: any[] =  [
+  navigationTypes: any[] = [
     { name: 'PHYSICAL_LINE_GUIDED', value: 'PHYSICAL_LINE_GUIDED' },
     { name: 'VIRTUAL_LINE_GUIDED', value: 'VIRTUAL_LINE_GUIDED' },
-    { name: 'AUTONOMOUS', value: 'AUTONOMOUS' }
+    { name: 'AUTONOMOUS', value: 'AUTONOMOUS' },
   ];
 
-
-  robotData: any[] = [
-
-  ];
+  robotData: any[] = [];
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -122,15 +116,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   ngOnInit() {
-    this.ipScanData.push({
-      ip: '12.12.12.12',
-      mac:'00:00:00:00:00:00',
-      host: 'host',
-      ping: '0.0ms',
-      Status: 'online',
-    })
-
-    this.cdRef.detectChanges()
+    this.cdRef.detectChanges();
     const today = new Date();
     const pastFiveYears = new Date();
     pastFiveYears.setFullYear(today.getFullYear() - 5);
@@ -213,6 +199,13 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filteredRobotData = this.robotData;
     this.searchTerm = '';
     this.searchTermChanged();
+  }
+
+  onPageChange(event: PageEvent) {
+    this.setPaginatedData();
+  }
+  setPaginatedData() {
+    throw new Error('Method not implemented.');
   }
 
   async selectMap(map: any) {
@@ -321,7 +314,6 @@ export class ConfigurationComponent implements AfterViewInit {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
-
   selectedrobotData = [
     { column1: '192.168.XX.XX', column2: ' ' },
     { column1: '192.168.XX.XX', column2: ' ' },
@@ -360,18 +352,17 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   isRobotPopupVisible: boolean = false;
   eventSource!: EventSource;
-  startIP: string = '0.0.0.0';
-  EndIP: string = '0.0.0.0';
+  startIP: string = '';
+  EndIP: string = '';
 
   startScanning() {
-
     this.ipScanData = [];
-    this.startIP = (
-      document.getElementById('ipRangeFrom') as HTMLInputElement
-    ).value;
-    this.EndIP = (
-      document.getElementById('ipRangeTo') as HTMLInputElement
-    ).value;
+    // this.startIP = (
+    //   document.getElementById('ipRangeFrom') as HTMLInputElement
+    // ).value;
+    // this.EndIP = (
+    //   document.getElementById('ipRangeTo') as HTMLInputElement
+    // ).value;
     if (this.startIP === '' || this.EndIP === '') {
       alert('Enter valid Ip');
       return;
@@ -415,6 +406,8 @@ export class ConfigurationComponent implements AfterViewInit {
     this.eventSource.onerror = (error) => {
       console.error('SSE error:', error);
       this.eventSource.close();
+      this.isScanning = false;
+      this.cdRef.detectChanges();
     };
     this.isScanning = true;
   }
@@ -447,7 +440,6 @@ export class ConfigurationComponent implements AfterViewInit {
   showImageUploadPopup = false;
   openImageUploadPopup(): void {
     this.showImageUploadPopup = true;
-
   }
 
   closeImageUploadPopup(): void {
@@ -484,6 +476,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.connectivityPoints = []; // Clear previous points
     console.log('Connectivity mode activated. Select two points.');
   }
+
   connectivityMode: 'none' | 'bi-directional' | 'uni-directional' = 'none';
   firstPoint: { x: number; y: number } | null = null;
   secondPoint: { x: number; y: number } | null = null;
@@ -533,18 +526,18 @@ export class ConfigurationComponent implements AfterViewInit {
     this.activeButton = button;
     this.isTransitioning = true;
 
-      this.activeButton = button;
-      this.activeHeader = this.getHeader(button);
-      this.isTransitioning = false;
+    this.activeButton = button;
+    this.activeHeader = this.getHeader(button);
+    this.isTransitioning = false;
 
-      // Set the current table and tab based on the button
-      if (button === 'fleet') {
-        this.currentTable = 'fleet';
-        this.currentTab = 'fleet';
-      } else {
-        this.currentTable = button;
-        this.currentTab = button;
-      }
+    // Set the current table and tab based on the button
+    if (button === 'fleet') {
+      this.currentTable = 'fleet';
+      this.currentTab = 'fleet';
+    } else {
+      this.currentTable = button;
+      this.currentTab = button;
+    }
   }
 
   setFleetTab(tab: string): void {
@@ -557,19 +550,19 @@ export class ConfigurationComponent implements AfterViewInit {
 
   showTable(table: string) {
     this.currentTable = table;
-      // Clear search term and reset date inputs when switching between tabs
-  // Clear search term and reset date inputs when switching between tabs
-  this.searchTerm = ''; // Clear the search term
-  this.startDate = null; // Clear the start date
-  this.endDate = null; // Clear the end date
+    // Clear search term and reset date inputs when switching between tabs
+    // Clear search term and reset date inputs when switching between tabs
+    this.searchTerm = ''; // Clear the search term
+    this.startDate = null; // Clear the start date
+    this.endDate = null; // Clear the end date
 
-  // Clear filtered data based on the current table
-  if (this.currentTable === 'environment') {
-    this.filteredEnvData = [...this.EnvData]; // Reset to the original data
-  } else if (this.currentTable === 'robot') {
-    this.filteredRobotData = [...this.robotData]; // Reset to the original data
-  }
-  this.filterData();
+    // Clear filtered data based on the current table
+    if (this.currentTable === 'environment') {
+      this.filteredEnvData = [...this.EnvData]; // Reset to the original data
+    } else if (this.currentTable === 'robot') {
+      this.filteredRobotData = [...this.robotData]; // Reset to the original data
+    }
+    this.filterData();
   }
   filterData() {
     const term = this.searchTerm.toLowerCase();
@@ -577,10 +570,11 @@ export class ConfigurationComponent implements AfterViewInit {
     if (this.currentTable === 'Environment') {
       this.filteredEnvData = this.EnvData.filter((item) => {
         const date = new Date(item.date);
-        const normalizedDate = this.normalizeDate(date);  // Normalize the item's date
+        const normalizedDate = this.normalizeDate(date); // Normalize the item's date
         const withinDateRange =
-          (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
-          (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate));  // Normalize the end date
+          (!this.startDate ||
+            normalizedDate >= this.normalizeDate(this.startDate)) &&
+          (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate)); // Normalize the end date
 
         return (
           (item.mapName.toLowerCase().includes(term) ||
@@ -604,8 +598,8 @@ export class ConfigurationComponent implements AfterViewInit {
     // Implement your date filter logic here
   }
 
-   // Function to format date to 'YYYY-MM-DD' format for input type="date"
-   formatDate(date: Date): string {
+  // Function to format date to 'YYYY-MM-DD' format for input type="date"
+  formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
@@ -664,41 +658,47 @@ export class ConfigurationComponent implements AfterViewInit {
     this.imageHeight = 0;
     this.imageWidth = 0;
   }
-  onCurrEditMapChange(currEditMap : boolean){
+  onCurrEditMapChange(currEditMap: boolean) {
     this.currEditMap = currEditMap;
   }
   editItem(item: any) {
-    fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${item.mapName}`, {
-      method:'GET',
-      credentials:'include'
-    }).then((response) =>{
-      return response.json()
-    }).then((data)=>{
-      if(!data.map){
-        alert('Seems map not exist');
-        return;
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${item.mapName}`,
+      {
+        method: 'GET',
+        credentials: 'include',
       }
-      if(data.error) {
-        console.log('Error while fetching map : ', data.error);
-        return;
-      }
-      const { map }= data;
-      this.currEditMapDet = {
-        mapName : map.mapName,
-        siteName : item.siteName,
-        ratio : map.mpp,
-        imgUrl : `http://${map.imgUrl}`,
-        nodes : map.nodes,
-        edges : map.edges,
-        assets : map.stations,
-        zones : map.zones
-      }
-      this.currEditMap = true;
-      this.showImageUploadPopup = true;
-      // console.log(map.mapName, item.siteName, map.mpp, map.imgUrl);
-    }) .catch((err)=>{
-      console.log(err);
-    })
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        if (!data.map) {
+          alert('Seems map not exist');
+          return;
+        }
+        if (data.error) {
+          console.log('Error while fetching map : ', data.error);
+          return;
+        }
+        const { map } = data;
+        this.currEditMapDet = {
+          mapName: map.mapName,
+          siteName: item.siteName,
+          ratio: map.mpp,
+          imgUrl: `http://${map.imgUrl}`,
+          nodes: map.nodes,
+          edges: map.edges,
+          assets: map.stations,
+          zones: map.zones,
+        };
+        this.currEditMap = true;
+        this.showImageUploadPopup = true;
+        // console.log(map.mapName, item.siteName, map.mpp, map.imgUrl);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   async deleteMap(map: any): Promise<boolean> {
@@ -762,10 +762,9 @@ export class ConfigurationComponent implements AfterViewInit {
   blockItem(item: any) {
     console.log('Block item:', item);
   }
-  isPPPopupOpen = false;
+  isPPPopupOpen: boolean = false;
   newItem: any = {};
-  isPopupOpen = false;
-  isPhysicalParametersFormVisible = false;
+  isPhysicalParametersFormVisible: boolean = false;
   // isTypeSpecificationFormVisible = false;
   // isProtocolLimitsFormVisible = false;
   // isProtocolFeaturesFormVisible = false;
@@ -783,165 +782,180 @@ export class ConfigurationComponent implements AfterViewInit {
       agvClass: undefined as any | undefined,
       maxLoadMass: 0,
       localizationTypes: '',
-      navigationTypes: ''
+      navigationTypes: '',
     },
     protocolLimits: {
       maxStringLens: '',
       maxArrayLens: '',
-      timing: ''
+      timing: '',
     },
     protocolFeatures: {
       optionalParameters: '',
       actionScopes: '',
       actionParameters: '',
-      resultDescription: ''
+      resultDescription: '',
     },
     agvGeometry: {
       wheelDefinitions: '',
       envelopes2d: '',
-      envelopes3d: ''
+      envelopes3d: '',
     },
     loadSpecification: {
       loadPositions: '',
-      loadSets: ''
+      loadSets: '',
     },
     localizationParameters: {
       type: '',
-      description: ''
-    }
+      description: '',
+    },
   };
   // cities: any[] | undefined;
 
   // selectedCity: DB | undefined;
 
+  // Method to close all forms
+  closeAllForms(): void {
+    this.isTypeSpecificationFormVisible = false;
+    this.isProtocolLimitsFormVisible = false;
+    this.isProtocolFeaturesFormVisible = false;
+    this.isAGVGeometryFormVisible = false;
+    this.isLoadSpecificationFormVisible = false;
+    this.isLocalizationParametersFormVisible = false;
+  }
 
-    // Method to close all forms
-    closeAllForms(): void {
-      this.isTypeSpecificationFormVisible = false;
-      this.isProtocolLimitsFormVisible = false;
-      this.isProtocolFeaturesFormVisible = false;
-      this.isAGVGeometryFormVisible = false;
-      this.isLoadSpecificationFormVisible = false;
-      this.isLocalizationParametersFormVisible = false;
-    }
+  // Toggle Type Specification Form
+  toggleTypeSpecificationForm(event: Event): void {
+    event.preventDefault();
+    this.closeAllForms();
+    this.isTypeSpecificationFormVisible = !this.isTypeSpecificationFormVisible;
+  }
 
-    // Toggle Type Specification Form
-    toggleTypeSpecificationForm(event: Event): void {
-      event.preventDefault();
-      this.closeAllForms();
-      this.isTypeSpecificationFormVisible = !this.isTypeSpecificationFormVisible;
-    }
+  // Toggle Protocol Limits Form
+  toggleProtocolLimitsForm(event: Event): void {
+    event.preventDefault();
+    this.closeAllForms();
+    this.isProtocolLimitsFormVisible = !this.isProtocolLimitsFormVisible;
+  }
 
-    // Toggle Protocol Limits Form
-    toggleProtocolLimitsForm(event: Event): void {
-      event.preventDefault();
-      this.closeAllForms();
-      this.isProtocolLimitsFormVisible = !this.isProtocolLimitsFormVisible;
-    }
+  // Toggle Protocol Features Form
+  toggleProtocolFeaturesForm(event: Event): void {
+    event.preventDefault();
+    this.closeAllForms();
+    this.isProtocolFeaturesFormVisible = !this.isProtocolFeaturesFormVisible;
+  }
 
-    // Toggle Protocol Features Form
-    toggleProtocolFeaturesForm(event: Event): void {
-      event.preventDefault();
-      this.closeAllForms();
-      this.isProtocolFeaturesFormVisible = !this.isProtocolFeaturesFormVisible;
-    }
+  // Toggle AGV Geometry Form
+  toggleAGVGeometryForm(event: Event): void {
+    event.preventDefault();
+    this.closeAllForms();
+    this.isAGVGeometryFormVisible = !this.isAGVGeometryFormVisible;
+  }
 
-    // Toggle AGV Geometry Form
-    toggleAGVGeometryForm(event: Event): void {
-      event.preventDefault();
-      this.closeAllForms();
-      this.isAGVGeometryFormVisible = !this.isAGVGeometryFormVisible;
-    }
+  // Toggle Load Specification Form
+  toggleLoadSpecificationForm(event: Event): void {
+    event.preventDefault();
+    this.closeAllForms();
+    this.isLoadSpecificationFormVisible = !this.isLoadSpecificationFormVisible;
+  }
 
-    // Toggle Load Specification Form
-    toggleLoadSpecificationForm(event: Event): void {
-      event.preventDefault();
-      this.closeAllForms();
-      this.isLoadSpecificationFormVisible = !this.isLoadSpecificationFormVisible;
-    }
+  // Toggle Localization Parameters Form
+  toggleLocalizationParametersForm(event: Event): void {
+    event.preventDefault();
+    this.closeAllForms();
+    this.isLocalizationParametersFormVisible =
+      !this.isLocalizationParametersFormVisible;
+  }
 
-    // Toggle Localization Parameters Form
-    toggleLocalizationParametersForm(event: Event): void {
-      event.preventDefault();
-      this.closeAllForms();
-      this.isLocalizationParametersFormVisible = !this.isLocalizationParametersFormVisible;
-    }
+  // Close form methods (if needed individually)
+  closeTypeSpecificationForm(): void {
+    this.isTypeSpecificationFormVisible = false;
+  }
 
-    // Close form methods (if needed individually)
-    closeTypeSpecificationForm(): void {
-      this.isTypeSpecificationFormVisible = false;
-    }
+  closeProtocolLimitsForm(): void {
+    this.isProtocolLimitsFormVisible = false;
+  }
 
-    closeProtocolLimitsForm(): void {
-      this.isProtocolLimitsFormVisible = false;
-    }
+  closeProtocolFeaturesForm(): void {
+    this.isProtocolFeaturesFormVisible = false;
+  }
 
-    closeProtocolFeaturesForm(): void {
-      this.isProtocolFeaturesFormVisible = false;
-    }
+  closeAGVGeometryForm(): void {
+    this.isAGVGeometryFormVisible = false;
+  }
 
-    closeAGVGeometryForm(): void {
-      this.isAGVGeometryFormVisible = false;
-    }
+  closeLoadSpecificationForm(): void {
+    this.isLoadSpecificationFormVisible = false;
+  }
 
-    closeLoadSpecificationForm(): void {
-      this.isLoadSpecificationFormVisible = false;
-    }
+  closeLocalizationParametersForm(): void {
+    console.log('Close icon clicked');
+    this.isLocalizationParametersFormVisible = false;
+  }
 
-    closeLocalizationParametersForm(): void {
-      console.log('Close icon clicked');
-      this.isLocalizationParametersFormVisible = false;
-    }
+  // Save methods for each form
+  saveTypeSpecification(): void {
+    console.log('Type Specification saved:', this.formData.typeSpecification);
+    this.closeTypeSpecificationForm();
+  }
 
-    // Save methods for each form
-    saveTypeSpecification(): void {
-      console.log('Type Specification saved:', this.formData.typeSpecification);
-      this.closeTypeSpecificationForm();
-    }
+  saveProtocolLimits(): void {
+    console.log('Protocol Limits saved:', this.formData.protocolLimits);
+    this.closeProtocolLimitsForm();
+  }
 
-    saveProtocolLimits(): void {
-      console.log('Protocol Limits saved:', this.formData.protocolLimits);
-      this.closeProtocolLimitsForm();
-    }
+  saveProtocolFeatures(): void {
+    console.log('Protocol Features saved:', this.formData.protocolFeatures);
+    this.closeProtocolFeaturesForm();
+  }
 
-    saveProtocolFeatures(): void {
-      console.log('Protocol Features saved:', this.formData.protocolFeatures);
-      this.closeProtocolFeaturesForm();
-    }
+  saveAGVGeometry(): void {
+    console.log('AGV Geometry saved:', this.formData.agvGeometry);
+    this.closeAGVGeometryForm();
+  }
 
-    saveAGVGeometry(): void {
-      console.log('AGV Geometry saved:', this.formData.agvGeometry);
-      this.closeAGVGeometryForm();
-    }
+  saveLoadSpecification(): void {
+    console.log('Load Specification saved:', this.formData.loadSpecification);
+    this.closeLoadSpecificationForm();
+  }
 
-    saveLoadSpecification(): void {
-      console.log('Load Specification saved:', this.formData.loadSpecification);
-      this.closeLoadSpecificationForm();
-    }
-
-    saveLocalizationParameters(): void {
-      console.log('Localization Parameters saved:', this.formData.localizationParameters);
-      this.closeLocalizationParametersForm();
-    }
+  saveLocalizationParameters(): void {
+    console.log(
+      'Localization Parameters saved:',
+      this.formData.localizationParameters
+    );
+    this.closeLocalizationParametersForm();
+  }
 
   saveItem(): void {
     // Implement form submission logic
     console.log('Item saved:', this.formData);
     this.isPopupOpen = false;
+    // this.cdRef.detectChanges();
+  }
+
+  // handle the data here..
+  saveRoboInfo(): void {
+    console.log(this.currentRoboDet);
+    console.log(this.formData);
+    this.isPopupOpen = false;
   }
 
   closeroboPopup(): void {
     this.isPopupOpen = false;
+    // this.cdRef.detectChanges();
   }
   openPopup(item: any) {
-    this.isPopupOpen = true;
-    this.newItem = { ...item }; // Initialize with the clicked item's data
+    this.currentRoboDet = item;
+    this.isPopupOpen = !this.isPopupOpen;
+    // this.newItem = { ...item }; // Initialize with the clicked item's data
+    // this.cdRef.detectChanges();
   }
   closePPPopup() {
-  this.isPhysicalParametersFormVisible = !this.isPhysicalParametersFormVisible;  }
-  savePPItem(){
-  this.isPhysicalParametersFormVisible = !this.isPhysicalParametersFormVisible;  }
-
-
-
+    this.isPhysicalParametersFormVisible =
+      !this.isPhysicalParametersFormVisible;
+  }
+  savePPItem() {
+    this.isPhysicalParametersFormVisible =
+      !this.isPhysicalParametersFormVisible;
+  }
 }

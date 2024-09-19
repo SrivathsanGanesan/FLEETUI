@@ -33,9 +33,24 @@ const renameProjFile = async ({ res, target, alterName }) => {
 
 const clearFiles = ({ target }) => {
   const files = fs.readdirSync(target);
+  // for (const file of files) {
+  //   if (file !== ".gitkeep" && fs.existsSync(`${target}/${file}`))
+  //     fs.unlinkSync(`${target}/${file}`);
+  // }
+
   for (const file of files) {
-    if (file !== ".gitkeep" && fs.existsSync(`${target}/${file}`))
-      fs.unlinkSync(`${target}/${file}`);
+    const filePath = path.join(target, file);
+    if (file !== ".gitkeep" && fs.existsSync(filePath)) {
+      const stat = fs.lstatSync(filePath);
+
+      if (stat.isDirectory()) {
+        fs.rmSync(filePath, { recursive: true });
+        // clearFiles({ target: filePath }); // recursively delete contents or files of the directory
+        // fs.rmdirSync(filePath); // After clearing contents, remove the directory itself
+      } else {
+        fs.unlinkSync(filePath); // It's a file, so delete it
+      }
+    }
   }
 };
 
@@ -209,8 +224,14 @@ const parseProjectFile = async (req, res, next) => {
   };
 
   const isDirValidate = await validateExtractedFile({ target });
-  if (!isDirValidate)
-    return sendResponse(400, { isZipValidate: false, msg: "Files missing" });
+  if (!isDirValidate) {
+    sendResponse(400, {
+      isZipValidate: false,
+      msg: "Files missing or Invalid zip File",
+    });
+    clearFiles({ target });
+    return;
+  }
 
   try {
     if (isRenamed) await renameProjFile({ res, target, alterName });

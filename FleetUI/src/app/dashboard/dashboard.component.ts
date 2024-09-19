@@ -58,6 +58,7 @@ export class DashboardComponent implements AfterViewInit {
   edges:any[]=[];
   zones:any[]=[];
   assets:any[]=[];
+  ratio : number = 1;
   plottedPoints: { id: number; x: number; y: number }[] = [];
   zoneType: ZoneType | null = null; // Selected zone type
   startX = 0;
@@ -124,11 +125,28 @@ export class DashboardComponent implements AfterViewInit {
     let data = await response.json();
     if (!data.map) return;
     mapData = data.map;
+    this.ratio = data.map.mpp;
+
     
-    this.nodes = mapData.nodes;
+    this.nodes = mapData.nodes.map((node :any)=>{ // yet to interface in this component..
+      node.nodePosition.x = node.nodePosition.x / (this.ratio || 1);
+      node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
+      return node;
+    });
     this.edges = mapData.edges;
-    this.assets = mapData.stations;
-    this.zones = mapData.zones;
+    this.assets = mapData.stations.map((asset : any)=>{ // yet to interface in this component..
+      asset.x = asset.x / (this.ratio || 1);
+      asset.y = asset.y / (this.ratio || 1);
+      return asset;
+    });
+    this.zones = mapData.zones.map((zone : any)=>{ // yet to interface in this component..
+      zone.pos = zone.pos.map((pos : any)=>{
+        pos.x = pos.x / (this.ratio || 1);
+        pos.y = pos.y / (this.ratio || 1);
+        return pos;
+      })
+      return zone;
+    });
     
   }
 
