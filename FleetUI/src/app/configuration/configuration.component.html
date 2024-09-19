@@ -539,7 +539,7 @@
     <div *ngIf="isAGVGeometryFormVisible" class="agv-geometry-form">
       <!-- AGV Geometry form fields here -->
       <div class="rob-inp">
-        <label for="wheelDefinitions">Wheel Definitions:</label>
+        <label for="wheelDefinitions" style="margin-right: 1.2rem;">Wheel Definitions:</label>
         <input  pInputText  type="text" id="wheelDefinitions" [(ngModel)]="formData.agvGeometry.wheelDefinitions" name="wheelDefinitions">
 
         <label for="envelopes2d">Envelopes 2D:</label>
@@ -565,7 +565,7 @@
         <input  pInputText  type="text" id="actionScopes" [(ngModel)]="formData.protocolFeatures.actionScopes" name="actionScopes">
       </div>
       <div class="rob-inp2" style="margin-left: 23px;">
-        <label for="actionParameters">Action Parameters:</label>
+        <label for="actionParameters" style="margin-right: .5rem ;">Action Parameters:</label>
         <input  pInputText  type="text" id="actionParameters" [(ngModel)]="formData.protocolFeatures.actionParameters" name="actionParameters">
 
         <label for="resultDescription">Result Description:</label>
@@ -580,7 +580,7 @@
     <div *ngIf="isProtocolLimitsFormVisible" class="protocol-limits-form">
       <!-- Protocol Limits form fields here -->
       <div class="rob-inp">
-        <label for="maxStringLens">Max String Lengths:</label>
+        <label for="maxStringLens" style="margin-right: 1.5rem;">Max String Lengths:</label>
         <input  pInputText  type="text" id="maxStringLens" [(ngModel)]="formData.protocolLimits.maxStringLens" name="maxStringLens">
 
         <label for="maxArrayLens">Max Array Lengths:</label>
