@@ -141,13 +141,18 @@ const getRoboDetails = async (req, res) => {
     const map = await Map.findOne({ _id: mapId });
     let robos = map.robots;
     return res.status(200).json({
-      robots: { robos: robos, fsAmr: factScheetAmr },
+      robots: {
+        robos: robos,
+        fsAmr: factScheetAmr.slice(0, Math.floor(Math.random() * 4) + 1),
+      },
       map: map,
       msg: "data sent!",
     });
   } catch (error) {
-    console.error("Error in getting tasks status :", err);
-    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+    console.error("Error in getting tasks status :", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
 
