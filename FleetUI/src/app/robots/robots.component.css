@@ -315,6 +315,7 @@ body, .card, .popup-menu {
   justify-content: center;
   align-items: center;
   background-color: #ff5c5c; /* Example button background color */
+  border: #ccc;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
