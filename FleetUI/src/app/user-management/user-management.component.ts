@@ -328,8 +328,9 @@ filteredTaskData: any;
     console.log('Delete User =>>>', findingAdmin);
 
     if (findingAdmin.length <= 1 && userRole === 'Administrator') {
-      alert('Should have atleast one admin');
+      // alert('Should have atleast one admin');
       this.deleteUserPopUp();
+      this.messageService.add({ severity: 'error', summary: 'Failed ', detail: 'Should have atleast one admin', life: 5000 });
       return;
     }
     console.log('DELETE:', username); // Log the username to delete
@@ -339,6 +340,7 @@ filteredTaskData: any;
 
     if (!userToDelete) {
       console.error('User not found for deletion:', username);
+      this.messageService.add({ severity: 'error', summary: 'Failed ', detail: 'Should have atleast one admin', life: 5000 });
       return;
     }
 
@@ -359,6 +361,13 @@ filteredTaskData: any;
             `Failed to delete user (${response.status} ${response.statusText})`
           );
         }
+          // Successfully deleted user
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: `User ${username} has been deleted successfully`,
+            life: 5000,
+          });
         this.fetchUsers();
         // Remove the user from the local list
         // this.userCredentials = this.userCredentials.filter(
@@ -483,6 +492,12 @@ filteredTaskData: any;
       })
       .catch((error) => {
         console.error('Error fetching user permissions:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed',
+          detail: 'Error fetching user permissions',
+          life: 5000
+        });
       });
   }
 
@@ -497,6 +512,12 @@ filteredTaskData: any;
   saveEditPermission() {
     if (!this.user) {
       console.error('No user selected for updating permissions');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Failed',
+        detail: 'No user selected for updating permissions',
+        life: 5000
+      });
       return;
     }
 
@@ -551,11 +572,25 @@ filteredTaskData: any;
       })
       .then((data) => {
         console.log('User updated successfully:', data);
+        // Success toast
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: `User ${this.user.userName}'s permissions have been updated successfully`,
+                  life: 5000
+                });
         // Optionally refresh the user list or update the local user list
         this.fetchUsers();
       })
       .catch((error) => {
         console.error('Error updating user:', error);
+                // Error toast
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Failed',
+                  detail: 'Error updating user permissions',
+                  life: 5000
+                });
       });
 
     // Close the popup

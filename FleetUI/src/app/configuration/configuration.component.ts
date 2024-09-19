@@ -19,6 +19,7 @@ import { EnvmapComponent } from '../envmap/envmap.component';
 import { AnyAaaaRecord } from 'node:dns';
 import { PageEvent } from '@angular/material/paginator';
 import { log } from 'node:console';
+import { MessageService } from 'primeng/api';
 
 interface Poll {
   ip: string;
@@ -109,7 +110,8 @@ export class ConfigurationComponent implements AfterViewInit {
   constructor(
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
-    public dialog: MatDialog // Inject MatDialog
+    public dialog: MatDialog, // Inject MatDialog
+    private messageService: MessageService
   ) {
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
@@ -364,13 +366,25 @@ export class ConfigurationComponent implements AfterViewInit {
     //   document.getElementById('ipRangeTo') as HTMLInputElement
     // ).value;
     if (this.startIP === '' || this.EndIP === '') {
-      alert('Enter valid Ip');
+      // alert('Enter valid Ip');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Scan Failed',
+        detail: 'Enter valid IP range.',
+        life: 5000
+      });
       return;
     }
     const ipv4Regex =
       /^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     if (!ipv4Regex.test(this.startIP) || !ipv4Regex.test(this.EndIP)) {
-      alert('not valid IP. Try again');
+      // alert('not valid IP. Try again');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Scan Failed',
+        detail: 'Invalid IP address. Please try again.',
+        life: 5000
+      });
       return;
     }
 
@@ -400,6 +414,12 @@ export class ConfigurationComponent implements AfterViewInit {
         this.cdRef.detectChanges();
       } catch (error) {
         console.error('Error parsing SSE data:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Scan Error',
+          detail: 'Error processing scan data.',
+          life: 5000
+        });
       }
     };
 
@@ -408,14 +428,59 @@ export class ConfigurationComponent implements AfterViewInit {
       this.eventSource.close();
       this.isScanning = false;
       this.cdRef.detectChanges();
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Scan Error',
+        detail: 'Failed to start scanning. Please try again.',
+        life: 5000
+      });
     };
     this.isScanning = true;
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Scanning Started',
+      detail: 'Scanning for IPs has started.',
+      life: 5000
+    });
   }
   stopScanning() {
-    this.isScanning = false;
-    this.eventSource.close();
-    return;
+    try {
+      if (this.eventSource) {
+        this.eventSource.close();
+
+        // Check if the event source has been successfully closed
+        if (!this.isScanning) {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Scanning Stopped',
+            detail: 'IP scanning has been stopped.',
+            life: 5000
+          });
+        } else {
+          throw new Error('Failed to stop scanning.');
+        }
+      } else {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'No Active Scan',
+          detail: 'No active IP scanning to stop.',
+          life: 5000
+        });
+      }
+    } catch (error) {
+      console.error('Error stopping scan:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Scan Stop Failed',
+        detail: 'Failed to stop the IP scanning process. Please try again.',
+        life: 5000
+      });
+    } finally {
+      this.isScanning = false;
+      this.cdRef.detectChanges();
+    }
   }
+
 
   robots = [
     { id: 1, name: 'Robot A' },
