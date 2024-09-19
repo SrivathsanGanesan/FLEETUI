@@ -453,9 +453,7 @@
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
     </div>
-    <div *ngIf="validationMessage" class="validation-error">
-      {{ validationMessage }}
-    </div>
+
     <!-- <button class="close-button" (click)="close()">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -469,10 +467,13 @@
         />
       </svg>
     </button> -->
+    <div *ngIf="validationError" class="validation-error">
+      {{ validationError }}
+    </div>
     <div class="button-container" *ngIf="!showImage">
+      
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
-
     </div>
   </div>
 </div>

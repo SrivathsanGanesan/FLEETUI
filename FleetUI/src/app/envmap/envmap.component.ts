@@ -539,6 +539,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
+    this.distanceBetweenPoints=null;
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -1075,7 +1076,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.mapService.setOnCreateMapImg(this.imageBase64);  // Save the Base64 image in the cookie
       }
     } else {
-      this.validationMessage = 'Please fill in all the required fields.';
+      this.validationError = 'Please fill in all the required fields.';
     }
   }
   close(): void {
