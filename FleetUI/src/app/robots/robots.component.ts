@@ -26,7 +26,7 @@ export interface Robot {
 @Component({
   selector: 'app-robots',
   templateUrl: './robots.component.html',
-  styleUrls: ['./robots.component.css'],
+  styleUrls: ['./robots.component.scss'],
 })
 export class RobotsComponent implements OnInit {
   robotImages: string[] = [
@@ -35,6 +35,7 @@ export class RobotsComponent implements OnInit {
     'agv3.png',
     // Add more images from assets/robots
   ];
+  currentSignalClass: string = 'none'; // Default class
 
   robots: Robot[] = [
     {
@@ -47,7 +48,7 @@ export class RobotsComponent implements OnInit {
       temperature:'59 C',
       networkstrength:'90 dBi',
       robotutilization:' 43 %',
-      cpuutilization: '90 %',   
+      cpuutilization: '90 %',
       memory: '10 %',
       error: '10',
       batteryPercentage: 87,
@@ -73,8 +74,8 @@ export class RobotsComponent implements OnInit {
       isCharging: true, // This will control whether the icon is shown
        totalPicks: '31',
       totalDrops:'28'
-       
-      
+
+
 
     },
     {
@@ -226,11 +227,11 @@ export class RobotsComponent implements OnInit {
   //       name: this.editRobotData.name,
   //       imageUrl: this.editRobotData.imageUrl,
   //       serialNumber: this.editRobotData.serialNumber || 'DefaultSerialNumber',
-       
-       
+
+
   //       status: this.editRobotData.status,
   //       battery: this.editRobotData.battery,
-        
+
   //     };
   //     this.closeEditPopup();
   //   }
@@ -239,14 +240,14 @@ export class RobotsComponent implements OnInit {
   // closeEditPopup() {
   //   this.isEditPopupOpen = false;
   //   this.editIndex = null;
-  //   this.editRobotData = { 
-  //     id: 0, 
-  //     name: '', 
-  //     imageUrl: '', 
+  //   this.editRobotData = {
+  //     id: 0,
+  //     name: '',
+  //     imageUrl: '',
   //     serialNumber: '' ,
-  //     status: 'Active', 
+  //     status: 'Active',
   //     battery: '100%',
-      
+
   //   };
   // }
 
@@ -268,6 +269,7 @@ export class RobotsComponent implements OnInit {
 
   constructor(public dialog: MatDialog) {}
   ngOnInit(): void {
+    this.setSignalStrength('Weak'); // Change this value to test different signals
     console.log(this.robots); // Debugging purpose
     throw new Error('Method not implemented.');
   }
@@ -277,5 +279,35 @@ export class RobotsComponent implements OnInit {
       width: '70%',
       data: robot,
     });
+  }
+  // fetchSignalStrength(): void {
+  //   // Replace with your API endpoint
+  //   const apiUrl = 'https://api.example.com/signal-strength';
+
+  //   this.http.get<{ signal: string }>(apiUrl).subscribe(response => {
+  //     this.currentSignalClass = this.mapSignalToClass(response.signal);
+  //   });
+  // }
+  setSignalStrength(signal: string): void {
+    this.currentSignalClass = this.mapSignalToClass(signal);
+    console.log('Current Signal Class: ', this.currentSignalClass); // Debug log
+  }
+
+
+  mapSignalToClass(signal: string): string {
+    switch (signal) {
+      case 'No signal':
+        return 'none';
+      case 'Weak':
+        return 'weak';
+      case 'Medium':
+        return 'medium';
+      case 'Full':
+        return 'full';
+      case 'Searching':
+        return 'loading';
+      default:
+        return 'loading';
+    }
   }
 }
