@@ -125,7 +125,7 @@ export class ProjectsetupComponent {
   async logout() {
     /* try {
       const response = await fetch(
-        'http://localhost:3000/fleet-project-file/download-project/project_2',
+        'http://localhost:3000/fleet-project-file/download-project/Vachan_proj',
         {
           credentials: 'include',
         }
@@ -137,7 +137,7 @@ export class ProjectsetupComponent {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = `project_2.zip`;
+        a.download = `Vachan_proj.zip`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -147,7 +147,7 @@ export class ProjectsetupComponent {
       console.log('Err ra pans : ', error);
     }
 
-    return; */
+    return;  */
     fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`, {
       credentials: 'include',
     })
