@@ -298,7 +298,6 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.currEditMap) this.showImage = true;
   }
   ngOnInit() {
-    
     if (this.currEditMap) {
       this.showImage = true;
       this.mapName = this.currEditMapDet.mapName;
@@ -416,7 +415,8 @@ export class EnvmapComponent implements AfterViewInit {
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
 
       this.assetImages['charging'] = new Image();
-      this.assetImages['charging'].src ='assets/Asseticon/charging-station.svg';
+      this.assetImages['charging'].src =
+        'assets/Asseticon/charging-station.svg';
 
       this.robotImages['robotA'] = new Image();
       this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
@@ -539,7 +539,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
-    this.distanceBetweenPoints = null; // Clear the input field
+    this.distanceBetweenPoints=null;
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -821,6 +821,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.updateEditedMap();
       return;
     }
+    
     if (!this.selectedImage) {
       alert('file missing!');
       return;
@@ -983,10 +984,9 @@ export class EnvmapComponent implements AfterViewInit {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
     const targetElement = event.target as HTMLElement;
     // Check if the click was on the "Clear" button, and if so, return early
-    if (targetElement.classList.contains('clear-btn') || targetElement.classList.contains('close-btn')) {
+    if (targetElement.classList.contains('clear-btn')) {
       return;
     }
-
     const canvas = this.imagePopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
@@ -1030,16 +1030,10 @@ export class EnvmapComponent implements AfterViewInit {
     const nodesJson = JSON.stringify(this.Nodes, null, 2);
     console.log('Node details:', nodesJson);
   }
-
-  
   resolution: number | null = null;
-  originX: number | null = null;
-  originY: number | null = null;
-
   open(): void {
-    
     if (!this.currEditMap)
-      if (this.mapName && this.siteName ) {
+      if (this.mapName && this.siteName) {
         for (let map of this.EnvData) {
           if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
             alert('Map name seems already exists, try another');
@@ -1053,7 +1047,7 @@ export class EnvmapComponent implements AfterViewInit {
         this.ratio = Number(
           (document.getElementById('resolution') as HTMLInputElement).value
         );
-    if (this.mapName && this.siteName && this.imageSrc && this.resolution) {
+    if (this.mapName && this.siteName && this.imageSrc ) {
       this.fileName = null;
       this.showImage = true;
       const img = new Image();
@@ -1082,9 +1076,9 @@ export class EnvmapComponent implements AfterViewInit {
         this.mapService.setOnCreateMapImg(this.imageBase64);  // Save the Base64 image in the cookie
       }
     } else {
-      this.validationMessage = 'Please fill in all the required fields.';    }
+      this.validationError = 'Please fill in all the required fields.';
+    }
   }
-  
   close(): void {
     this.currEditMapChange.emit(false);
     this.showImage = true;
@@ -1387,24 +1381,57 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fillText(text, x, y); // Draw text at (x, y)
   }
   private isPositionOccupied(x: number, y: number, type : string ): boolean {
-    // Check if the position is occupied by an existing node
     let nodeOccupied = false;
     let assetOccupied = false;
-    if(type !== 'node')
-      nodeOccupied = this.nodes.some(node => {
-        const distance = Math.sqrt(Math.pow(node.nodePosition.x - x, 2) + Math.pow(node.nodePosition.y - y, 2));
-        return distance < 25; // A threshold of 10 pixels for proximity
-      });
-  
-    // Check if the position is occupied by an existing asset
-    if(type !== 'asset')
-      assetOccupied = this.assets.some(asset => {
-        const distance = Math.sqrt(Math.pow(asset.x - x, 2) + Math.pow(asset.y - y, 2));
-        return distance < 20; // A threshold of 10 pixels for proximity
-      });
-  
-    return  nodeOccupied || assetOccupied;
+
+    if (type === 'multi' && this.firstNode && this.secondNode) {
+        // Multi-node: Check if any nodes or assets are between the first and second node
+        nodeOccupied = this.nodes.some(node => {
+            return this.isPointBetweenTwoNodes(this.firstNode!.nodePosition, this.secondNode!.nodePosition, { x: node.nodePosition.x, y: node.nodePosition.y });
+        });
+
+        assetOccupied = this.assets.some(asset => {
+            return this.isPointBetweenTwoNodes(this.firstNode!.nodePosition, this.secondNode!.nodePosition, { x: asset.x, y: asset.y });
+        });
+    } else {
+        // Single node or asset placement logic
+        if (type !== 'node') {
+            nodeOccupied = this.nodes.some(node => {
+                const distance = Math.sqrt(Math.pow(node.nodePosition.x - x, 2) + Math.pow(node.nodePosition.y - y, 2));
+                return distance < 25; // Threshold for proximity
+            });
+        }
+
+        if (type !== 'asset') {
+            assetOccupied = this.assets.some(asset => {
+                const distance = Math.sqrt(Math.pow(asset.x - x, 2) + Math.pow(asset.y - y, 2));
+                return distance < 20; // Threshold for proximity
+            });
+        }
+    }
+
+    return nodeOccupied || assetOccupied;
   }
+  private isPointBetweenTwoNodes(firstNode: { x: number; y: number }, secondNode: { x: number; y: number }, point: { x: number; y: number }): boolean {
+    const distanceToLine = this.calculateDistanceFromPointToLine(firstNode, secondNode, point);
+    const isWithinLineSegment = this.isPointOnLineSegment(firstNode, secondNode, point);
+
+    return distanceToLine < 20 && isWithinLineSegment; // Threshold to consider proximity to the line
+}
+private calculateDistanceFromPointToLine(p1: { x: number; y: number }, p2: { x: number; y: number }, point: { x: number; y: number }): number {
+  const numerator = Math.abs((p2.y - p1.y) * point.x - (p2.x - p1.x) * point.y + p2.x * p1.y - p2.y * p1.x);
+  const denominator = Math.sqrt(Math.pow(p2.y - p1.y, 2) + Math.pow(p2.x - p1.x, 2));
+  return numerator / denominator;
+}
+
+private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: number }, point: { x: number; y: number }): boolean {
+  const minX = Math.min(p1.x, p2.x);
+  const maxX = Math.max(p1.x, p2.x);
+  const minY = Math.min(p1.y, p2.y);
+  const maxY = Math.max(p1.y, p2.y);
+
+  return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY;
+}
   
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -1618,12 +1645,7 @@ export class EnvmapComponent implements AfterViewInit {
           const x = this.firstNode.nodePosition.x + i * dx;
           const y = this.firstNode.nodePosition.y + i * dy;
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
-          if (this.isPositionOccupied(x, transformedY, 'node')) {
-            this.showIntermediateNodesDialog = false;
-            //..
-            alert('This position is already occupied by a node or asset. Please choose a different location.');
-            return;
-          }
+
           
           let node = {
             nodeId: this.nodeCounter.toString(),
@@ -1853,8 +1875,8 @@ export class EnvmapComponent implements AfterViewInit {
           this.deselectNode();
         }
         // Select the new node
-        this.drawNode(clickedNode, 'red', true); // Highlight the selected node
         this.selectedNode = clickedNode;
+        this.drawNode(clickedNode, 'red', true); // Highlight the selected node
         console.log('Node selected:', x, y);
 
         // Draw connections or perform any other actions
