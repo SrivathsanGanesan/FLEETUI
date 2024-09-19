@@ -18,6 +18,7 @@ export interface Robot {
   batteryPercentage: number;
   totalPicks: string;
  totalDrops:string;
+  SignalStrength: string;
 
   isCharging: boolean // This will control whether the icon is shown
   // Add other fields as needed
@@ -37,6 +38,8 @@ export class RobotsComponent implements OnInit {
   ];
   currentSignalClass: string = 'none'; // Default class
 
+  
+
   robots: Robot[] = [
     {
       id: 1,
@@ -54,7 +57,8 @@ export class RobotsComponent implements OnInit {
       batteryPercentage: 87,
       isCharging: true, // This will control whether the icon is shown
       totalPicks: '31',
-      totalDrops:'28'
+      totalDrops:'28',
+      SignalStrength:'Full'
 
     },
     {
@@ -73,10 +77,9 @@ export class RobotsComponent implements OnInit {
       batteryPercentage: 7,
       isCharging: true, // This will control whether the icon is shown
        totalPicks: '31',
-      totalDrops:'28'
-
-
-
+      totalDrops:'28',
+      SignalStrength:'Full'
+      
     },
     {
       id: 3,
@@ -94,7 +97,8 @@ export class RobotsComponent implements OnInit {
       batteryPercentage: 10,
       isCharging: true ,// This will control whether the icon is shown
        totalPicks: '31',
-      totalDrops:'28'
+      totalDrops:'28',
+      SignalStrength:'Weak'
     },
     {
       id: 4,
@@ -112,7 +116,8 @@ export class RobotsComponent implements OnInit {
       batteryPercentage: 40,
       isCharging: true, // This will control whether the icon is shown
        totalPicks: '31',
-      totalDrops:'28'
+      totalDrops:'28',
+      SignalStrength:'Full'
     },
     {
       id: 5,
@@ -130,7 +135,8 @@ export class RobotsComponent implements OnInit {
       batteryPercentage: 41,
       isCharging: true ,// This will control whether the icon is shown
        totalPicks: '31',
-      totalDrops:'28'
+      totalDrops:'28',
+      SignalStrength:'Full'
     },
     {
       id: 6,
@@ -148,7 +154,8 @@ export class RobotsComponent implements OnInit {
       batteryPercentage: 90,
       isCharging: false ,// This will control whether the icon is shown
       totalPicks: '31',
-      totalDrops:'28'
+      totalDrops:'28',
+      SignalStrength:'Full'
     },
     // Add more robots...
   ];
@@ -272,6 +279,8 @@ export class RobotsComponent implements OnInit {
     this.setSignalStrength('Weak'); // Change this value to test different signals
     console.log(this.robots); // Debugging purpose
     throw new Error('Method not implemented.');
+
+   
   }
 
   openRobotDetail(robot: Robot): void {
@@ -310,4 +319,24 @@ export class RobotsComponent implements OnInit {
         return 'loading';
     }
   }
+
+  getBatteryColor(batteryPercentage: number): string {
+    if (batteryPercentage >= 75) {
+      return 'high'; // Green for high battery
+    } else if (batteryPercentage >= 40) {
+      return 'medium';
+    } else {
+      return 'low'; // Red for low battery
+    }
+  }
+  
+  
+  
+
+
+   
+   
+
+    
+  
 }

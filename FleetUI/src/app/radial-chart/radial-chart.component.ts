@@ -3,6 +3,7 @@ import {
   ApexNonAxisChartSeries,
   ApexChart,
   ApexPlotOptions,
+  
 } from 'ng-apexcharts';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
@@ -46,12 +47,19 @@ export class RadialChartComponent implements OnInit {
               label: 'Total',
               formatter: this.getTotalRoboCounts,
             },
+            
           },
         },
       },
       labels: ['Healthy', 'Inactive', 'Error'],
     };
   }
+
+  getColor(index: number): string {
+    const colors = ['#FF0000', '#00FF00', '#0000FF']; // Example colors, adjust based on your chart segments
+    return colors[index % colors.length]; // Cycle through colors if you have more labels than colors
+  }
+  
 
   async ngOnInit() {
     if (this.selectedMap) return;

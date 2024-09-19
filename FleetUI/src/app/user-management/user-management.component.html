@@ -86,7 +86,7 @@
   <div [ngClass]="{'hidden': !userCreatePopUp}" class="absolute flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50">
     <div class="popup w-[700px] py-10 bg-[#D9D9D9]">
       <!-- Title -->
-      <span class="flex flex-col items-start justify-center">
+      <span class="flex flex-col items-start justify-center gap-3.5">
         <p class=" text-[35px] text-black font-bold">Create User</p>
         <p class=" flex items-center justify-center gap-2 text-[14px] font-medium text-[#7B7B7B]">
           Create an New User
@@ -149,11 +149,11 @@
   </div>
 
   <!-- User Permission Popup -->
-   <div [ngClass]="{'hidden': !userPermissionOCstate}" class="absolute flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50">
-      <div class="w-[900px] h-[680px] py-14 bg-[#D9D9D9] rounded-[20px] px-14 flex gap-1 flex-col">
+   <div [ngClass]="{'hidden': !userPermissionOCstate}" class="absolute  flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50">
+      <div class="w-[900px] scale-85 h-[680px] py-14 bg-[#D9D9D9] rounded-[20px] px-14 flex gap-1 flex-col">
         <!-- Title and Close Button -->
-        <span class="flex items-center justify-between w-full">
-          <span class="flex flex-col items-start justify-center">
+        <span class="flex items-center justify-between w-full mb-3">
+          <span class="flex flex-col items-start justify-center  gap-3.5">
             <p class="text-[38px]  text-[#DA2127] font-bold">User Permission</p>
             <p class="flex items-center text-[14px] justify-between gap-2 text-[#7B7B7B] font-medium">
               Edit the user permission
@@ -175,83 +175,72 @@
         </span>
 
         <span class="flex flex-col items-start justify-center gap-3 w-full">
-            @for (permission of userPermissionOptions; track permission) {
-              <span class="w-full flex flex-col border-b-2 pb-5 gap-3 text-[#535353]">
-                <span class="flex gap-3 items-center">
-                  <p class="text-[20px] font-semibold text-black">{{permission.nameTag}}</p>
-                </span>
+          @for (permission of userPermissionOptions; track permission) {
+            <span class="w-full flex flex-col border-b-2 pb-5 gap-3 text-[#535353]">
+              <span class="flex gap-3 items-center">
+                <p class="flex text-[20px] font-semibold text-black">{{permission.nameTag}}</p>
+              </span>
                 <span class="grid grid-cols-5 w-full font-medium text-[14px] items-center">
 
                   <!-- Enable Toggle -->
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" [checked]="userPermissionState[permission.order][permission.isAvail]" (change)="changeUserPermission(permission.order, permission.isAvail)" class="sr-only peer">
-                    <div class="group peer ring-0 bg-rose-400 rounded-full outline-none duration-300 after:duration-300 w-16 h-8 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-gray-50 after:outline-none after:h-6 after:w-6 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-checked:after:translate-x-8 peer-hover:after:scale-95">
-                      <svg class="absolute top-1 left-8 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path class="svg-fill-primary" d="M50,18A19.9,19.9,0,0,0,30,38v8a8,8,0,0,0-8,8V74a8,8,0,0,0,8,8H70a8,8,0,0,0,8-8V54a8,8,0,0,0-8-8H38V38a12,12,0,0,1,23.6-3,4,4,0,1,0,7.8-2A20.1,20.1,0,0,0,50,18Z"></path>
-                      </svg>
-                      <svg class="absolute top-1 left-1 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M30,46V38a20,20,0,0,1,40,0v8a8,8,0,0,1,8,8V74a8,8,0,0,1-8,8H30a8,8,0,0,1-8-8V54A8,8,0,0,1,30,46Zm32-8v8H38V38a12,12,0,0,1,24,0Z" fill-rule="evenodd"></path>
-                      </svg>
-                    </div>
+                  <span class="w-full flex items-center justify-start gap-3">
+                    <label class="switch">
+                      <input type="checkbox" [checked]="userPermissionState[permission.order][permission.isAvail]" (change)="changeUserPermission(permission.order, permission.isAvail)" class="sr-only peer">
+                      <span class="slider"></span>
+                    </label>
                     <p class="text-[15px] font-medium">ENABLE</p>
-                  </label>
+                </span>
 
                   <!-- Create Toggle -->
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" [checked]="userPermissionState[permission.order][permission.create]" (change)="changeUserPermission(permission.order, permission.create)" class="sr-only peer">
-                    <div class="group peer ring-0 bg-rose-400 rounded-full outline-none duration-300 after:duration-300 w-16 h-8 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-gray-50 after:outline-none after:h-6 after:w-6 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-checked:after:translate-x-8 peer-hover:after:scale-95">
-                      <svg class="absolute top-1 left-8 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path class="svg-fill-primary" d="M50,18A19.9,19.9,0,0,0,30,38v8a8,8,0,0,0-8,8V74a8,8,0,0,0,8,8H70a8,8,0,0,0,8-8V54a8,8,0,0,0-8-8H38V38a12,12,0,0,1,23.6-3,4,4,0,1,0,7.8-2A20.1,20.1,0,0,0,50,18Z"></path>
-                      </svg>
-                      <svg class="absolute top-1 left-1 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M30,46V38a20,20,0,0,1,40,0v8a8,8,0,0,1,8,8V74a8,8,0,0,1-8,8H30a8,8,0,0,1-8-8V54A8,8,0,0,1,30,46Zm32-8v8H38V38a12,12,0,0,1,24,0Z" fill-rule="evenodd"></path>
-                      </svg>
-                    </div>
+                  <span class="w-full flex items-center justify-start gap-3">
+                  
+                    <label class="switch">
+                      <input type="checkbox" [checked]="userPermissionState[permission.order][permission.create]" (change)="changeUserPermission(permission.order, permission.create)" class="sr-only peer">
+
+                      <span class="slider"></span>
+                    </label>
                     <p class="text-[15px] font-medium">CREATE</p>
-                  </label>
+                  
+                </span>
 
                   <!-- Edit Toggle -->
-                  <label class="relative inline-flex items-center cursor-pointer">
+                  <span class="w-full flex items-center justify-start gap-3">
+                  
                     <input type="checkbox" [checked]="userPermissionState[permission.order][permission.edit]" (change)="changeUserPermission(permission.order, permission.edit)" class="sr-only peer">
-                    <div class="group peer ring-0 bg-rose-400 rounded-full outline-none duration-300 after:duration-300 w-16 h-8 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-gray-50 after:outline-none after:h-6 after:w-6 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-checked:after:translate-x-8 peer-hover:after:scale-95">
-                      <svg class="absolute top-1 left-8 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path class="svg-fill-primary" d="M50,18A19.9,19.9,0,0,0,30,38v8a8,8,0,0,0-8,8V74a8,8,0,0,0,8,8H70a8,8,0,0,0,8-8V54a8,8,0,0,0-8-8H38V38a12,12,0,0,1,23.6-3,4,4,0,1,0,7.8-2A20.1,20.1,0,0,0,50,18Z"></path>
-                      </svg>
-                      <svg class="absolute top-1 left-1 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M30,46V38a20,20,0,0,1,40,0v8a8,8,0,0,1,8,8V74a8,8,0,0,1-8,8H30a8,8,0,0,1-8-8V54A8,8,0,0,1,30,46Zm32-8v8H38V38a12,12,0,0,1,24,0Z" fill-rule="evenodd"></path>
-                      </svg>
-                    </div>
+                    <label class="switch">
+                      <input type="checkbox" [checked]="userPermissionState[permission.order][permission.edit]" (change)="changeUserPermission(permission.order, permission.edit)" class="sr-only peer">
+
+                      <span class="slider"></span>
+                    </label>
                     <p class="text-[15px] font-medium">EDIT</p>
-                  </label>
+                  
+                </span>
 
                   <!-- Delete Toggle -->
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" [checked]="userPermissionState[permission.order][permission.delete]" (change)="changeUserPermission(permission.order, permission.delete)" class="sr-only peer">
-                    <div class="group peer ring-0 bg-rose-400 rounded-full outline-none duration-300 after:duration-300 w-16 h-8 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-gray-50 after:outline-none after:h-6 after:w-6 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-checked:after:translate-x-8 peer-hover:after:scale-95">
-                      <svg class="absolute top-1 left-8 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path class="svg-fill-primary" d="M50,18A19.9,19.9,0,0,0,30,38v8a8,8,0,0,0-8,8V74a8,8,0,0,0,8,8H70a8,8,0,0,0,8-8V54a8,8,0,0,0-8-8H38V38a12,12,0,0,1,23.6-3,4,4,0,1,0,7.8-2A20.1,20.1,0,0,0,50,18Z"></path>
-                      </svg>
-                      <svg class="absolute top-1 left-1 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M30,46V38a20,20,0,0,1,40,0v8a8,8,0,0,1,8,8V74a8,8,0,0,1-8,8H30a8,8,0,0,1-8-8V54A8,8,0,0,1,30,46Zm32-8v8H38V38a12,12,0,0,1,24,0Z" fill-rule="evenodd"></path>
-                      </svg>
-                    </div>
+                  <span class="w-full flex items-center justify-start gap-3">
+                  
+                    <label class="switch">
+                      <input type="checkbox" [checked]="userPermissionState[permission.order][permission.delete]" (change)="changeUserPermission(permission.order, permission.delete)" class="sr-only peer">
+
+                      <span class="slider"></span>
+                    </label>
                     <p class="text-[15px] font-medium">DELETE</p>
-                  </label>
+                  
+                </span>
 
                   <!-- View Toggle -->
-                  <label class="relative inline-flex items-center cursor-pointer">
+                  <span class="w-full flex items-center justify-start gap-3">
+                 
                     <input type="checkbox" [checked]="userPermissionState[permission.order][permission.view]" (change)="changeUserPermission(permission.order, permission.view)" class="sr-only peer">
-                    <div class="group peer ring-0 bg-rose-400 rounded-full outline-none duration-300 after:duration-300 w-16 h-8 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-gray-50 after:outline-none after:h-6 after:w-6 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-checked:after:translate-x-8 peer-hover:after:scale-95">
-                      <svg class="absolute top-1 left-8 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path class="svg-fill-primary" d="M50,18A19.9,19.9,0,0,0,30,38v8a8,8,0,0,0-8,8V74a8,8,0,0,0,8,8H70a8,8,0,0,0,8-8V54a8,8,0,0,0-8-8H38V38a12,12,0,0,1,23.6-3,4,4,0,1,0,7.8-2A20.1,20.1,0,0,0,50,18Z"></path>
-                      </svg>
-                      <svg class="absolute top-1 left-1 stroke-gray-900 w-6 h-6" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M30,46V38a20,20,0,0,1,40,0v8a8,8,0,0,1,8,8V74a8,8,0,0,1-8,8H30a8,8,0,0,1-8-8V54A8,8,0,0,1,30,46Zm32-8v8H38V38a12,12,0,0,1,24,0Z" fill-rule="evenodd"></path>
-                      </svg>
-                    </div>
+                    <label class="switch">
+                      <input type="checkbox" [checked]="userPermissionState[permission.order][permission.view]" (change)="changeUserPermission(permission.order, permission.view)" class="sr-only peer">
+
+                      <span class="slider"></span>
+                    </label>
                     <p class="text-[15px] font-medium text-center">VIEW</p>
 
-                  </label>
+                
+                </span>
 
                 </span>
               </span>
@@ -259,7 +248,7 @@
           </span>
 
 
-        <span>
+        <span class="mt-7 w-full flex items-center justify-end">
           <button class="px-10 py-3 bg-[#D30000] rounded-md text-white font-semibold text-[14px]" (click)="saveEditPermission()">Edit Permission</button>
         </span>
       </div>

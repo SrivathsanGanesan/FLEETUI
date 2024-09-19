@@ -29,7 +29,7 @@ distanceLeft: string;
   memory: string;
  totalPicks: string;
  totalDrops:string;
-
+ SignalStrength: string;
   error: string;
   batteryPercentage: number;
   
@@ -44,8 +44,9 @@ export class RobotDetailPopupComponent {
   
   metrics: { title: string; value: string; icon: string }[] = [];
   // batteryData: any[] = [];  
+
   robot: any;
-  
+  currentSignalClass: any
 
 
   onEmergencyStop() {
@@ -76,7 +77,7 @@ export class RobotDetailPopupComponent {
     
     
   }
-
+ 
   getBatteryColor(batteryPercentage: number): string {
     if (batteryPercentage >= 75) {
       return 'high'; // Green for high battery
@@ -87,30 +88,11 @@ export class RobotDetailPopupComponent {
     }
   }
   
-  wifiClass: string = 'none'; // Default WiFi signal state
-
-  // Update this method to set the class based on signal strength
-  updateWifiSignal(signalStrength: string) {
-    this.updateWifiSignal('medium');
-
-    this.wifiClass = signalStrength;  // Set values like 'none', 'weak', 'medium', 'full', or 'loading'
-  }
-
-  // Example: Call this function to update the WiFi signal strength dynamically
-  simulateWifiSignal() {
-    setTimeout(() => this.updateWifiSignal('weak'), 1000);
-    setTimeout(() => this.updateWifiSignal('medium'), 2000);
-    setTimeout(() => this.updateWifiSignal('full'), 3000);
-    setTimeout(() => this.updateWifiSignal('none'), 4000);
-  }
-
-  
-
   ngOnInit(): void {
 
     console.log('Battery Percentage:', this.data.batteryPercentage);
-    console.log('Is Charging:', this.data.isCharging);
-    this.simulateWifiSignal();
+    console.log('Is Charging:', this.data.isCharging); 
+    this.getsignal(this.data.SignalStrength)
   }
  
 
@@ -118,5 +100,24 @@ export class RobotDetailPopupComponent {
  
   onClose(): void {
     this.dialogRef.close();
+  }
+
+ 
+
+  getsignal(signal: string): string {
+    switch (signal) {
+      case 'No signal':
+        return 'none';
+      case 'Weak':
+        return 'weak';
+      case 'Medium':
+        return 'medium';
+      case 'Full':
+        return 'full';
+      case 'Searching':
+        return 'loading';
+      default:
+        return 'loading';
+    }
   }
 }
