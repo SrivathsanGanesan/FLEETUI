@@ -325,20 +325,20 @@ export class EnvmapComponent implements AfterViewInit {
       });
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
-          ? parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
-          : this.nodeCounter+ 1;
+          ? parseInt(this.nodes[this.nodes.length - 1].nodeId) + 1
+          : this.nodeCounter;
       // this.nodeCounter=1;
       this.edgeCounter =
         parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
-          ? parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
+          ? parseInt(this.edges[this.edges.length - 1].edgeId) + 1
           : this.edgeCounter;
       this.assetCounter =
         this.assets[this.assets.length - 1]?.id + 1
-          ? this.assets[this.assets.length - 1]?.id + 1
+          ? this.assets[this.assets.length - 1].id + 1
           : this.assetCounter;
       this.zoneCounter =
         parseInt(this.zones[this.zones.length - 1]?.id) + 1
-          ? parseInt(this.zones[this.zones.length - 1]?.id) + 1
+          ? parseInt(this.zones[this.zones.length - 1].id) + 1
           : this.zoneCounter;
       this.open();
     }
@@ -1015,9 +1015,9 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fill();
 
     // Add the node to the nodes array with an ID
-    const nodeId = this.nodeCounter++;
+    // const nodeId = this.nodeCounter++;
     this.Nodes.push({
-      id: nodeId,
+      id: this.nodeCounter,
       x: x,
       y: y,
       type: this.plottingMode || 'single',
@@ -1442,6 +1442,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
       return;
     }
 
+    
     const color = 'blue'; // Color for single nodes
     this.drawNode(
       {
@@ -1467,10 +1468,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
       intermediate_node: false,
       waiting_node: false,
     };
-    console.log(
-      `Type: Single Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y: transformedY }
-    );
+
     let node = {
       nodeId: this.nodeCounter.toString(),
       sequenceId: this.nodeCounter,
@@ -1481,6 +1479,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
       intermediate_node: false,
       Waiting_node: false,
     };
+    
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
     this.nodes.push(node);
     this.Nodes.push({ ...this.nodeDetails, type: 'single' });
@@ -1633,7 +1632,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
   onInputChanged(): void {
     this.isEnterButtonVisible =
       this.numberOfIntermediateNodes !== null &&
-      this.numberOfIntermediateNodes > 0;
+      this.numberOfIntermediateNodes >1;
   }
   plotIntermediateNodes(): void {
     if (this.numberOfIntermediateNodes && this.numberOfIntermediateNodes > 0) {
@@ -1770,6 +1769,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
     this.firstNode = null;
     this.secondNode = null;
     this.numberOfIntermediateNodes = 0;
+    this.onInputChanged ();
   }
   private onNodeClick(x: number, y: number): void {
     // Find the clicked node
@@ -2466,6 +2466,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
       let nodeClicked = false;
       for (const node of this.nodes) {
         if (this.isNodeClicked(node, x, y)) {
+          // console.log(node)
           this.onNodeClick(node.nodePosition.x, node.nodePosition.y);
           this.selectedNode = node;
           this.originalNodePosition = { x : node.nodePosition.x, y : node.nodePosition.y };
@@ -2474,7 +2475,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
           break;
         }
       }
-
+      
       if (!nodeClicked && this.isPlottingEnabled) {
         if (this.plottingMode === 'single') {
           this.selectedAsset = null;
