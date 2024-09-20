@@ -353,7 +353,6 @@ export class EnvmapComponent implements AfterViewInit {
           : this.zoneCounter;
       this.open();
     }
-
   }
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
@@ -1425,11 +1424,11 @@ export class EnvmapComponent implements AfterViewInit {
         currentNode.nodePosition.orientation = angleDegrees;
       }
 
-      console.log(
-        `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
-          2
-        )}°`
-      );
+      // console.log(
+      //   `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
+      //     2
+      //   )}°`
+      // );
 
       // Draw the line
       ctx.beginPath();
@@ -1502,16 +1501,7 @@ export class EnvmapComponent implements AfterViewInit {
     let nodeOccupied = false;
     let assetOccupied = false;
 
-    if (type === 'multi' && this.firstNode && this.secondNode) {
-        // Multi-node: Check if any nodes or assets are between the first and second node
-        nodeOccupied = this.nodes.some(node => {
-            return this.isPointBetweenTwoNodes(this.firstNode!.nodePosition, this.secondNode!.nodePosition, { x: node.nodePosition.x, y: node.nodePosition.y });
-        });
 
-        assetOccupied = this.assets.some(asset => {
-            return this.isPointBetweenTwoNodes(this.firstNode!.nodePosition, this.secondNode!.nodePosition, { x: asset.x, y: asset.y });
-        });
-    } else {
         // Single node or asset placement logic
         if (type !== 'node') {
             nodeOccupied = this.nodes.some(node => {
@@ -1526,31 +1516,10 @@ export class EnvmapComponent implements AfterViewInit {
                 return distance < 20; // Threshold for proximity
             });
         }
-    }
+    
 
     return nodeOccupied || assetOccupied;
-  }
-  private isPointBetweenTwoNodes(firstNode: { x: number; y: number }, secondNode: { x: number; y: number }, point: { x: number; y: number }): boolean {
-    const distanceToLine = this.calculateDistanceFromPointToLine(firstNode, secondNode, point);
-    const isWithinLineSegment = this.isPointOnLineSegment(firstNode, secondNode, point);
-
-    return distanceToLine < 20 && isWithinLineSegment; // Threshold to consider proximity to the line
-}
-private calculateDistanceFromPointToLine(p1: { x: number; y: number }, p2: { x: number; y: number }, point: { x: number; y: number }): number {
-  const numerator = Math.abs((p2.y - p1.y) * point.x - (p2.x - p1.x) * point.y + p2.x * p1.y - p2.y * p1.x);
-  const denominator = Math.sqrt(Math.pow(p2.y - p1.y, 2) + Math.pow(p2.x - p1.x, 2));
-  return numerator / denominator;
-}
-
-private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: number }, point: { x: number; y: number }): boolean {
-  const minX = Math.min(p1.x, p2.x);
-  const maxX = Math.max(p1.x, p2.x);
-  const minY = Math.min(p1.y, p2.y);
-  const maxY = Math.max(p1.y, p2.y);
-
-  return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY;
-}
-
+  }  
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -1634,119 +1603,139 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
     const transformedY = canvas.height - y; // Flip the Y-axis
 
     if (this.isPositionOccupied(x, y, 'node')) {
-      alert('This position is already occupied by a node or asset. Please choose a different location.');
-      return;
+        alert('This position is already occupied by a node or asset. Please choose a different location.');
+        return;
     }
+
     const color = 'blue'; // Color for multi-nodes
     this.drawNode(
-      {
-        nodeId: '',
-        sequenceId: 0,
-        nodeDescription: '',
-        released: true,
-        nodePosition: { x: x, y: transformedY, orientation: 0 },
-        actions: [],
-        intermediate_node: false,
-        Waiting_node: false,
-      },
-      color,
-      false
+        {
+            nodeId: '',
+            sequenceId: 0,
+            nodeDescription: '',
+            released: true,
+            nodePosition: { x: x, y: transformedY, orientation: 0 },
+            actions: [],
+            intermediate_node: false,
+            Waiting_node: false,
+        },
+        color,
+        false
     );
-    console.log(
-      `Type: Multi Node, Node Number: ${this.nodeCounter}, Position:`,
-      { x, y: transformedY }
-    ); // Log the node number and position
-
-    if (this.ratio !== null) {
-      const distanceX = x * this.ratio;
-      const distanceY = transformedY * this.ratio;
-      console.log(
-        `Type: Multi Node, Node Number: ${
-          this.nodeCounter
-        }, Distance (meters): X: ${distanceX.toFixed(
-          2
-        )}, Y: ${distanceY.toFixed(2)}`
-      );
-    }
-
-    this.nodeDetails = {
-      id: this.nodeCounter,
-      x: x, // Adjust for ratio if present
-      y: transformedY,
-      description: '',
-      actions: [],
-      intermediate_node: false,
-      waiting_node: false,
-    };
 
     if (this.firstNode === null) {
-      // Plotting the first node
-      let firstnode = {
-        nodeId: this.nodeCounter.toString(),
-        sequenceId: this.nodeCounter,
-        nodeDescription: '',
-        released: true,
-        nodePosition: { x: x, y: transformedY, orientation: 0 },
-        actions: [],
-        intermediate_node: false,
-        Waiting_node: false,
-      };
-      this.firstNode = firstnode;
-      this.nodes.push(firstnode);
+        // Plotting the first node
+        let firstnode = {
+            nodeId: this.nodeCounter.toString(),
+            sequenceId: this.nodeCounter,
+            nodeDescription: '',
+            released: true,
+            nodePosition: { x: x, y: transformedY, orientation: 0 },
+            actions: [],
+            intermediate_node: false,
+            Waiting_node: false,
+        };
+        this.firstNode = firstnode;
+        this.nodes.push(firstnode);
     } else if (this.secondNode === null) {
-      // Plotting the second node
-      let secondnode = {
-        nodeId: this.nodeCounter.toString(),
-        sequenceId: this.nodeCounter,
-        nodeDescription: '',
-        released: true,
-        nodePosition: { x: x, y: transformedY, orientation: 0 },
-        actions: [],
-        intermediate_node: false,
-        Waiting_node: false,
-      };
-      this.secondNode = secondnode;
-      this.nodes.push(secondnode);
+        // Plotting the second node
+        let secondnode = {
+            nodeId: this.nodeCounter.toString(),
+            sequenceId: this.nodeCounter,
+            nodeDescription: '',
+            released: true,
+            nodePosition: { x: x, y: transformedY, orientation: 0 },
+            actions: [],
+            intermediate_node: false,
+            Waiting_node: false,
+        };
+        this.secondNode = secondnode;
 
-      this.isDrawingLine = true;
-      this.lineStartX = x;
-      this.lineStartY = y;
+        // Check for overlapping assets between firstNode and secondNode
+        if (this.isAssetOverlappingWithNodes(this.firstNode, this.secondNode)) {
+            alert('There are assets (stations) between the two nodes. Please resolve the overlap before plotting.');
+            this.firstNode = null;
+            this.secondNode = null;
+            this.redrawCanvas(); // Redraw to remove the second node
+            return;
+        }
 
-      this.overlayCanvas.nativeElement.addEventListener(
-        'mousemove',
-        this.onMouseMove.bind(this)
-      );
-      this.overlayCanvas.nativeElement.addEventListener(
-        'mouseup',
-        this.onMouseUp.bind(this)
-      );
+        this.nodes.push(secondnode);
 
-      this.isPlottingEnabled = false; // Disable further plotting after two nodes
-      // setTimeout(() => {
-        // this.showIntermediateNodesDialog = true;
-      // }, 1000);
+        this.isDrawingLine = true;
+        this.lineStartX = x;
+        this.lineStartY = y;
+
+        this.overlayCanvas.nativeElement.addEventListener(
+            'mousemove',
+            this.onMouseMove.bind(this)
+        );
+        this.overlayCanvas.nativeElement.addEventListener(
+            'mouseup',
+            this.onMouseUp.bind(this)
+        );
+
+        this.isPlottingEnabled = false; // Disable further plotting after two nodes
     } else {
-      // Plotting additional nodes
-      let node = {
-        nodeId: this.nodeCounter.toString(),
-        sequenceId: this.nodeCounter,
-        nodeDescription: '',
-        released: true,
-        nodePosition: {
-          x: x,
-          y: transformedY,
-          orientation: this.secondNode.nodePosition.orientation,
-        },
-        actions: [],
-        intermediate_node: false,
-        Waiting_node: false,
-      };
-      this.nodes.push(node);
+        // Plotting additional nodes
+        let node = {
+            nodeId: this.nodeCounter.toString(),
+            sequenceId: this.nodeCounter,
+            nodeDescription: '',
+            released: true,
+            nodePosition: {
+                x: x,
+                y: transformedY,
+                orientation: this.secondNode.nodePosition.orientation,
+            },
+            actions: [],
+            intermediate_node: false,
+            Waiting_node: false,
+        };
+        this.nodes.push(node);
     }
 
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
+}
+
+private isAssetOverlappingWithNodes(node1: Node, node2: Node): boolean {
+  console.log(this.firstNode)
+  return this.assets.some(asset => {
+      // Calculate the distance between asset and the line formed by node1 and node2
+      const distanceToLine = this.getDistanceFromLine(asset.x, asset.y, node1.nodePosition, node2.nodePosition);
+      return distanceToLine < 20; // Adjust this threshold based on asset proximity tolerance
+  });
+}
+
+private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: number}, node2Pos: {x: number, y: number}): number {
+  const A = x - node1Pos.x;
+  const B = y - node1Pos.y;
+  const C = node2Pos.x - node1Pos.x;
+  const D = node2Pos.y - node1Pos.y;
+
+  const dot = A * C + B * D;
+  const len_sq = C * C + D * D;
+  const param = (len_sq !== 0) ? dot / len_sq : -1;
+
+  let xx, yy;
+
+  if (param < 0) {
+      xx = node1Pos.x;
+      yy = node1Pos.y;
+  } else if (param > 1) {
+      xx = node2Pos.x;
+      yy = node2Pos.y;
+  } else {
+      xx = node1Pos.x + param * C;
+      yy = node1Pos.y + param * D;
   }
+
+  const dx = x - xx;
+  const dy = y - yy;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
   onInputChanged(): void {
     this.isEnterButtonVisible =
       this.numberOfIntermediateNodes !== null &&
@@ -2197,12 +2186,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
-    const transformedY = canvas.height - y; // Flip the Y-axis
-    // if (this.isPositionOccupied(x, transformedY)) {
-    //   alert('This position is already occupied by a node or asset. Please choose a different location.');
-    //   return;
-    // }
-
+    const transformedY = canvas.height - y; // Flip the Y-axis  
     if (image && ctx) {
       const imageSize = 50; // Set image size
       ctx.drawImage(
@@ -2213,13 +2197,14 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
         imageSize
       );
     }
-
+  
+    // Update assets list and asset details
     this.assets = this.assets.map((asset) => {
       if (this.selectedAsset?.id === asset.id)
         asset.orientation = this.orientationAngle;
       return asset;
     });
-
+  
     this.overlayCanvas.nativeElement.addEventListener(
       'mousemove',
       this.onMouseMove.bind(this)
@@ -2229,6 +2214,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
       this.onMouseUp.bind(this)
     );
   }
+  
   startZonePlotting(): void {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;

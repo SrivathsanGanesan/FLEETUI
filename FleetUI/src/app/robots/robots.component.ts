@@ -19,9 +19,8 @@ export interface Robot {
   error: string;
   batteryPercentage: number;
   totalPicks: string;
- totalDrops:string;
+  totalDrops: string;
   SignalStrength: string;
-
   isCharging: boolean; // This will control whether the icon is shown
   // Add other fields as needed
 }
@@ -39,13 +38,9 @@ export class RobotsComponent implements OnInit {
     // Add more images from assets/robots
   ];
   currentSignalClass: string = 'none'; // Default class
+  robots: any[] = [];
 
-  
-
-  
-
-
-   robots: Robot[] = [
+  /* robots: Robot[] = [
     {
       id: 1,
       serialNumber: '50000',
@@ -62,9 +57,8 @@ export class RobotsComponent implements OnInit {
       batteryPercentage: 87,
       isCharging: true, // This will control whether the icon is shown
       totalPicks: '31',
-      totalDrops:'28',
-      SignalStrength:'Weak'
-
+      totalDrops: '28',
+      SignalStrength: 'Weak',
     },
     {
       id: 2,
@@ -81,10 +75,9 @@ export class RobotsComponent implements OnInit {
       error: '20',
       batteryPercentage: 7,
       isCharging: true, // This will control whether the icon is shown
-       totalPicks: '31',
-      totalDrops:'28',
-      SignalStrength:'Searching'
-      
+      totalPicks: '31',
+      totalDrops: '28',
+      SignalStrength: 'Searching',
     },
     {
       id: 3,
@@ -100,10 +93,10 @@ export class RobotsComponent implements OnInit {
       memory: '30 %',
       error: '30',
       batteryPercentage: 10,
-      isCharging: true ,// This will control whether the icon is shown
-       totalPicks: '31',
-      totalDrops:'28',
-      SignalStrength:'Weak'
+      isCharging: true, // This will control whether the icon is shown
+      totalPicks: '31',
+      totalDrops: '28',
+      SignalStrength: 'Weak',
     },
     {
       id: 4,
@@ -120,9 +113,9 @@ export class RobotsComponent implements OnInit {
       error: '40',
       batteryPercentage: 40,
       isCharging: true, // This will control whether the icon is shown
-       totalPicks: '31',
-      totalDrops:'28',
-      SignalStrength:'Full'
+      totalPicks: '31',
+      totalDrops: '28',
+      SignalStrength: 'Full',
     },
     {
       id: 5,
@@ -138,10 +131,10 @@ export class RobotsComponent implements OnInit {
       memory: '50 %',
       error: '50',
       batteryPercentage: 41,
-      isCharging: true ,// This will control whether the icon is shown
-       totalPicks: '31',
-      totalDrops:'28',
-      SignalStrength:'Full'
+      isCharging: true, // This will control whether the icon is shown
+      totalPicks: '31',
+      totalDrops: '28',
+      SignalStrength: 'Full',
     },
     {
       id: 6,
@@ -159,11 +152,11 @@ export class RobotsComponent implements OnInit {
       batteryPercentage: 90,
       isCharging: false, // This will control whether the icon is shown
       totalPicks: '31',
-      totalDrops:'28',
-      SignalStrength:'Full'
+      totalDrops: '28',
+      SignalStrength: 'Full',
     },
     // Add more robots...
-  ]; 
+  ]; */
 
   mapDetails: any | null = null;
   showPopup = false;
@@ -178,10 +171,19 @@ export class RobotsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.setSignalStrength('Weak'); // Change this value to test different signals
+    // this.setSignalStrength('Weak'); // Change this value to test different signals
     this.mapDetails = this.projectService.getMapData();
     if (!this.mapDetails) return;
     let grossFactSheet = await this.fetchAllRobos();
+    this.robots = grossFactSheet.map((robo) => {
+      robo.imageUrl = '../../assets/robots/agv1.png';
+      if (robo.networkstrength < 20) robo.SignalStrength = 'weak';
+      else if (robo.networkstrength < 40) robo.SignalStrength = 'medium';
+      else if (robo.networkstrength < 80) robo.SignalStrength = 'full';
+      robo.networkstrength = robo.networkstrength.toString() + ' dBm';
+      return robo;
+    });
+    // this.robots = grossFactSheet;
   }
 
   async fetchAllRobos(): Promise<any[]> {
@@ -200,9 +202,8 @@ export class RobotsComponent implements OnInit {
     //   throw new Error(`Err with status code of ${response.status}`);
     const data = await response.json();
     console.log(data);
-    if (data.error || !data.map) return [];
-    const { robots } = data;
-    return robots.fsAmr;
+    if (data.robots) return data.robots;
+    return [];
   }
 
   getImagePath(imageName: string): string {
@@ -278,15 +279,16 @@ export class RobotsComponent implements OnInit {
   // }
 
   deleteRobot(index: number) {
-    this.robots.splice(index, 1);
+    // yet to do..
+    // this.robots.splice(index, 1);
     this.updateRobotIds();
     this.menuOpenIndex = null;
   }
 
   updateRobotIds() {
-    this.robots.forEach((robot, index) => {
-      robot.id = index + 1;
-    });
+    // this.robots.forEach((robot, index) => {
+    //   robot.id = index + 1;
+    // });
   }
 
   trackByIndex(index: number, obj: any): any {
@@ -314,15 +316,15 @@ export class RobotsComponent implements OnInit {
 
   mapSignalToClass(signal: string): string {
     switch (signal) {
-      case 'No signal':
+      case 'no signal':
         return 'none';
-      case 'Weak':
+      case 'weak':
         return 'weak';
-      case 'Medium':
+      case 'medium':
         return 'medium';
-      case 'Full':
+      case 'full':
         return 'full';
-      case 'Searching':
+      case 'searching':
         return 'loading';
       default:
         return 'loading';
@@ -338,14 +340,4 @@ export class RobotsComponent implements OnInit {
       return 'low'; // Red for low battery
     }
   }
-  
-  
-  
-
-
-   
-   
-
-    
-  
 }
