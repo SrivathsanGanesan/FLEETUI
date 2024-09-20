@@ -427,6 +427,11 @@ export class EnvmapComponent implements AfterViewInit {
 
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      this.robotImages['robotA'] = new Image();
+      this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
+
+      this.robotImages['robotB'] = new Image();
+      this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
       // Initialize assets and robots
       this.assetImages['docking'] = new Image();
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
@@ -435,11 +440,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.assetImages['charging'].src =
         'assets/Asseticon/charging-station.svg';
 
-      this.robotImages['robotA'] = new Image();
-      this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
 
-      this.robotImages['robotB'] = new Image();
-      this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
     } else {
       console.error('Failed to get canvas context');
     }
@@ -1671,15 +1672,6 @@ export class EnvmapComponent implements AfterViewInit {
         this.currMulNode.push(this.firstNode);
         this.currMulNode.push(this.secondNode);
 
-        // Check for overlapping assets between firstNode and secondNode
-        if (this.isAssetOverlappingWithNodes(this.firstNode, this.secondNode)) {
-            alert('There are assets (stations) between the two nodes. Please resolve the overlap before plotting.');
-            this.firstNode = null;
-            this.secondNode = null;
-            this.redrawCanvas(); // Redraw to remove the second node
-            return;
-        }
-
         this.nodes.push(secondnode);
 
         this.isDrawingLine = true;
@@ -1721,42 +1713,6 @@ export class EnvmapComponent implements AfterViewInit {
     this.nodeCounter++; // Increment the node counter
 }
 
-private isAssetOverlappingWithNodes(node1: Node, node2: Node): boolean {
-  console.log(this.firstNode)
-  return this.assets.some(asset => {
-      // Calculate the distance between asset and the line formed by node1 and node2
-      const distanceToLine = this.getDistanceFromLine(asset.x, asset.y, node1.nodePosition, node2.nodePosition);
-      return distanceToLine < 20; // Adjust this threshold based on asset proximity tolerance
-  });
-}
-
-private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: number}, node2Pos: {x: number, y: number}): number {
-  const A = x - node1Pos.x;
-  const B = y - node1Pos.y;
-  const C = node2Pos.x - node1Pos.x;
-  const D = node2Pos.y - node1Pos.y;
-
-  const dot = A * C + B * D;
-  const len_sq = C * C + D * D;
-  const param = (len_sq !== 0) ? dot / len_sq : -1;
-
-  let xx, yy;
-
-  if (param < 0) {
-      xx = node1Pos.x;
-      yy = node1Pos.y;
-  } else if (param > 1) {
-      xx = node2Pos.x;
-      yy = node2Pos.y;
-  } else {
-      xx = node1Pos.x + param * C;
-      yy = node1Pos.y + param * D;
-  }
-
-  const dx = x - xx;
-  const dy = y - yy;
-  return Math.sqrt(dx * dx + dy * dy);
-}
 
   onInputChanged(): void {
     this.isEnterButtonVisible =

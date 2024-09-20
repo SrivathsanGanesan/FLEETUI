@@ -427,6 +427,16 @@
         </div>
 
         <div class="rob-inp">
+          <label for="robotName">Robot Name:</label>
+          <input
+            pInputText
+            type="text"
+            id="robotName"
+            [(ngModel)]="formData.robotName"
+            name="robotName"
+            required
+          />
+
           <label for="manufacturer">Manufacturer:</label>
           <input
             pInputText

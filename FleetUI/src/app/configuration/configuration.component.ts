@@ -865,6 +865,7 @@ export class ConfigurationComponent implements AfterViewInit {
   // isLocalizationParametersFormVisible = false;
 
   formData = {
+    robotName:'',
     manufacturer: '',
     serialNumber: '',
     typeSpecification: {
