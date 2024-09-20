@@ -149,145 +149,113 @@
         [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
       >
 
-        <div class="sampleCSS">
-          <div class="node_details">
-            <p>Node Details</p>
-            <!-- <div class="node-id">Node ID: {{ nodeDetails.id }}</div> -->
-            <div class="action-container">
-              <label for="nodeAction">Add Action:</label>
-              <select
+      <div class="sampleCSS">
+        <div class="node_details">
+          <p>Node Details</p>
+
+          <div class="action-container">
+            <div class="action">
+              <label for="nodeAction" class="label" style="margin-right: 1rem;">Add Action:</label>
+              <p-dropdown
                 id="nodeAction"
+                [options]="actionOptions"
                 [(ngModel)]="selectedAction"
-                (change)="onActionChange()"
-              >
-                <option value="Move" [disabled]="isOptionDisabled('Move')">
-                  Move
-                </option>
-                <option value="Dock" [disabled]="isOptionDisabled('Dock')">
-                  Dock
-                </option>
-                <option value="Undock" [disabled]="isOptionDisabled('Undock')">
-                  Undock
-                </option>
-              </select>
+                (onChange)="onActionChange()"
+                placeholder="Select Action"
+                [autoDisplayFirst]="false"
+
+              ></p-dropdown>
             </div>
+            <div *ngIf="validationError" class="validation-error">{{ validationError }}</div>
+          </div>
 
-            <div *ngIf="actions.length > 0" class="action-div">
-              <p>Actions:</p>
-              <div class="action-buttons">
-                <!-- yet to remove this.selectedNode.actions -->
-                <div
-                  *ngFor="let action of this.actions; let i = index"
-                  class="action-item"
-                >
-                  <button class="action-button" (click)="editAction(i)">
-                    {{ action.actionType }}
-                    <span class="delete-icon" (click)="removeAction(i)">X</span>
-                  </button>
-                </div>
+          <div *ngIf="actions.length > 0" class="action-div">
+            <p>Actions:</p>
+            <div class="action-buttons">
+              <div *ngFor="let action of actions; let i = index" class="action-item">
+                <button class="action-button" (click)="editAction(i)">
+                  {{ action.actionType }}
+                  <span class="delete-icon" (click)="removeAction(i)">X</span>
+                </button>
               </div>
-            </div>
-
-            <label for="nodeDescription">Node Description:</label>
-            <input pInputText
-              type="text"
-              id="nodeDescription"
-              [(ngModel)]="nodeDetails.description"
-            /><br />
-            <label for="Intermediate_Stn">Intermediate Node</label>
-            <input pInputText
-              type="checkbox"
-              id="Intermediate_Stn"
-              [(ngModel)]="nodeDetails.intermediate_node"
-            /><br />
-
-            <label for="Waiting_Stn">Waiting Node</label>
-            <input pInputText
-              type="checkbox"
-              id="Waiting_Stn"
-              [(ngModel)]="nodeDetails.waiting_node"
-            />
-            <div class="Node-btn">
-              <div *ngIf="validationError" class="validation-error">
-                {{ validationError }}
-              </div>
-              <button class="Delnode-btn" (click)="deleteSelectedNode()">
-                Delete Node
-              </button>
-              <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
-              <button class="closenode-btn" (click)="closeNodeDetailsPopup()">
-                Close
-              </button>
             </div>
           </div>
 
-          <div class="action-form">
-            <div
-              *ngIf="selectedAction === 'Move' && isMoveActionFormVisible"
-              class="move-action-form"
-            >
-              <p>Move Action Parameters</p>
+          <div class="input-group1">
+            <label for="nodeDescription" class="label">Node Description:</label>
+            <input pInputTextArea
+              type="text"
+              id="nodeDescription"
+              [(ngModel)]="nodeDetails.description"
+              [style]="{'height':'30px','width':'50%'}"
+            /><br />
+          </div>
+            <div class="input-group">
+              <div class="node1">
+                <label for="Intermediate_Stn" class="label">Intermediate Node</label>
+                <p-checkbox
+                  id="Intermediate_Stn"
+                  [binary]="true"
+                  inputId="binary"
+                  [(ngModel)]="nodeDetails.intermediate_node"
+                /><br />
+              </div>
+              <div>
+                <label for="Waiting_Stn" class="label">Waiting Node</label>
+                <p-checkbox
+                  id="Waiting_Stn"
+                  [binary]="true"
+                  inputId="binary"
+                  [(ngModel)]="nodeDetails.waiting_node"
+                />
+            </div>
+
+          <div class="Node-btn">
+            <div *ngIf="validationError" class="validation-error">{{ validationError }}</div>
+            <button class="Delnode-btn" (click)="deleteSelectedNode()">Delete Node</button>
+            <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
+            <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
+          </div>
+        </div>
+       </div>
+        <div class="action-form">
+          <div *ngIf="selectedAction === 'Move' && isMoveActionFormVisible" class="move-action-form">
+            <p>Move Action Parameters</p>
+            <div class="input-group">
               <label>Max Linear Velocity:</label>
-              <input pInputText
-                type="number"
-                                min="0"
-                max="1000"
-                [(ngModel)]="moveParameters.maxLinearVelocity"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxLinearVelocity" /><br />
               <label>Max Angular Velocity:</label>
-              <input pInputText
-                type="number"
-                                min="0"
-                max="1000"
-                [(ngModel)]="moveParameters.maxAngularVelocity"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxAngularVelocity" /><br />
               <label>Max Tolerance at Goal X:</label>
-              <input pInputText
-                type="number"
-                                min="0"
-                max="1000"
-                [(ngModel)]="moveParameters.maxToleranceAtGoalX"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxToleranceAtGoalX" /><br />
               <label>Max Tolerance at Goal Y:</label>
-              <input pInputText
-                type="number"
-                                min="0"
-                max="1000"
-                [(ngModel)]="moveParameters.maxToleranceAtGoalY"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxToleranceAtGoalY" /><br />
               <label>Max Tolerance at Goal Orientation:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br />
               <label>End Point Orientation:</label>
-              <input
-                type="checkbox"
-                [(ngModel)]="moveParameters.endPointOrientation"
-              /><br />
+              <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br />
               <label>Auto Robot Operation Mode:</label>
               <select [(ngModel)]="moveParameters.autoRobotMode">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
-                <!-- Add more options as needed --></select
-              ><br />
+                <!-- Add more options as needed -->
+              </select><br />
               <button (click)="addAction()">Add</button>
             </div>
+          </div>
 
-            <div
-              *ngIf="selectedAction === 'Dock' && isDockActionFormVisible"
-              class="move-action-form"
-            >
-              <p>Dock Action Parameters</p>
+          <!-- Repeat similar structure for Dock and Undock Action Parameters -->
+          <div *ngIf="selectedAction === 'Dock' && isDockActionFormVisible" class="move-action-form">
+            <p>Dock Action Parameters</p>
+            <div class="input-group">
               <label>Max Linear Velocity:</label>
               <input pInputText
                 type="number"
                 min="0"
                 max="1000"
-                [(ngModel)]="dockParameters.maxAngularVelocity"
+                [(ngModel)]="dockParameters.maxLinearVelocity"
               /><br />
+
               <label>Max Tolerance at Goal X:</label>
               <input pInputText
                 type="number"
@@ -295,6 +263,7 @@
                 max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalX"
               /><br />
+
               <label>Max Tolerance at Goal Y:</label>
               <input pInputText
                 type="number"
@@ -302,6 +271,7 @@
                 max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalY"
               /><br />
+
               <label>Max Tolerance at Goal Orientation:</label>
               <input pInputText
                 type="number"
@@ -309,46 +279,47 @@
                 max="1000"
                 [(ngModel)]="dockParameters.maxToleranceAtGoalOrientation"
               /><br />
-              <label>Goal offset X</label>
+
+              <label>Goal Offset X:</label>
               <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.goalOffsetX"
               /><br />
-              <label>Goal offset Y</label>
+
+              <label>Goal Offset Y:</label>
               <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.goalOffsetY"
               /><br />
-              <label>Goal offset Orientation</label>
+
+              <label>Goal Offset Orientation:</label>
               <input pInputText
                 type="number"
                 min="0"
                 max="1000"
                 [(ngModel)]="dockParameters.goalOffsetOrientation"
               /><br />
+
               <label>End Point Orientation:</label>
-              <input
-                type="checkbox"
-                [(ngModel)]="dockParameters.endPointOrientation"
-              /><br />
-              <label>Docking Type: </label>
+              <input type="checkbox" [(ngModel)]="dockParameters.endPointOrientation" /><br />
+
+              <label>Docking Type:</label>
               <select [(ngModel)]="dockParameters.dockingType">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
-                <!-- Add more options as needed --></select
-              ><br />
+                <!-- Add more options as needed -->
+              </select><br />
+
               <button (click)="addAction()">Add</button>
             </div>
-
-            <div
-              *ngIf="selectedAction === 'Undock' && isUndockActionFormVisible"
-              class="move-action-form"
-            >
-              <p>Undock Action Parameters</p>
+          </div>
+          <div *ngIf="selectedAction === 'Undock' && isUndockActionFormVisible" class="move-action-form">
+            <p>Undock Action Parameters</p>
+            <div class="input-group">
               <label>Max Linear Velocity:</label>
               <input pInputText
                 type="number"
@@ -356,6 +327,7 @@
                 max="1000"
                 [(ngModel)]="undockParameters.maxLinearVelocity"
               /><br />
+
               <label>Max Angular Velocity:</label>
               <input pInputText
                 type="number"
@@ -363,6 +335,7 @@
                 max="1000"
                 [(ngModel)]="undockParameters.maxAngularVelocity"
               /><br />
+
               <label>Max Tolerance at Goal X:</label>
               <input pInputText
                 type="number"
@@ -370,6 +343,7 @@
                 max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalX"
               /><br />
+
               <label>Max Tolerance at Goal Y:</label>
               <input pInputText
                 type="number"
@@ -377,6 +351,7 @@
                 max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalY"
               /><br />
+
               <label>Max Tolerance at Goal Orientation:</label>
               <input pInputText
                 type="number"
@@ -384,12 +359,11 @@
                 max="1000"
                 [(ngModel)]="undockParameters.maxToleranceAtGoalOrientation"
               /><br />
+
               <label>End Point Orientation:</label>
-              <input pInputText
-                type="checkbox"
-                [(ngModel)]="undockParameters.endPointOrientation"
-              /><br />
-              <label>Undocking Distance</label>
+              <input type="checkbox" [(ngModel)]="undockParameters.endPointOrientation" /><br />
+
+              <label>Undocking Distance:</label>
               <input pInputText
                 type="number"
                 min="0"
@@ -397,11 +371,13 @@
                 [(ngModel)]="undockParameters.undockingDistance"
               /><br />
 
-              <br />
               <button (click)="addAction()">Add</button>
             </div>
           </div>
         </div>
+
+
+      </div>
 
 
       </div>
