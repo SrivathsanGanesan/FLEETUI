@@ -237,7 +237,12 @@ const deleteMap = async (req, res) => {
   const { projectName, siteName } = req.body;
   const mapName = req.params.mapName;
   try {
-    const updatedProj = await projectModel.findOneAndUpdate(
+    let isMapExists = await Map.exists({ mapName: mapName });
+    if (!isMapExists)
+      return res
+        .status(400)
+        .json({ isMapExists: false, msg: "Map not exists!" });
+    /* const updatedProj = await projectModel.findOneAndUpdate(
       {
         projectName: projectName,
         "sites.siteName": siteName,
@@ -248,14 +253,10 @@ const deleteMap = async (req, res) => {
         },
       },
       { new: true } // which returns the updated doc!
-    );
-
-    let isMapExists = await Map.exists({ mapName: mapName });
-    if (!isMapExists)
-      return res
-        .status(400)
-        .json({ isMapExists: false, msg: "Map not exists!" });
+    ); */
     let mapDet = await Map.findOne({ mapName: mapName });
+    let robots = mapDet.robots;
+    for (let robo of robots) await Robo.deleteOne({ _id: robo.roboId });
     let imgToDelete = mapDet.imgUrl.split("/")[2]; // [localhost:3000, dashboard, samp.png]
     let isImgDeleted = deleteImage(imgToDelete);
     if (!isImgDeleted)

@@ -18,8 +18,8 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { EnvmapComponent } from '../envmap/envmap.component';
 import { AnyAaaaRecord } from 'node:dns';
 import { PageEvent } from '@angular/material/paginator';
-import { log } from 'node:console';
-import { MessageService } from 'primeng/api';
+import { response } from 'express';
+import { error } from 'node:console';
 
 interface Poll {
   ip: string;
@@ -110,8 +110,7 @@ export class ConfigurationComponent implements AfterViewInit {
   constructor(
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
-    public dialog: MatDialog, // Inject MatDialog
-    private messageService: MessageService
+    public dialog: MatDialog // Inject MatDialog
   ) {
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
@@ -129,6 +128,7 @@ export class ConfigurationComponent implements AfterViewInit {
     if (currMapData) this.selectedMap = currMapData;
 
     this.mapData = this.projectService.getSelectedProject(); // _id
+    if (!this.mapData) return;
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
       { credentials: 'include' }
@@ -137,7 +137,7 @@ export class ConfigurationComponent implements AfterViewInit {
         if (!response.ok) throw new Error(`Error code of ${response.status}`);
         return response.json();
       })
-      .then((data) => {
+      .then(async (data) => {
         const { sites } = data.project;
         this.EnvData = sites
           .flatMap((sites: any) => {
@@ -168,15 +168,22 @@ export class ConfigurationComponent implements AfterViewInit {
         );
         this.filteredEnvData = this.EnvData;
         this.cdRef.detectChanges();
-        if (!this.projectService.getIsMapSet())
+        if (!this.projectService.getIsMapSet()) {
           this.selectedMap = this.EnvData[0];
+          let imgUrl = await this.getMapImgUrl(this.selectMap);
+          this.projectService.setMapData({
+            ...this.EnvData[0],
+            imgUrl: imgUrl,
+          });
+        }
       })
       .catch((error) => {
         console.log(error);
       });
 
+    this.fetchRobos(); // fetch all robots..
+
     if (!this.EnvData.length) return;
-    // console.log(this.EnvData);
 
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
@@ -189,18 +196,85 @@ export class ConfigurationComponent implements AfterViewInit {
         return response.json();
       })
       .then((data) => {
-        this.projectService.setMapData({
-          ...this.EnvData[0],
-          imgUrl: data.map.imgUrl,
-        });
+        if (!this.projectService.getMapData())
+          // yet to remove..
+          this.projectService.setMapData({
+            ...this.EnvData[0],
+            imgUrl: data.map.imgUrl,
+          });
       })
       .catch((error) => {
         console.log(error);
       });
     // this.filteredEnvData = this.EnvData;
-    this.filteredRobotData = this.robotData;
     this.searchTerm = '';
     this.searchTermChanged();
+  }
+
+  fetchRobos() {
+    let mapData = this.projectService.getMapData();
+
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    )
+      .then((response) => {
+        if (response.status == 422) {
+          console.log('Invalid map id, which request to fetch robots');
+          return;
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.error) return;
+        if (data.populatedRobos) this.robotData = data.populatedRobos;
+        this.filteredRobotData = this.robotData;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  editRobo(robo: any) {}
+
+  deleteRobo(robo: any) {
+    let project = this.projectService.getSelectedProject();
+    let map = this.projectService.getMapData();
+    let roboInfo = {
+      roboId: robo._id,
+      projectName: project.projectName,
+      mapName: map.mapName,
+    };
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/robo-configuration`,
+      {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(roboInfo),
+      }
+    )
+      .then((response) => {
+        // if (response.ok) {
+        //   this.robotData = this.robotData.filter(
+        //     (robo) => robo._id !== roboInfo.roboId
+        //   );
+        //   return;
+        // }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.isRoboExists) this.fetchRobos();
+        // if(data.isrob)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   onPageChange(event: PageEvent) {
@@ -217,15 +291,14 @@ export class ConfigurationComponent implements AfterViewInit {
       this.projectService.setIsMapSet(false);
       if (!this.EnvData.length) return;
       this.selectedMap = this.EnvData[0];
-      const response = await fetch(
-        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
-      );
-      if (!response.ok)
-        console.error('Error while fetching map data : ', response.status);
-      let data = await response.json();
-      let { map } = data;
+      // const response = await fetch(
+      //   `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
+      // );
+      // if (!response.ok)
+      //   console.error('Error while fetching map data : ', response.status);
+      // let data = await response.json();
+      // let { map } = data;
       this.ngOnInit();
-
       if (this.projectService.getIsMapSet()) return;
       this.projectService.setIsMapSet(true);
       return;
@@ -248,6 +321,16 @@ export class ConfigurationComponent implements AfterViewInit {
 
     if (this.projectService.getIsMapSet()) return;
     this.projectService.setIsMapSet(true);
+  }
+
+  async getMapImgUrl(map: any): Promise<any> {
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+    );
+    if (!response.ok)
+      console.error('Error while fetching map data : ', response.status);
+    let data = await response.json();
+    if (!data.error) return data.map.imgUrl;
   }
 
   isButtonDisabled(item: any): boolean {
@@ -357,38 +440,27 @@ export class ConfigurationComponent implements AfterViewInit {
   startIP: string = '';
   EndIP: string = '';
 
-  startScanning() {
+  async startScanning() {
     this.ipScanData = [];
-    // this.startIP = (
-    //   document.getElementById('ipRangeFrom') as HTMLInputElement
-    // ).value;
-    // this.EndIP = (
-    //   document.getElementById('ipRangeTo') as HTMLInputElement
-    // ).value;
     if (this.startIP === '' || this.EndIP === '') {
-      // alert('Enter valid Ip');
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Scan Failed',
-        detail: 'Enter valid IP range.',
-        life: 5000
-      });
+      alert('Enter valid Ip');
       return;
     }
     const ipv4Regex =
       /^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     if (!ipv4Regex.test(this.startIP) || !ipv4Regex.test(this.EndIP)) {
-      // alert('not valid IP. Try again');
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Scan Failed',
-        detail: 'Invalid IP address. Please try again.',
-        life: 5000
-      });
+      alert('not valid IP. Try again');
       return;
     }
 
     const URL = `http://${environment.API_URL}:${environment.PORT}/fleet-config/scan-ip/${this.startIP}-${this.EndIP}`;
+
+    const response = await fetch(URL, { method: 'GET' });
+
+    if (response.status === 422) {
+      alert(`Ip range is too large`);
+      return;
+    }
 
     if (this.eventSource) this.eventSource.close();
 
@@ -414,12 +486,6 @@ export class ConfigurationComponent implements AfterViewInit {
         this.cdRef.detectChanges();
       } catch (error) {
         console.error('Error parsing SSE data:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Scan Error',
-          detail: 'Error processing scan data.',
-          life: 5000
-        });
       }
     };
 
@@ -428,59 +494,14 @@ export class ConfigurationComponent implements AfterViewInit {
       this.eventSource.close();
       this.isScanning = false;
       this.cdRef.detectChanges();
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Scan Error',
-        detail: 'Failed to start scanning. Please try again.',
-        life: 5000
-      });
     };
     this.isScanning = true;
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Scanning Started',
-      detail: 'Scanning for IPs has started.',
-      life: 5000
-    });
   }
   stopScanning() {
-    try {
-      if (this.eventSource) {
-        this.eventSource.close();
-
-        // Check if the event source has been successfully closed
-        if (!this.isScanning) {
-          this.messageService.add({
-            severity: 'info',
-            summary: 'Scanning Stopped',
-            detail: 'IP scanning has been stopped.',
-            life: 5000
-          });
-        } else {
-          throw new Error('Failed to stop scanning.');
-        }
-      } else {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'No Active Scan',
-          detail: 'No active IP scanning to stop.',
-          life: 5000
-        });
-      }
-    } catch (error) {
-      console.error('Error stopping scan:', error);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Scan Stop Failed',
-        detail: 'Failed to stop the IP scanning process. Please try again.',
-        life: 5000
-      });
-    } finally {
-      this.isScanning = false;
-      this.cdRef.detectChanges();
-    }
+    this.isScanning = false;
+    this.eventSource.close();
+    return;
   }
-
 
   robots = [
     { id: 1, name: 'Robot A' },
@@ -613,6 +634,7 @@ export class ConfigurationComponent implements AfterViewInit {
   minDate!: string;
   maxDate!: string;
 
+  // yet to work..
   showTable(table: string) {
     this.currentTable = table;
     // Clear search term and reset date inputs when switching between tabs
@@ -626,9 +648,11 @@ export class ConfigurationComponent implements AfterViewInit {
       this.filteredEnvData = [...this.EnvData]; // Reset to the original data
     } else if (this.currentTable === 'robot') {
       this.filteredRobotData = [...this.robotData]; // Reset to the original data
+      this.fetchRobos();
     }
     this.filterData();
   }
+
   filterData() {
     const term = this.searchTerm.toLowerCase();
 
@@ -651,8 +675,8 @@ export class ConfigurationComponent implements AfterViewInit {
     } else if (this.currentTable === 'robot') {
       this.filteredRobotData = this.robotData.filter(
         (item) =>
-          item.column1.toLowerCase().includes(term) ||
-          item.column2.toLowerCase().includes(term)
+          item.roboName.toLowerCase().includes(term) ||
+          item.ipAdd.toLowerCase().includes(term)
       );
     }
   }
@@ -893,6 +917,7 @@ export class ConfigurationComponent implements AfterViewInit {
     event.preventDefault();
     this.closeAllForms();
     this.isTypeSpecificationFormVisible = !this.isTypeSpecificationFormVisible;
+    this.cdRef.detectChanges();
   }
 
   // Toggle Protocol Limits Form
@@ -900,6 +925,7 @@ export class ConfigurationComponent implements AfterViewInit {
     event.preventDefault();
     this.closeAllForms();
     this.isProtocolLimitsFormVisible = !this.isProtocolLimitsFormVisible;
+    this.cdRef.detectChanges();
   }
 
   // Toggle Protocol Features Form
@@ -907,6 +933,7 @@ export class ConfigurationComponent implements AfterViewInit {
     event.preventDefault();
     this.closeAllForms();
     this.isProtocolFeaturesFormVisible = !this.isProtocolFeaturesFormVisible;
+    this.cdRef.detectChanges();
   }
 
   // Toggle AGV Geometry Form
@@ -914,6 +941,7 @@ export class ConfigurationComponent implements AfterViewInit {
     event.preventDefault();
     this.closeAllForms();
     this.isAGVGeometryFormVisible = !this.isAGVGeometryFormVisible;
+    this.cdRef.detectChanges();
   }
 
   // Toggle Load Specification Form
@@ -921,6 +949,7 @@ export class ConfigurationComponent implements AfterViewInit {
     event.preventDefault();
     this.closeAllForms();
     this.isLoadSpecificationFormVisible = !this.isLoadSpecificationFormVisible;
+    this.cdRef.detectChanges();
   }
 
   // Toggle Localization Parameters Form
@@ -929,58 +958,70 @@ export class ConfigurationComponent implements AfterViewInit {
     this.closeAllForms();
     this.isLocalizationParametersFormVisible =
       !this.isLocalizationParametersFormVisible;
+    this.cdRef.detectChanges();
   }
 
   // Close form methods (if needed individually)
   closeTypeSpecificationForm(): void {
     this.isTypeSpecificationFormVisible = false;
+    this.cdRef.detectChanges();
   }
 
   closeProtocolLimitsForm(): void {
     this.isProtocolLimitsFormVisible = false;
+    this.cdRef.detectChanges();
   }
 
   closeProtocolFeaturesForm(): void {
     this.isProtocolFeaturesFormVisible = false;
+    this.cdRef.detectChanges();
   }
 
   closeAGVGeometryForm(): void {
     this.isAGVGeometryFormVisible = false;
+    this.cdRef.detectChanges();
   }
 
   closeLoadSpecificationForm(): void {
     this.isLoadSpecificationFormVisible = false;
+    this.cdRef.detectChanges();
   }
 
   closeLocalizationParametersForm(): void {
     console.log('Close icon clicked');
     this.isLocalizationParametersFormVisible = false;
+    this.cdRef.detectChanges();
   }
 
   // Save methods for each form
   saveTypeSpecification(): void {
     console.log('Type Specification saved:', this.formData.typeSpecification);
     this.closeTypeSpecificationForm();
+    // this.cdRef.detectChanges();
   }
 
   saveProtocolLimits(): void {
     console.log('Protocol Limits saved:', this.formData.protocolLimits);
     this.closeProtocolLimitsForm();
+    this.cdRef.detectChanges();
   }
 
   saveProtocolFeatures(): void {
     console.log('Protocol Features saved:', this.formData.protocolFeatures);
     this.closeProtocolFeaturesForm();
+    this.cdRef.detectChanges();
   }
 
   saveAGVGeometry(): void {
     console.log('AGV Geometry saved:', this.formData.agvGeometry);
     this.closeAGVGeometryForm();
+    this.cdRef.detectChanges();
   }
 
   saveLoadSpecification(): void {
     console.log('Load Specification saved:', this.formData.loadSpecification);
     this.closeLoadSpecificationForm();
+    this.cdRef.detectChanges();
   }
 
   saveLocalizationParameters(): void {
@@ -989,31 +1030,79 @@ export class ConfigurationComponent implements AfterViewInit {
       this.formData.localizationParameters
     );
     this.closeLocalizationParametersForm();
+    this.cdRef.detectChanges();
   }
 
   saveItem(): void {
-    // Implement form submission logic
-    console.log('Item saved:', this.formData);
     this.isPopupOpen = false;
-    // this.cdRef.detectChanges();
+    this.cdRef.detectChanges();
   }
 
   // handle the data here..
   saveRoboInfo(): void {
-    console.log(this.currentRoboDet);
-    console.log(this.formData);
+    // roboName | serial Number, ip add, mac add, grossInfo
+    let project = this.projectService.getSelectedProject();
+    let currMap = this.projectService.getMapData();
+    const roboDetails = {
+      projectName: project.projectName,
+      mapId: currMap.id,
+      mapName: currMap.mapName,
+      roboName: this.formData.serialNumber,
+      ipAdd: this.currentRoboDet.ip,
+      macAdd: this.currentRoboDet.mac,
+      grossInfo: this.formData,
+    };
+    if (roboDetails.roboName === '' || this.formData.manufacturer === '') {
+      alert('Manufacturer or roboname should be there');
+      return;
+    }
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/robo-configuration`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(roboDetails),
+      }
+    )
+      .then((response) => {
+        if (response.status === 422)
+          console.log(
+            'Error while inserting reference Id in server, unprocessable entity'
+          );
+        // if (!response.ok)
+        //   throw new Error(`Err with status code of ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.error) return;
+        else if (data.isIpMacExists) {
+          console.log(data.msg);
+          alert('Ip | Mac seems already exists!');
+          return;
+        }
+        if (data.robo) {
+          this.robotData = [...this.robotData, data.robo];
+          this.filteredRobotData = this.robotData;
+          this.cdRef.detectChanges();
+          // alert('robo Added to db');
+          return;
+        }
+      });
     this.isPopupOpen = false;
+    this.cdRef.detectChanges();
   }
 
   closeroboPopup(): void {
     this.isPopupOpen = false;
-    // this.cdRef.detectChanges();
+    this.cdRef.detectChanges();
   }
   openPopup(item: any) {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
-    // this.cdRef.detectChanges();
+    this.cdRef.detectChanges();
   }
   closePPPopup() {
     this.isPhysicalParametersFormVisible =

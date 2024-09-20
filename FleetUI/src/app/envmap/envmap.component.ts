@@ -1748,7 +1748,7 @@ private isPointOnLineSegment(p1: { x: number; y: number }, p2: { x: number; y: n
     if (this.validationError) {
       return;
     }
-    this.projectService.setNode();
+    // this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
     // const updatedNodeDetails = {
     //   ...this.nodeDetails,  // Spread the existing details

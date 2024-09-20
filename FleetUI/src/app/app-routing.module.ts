@@ -13,6 +13,8 @@ import { RobotsComponent } from './robots/robots.component';
 import { RobotDashboardComponent } from './robot-dashboard/robot-dashboard.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './user-management/user-management.component';
+import { SupportComponent } from './support/support.component';
+import { FaqComponent } from './faq/faq.component';
 
 const routes: Routes = [
   {
@@ -62,6 +64,11 @@ const routes: Routes = [
     component: UserManagementComponent,
     canActivate: [AuthGuard, ProjectGuard], // Ensure both guards are here
   },
+  {
+    path: 'support',
+    component: SupportComponent,
+    canActivate: [AuthGuard, ProjectGuard], // Ensure both guards are here
+  },
 
   // { path: 'statistics/operation', component: StatisticsComponent },
   // { path: 'statistics/robot', component: RobotDashboardComponent },
@@ -69,6 +76,10 @@ const routes: Routes = [
   { path: 'statistics/operation', component: StatisticsComponent },
   { path: 'statistics/robot', component: RobotDashboardComponent },
   { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' },
+  { path: 'faq', component: FaqComponent },
+  { path: 'support', component: SupportComponent },
+
+  
 ];
 
 @NgModule({

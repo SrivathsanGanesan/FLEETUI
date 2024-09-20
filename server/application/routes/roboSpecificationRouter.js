@@ -1,7 +1,12 @@
 const express = require("express");
 const multer = require("multer");
 const roboSpecificationRouter = express.Router();
-const { createRobo, updateRobo } = require("../controllers/robotController");
+const {
+  createRobo,
+  updateRobo,
+  getAllRobo,
+  deleteRobo,
+} = require("../controllers/robotController");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -18,5 +23,7 @@ const upload = multer({ storage: storage });
 // roboSpecificationRouter.post("/", upload.single("roboImg"), createRobo);
 roboSpecificationRouter.post("/", createRobo);
 roboSpecificationRouter.put("/:queRoboName", updateRobo);
+roboSpecificationRouter.get("/get-robos/:mapId", getAllRobo);
+roboSpecificationRouter.delete("/", deleteRobo);
 
 module.exports = roboSpecificationRouter;

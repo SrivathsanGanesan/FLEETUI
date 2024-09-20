@@ -50,6 +50,8 @@ import { DropdownModule } from 'primeng/dropdown';import { RadialChartComponent 
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AppServerModule } from './app.module.server';
+import { SupportComponent } from './support/support.component';
+import { FaqComponent } from './faq/faq.component';
 import { CheckboxModule } from 'primeng/checkbox';
 
 
@@ -88,7 +90,9 @@ import { CheckboxModule } from 'primeng/checkbox';
     TasksComponent,
     UserManagementComponent,
     FullscreenButtonComponent,
-    RadialChartComponent
+    RadialChartComponent,
+    SupportComponent,
+    FaqComponent
   ],
   imports: [
     NgApexchartsModule,

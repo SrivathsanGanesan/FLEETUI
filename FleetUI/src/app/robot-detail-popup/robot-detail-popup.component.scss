@@ -75,7 +75,7 @@
 
 .robot-image-container {
   top: 28px;
-  left: 700px;
+  left: 950px;
   position: absolute;
   display: flex;
   box-sizing: border-box;
@@ -206,144 +206,6 @@
 
 
 
- /* wifi */
- .wifi{
-  position: relative;
- 
-  top: 25px;
-  left: 800px;
- }
- @mixin getWifi($size) {
-  $anim: 1.5s linear infinite;
-  $border-width: $size/2.35;
-  $line-color: #444;
-  $line-color-weak: rgba($line-color, 0.4);
-  $trans: 0.3s linear;
-  
-  box-sizing: border-box;
-  background-color: transparent;
-  border: $size/2 solid transparent;
-  border-top-color: $line-color;
-  border-radius: $size / 2;
-  height: $size;
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  transition: border-top-color $trans;
-  width: $size;
-  
-  &:before,
-  &:after {
-    content: '';
-    box-sizing: border-box;
-    background-color: transparent;
-    border: $border-width/1.2 solid transparent;
-    border-top-color: $line-color;
-    position: absolute;
-    transition: border-top-color $trans;
-  }
-  
-  &:before {
-    border-radius: $size;
-    height: $size*2;
-    left: -$size;
-    top: -$size;
-    width: $size*2;
-  }
-  
-  &:after {
-    border-radius: $size*3;
-    height: $size*3;
-    left: -$size*1.5;
-    top: -$size*1.5;
-    width: $size*3;
-  }
-  
-  &.loading {
-    animation: blink-1 $anim;
-    
-    &:before {
-      animation: blink-2 $anim;
-    }
-    
-    &:after {
-      animation: blink-3 $anim;
-    }
-  }
-  
-  &.none:not(.loading) {
-    border-top-color: $line-color-weak;
-    
-    &:before,
-    &:after {
-      border-top-color: $line-color-weak;
-    }
-  }
-  
-  &.weak:not(.loading) {
-    &:before,
-    &:after {
-      border-top-color: $line-color-weak;
-    }
-  }
-  
-  &.medium:not(.loading) {
-    &:after {
-      border-top-color: $line-color-weak;
-    }
-  }
-  
-  @at-root {
-    @keyframes blink-1 {
-      0% {
-        border-top-color: $line-color-weak;
-      }
-
-      50%,
-      100% {
-        border-top-color: $line-color;
-      }
-    }
-    
-    @keyframes blink-2 {
-      0%,
-      100% {
-        border-top-color: $line-color;
-      }
-      
-      50% {
-        border-top-color: $line-color-weak;
-      }
-    }
-    
-    @keyframes blink-3 {
-      0%,
-      50% {
-        border-top-color: $line-color;
-      }
-      
-      100% {
-        border-top-color: $line-color-weak;
-      }
-    }
-  }
-}
-
-body {
-  background-color: #F0F32B;
-  color: #494949;
-  font-family: Raleway, Helvetica Neue, Helvetica, Arial, sans-serif;
-  text-align: center;
-}
-
-h1 {
-  margin: 1em;
-}
-
-.wifi {
-  @include getWifi(120px);
-  transform: translate(-25%);
-}
 /* connect and disconnect */
 
 
@@ -1435,7 +1297,7 @@ emergency stop */
   display: flex;
   flex-direction: column;
   padding: 10px;
-  background: linear-gradient(135deg, #ffffff 0%, #dddddd 100%); /* Red gradient background */
+  background: linear-gradient(135deg, #faf4f4 0%, #dddddd 100%); /* Red gradient background */
 
   border-radius: 15px;
 }
@@ -1559,9 +1421,6 @@ emergency stop */
   text-align: right;
 }
 
-
-
-
 /* battery details */
 .battery-details {
   position: absolute;
@@ -1607,5 +1466,142 @@ emergency stop */
 
 
 
+/* wifi signal */
 
+  /* Style for the WiFi signal section */
+  .wifi-signal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+    @mixin getWifi($size) {
+      $anim: 1.5s linear infinite;
+      $border-width: $size/2.35;
+      $line-color: #28a808;
+      $line-color-weak: rgba($line-color, 0.4);
+      $trans: 0.3s linear;
+  
+      box-sizing: border-box;
+      background-color: transparent;
+      border: $size / 2 solid transparent;
+      border-top-color: $line-color;
+      border-radius: $size / 2;
+      height: $size;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transition: border-top-color $trans;
+      width: $size;
+  
+      &:before,
+      &:after {
+        content: '';
+        box-sizing: border-box;
+        background-color: transparent;
+        border: $border-width / 1.2 solid transparent;
+        border-top-color: $line-color;
+        position: absolute;
+        transition: border-top-color $trans;
+      }
+  
+      &:before {
+        border-radius: $size;
+        height: $size * 2;
+        left: -$size;
+        top: -$size;
+        width: $size * 2;
+      }
+  
+      &:after {
+        border-radius: $size * 3;
+        height: $size * 3;
+        left: -$size * 1.5;
+        top: -$size * 1.5;
+        width: $size * 3;
+      }
+  
+      &.loading {
+        animation: blink-1 $anim;
+  
+        &:before {
+          animation: blink-2 $anim;
+        }
+  
+        &:after {
+          animation: blink-3 $anim;
+        }
+      }
+  
+      &.none:not(.loading) {
+        border-top-color: $line-color-weak;
+  
+        &:before,
+        &:after {
+          border-top-color: $line-color-weak;
+        }
+      }
+  
+      &.weak:not(.loading) {
+        &:before,
+        &:after {
+          border-top-color: $line-color-weak;
+        }
+      }
+  
+      &.medium:not(.loading) {
+        &:after {
+          border-top-color: $line-color-weak;
+        }
+      }
+  
+      @at-root {
+        @keyframes blink-1 {
+          0% {
+            border-top-color: $line-color-weak;
+          }
+  
+          50%,
+          100% {
+            border-top-color: $line-color;
+          }
+        }
+  
+        @keyframes blink-2 {
+          0%,
+          100% {
+            border-top-color: $line-color;
+          }
+  
+          50% {
+            border-top-color: $line-color-weak;
+          }
+        }
+  
+        @keyframes blink-3 {
+          0%,
+          50% {
+            border-top-color: $line-color;
+          }
+  
+          100% {
+            border-top-color: $line-color-weak;
+          }
+        }
+      }
+    }
+  
+    .wifi {
+      @include getWifi(30px);  
+      transform: translate(-25%);
+    }
+  
+  
+/*   
+    .wifi-style{
+      top: 50%;
+      position: absolute;
+      left: 38%;
+    }
+   */
 

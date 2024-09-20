@@ -1,5 +1,5 @@
 <div class="popup-content">
-  <app-fullscreen-button></app-fullscreen-button>
+  <!-- <app-fullscreen-button></app-fullscreen-button> -->
     <div class="popup-header">
       <h2>{{data.name}}</h2>
       <!-- emergency stop -->
@@ -10,8 +10,17 @@
         </div> 
     </div>
     
+    
+    <div class="wifi-signal absolute z-50 top-[0px]  w-[30vw] h-[30vh]">
+      <div class="wifi-style flex z-50">
+        <div class="wifi" [ngClass]="currentSignalClass"></div>
+        
+      </div>
+    </div>
 
-    <div class="robot-detail-container">
+    <div class="robot-detail-container relative">
+
+
       <svg
       width="580" 
       height="862"

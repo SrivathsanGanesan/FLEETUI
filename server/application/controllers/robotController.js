@@ -47,12 +47,16 @@ const createRobo = async (req, res, next) => {
       return res
         .status(400)
         .json({ exists: true, msg: "robo name already exists!" });
+    let isMacIpExists = await Robo.exists({ macAdd: macAdd, ipAdd: ipAdd });
+    if (isMacIpExists)
+      return res
+        .status(400)
+        .json({ isIpMacExists: true, msg: "Ip | Mac seems already exists" });
     const robo = await new Robo({
       roboName,
       ipAdd,
       macAdd,
-      // imgUrl: `localhost:3000/roboSpecification/${req.file.filename}`,
-      // grossInfo
+      grossInfo,
     }).save();
     const roboId = robo._id;
     const resultDoc = await insertRoboIdInProj({
@@ -69,7 +73,7 @@ const createRobo = async (req, res, next) => {
     if (!resultDoc || !isIdInserted)
       await Robo.deleteOne({ roboName: roboName });
     if (!resultDoc)
-      return res.status(500).json({
+      return res.status(422).json({
         succeded: false,
         msg: "Robo refernce Id does not inserted in Project",
       });
@@ -79,7 +83,9 @@ const createRobo = async (req, res, next) => {
         succeded: false,
         msg: "Robo refernce Id does not inserted in Map",
       });
-    return res.status(201).json({ exits: false, msg: "data inserted!" });
+    return res
+      .status(201)
+      .json({ exits: false, robo: robo, msg: "data inserted!" });
   } catch (err) {
     console.log("err occs : ", err);
     res.status(500).json({ error: err, msg: "error occured while inserting!" });
@@ -110,6 +116,78 @@ const updateRobo = async (req, res, next) => {
   } catch (error) {
     console.log("err occs : ", error);
     res
+      .status(500)
+      .json({ error: error, msg: "error occured while updating Robo!" });
+  }
+};
+
+const getAllRobo = async (req, res) => {
+  const mapId = req.params.mapId;
+  try {
+    const isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res
+        .status(422)
+        .json({ map: null, isMapExist: false, msg: "map-id not exist" });
+    let robots = await Map.findOne({ _id: mapId }, { robots: 1 }).populate({
+      // {robots : 1} only robots field is selected from the document.. 1 ensures that field should be include, 0 exclude from the document and returns document except that field..
+      path: "robots.roboId",
+      model: Robo,
+    });
+    let populatedRobos = robots.robots.map((robo) => robo.roboId);
+    res.status(200).json({ populatedRobos: populatedRobos, msg: "data sent!" });
+  } catch (error) {
+    console.log("err occs : ", error);
+    if (error.name === "CastError")
+      return res
+        .status(400)
+        .json({ error: error.message, msg: "not valid map Id" });
+    return res
+      .status(500)
+      .json({ error: error, msg: "error occured while inserting!" });
+  }
+};
+
+const deleteRobo = async (req, res) => {
+  const { roboId, projectName, mapName } = req.body;
+  try {
+    const isRoboExists = await Robo.exists({ _id: roboId });
+    if (!isRoboExists)
+      return res
+        .status(422)
+        .json({ isRoboExists: false, msg: "Robo seems not exists" });
+    const updatedProj = await projectModel.findOneAndUpdate(
+      { projectName: projectName },
+      { $pull: { robots: { roboId: roboId } } },
+      { new: true }
+    );
+    const updatedMap = await Map.findOneAndUpdate(
+      { mapName: mapName },
+      { $pull: { robots: { roboId: roboId } } },
+      { new: true }
+    );
+
+    if (!updatedMap || !updatedProj)
+      return res.status(400).json({
+        isRoboExists: false,
+        msg: "Map | Project not found or update failed",
+      });
+
+    let deletedRobo = await Robo.deleteOne({ _id: roboId });
+    if (deletedRobo.deletedCount === 0)
+      return res.status(400).json({
+        idDeleted: false,
+        isRoboExists: false,
+        msg: "robo not exist!",
+      });
+    return res.status(200).json({ isRoboExists: true, msg: "Robo deleted" });
+  } catch (error) {
+    console.log("err occs : ", error);
+    if (error.name === "CastError")
+      return res
+        .status(400)
+        .json({ error: error.message, msg: "not valid map Id" });
+    return res
       .status(500)
       .json({ error: error, msg: "error occured while inserting!" });
   }
@@ -155,23 +233,6 @@ module.exports = {
   uptime,
   createRobo,
   updateRobo,
+  getAllRobo,
+  deleteRobo,
 };
-
-/* const mockData = {
-      service: "Fleet Management System",
-      uptime: {
-        status: "operational",
-        percentage: 97,
-      },
-      timestamp: "2024-06-01T12:00:00Z",
-      details: {
-        last_checked: "2024-06-01T11:59:00Z",
-        check_interval_minutes: 2,
-      },
-    };
-    if (mockData)
-      return res.status(200).json({
-        uptime: mockData,
-        percentage: Math.floor(Math.random() * 100),
-        opt: "succeed!",
-      }); */
