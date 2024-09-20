@@ -287,6 +287,8 @@ export class EnvmapComponent implements AfterViewInit {
   private nodesToDelete: Node[] = [];
   isOpen: boolean = false;
 
+  currMulNode : Node[] = [];
+
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
     this.deselectNode();
@@ -1518,7 +1520,6 @@ export class EnvmapComponent implements AfterViewInit {
     let nodeOccupied = false;
     let assetOccupied = false;
 
-
         // Single node or asset placement logic
         if (type !== 'node') {
             nodeOccupied = this.nodes.some(node => {
@@ -1667,6 +1668,8 @@ export class EnvmapComponent implements AfterViewInit {
             Waiting_node: false,
         };
         this.secondNode = secondnode;
+        this.currMulNode.push(this.firstNode);
+        this.currMulNode.push(this.secondNode);
 
         // Check for overlapping assets between firstNode and secondNode
         if (this.isAssetOverlappingWithNodes(this.firstNode, this.secondNode)) {
@@ -1693,24 +1696,26 @@ export class EnvmapComponent implements AfterViewInit {
         );
 
         this.isPlottingEnabled = false; // Disable further plotting after two nodes
-    } else {
-        // Plotting additional nodes
-        let node = {
-            nodeId: this.nodeCounter.toString(),
-            sequenceId: this.nodeCounter,
-            nodeDescription: '',
-            released: true,
-            nodePosition: {
-                x: x,
-                y: transformedY,
-                orientation: this.secondNode.nodePosition.orientation,
-            },
-            actions: [],
-            intermediate_node: false,
-            Waiting_node: false,
-        };
-        this.nodes.push(node);
-    }
+    } 
+    //yet to uncomment..
+    // else {
+    //     // Plotting additional nodes
+    //     let node = {
+    //         nodeId: this.nodeCounter.toString(),
+    //         sequenceId: this.nodeCounter,
+    //         nodeDescription: '',
+    //         released: true,
+    //         nodePosition: {
+    //             x: x,
+    //             y: transformedY,
+    //             orientation: this.secondNode.nodePosition.orientation,
+    //         },
+    //         actions: [],
+    //         intermediate_node: false,
+    //         Waiting_node: false,
+    //     };
+    //     this.nodes.push(node);
+    // }
 
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
@@ -1769,6 +1774,24 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
           const y = this.firstNode.nodePosition.y + i * dy;
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
 
+          if(this.isPositionOccupied(x, transformedY, 'node')){
+            alert('stop bro');
+            this.nodes = this.nodes.filter(node => 
+              !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
+            );
+            this.closeIntermediateNodesDialog()
+            this.redrawCanvas();
+            return;
+          }
+          if(this.isOverLappingWithOtherNodesInPlotting(x, y)){
+            alert('stop bro');
+            this.nodes = this.nodes.filter(node => 
+              !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
+            );
+            this.closeIntermediateNodesDialog()
+            this.redrawCanvas();
+            return;
+          }
 
           let node = {
             nodeId: this.nodeCounter.toString(),
@@ -1782,6 +1805,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
           };
 
           this.nodes.push(node);
+          this.currMulNode.push(node);
 
           // Draw the node
           this.drawNode(node, 'blue', false);
@@ -1806,9 +1830,6 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     { label: 'Dock', value: 'Dock' },
     { label: 'Undock', value: 'Undock' }
   ];
-
-
-
 
    // Validation logic
   validateForm() {
@@ -1927,6 +1948,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     this.firstNode = null;
     this.secondNode = null;
     this.numberOfIntermediateNodes = 0;
+    this.currMulNode = [];
     this.onInputChanged ();
   }
   private onNodeClick(x: number, y: number): void {
@@ -2511,6 +2533,18 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
           return true;
         }
       }
+    }
+    return false;
+  }
+  isOverLappingWithOtherNodesInPlotting(currNodex : number, currNodey : number):boolean{
+    const threshold = 15;
+    for (const node of this.nodes) {
+      // if (node.nodeId !== currNode.nodeId) {
+        const distance = Math.sqrt(Math.pow(node.nodePosition.x - currNodex, 2) + Math.pow(node.nodePosition.y - currNodey, 2));
+        if (distance < threshold) {
+          return true;
+        }
+      // }
     }
     return false;
   }
