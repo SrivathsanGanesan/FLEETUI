@@ -279,7 +279,7 @@ const deleteMap = async (req, res) => {
       .json({ isDeleted: true, opt: "succeed!", updatedProj: updatedProj });
   } catch (err) {
     console.log("err occ : ", err);
-    res.send(500).json({
+    res.status(500).json({
       opt: "failed",
       msg: "error occured while deleting map!",
       error: err,

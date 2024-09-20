@@ -67,8 +67,7 @@ interface Zone {
 }
 interface Robo {
   roboDet: any;
-  x: number;
-  y: number;
+  pos : {x : number, y : number, orientation : number}
 }
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -288,6 +287,8 @@ export class EnvmapComponent implements AfterViewInit {
   private nodesToDelete: Node[] = [];
   isOpen: boolean = false;
 
+  currMulNode : Node[] = [];
+
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
     this.deselectNode();
@@ -334,6 +335,12 @@ export class EnvmapComponent implements AfterViewInit {
         })
         return zone;
       });
+      this.robos = this.currEditMapDet.robos.map((robo : Robo)=>{
+        robo.pos.x = robo.pos.x / (this.ratio || 1);
+        robo.pos.y = robo.pos.y / (this.ratio || 1);
+        return robo;
+      })
+      
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
           ? parseInt(this.nodes[this.nodes.length - 1].nodeId) + 1
@@ -420,6 +427,11 @@ export class EnvmapComponent implements AfterViewInit {
 
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      this.robotImages['robotA'] = new Image();
+      this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
+
+      this.robotImages['robotB'] = new Image();
+      this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
       // Initialize assets and robots
       this.assetImages['docking'] = new Image();
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
@@ -428,11 +440,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.assetImages['charging'].src =
         'assets/Asseticon/charging-station.svg';
 
-      this.robotImages['robotA'] = new Image();
-      this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
 
-      this.robotImages['robotB'] = new Image();
-      this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
     } else {
       console.error('Failed to get canvas context');
     }
@@ -898,6 +906,11 @@ export class EnvmapComponent implements AfterViewInit {
       })
       return zone;
     })
+    this.robos = this.robos.map((robo)=>{
+      robo.pos.x = robo.pos.x * (this.ratio || 1);
+      robo.pos.y = robo.pos.y * (this.ratio || 1);
+      return robo;
+    })
     let editedMap = {
       mapName: null,
       siteName: null,
@@ -907,8 +920,9 @@ export class EnvmapComponent implements AfterViewInit {
       edges: this.edges,
       zones: this.zones,
       stations: this.assets,
-      robos: this.robos
+      roboPos: this.robos
     };
+    
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.mapName}`,
       {
@@ -961,6 +975,11 @@ export class EnvmapComponent implements AfterViewInit {
       })
       return zone;
     })
+    this.robos = this.robos.map((robo)=>{
+      robo.pos.x = robo.pos.x * (this.ratio || 1);
+      robo.pos.y = robo.pos.y * (this.ratio || 1);
+      return robo;
+    })
     this.form = new FormData();
     let mapData = {
       projectName: this.projData.projectName,
@@ -972,7 +991,7 @@ export class EnvmapComponent implements AfterViewInit {
       edges: this.edges,
       nodes: this.nodes,
       stations: this.assets,
-      robos: this.robos
+      roboPos: this.robos
     };
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
@@ -1464,16 +1483,17 @@ export class EnvmapComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
 
     if (image && ctx) {
-      const imageSize = 30;
+      const imageSize = 20;
 
       // Highlight the selected robot with a border or background
-      if (isSelected) {
-        ctx.beginPath();
-        ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
-        ctx.fill();
-        ctx.closePath();
-      }
+      // yet tp replace..
+      // if (isSelected) {
+      //   ctx.beginPath();
+      //   ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+      //   ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
+      //   ctx.fill();
+      //   ctx.closePath();
+      // }
 
       // Draw the robot image
       ctx.drawImage(
@@ -1500,7 +1520,6 @@ export class EnvmapComponent implements AfterViewInit {
   private isPositionOccupied(x: number, y: number, type : string ): boolean {
     let nodeOccupied = false;
     let assetOccupied = false;
-
 
         // Single node or asset placement logic
         if (type !== 'node') {
@@ -1650,15 +1669,8 @@ export class EnvmapComponent implements AfterViewInit {
             Waiting_node: false,
         };
         this.secondNode = secondnode;
-
-        // Check for overlapping assets between firstNode and secondNode
-        if (this.isAssetOverlappingWithNodes(this.firstNode, this.secondNode)) {
-            alert('There are assets (stations) between the two nodes. Please resolve the overlap before plotting.');
-            this.firstNode = null;
-            this.secondNode = null;
-            this.redrawCanvas(); // Redraw to remove the second node
-            return;
-        }
+        this.currMulNode.push(this.firstNode);
+        this.currMulNode.push(this.secondNode);
 
         this.nodes.push(secondnode);
 
@@ -1676,65 +1688,31 @@ export class EnvmapComponent implements AfterViewInit {
         );
 
         this.isPlottingEnabled = false; // Disable further plotting after two nodes
-    } else {
-        // Plotting additional nodes
-        let node = {
-            nodeId: this.nodeCounter.toString(),
-            sequenceId: this.nodeCounter,
-            nodeDescription: '',
-            released: true,
-            nodePosition: {
-                x: x,
-                y: transformedY,
-                orientation: this.secondNode.nodePosition.orientation,
-            },
-            actions: [],
-            intermediate_node: false,
-            Waiting_node: false,
-        };
-        this.nodes.push(node);
-    }
+    } 
+    //yet to uncomment..
+    // else {
+    //     // Plotting additional nodes
+    //     let node = {
+    //         nodeId: this.nodeCounter.toString(),
+    //         sequenceId: this.nodeCounter,
+    //         nodeDescription: '',
+    //         released: true,
+    //         nodePosition: {
+    //             x: x,
+    //             y: transformedY,
+    //             orientation: this.secondNode.nodePosition.orientation,
+    //         },
+    //         actions: [],
+    //         intermediate_node: false,
+    //         Waiting_node: false,
+    //     };
+    //     this.nodes.push(node);
+    // }
 
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
 }
 
-private isAssetOverlappingWithNodes(node1: Node, node2: Node): boolean {
-  console.log(this.firstNode)
-  return this.assets.some(asset => {
-      // Calculate the distance between asset and the line formed by node1 and node2
-      const distanceToLine = this.getDistanceFromLine(asset.x, asset.y, node1.nodePosition, node2.nodePosition);
-      return distanceToLine < 20; // Adjust this threshold based on asset proximity tolerance
-  });
-}
-
-private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: number}, node2Pos: {x: number, y: number}): number {
-  const A = x - node1Pos.x;
-  const B = y - node1Pos.y;
-  const C = node2Pos.x - node1Pos.x;
-  const D = node2Pos.y - node1Pos.y;
-
-  const dot = A * C + B * D;
-  const len_sq = C * C + D * D;
-  const param = (len_sq !== 0) ? dot / len_sq : -1;
-
-  let xx, yy;
-
-  if (param < 0) {
-      xx = node1Pos.x;
-      yy = node1Pos.y;
-  } else if (param > 1) {
-      xx = node2Pos.x;
-      yy = node2Pos.y;
-  } else {
-      xx = node1Pos.x + param * C;
-      yy = node1Pos.y + param * D;
-  }
-
-  const dx = x - xx;
-  const dy = y - yy;
-  return Math.sqrt(dx * dx + dy * dy);
-}
 
   onInputChanged(): void {
     this.isEnterButtonVisible =
@@ -1752,6 +1730,24 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
           const y = this.firstNode.nodePosition.y + i * dy;
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
 
+          if(this.isPositionOccupied(x, transformedY, 'node')){
+            alert('stop bro');
+            this.nodes = this.nodes.filter(node => 
+              !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
+            );
+            this.closeIntermediateNodesDialog()
+            this.redrawCanvas();
+            return;
+          }
+          if(this.isOverLappingWithOtherNodesInPlotting(x, y)){
+            alert('stop bro');
+            this.nodes = this.nodes.filter(node => 
+              !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
+            );
+            this.closeIntermediateNodesDialog()
+            this.redrawCanvas();
+            return;
+          }
 
           let node = {
             nodeId: this.nodeCounter.toString(),
@@ -1765,6 +1761,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
           };
 
           this.nodes.push(node);
+          this.currMulNode.push(node);
 
           // Draw the node
           this.drawNode(node, 'blue', false);
@@ -1789,9 +1786,6 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     { label: 'Dock', value: 'Dock' },
     { label: 'Undock', value: 'Undock' }
   ];
-
-
-
 
    // Validation logic
   validateForm() {
@@ -1910,6 +1904,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     this.firstNode = null;
     this.secondNode = null;
     this.numberOfIntermediateNodes = 0;
+    this.currMulNode = [];
     this.onInputChanged ();
   }
   private onNodeClick(x: number, y: number): void {
@@ -2387,10 +2382,10 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 25;
     return (
-      x >= robo.x - imageSize / 2 &&
-      x <= robo.x + imageSize / 2 &&
-      y >= robo.y - imageSize / 2 &&
-      y <= robo.y + imageSize / 2
+      x >= robo.pos.x - imageSize / 2 &&
+      x <= robo.pos.x + imageSize / 2 &&
+      y >= robo.pos.y - imageSize / 2 &&
+      y <= robo.pos.y + imageSize / 2
     );
   }
   onCancel(): void {
@@ -2434,7 +2429,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
         return;
       }
 
-      const robo: Robo = { roboDet: robot, x: x, y: y };
+      const robo: Robo = { roboDet: robot, pos :{x: x, y: y, orientation : 0} }; // yet to add orientation..
       this.robos.push(robo);
 
       this.roboInitOffset += 60;
@@ -2465,7 +2460,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     const threshold = 30; // Adjust this value as needed for the distance to consider as overlap
     for (const robo of this.robos) {
       if (robo.roboDet.id !== currentRobo.roboDet.id) {
-        const distance = Math.sqrt(Math.pow(robo.x - currentRobo.x, 2) + Math.pow(robo.y - currentRobo.y, 2));
+        const distance = Math.sqrt(Math.pow(robo.pos.x - currentRobo.pos.x, 2) + Math.pow(robo.pos.y - currentRobo.pos.y, 2));
         if (distance < threshold) {
           return true; // Overlap found
         }
@@ -2494,6 +2489,18 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
           return true;
         }
       }
+    }
+    return false;
+  }
+  isOverLappingWithOtherNodesInPlotting(currNodex : number, currNodey : number):boolean{
+    const threshold = 15;
+    for (const node of this.nodes) {
+      // if (node.nodeId !== currNode.nodeId) {
+        const distance = Math.sqrt(Math.pow(node.nodePosition.x - currNodex, 2) + Math.pow(node.nodePosition.y - currNodey, 2));
+        if (distance < threshold) {
+          return true;
+        }
+      // }
     }
     return false;
   }
@@ -2596,7 +2603,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
         if (this.isRobotClicked(robo, x, y)) {
           this.selectedRobo = robo;
           this.draggingRobo = true;
-          this.originalRoboPosition = { x: robo.x, y: robo.y };
+          this.originalRoboPosition = { x: robo.pos.x, y: robo.pos.y };
           this.redrawCanvas();
           return;
         }
@@ -2702,12 +2709,12 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       this.redrawCanvas();
       this.plotRobo(x, y);
 
-      this.selectedRobo.x = x;
-      this.selectedRobo.y = y;
+      this.selectedRobo.pos.x = x;
+      this.selectedRobo.pos.y = y;
       const roboIndex = this.robos.findIndex(robo => robo.roboDet === this.selectedRobo?.roboDet);
       if (roboIndex !== -1) {
-        this.robos[roboIndex].x = x;
-        this.robos[roboIndex].y = y;
+        this.robos[roboIndex].pos.x = x;
+        this.robos[roboIndex].pos.y = y;
       }
     }
   }
@@ -2842,18 +2849,29 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
 
     if (this.draggingRobo && this.selectedRobo) {
       // Update the position of the selected robot
-      this.selectedRobo.x = x;
-      this.selectedRobo.y = y;
+      this.selectedRobo.pos.x = x;
+      this.selectedRobo.pos.y = y;
 
       // Check if the robot is overlapping with another one
       if (this.isOverlappingWithOtherRobos(this.selectedRobo)) {
         // Reset the robot to its original position if overlapping
-        this.selectedRobo.x = this.originalRoboPosition!.x;
-        this.selectedRobo.y = this.originalRoboPosition!.y;
+        this.selectedRobo.pos.x = this.originalRoboPosition!.x;
+        this.selectedRobo.pos.y = this.originalRoboPosition!.y;
         alert('Overlapping detected! Robot has been reset to its original position.');
       }
-      this.redrawCanvas();
       this.draggingRobo = false;
+      if(this.selectedRobo){
+        this.robos = this.robos.map((robo) => {
+          if (this.selectedRobo?.roboDet.id === robo.roboDet.id) {
+            robo.pos.x = x;
+            robo.pos.y = y;
+            robo.roboDet.selected = true;
+            return robo;
+          }
+          return robo;
+        });
+      }
+      this.redrawCanvas();
     }
      // Reset originalRoboPosition after the drag ends
      this.originalRoboPosition = null;
@@ -2896,14 +2914,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     const dy = mouseY - asset.y;
     return dx * dx + dy * dy <= radius * radius;
   }
-  private updateRoboPosition(id: number, x: number, y: number): void {
-    const robo = this.robos.find((robo) => robo.roboDet.id === id);
-    if (robo) {
-      robo.x = x;
-      robo.y = y;
-      this.redrawCanvas(); // Redraw canvas to show the updated position
-    }
-  }
+
   private updateAssetPosition(id: number, x: number, y: number): void {
     // Implement logic to update asset position in your data structure
     // Example: Find and update asset in this.assets
@@ -2973,7 +2984,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       });
 
       this.robos.forEach((robo) =>
-        this.plotRobo(robo.x, robo.y, this.selectedRobo === robo)
+        this.plotRobo(robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
       );
 
       // Draw assets, zones, and robots

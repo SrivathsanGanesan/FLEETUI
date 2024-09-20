@@ -183,7 +183,7 @@
               </thead>
               <tbody>
                 <tr *ngIf="filteredRobotData.length === 0">
-                  <td colspan="3" class="iconTable">No data found</td>
+                  <td colspan="4" class="iconTable">No data found</td>
                 </tr>
                 <tr *ngFor="let item of filteredRobotData; index as i">
                   <td>{{ i + 1 }}</td>
@@ -427,6 +427,16 @@
         </div>
 
         <div class="rob-inp">
+          <label for="robotName">Robot Name:</label>
+          <input
+            pInputText
+            type="text"
+            id="robotName"
+            [(ngModel)]="formData.robotName"
+            name="robotName"
+            required
+          />
+
           <label for="manufacturer">Manufacturer:</label>
           <input
             pInputText

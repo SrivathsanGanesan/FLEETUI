@@ -782,6 +782,7 @@ export class ConfigurationComponent implements AfterViewInit {
           edges: map.edges,
           assets: map.stations,
           zones: map.zones,
+          robos: map.roboPos,
         };
         this.currEditMap = true;
         this.showImageUploadPopup = true;
@@ -864,6 +865,7 @@ export class ConfigurationComponent implements AfterViewInit {
   // isLocalizationParametersFormVisible = false;
 
   formData = {
+    robotName:'',
     manufacturer: '',
     serialNumber: '',
     typeSpecification: {
@@ -1082,6 +1084,9 @@ export class ConfigurationComponent implements AfterViewInit {
         else if (data.isIpMacExists) {
           console.log(data.msg);
           alert('Ip | Mac seems already exists!');
+          return;
+        } else if (data.exists) {
+          alert('Robo Name already exists');
           return;
         }
         if (data.robo) {

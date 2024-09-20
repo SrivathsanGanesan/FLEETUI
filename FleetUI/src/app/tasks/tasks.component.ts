@@ -55,7 +55,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   constructor(
     private exportService: ExportService,
-    private projectService: ProjectService, private messageService: MessageService
+    private projectService: ProjectService,
+    private messageService: MessageService
   ) {}
 
   async ngOnInit() {
@@ -146,7 +147,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
             severity: 'success',
             summary: 'Export Successful',
             detail: 'Data exported to CSV successfully!',
-            life: 3000
+            life: 3000,
           });
           break;
         case 'excel':
@@ -155,7 +156,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
             severity: 'success',
             summary: 'Export Successful',
             detail: 'Data exported to Excel successfully!',
-            life: 3000
+            life: 3000,
           });
           break;
         case 'pdf':
@@ -164,7 +165,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
             severity: 'success',
             summary: 'Export Successful',
             detail: 'Data exported to PDF successfully!',
-            life: 3000
+            life: 3000,
           });
           break;
         default:
@@ -173,7 +174,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
             severity: 'error',
             summary: 'Export Failed',
             detail: 'Invalid export format specified.',
-            life: 3000
+            life: 3000,
           });
       }
     } catch (error) {
@@ -182,11 +183,10 @@ export class TasksComponent implements OnInit, AfterViewInit {
         severity: 'error',
         summary: 'Export Failed',
         detail: 'An error occurred while exporting data.',
-        life: 3000
+        life: 3000,
       });
     }
   }
-
 
   showPopup() {
     this.isPopupVisible = true;
