@@ -124,7 +124,10 @@ export class ConfigurationComponent implements AfterViewInit {
     this.minDate = this.formatDate(pastFiveYears);
     this.maxDate = this.formatDate(today);
     let currMapData = this.projectService.getMapData();
-    if (currMapData) this.selectedMap = currMapData;
+    if (currMapData) {
+      this.selectedMap = currMapData;
+      return;
+    }
 
     this.mapData = this.projectService.getSelectedProject(); // _id
     if (!this.mapData) return;
@@ -215,6 +218,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
   fetchRobos() {
     let mapData = this.projectService.getMapData();
+    if (!mapData) return;
 
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.id}`,
@@ -865,7 +869,7 @@ export class ConfigurationComponent implements AfterViewInit {
   // isLocalizationParametersFormVisible = false;
 
   formData = {
-    robotName:'',
+    robotName: '',
     manufacturer: '',
     serialNumber: '',
     typeSpecification: {
