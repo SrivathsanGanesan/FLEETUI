@@ -178,7 +178,7 @@ export class RobotsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.setSignalStrength('Weak'); // Change this value to test different signals
+    this.setSignalStrength('Full'); // Change this value to test different signals
     this.mapDetails = this.projectService.getMapData();
     if (!this.mapDetails) return;
     let grossFactSheet = await this.fetchAllRobos();

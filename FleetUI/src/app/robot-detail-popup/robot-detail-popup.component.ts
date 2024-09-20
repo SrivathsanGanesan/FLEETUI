@@ -32,6 +32,7 @@ distanceLeft: string;
  SignalStrength: string;
   error: string;
   batteryPercentage: number;
+ 
   
 }
 
@@ -47,7 +48,18 @@ export class RobotDetailPopupComponent {
 
   robot: any;
   currentSignalClass: any
+  
+  isConnected: boolean = false;
 
+  toggleConnection() {
+    this.isConnected = !this.isConnected;
+  }
+
+  isActive: boolean = false;  // Initially true
+
+  toggleStatus() {
+    this.isActive = !this.isActive;  // Toggle between true and false
+  }
 
   onEmergencyStop() {
     alert('Emergency Stop Pressed!');

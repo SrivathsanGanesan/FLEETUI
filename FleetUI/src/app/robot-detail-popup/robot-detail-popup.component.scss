@@ -76,6 +76,7 @@
 .robot-image-container {
   top: 28px;
   left: 950px;
+  
   position: absolute;
   display: flex;
   box-sizing: border-box;
@@ -1469,10 +1470,12 @@ emergency stop */
 /* wifi signal */
 
   /* Style for the WiFi signal section */
+  
   .wifi-signal {
     display: flex;
     justify-content: center;
     align-items: center;
+  
     
   }
     @mixin getWifi($size) {
@@ -1596,12 +1599,80 @@ emergency stop */
       transform: translate(-25%);
     }
   
-  
-/*   
-    .wifi-style{
-      top: 50%;
-      position: absolute;
-      left: 38%;
-    }
-   */
 
+
+  //  connect
+  .status-button {
+    position: absolute;
+   
+    left: 730px;
+    top: 260px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid rgb(0, 255, 0); /* Initial green stroke */
+    color: rgb(4, 190, 4); /* Initial green color */
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease; /* Smooth transition */
+  }
+  
+  .status-button.connected {
+    border-color: red; /* Red stroke when connected */
+    color: red; /* Red text color when connected */
+  }
+  
+  .status-button:hover {
+    background-color: rgba(0, 128, 0, 0.1); /* Green hover effect */
+  }
+  
+  .status-button.connected:hover {
+    background-color: rgba(255, 0, 0, 0.1); /* Red hover effect */
+  }
+  
+
+
+  // connect
+  .status-container {
+    position: absolute;
+    left: 730px;
+    top: 170px;
+    display: flex;
+    align-items: center;
+    
+    padding: 10px 20px;
+    border: 2px solid #535353; /* Green border initially */
+    border-radius: 10px;
+  }
+  
+  .status-indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .status-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Active state (green circle) */
+  .active {
+    background-color: #08ff08; /* Green */
+  }
+  
+  /* Inactive state (glowing red circle) */
+  .inactive {
+    background-color: #fc0000; /* Red */
+    box-shadow: 0 0 8px #ff4560; /* Glowing red effect */
+  }
+  
+  /* Inactive state border change */
+  .status-container.inactive {
+    border-color: #ff4560; /* Red border when inactive */
+  }
+  
