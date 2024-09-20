@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-robot-popup',
@@ -11,6 +12,7 @@ export class RobotPopupComponent {
   @Output() close = new EventEmitter<void>();
   @Output() addRobot = new EventEmitter<any[]>(); // Emit an array of selected robots
 
+  constructor(private messageService: MessageService) {}
   //..
   showError: boolean = false; // To track if an error message should be shown
   availableRobots = [
@@ -26,15 +28,32 @@ export class RobotPopupComponent {
 
   addSelectedRobots() {
     const selectedRobots = this.availableRobots.filter((robot) => robot.selected);
+
     if (selectedRobots.length > 0) {
       this.addRobot.emit(selectedRobots); // Emit all selected robots
       this.showError = false;
+
+      // Show success toast message
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Robots added successfully!'
+      });
+
       this.close.emit();
     } else {
-      this.showError = true; // Show the error message if no robots are selected
+      this.showError = true;
+
+      // Show error toast message
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No robots selected!'
+      });
     }
+
     this.resetSelections();
-  } 
+  }
 
   private resetSelections() {
     this.availableRobots.forEach((robot) => {

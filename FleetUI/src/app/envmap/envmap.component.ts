@@ -20,6 +20,7 @@ import { response } from 'express';
 import { CookieService } from 'ngx-cookie-service';
 import { MapService } from '../map.service';
 import { CheckboxModule } from 'primeng/checkbox';
+import { MessageService } from 'primeng/api';
 
 interface Node {
   nodeId: string;
@@ -149,6 +150,12 @@ export class EnvmapComponent implements AfterViewInit {
     nodePosition: { x: number; y: number; orientation: number };
   }[] = []; // updated structure
   connections: { fromId: number; toId: number; type: 'uni' | 'bi' }[] = []; // connections
+  dockingTypes = [
+    { label: 'Mode 1', value: 'mode1' },
+    { label: 'Mode 2', value: 'mode2' },
+    // Add more options as needed
+  ];
+
   isNodeDetailsPopupVisible = false; // Control popup visibility
   public ratio: number | null = null; // Store the resolution ratio (meters per pixel)
   plottingMode: 'single' | 'multi' | null = null;
@@ -296,7 +303,8 @@ export class EnvmapComponent implements AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
     private projectService: ProjectService,
-    private mapService:MapService
+    private mapService:MapService,
+    private messageService:MessageService,
   ) {
     if (this.currEditMap) this.showImage = true;
   }
@@ -522,11 +530,16 @@ export class EnvmapComponent implements AfterViewInit {
 
       // Clear the selected node
       this.selectedNode = null;
-
       // Redraw the canvas
       this.redrawCanvas();
     } else {
       console.log('No node selected to delete.');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'No items selected for deletion.'
+      });
+
     }
 
     // Disable delete mode after confirmation
@@ -535,6 +548,107 @@ export class EnvmapComponent implements AfterViewInit {
     // Hide confirmation dialog
     this.isConfirmationVisible = false;
   }
+  // confirmDelete(): void {
+  //   let nodesDeleted = false;
+  //   let assetDeleted = false;
+  //   let roboDeleted = false;
+  //   let nodeDeleted = false;
+
+  //   // Check if any nodes are selected for deletion
+  //   if (this.nodesToDelete.length > 0) {
+  //     console.log('Selected nodes for deletion:', this.nodesToDelete.map(node => ({ nodeId: node.nodeId, node })));
+
+  //     // Remove selected nodes from the nodes array
+  //     this.nodes = this.nodes.filter(
+  //       (node) => !this.nodesToDelete.includes(node)
+  //     );
+
+  //     // Remove edges related to deleted nodes
+  //     this.edges = this.edges.filter((edge) => {
+  //       return !this.nodesToDelete.some(
+  //         (node) => edge.startNodeId === node.nodeId || edge.endNodeId === node.nodeId
+  //       );
+  //     });
+
+  //     // Clear the selected nodes
+  //     this.nodesToDelete = [];
+
+  //     // Redraw the canvas
+  //     this.redrawCanvas();
+
+  //     nodesDeleted = true; // Mark that nodes were deleted
+  //   }
+
+  //   // Check if an asset is selected for deletion
+  //   if (this.selectedAsset) {
+  //     console.log('Selected asset for deletion:', this.selectedAsset);
+
+  //     this.assets = this.assets.filter(
+  //       (asset) => this.selectedAsset?.id !== asset.id
+  //     );
+  //     this.redrawCanvas();
+  //     assetDeleted = true; // Mark that an asset was deleted
+  //   }
+
+  //   // Check if a robot is selected for deletion
+  //   if (this.selectedRobo) {
+  //     console.log('Selected robot for deletion:', this.selectedRobo);
+
+  //     this.robos = this.robos.filter(
+  //       (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
+  //     );
+  //     this.redrawCanvas();
+  //     roboDeleted = true; // Mark that a robot was deleted
+  //   }
+
+  //   // Check if a node is selected for deletion
+  //   if (this.selectedNode) {
+  //     console.log('Selected node for deletion:', { nodeId: this.selectedNode.nodeId, node: this.selectedNode });
+
+  //     // Remove the node by its unique ID
+  //     this.nodes = this.nodes.filter(
+  //       (node) => node.nodeId !== this.selectedNode?.nodeId
+  //     );
+
+  //     // Remove edges related to the deleted node
+  //     this.edges = this.edges.filter((edge) => {
+  //       return (
+  //         edge.startNodeId !== this.selectedNode?.nodeId &&
+  //         edge.endNodeId !== this.selectedNode?.nodeId
+  //       );
+  //     });
+
+  //     // Clear the selected node
+  //     this.selectedNode = null;
+
+  //     // Redraw the canvas
+  //     this.redrawCanvas();
+
+  //     nodeDeleted = true; // Mark that a node was deleted
+  //   }
+
+  //   // Toast message logic: Show warning if nothing was selected or deleted
+  //   if (!nodesDeleted && !assetDeleted && !roboDeleted && !nodeDeleted) {
+  //     this.messageService.add({
+  //       severity: 'warn',
+  //       summary: 'Warning',
+  //       detail: 'No items selected for deletion.'
+  //     });
+  //   } else {
+  //     this.messageService.add({
+  //       severity: 'success',
+  //       summary: 'Success',
+  //       detail: 'Deletion successful.'
+  //     });
+  //   }
+
+  //   // Disable delete mode after confirmation
+  //   this.isDeleteModeEnabled = false;
+
+  //   // Hide confirmation dialog
+  //   this.isConfirmationVisible = false;
+  // }
+
   cancelDelete(): void {
     // Hide confirmation dialog without deleting
     // this.isDeleteModeEnabled = false;

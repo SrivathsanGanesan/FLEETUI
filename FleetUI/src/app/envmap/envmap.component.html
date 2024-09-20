@@ -163,7 +163,7 @@
                 (onChange)="onActionChange()"
                 placeholder="Select Action"
                 [autoDisplayFirst]="false"
-
+                styleClass="small-dropdown"
               ></p-dropdown>
             </div>
             <div *ngIf="validationError" class="validation-error">{{ validationError }}</div>
@@ -212,6 +212,8 @@
 
           <div class="Node-btn">
             <div *ngIf="validationError" class="validation-error">{{ validationError }}</div>
+          </div>
+          <div class="Node-btn">
             <button class="Delnode-btn" (click)="deleteSelectedNode()">Delete Node</button>
             <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
             <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
@@ -221,159 +223,115 @@
         <div class="action-form">
           <div *ngIf="selectedAction === 'Move' && isMoveActionFormVisible" class="move-action-form">
             <p>Move Action Parameters</p>
-            <div class="input-group">
+            <div class="input-groupg">
               <label>Max Linear Velocity:</label>
               <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxLinearVelocity" /><br />
+
               <label>Max Angular Velocity:</label>
               <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxAngularVelocity" /><br />
+            </div>
+            <div class="input-groupg">
               <label>Max Tolerance at Goal X:</label>
               <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxToleranceAtGoalX" /><br />
+
               <label>Max Tolerance at Goal Y:</label>
               <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxToleranceAtGoalY" /><br />
+            </div>
+            <div class="input-groupg">
               <label>Max Tolerance at Goal Orientation:</label>
               <input pInputText type="number" min="0" max="1000" [(ngModel)]="moveParameters.maxToleranceAtGoalOrientation" /><br />
+
               <label>End Point Orientation:</label>
-              <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" /><br />
+              <input type="checkbox" [(ngModel)]="moveParameters.endPointOrientation" style="height: 20px;" /><br />
+            </div>
+            <div class="input-groupg">
               <label>Auto Robot Operation Mode:</label>
-              <select [(ngModel)]="moveParameters.autoRobotMode">
+              <select [(ngModel)]="moveParameters.autoRobotMode" style="margin-right: 20rem;">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
-                <!-- Add more options as needed -->
-              </select><br />
-              <button (click)="addAction()">Add</button>
+              </select><br/>
             </div>
+              <button (click)="addAction()">Add</button>
+
           </div>
 
-          <!-- Repeat similar structure for Dock and Undock Action Parameters -->
+
           <div *ngIf="selectedAction === 'Dock' && isDockActionFormVisible" class="move-action-form">
             <p>Dock Action Parameters</p>
-            <div class="input-group">
+            <div class="input-groupg">
               <label>Max Linear Velocity:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="dockParameters.maxLinearVelocity"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="dockParameters.maxLinearVelocity" /><br />
 
               <label>Max Tolerance at Goal X:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="dockParameters.maxToleranceAtGoalX"
-              /><br />
-
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="dockParameters.maxToleranceAtGoalX" /><br />
+            </div>
+            <div class="input-groupg">
               <label>Max Tolerance at Goal Y:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="dockParameters.maxToleranceAtGoalY"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="dockParameters.maxToleranceAtGoalY" /><br />
 
               <label>Max Tolerance at Goal Orientation:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="dockParameters.maxToleranceAtGoalOrientation"
-              /><br />
-
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="dockParameters.maxToleranceAtGoalOrientation" /><br />
+            </div>
+            <div class="input-groupg">
               <label>Goal Offset X:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="dockParameters.goalOffsetX"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="dockParameters.goalOffsetX" /><br />
 
               <label>Goal Offset Y:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="dockParameters.goalOffsetY"
-              /><br />
-
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="dockParameters.goalOffsetY" /><br />
+            </div>
+            <div class="input-groupg">
               <label>Goal Offset Orientation:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="dockParameters.goalOffsetOrientation"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="dockParameters.goalOffsetOrientation" /><br />
 
               <label>End Point Orientation:</label>
-              <input type="checkbox" [(ngModel)]="dockParameters.endPointOrientation" /><br />
-
-              <label>Docking Type:</label>
-              <select [(ngModel)]="dockParameters.dockingType">
-                <option value="mode1">Mode 1</option>
-                <option value="mode2">Mode 2</option>
-                <!-- Add more options as needed -->
-              </select><br />
-
-              <button (click)="addAction()">Add</button>
+              <input type="checkbox" [(ngModel)]="dockParameters.endPointOrientation" style="height: 20px;" /><br />
             </div>
+            <div class="input-groupg">
+              <label for="Waiting_Stn" class="label">Docking Type</label>
+              <p-dropdown appendTo="body"
+                [options]="dockingTypes"
+                [(ngModel)]="dockParameters.dockingType"
+                styleClass="small-dropdown"
+                [autoDisplayFirst]="false"
+                placeholder="Select Docking Type"
+                [style]="{'height':'32px','fontSize':'12px','display':'flex','align-items':'center','marginRight':'17rem'}"
+              ></p-dropdown><br />
+            </div>
+              <button (click)="addAction()">Add</button>
+
           </div>
+
           <div *ngIf="selectedAction === 'Undock' && isUndockActionFormVisible" class="move-action-form">
             <p>Undock Action Parameters</p>
-            <div class="input-group">
+            <div class="input-groupg">
               <label>Max Linear Velocity:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="undockParameters.maxLinearVelocity"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.maxLinearVelocity" /><br />
 
               <label>Max Angular Velocity:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="undockParameters.maxAngularVelocity"
-              /><br />
-
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.maxAngularVelocity" /><br />
+            </div>
+            <div class="input-groupg">
               <label>Max Tolerance at Goal X:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="undockParameters.maxToleranceAtGoalX"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.maxToleranceAtGoalX" /><br />
 
               <label>Max Tolerance at Goal Y:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="undockParameters.maxToleranceAtGoalY"
-              /><br />
-
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.maxToleranceAtGoalY" /><br />
+            </div>
+            <div class="input-groupg">
               <label>Max Tolerance at Goal Orientation:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="undockParameters.maxToleranceAtGoalOrientation"
-              /><br />
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.maxToleranceAtGoalOrientation" /><br />
 
               <label>End Point Orientation:</label>
-              <input type="checkbox" [(ngModel)]="undockParameters.endPointOrientation" /><br />
-
-              <label>Undocking Distance:</label>
-              <input pInputText
-                type="number"
-                min="0"
-                max="1000"
-                [(ngModel)]="undockParameters.undockingDistance"
-              /><br />
-
-              <button (click)="addAction()">Add</button>
+              <input type="checkbox" [(ngModel)]="undockParameters.endPointOrientation" style="height: 20px;" /><br />
             </div>
+            <div class="input-groupg">
+              <label>Undocking Distance:</label>
+              <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.undockingDistance" style="margin-right: 20rem;"/><br />
+            </div>
+              <button (click)="addAction()">Add</button>
+
           </div>
+
         </div>
 
 
