@@ -126,7 +126,6 @@ export class ConfigurationComponent implements AfterViewInit {
     let currMapData = this.projectService.getMapData();
     if (currMapData) {
       this.selectedMap = currMapData;
-      return;
     }
 
     this.mapData = this.projectService.getSelectedProject(); // _id
@@ -170,6 +169,8 @@ export class ConfigurationComponent implements AfterViewInit {
         );
         this.filteredEnvData = this.EnvData;
         // this.cdRef.detectChanges();
+        console.log('hey :', this.projectService.getIsMapSet());
+
         if (!this.projectService.getIsMapSet()) {
           this.selectedMap = this.EnvData[0];
           let imgUrl = '';
@@ -179,6 +180,7 @@ export class ConfigurationComponent implements AfterViewInit {
               ...this.EnvData[0],
               imgUrl: imgUrl,
             });
+            this.projectService.setIsMapSet(true);
           }
         }
       })
@@ -306,7 +308,7 @@ export class ConfigurationComponent implements AfterViewInit {
       // let { map } = data;
       this.ngOnInit();
       if (this.projectService.getIsMapSet()) return;
-      this.projectService.setIsMapSet(true);
+      // this.projectService.setIsMapSet(true);
       return;
     }
     // Select a new map
