@@ -787,7 +787,7 @@ export class ConfigurationComponent implements AfterViewInit {
           edges: map.edges,
           assets: map.stations,
           zones: map.zones,
-          robos : map.roboPos
+          robos: map.roboPos,
         };
         this.currEditMap = true;
         this.showImageUploadPopup = true;
