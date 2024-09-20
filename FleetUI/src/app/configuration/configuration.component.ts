@@ -894,6 +894,7 @@ export class ConfigurationComponent implements AfterViewInit {
     event.preventDefault();
     this.closeAllForms();
     this.isTypeSpecificationFormVisible = !this.isTypeSpecificationFormVisible;
+        this.cdRef.detectChanges();
   }
 
   // Toggle Protocol Limits Form
@@ -1014,7 +1015,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isPopupOpen = !this.isPopupOpen;
     this.currentRoboDet = item;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
-    // this.cdRef.detectChanges();
+    this.cdRef.detectChanges();
   }
   closePPPopup() {
     this.isPhysicalParametersFormVisible =
