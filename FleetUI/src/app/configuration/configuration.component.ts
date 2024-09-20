@@ -169,8 +169,6 @@ export class ConfigurationComponent implements AfterViewInit {
         );
         this.filteredEnvData = this.EnvData;
         // this.cdRef.detectChanges();
-        console.log('hey :', this.projectService.getIsMapSet());
-
         if (!this.projectService.getIsMapSet()) {
           this.selectedMap = this.EnvData[0];
           let imgUrl = '';
