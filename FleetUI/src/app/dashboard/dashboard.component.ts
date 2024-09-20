@@ -3,7 +3,6 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   ViewChild,
-  
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
@@ -11,6 +10,7 @@ import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
+
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -37,7 +37,6 @@ enum ZoneType {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
@@ -53,12 +52,12 @@ export class DashboardComponent implements AfterViewInit {
   lastY = 0;
   offsetX = 0;
   offsetY = 0;
-  mapDetails:any | null = null;
-  nodes:any[]= [];
-  edges:any[]=[];
-  zones:any[]=[];
-  assets:any[]=[];
-  ratio : number = 1;
+  mapDetails: any | null = null;
+  nodes: any[] = [];
+  edges: any[] = [];
+  zones: any[] = [];
+  assets: any[] = [];
+  ratio: number = 1;
   plottedPoints: { id: number; x: number; y: number }[] = [];
   zoneType: ZoneType | null = null; // Selected zone type
   startX = 0;
@@ -90,19 +89,18 @@ export class DashboardComponent implements AfterViewInit {
   recording = false;
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
-  showModelCanvas: boolean = false;  // Initially hide the modelCanvas
-  
+  showModelCanvas: boolean = false; // Initially hide the modelCanvas
+
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
   ) {
-
     if (this.projectService.getIsMapSet()) return;
     this.onInitMapImg(); // yet to remove..
-    
+
     this.assetImages = {
-      'docking': new Image(),
-      'charging': new Image()
+      docking: new Image(),
+      charging: new Image(),
     };
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
@@ -112,47 +110,52 @@ export class DashboardComponent implements AfterViewInit {
 
   async getMapDetails() {
     let mapData = this.projectService.getMapData();
-    let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapData.mapName}`);
-    if (!response.ok) throw new Error(`Error with status code of ${response.status}`);
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapData.mapName}`
+    );
+    if (!response.ok)
+      throw new Error(`Error with status code of ${response.status}`);
     let data = await response.json();
     if (!data.map) return;
     mapData = data.map;
     this.ratio = data.map.mpp;
 
-    
-    this.nodes = mapData.nodes.map((node :any)=>{ // yet to interface in this component..
+    this.nodes = mapData.nodes.map((node: any) => {
+      // yet to interface in this component..
       node.nodePosition.x = node.nodePosition.x / (this.ratio || 1);
       node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
       return node;
     });
     this.edges = mapData.edges;
-    this.assets = mapData.stations.map((asset : any)=>{ // yet to interface in this component..
+    this.assets = mapData.stations.map((asset: any) => {
+      // yet to interface in this component..
       asset.x = asset.x / (this.ratio || 1);
       asset.y = asset.y / (this.ratio || 1);
       return asset;
     });
-    this.zones = mapData.zones.map((zone : any)=>{ // yet to interface in this component..
-      zone.pos = zone.pos.map((pos : any)=>{
+    this.zones = mapData.zones.map((zone: any) => {
+      // yet to interface in this component..
+      zone.pos = zone.pos.map((pos: any) => {
         pos.x = pos.x / (this.ratio || 1);
         pos.y = pos.y / (this.ratio || 1);
         return pos;
-      })
+      });
       return zone;
     });
-    
   }
 
   // guess no need..
   async ngOnInit() {
-    if (this.projectService.getIsMapSet()) return;
-    await this.onInitMapImg();
+    if (!this.projectService.getMapData()) {
+      await this.onInitMapImg();
+      return;
+    }
     this.loadCanvas();
   }
 
   async onInitMapImg() {
     let project = this.projectService.getSelectedProject();
     let mapArr = [];
-    // console.log(project);
 
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-project/${project._id}`,
@@ -162,18 +165,31 @@ export class DashboardComponent implements AfterViewInit {
       console.error('Error while fetching map data : ', response.status);
     let data = await response.json();
     let projectSites = data.project.sites;
-    mapArr = projectSites
-      .map((sites: any) => {
-        for (let map of sites.maps) {
-          return {
-            id: map.mapId,
-            mapName: map.mapName,
-            siteName: sites.siteName,
-          };
-        }
-        return null;
-      })
-      .filter((item: any) => item !== null);
+    mapArr = projectSites.flatMap((sites: any) => {
+      return sites.maps.map((map: any) => {
+        let date = new Date(map?.createdAt);
+        let createdAt = date.toLocaleString('en-IN', {
+          month: 'short',
+          year: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+        });
+
+        return {
+          id: map.mapId,
+          mapName: map.mapName,
+          siteName: sites.siteName,
+          date: createdAt,
+          createdAt: map.createdAt, // for sorting..
+        };
+      });
+    });
+    mapArr.sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
 
     if (!mapArr.length) return;
     const mapResponse = await fetch(
@@ -207,11 +223,10 @@ export class DashboardComponent implements AfterViewInit {
 
   async toggleModelCanvas() {
     this.showModelCanvas = !this.showModelCanvas;
-    if(!this.showModelCanvas) {
+    if (!this.showModelCanvas) {
       this.nodes = [];
-    }
-    else await this.getMapDetails()
-    this.loadCanvas();  // Redraw the canvas based on the updated state
+    } else await this.getMapDetails();
+    this.loadCanvas(); // Redraw the canvas based on the updated state
   }
 
   getliveAmrPos() {
@@ -234,7 +249,6 @@ export class DashboardComponent implements AfterViewInit {
     };
   }
 
- 
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -252,34 +266,35 @@ export class DashboardComponent implements AfterViewInit {
     // Draw the image
     ctx.drawImage(img, 0, 0);
 
-    if(!this.showModelCanvas) return;
+    if (!this.showModelCanvas) return;
     // Draw nodes on the image
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
-    
+
     // Draw edges between nodes
     this.edges.forEach((edge) => {
-      const startNode = this.nodes.find(n => n.nodeId === edge.startNodeId);
-      const endNode = this.nodes.find(n => n.nodeId === edge.endNodeId);
+      const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
+      const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
       if (startNode && endNode) {
-        const startPos = { x: startNode.nodePosition.x, y: startNode.nodePosition.y };
+        const startPos = {
+          x: startNode.nodePosition.x,
+          y: startNode.nodePosition.y,
+        };
         const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
         const transformedStartY = img.height - startPos.y;
         const transformedEndY = img.height - endPos.y;
-        this.drawEdge(ctx,
-          { x: startPos.x, y: transformedStartY }, 
-          { x: endPos.x, y: transformedEndY }, 
-          edge.direction, 
-          edge.startNodeId, 
-          edge.endNodeId            
-        );          
+        this.drawEdge(
+          ctx,
+          { x: startPos.x, y: transformedStartY },
+          { x: endPos.x, y: transformedEndY },
+          edge.direction,
+          edge.startNodeId,
+          edge.endNodeId
+        );
       }
-
     });
-
-
 
     this.zones.forEach((zone) => {
       // Re-plot the points of the zone
@@ -293,15 +308,19 @@ export class DashboardComponent implements AfterViewInit {
       this.drawLayer(ctx);
       this.plottedPoints = [];
     });
-    
-    
+
     this.assets.forEach((asset) =>
-      this.plotAsset(ctx,asset.x, asset.y, asset.type)
+      this.plotAsset(ctx, asset.x, asset.y, asset.type)
     );
     // ctx.restore(); // Reset transformation after drawing
   }
 
-  private plotAsset(ctx : CanvasRenderingContext2D,x: number, y: number, assetType: string): void {
+  private plotAsset(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    assetType: string
+  ): void {
     // const canvas = this.overlayCanvas.nativeElement;
     // const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
@@ -310,7 +329,7 @@ export class DashboardComponent implements AfterViewInit {
     //   alert('This position is already occupied by a node or asset. Please choose a different location.');
     //   return;
     // }
-  
+
     if (image && ctx) {
       const imageSize = 50; // Set image size
       ctx.drawImage(
@@ -329,7 +348,7 @@ export class DashboardComponent implements AfterViewInit {
     // });
   }
 
-  drawLayer(ctx : CanvasRenderingContext2D): void {
+  drawLayer(ctx: CanvasRenderingContext2D): void {
     // const canvas = this.overlayCanvas.nativeElement;
     // const ctx = canvas.getContext('2d');
     if (ctx && this.plottedPoints.length >= 3 && this.zoneType) {
@@ -342,7 +361,6 @@ export class DashboardComponent implements AfterViewInit {
       }
 
       ctx.closePath();
-
 
       // Set the fill color based on the selected zone type
       const zoneColor = this.zoneColors[this.zoneType];
@@ -373,7 +391,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
-    
+
     if (direction === 'UN_DIRECTIONAL') {
       ctx.strokeStyle = 'black'; // Uni-directional in black
     } else if (direction === 'BI_DIRECTIONAL') {
@@ -382,13 +400,22 @@ export class DashboardComponent implements AfterViewInit {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    this.drawArrowhead(ctx, { x: startX, y: startY }, { x: endX, y: endY }, direction);
+    this.drawArrowhead(
+      ctx,
+      { x: startX, y: startY },
+      { x: endX, y: endY },
+      direction
+    );
 
     if (direction === 'BI_DIRECTIONAL') {
-      this.drawArrowhead(ctx, { x: endX, y: endY }, { x: startX, y: startY }, direction);
+      this.drawArrowhead(
+        ctx,
+        { x: endX, y: endY },
+        { x: startX, y: startY },
+        direction
+      );
     }
-    
-  }  
+  }
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
@@ -397,7 +424,7 @@ export class DashboardComponent implements AfterViewInit {
   ): void {
     const headLength = 15; // Length of the arrowhead
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
-  
+
     // Calculate the arrowhead points
     const arrowheadPoint1 = {
       x: to.x - headLength * Math.cos(angle - Math.PI / 6),
@@ -407,30 +434,30 @@ export class DashboardComponent implements AfterViewInit {
       x: to.x - headLength * Math.cos(angle + Math.PI / 6),
       y: to.y - headLength * Math.sin(angle + Math.PI / 6),
     };
-  
+
     ctx.beginPath();
     ctx.moveTo(to.x, to.y);
     ctx.lineTo(arrowheadPoint1.x, arrowheadPoint1.y);
     ctx.lineTo(arrowheadPoint2.x, arrowheadPoint2.y);
     ctx.lineTo(to.x, to.y);
-  
+
     // Change arrowhead color based on direction
     if (direction === 'UN_DIRECTIONAL') {
       ctx.fillStyle = 'black'; // Uni-directional arrowhead in black
     } else if (direction === 'BI_DIRECTIONAL') {
       ctx.fillStyle = 'green'; // Bi-directional arrowhead in green
     }
-  
+
     ctx.fill();
   }
-  
-  drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) { 
+
+  drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) {
     // Set node style (for example, circle)
     ctx.beginPath();
     ctx.arc(x, y, 6, 0, 2 * Math.PI); // Draw circle with radius 10
     ctx.fillStyle = '#00f'; // Blue color
     ctx.fill();
-  
+
     // Add a label to the node
     ctx.fillStyle = '#000'; // Black text color
     ctx.font = '12px Arial';
@@ -524,17 +551,18 @@ export class DashboardComponent implements AfterViewInit {
   loadCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-  
-      if (ctx) {
+
+    if (ctx) {
       const img = new Image();
       let imgName = this.projectService.getMapData();
       img.src = `http://${imgName.imgUrl}`;
 
       img.onload = () => {
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+        canvas.height =
+          canvas.parentElement?.clientHeight || window.innerHeight;
         this.draw(ctx, img);
-      
+
         // // Conditionally draw nodes based on showModelCanvas flag
         // if (this.showModelCanvas) {
         //   this.nodes.forEach((node) => {
@@ -553,7 +581,7 @@ export class DashboardComponent implements AfterViewInit {
         .then((dataUrl: string) => {
           const link = document.createElement('a');
           link.href = dataUrl;
-          link.download = 'page_capture.png'; 
+          link.download = 'page_capture.png';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -565,7 +593,7 @@ export class DashboardComponent implements AfterViewInit {
       console.error('Container element not found.');
     }
   }
-  
+
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;
   }
