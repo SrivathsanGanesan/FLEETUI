@@ -82,7 +82,7 @@ filteredTaskData: any;
   userPermissionOptions = [
     {
       order: 0,
-      nameTag: 'MAPS',
+      nameTag: 'DASHBOARD',
       isAvail: 0,
       create: 1,
       edit: 2,
@@ -91,7 +91,7 @@ filteredTaskData: any;
     },
     {
       order: 1,
-      nameTag: 'MISSION',
+      nameTag: 'STATISTICS',
       isAvail: 0,
       create: 1,
       edit: 2,
@@ -100,7 +100,7 @@ filteredTaskData: any;
     },
     {
       order: 2,
-      nameTag: 'TRANSITION',
+      nameTag: 'CONFIGURATION',
       isAvail: 0,
       create: 1,
       edit: 2,
@@ -109,7 +109,7 @@ filteredTaskData: any;
     },
     {
       order: 3,
-      nameTag: 'PATHS',
+      nameTag: 'TASKS',
       isAvail: 0,
       create: 1,
       edit: 2,
@@ -461,11 +461,11 @@ filteredTaskData: any;
         // Update the local permission state
         this.userPermissionState = [
           [
-            data.permissions.maps.enable,
-            data.permissions.maps.create,
-            data.permissions.maps.edit,
-            data.permissions.maps.delete,
-            data.permissions.maps.view,
+            data.permissions.dashboard.enable,
+            data.permissions.dashboard.create,
+            data.permissions.dashboard.edit,
+            data.permissions.dashboard.delete,
+            data.permissions.dashboard.view,
           ],
           [
             data.permissions.mission.enable,
@@ -523,28 +523,28 @@ filteredTaskData: any;
 
     // Prepare the permissions object to send to the backend
     const updatedPermissions = {
-      maps: {
+      dashboard: {
         enable: this.userPermissionState[0][0],
         create: this.userPermissionState[0][1],
         edit: this.userPermissionState[0][2],
         delete: this.userPermissionState[0][3],
         view: this.userPermissionState[0][4],
       },
-      mission: {
+      Statistics: {
         enable: this.userPermissionState[1][0],
         create: this.userPermissionState[1][1],
         edit: this.userPermissionState[1][2],
         delete: this.userPermissionState[1][3],
         view: this.userPermissionState[1][4],
       },
-      transition: {
+      configuration: {
         enable: this.userPermissionState[2][0],
         create: this.userPermissionState[2][1],
         edit: this.userPermissionState[2][2],
         delete: this.userPermissionState[2][3],
         view: this.userPermissionState[2][4],
       },
-      paths: {
+      Errorlogs: {
         enable: this.userPermissionState[3][0],
         create: this.userPermissionState[3][1],
         edit: this.userPermissionState[3][2],

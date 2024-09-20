@@ -4,15 +4,17 @@
       <h2>{{data.name}}</h2>
 
 
+      
       <!-- emergency stop -->
       <div class="switch demo3">
-        <input type="checkbox" />
-        <label><i></i></label>
-        </div> 
-    </div>
+        <input type="checkbox" id="emergencyStop" />
+        <label for="emergencyStop"><i></i></label>
+        <span class="tooltip">Emergency Stop</span>
+      </div>
+
     
     <!-- wifi module -->
-    <div class="wifi-signal absolute z-50 top-[0px]  w-[100vw] h-[30vh]">
+    <div class="wifi-signal absolute z-50 top-[0px]  w-[80vw] h-[30vh]">
       <div class="wifi-style flex z-50">
         <div class="wifi" [ngClass]="currentSignalClass"></div> 
       </div>
@@ -25,30 +27,30 @@
     </div>
     
     <!-- connect button -->
-    <button class="status-button absolute z-50 top-[0px]  w-[10vw] h-[8vh]" (click)="toggleConnection()">
+    <button 
+      class="status-button absolute z-50 top-[0px] w-[10vw] h-[8vh] 
+      {{ isConnected ? 'connected' : '' }}" 
+      (click)="toggleConnection()">
       {{ isConnected ? 'Disconnect' : 'Connect' }}
     </button>
+
     
 
     <div class="robot-detail-container relative">
-
-
       <svg
-      width="580" 
-      height="862"
-      viewBox="0 0 580 862" 
+      width="590" 
+      height="832"
+      viewBox="0 0 590 832" 
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect width="580" height="590" rx="15" fill="white" /> 
+      <rect width="590" height="580" rx="15" fill="white" /> 
     </svg>
  
    </div>
   <div class="robot-image-container">
     <img [src]="data.imageUrl" alt="{{data.name}}" class="robot-image">
   </div>
-
-
 
   
   <div class="battery-frame">
@@ -67,10 +69,6 @@
       <!-- <p>{{ data.isCharging ? 'Charging' : 'Not Charging' }}</p> -->
     </div>
     
-      
-    
-    
-
     <!-- Battery Details -->
       <div class="battery-details">
         <div class="average-discharge">
@@ -486,76 +484,10 @@
   </div>
     
 
-  <!-- close button -->
-  <!-- <div class="button-container">
-    <button mat-button color="warn" (click)="onClose()">
-      <span class="button-text">Close</span>
-    </button>
-</div> -->
-
-<div class="id-info-item">
-  <strong>ID:</strong> {{data.id}}
-</div>
- 
-  
-  
-  <!-- <div class="wifi-container">
-    <div class="wifi-symbol">
-      <div class="wifi-circle first" [ngClass]="{'green': wifiPercentage >= 100}"></div>
-      <div class="wifi-circle second" [ngClass]="{'green': wifiPercentage >= 75}"></div>
-      <div class="wifi-circle third" [ngClass]="{'green': wifiPercentage >= 50}"></div>
-      <div class="wifi-circle fourth"></div> 
-    
-    <p class="wifi-percentage">{{ wifiPercentage }}%</p>
-  </div>
-   -->
-   <!-- <div class="wifi-container">
-    <div class="wifi-symbol">
-      <div class="wifi-circle first" [ngClass]="getClassForCircle(wifiPercentage, 100)"></div>
-      <div class="wifi-circle second" [ngClass]="getClassForCircle(wifiPercentage, 75)"></div>
-      <div class="wifi-circle third" [ngClass]="getClassForCircle(wifiPercentage, 50)"></div>
-      <div class="wifi-circle fourth" [ngClass]="getClassForCircle(wifiPercentage, 25)"></div>
+    <div class="id-info-item">
+      <strong>ID:</strong> {{data.id}}
     </div>
-    
-    <p class="wifi-percentage">{{ wifiPercentage }}%</p>
-  </div> -->
   
-  <!-- <h1>CSS Wifi Signal</h1>
-
-<div class="wifi-signal">
-  <div class="wifi"></div>
-</div>
-
-<div id="states" class="btn-group" role="group">
-  <button type="button" class="btn btn-default" data-class="none">No signal</button>
-  <button type="button" class="btn btn-default" data-class="weak">Weak</button>
-  <button type="button" class="btn btn-default" data-class="medium">Medium</button>
-  <button type="button" class="btn btn-default" data-class="">Full</button>
-  <button type="button" class="btn btn-default" data-class="loading">Searching</button>
-</div>
-  -->
-      <!-- <div class="robot-image-container">
-        <img [src]="data.imageUrl" alt="{{data.name}}" class="robot-image">
-        <div class="loader"></div>
-       
-      </div>
-      <div class="robot-info">
-        <div class="robot-info-item">
-          <strong>ID:</strong> {{data.id}}
-        </div>
-        <div class="robot-info-item">
-          <strong>S.no:</strong> {{data.serialNumber}}
-        </div>
-        <div class="robot-info-item">
-          <strong>Capacity:</strong> {{data.capacity}}
-        </div>
-        <div class="robot-info-item">
-          <strong>Speed:</strong> {{data.speed}}
-        </div>
-        <div class="robot-info-item">
-          <strong>Accuracy:</strong> {{data.accuracy}}
-        </div>
-      </div> -->
 </div>
 
   
