@@ -345,7 +345,6 @@ export class EnvmapComponent implements AfterViewInit {
           : this.zoneCounter;
       this.open();
     }
-
   }
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();

@@ -456,6 +456,7 @@
 
 <app-robot-popup
   [isVisible]="isRobotPopupVisible"
+  [mapName]="this.mapName"
   (close)="closeRobotPopup()"
   (addRobot)="placeRobots($event)"
 ></app-robot-popup>
