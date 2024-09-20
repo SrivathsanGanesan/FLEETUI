@@ -1052,6 +1052,10 @@ export class ConfigurationComponent implements AfterViewInit {
       macAdd: this.currentRoboDet.mac,
       grossInfo: this.formData,
     };
+    if (roboDetails.roboName === '' || this.formData.manufacturer === '') {
+      alert('Manufacturer or roboname should be there');
+      return;
+    }
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/robo-configuration`,
       {
@@ -1079,8 +1083,10 @@ export class ConfigurationComponent implements AfterViewInit {
           return;
         }
         if (data.robo) {
-          alert('robo Added to db');
-          console.log(data.robo);
+          this.robotData = [...this.robotData, data.robo];
+          this.filteredRobotData = this.robotData;
+          this.cdRef.detectChanges();
+          // alert('robo Added to db');
           return;
         }
       });
