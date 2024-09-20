@@ -1717,7 +1717,7 @@ export class EnvmapComponent implements AfterViewInit {
   onInputChanged(): void {
     this.isEnterButtonVisible =
       this.numberOfIntermediateNodes !== null &&
-      this.numberOfIntermediateNodes >1;
+      this.numberOfIntermediateNodes >0;
   }
   plotIntermediateNodes(): void {
     if (this.numberOfIntermediateNodes && this.numberOfIntermediateNodes > 0) {
@@ -2398,7 +2398,11 @@ export class EnvmapComponent implements AfterViewInit {
     // Redraw the canvas to remove the temporary zone points
     this.redrawCanvas();
   }
+  openRobotPopup(): void {
+    this.isRobotPopupVisible = true;
+  }
   removeRobots(): void {
+
     this.isConfirmationVisible = true;
 
     // Remove selected robots
@@ -2411,9 +2415,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.zoneType = null;
     this.isPopupVisible = true;
   }
-  openRobotPopup(): void {
-    this.isRobotPopupVisible = true;
-  }
+
   closeRobotPopup(): void {
     this.isRobotPopupVisible = false;
   }
