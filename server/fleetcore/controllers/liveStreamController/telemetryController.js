@@ -155,7 +155,7 @@ const getRoboDetails = async (req, res) => {
         name: robot.roboName,
         imageUrl: "",
         status: "Active",
-        battery: Math.floor(Math.random() * 80).toString() + " %",
+        battery: Math.floor(Math.random() * 80).toString(),
         serialNumber: robot._id.toString().slice(15),
         temperature: Math.floor(Math.random() * 40).toString() + " %",
         networkstrength: Math.floor(Math.random() * 80),
