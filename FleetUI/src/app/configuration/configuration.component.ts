@@ -459,8 +459,13 @@ export class ConfigurationComponent implements AfterViewInit {
 
     const response = await fetch(URL, { method: 'GET' });
 
+    let data = await response.json();
     if (response.status === 422) {
       alert(`Ip range is too large`);
+      return;
+    }
+    if (data.exist) {
+      alert('Robo might already exists in another map');
       return;
     }
 
