@@ -18,8 +18,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { EnvmapComponent } from '../envmap/envmap.component';
 import { AnyAaaaRecord } from 'node:dns';
 import { PageEvent } from '@angular/material/paginator';
-import { response } from 'express';
-import { error } from 'node:console';
+import { log } from 'node:console';
 
 interface Poll {
   ip: string;
@@ -167,14 +166,17 @@ export class ConfigurationComponent implements AfterViewInit {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         this.filteredEnvData = this.EnvData;
-        this.cdRef.detectChanges();
+        // this.cdRef.detectChanges();
         if (!this.projectService.getIsMapSet()) {
           this.selectedMap = this.EnvData[0];
-          let imgUrl = await this.getMapImgUrl(this.selectMap);
-          this.projectService.setMapData({
-            ...this.EnvData[0],
-            imgUrl: imgUrl,
-          });
+          let imgUrl = '';
+          if (this.EnvData[0]) {
+            imgUrl = await this.getMapImgUrl(this.selectedMap);
+            this.projectService.setMapData({
+              ...this.EnvData[0],
+              imgUrl: imgUrl,
+            });
+          }
         }
       })
       .catch((error) => {
@@ -185,28 +187,28 @@ export class ConfigurationComponent implements AfterViewInit {
 
     if (!this.EnvData.length) return;
 
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          console.error('Error while fetching map data : ', response.status);
-          throw new Error('Error while fetching map data');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (!this.projectService.getMapData())
-          // yet to remove..
-          this.projectService.setMapData({
-            ...this.EnvData[0],
-            imgUrl: data.map.imgUrl,
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // this.filteredEnvData = this.EnvData;
+    // fetch(
+    //   `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
+    // )
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       console.error('Error while fetching map data : ', response.status);
+    //       throw new Error('Error while fetching map data');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((data) => {
+    //     if (!this.projectService.getMapData())
+    //       // yet to remove..
+    //       this.projectService.setMapData({
+    //         ...this.EnvData[0],
+    //         imgUrl: data.map.imgUrl,
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    this.filteredEnvData = this.EnvData;
     this.searchTerm = '';
     this.searchTermChanged();
   }

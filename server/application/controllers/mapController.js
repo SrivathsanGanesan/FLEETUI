@@ -54,8 +54,9 @@ const mapInsert = async (req, res) => {
       mpp,
       nodes,
       edges,
-      stations = [],
+      stations,
       zones,
+      roboPos,
     } = mapData;
     const map = await Map.exists({ mapName: mapName });
     if (map) return res.json({ exits: true, msg: "Map name already exits" });
