@@ -12,7 +12,7 @@ averageSpeed: any;
 distanceLeft: string;
 
   
-  averageChargingTime: string;
+ 
   id: number;
   name: string;
   imageUrl: string;
@@ -32,7 +32,14 @@ distanceLeft: string;
  SignalStrength: string;
   error: string;
   batteryPercentage: number;
- 
+  // new
+  averagedischarge:number;
+  averageChargingTime: string;
+ currentspeed: string;
+ averagespeed: string;
+ maximumspeed: string;
+ averagetransfertime: string;
+ averagedockingtime: string;
   
 }
 
@@ -114,7 +121,7 @@ export class RobotDetailPopupComponent {
 
   setSignalStrength(signal: string): void {
     this.currentSignalClass = this.mapSignalToClass(signal);
-    console.log('POpup Current Signal Class: ', this.currentSignalClass); // Debug log
+    console.log('POpup Current Signal Class: ', this.currentSignalClass); 
   }
 
   mapSignalToClass(signal: string): string {
