@@ -66,8 +66,7 @@ interface Zone {
 }
 interface Robo {
   roboDet: any;
-  x: number;
-  y: number;
+  pos : {x : number, y : number, orientation : number}
 }
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -326,6 +325,12 @@ export class EnvmapComponent implements AfterViewInit {
         })
         return zone;
       });
+      this.robos = this.currEditMapDet.robos.map((robo : Robo)=>{
+        robo.pos.x = robo.pos.x / (this.ratio || 1);
+        robo.pos.y = robo.pos.y / (this.ratio || 1);
+        return robo;
+      })
+      
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
           ? parseInt(this.nodes[this.nodes.length - 1].nodeId) + 1
@@ -784,6 +789,11 @@ export class EnvmapComponent implements AfterViewInit {
       })
       return zone;
     })
+    this.robos = this.robos.map((robo)=>{
+      robo.pos.x = robo.pos.x * (this.ratio || 1);
+      robo.pos.y = robo.pos.y * (this.ratio || 1);
+      return robo;
+    })
     let editedMap = {
       mapName: null,
       siteName: null,
@@ -793,8 +803,9 @@ export class EnvmapComponent implements AfterViewInit {
       edges: this.edges,
       zones: this.zones,
       stations: this.assets,
-      robos: this.robos
+      roboPos: this.robos
     };
+    
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.mapName}`,
       {
@@ -847,6 +858,11 @@ export class EnvmapComponent implements AfterViewInit {
       })
       return zone;
     })
+    this.robos = this.robos.map((robo)=>{
+      robo.pos.x = robo.pos.x * (this.ratio || 1);
+      robo.pos.y = robo.pos.y * (this.ratio || 1);
+      return robo;
+    })
     this.form = new FormData();
     let mapData = {
       projectName: this.projData.projectName,
@@ -858,7 +874,7 @@ export class EnvmapComponent implements AfterViewInit {
       edges: this.edges,
       nodes: this.nodes,
       stations: this.assets,
-      robos: this.robos
+      roboPos: this.robos
     };
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
@@ -1350,16 +1366,17 @@ export class EnvmapComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
 
     if (image && ctx) {
-      const imageSize = 30;
+      const imageSize = 20;
 
       // Highlight the selected robot with a border or background
-      if (isSelected) {
-        ctx.beginPath();
-        ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
-        ctx.fill();
-        ctx.closePath();
-      }
+      // yet tp replace..
+      // if (isSelected) {
+      //   ctx.beginPath();
+      //   ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+      //   ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
+      //   ctx.fill();
+      //   ctx.closePath();
+      // }
 
       // Draw the robot image
       ctx.drawImage(
@@ -2273,10 +2290,10 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 25;
     return (
-      x >= robo.x - imageSize / 2 &&
-      x <= robo.x + imageSize / 2 &&
-      y >= robo.y - imageSize / 2 &&
-      y <= robo.y + imageSize / 2
+      x >= robo.pos.x - imageSize / 2 &&
+      x <= robo.pos.x + imageSize / 2 &&
+      y >= robo.pos.y - imageSize / 2 &&
+      y <= robo.pos.y + imageSize / 2
     );
   }
   onCancel(): void {
@@ -2320,7 +2337,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
         return;
       }
 
-      const robo: Robo = { roboDet: robot, x: x, y: y };
+      const robo: Robo = { roboDet: robot, pos :{x: x, y: y, orientation : 0} }; // yet to add orientation..
       this.robos.push(robo);
 
       this.roboInitOffset += 60;
@@ -2351,7 +2368,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     const threshold = 30; // Adjust this value as needed for the distance to consider as overlap
     for (const robo of this.robos) {
       if (robo.roboDet.id !== currentRobo.roboDet.id) {
-        const distance = Math.sqrt(Math.pow(robo.x - currentRobo.x, 2) + Math.pow(robo.y - currentRobo.y, 2));
+        const distance = Math.sqrt(Math.pow(robo.pos.x - currentRobo.pos.x, 2) + Math.pow(robo.pos.y - currentRobo.pos.y, 2));
         if (distance < threshold) {
           return true; // Overlap found
         }
@@ -2482,7 +2499,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
         if (this.isRobotClicked(robo, x, y)) {
           this.selectedRobo = robo;
           this.draggingRobo = true;
-          this.originalRoboPosition = { x: robo.x, y: robo.y };
+          this.originalRoboPosition = { x: robo.pos.x, y: robo.pos.y };
           this.redrawCanvas();
           return;
         }
@@ -2588,12 +2605,12 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       this.redrawCanvas();
       this.plotRobo(x, y);
 
-      this.selectedRobo.x = x;
-      this.selectedRobo.y = y;
+      this.selectedRobo.pos.x = x;
+      this.selectedRobo.pos.y = y;
       const roboIndex = this.robos.findIndex(robo => robo.roboDet === this.selectedRobo?.roboDet);
       if (roboIndex !== -1) {
-        this.robos[roboIndex].x = x;
-        this.robos[roboIndex].y = y;
+        this.robos[roboIndex].pos.x = x;
+        this.robos[roboIndex].pos.y = y;
       }
     }
   }
@@ -2728,18 +2745,29 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
 
     if (this.draggingRobo && this.selectedRobo) {
       // Update the position of the selected robot
-      this.selectedRobo.x = x;
-      this.selectedRobo.y = y;
+      this.selectedRobo.pos.x = x;
+      this.selectedRobo.pos.y = y;
 
       // Check if the robot is overlapping with another one
       if (this.isOverlappingWithOtherRobos(this.selectedRobo)) {
         // Reset the robot to its original position if overlapping
-        this.selectedRobo.x = this.originalRoboPosition!.x;
-        this.selectedRobo.y = this.originalRoboPosition!.y;
+        this.selectedRobo.pos.x = this.originalRoboPosition!.x;
+        this.selectedRobo.pos.y = this.originalRoboPosition!.y;
         alert('Overlapping detected! Robot has been reset to its original position.');
       }
-      this.redrawCanvas();
       this.draggingRobo = false;
+      if(this.selectedRobo){
+        this.robos = this.robos.map((robo) => {
+          if (this.selectedRobo?.roboDet.id === robo.roboDet.id) {
+            robo.pos.x = x;
+            robo.pos.y = y;
+            robo.roboDet.selected = true;
+            return robo;
+          }
+          return robo;
+        });
+      }
+      this.redrawCanvas();
     }
      // Reset originalRoboPosition after the drag ends
      this.originalRoboPosition = null;
@@ -2782,14 +2810,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     const dy = mouseY - asset.y;
     return dx * dx + dy * dy <= radius * radius;
   }
-  private updateRoboPosition(id: number, x: number, y: number): void {
-    const robo = this.robos.find((robo) => robo.roboDet.id === id);
-    if (robo) {
-      robo.x = x;
-      robo.y = y;
-      this.redrawCanvas(); // Redraw canvas to show the updated position
-    }
-  }
+
   private updateAssetPosition(id: number, x: number, y: number): void {
     // Implement logic to update asset position in your data structure
     // Example: Find and update asset in this.assets
@@ -2859,7 +2880,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       });
 
       this.robos.forEach((robo) =>
-        this.plotRobo(robo.x, robo.y, this.selectedRobo === robo)
+        this.plotRobo(robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
       );
 
       // Draw assets, zones, and robots

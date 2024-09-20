@@ -18,6 +18,7 @@ export class RobotPopupComponent {
   mapData : any | null = null;
   showError: boolean = false; // To track if an error message should be shown
 
+  listedRobo : any[]=[];
   availableRobots : any[]=[];
 
   constructor(private projectService:ProjectService){}
@@ -35,9 +36,19 @@ export class RobotPopupComponent {
       credentials: 'include'
     });
     let data = await response.json();
-    this.availableRobots = data.populatedRobos;
-    console.log(this.availableRobots);
-    
+    this.listedRobo = data.populatedRobos;
+    let id = 0;
+    this.availableRobots = data.populatedRobos.map((robo : any)=>{
+      id++;
+      return {
+        id : id,
+        roboId : robo._id.toString().slice(18),
+        roboName : robo.roboName,
+        ipAdd : robo.ipAdd,
+        selected : true,
+      }
+    })
+    // console.log(this.availableRobots);
   }
 
   closePopup() {
