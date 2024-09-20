@@ -459,13 +459,8 @@ export class ConfigurationComponent implements AfterViewInit {
 
     const response = await fetch(URL, { method: 'GET' });
 
-    let data = await response.json();
     if (response.status === 422) {
       alert(`Ip range is too large`);
-      return;
-    }
-    if (data.exist) {
-      alert('Robo might already exists in another map');
       return;
     }
 
@@ -1088,6 +1083,9 @@ export class ConfigurationComponent implements AfterViewInit {
         else if (data.isIpMacExists) {
           console.log(data.msg);
           alert('Ip | Mac seems already exists!');
+          return;
+        } else if (data.exists) {
+          alert('Robo Name already exists');
           return;
         }
         if (data.robo) {
