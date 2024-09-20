@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-robot-popup',
@@ -14,6 +15,7 @@ export class RobotPopupComponent {
   @Output() close = new EventEmitter<void>();
   @Output() addRobot = new EventEmitter<any[]>(); // Emit an array of selected robots
 
+  constructor(private messageService: MessageService,private projectService:ProjectService) {}
   //..
   mapData : any | null = null;
   showError: boolean = false; // To track if an error message should be shown
@@ -21,7 +23,7 @@ export class RobotPopupComponent {
   listedRobo : any[]=[];
   availableRobots : any[]=[];
 
-  constructor(private projectService:ProjectService){}
+
 
   async ngOnInit(){
     if(!this.mapName) return;
@@ -30,7 +32,7 @@ export class RobotPopupComponent {
       credentials:'include'
     });
     let mapData = await res1.json();
-    
+
     let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.map._id}`, {
       method: 'GET',
       credentials: 'include'
@@ -58,15 +60,32 @@ export class RobotPopupComponent {
 
   addSelectedRobots() {
     const selectedRobots = this.availableRobots.filter((robot) => robot.selected);
+
     if (selectedRobots.length > 0) {
       this.addRobot.emit(selectedRobots); // Emit all selected robots
       this.showError = false;
+
+      // Show success toast message
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Robots added successfully!'
+      });
+
       this.close.emit();
     } else {
-      this.showError = true; // Show the error message if no robots are selected
+      this.showError = true;
+
+      // Show error toast message
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No robots selected!'
+      });
     }
+
     this.resetSelections();
-  } 
+  }
 
   private resetSelections() {
     this.availableRobots.forEach((robot) => {
