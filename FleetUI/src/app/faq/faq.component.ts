@@ -1,14 +1,11 @@
-import { Component } from '@angular/core';
-
-import { Router } from '@angular/router'; // Import Router
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-support',
-  templateUrl: './support.component.html',
-  styleUrl: './support.component.css'
+  selector: 'app-faq',
+  templateUrl: './faq.component.html',
+  styleUrls: ['./faq.component.css']
 })
-export class SupportComponent {
-  constructor(private router: Router) { } // Inject the router
+export class FaqComponent implements OnInit {
   faqs = [
     {
       iconUrl: 'assets/icons/free-trial.svg',
@@ -53,8 +50,9 @@ export class SupportComponent {
   ];
 
   visibleFaqs = 4;
+  router: any;
 
- 
+  constructor() { }
 
   ngOnInit(): void { }
 
@@ -66,26 +64,7 @@ export class SupportComponent {
     window.open('/documentation', '_blank');
   }
 
-  isPopupOpen = false;
-
-  openPopup() {
-    this.isPopupOpen = true;
-  }
-
-  closePopup() {
-    this.isPopupOpen = false;
-  }
-  // Document for resource
-  downloadDocument() {
-    const link = document.createElement('a');
-    link.href = 'path/to/your/document.pdf';
-    link.download = 'Training_Resource_Document.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  goToFaq(): void {
-    this.router.navigate(['/faq']);
+  goBackToSupport(): void {
+    this.router.navigate(['/support']); // Navigate back to the Support page
   }
 }

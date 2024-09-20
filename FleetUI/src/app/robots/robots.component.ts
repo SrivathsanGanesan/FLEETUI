@@ -44,9 +44,8 @@ export class RobotsComponent implements OnInit {
 
   
 
-  robots: Robot[] = [];
 
-  /* robots: Robot[] = [
+   robots: Robot[] = [
     {
       id: 1,
       serialNumber: '50000',
@@ -64,7 +63,7 @@ export class RobotsComponent implements OnInit {
       isCharging: true, // This will control whether the icon is shown
       totalPicks: '31',
       totalDrops:'28',
-      SignalStrength:'Full'
+      SignalStrength:'Weak'
 
     },
     {
@@ -84,7 +83,7 @@ export class RobotsComponent implements OnInit {
       isCharging: true, // This will control whether the icon is shown
        totalPicks: '31',
       totalDrops:'28',
-      SignalStrength:'Full'
+      SignalStrength:'Searching'
       
     },
     {
@@ -164,7 +163,7 @@ export class RobotsComponent implements OnInit {
       SignalStrength:'Full'
     },
     // Add more robots...
-  ]; */
+  ]; 
 
   mapDetails: any | null = null;
   showPopup = false;
@@ -183,26 +182,6 @@ export class RobotsComponent implements OnInit {
     this.mapDetails = this.projectService.getMapData();
     if (!this.mapDetails) return;
     let grossFactSheet = await this.fetchAllRobos();
-    this.robots = grossFactSheet.map((amr) => {
-      return {
-        id: amr.headerId,
-        serialNumber: amr.serialNumber,
-        name: amr.typeSpecification.seriesName,
-        imageUrl: '../../assets/robots/agv1.png',
-        status: 'Active',
-        battery: '40%',
-        temperature: '59 C',
-        networkstrength: '90 dBi',
-        robotutilization: ' 43 %',
-        cpuutilization: '90 %',
-        memory: '10 %',
-        error: '10',
-        batteryPercentage: 78,
-        isCharging: true, // This will control whether the icon is shown
-        totalPicks: '31',
-        totalDrops: '28',
-      };
-    });
   }
 
   async fetchAllRobos(): Promise<any[]> {
@@ -312,15 +291,6 @@ export class RobotsComponent implements OnInit {
 
   trackByIndex(index: number, obj: any): any {
     return index;
-  }
-
-  constructor(public dialog: MatDialog) {}
-  ngOnInit(): void {
-    this.setSignalStrength('Weak'); // Change this value to test different signals
-    console.log(this.robots); // Debugging purpose
-    throw new Error('Method not implemented.');
-
-   
   }
 
   openRobotDetail(robot: Robot): void {

@@ -38,7 +38,7 @@ distanceLeft: string;
 @Component({
   selector: 'app-robot-detail-popup',
   templateUrl: './robot-detail-popup.component.html',
-  styleUrls: ['./robot-detail-popup.component.css']
+  styleUrls: ['./robot-detail-popup.component.scss']
 })
 export class RobotDetailPopupComponent {
   
@@ -92,19 +92,20 @@ export class RobotDetailPopupComponent {
 
     console.log('Battery Percentage:', this.data.batteryPercentage);
     console.log('Is Charging:', this.data.isCharging); 
-    this.getsignal(this.data.SignalStrength)
+    this.setSignalStrength(this.data.SignalStrength)
   }
  
-
-  
  
   onClose(): void {
     this.dialogRef.close();
   }
 
- 
+  setSignalStrength(signal: string): void {
+    this.currentSignalClass = this.mapSignalToClass(signal);
+    console.log('POpup Current Signal Class: ', this.currentSignalClass); // Debug log
+  }
 
-  getsignal(signal: string): string {
+  mapSignalToClass(signal: string): string {
     switch (signal) {
       case 'No signal':
         return 'none';
