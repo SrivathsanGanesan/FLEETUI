@@ -58,18 +58,16 @@ export class ProjectService {
     this.cookieService.set('_isMapSet', JSON.stringify(state));
   }
 
-  getIsMapSet() {
+  getIsMapSet(): boolean {
     const isMapSet = this.cookieService.get('_isMapSet');
-    return isMapSet ? JSON.parse(isMapSet) : null;
+    return isMapSet ? JSON.parse(isMapSet) : false;
   }
 
   clearIsMapSet() {
     this.cookieService.delete('_isMapSet', '/');
   }
 
-  setNode(){
-    this.cookieService.set('nodes', JSON.stringify(
-      [{id :1, name : 'node1'}]
-    ))
-  }
+  // setNode() {
+  //   this.cookieService.set('nodes', JSON.stringify([{ id: 1, name: 'node1' }]));
+  // }
 }

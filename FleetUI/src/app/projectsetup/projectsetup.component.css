@@ -222,10 +222,18 @@ label.active {
   background-color: #ff73733c; /* Background color of options */
   color: rgb(141, 133, 133);
   font-family: Arial, Helvetica, sans-serif;
+  height:50px !important;
+  padding: 5px;
   font-size: 15px;
   margin: 5px;
   text-align: center;
   border: none;
+}
+/* Ensure dropdown behaves as intended */
+select.ProjList {
+  display: block;
+  width: 100%;
+  font-size: 14px;
 }
 .Sitename:focus,
 .Projectname:focus {
@@ -244,4 +252,30 @@ label.active {
   align-items: center;
   height: 100vh;
   background-color: #ffffff; /* Optional: Match the body background color */
+}
+
+/* Style the main dropdown container */
+.ProjList .p-dropdown {
+  height: 29px; /* Set the height */
+  display: flex;
+  align-items: center; /* Center content vertically */
+}
+
+/* Ensure the dropdown label (selected value) is vertically centered */
+.ProjList .p-dropdown-label {
+  display: flex;
+  align-items: center;
+  height: 100%; /* Match the container's height */
+}
+
+/* You can also add padding or other styling to make it look better */
+.ProjList .p-dropdown {
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Optional: style the dropdown's expanded list */
+.ProjList .p-dropdown-panel {
+  max-height: 200px; /* Add a max-height if the list is too long */
+  overflow-y: auto;  /* Add vertical scroll if needed */
 }

@@ -51,6 +51,8 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AppServerModule } from './app.module.server';
 import { SupportComponent } from './support/support.component';
+import { FaqComponent } from './faq/faq.component';
+import { CheckboxModule } from 'primeng/checkbox';
 
 
 
@@ -89,7 +91,8 @@ import { SupportComponent } from './support/support.component';
     UserManagementComponent,
     FullscreenButtonComponent,
     RadialChartComponent,
-    SupportComponent
+    SupportComponent,
+    FaqComponent
   ],
   imports: [
     NgApexchartsModule,
@@ -108,7 +111,8 @@ import { SupportComponent } from './support/support.component';
     ButtonModule,
     DropdownModule,
     ToastModule,
-    AppServerModule
+    AppServerModule,
+    CheckboxModule,
   ],
   providers: [
     // provideClientHydration()

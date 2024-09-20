@@ -5,11 +5,15 @@ import { ProjectService } from '../services/project.service';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../environments/environment.development';
 import { error, log } from 'node:console';
+import { MessageService } from 'primeng/api';
 
 interface Project {
-  _id: string;
-  projectName: string;
+  _id?: string; // Assuming _id is optional
+  projectId?: string; // Add this if projectId is present in your data
+  projectName: string; // Other fields based on your data structure
+  // Add any other relevant fields
 }
+
 
 @Component({
   selector: 'app-projectsetup',
@@ -37,7 +41,8 @@ export class ProjectsetupComponent {
     private authService: AuthService,
     private router: Router,
     private projectService: ProjectService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private messageService: MessageService,
   ) {}
 
   ngOnInit(): void {
@@ -258,92 +263,188 @@ export class ProjectsetupComponent {
     this.isFocused[inputId] = false;
   }
 
+  // onProjectChange(event: any) {
+  //   this.project = JSON.parse(event.target.value);
+  //   if (!JSON.parse(event.target.value)._id)
+  //     this.project._id = JSON.parse(event.target.value).projectId;
+  // }
   onProjectChange(event: any) {
-    this.project = JSON.parse(event.target.value);
-    if (!JSON.parse(event.target.value)._id)
-      this.project._id = JSON.parse(event.target.value).projectId;
+    try {
+      this.project = event;
+
+      // Check for required properties
+      if (!this.project) {
+        throw new Error('No project selected');
+      }
+
+      if (!this.project._id && this.project?.projectId) {
+        this.project._id = this.project.projectId;
+      }
+
+    } catch (error) {
+      // Show error toast notification
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Selection Error',
+        detail: 'An error occurred while selecting the project',
+        life: 3000  // Duration the toast will be visible
+      });
+    }
+
+    console.log('Selected Project:', this.project);
   }
+
+
+
 
   createProject() {
     if (!this.projectname && !this.sitename) {
-      this.errorMessage = '*Please fill in both the fields.';
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: '*Please fill in both the fields.',
+        life: 3000
+      });
       return;
     }
 
     if (!this.projectname) {
-      this.errorMessage = '*Please fill Project Name.';
-      return;
-    }
-    if (!this.sitename) {
-      this.errorMessage = '*Please fill Site Name.';
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: '*Please fill Project Name.',
+        life: 3000
+      });
       return;
     }
 
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-project/project`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          project: {
-            projectName: this.projectname,
-            siteName: this.sitename,
-          },
-        }),
-      }
-    )
+    if (!this.sitename) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: '*Please fill Site Name.',
+        life: 3000
+      });
+      return;
+    }
+
+    fetch(`http://${environment.API_URL}:${environment.PORT}/fleet-project/project`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        project: {
+          projectName: this.projectname,
+          siteName: this.sitename,
+        },
+      }),
+    })
       .then((res) => {
-        if (res.status === 400) alert('project Name already exits');
-        else if (res.status === 500) console.log('Error in server side');
-        else if (res.status === 403) {
-          alert('Toke Invalid');
+        if (res.status === 400) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Project Error',
+            detail: 'Project Name already exists.',
+            life: 3000
+          });
+          return; // Early return to prevent proceeding with parsing the response
+        } else if (res.status === 500) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Server Error',
+            detail: 'Error in server side.',
+            life: 3000
+          });
+          return;
+        } else if (res.status === 403) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Authentication Error',
+            detail: 'Token Invalid.',
+            life: 3000
+          });
           return;
         }
         return res.json();
       })
       .then((data) => {
-        if (!data.exists) {
-          this.projectService.setProjectCreated(true); //
-          this.projectService.setSelectedProject(data.project); //
+        if (data && !data.exists) {
+          this.projectService.setProjectCreated(true);
+          this.projectService.setSelectedProject(data.project);
           this.router.navigate(['/dashboard']);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Project Created',
+            detail: `Project "${data.project.projectName}" created successfully.`,
+            life: 3000
+          });
         }
         console.log(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.error(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Fetch Error',
+          detail: 'An error occurred while creating the project.',
+          life: 3000
+        });
+      });
   }
 
   openProject() {
-    // console.log('name : ', this.project._id, this.project.projectName);
-    if (this.project._id === '' && this.project.projectName === '') {
-      alert('no project selected');
+    if (!this.project || !this.project._id || !this.project.projectName) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'No Project Selected',
+        detail: 'Please select a project before proceeding.',
+        life: 3000
+      });
       return;
     }
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.project._id}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      }
-    )
+
+    fetch(`http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.project._id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
       .then((res) => {
-        // if (!res.ok) {
-        //   throw new Error('Project not found: ' + res.status);
-        // }
+        if (!res.ok) {
+          throw new Error('Project not found: ' + res.status);
+        }
         return res.json();
       })
       .then((data) => {
-        // console.log(this.project._id, this.project.projectName);
-        // return;
         if (!data.exists) {
-          alert('Project does not exist on DB, try deleting it from the user');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Project Not Found',
+            detail: 'Project does not exist in the database, try deleting it from the user.',
+            life: 3000
+          });
           return;
         }
-        // console.log(data.project);
+
         this.projectService.setSelectedProject(data.project);
         this.projectService.setProjectCreated(true);
         this.router.navigate(['/dashboard']);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Project Opened',
+          detail: `Successfully opened project: ${data.project.projectName}`,
+          life: 3000
+        });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.error(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Fetch Error',
+          detail: 'An error occurred while fetching the project.',
+          life: 3000
+        });
+      });
   }
+
 }

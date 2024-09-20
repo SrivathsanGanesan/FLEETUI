@@ -1,132 +1,68 @@
+.radial-chart-container {
+  display: flex; /* Align chart and labels horizontally */
+  align-items: flex-start; /* Align items to the top */
+  gap: 20px; /* Space between the chart and labels */
+}
+
 #chart {
-    position: relative;
-    padding: 0; /* Remove extra padding */
-  }
-  
-  #chart h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
-    color: #333;
-    position: absolute;
-    top: 0;   /* Positioned directly at the top */
-    left: 0;  /* Positioned directly at the left */
-  }
-  
-  apx-chart {
-    width: 100%;
-    max-width: 600px;
-    
-  }
-  .body {
-    --radius: 8px;
-    --border: 4px;
-    --height: 38px;
-    --speed: 0.25s;
-    display: grid;
-    justify-content: end;
-    align-items: center;
-    font-family: "SF Pro Text", "SF Pro Icons", "AOS Icons", "Helvetica Neue",
-      Helvetica, Arial, sans-serif, system-ui;
+  position: relative;
+  width: 100%; /* Adjust to fit the container */
+  max-width: 600px; /* Adjust as needed */
 }
 
-.tabs {
-    height: var(--height);
-    display: grid;
-    grid-auto-flow: column;
-    background: hsl(0 100% 50%); /* Red background for the tabs */
-    border-radius: var(--radius);
-    grid-auto-columns: 1fr;
-    position: relative;
-    border: var(--border) solid hsl(0 100% 50%); /* Red border for tabs */
+#chart h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  position: absolute;
+  top: 0; /* Positioned at the top of the chart */
+  left: 0; /* Positioned at the left of the chart */
 }
 
-.tabs > .input,
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+.chart-labels {
+  display: flex;
+  flex-direction: column; /* Arrange labels vertically */
+  align-items: flex-start; /* Align labels to the start (left) */
+  gap:20px;
+  margin-top: 80px;
 }
 
-.tabs:has(:checked:nth-of-type(1)) {
-    --active: 0;
+.label-item {
+  display: flex;
+  align-items: center; /* Center items vertically */
+  margin-bottom: 10px; /* Space between label items */
 }
 
-.tabs:has(:checked:nth-of-type(2)) {
-    --active: 1;
+.label-color {
+  display: inline-block;
+  width: 20px; /* Size of the color indicator */
+  height: 20px;
+  border-radius: 50%; /* Circular color indicator */
+  margin-right: 10px; /* Space between color and text */
 }
 
-.tabs:has(:checked:nth-of-type(3)) {
-    --active: 2;
+.healthy-color {
+  background-color: #00e396; /* Healthy color */
 }
 
-.tabs:has(:checked:nth-of-type(4)) {
-    --active: 3;
+.inactive-color {
+  background-color: #feb019; /* Inactive color */
 }
 
-.tabs :checked + .label {
-    --highlight: 1;
-    background: hsl(0 0% 100%); /* White background for the active tab */
-    color: hsl(0 100% 50%); /* Red font for the active tab */
+.error-color {
+  background-color: #ff4560; /* Error color */
 }
 
-.tabs:has(.input:nth-of-type(2)) {
-    --count: 2;
+.label-text {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px; /* Space between text and value */
 }
 
-.tabs:has(.input:nth-of-type(3)) {
-    --count: 3;
+.label-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: #555; /* Adjust color as needed */
 }
-
-.tabs:has(.input:nth-of-type(4)) {
-    --count: 4;
-}
-
-.tabs .label {
-    padding: 0 clamp(10px, 10px + 10px, 20px);
-    cursor: pointer;
-    text-align: center;
-    height: 100%;
-    display: grid;
-    border-radius: calc(var(--radius) - var(--border));
-    place-items: center;
-    color: hsl(0 0% 100%); /* White font for inactive tabs */
-    background: hsl(0 100% 50%); /* Red background for inactive tabs */
-    transition: background, color;
-    transition-duration: 0.25s;
-    transition-timing-function: var(--ease, ease);
-}
-
-.input:not(:checked) + .label:hover {
-    --highlight: 0.35;
-    background: hsl(0 80% 50%); /* Slightly darker red for hover effect */
-}
-
-.tabs::after {
-    pointer-events: none;
-    content: "";
-    width: calc(100% / var(--count));
-    height: 100%;
-    background: hsl(0 100% 50%); /* Red background for the indicator */
-    position: absolute;
-    border-radius: calc(var(--radius) - var(--border));
-    mix-blend-mode: difference;
-    translate: calc(var(--active, 0) * 100%) 0;
-    transition: translate, outline-color;
-    transition-duration: var(--speed);
-    transition-timing-function: var(--ease, ease);
-    outline: 2px solid transparent;
-}
-
-.tabs:has(:focus-visible)::after {
-    outline-color: red;
-}
-
-  

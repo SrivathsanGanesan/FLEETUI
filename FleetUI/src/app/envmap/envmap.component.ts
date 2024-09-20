@@ -19,6 +19,7 @@ import { parse } from 'path';
 import { response } from 'express';
 import { CookieService } from 'ngx-cookie-service';
 import { MapService } from '../map.service';
+import { CheckboxModule } from 'primeng/checkbox';
 
 interface Node {
   nodeId: string;
@@ -130,6 +131,8 @@ export class EnvmapComponent implements AfterViewInit {
   public assets: asset[] = []; // Org_assets
   public zones: Zone[] = []; // Org_zones
   robos: Robo[] = []; // Org_robos
+  selectedAction: string| null = null;
+  validationError: string | null = null;
   Nodes: {
     id: number;
     x: number;
@@ -200,7 +203,7 @@ export class EnvmapComponent implements AfterViewInit {
   private lineStartY: number | null = null;
   private lineEndX: number | null = null;
   private lineEndY: number | null = null;
-  selectedAction: string = ''; // Initialize with an empty string or any other default value
+  // selectedAction: string = ''; // Initialize with an empty string or any other default value
   actions: any[] = []; // Array to hold the list of actions with parameters
   isDistanceConfirmed = false; // Flag to control the Save button
   isEnterButtonVisible = false;
@@ -342,7 +345,7 @@ export class EnvmapComponent implements AfterViewInit {
           : this.zoneCounter;
       this.open();
     }
-    
+
   }
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
@@ -379,13 +382,13 @@ export class EnvmapComponent implements AfterViewInit {
   }
 //   private isPositionOccupied(x: number, y: number): boolean {
 //     // Check if the position is occupied by any existing node
-//     const isNodeOccupied = this.nodes.some(node => 
+//     const isNodeOccupied = this.nodes.some(node =>
 //         Math.abs(node.pos.x - x)  && Math.abs(node.pos.y - y)
 //     );
 
 //     // Check if the position is occupied by any existing asset
-//     const isAssetOccupied = this.assets.some(asset => 
-//         Math.abs(asset.x - x)  && Math.abs(asset.y - y) 
+//     const isAssetOccupied = this.assets.some(asset =>
+//         Math.abs(asset.x - x)  && Math.abs(asset.y - y)
 //     );
 
 //     return isNodeOccupied || isAssetOccupied;
@@ -574,6 +577,7 @@ export class EnvmapComponent implements AfterViewInit {
   onActionChange(): void {
     this.resetParameters();
     this.showActionForm();
+    this.validateForm();
   }
   resetParameters(): void {
     this.moveParameters = {
@@ -699,13 +703,13 @@ export class EnvmapComponent implements AfterViewInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      this.selectedImage = input.files[0];      
+      this.selectedImage = input.files[0];
       const file = input.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (e: any) => {
           this.imageBase64 = e.target.result;
-          console.log(this.imageBase64);          
+          console.log(this.imageBase64);
           // if(this.imageBase64) this.mapService.setOnCreateMapImg(this.imageBase64);  // Save to cookie after conversion
         };
         reader.readAsDataURL(file);
@@ -810,9 +814,9 @@ export class EnvmapComponent implements AfterViewInit {
         this.edges = updatedData.edges;
         this.assets = updatedData.stations;
         this.zones = updatedData.zones;
-        this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : []; 
+        this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];
         alert("Updated Successfully")
-   
+
         this.closePopup.emit();
         });
   }
@@ -821,7 +825,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.updateEditedMap();
       return;
     }
-    
+
     if (!this.selectedImage) {
       alert('file missing!');
       return;
@@ -1412,7 +1416,7 @@ export class EnvmapComponent implements AfterViewInit {
       return;
     }
 
-    
+
     const color = 'blue'; // Color for single nodes
     this.drawNode(
       {
@@ -1449,7 +1453,7 @@ export class EnvmapComponent implements AfterViewInit {
       intermediate_node: false,
       Waiting_node: false,
     };
-    
+
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
     this.nodes.push(node);
     this.Nodes.push({ ...this.nodeDetails, type: 'single' });
@@ -1629,13 +1633,13 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
         const dx = (this.secondNode.nodePosition.x - this.firstNode.nodePosition.x) / (this.numberOfIntermediateNodes + 1);
         const dy = (this.secondNode.nodePosition.y - this.firstNode.nodePosition.y) / (this.numberOfIntermediateNodes + 1);
-  
+
         for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
           const x = this.firstNode.nodePosition.x + i * dx;
           const y = this.firstNode.nodePosition.y + i * dy;
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
 
-          
+
           let node = {
             nodeId: this.nodeCounter.toString(),
             sequenceId: this.nodeCounter,
@@ -1646,27 +1650,61 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
             intermediate_node: true, // Marking it as intermediate
             Waiting_node: false,
           };
-  
+
           this.nodes.push(node);
-  
+
           // Draw the node
           this.drawNode(node, 'blue', false);
-  
+
           // Draw the text label for the node
           const canvas = this.overlayCanvas.nativeElement;
           const ctx = canvas.getContext('2d')!;
-  
+
           console.log(`Intermediate Node ${this.nodeCounter} plotted at:`, { x, y });
-  
+
           this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
-  
+
           this.nodeCounter++; // Increment the node counter
         }
       }
       this.closeIntermediateNodesDialog();
     }
-  }  
-  validationError: string = '';
+  }
+    // Define the available actions for the dropdown
+  actionOptions = [
+    { label: 'Move', value: 'Move' },
+    { label: 'Dock', value: 'Dock' },
+    { label: 'Undock', value: 'Undock' }
+  ];
+
+
+
+
+   // Validation logic
+  validateForm() {
+    if (!this.nodeDetails.description) {
+      this.validationError = 'Node Description is required.';
+    } else if (this.selectedAction === 'Move') {
+      if (!this.moveParameters.maxLinearVelocity || !this.moveParameters.maxAngularVelocity) {
+        this.validationError = 'All Move Action fields are required.';
+      } else {
+        this.validationError = null; // Clear error if all fields are valid
+      }
+    } else if (this.selectedAction === 'Dock') {
+      if (!this.dockParameters.maxAngularVelocity || !this.dockParameters.goalOffsetX) {
+        this.validationError = 'All Dock Action fields are required.';
+      } else {
+        this.validationError = null;
+      }
+    } else if (this.selectedAction === 'Undock') {
+      if (!this.undockParameters.maxLinearVelocity || !this.undockParameters.maxToleranceAtGoalX) {
+        this.validationError = 'All Undock Action fields are required.';
+      } else {
+        this.validationError = null;
+      }
+    }
+  }
+  // validationError: string = '';
   saveNodeDetails(): void {
     this.validationError = '';
 
@@ -1700,7 +1738,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     if (this.validationError) {
       return;
     }
-    this.projectService.setNode();
+    // this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
     // const updatedNodeDetails = {
     //   ...this.nodeDetails,  // Spread the existing details
@@ -1844,7 +1882,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
               this.secondNode.nodePosition,
               'bi',
               this.firstNode.nodeId,
-              this.secondNode.nodeId            
+              this.secondNode.nodeId
             );
           }
 
@@ -1888,28 +1926,28 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
   ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-  
+
     // Find the corresponding Edge based on startNodeId and endNodeId
     const edge = this.edges.find(
       (e) => e.startNodeId === startNodeId && e.endNodeId === endNodeId
     );
-  
+
     if (ctx && edge) {
       // Calculate the distance between the start and end points
       const dx = endPos.x - startPos.x;
       const dy = endPos.y - startPos.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-  
+
       // Calculate new start and end points with the threshold
       const startX = startPos.x + (dx * threshold) / distance;
       const startY = startPos.y + (dy * threshold) / distance;
       const endX = endPos.x - (dx * threshold) / distance;
       const endY = endPos.y - (dy * threshold) / distance;
-  
+
       ctx.beginPath();
       ctx.moveTo(startX, canvas.height - startY); // Start point (flip Y-axis)
       ctx.lineTo(endX, canvas.height - endY); // End point (flip Y-axis)
-  
+
       // Change color based on direction
       if (direction === 'uni') {
         ctx.strokeStyle = 'black'; // Uni-directional in black
@@ -1918,27 +1956,27 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       }
       ctx.lineWidth = 2;
       ctx.stroke();
-  
+
       this.drawArrowhead(ctx, { x: startX, y: startY }, { x: endX, y: endY }, direction);
-  
+
       if (direction === 'bi') {
         // Draw the reverse arrow for bi-directional
         this.drawArrowhead(ctx, { x: endX, y: endY }, { x: startX, y: startY }, direction);
       }
-  
+
       // Draw edge ID in the middle of the line
       const midX = (startX + endX) / 2;
       const midY = (canvas.height - startY + canvas.height - endY) / 2;
-  
+
       ctx.font = '12px Arial'; // Font size and type
       ctx.fillStyle = 'black'; // Text color
       ctx.textAlign = 'center'; // Center align text
       ctx.textBaseline = 'top'; // Position text below the edge
-  
+
       // Draw the edge ID instead of startNodeId and endNodeId
       ctx.fillText(`${edge.edgeId}`, midX, midY + 5);
     }
-  }    
+  }
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
@@ -2295,21 +2333,21 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
   drawSelectionBox(start: { x: number, y: number }, end: { x: number, y: number }): void {
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     if (!ctx) return;
-  
+
     const minX = Math.min(start.x, end.x);
     const minY = Math.min(start.y, end.y);
     const width = Math.abs(end.x - start.x);
     const height = Math.abs(end.y - start.y);
-  
+
     // Set the style for the selection box
     ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)';
     ctx.lineWidth = 2;
     ctx.setLineDash([5, 5]); // Create dashed lines
-  
+
     // Draw the selection rectangle
     ctx.strokeRect(minX, minY, width, height);
     ctx.setLineDash([]); // Reset line dash after drawing
-  }  
+  }
   isOverlappingWithOtherRobos(currentRobo: Robo): boolean {
     const threshold = 30; // Adjust this value as needed for the distance to consider as overlap
     for (const robo of this.robos) {
@@ -2462,7 +2500,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
           break;
         }
       }
-      
+
       if (!nodeClicked && this.isPlottingEnabled) {
         if (this.plottingMode === 'single') {
           this.selectedAsset = null;
@@ -2574,25 +2612,25 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       const maxX = Math.max(this.selectionStart.x, this.selectionEnd.x);
       const minY = Math.min(this.selectionStart.y, this.selectionEnd.y);
       const maxY = Math.max(this.selectionStart.y, this.selectionEnd.y);
-  
+
       // Find nodes inside the selection box
       this.nodesToDelete = this.nodes.filter((node) => {
         const nodeX = node.nodePosition.x;
-        const nodeY = node.nodePosition.y;  
+        const nodeY = node.nodePosition.y;
         return nodeX >= minX && nodeX <= maxX && nodeY >= minY && nodeY <= maxY;
       });
-  
+
       console.log('Nodes selected for deletion:', this.nodesToDelete);
-  
+
       // Show confirmation dialog if nodes are selected
       if (this.nodesToDelete.length > 0) {
         this.isConfirmationVisible = true;
       }
-  
+
       // Reset selection start and end
       this.selectionStart = null;
       this.selectionEnd = null;
-  
+
       // Redraw the canvas without the selection box
       this.redrawCanvas();
     }
@@ -2651,7 +2689,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     }
 
     if (this.draggingAsset && this.selectedAsset) {
-      
+
       this.draggingAsset = false;
       if (this.selectedAssetType) {
         // let asset : asset;
@@ -2685,7 +2723,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
         alert('Overlapping detected! Asset has been reset to its original position.');
         this.redrawCanvas();
       }
-      
+
       // this.selectedAsset = null; // yet to uncomment..
     }
 
@@ -2693,7 +2731,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       // Update the position of the selected robot
       this.selectedRobo.x = x;
       this.selectedRobo.y = y;
-  
+
       // Check if the robot is overlapping with another one
       if (this.isOverlappingWithOtherRobos(this.selectedRobo)) {
         // Reset the robot to its original position if overlapping

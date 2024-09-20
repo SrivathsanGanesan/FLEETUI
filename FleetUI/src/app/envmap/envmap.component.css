@@ -176,7 +176,7 @@ h2 {
 .validation-error{
   font-size: 10px;
   color: #ff3333;
-  padding: 10px;
+  /* padding: 10px; */
 }
 /* .image-popup-content .close-btn {
   position: absolute;
@@ -346,6 +346,63 @@ canvas {
   flex-direction: column;
   border-radius: 10px;
 }
+/* .node_details {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+} */
+.label {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+.input-group {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1rem;
+  justify-content: space-between;
+  align-content: center;
+  flex-wrap: wrap;
+}
+.input-group1 {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1rem;
+  justify-content: space-between;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
+.action-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.Node-btn {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.validation-error {
+  color: red;
+  /* margin-top: 0.5rem; */
+}
+
+
 .action-div{
   margin: 10px;
 }
@@ -391,15 +448,21 @@ canvas {
 }
 .node-details-popup input{
 
-  border-bottom: 1px solid black;
-  border-radius: 3px;
-  background-color: transparent;
+  /* border-bottom: 1px solid black; */
+  /* border-radius: 3px; */
+  /* background-color: transparent; */
+  border: 1px solid #ccc;
 }
-.sampleCSS {
+/* .sampleCSS {
   display: flex;
 
   font-size: 10px;
   font-weight: bold;
+} */
+.sampleCSS {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
 }
 
 .action-container select{
@@ -597,9 +660,9 @@ button {
   margin-bottom: 10px;
   width: 100%;
   padding: 8px;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   font-size: 10px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 
 }
 

@@ -176,111 +176,43 @@
   box-shadow: none;
 }
 
-.body {
-  --radius: 8px;
-  --border: 4px;
-  --height: 38px;
-  --speed: 0.25s;
-  display: grid;
-  justify-content: end;
+
+.button-container {
+  display: flex;
+  justify-content: center;
   align-items: center;
-  font-family: "SF Pro Text", "SF Pro Icons", "AOS Icons", "Helvetica Neue",
-    Helvetica, Arial, sans-serif, system-ui;
+  padding: 5px;
+  border: 1px solid rgb(207, 207, 207);
+  border-radius: 15px;
+  background-color: #dbdbdb; /* Light grey background for the container */
+}
+
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5vh;
 }
 
 .tabs {
-  height: var(--height);
-  display: grid;
-  grid-auto-flow: column;
-  background: hsl(0 100% 50%); /* Red background for the tabs */
-  border-radius: var(--radius);
-  grid-auto-columns: 1fr;
-  position: relative;
-  border: var(--border) solid hsl(0 100% 50%); /* Red border for tabs */
+  display: flex;
+  gap: 10px;
 }
 
-.tabs > .input,
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+.input {
+  display: none;
 }
 
-.tabs:has(:checked:nth-of-type(1)) {
-  --active: 0;
-}
-
-.tabs:has(:checked:nth-of-type(2)) {
-  --active: 1;
-}
-
-.tabs:has(:checked:nth-of-type(3)) {
-  --active: 2;
-}
-
-.tabs:has(:checked:nth-of-type(4)) {
-  --active: 3;
-}
-
-.tabs:has(.input:nth-of-type(2)) {
-  --count: 2;
-}
-
-.tabs:has(.input:nth-of-type(3)) {
-  --count: 3;
-}
-
-.tabs:has(.input:nth-of-type(4)) {
-  --count: 4;
-}
-
-/* Active tab styling */
-.tabs :checked + .label {
-  background: hsl(0 0% 100%); /* White background for the active tab */
-  color: hsl(0 100% 50%); /* Red font for the active tab */
-  border-radius: calc(var(--radius) - var(--border));
-  border: 2px solid hsl(0 100% 50%);
-}
-
-/* Hover effect on inactive tabs */
-.input:not(:checked) + .label:hover {
-  background: hsl(0 80% 50%); /* Slightly darker red for hover effect */
+.label {
+  padding: 5px 20px;
+  background-color: rgb(160, 160, 160);
   color: white;
-}
-
-.tabs .label {
-  padding: 0 clamp(10px, 10px + 10px, 20px);
   cursor: pointer;
-  text-align: center;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  color: white; /* White font for inactive tabs */
-  background: hsl(0 100% 50%); /* Red background for inactive tabs */
-  transition: background, color, border;
-  transition-duration: 0.25s;
-  transition-timing-function: ease;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
 }
 
-.tabs::after {
-  pointer-events: none;
-  content: "";
-  width: calc(100% / var(--count));
-  height: 100%;
-  background: hsl(0 100% 50%); /* Red background for the indicator */
-  position: absolute;
-  border-radius: calc(var(--radius) - var(--border));
-  translate: calc(var(--active, 0) * 100%) 0;
-  transition: translate 0.25s ease;
-  outline: 2px solid transparent;
-}
-
-.tabs:has(:focus-visible)::after {
-  outline-color: red;
+/* Apply red background when radio button is selected */
+.input:checked + .label {
+  background-color: red;
 }
