@@ -104,20 +104,14 @@
           </div>
         </div>
         <div class="ProjDiv3" *ngIf="isProjDiv3Visible">
-          <select
-            class="ProjList"
-            [(ngModel)]="selectedProject"
-            (change)="onProjectChange($event)"
-          >
-            <option value="" disabled selected>Project List</option>
-            <option
-              *ngFor="let product of productList"
-              [value]="product | json"
-            >
-              <!-- | "product | json" angular pipe which converts object into a string -->
-              {{ product.projectName }}
-            </option>
-          </select>
+          <p-dropdown
+          class="ProjList" appendTo="body"
+          [options]="productList"
+          [(ngModel)]="selectedProject"
+          optionLabel="projectName"
+          placeholder="Project List"
+          (onChange)="onProjectChange($event.value)"
+        ></p-dropdown>
           <div class="ButtonSet">
             <button class="OpenBTN" (click)="openProject()">OPEN</button>
             <button (click)="showProjDiv3()" class="BackBTN">BACK</button>

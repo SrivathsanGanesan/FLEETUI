@@ -50,6 +50,7 @@ import { DropdownModule } from 'primeng/dropdown';import { RadialChartComponent 
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AppServerModule } from './app.module.server';
+import { CheckboxModule } from 'primeng/checkbox';
 
 
 
@@ -106,7 +107,8 @@ import { AppServerModule } from './app.module.server';
     ButtonModule,
     DropdownModule,
     ToastModule,
-    AppServerModule
+    AppServerModule,
+    CheckboxModule,
   ],
   providers: [
     // provideClientHydration()
