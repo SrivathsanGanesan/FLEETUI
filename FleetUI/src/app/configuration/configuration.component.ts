@@ -167,17 +167,17 @@ export class ConfigurationComponent implements AfterViewInit {
         );
         this.filteredEnvData = this.EnvData;
         // this.cdRef.detectChanges();
-        // if (!this.projectService.getIsMapSet()) {
-        this.selectedMap = this.EnvData[0];
-        let imgUrl = '';
-        if (this.EnvData[0]) {
-          imgUrl = await this.getMapImgUrl(this.selectedMap);
-          this.projectService.setMapData({
-            ...this.EnvData[0],
-            imgUrl: imgUrl,
-          });
+        if (!this.projectService.getIsMapSet()) {
+          this.selectedMap = this.EnvData[0];
+          let imgUrl = '';
+          if (this.EnvData[0]) {
+            imgUrl = await this.getMapImgUrl(this.selectedMap);
+            this.projectService.setMapData({
+              ...this.EnvData[0],
+              imgUrl: imgUrl,
+            });
+          }
         }
-        // }
       })
       .catch((error) => {
         console.log(error);
