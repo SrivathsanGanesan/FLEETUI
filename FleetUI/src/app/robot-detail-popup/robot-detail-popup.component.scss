@@ -1219,8 +1219,8 @@ border-radius: 15px; /* Rounded edges matching the container */
 .distance, .charging-time {
   color: #000;
   font-size: 24px;
-  font-family: Inter, sans-serif;
-  font-weight: 500;
+ 
+  font-weight: 600;
   text-align: left;
   width: 100%;
 }
@@ -1228,7 +1228,7 @@ border-radius: 15px; /* Rounded edges matching the container */
 .discharge-label, .charging-label {
   color: #6e6e6e;
   font-size: 14px;
-  font-family: Inter;
+ 
   font-weight: 500;
   text-align: left;
   width: 100%;
@@ -1244,16 +1244,15 @@ border-radius: 15px; /* Rounded edges matching the container */
 .battery-percentage {
   color: #000000;
   font-size: 24px;
-  font-family: Inter;
-  font-weight: 600;
+  
+  font-weight: 500;
   text-align: center;
 }
 
 .battery-label {
   color: #6e6e6e;
-  font-size: 16px;
-  font-family: Inter;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   text-align: left;
   width: 100%;
 }
@@ -1423,9 +1422,9 @@ border-radius: 15px; /* Rounded edges matching the container */
 /* Label styling for all */
 .label {
   color: #6e6e6e;
-  font-size: 14px; /* Adjust font size as needed */
-  font-family: Inter, sans-serif;
-  font-weight: 600;
+  font-size: 15px; /* Adjust font size as needed */
+  
+  font-weight: 500;
   text-align: center;
   width: auto; /* Auto width for dynamic adjustment */
 }
@@ -1436,7 +1435,7 @@ border-radius: 15px; /* Rounded edges matching the container */
   color: #000000;
   font-size: 20px; /* Adjust as needed */
   font-family: Inter, sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   text-align: right;
 }
 
@@ -1467,17 +1466,17 @@ border-radius: 15px; /* Rounded edges matching the container */
 .discharge-distance, .charging-time {
   color: #000000;
   font-size: 24px;
-  font-family: Inter;
-  font-weight: 600;
+  // font-family: Inter;
+  font-weight: 500;
   text-align: left;
   width: 100%;
 }
 
 .discharge-label, .charging-time-label {
   color: #6e6e6e;
-  font-size: 16px;
-  font-family: Inter;
-  font-weight: 600;
+  font-size: 15px;
+
+  font-weight: 500;
   
   text-align: left;
   width: 100%;
