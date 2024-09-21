@@ -178,7 +178,7 @@ body, .card, .popup-menu {
     .card-container-wrapper {
       display: flex;
     gap: 4rem;
-    overflow-x: scroll;
+    // overflow-x: scroll;
     padding: 4rem;
     }
 
@@ -301,7 +301,7 @@ body, .card, .popup-menu {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ff5c5c; /* Example button background color */
+  background-color: #eb1515; /* Example button background color */
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
@@ -309,6 +309,9 @@ body, .card, .popup-menu {
   margin: 0 auto; /* Center the button horizontally */
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
+  
+  /* Add a border */
+  border: 2px solid #a5a5a5; /* White border */
 }
 
 .details-button:hover {
@@ -646,7 +649,7 @@ body, .card, .popup-menu {
   }
 
   .wifi {
-    @include getWifi(10px);  // Set size to 50px
+    @include getWifi(11px);  // Set size to 50px
     transform: translate(-25%);
   }
 
