@@ -568,6 +568,16 @@ export class ConfigurationComponent implements AfterViewInit {
       this.cdRef.detectChanges();
     };
     this.isScanning = true;
+    if (this.isScanning)
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Info',
+        detail: 'Started scanning',
+      });
+  }
+  stopScanning() {
+    this.eventSource.close();
+    return;
   }
 
   robots = [
