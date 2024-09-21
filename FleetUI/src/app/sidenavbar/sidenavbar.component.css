@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:weight@100;200;300;400;500;600;700;800&display=swap");
 /* sidenavbar.css */
 .sidebar {
     height: 100%;
@@ -28,7 +29,7 @@
   .sidebar:hover {
     width: 220px;
   }
-  
+
   .notification-popup {
     position: absolute;
     top: 52px; /* Adjust according to your layout */
@@ -41,7 +42,7 @@
     font-family: Arial, Helvetica, sans-serif;
     z-index: 1000; /* Ensure it is on top */
   }
-  
+
   .Profile-popup {
     position: absolute;
     top: 52px; /* Adjust according to your layout */
@@ -54,7 +55,7 @@
     font-family: Arial, Helvetica, sans-serif;
     z-index: 1000; /* Ensure it is on top */
   }
-  
+
   .topbar {
     width: 100%;
     height: 50px;
@@ -77,51 +78,51 @@
     display: flex;
     align-items: center;
   }
-  
+
   .username {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
   }
-  
+
   .topbar img {
     margin: 0 10px;
     /* filter: drop-shadow(20px 5px 5px 5px 5px rgba(52, 49, 49, 0.308)); */
   }
-  
+
   .Profile {
     display: flex;
     align-items: center;
     padding-right: 40px;
   }
-  
+
   .Profile img {
     margin-right: 2px;
   }
-  
+
   .profile-info {
     display: flex;
     flex-direction: column;
   }
-  
+
   .profile-info p {
     margin: 0;
     font-size: 0.75rem;
     font-family: Arial, Helvetica, sans-serif;
   }
-  
+
   .Logo {
     height: 45px;
     width: 45px;
     margin: 15px 0 0 10px;
     border-radius: 15px;
   }
-  
+
   .icons {
     margin: 25px 0 0 10px;
     width: 180px;
     /* filter: drop-shadow(10px 10px 5px rgba(52, 49, 49, 0.308)); */
   }
-  
+
   .icon1, .icon2, .icon3, .icon4, .icon5, .icon6,.icon7,.icon8{
     display: flex;
     align-items: center;
@@ -130,12 +131,12 @@
     transition: margin-left 0.3s ease;
     cursor: pointer;
   }
-  
+
   .icon1:hover, .icon2:hover, .icon3:hover, .icon4:hover, .icon5:hover, .icon6:hover, .icon7:hover, .icon8:hover {
     border-bottom: 1px solid white;
     border-radius: 10px;
   }
-  
+
   .icon1 img, .icon2 img, .icon3 img, .icon4 img, .icon5 img,.icon6 img, .icon7 img, .icon8 img {
     margin-right: 10px;
     margin-left: 10px;
@@ -150,7 +151,7 @@
     transition: opacity 0.3s ease;
     opacity: 0;
   }
-  
+
   .sidebar:hover .icons .label {
     display: block;
     opacity: 1;
@@ -159,15 +160,15 @@
     font-family: Arial, Helvetica, sans-serif;
     color: #ffffff;
   }
-  
+
   .Outlogo {
     margin: 0;
   }
-  
+
   .Nlogo {
     margin: 10px 5px 5px 1200px; /* Adjust margin as needed */
   }
-  
+
   .logout-icon {
     margin: auto 0 20px 10px; /* Center vertically and add bottom margin */
     display: flex;
@@ -176,9 +177,80 @@
     cursor: pointer;
     transition: margin 0.5s ease;
   }
-  
+
   .logout-icon:hover {
     background-color: #9115154e;
-    border-radius: 30px;    
+    border-radius: 30px;
   }
-  
+.container{
+  display: flex;
+  justify-content:center;
+  align-items:center;
+}
+
+  body {
+      background-color: #545454;
+      font-family: "Poppins", sans-serif;
+      font-weight: 300;
+      margin: 0; /* Ensure no default margin */
+  }
+
+  .container {
+      height: 100vh;
+      display: flex; /* Center content if needed */
+      justify-content: center; /* Center horizontally */
+      align-items: center; /* Center vertically */
+  }
+
+  .card {
+      width: 380px;
+      border: none;
+      border-radius: 15px;
+      padding: 8px;
+      background-color: #fff;
+      position: relative;
+      height: 370px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+  }
+
+  .upper {
+      height: 100px;
+  }
+
+  .upper img {
+      width: 100%;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+  }
+
+  .user {
+      position: relative;
+  }
+
+  .profile img {
+      height: 80px;
+      width: 80px;
+      margin-top: 2px;
+  }
+
+  .profile {
+      position: absolute;
+      top: -50px;
+      left: 50%; /* Center horizontally */
+      transform: translateX(-50%); /* Adjust for centering */
+      height: 90px;
+      width: 90px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+  }
+
+  .follow {
+      border-radius: 15px;
+      padding: 0 20px; /* Simplified padding */
+      height: 35px;
+  }
+
+  .stats span {
+      font-size: 29px;
+  }
+
