@@ -30,6 +30,7 @@ export interface Robot {
   averagetransfertime: string;
   averagedockingtime: string;
   // Add other fields as needed
+  
 }
 
 @Component({
@@ -46,7 +47,8 @@ export class RobotsComponent implements OnInit {
   ];
   currentSignalClass: string = 'none'; // Default class
   robots: Robot[] = [];
-
+  searchQuery: string = '';  // To hold the search input
+  filteredRobots: Robot[] = []; // To store filtered robots
   /* robots: Robot[] = [
     {
     id: 1,
@@ -191,15 +193,28 @@ export class RobotsComponent implements OnInit {
     let grossFactSheet = await this.fetchAllRobos();
     this.robots = grossFactSheet.map((robo) => {
       robo.imageUrl = '../../assets/robots/agv1.png';
+      robo.networkstrength = `${robo.networkstrength} dBm`;
       if (robo.networkstrength < 20) robo.SignalStrength = 'Weak';
       else if (robo.networkstrength < 40) robo.SignalStrength = 'Medium';
       else if (robo.networkstrength < 80) robo.SignalStrength = 'Full';
       robo.networkstrength = robo.networkstrength.toString() + ' dBm';
       return robo;
     });
+    this.filteredRobots = this.robots;
     // this.robots = grossFactSheet;
   }
-
+  filterRobots(): void {
+    const query = this.searchQuery.toLowerCase();
+  
+    this.filteredRobots = this.robots.filter((robot) => {
+      const idMatch = robot.id.toString().includes(query);
+      const serialNumberMatch = robot.serialNumber.toLowerCase().includes(query);
+      const nameMatch = robot.name.toLowerCase().includes(query);
+  
+      return idMatch || serialNumberMatch || nameMatch;
+    });
+  }
+  
   async fetchAllRobos(): Promise<any[]> {
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fms-amrs`,

@@ -669,7 +669,10 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
-    this.distanceBetweenPoints=null;
+    this.points = [];
+    this.showDistanceDialog = false;
+    this.distanceBetweenPoints = null; // Reset distance if applicable
+    this.isDistanceConfirmed=false;
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -1114,6 +1117,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.points = [];
       this.showDistanceDialog = false;
       this.distanceBetweenPoints = null; // Reset distance if applicable
+      this.isDistanceConfirmed=false;
 
       // Redraw the image if necessary without resetting canvas size
       const img = new Image();
@@ -1124,31 +1128,39 @@ export class EnvmapComponent implements AfterViewInit {
     }
     console.clear();
   }
-  @HostListener('click', ['$event'])
-  onImagePopupCanvasClick(event: MouseEvent): void {
-    if (!this.showImagePopup || !this.imagePopupCanvas) return;
-    const targetElement = event.target as HTMLElement;
-    // Check if the click was on the "Clear" button, and if so, return early
-    if (targetElement.classList.contains('clear-btn')) {
-      return;
-    }
-    const canvas = this.imagePopupCanvas.nativeElement;
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+@HostListener('click', ['$event'])
+onImagePopupCanvasClick(event: MouseEvent): void {
+  if (!this.showImagePopup || !this.imagePopupCanvas) return;
 
-    if (this.points.length < 2) {
-      this.points.push({ x, y });
-      this.plotPointOnImagePopupCanvas(x, y);
+  const targetElement = event.target as HTMLElement;
 
-      if (this.points.length === 2) {
-        console.log('Two points plotted:', this.points);
-        const distance = this.calculateDistance(this.points[0], this.points[1]);
-        console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
-        this.showDistanceDialog = true; // Show the distance input dialog
-      }
+  // Ignore clicks on the "close" button
+  if (targetElement.classList.contains('close-btn')) {
+    return;
+  }
+
+  // Ignore clicks on the "clear" button
+  if (targetElement.classList.contains('clear-btn')) {
+    return;
+  }
+
+  const canvas = this.imagePopupCanvas.nativeElement;
+  const rect = canvas.getBoundingClientRect();
+  const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+  const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+
+  if (this.points.length < 2) {
+    this.points.push({ x, y });
+    this.plotPointOnImagePopupCanvas(x, y);
+
+    if (this.points.length === 2) {
+      console.log('Two points plotted:', this.points);
+      const distance = this.calculateDistance(this.points[0], this.points[1]);
+      console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
+      this.showDistanceDialog = true; // Show the distance input dialog
     }
   }
+}
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -1768,7 +1780,7 @@ export class EnvmapComponent implements AfterViewInit {
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
 
           if(this.isPositionOccupied(x, transformedY, 'node')){
-            alert('stop bro');
+            alert('Nodes cannot plotted as there are nodes or assets are between them');
             this.nodes = this.nodes.filter(node => 
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
@@ -1777,7 +1789,7 @@ export class EnvmapComponent implements AfterViewInit {
             return;
           }
           if(this.isOverLappingWithOtherNodesInPlotting(x, y)){
-            alert('stop bro');
+            alert('Nodes cannot plotted as there are nodes or assets are between them');
             this.nodes = this.nodes.filter(node => 
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
