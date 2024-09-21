@@ -49,7 +49,8 @@
               id="resolution"
               #resolutionInput
               placeholder="Resolution"
-              (keyup.enter)="open()"
+              (keyup.enter)="open()" 
+              (input)="onInputResolution($event)"
             />
             <p id="or">or</p>
             <button class="OpenandLocate" (click)="openImagePopup()">

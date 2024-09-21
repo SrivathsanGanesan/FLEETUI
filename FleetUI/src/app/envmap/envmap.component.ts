@@ -112,8 +112,11 @@ export class EnvmapComponent implements AfterViewInit {
   @ViewChild('imagePopupCanvas', { static: false })
   imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('xInput') xInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('yInput') yInput!: ElementRef<HTMLInputElement>;
   @ViewChild('nodeDetailsPopup', { static: false })
   nodeDetailsPopup!: ElementRef<HTMLDivElement>;
+  
 
   projData: any;
   form: FormData | null = null;
@@ -284,6 +287,7 @@ export class EnvmapComponent implements AfterViewInit {
   selectedAssetId: string | null = null; // Store the selected asset ID
   // private draggedNode: Node | null = null;
   private selectionStart: { x: number; y: number } | null = null;
+  private selectionTransformStart : {x :number ; y : number} | null = null;
   private selectionEnd: { x: number; y: number } | null = null;
   private nodesToDelete: Node[] = [];
   isOpen: boolean = false;
@@ -1170,23 +1174,37 @@ export class EnvmapComponent implements AfterViewInit {
     const nodesJson = JSON.stringify(this.Nodes, null, 2);
     console.log('Node details:', nodesJson);
   }
-  resolution: number | null = null;
+  onInputResolution(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.ratio = Number(input.value);
+  }
   open(): void {
+    this.validationError = null;
+
     if (!this.currEditMap)
       if (this.mapName && this.siteName) {
         for (let map of this.EnvData) {
           if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
-            alert('Map name seems already exists, try another');
+            this.validationError="Map name seems already exists, try another";
             return;
           }
         }
       }
 
-    if (!this.currEditMap)
-      if (!this.ratio)
-        this.ratio = Number(
-          (document.getElementById('resolution') as HTMLInputElement).value
-        );
+    if (this.resolutionInput && this.resolutionInput.nativeElement) {
+      const resolutionInputValue = this.resolutionInput.nativeElement.value;
+
+      if (!this.ratio) {
+        this.ratio = Number(resolutionInputValue);
+        if (!this.ratio || isNaN(this.ratio)) {
+          this.validationError = 'Please provide a valid resolution or click Locate.';
+          return;
+        }
+      }
+    } else {
+      console.error('Resolution input element not found via ViewChild.');
+    }
+  
     if (this.mapName && this.siteName && this.imageSrc ) {
       this.fileName = null;
       this.showImage = true;
@@ -1215,8 +1233,9 @@ export class EnvmapComponent implements AfterViewInit {
       if (this.imageBase64) {
         this.mapService.setOnCreateMapImg(this.imageBase64);  // Save the Base64 image in the cookie
       }
-    } else {
-      this.validationError = 'Please fill in all the required fields.';
+    } 
+    else{
+      this.validationError="Please enter Map name and Site name"
     }
   }
   close(): void {
@@ -2384,7 +2403,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.redrawCanvas(); // Redraw the canvas to reflect the updated zone
   }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
-    const imageSize = 25;
+    const imageSize = 30;
     return (
       x >= robo.pos.x - imageSize / 2 &&
       x <= robo.pos.x + imageSize / 2 &&
@@ -2519,9 +2538,11 @@ export class EnvmapComponent implements AfterViewInit {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
       const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
       const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+      const transformedY = this.overlayCanvas.nativeElement.height - y;
       if (this.isDeleteModeEnabled) {
         // Start drawing the selection box
         this.selectionStart = { x, y };
+        this.selectionTransformStart = {x , y :transformedY}
         this.selectionEnd = null;
       }
 
@@ -2649,10 +2670,10 @@ export class EnvmapComponent implements AfterViewInit {
 
     if (this.isDeleteModeEnabled && this.selectionStart) {
       this.selectionEnd = { x, y };
-
-      // Redraw canvas with selection box
+      
       this.redrawCanvas();
       this.drawSelectionBox(this.selectionStart, this.selectionEnd);
+      // Redraw canvas with selection box
     }
     if (this.draggingAsset && this.selectedAsset) {
       // Update the position of the selected asset
@@ -2732,18 +2753,22 @@ export class EnvmapComponent implements AfterViewInit {
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y;
 
-    if (this.isDeleteModeEnabled && this.selectionStart && this.selectionEnd) {
+    if (this.isDeleteModeEnabled && this.selectionStart && this.selectionEnd && this.selectionTransformStart) {
+
       // Calculate selection box bounds
       const minX = Math.min(this.selectionStart.x, this.selectionEnd.x);
       const maxX = Math.max(this.selectionStart.x, this.selectionEnd.x);
-      const minY = Math.min(this.selectionStart.y, this.selectionEnd.y);
-      const maxY = Math.max(this.selectionStart.y, this.selectionEnd.y);
+      const minY = Math.min(this.selectionTransformStart.y, transformedY);
+      const maxY = Math.max(this.selectionTransformStart.y, transformedY);
 
       // Find nodes inside the selection box
       this.nodesToDelete = this.nodes.filter((node) => {
         const nodeX = node.nodePosition.x;
         const nodeY = node.nodePosition.y;
-        return nodeX >= minX && nodeX <= maxX && nodeY >= minY && nodeY <= maxY;
+        const radius = 10;  // Assuming nodes may have a radius
+        
+        return (nodeX + radius >= minX && nodeX - radius <= maxX) &&
+               (nodeY + radius >= minY && nodeY - radius <= maxY);
       });
 
       console.log('Nodes selected for deletion:', this.nodesToDelete);

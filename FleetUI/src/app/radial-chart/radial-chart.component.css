@@ -7,19 +7,10 @@
 #chart {
   position: relative;
   width: 100%; /* Adjust to fit the container */
-  max-width: 600px; /* Adjust as needed */
+  max-width: 500px; /* Adjust as needed */
 }
 
-#chart h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0;
-  padding: 0;
-  color: #333;
-  position: absolute;
-  top: 0; /* Positioned at the top of the chart */
-  left: 0; /* Positioned at the left of the chart */
-}
+
 
 .chart-labels {
   display: flex;
