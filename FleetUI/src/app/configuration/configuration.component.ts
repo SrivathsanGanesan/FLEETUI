@@ -250,12 +250,24 @@ export class ConfigurationComponent implements AfterViewInit {
       .then((response) => {
         if (response.status == 422) {
           console.log('Invalid map id, which request to fetch robots');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Invalid map id, which request to fetch robots',
+            life: 4000,
+          });
           return;
         }
         return response.json();
       })
       .then((data) => {
         console.log(data);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Robots Fetched Successfully',
+          life: 4000,
+        });
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
         this.filteredRobotData = this.robotData;
@@ -881,13 +893,22 @@ export class ConfigurationComponent implements AfterViewInit {
       })
       .then((data) => {
         if (!data.map) {
-          alert('Seems map not exist');
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Warning',
+            detail: 'Map does not exist.',
+          });
           return;
         }
         if (data.error) {
-          console.log('Error while fetching map : ', data.error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `Error fetching map: ${data.error}`,
+          });
           return;
         }
+
         const { map } = data;
         this.currEditMapDet = {
           mapName: map.mapName,
@@ -902,14 +923,24 @@ export class ConfigurationComponent implements AfterViewInit {
         };
         this.currEditMap = true;
         this.showImageUploadPopup = true;
-        // console.log(map.mapName, item.siteName, map.mpp, map.imgUrl);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Map data loaded successfully.',
+        });
       })
       .catch((err) => {
         console.log(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'An error occurred while fetching map data.',
+        });
       });
   }
 
-   async deleteMap(map: any): Promise<boolean> {
+  async deleteMap(map: any): Promise<boolean> {
     try {
       const response = await fetch(
         `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map.mapName}`,
@@ -918,23 +949,22 @@ export class ConfigurationComponent implements AfterViewInit {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            projectName: this.projectService.getMapData()?.projectName,
+            projectName: this.mapData?.projectName,
             siteName: map.siteName,
           }),
         }
       );
+      // if (!response.ok)
+      //   console.error('Error while fetching map data : ', response.status);
       let data = await response.json();
       if (data.isDeleted) return true;
       if (data.isMapExist === false) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Warning',
-          detail: data.msg,
-        });
+        alert(data.msg);
         return false;
       }
       return false;
     } catch (error) {
+      console.log('Err occured : ', error);
       console.error('Error occurred: ', error);
       this.messageService.add({
         severity: 'error',
@@ -950,30 +980,27 @@ export class ConfigurationComponent implements AfterViewInit {
     let isDeleted = false;
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      if (result) {
-        isDeleted = await this.deleteMap(item);
-        if (isDeleted) {
-          this.projectService.setIsMapSet(false);
-          this.projectService.clearMapData();
-          this.ngOnInit();
-
-          // Assuming `currentTable` determines which data array to modify
-          if (this.currentTable === 'Environment') {
-            this.EnvData = this.EnvData.filter((i) => i !== item);
-            this.filteredEnvData = this.EnvData;
-            this.cdRef.detectChanges();
-          } else if (this.currentTable === 'robot') {
-            this.filteredRobotData = this.filteredRobotData.filter(
-              (i) => i !== item
-            );
-          }
-
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Deleted',
-            detail: 'Item successfully deleted!',
-          });
+      if (result) isDeleted = await this.deleteMap(item);
+      if (isDeleted) {
+        this.projectService.setIsMapSet(false);
+        this.projectService.clearMapData();
+        this.ngOnInit();
+        // Assuming currentTable determines which data array to modify
+        if (this.currentTable === 'Environment') {
+          this.EnvData = this.EnvData.filter((i) => i !== item);
+          this.filteredEnvData = this.EnvData;
+          this.cdRef.detectChanges();
+        } else if (this.currentTable === 'robot') {
+          this.filteredRobotData = this.filteredRobotData.filter(
+            (i) => i !== item
+          );
         }
+        console.log('Item deleted:', item);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Deleted',
+          detail: 'Item successfully deleted!',
+        });
       }
     });
   }
@@ -993,7 +1020,7 @@ export class ConfigurationComponent implements AfterViewInit {
       severity: 'warn',
       summary: 'Block Item',
       detail: 'Item blocked.',
-    });
+    })
   }
 
   isPPPopupOpen: boolean = false;
