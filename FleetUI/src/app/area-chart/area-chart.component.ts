@@ -32,8 +32,7 @@ export type ChartOptions = {
   styleUrls: ['./area-chart.component.css'],
 })
 export class AreaChartComponent implements OnInit {
-
- currentFilter: string = 'today'; // To track the selected filter
+  currentFilter: string = 'today'; // To track the selected filter
 
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
@@ -164,8 +163,8 @@ export class AreaChartComponent implements OnInit {
     }
   }
 
-   // Apply filter function when a filter is selected
-   applyFilter(filter: string) {
+  // Apply filter function when a filter is selected
+  applyFilter(filter: string) {
     this.currentFilter = filter; // Update the current filter
     this.updateChartWithFilter(); // Re-fetch data with the new filter
   }
@@ -184,9 +183,10 @@ export class AreaChartComponent implements OnInit {
       }
     );
     const data = await response.json();
+    console.log(data.throughput);
 
-    if (data.throughput && data.throughput.Stat)
-      this.throughputArr = data.throughput.Stat.map((stat: any) => {
+    if (data.throughput)
+      this.throughputArr = data.throughput.map((stat: any) => {
         let time = new Date(stat.TimeStamp).toLocaleString('en-IN', {
           year: 'numeric',
           month: 'short',

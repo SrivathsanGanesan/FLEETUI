@@ -112,7 +112,7 @@ export class ConfigurationComponent implements AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
-    private messageService:MessageService,
+    private messageService: MessageService
   ) {
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
@@ -308,8 +308,6 @@ export class ConfigurationComponent implements AfterViewInit {
     this.setPaginatedData();
   }
 
-
-
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {
       // Deselect if the same map is clicked again
@@ -370,7 +368,6 @@ export class ConfigurationComponent implements AfterViewInit {
       });
     }
   }
-
 
   async getMapImgUrl(map: any): Promise<any> {
     const response = await fetch(
@@ -494,88 +491,84 @@ export class ConfigurationComponent implements AfterViewInit {
     this.ipScanData = [];
 
     if (this.startIP === '' || this.EndIP === '') {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Enter valid IP' });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Enter valid IP',
+      });
       return;
     }
 
     const ipv4Regex =
       /^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     if (!ipv4Regex.test(this.startIP) || !ipv4Regex.test(this.EndIP)) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Not valid IP. Try again' });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Not valid IP. Try again',
+      });
       return;
     }
 
     const URL = `http://${environment.API_URL}:${environment.PORT}/fleet-config/scan-ip/${this.startIP}-${this.EndIP}`;
 
-    try {
-      const response = await fetch(URL, { method: 'GET' });
+    const response = await fetch(URL, { method: 'GET' });
 
-      if (response.status === 422) {
-        this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'IP range is too large' });
-        return;
-      }
-
-      if (this.eventSource) this.eventSource.close();
-
-      this.eventSource = new EventSource(URL);
-      this.eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          let poll: Poll = {
-            ip: data.ip_address,
-            mac: data.mac_address === '' || data.mac_address === 'undefined' ? '00:00:00:00:00:00' : data.mac_address,
-            host: data.host,
-            ping: data.time,
-            Status: data.status,
-          };
-
-          if (poll.Status === 'online') {
-            this.ipScanData = [...this.ipScanData, poll];
-            this.messageService.add({
-              severity: 'success',
-              summary: 'IP Scanned',
-              detail: `IP ${poll.ip} is online`,
-            });
-          }
-          this.cdRef.detectChanges();
-        } catch (error) {
-          console.error('Error parsing SSE data:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error parsing SSE data',
-          });
-        }
-      };
-    } catch (error) {
+    if (response.status === 422) {
+      // alert(`Ip range is too large`);
       this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: `Failed to fetch data`,
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Ip range is too large',
       });
+      return;
     }
-  }
-  stopScanning() {
-    this.isScanning = false;
 
-    if (this.eventSource) {
+    if (this.eventSource) this.eventSource.close();
+
+    this.eventSource = new EventSource(URL);
+    this.eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        let poll: Poll = {
+          ip: data.ip_address,
+          mac:
+            data.mac_address === '' || data.mac_address === 'undefined'
+              ? '00:00:00:00:00:00'
+              : data.mac_address,
+          host: data.host,
+          ping: data.time,
+          // hostname:data.hostname,
+          Status: data.status,
+        };
+        // console.log(poll);
+
+        if (poll.Status === 'online')
+          this.ipScanData = [...this.ipScanData, poll];
+        this.cdRef.detectChanges();
+      } catch (error) {
+        console.error('Error parsing SSE data:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `Error parsing SSE data ${error}`,
+        });
+      }
+    };
+
+    this.eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
       this.eventSource.close();
       this.messageService.add({
         severity: 'success',
-        summary: 'Scan Stopped',
-        detail: 'The scanning process has been successfully stopped.',
+        summary: 'Completed',
+        detail: 'Scanning Completed',
       });
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'No Active Scan',
-        detail: 'There is no active scanning process to stop.',
-      });
-    }
-
-    return;
+      this.isScanning = false;
+      this.cdRef.detectChanges();
+    };
+    this.isScanning = true;
   }
-
 
   robots = [
     { id: 1, name: 'Robot A' },

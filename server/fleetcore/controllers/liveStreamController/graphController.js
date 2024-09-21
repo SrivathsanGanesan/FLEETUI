@@ -1,3 +1,4 @@
+const { get } = require("mongoose");
 const { Map, Robo } = require("../../../application/models/mapSchema");
 
 const eventStreamHeader = {
@@ -5,6 +6,26 @@ const eventStreamHeader = {
   "Cache-Control": "no-cache",
   Connection: "keep-alive",
 };
+
+const getSampSeries = () => {
+  let arr = [];
+  for (let i = 1; i <= 5; i++) {
+    arr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
+  }
+  return arr;
+};
+
+let throughPutArr = getSampSeries();
+let starvationRateArr = getSampSeries();
+let pickAccuracyArr = getSampSeries();
+let errRateArr = getSampSeries();
 //..
 
 const getFleetThroughput = (req, res, next) => {
@@ -90,7 +111,7 @@ const throughput = async (req, res, next) => {
 
     return res.status(200).json({
       msg: "data sent",
-      throughput: { Stat: dummyStat, InProgress: InProgress },
+      throughput: throughPutArr,
       // throughput: throughput,
     });
   } catch (err) {
