@@ -81,7 +81,7 @@
 
 .popup-content.fixed-size {
   width: 1440px;
-  height: 620px;
+  height: 650px;
 }
 #Edgepopupcontent{
   max-width: 1000px;
@@ -246,7 +246,7 @@ h2 {
 
 } */
 .image-container {
-  margin-top: 10px;
+  /* margin-top: 10px; */
   position: relative;
 }
 
@@ -548,7 +548,10 @@ canvas {
   z-index: 10; /* Higher than the canvas */
   pointer-events: auto; /* Allow interaction */
 }
-
+.dropdown button:hover{
+  background-color: #ff3333;
+  color: white;
+}
 .dropdown-button {
   background-color: #ff3333;
   color: white;
