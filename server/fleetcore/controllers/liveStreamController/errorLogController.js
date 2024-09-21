@@ -1,30 +1,18 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
 
 let errTaskLogs = {
-  notifications: [
-    {
-      name: "ERR001",
-      description: "Battery low",
-      fix: ["Recharge the battery"],
-      criticality: 2,
-      // icon: "fa-solid fa-circle-exclamation",
-    },
-    {
-      name: "ERR002",
-      description: "Obstacle detected",
-      fix: ["Clear the path"],
-      criticality: 3,
-      // icon: "fa-solid fa-circle-exclamation",
-    },
-    {
-      name: "ERR003",
-      description: "Battery low",
-      fix: ["Recharge the battery"],
-      criticality: 2,
-      // icon: "fa-solid fa-circle-exclamation",
-    },
-  ],
+  notifications: [],
 };
+// let notifications = [];
+for (let i = 1; i < 100; i++) {
+  errTaskLogs.notifications.push({
+    name: `ERR00${i}`,
+    description: "Battery low",
+    fix: ["Recharge the battery"],
+    criticality: 2,
+    // icon: "fa-solid fa-circle-exclamation",
+  });
+}
 
 let errRoboLogs = {
   stats: {
@@ -66,27 +54,17 @@ let errRoboLogs = {
 };
 
 let errFleetLogs = {
-  fleetStats: [
-    {
-      moduleName: "inspection",
-      errCode: 1,
-      criticality: 3,
-      desc: "need to get verify",
-    },
-    {
-      moduleName: "maintanence",
-      errCode: 4,
-      criticality: 4,
-      desc: "N/A",
-    },
-    {
-      moduleName: "N/A",
-      errCode: 0,
-      criticality: 0,
-      desc: "N/A",
-    },
-  ],
+  fleetStats: [],
 };
+
+for (let i = 1; i < 100; i++) {
+  errFleetLogs.fleetStats.push({
+    moduleName: "maintanence",
+    errCode: 4,
+    criticality: 4,
+    desc: "N/A",
+  });
+}
 
 //.. Task
 const getFleetTaskErrLogs = (req, res, next) => {

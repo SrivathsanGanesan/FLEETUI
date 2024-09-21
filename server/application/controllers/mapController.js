@@ -90,8 +90,6 @@ const mapInsert = async (req, res) => {
         { new: true }
       );
 
-    console.log(updatedSite);
-
     if (req.file === undefined)
       return res.status(400).json({ msg: "file missing", isFileExist: false });
     mapData.imgUrl = `localhost:3000/dashboard/${req.file.filename}`;
@@ -243,7 +241,7 @@ const deleteMap = async (req, res) => {
       return res
         .status(400)
         .json({ isMapExists: false, msg: "Map not exists!" });
-    /* const updatedProj = await projectModel.findOneAndUpdate(
+    const updatedProj = await projectModel.findOneAndUpdate(
       {
         projectName: projectName,
         "sites.siteName": siteName,
@@ -254,7 +252,7 @@ const deleteMap = async (req, res) => {
         },
       },
       { new: true } // which returns the updated doc!
-    ); */
+    );
     let mapDet = await Map.findOne({ mapName: mapName });
     let robots = mapDet.robots;
     for (let robo of robots) await Robo.deleteOne({ _id: robo.roboId });
@@ -279,7 +277,7 @@ const deleteMap = async (req, res) => {
       .json({ isDeleted: true, opt: "succeed!", updatedProj: updatedProj });
   } catch (err) {
     console.log("err occ : ", err);
-    res.send(500).json({
+    res.status(500).json({
       opt: "failed",
       msg: "error occured while deleting map!",
       error: err,

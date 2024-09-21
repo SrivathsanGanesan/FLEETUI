@@ -52,14 +52,30 @@
 
                 <div class="top-section">
                   <div class="icons">
-                    <div class="menu-icon" (click)="toggleMenu(i)">
-                      &#x22EE; <!-- HTML code for vertical ellipsis -->
-                    </div>
+                    <!-- <div class="menu-icon" (click)="toggleMenu(i)">
+                      &#x22EE; 
+                    </div> -->
 
                     <div class="wifi-signal">
                       <div class="wifi-style">
-                        <div class="wifi" [ngClass]="currentSignalClass"></div>
+                        <div class="wifi" [ngClass]="mapSignalToClass(robot.SignalStrength)"></div>
                       </div>
+                    </div>
+                    
+                    <!-- battery-container -->
+                    <div class="battery-container">
+                      <div class="battery">
+                        <div class="battery-level"
+                             [ngStyle]="{'height': robot.batteryPercentage + '%'}"
+                             [ngClass]="getBatteryColor(robot.batteryPercentage)">
+                        </div>
+                        <!-- Charging icon will only show if charging is true -->
+                        <div *ngIf="robot.isCharging" class="charging-icon">
+                          <img class="charging-image" src="assets/icons/charging1.png" alt="Charging" />
+                        </div>
+                      </div>
+                      <!-- <p class="battery-percentage">{{ data.batteryPercentage }}%</p> -->
+                      <!-- <p>{{ data.isCharging ? 'Charging' : 'Not Charging' }}</p> -->
                     </div>
 
                     

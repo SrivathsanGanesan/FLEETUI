@@ -1,6 +1,6 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
 
-const fleetTasks = {
+/* const fleetTasks = {
   tasks: [
     {
       task_id: "task_001",
@@ -52,7 +52,34 @@ const fleetTasks = {
   ],
   messageText: "ACCEPTED",
   errorCode: 100,
-};
+}; */
+
+let tasks = [];
+for (let i = 1; i < 100; i++) {
+  tasks.push({
+    task_id: `task_00${i}`,
+    agent_ID: `AMR ${i}`,
+    agent_name: "Robot A",
+    task_status: {
+      status: "In Progress",
+      color: "#E19F26",
+    },
+    sub_task: [
+      {
+        source_location: "Location A",
+        task_Add_Time: "1694092800",
+        task_Complete_Time: "1694096400",
+        task_type: "Pickup",
+      },
+      {
+        source_location: "Location B",
+        task_Add_Time: "1694096500",
+        task_Complete_Time: "1694100000",
+        task_type: "Dropoff",
+      },
+    ],
+  });
+}
 
 const getFleetTask = (req, res, next) => {
   fetch(`http://fleetIp:8080/fms/amr/get_tasks_list`, {
@@ -98,7 +125,7 @@ const getTasks = async (req, res) => {
 
     return res.status(200).json({
       msg: "data sent",
-      tasks: fleetTasks.tasks,
+      tasks: tasks,
     });
   } catch (err) {
     console.log("error occured : ", err);

@@ -57,6 +57,7 @@ export class DashboardComponent implements AfterViewInit {
   edges: any[] = [];
   zones: any[] = [];
   assets: any[] = [];
+  robos: any[] = [];
   ratio: number = 1;
   plottedPoints: { id: number; x: number; y: number }[] = [];
   zoneType: ZoneType | null = null; // Selected zone type
@@ -64,6 +65,7 @@ export class DashboardComponent implements AfterViewInit {
   startY = 0;
   showChart2 = true; // Controls blur effect for Chart2
   showChart3 = true;
+  robotImages: { [key: string]: HTMLImageElement } = {};
   assetImages: { [key: string]: HTMLImageElement } = {};
   zoneColors: { [key in ZoneType]: string } = {
     [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)', // Red with 30% opacity
@@ -97,16 +99,22 @@ export class DashboardComponent implements AfterViewInit {
   ) {
     if (this.projectService.getIsMapSet()) return;
     this.onInitMapImg(); // yet to remove..
+  }
 
+  ngAfterViewInit(): void {
+    this.robotImages = {
+      robotB: new Image()
+    }
     this.assetImages = {
       docking: new Image(),
       charging: new Image(),
     };
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
-  }
 
-  ngAfterViewInit(): void {}
+    this.robotImages['robotB'] = new Image();
+    this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
+  }
 
   async getMapDetails() {
     let mapData = this.projectService.getMapData();
@@ -126,13 +134,16 @@ export class DashboardComponent implements AfterViewInit {
       node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
       return node;
     });
+
     this.edges = mapData.edges;
+
     this.assets = mapData.stations.map((asset: any) => {
       // yet to interface in this component..
       asset.x = asset.x / (this.ratio || 1);
       asset.y = asset.y / (this.ratio || 1);
       return asset;
     });
+
     this.zones = mapData.zones.map((zone: any) => {
       // yet to interface in this component..
       zone.pos = zone.pos.map((pos: any) => {
@@ -142,6 +153,12 @@ export class DashboardComponent implements AfterViewInit {
       });
       return zone;
     });
+
+    this.robos = mapData.roboPos.map((robo:any)=>{
+      robo.pos.x = robo.pos.x / (this.ratio || 1);
+      robo.pos.y = robo.pos.y / (this.ratio || 1);
+      return robo;
+    })
   }
 
   // guess no need..
@@ -312,7 +329,39 @@ export class DashboardComponent implements AfterViewInit {
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
     );
+
+    this.robos.forEach((robo) =>
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
+    );
     // ctx.restore(); // Reset transformation after drawing
+  }
+
+  plotRobo(ctx: CanvasRenderingContext2D, x: number, y: number, isSelected: boolean = false): void {
+    const image = this.robotImages['robotB'];
+    // const canvas = this.overlayCanvas.nativeElement;
+    // const ctx = canvas.getContext('2d');
+
+    if (image && ctx) {
+      const imageSize = 20;
+
+      // Highlight the selected robot with a border or background
+      // if (isSelected) { yet to replaced..
+      //   ctx.beginPath();
+      //   ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+      //   ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
+      //   ctx.fill();
+      //   ctx.closePath();
+      // }
+
+      // Draw the robot image
+      ctx.drawImage(
+        image,
+        x - imageSize / 2,
+        y - imageSize / 2,
+        imageSize * 1.3,
+        imageSize
+      );
+    }
   }
 
   private plotAsset(

@@ -133,7 +133,9 @@ export class ConfigurationComponent implements AfterViewInit {
     this.minDate = this.formatDate(pastFiveYears);
     this.maxDate = this.formatDate(today);
     let currMapData = this.projectService.getMapData();
-    if (currMapData) this.selectedMap = currMapData;
+    if (currMapData) {
+      this.selectedMap = currMapData;
+    }
 
     this.mapData = this.projectService.getSelectedProject(); // _id
     if (!this.mapData) return;
@@ -185,6 +187,7 @@ export class ConfigurationComponent implements AfterViewInit {
               ...this.EnvData[0],
               imgUrl: imgUrl,
             });
+            this.projectService.setIsMapSet(true);
           }
         }
       })
@@ -224,6 +227,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
   fetchRobos() {
     let mapData = this.projectService.getMapData();
+    if (!mapData) return;
 
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.id}`,
@@ -317,7 +321,7 @@ export class ConfigurationComponent implements AfterViewInit {
       this.ngOnInit();
 
       if (this.projectService.getIsMapSet()) return;
-      this.projectService.setIsMapSet(true);
+      // this.projectService.setIsMapSet(true);
       return;
     }
 
@@ -850,6 +854,7 @@ export class ConfigurationComponent implements AfterViewInit {
           edges: map.edges,
           assets: map.stations,
           zones: map.zones,
+          robos: map.roboPos,
         };
         this.currEditMap = true;
         this.showImageUploadPopup = true;
@@ -932,6 +937,7 @@ export class ConfigurationComponent implements AfterViewInit {
   // isLocalizationParametersFormVisible = false;
 
   formData = {
+    robotName: '',
     manufacturer: '',
     serialNumber: '',
     typeSpecification: {
@@ -1150,6 +1156,9 @@ export class ConfigurationComponent implements AfterViewInit {
         else if (data.isIpMacExists) {
           console.log(data.msg);
           alert('Ip | Mac seems already exists!');
+          return;
+        } else if (data.exists) {
+          alert('Robo Name already exists');
           return;
         }
         if (data.robo) {
