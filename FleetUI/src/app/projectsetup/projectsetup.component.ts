@@ -14,7 +14,6 @@ interface Project {
   // Add any other relevant fields
 }
 
-
 @Component({
   selector: 'app-projectsetup',
   templateUrl: './projectsetup.component.html',
@@ -42,7 +41,7 @@ export class ProjectsetupComponent {
     private router: Router,
     private projectService: ProjectService,
     private cookieService: CookieService,
-    private messageService: MessageService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -78,9 +77,9 @@ export class ProjectsetupComponent {
       this.isFocused = {};
       this.errorMessage = '';
     }
-    if (!this.isProjDiv2Visible) {
-      this.selectedFileName = 'Import Project File';
-    }
+    // if (!this.isProjDiv2Visible) {
+    //   this.selectedFileName = 'Import Project File';
+    // }
     if (!this.isProjDiv3Visible) {
       this.selectedProject = '';
     }
@@ -96,9 +95,9 @@ export class ProjectsetupComponent {
       this.isFocused = {};
       this.errorMessage = '';
     }
-    if (!this.isProjDiv2Visible) {
-      this.selectedFileName = 'Import Project File';
-    }
+    // if (!this.isProjDiv2Visible) {
+    //   this.selectedFileName = 'Import Project File';
+    // }
     if (!this.isProjDiv3Visible) {
       this.selectedProject = '';
     }
@@ -114,9 +113,9 @@ export class ProjectsetupComponent {
       this.isFocused = {};
       this.errorMessage = '';
     }
-    if (!this.isProjDiv2Visible) {
-      this.selectedFileName = 'Import Project File';
-    }
+    // if (!this.isProjDiv2Visible) {
+    //   this.selectedFileName = 'Import Project File';
+    // }
     if (!this.isProjDiv3Visible) {
       this.selectedProject = '';
     }
@@ -280,22 +279,18 @@ export class ProjectsetupComponent {
       if (!this.project._id && this.project?.projectId) {
         this.project._id = this.project.projectId;
       }
-
     } catch (error) {
       // Show error toast notification
       this.messageService.add({
         severity: 'error',
         summary: 'Selection Error',
         detail: 'An error occurred while selecting the project',
-        life: 3000  // Duration the toast will be visible
+        life: 3000, // Duration the toast will be visible
       });
     }
 
     console.log('Selected Project:', this.project);
   }
-
-
-
 
   createProject() {
     if (!this.projectname && !this.sitename) {
@@ -303,7 +298,7 @@ export class ProjectsetupComponent {
         severity: 'error',
         summary: 'Validation Error',
         detail: '*Please fill in both the fields.',
-        life: 3000
+        life: 3000,
       });
       return;
     }
@@ -313,7 +308,7 @@ export class ProjectsetupComponent {
         severity: 'error',
         summary: 'Validation Error',
         detail: '*Please fill Project Name.',
-        life: 3000
+        life: 3000,
       });
       return;
     }
@@ -323,29 +318,32 @@ export class ProjectsetupComponent {
         severity: 'error',
         summary: 'Validation Error',
         detail: '*Please fill Site Name.',
-        life: 3000
+        life: 3000,
       });
       return;
     }
 
-    fetch(`http://${environment.API_URL}:${environment.PORT}/fleet-project/project`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        project: {
-          projectName: this.projectname,
-          siteName: this.sitename,
-        },
-      }),
-    })
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/project`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          project: {
+            projectName: this.projectname,
+            siteName: this.sitename,
+          },
+        }),
+      }
+    )
       .then((res) => {
         if (res.status === 400) {
           this.messageService.add({
             severity: 'error',
             summary: 'Project Error',
             detail: 'Project Name already exists.',
-            life: 3000
+            life: 3000,
           });
           return; // Early return to prevent proceeding with parsing the response
         } else if (res.status === 500) {
@@ -353,7 +351,7 @@ export class ProjectsetupComponent {
             severity: 'error',
             summary: 'Server Error',
             detail: 'Error in server side.',
-            life: 3000
+            life: 3000,
           });
           return;
         } else if (res.status === 403) {
@@ -361,7 +359,7 @@ export class ProjectsetupComponent {
             severity: 'error',
             summary: 'Authentication Error',
             detail: 'Token Invalid.',
-            life: 3000
+            life: 3000,
           });
           return;
         }
@@ -377,7 +375,7 @@ export class ProjectsetupComponent {
             severity: 'success',
             summary: 'Project Created',
             detail: `Project "${data.project.projectName}" created successfully.`,
-            life: 3000
+            life: 3000,
           });
         }
         console.log(data);
@@ -388,7 +386,7 @@ export class ProjectsetupComponent {
           severity: 'error',
           summary: 'Fetch Error',
           detail: 'An error occurred while creating the project.',
-          life: 3000
+          life: 3000,
         });
       });
   }
@@ -399,15 +397,18 @@ export class ProjectsetupComponent {
         severity: 'error',
         summary: 'No Project Selected',
         detail: 'Please select a project before proceeding.',
-        life: 3000
+        life: 3000,
       });
       return;
     }
 
-    fetch(`http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.project._id}`, {
-      method: 'GET',
-      credentials: 'include',
-    })
+    fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.project._id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    )
       .then((res) => {
         if (!res.ok) {
           throw new Error('Project not found: ' + res.status);
@@ -419,8 +420,9 @@ export class ProjectsetupComponent {
           this.messageService.add({
             severity: 'error',
             summary: 'Project Not Found',
-            detail: 'Project does not exist in the database, try deleting it from the user.',
-            life: 3000
+            detail:
+              'Project does not exist in the database, try deleting it from the user.',
+            life: 3000,
           });
           return;
         }
@@ -433,7 +435,7 @@ export class ProjectsetupComponent {
           severity: 'success',
           summary: 'Project Opened',
           detail: `Successfully opened project: ${data.project.projectName}`,
-          life: 3000
+          life: 3000,
         });
       })
       .catch((err) => {
@@ -442,9 +444,8 @@ export class ProjectsetupComponent {
           severity: 'error',
           summary: 'Fetch Error',
           detail: 'An error occurred while fetching the project.',
-          life: 3000
+          life: 3000,
         });
       });
   }
-
 }
