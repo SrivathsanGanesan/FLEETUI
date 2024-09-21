@@ -3,7 +3,6 @@ import {
   ApexNonAxisChartSeries,
   ApexChart,
   ApexPlotOptions,
-  
 } from 'ng-apexcharts';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
@@ -25,6 +24,7 @@ export class RadialChartComponent implements OnInit {
   roboStatePie: number[] = [0, 0, 0];
   selectedMap: any | null = null;
   currentFilter: string = 'today'; // To track the selected filter
+  totCount: string = '0';
 
   constructor(private projectService: ProjectService) {
     this.chartOptions = {
@@ -45,9 +45,8 @@ export class RadialChartComponent implements OnInit {
             total: {
               show: true,
               label: 'Total',
-              formatter: this.getTotalRoboCounts,
+              formatter: () => this.totCount, //this.getTotalRoboCounts
             },
-            
           },
         },
       },
@@ -59,7 +58,6 @@ export class RadialChartComponent implements OnInit {
     const colors = ['#FF0000', '#00FF00', '#0000FF']; // Example colors, adjust based on your chart segments
     return colors[index % colors.length]; // Cycle through colors if you have more labels than colors
   }
-  
 
   async ngOnInit() {
     if (this.selectedMap) return;
@@ -99,7 +97,7 @@ export class RadialChartComponent implements OnInit {
         body: JSON.stringify({}),
       }
     );
-    
+
     let data = await response.json();
     if (data.error) {
       console.log('Err occurred while getting tasks status:', data.error);
@@ -109,7 +107,14 @@ export class RadialChartComponent implements OnInit {
       alert(data.msg);
       return [0, 0, 0];
     }
-    if (data.roboStates) return data.roboStates;
+    if (data.roboStates) {
+      let count = 0;
+      data.roboStates.forEach((stateCount: number) => {
+        count += stateCount;
+      });
+      this.totCount = count.toString();
+      return data.roboStates;
+    }
     return [0, 0, 0];
   }
 }
