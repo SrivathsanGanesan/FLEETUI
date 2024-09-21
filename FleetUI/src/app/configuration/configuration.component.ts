@@ -185,6 +185,7 @@ export class ConfigurationComponent implements AfterViewInit {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         this.filteredEnvData = this.EnvData;
+        this.setPaginatedData();
         // this.cdRef.detectChanges();
         if (!this.projectService.getIsMapSet()) {
           this.selectedMap = this.EnvData[0];
@@ -274,33 +275,40 @@ export class ConfigurationComponent implements AfterViewInit {
       projectName: project.projectName,
       mapName: map.mapName,
     };
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/robo-configuration`,
-      {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(roboInfo),
-      }
-    )
-      .then((response) => {
-        // if (response.ok) {
-        //   this.robotData = this.robotData.filter(
-        //     (robo) => robo._id !== roboInfo.roboId
-        //   );
-        //   return;
-        // }
-        return response.json();
-      })
+
+    fetch(`http://${environment.API_URL}:${environment.PORT}/robo-configuration`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(roboInfo),
+    })
+      .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        if (data.isRoboExists) this.fetchRobos();
-        // if(data.isrob)
+        if (data.isRoboExists) {
+          this.fetchRobos();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Robot deleted successfully!',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to delete the robot.',
+          });
+        }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'An error occurred while deleting the robot.',
+        });
       });
   }
+
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
   }
@@ -309,7 +317,7 @@ export class ConfigurationComponent implements AfterViewInit {
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.filteredTaskData = this.filteredTaskData.slice(
+      this.paginatedData = this.filteredTaskData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
@@ -901,7 +909,7 @@ export class ConfigurationComponent implements AfterViewInit {
       });
   }
 
-  async deleteMap(map: any): Promise<boolean> {
+   async deleteMap(map: any): Promise<boolean> {
     try {
       const response = await fetch(
         `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map.mapName}`,
@@ -910,22 +918,29 @@ export class ConfigurationComponent implements AfterViewInit {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            projectName: this.mapData?.projectName,
+            projectName: this.projectService.getMapData()?.projectName,
             siteName: map.siteName,
           }),
         }
       );
-      // if (!response.ok)
-      //   console.error('Error while fetching map data : ', response.status);
       let data = await response.json();
       if (data.isDeleted) return true;
       if (data.isMapExist === false) {
-        alert(data.msg);
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: data.msg,
+        });
         return false;
       }
       return false;
     } catch (error) {
-      console.log('Err occured : ', error);
+      console.error('Error occurred: ', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An error occurred while deleting the map.',
+      });
       return false;
     }
   }
@@ -935,33 +950,52 @@ export class ConfigurationComponent implements AfterViewInit {
     let isDeleted = false;
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      if (result) isDeleted = await this.deleteMap(item);
-      if (isDeleted) {
-        this.projectService.setIsMapSet(false);
-        this.projectService.clearMapData();
-        this.ngOnInit();
-        // Assuming `currentTable` determines which data array to modify
-        if (this.currentTable === 'Environment') {
-          this.EnvData = this.EnvData.filter((i) => i !== item);
-          this.filteredEnvData = this.EnvData;
-          this.cdRef.detectChanges();
-        } else if (this.currentTable === 'robot') {
-          this.filteredRobotData = this.filteredRobotData.filter(
-            (i) => i !== item
-          );
+      if (result) {
+        isDeleted = await this.deleteMap(item);
+        if (isDeleted) {
+          this.projectService.setIsMapSet(false);
+          this.projectService.clearMapData();
+          this.ngOnInit();
+
+          // Assuming `currentTable` determines which data array to modify
+          if (this.currentTable === 'Environment') {
+            this.EnvData = this.EnvData.filter((i) => i !== item);
+            this.filteredEnvData = this.EnvData;
+            this.cdRef.detectChanges();
+          } else if (this.currentTable === 'robot') {
+            this.filteredRobotData = this.filteredRobotData.filter(
+              (i) => i !== item
+            );
+          }
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Deleted',
+            detail: 'Item successfully deleted!',
+          });
         }
-        console.log('Item deleted:', item);
       }
     });
   }
 
   addItem(item: any) {
     console.log('Add item:', item);
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Add Item',
+      detail: 'Item added successfully.',
+    });
   }
 
   blockItem(item: any) {
     console.log('Block item:', item);
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Block Item',
+      detail: 'Item blocked.',
+    });
   }
+
   isPPPopupOpen: boolean = false;
   newItem: any = {};
   isPhysicalParametersFormVisible: boolean = false;
