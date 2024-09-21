@@ -229,6 +229,7 @@ export class ConfigurationComponent implements AfterViewInit {
     //     console.log(error);
     //   });
     this.filteredEnvData = this.EnvData;
+    this.setPaginatedData();
     this.searchTerm = '';
     this.searchTermChanged();
     
@@ -308,7 +309,7 @@ export class ConfigurationComponent implements AfterViewInit {
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.ipScanData = this.filteredTaskData.slice(
+      this.filteredTaskData = this.filteredTaskData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
@@ -318,6 +319,27 @@ export class ConfigurationComponent implements AfterViewInit {
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
+    // Search method
+    onSearch(event: Event): void {
+      const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
+  
+      if (!inputValue) {
+        this.filteredEnvData = this.EnvData;
+      } else {
+        this.filteredEnvData = this.EnvData.filter((item) =>
+          Object.values(item).some((val) =>
+            String(val).toLowerCase().includes(inputValue)
+          )
+        );
+      }
+  
+      // Reset the paginator after filtering
+      if (this.paginator) {
+        this.paginator.firstPage();
+      }
+  
+      this.setPaginatedData(); // Update paginated data after filtering
+    }
 
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {
