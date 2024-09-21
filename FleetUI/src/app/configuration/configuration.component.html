@@ -287,10 +287,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="ipScanData.length === 0">
+                <tr *ngIf="ipScanData.length === 0 ">
                   <td colspan="6" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of ipScanData">
+                <tr *ngFor="let item of ipScanData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td>{{ item.ip }}</td>
                   <td>{{ item.mac }}</td>
                   <td>{{ item.host }}</td>
@@ -396,6 +396,7 @@
               [currEditMapDet]="this.currEditMapDet"
               (closePopup)="closeImageUploadPopup()"
               (currEditMapChange)="onCurrEditMapChange($event)"
+              (refreshTable)="reloadTable()"
             >
             </app-envmap>
           </div>

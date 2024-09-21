@@ -17,8 +17,9 @@ import { ProjectService } from '../services/project.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { EnvmapComponent } from '../envmap/envmap.component';
 import { AnyAaaaRecord } from 'node:dns';
-import { PageEvent } from '@angular/material/paginator';
 import { log } from 'node:console';
+import { MessageService } from 'primeng/api';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 interface Poll {
   ip: string;
@@ -39,6 +40,7 @@ export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayLayer', { static: false }) overlayLayer!: ElementRef;
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
   nodes: Array<{ x: number; y: number; id: number }> = [];
   selectedNode: { x: number; y: number; id: number } | null = null;
@@ -105,14 +107,21 @@ export class ConfigurationComponent implements AfterViewInit {
   ];
 
   robotData: any[] = [];
-
+  paginatedData: any[] = [];
   constructor(
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
-    public dialog: MatDialog // Inject MatDialog
+    public dialog: MatDialog, // Inject MatDialog
+    private messageService:MessageService,
   ) {
     this.filteredEnvData = this.EnvData;
     this.filteredRobotData = this.robotData;
+  }
+
+  reloadTable() {
+    // Call the method that fetches the table data to reload the table
+    this.loadData();
+    this.filterData();
   }
 
   ngOnInit() {
@@ -278,13 +287,24 @@ export class ConfigurationComponent implements AfterViewInit {
         console.log(error);
       });
   }
+  trackByTaskId(index: number, item: any): number {
+    return item.taskId; // or any unique identifier like taskId
+  }
+  setPaginatedData() {
+    if (this.paginator) {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.ipScanData = this.filteredTaskData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+    }
+  }
 
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
-  setPaginatedData() {
-    throw new Error('Method not implemented.');
-  }
+
+
 
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {
@@ -292,38 +312,61 @@ export class ConfigurationComponent implements AfterViewInit {
       this.projectService.clearMapData();
       this.projectService.setIsMapSet(false);
       if (!this.EnvData.length) return;
+
       this.selectedMap = this.EnvData[0];
-      // const response = await fetch(
-      //   `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
-      // );
-      // if (!response.ok)
-      //   console.error('Error while fetching map data : ', response.status);
-      // let data = await response.json();
-      // let { map } = data;
       this.ngOnInit();
+
       if (this.projectService.getIsMapSet()) return;
       this.projectService.setIsMapSet(true);
       return;
     }
+
     // Select a new map
     this.selectedMap = map;
     if (!this.EnvData.length) return;
+
     this.projectService.clearMapData();
-    const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
-    );
-    if (!response.ok)
-      console.error('Error while fetching map data : ', response.status);
-    let data = await response.json();
 
-    this.projectService.setMapData({
-      ...map,
-      imgUrl: data.map.imgUrl,
-    });
+    try {
+      const response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+      );
 
-    if (this.projectService.getIsMapSet()) return;
-    this.projectService.setIsMapSet(true);
+      if (!response.ok) {
+        console.error('Error while fetching map data : ', response.status);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `Error while fetching map data: ${response.status}`,
+        });
+        return; // Stop execution if the fetch fails
+      }
+
+      const data = await response.json();
+
+      this.projectService.setMapData({
+        ...map,
+        imgUrl: data.map.imgUrl,
+      });
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Map Selected',
+        detail: `Successfully loaded map: ${map.mapName}`,
+      });
+
+      if (this.projectService.getIsMapSet()) return;
+      this.projectService.setIsMapSet(true);
+    } catch (error) {
+      console.error('Fetch error:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: `Error fetching map`,
+      });
+    }
   }
+
 
   async getMapImgUrl(map: any): Promise<any> {
     const response = await fetch(
@@ -405,11 +448,12 @@ export class ConfigurationComponent implements AfterViewInit {
     { column1: '192.168.XX.XX', column2: ' ' },
     { column1: '192.168.XX.XX', column2: ' ' },
   ];
-  ipScanData: Poll[] = [];
+  ipScanData: any[] = [];
 
   loadData() {
     // Fetch or initialize data here
     this.EnvData = []; // Replace with actual data fetching
+
     this.filterData(); // Initial filter application
   }
 
@@ -444,66 +488,90 @@ export class ConfigurationComponent implements AfterViewInit {
 
   async startScanning() {
     this.ipScanData = [];
+
     if (this.startIP === '' || this.EndIP === '') {
-      alert('Enter valid Ip');
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Enter valid IP' });
       return;
     }
+
     const ipv4Regex =
       /^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     if (!ipv4Regex.test(this.startIP) || !ipv4Regex.test(this.EndIP)) {
-      alert('not valid IP. Try again');
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Not valid IP. Try again' });
       return;
     }
 
     const URL = `http://${environment.API_URL}:${environment.PORT}/fleet-config/scan-ip/${this.startIP}-${this.EndIP}`;
 
-    const response = await fetch(URL, { method: 'GET' });
+    try {
+      const response = await fetch(URL, { method: 'GET' });
 
-    if (response.status === 422) {
-      alert(`Ip range is too large`);
-      return;
-    }
-
-    if (this.eventSource) this.eventSource.close();
-
-    this.eventSource = new EventSource(URL);
-    this.eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        let poll: Poll = {
-          ip: data.ip_address,
-          mac:
-            data.mac_address === '' || data.mac_address === 'undefined'
-              ? '00:00:00:00:00:00'
-              : data.mac_address,
-          host: data.host,
-          ping: data.time,
-          // hostname:data.hostname,
-          Status: data.status,
-        };
-        // console.log(poll);
-
-        if (poll.Status === 'online')
-          this.ipScanData = [...this.ipScanData, poll];
-        this.cdRef.detectChanges();
-      } catch (error) {
-        console.error('Error parsing SSE data:', error);
+      if (response.status === 422) {
+        this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'IP range is too large' });
+        return;
       }
-    };
 
-    this.eventSource.onerror = (error) => {
-      console.error('SSE error:', error);
-      this.eventSource.close();
-      this.isScanning = false;
-      this.cdRef.detectChanges();
-    };
-    this.isScanning = true;
+      if (this.eventSource) this.eventSource.close();
+
+      this.eventSource = new EventSource(URL);
+      this.eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          let poll: Poll = {
+            ip: data.ip_address,
+            mac: data.mac_address === '' || data.mac_address === 'undefined' ? '00:00:00:00:00:00' : data.mac_address,
+            host: data.host,
+            ping: data.time,
+            Status: data.status,
+          };
+
+          if (poll.Status === 'online') {
+            this.ipScanData = [...this.ipScanData, poll];
+            this.messageService.add({
+              severity: 'success',
+              summary: 'IP Scanned',
+              detail: `IP ${poll.ip} is online`,
+            });
+          }
+          this.cdRef.detectChanges();
+        } catch (error) {
+          console.error('Error parsing SSE data:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error parsing SSE data',
+          });
+        }
+      };
+    } catch (error) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: `Failed to fetch data`,
+      });
+    }
   }
   stopScanning() {
     this.isScanning = false;
-    this.eventSource.close();
+
+    if (this.eventSource) {
+      this.eventSource.close();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Scan Stopped',
+        detail: 'The scanning process has been successfully stopped.',
+      });
+    } else {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'No Active Scan',
+        detail: 'There is no active scanning process to stop.',
+      });
+    }
+
     return;
   }
+
 
   robots = [
     { id: 1, name: 'Robot A' },

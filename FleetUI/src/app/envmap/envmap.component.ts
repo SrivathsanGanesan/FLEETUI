@@ -22,6 +22,7 @@ import { MapService } from '../map.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 
+
 interface Node {
   nodeId: string;
   sequenceId: number;
@@ -102,7 +103,7 @@ export class EnvmapComponent implements AfterViewInit {
   @Input() currEditMapDet: any | null = null;
   @Output() currEditMapChange = new EventEmitter<any>();
   @Input() addEnvToEnvData!: (data: any) => void;
-
+  @Output() refreshTable = new EventEmitter<void>();  // Add this
   @Output() closePopup = new EventEmitter<void>();
   @Output() newEnvEvent = new EventEmitter<any>();
   @ViewChild('imageCanvas', { static: false })
@@ -1020,10 +1021,13 @@ export class EnvmapComponent implements AfterViewInit {
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           this.cdRef.detectChanges();
+           // Emit the event to refresh the table
+          this.refreshTable.emit();   // Emit this event here
         }
 
         console.log(this.EnvData);
         alert("Saved Successfully")
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Map Saved Successfully', life: 4000 });
         this.closePopup.emit();
       })
       .catch((error) => {
@@ -1516,10 +1520,10 @@ export class EnvmapComponent implements AfterViewInit {
                 return distance < 20; // Threshold for proximity
             });
         }
-    
+
 
     return nodeOccupied || assetOccupied;
-  }  
+  }
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -2186,7 +2190,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
-    const transformedY = canvas.height - y; // Flip the Y-axis  
+    const transformedY = canvas.height - y; // Flip the Y-axis
     if (image && ctx) {
       const imageSize = 50; // Set image size
       ctx.drawImage(
@@ -2197,14 +2201,14 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
         imageSize
       );
     }
-  
+
     // Update assets list and asset details
     this.assets = this.assets.map((asset) => {
       if (this.selectedAsset?.id === asset.id)
         asset.orientation = this.orientationAngle;
       return asset;
     });
-  
+
     this.overlayCanvas.nativeElement.addEventListener(
       'mousemove',
       this.onMouseMove.bind(this)
@@ -2214,7 +2218,7 @@ private getDistanceFromLine(x: number, y: number, node1Pos: {x: number, y: numbe
       this.onMouseUp.bind(this)
     );
   }
-  
+
   startZonePlotting(): void {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;
