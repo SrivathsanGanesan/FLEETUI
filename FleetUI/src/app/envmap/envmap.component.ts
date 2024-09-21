@@ -897,25 +897,29 @@ export class EnvmapComponent implements AfterViewInit {
       node.nodePosition.x = node.nodePosition.x * (this.ratio || 1);
       node.nodePosition.y = node.nodePosition.y * (this.ratio || 1);
       return node;
-    }); // convert pix to meter..
-    this.assets = this.assets.map((asset)=>{
+    });
+
+    this.assets = this.assets.map((asset) => {
       asset.x = asset.x * (this.ratio || 1);
       asset.y = asset.y * (this.ratio || 1);
       return asset;
-    }); // convert pix to meter..
-    this.zones = this.zones.map((zone)=>{
-      zone.pos = zone.pos.map((pos)=>{
+    });
+
+    this.zones = this.zones.map((zone) => {
+      zone.pos = zone.pos.map((pos) => {
         pos.x = pos.x * (this.ratio || 1);
         pos.y = pos.y * (this.ratio || 1);
         return pos;
-      })
+      });
       return zone;
-    })
-    this.robos = this.robos.map((robo)=>{
+    });
+
+    this.robos = this.robos.map((robo) => {
       robo.pos.x = robo.pos.x * (this.ratio || 1);
       robo.pos.y = robo.pos.y * (this.ratio || 1);
       return robo;
-    })
+    });
+
     let editedMap = {
       mapName: null,
       siteName: null,
@@ -937,9 +941,7 @@ export class EnvmapComponent implements AfterViewInit {
         body: JSON.stringify(editedMap),
       }
     )
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
         const { updatedData } = data;
         this.nodes = updatedData.nodes;
@@ -947,10 +949,26 @@ export class EnvmapComponent implements AfterViewInit {
         this.assets = updatedData.stations;
         this.zones = updatedData.zones;
         this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];
-        alert("Updated Successfully")
 
-        this.closePopup.emit();
+        // Success Toast
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Map updated successfully!',
         });
+
+        this.closePopup.emit(); // Close the popup after update
+      })
+      .catch((error) => {
+        console.error('Error updating map:', error);
+
+        // Error Toast
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update the map. Please try again later.',
+        });
+      });
   }
   saveOpt() {
     if (this.currEditMap) {
@@ -959,34 +977,44 @@ export class EnvmapComponent implements AfterViewInit {
     }
 
     if (!this.selectedImage) {
-      alert('file missing!');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'File missing!',
+        life: 4000,
+      });
       return;
     }
-    this.nodes = this.nodes.map((node)=>{
+
+    this.nodes = this.nodes.map((node) => {
       node.nodePosition.x = node.nodePosition.x * (this.ratio || 1);
       node.nodePosition.y = node.nodePosition.y * (this.ratio || 1);
       return node;
-    }); // convert pix to meter..
-    this.assets = this.assets.map((asset)=>{
+    });
+
+    this.assets = this.assets.map((asset) => {
       asset.x = asset.x * (this.ratio || 1);
       asset.y = asset.y * (this.ratio || 1);
       return asset;
-    }); // convert pix to meter..
-    this.zones = this.zones.map((zone)=>{
-      zone.pos = zone.pos.map((pos)=>{
+    });
+
+    this.zones = this.zones.map((zone) => {
+      zone.pos = zone.pos.map((pos) => {
         pos.x = pos.x * (this.ratio || 1);
         pos.y = pos.y * (this.ratio || 1);
         return pos;
-      })
+      });
       return zone;
-    })
-    this.robos = this.robos.map((robo)=>{
+    });
+
+    this.robos = this.robos.map((robo) => {
       robo.pos.x = robo.pos.x * (this.ratio || 1);
       robo.pos.y = robo.pos.y * (this.ratio || 1);
       return robo;
-    })
+    });
+
     this.form = new FormData();
-    let mapData = {
+    const mapData = {
       projectName: this.projData.projectName,
       siteName: this.siteName,
       mapName: this.mapName,
@@ -996,35 +1024,32 @@ export class EnvmapComponent implements AfterViewInit {
       edges: this.edges,
       nodes: this.nodes,
       stations: this.assets,
-      roboPos: this.robos
+      roboPos: this.robos,
     };
+
     this.form?.append('mapImg', this.selectedImage);
-    this.form?.append('mapData', JSON.stringify(mapData)); // Insert the map related data here..
+    this.form?.append('mapData', JSON.stringify(mapData));
+
     fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps`, {
       method: 'POST',
       credentials: 'include',
       body: this.form,
     })
-      .then((response) => {
-        // if (!response.ok)
-        //   throw new Error(
-        //     `Error occured with status code of ${response.status}`
-        //   );
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        if (data.exits === true) {
-          alert(data.msg);
+        if (data.exists === true || data.isFileExist === false) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Warning',
+            detail: data.msg,
+            life: 4000,
+          });
           return;
         }
-        if (data.isFileExist === false) {
-          alert(data.msg);
-          return;
-        }
+
         if (data.map) {
-          let mapCreatedAt = new Date(data.map.createdAt);
-          let createdAt = mapCreatedAt.toLocaleString('en-IN', {
+          const mapCreatedAt = new Date(data.map.createdAt);
+          const createdAt = mapCreatedAt.toLocaleString('en-IN', {
             month: 'short',
             year: 'numeric',
             day: 'numeric',
@@ -1032,6 +1057,7 @@ export class EnvmapComponent implements AfterViewInit {
             minute: 'numeric',
             second: 'numeric',
           });
+
           this.EnvData.push({
             id: data.map._id,
             mapName: data.map.mapName,
@@ -1039,22 +1065,36 @@ export class EnvmapComponent implements AfterViewInit {
             date: createdAt,
             createdAt: data.map.createdAt,
           });
+
           this.EnvData.sort(
             (a: any, b: any) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
+
           this.cdRef.detectChanges();
-           // Emit the event to refresh the table
-          this.refreshTable.emit();   // Emit this event here
+          this.refreshTable.emit(); // Emit the event to refresh the table
         }
 
-        console.log(this.EnvData);
-        // alert("Saved Successfully")
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Map Saved Successfully', life: 4000 });
+        // Success toast notification
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Map saved successfully',
+          life: 4000,
+        });
+
         this.closePopup.emit();
       })
       .catch((error) => {
-        console.error('Error occ : ', error);
+        console.error('Error occurred:', error);
+
+        // Error toast notification
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to save map. Please try again.',
+          life: 4000,
+        });
       });
 
     this.form = null;
