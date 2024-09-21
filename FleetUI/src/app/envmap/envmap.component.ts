@@ -510,6 +510,7 @@ export class EnvmapComponent implements AfterViewInit {
       );
       this.redrawCanvas();
     }
+
     if (this.selectedRobo) {
       this.robos = this.robos.filter(
         (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
@@ -1284,6 +1285,19 @@ export class EnvmapComponent implements AfterViewInit {
         return;
       }
     }
+    for (const robo of this.robos) {
+      if (this.isRobotClicked(robo, x, y)) {
+        // this.isConfirmationVisible = true;
+        const confirmDelete = confirm('Do you want to delete this robot?');
+        if (confirmDelete) {
+          // Remove the robot from the robos array
+          this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
+          // Redraw the canvas after deleting the robot
+          this.redrawCanvas();
+        }
+        return;
+      }
+    }
     // Check if a node is clicked
     for (const node of this.nodes) {
       if (this.isNodeClicked(node, x, y) && this.selectedNode) {
@@ -1506,17 +1520,17 @@ export class EnvmapComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
 
     if (image && ctx) {
-      const imageSize = 20;
+      const imageSize = 30;
 
       // Highlight the selected robot with a border or background
-      // yet tp replace..
-      // if (isSelected) {
-      //   ctx.beginPath();
-      //   ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
-      //   ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
-      //   ctx.fill();
-      //   ctx.closePath();
-      // }
+
+      if (!isSelected) {
+        ctx.beginPath();
+        ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.4)'; // Semi-transparent red
+        ctx.fill();
+        ctx.closePath();
+      }
 
       // Draw the robot image
       ctx.drawImage(
@@ -2404,12 +2418,12 @@ export class EnvmapComponent implements AfterViewInit {
   }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 30;
-    return (
-      x >= robo.pos.x - imageSize / 2 &&
-      x <= robo.pos.x + imageSize / 2 &&
-      y >= robo.pos.y - imageSize / 2 &&
-      y <= robo.pos.y + imageSize / 2
-    );
+    const roboX = robo.pos.x;
+    const roboY = robo.pos.y;
+  
+    // Check if the click is within the robot's bounds (circle radius check)
+    const distance = Math.sqrt((x - roboX) ** 2 + (y - roboY) ** 2);
+    return distance <= imageSize * 1.5; // Adjust this based on the robot's size
   }
   onCancel(): void {
     // Clear the plotted points and reset the zone plotting state
@@ -2424,16 +2438,26 @@ export class EnvmapComponent implements AfterViewInit {
   openRobotPopup(): void {
     this.isRobotPopupVisible = true;
   }
-  removeRobots(): void {
-
-    this.isConfirmationVisible = true;
-
-    // Remove selected robots
-    // this.robos = this.robos.filter(
-    //   (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
-    // );
-    // this.redrawCanvas();
-  }
+  // removeRobots(): void {
+  //   // Check if there are any robots to remove
+  //   if (this.robos.length === 0) {
+  //     console.log("No robots to remove.");
+  //     return; // Exit the function if no robots are present
+  //   }
+  
+  //   // If robots are present, show the confirmation
+  //   this.isConfirmationVisible = true;
+  
+  //   // If confirmed, proceed with removing the selected robots
+  //   // Uncomment and modify based on your confirmation logic
+  //   // this.robos = this.robos.filter(
+  //   //   (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
+  //   // );
+  
+  //   // Redraw the canvas after removing robots
+  //   // this.redrawCanvas();
+  // }
+  
   showZoneTypePopup(): void {
     this.zoneType = null;
     this.isPopupVisible = true;
@@ -2626,15 +2650,28 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
       }
+      let robotClicked = false; // Track if the robot was clicked
+
+      // Check if a robot is clicked
       for (const robo of this.robos) {
         if (this.isRobotClicked(robo, x, y)) {
           this.selectedRobo = robo;
           this.draggingRobo = true;
           this.originalRoboPosition = { x: robo.pos.x, y: robo.pos.y };
-          this.redrawCanvas();
-          return;
+          this.redrawCanvas(); // Redraw the canvas after selecting the robot
+          robotClicked = true;
+          break;
         }
       }
+  
+      if (!robotClicked) {
+        // Deselect the robot if clicked elsewhere on the canvas
+        this.selectedRobo = null;
+        this.redrawCanvas(); // Redraw the canvas after deselecting the robot
+      }
+  
+      // Handle other types of clicks like zone plotting, asset dragging, etc.
+
       let nodeClicked = false;
       for (const node of this.nodes) {
         if (this.isNodeClicked(node, x, y)) {
@@ -2660,6 +2697,8 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
   }
+
+  
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -3014,9 +3053,10 @@ export class EnvmapComponent implements AfterViewInit {
         this.plottedPoints = [];
       });
 
-      this.robos.forEach((robo) =>
-        this.plotRobo(robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
-      );
+      for (const robo of this.robos) {
+        const isSelected = this.selectedRobo && this.selectedRobo.roboDet.id === robo.roboDet.id;
+        this.plotRobo(robo.pos.x, robo.pos.y, !isSelected);
+      }
 
       // Draw assets, zones, and robots
       this.assets.forEach((asset) =>
