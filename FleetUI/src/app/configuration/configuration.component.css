@@ -549,8 +549,11 @@ tr:nth-child(even) {
 
 .date-inputs {
   display: flex;
-  gap: 0.3rem; /* Space between date inputs */
+  padding: 10px;
+  gap: 0.7rem; /* Space between date inputs */
   align-items: center;
+  border-radius: 10px;
+  filter: drop-shadow(0px 4px 0.5px rgba(225, 223, 223, 0.333));
 }
 .ASR-button, .IP-Scan{
   padding: 10px 20px;
@@ -564,7 +567,7 @@ tr:nth-child(even) {
 .date-input {
   padding: 0.5rem;
   border-radius: 0.5rem;
-  border: 1px solid #ccc;
+  border: 0px solid #ccc;  
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -572,13 +575,17 @@ tr:nth-child(even) {
   outline: none;
   box-shadow: 0px 0px 0px 2px #D30000;
 }
+.date-inputs{
+  background-color: #f7f7f7;
+  padding: 10px;
 
+}
 .date-label {
   color: #333;
   margin-left: 10px;
 }
 .Enddate-label{
-  margin-left: 80px;
+  margin-left: 60px;
 }
 .tab-menu {
   list-style: none;

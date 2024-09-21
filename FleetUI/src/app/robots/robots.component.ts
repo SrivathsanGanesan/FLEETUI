@@ -22,7 +22,7 @@ export interface Robot {
   totalDrops: string;
   SignalStrength: string;
   isCharging: boolean; // This will control whether the icon is shown
-  averagedischarge:number;
+  averagedischarge: number;
   averageChargingTime: string;
   currentspeed: string;
   averagespeed: string;
@@ -30,7 +30,6 @@ export interface Robot {
   averagetransfertime: string;
   averagedockingtime: string;
   // Add other fields as needed
-  
 }
 
 @Component({
@@ -46,7 +45,10 @@ export class RobotsComponent implements OnInit {
     // Add more images from assets/robots
   ];
   currentSignalClass: string = 'none'; // Default class
-  robots: Robot[] = [ {
+  robots: Robot[] = [];
+
+  /* robots: Robot[] = [
+    {
     id: 1,
     serialNumber: '50000',
     name: 'Forklift AGV',
@@ -72,58 +74,6 @@ export class RobotsComponent implements OnInit {
     averagetransfertime: '2.03',
     averagedockingtime: '1.40',
   },
-  {
-    id: 2,
-    serialNumber: '50000',
-    name: 'Forklift AGV',
-    imageUrl: '../../assets/robots/agv1.png',
-    status: 'Active',
-    battery: '40%',
-    temperature: '59 C',
-    networkstrength: '90 dBi',
-    robotutilization: ' 43 %',
-    cpuutilization: '90 %',
-    memory: '10 %',
-    error: '10',
-    batteryPercentage: 17,
-    isCharging: false, // This will control whether the icon is shown
-    totalPicks: '31',
-    totalDrops: '28',
-    SignalStrength: 'Full',
-    averagedischarge:20,
-    averageChargingTime:'1.30',
-    currentspeed: '1.5',
-    averagespeed: '0.9',
-    maximumspeed: '2.0',
-    averagetransfertime: '2.03',
-    averagedockingtime: '1.40',
-  }
-
-
-];
-
-  /* robots: Robot[] = [
-    {
-      id: 1,
-      serialNumber: '50000',
-      name: 'Forklift AGV',
-      imageUrl: '../../assets/robots/agv1.png',
-      status: 'Active',
-      battery: '40%',
-      temperature: '59 C',
-      networkstrength: '90 dBi',
-      robotutilization: ' 43 %',
-      cpuutilization: '90 %',
-      memory: '10 %',
-      error: '10',
-      batteryPercentage: 87,
-      isCharging: true, // This will control whether the icon is shown
-      totalPicks: '31',
-      totalDrops: '28',
-      SignalStrength: 'Weak',
-      averagedischarge:number;
-      
-    },
     {
       id: 2,
       serialNumber: '101589',
@@ -234,20 +184,16 @@ export class RobotsComponent implements OnInit {
     // this.mapDetails = this.projectService.getMapData();
   }
 
-
-
-
   async ngOnInit() {
     // this.setSignalStrength('Weak'); // Change this value to test different signals
     this.mapDetails = this.projectService.getMapData();
     if (!this.mapDetails) return;
     let grossFactSheet = await this.fetchAllRobos();
-    return;
     this.robots = grossFactSheet.map((robo) => {
       robo.imageUrl = '../../assets/robots/agv1.png';
-      if (robo.networkstrength < 20) robo.SignalStrength = 'weak';
-      else if (robo.networkstrength < 40) robo.SignalStrength = 'medium';
-      else if (robo.networkstrength < 80) robo.SignalStrength = 'full';
+      if (robo.networkstrength < 20) robo.SignalStrength = 'Weak';
+      else if (robo.networkstrength < 40) robo.SignalStrength = 'Medium';
+      else if (robo.networkstrength < 80) robo.SignalStrength = 'Full';
       robo.networkstrength = robo.networkstrength.toString() + ' dBm';
       return robo;
     });
@@ -380,7 +326,6 @@ export class RobotsComponent implements OnInit {
   setSignalStrength(signal: string): void {
     this.currentSignalClass = this.mapSignalToClass(signal);
     console.log('Current Signal Class: ', this.currentSignalClass); // Debug log
-    
   }
 
   mapSignalToClass(signal: string): string {
