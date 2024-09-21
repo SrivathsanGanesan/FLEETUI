@@ -163,7 +163,7 @@
               *ngIf="currentTable === 'Environment' && !imageUploaded"
             >
               <mat-paginator
-                [length]="filteredTaskData.length"
+                [length]="filteredEnvData.length"
                 [pageSize]="10"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
@@ -311,7 +311,7 @@
               *ngIf="currentTable === 'robot' && !imageUploaded"
             >
               <mat-paginator
-                [length]="filteredTaskData.length"
+                [length]="ipScanData.length"
                 [pageSize]="10"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"

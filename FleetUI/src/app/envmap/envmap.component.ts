@@ -341,7 +341,7 @@ export class EnvmapComponent implements AfterViewInit {
         robo.pos.y = robo.pos.y / (this.ratio || 1);
         return robo;
       })
-      
+
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
           ? parseInt(this.nodes[this.nodes.length - 1].nodeId) + 1
@@ -923,7 +923,7 @@ export class EnvmapComponent implements AfterViewInit {
       stations: this.assets,
       roboPos: this.robos
     };
-    
+
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.mapName}`,
       {
@@ -1045,7 +1045,7 @@ export class EnvmapComponent implements AfterViewInit {
         }
 
         console.log(this.EnvData);
-        alert("Saved Successfully")
+        // alert("Saved Successfully")
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Map Saved Successfully', life: 4000 });
         this.closePopup.emit();
       })
@@ -1692,7 +1692,7 @@ export class EnvmapComponent implements AfterViewInit {
         );
 
         this.isPlottingEnabled = false; // Disable further plotting after two nodes
-    } 
+    }
     //yet to uncomment..
     // else {
     //     // Plotting additional nodes
@@ -1736,7 +1736,7 @@ export class EnvmapComponent implements AfterViewInit {
 
           if(this.isPositionOccupied(x, transformedY, 'node')){
             alert('stop bro');
-            this.nodes = this.nodes.filter(node => 
+            this.nodes = this.nodes.filter(node =>
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
             this.closeIntermediateNodesDialog()
@@ -1745,7 +1745,7 @@ export class EnvmapComponent implements AfterViewInit {
           }
           if(this.isOverLappingWithOtherNodesInPlotting(x, y)){
             alert('stop bro');
-            this.nodes = this.nodes.filter(node => 
+            this.nodes = this.nodes.filter(node =>
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
             this.closeIntermediateNodesDialog()

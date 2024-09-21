@@ -42,6 +42,7 @@ export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('overlayLayer', { static: false }) overlayLayer!: ElementRef;
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
+
   nodes: Array<{ x: number; y: number; id: number }> = [];
   selectedNode: { x: number; y: number; id: number } | null = null;
   nodeIdCounter: number = 0; // Counter to generate unique IDs for each node
@@ -120,11 +121,18 @@ export class ConfigurationComponent implements AfterViewInit {
 
   reloadTable() {
     // Call the method that fetches the table data to reload the table
+    console.log("data reloaded")
     this.loadData();
     this.filterData();
   }
+  onChanges(){
+    this.loadData();
+    this.filterData();
+    console.log("data added");
+  }
 
   ngOnInit() {
+    this.setPaginatedData()
     this.cdRef.detectChanges();
     const today = new Date();
     const pastFiveYears = new Date();
@@ -223,6 +231,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filteredEnvData = this.EnvData;
     this.searchTerm = '';
     this.searchTermChanged();
+    
   }
 
   fetchRobos() {
@@ -294,6 +303,8 @@ export class ConfigurationComponent implements AfterViewInit {
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
   }
+
+
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
@@ -456,7 +467,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
   loadData() {
     // Fetch or initialize data here
-    this.EnvData = []; // Replace with actual data fetching
+    // this.EnvData = []; // Replace with actual data fetching
 
     this.filterData(); // Initial filter application
   }
