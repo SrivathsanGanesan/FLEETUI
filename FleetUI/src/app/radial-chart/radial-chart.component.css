@@ -5,7 +5,7 @@
 }
 
 #chart {
-  position: relative;
+  
   width: 100%; /* Adjust to fit the container */
   max-width: 500px; /* Adjust as needed */
 }
