@@ -20,6 +20,7 @@
           <div class="search-box">
             <input
               type="text"
+              (input)="onSearch($event)"
               placeholder="Search For Something..."
               class="search-input"
               [(ngModel)]="searchTerm"
@@ -118,7 +119,7 @@
                 <tr *ngIf="filteredEnvData.length === 0">
                   <td colspan="5" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of filteredEnvData">
+                <tr *ngFor="let item of filteredEnvData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td>
                     {{ item.mapName }}
                   </td>
@@ -163,7 +164,7 @@
               *ngIf="currentTable === 'Environment' && !imageUploaded"
             >
               <mat-paginator
-                [length]="filteredTaskData.length"
+                [length]="filteredEnvData.length"
                 [pageSize]="10"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
@@ -211,7 +212,7 @@
               *ngIf="currentTable === 'robot' && !imageUploaded"
             >
               <mat-paginator
-                [length]="filteredTaskData.length"
+                [length]="filteredRobotData.length"
                 [pageSize]="10"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
@@ -287,10 +288,17 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="ipScanData.length === 0 ">
+                <tr *ngIf="ipScanData.length === 0">
                   <td colspan="6" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of ipScanData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
+                <tr
+                  *ngFor="
+                    let item of ipScanData;
+                    index as i;
+                    trackBy: trackByTaskId
+                  "
+                  [class.paused]="item.paused"
+                >
                   <td>{{ item.ip }}</td>
                   <td>{{ item.mac }}</td>
                   <td>{{ item.host }}</td>
@@ -311,7 +319,7 @@
               *ngIf="currentTable === 'robot' && !imageUploaded"
             >
               <mat-paginator
-                [length]="filteredTaskData.length"
+                [length]="ipScanData.length"
                 [pageSize]="10"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
