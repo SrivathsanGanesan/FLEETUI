@@ -202,4 +202,9 @@ export class TasksComponent implements OnInit, AfterViewInit {
   onClose() {
     this.isPopupVisible = false;
   }
+
+
+  // cancel popup
+
+  
 }

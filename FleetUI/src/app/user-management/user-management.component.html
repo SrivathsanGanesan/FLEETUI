@@ -1,7 +1,7 @@
 <app-sidenavbar></app-sidenavbar>
 <div class=" mainContent">
 
-    
+  <app-loader></app-loader>
     <!-- Title and Button -->
     <div class="flex w-full items-center justify-between">
       <!-- Title -->
@@ -267,7 +267,7 @@
 
    <!-- Delete User Permission -->
    <div [ngClass]="{'hidden': !deleteUserOCstate}" class="absolute flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50">
-    <div class="w-[600px] bg-white flex flex-col gap-5 rounded-[20px] shadow-[0_0_100px_#00000060] border-l-[22px] border-[#D30000] p-10">
+    <div class="w-[600px] bg-white flex flex-col gap-5 rounded-[20px] shadow-[0_0_100px_#00000060] p-10">
        <!-- Title -->
        <span class="flex flex-col items-start justify-center">
         <p class=" text-[35px] text-[#DA2127] font-bold">Delete</p>

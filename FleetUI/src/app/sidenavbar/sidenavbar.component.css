@@ -1,6 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:weight@100;200;300;400;500;600;700;800&display=swap");
 /* sidenavbar.css */
+
+/* styles.css or styles.scss */
+
+
 .sidebar {
+  position: fixed; /* or relative based on your layout */
     height: 100%;
     width: 65px;
     background-color: #FF7373;
@@ -11,7 +16,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    z-index: 1; /* Ensure it's above the canvas */
+   
+    z-index: 10000;
   }
 /* CSS for the active tab */
   .active {
