@@ -1467,7 +1467,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   onDeleteZone(): void {
     if (this.selectedZone) {
       // Remove the selected zone from the zones array
-      this.zones = this.zones.filter((zone) => zone !== this.selectedZone);
+      this.zones = this.zones.filter((zone) => zone.id !== this.selectedZone?.id);
       this.selectedZone = null;
 
       // Hide the popup and redraw the canvas to reflect the deletion
