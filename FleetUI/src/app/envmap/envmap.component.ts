@@ -706,13 +706,13 @@ export class EnvmapComponent implements AfterViewInit {
     dockingType: 'mode1',
   };
   undockParameters = {
-    maxLinearVelocity: '',
-    maxAngularVelocity: '',
-    maxToleranceAtGoalX: '',
-    maxToleranceAtGoalY: '',
-    maxToleranceAtGoalOrientation: '',
+    maxLinearVelocity: 0,
+    maxAngularVelocity: 0,
+    maxToleranceAtGoalX: 0,
+    maxToleranceAtGoalY: 0,
+    maxToleranceAtGoalOrientation: 0,
     endPointOrientation: false,
-    undockingDistance: '',
+    undockingDistance: 0,
   };
   onActionChange(): void {
     
@@ -743,13 +743,13 @@ export class EnvmapComponent implements AfterViewInit {
       dockingType: 'mode1',
     };
     this.undockParameters = {
-      maxLinearVelocity: '',
-      maxAngularVelocity: '',
-      maxToleranceAtGoalX: '',
-      maxToleranceAtGoalY: '',
-      maxToleranceAtGoalOrientation: '',
+      maxLinearVelocity: 0,
+      maxAngularVelocity: 0,
+      maxToleranceAtGoalX: 0,
+      maxToleranceAtGoalY: 0,
+      maxToleranceAtGoalOrientation: 0,
       endPointOrientation: false,
-      undockingDistance: '',
+      undockingDistance: 0,
     };
   }
   showActionForm(): void {
