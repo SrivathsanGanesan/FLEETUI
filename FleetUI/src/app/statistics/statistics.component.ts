@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-statistics',
@@ -9,6 +10,7 @@ import { ProjectService } from '../services/project.service';
   styleUrls: ['./statistics.component.css'],
 })
 export class StatisticsComponent {
+
   currentView: string = 'operation'; // Default to 'operation'
   operationPie: number[] = [0, 0, 0, 0, 0];
   selectedMap: any | null = null;
@@ -27,7 +29,14 @@ export class StatisticsComponent {
     { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
     // { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   ];
+  
+  statisticsData: any = {}; // Initialize the array with mock data
 
+
+  
+
+
+  
   filteredOperationActivities = this.operationActivities;
   filteredNotifications = this.notifications;
 
@@ -72,6 +81,18 @@ export class StatisticsComponent {
       //   currTasks[0],
       // ];
     }, 1000 * 10);
+
+
+    this.statisticsData = {
+      systemThroughput: 15,
+      systemThroughputChange: 3.5,
+      systemUptime: 99.9,
+      systemUptimeChange: 0.2,
+      successRate: 95,
+      successRateChange: -1.5,
+      responsiveness: 200,
+      responsivenessChange: 5.2
+    };
   }
 
   async fetchCurrTasksStatus(): Promise<number[]> {

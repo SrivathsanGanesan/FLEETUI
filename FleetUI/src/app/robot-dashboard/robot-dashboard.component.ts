@@ -12,6 +12,7 @@ export class RobotDashboardComponent implements OnInit {
   currentView: string = 'robot';
   selectedMap: any | null = null;
   robotActivities: any[] = [];
+  statisticsData: any = {}; // Initialize the array with mock data
   // robotActivities = [
 
   //   // { id: 2, name: 'AMR-001', task: 'Transporting materials', progress: 85, status: 'Actively Working' },
@@ -54,6 +55,17 @@ export class RobotDashboardComponent implements OnInit {
       //   currActivities[0],
       // ];
     }, 1000 * 10);
+
+    this.statisticsData = {
+      averageSpeed: 75,
+      averageSpeedchange: 8.5,
+      totalDistance: 99.9,
+      totalDistanceChange: 0.2,
+      robotUtilization: 35,
+      robotUtilizationChange: -1.5,
+      networkConnection: 100,
+      networkConnectionChange: 5.2
+    };
   }
 
   async fetchCurrRoboActivites(): Promise<number[]> {

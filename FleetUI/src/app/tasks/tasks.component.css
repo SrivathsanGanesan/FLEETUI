@@ -83,9 +83,10 @@
    
     padding: 5px;
     height: 30px;
-    text-align: center;
+    text-align: left;
   }
 
+ 
   th {
     background-color: #FFCDCD;
     padding: 10px 20px;
@@ -97,6 +98,8 @@
 
   td {
     font-size: 13px;
+    text-align: left;
+    padding-left: 20px;
   }
 
   tr:hover {
@@ -143,7 +146,7 @@
     position: relative; /* Important for positioning the close button */
     font-size: 36px; /* Ensures that the font size stays large */
     font-family: 'Arial', sans-serif; /* Explicitly set the font family */
-    font-weight: bold;
+    font-weight: 600;
     color: #DA2127;
     padding: 60px;
     background: #fff;
@@ -162,7 +165,7 @@
     border: none;
     border-radius: 5px;
     background-color: #dedede;
-    font-size: 18px;
+    font-size: 16px;
     color: #212121;
     cursor: pointer;
     width: 200px; /* Set a fixed width for all buttons */
@@ -247,15 +250,7 @@
     color: #aaa;
   }
 
-  th, td {
-    border: 0px solid #ffffff;
-    /* padding:10px 5px 10px 10px; */
-    height: 30px;
-  }
-  td{
-    text-align: center;
-    padding-left: 20px;
-  }
+  
 
   .search-btn {
     background-color: #ff5c5c;
