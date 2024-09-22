@@ -12,7 +12,17 @@ export class RobotDashboardComponent implements OnInit {
   currentView: string = 'robot';
   selectedMap: any | null = null;
   robotActivities: any[] = [];
-  statisticsData: any = {}; // Initialize the array with mock data
+  statisticsData: any = {
+    averageSpeed: 75,
+    averageSpeedchange: 8.5,
+    totalDistance: 99.9,
+    totalDistanceChange: 0.2,
+    robotUtilization: 35,
+    robotUtilizationChange: -1.5,
+    networkConnection: 100,
+    networkConnectionChange: 5.2,
+  }; // Initialize the array with mock data
+
   // robotActivities = [
 
   //   // { id: 2, name: 'AMR-001', task: 'Transporting materials', progress: 85, status: 'Actively Working' },
@@ -42,30 +52,59 @@ export class RobotDashboardComponent implements OnInit {
     this.router.navigate(['/statistics/robot']);
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) return;
+    this.getFleetGrossStatus();
     this.robotActivities = await this.fetchCurrRoboActivites();
     this.filteredRobotActivities = this.robotActivities;
     setInterval(async () => {
       let currActivities = await this.fetchCurrRoboActivites();
       this.robotActivities.push(currActivities);
       this.filteredRobotActivities = this.robotActivities.flat(); // flat() to convert nested of nested array to single array..
-      console.log(this.filteredRobotActivities);
 
       // this.filteredRobotActivities = [
       //   ...this.filteredRobotActivities,
       //   currActivities[0],
       // ];
     }, 1000 * 10);
+  }
 
-    this.statisticsData = {
-      averageSpeed: 75,
-      averageSpeedchange: 8.5,
-      totalDistance: 99.9,
-      totalDistanceChange: 0.2,
-      robotUtilization: 35,
-      robotUtilizationChange: -1.5,
-      networkConnection: 100,
-      networkConnectionChange: 5.2
-    };
+  async fetchFleetStatus(endpoint: string, bodyData = {}): Promise<any> {
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-gross-status/${endpoint}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData),
+      }
+    );
+
+    return await response.json();
+  }
+
+  // async to synchronous...
+  async getFleetGrossStatus() {
+    const mapId = this.selectedMap.id;
+
+    let averageSpeed = await this.fetchFleetStatus('average-speed', {
+      mapId: mapId,
+    });
+    if (averageSpeed.averageSpeed)
+      this.statisticsData.averageSpeed = averageSpeed.averageSpeed;
+    let totDistance = await this.fetchFleetStatus('total-distance', {
+      mapId: mapId,
+    });
+    if (totDistance.totalDistance)
+      this.statisticsData.totalDistance = totDistance.totalDistance;
+    let roboUtil = await this.fetchFleetStatus('robo-util', {
+      mapId: mapId,
+    });
+    if (roboUtil.roboUtilization)
+      this.statisticsData.robotUtilization = roboUtil.roboUtilization;
+    let networkConn = await this.fetchFleetStatus('network-conn', {
+      mapId: mapId,
+    });
+    if (networkConn.networkConnection)
+      this.statisticsData.networkConnection = networkConn.networkConnection;
   }
 
   async fetchCurrRoboActivites(): Promise<number[]> {

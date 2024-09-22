@@ -567,7 +567,7 @@ tr:nth-child(even) {
 .date-input {
   padding: 0.5rem;
   border-radius: 0.5rem;
-  border: 0px solid #ccc;  
+  border: 0px solid #ccc;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -920,4 +920,12 @@ border: none;
     border: 1px solid #ccc;
     border-radius: 10px;
     min-height: var(--mat-paginator-container-size);
+}
+
+
+.custom-dropdown {
+  width: 242px; /* Set the fixed width */
+  white-space: nowrap; /* Prevent text from wrapping */
+  /* overflow: hidden; Hide overflow text */
+  text-overflow: ellipsis; /* Show '...' for overflow text */
 }

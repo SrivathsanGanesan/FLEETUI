@@ -20,6 +20,7 @@
           <div class="search-box">
             <input
               type="text"
+              (input)="onSearch($event)"
               placeholder="Search For Something..."
               class="search-input"
               [(ngModel)]="searchTerm"
@@ -41,7 +42,7 @@
             <input
               type="date"
               id="start-date"
-              
+
               (change)="onDateChange($event)"
               class="date-input"
               [min]="minDate"
@@ -52,7 +53,7 @@
             <input
               type="date"
               id="end-date"
-          
+
               (change)="onDateChange($event)"
               class="date-input"
               [min]="minDate"
@@ -117,10 +118,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="filteredEnvData.length === 0">
+                <tr *ngIf="paginatedData.length === 0">
                   <td colspan="5" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of filteredEnvData">
+                <tr *ngFor="let item of paginatedData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td>
                     {{ item.mapName }}
                   </td>
@@ -162,10 +163,10 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'Environment' && !imageUploaded && filteredEnvData.length > 5"
+              *ngIf="currentTable === 'Environment' && !imageUploaded "
             >
               <mat-paginator
-                [length]="filteredTaskData.length"
+                [length]="filteredEnvData.length"
                 [pageSize]="5"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
@@ -184,10 +185,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="filteredRobotData.length === 0">
+                <tr *ngIf="paginatedData1.length === 0">
                   <td colspan="4" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of filteredRobotData; index as i">
+                <tr *ngFor="let item of paginatedData1; index as i">
                   <td>{{ i + 1 }}</td>
                   <td>{{ item.roboName }}</td>
                   <td>{{ item.ipAdd }}</td>
@@ -210,7 +211,7 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded && filteredRobotData.length > 5"
+              *ngIf="currentTable === 'robot' && !imageUploaded"
             >
               <mat-paginator
                 [length]="filteredRobotData.length"
@@ -289,10 +290,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="ipScanData.length === 0 ">
+                <tr *ngIf="paginatedData2.length === 0 ">
                   <td colspan="6" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of ipScanData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
+                <tr *ngFor="let item of paginatedData2; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td>{{ item.ip }}</td>
                   <td>{{ item.mac }}</td>
                   <td>{{ item.host }}</td>
@@ -310,7 +311,7 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded && ipScanData.length > 5"
+              *ngIf="currentTable === 'robot' && !imageUploaded "
             >
               <mat-paginator
                 [length]="ipScanData.length"
@@ -430,7 +431,7 @@
         </div>
 
         <div class="rob-inp">
-          <label for="robotName">Robot Name:</label>
+          <label for="robotName" style="margin-right:1rem;margin-left:1rem;">Robot Name:</label>
           <input
             pInputText
             type="text"
@@ -440,7 +441,7 @@
             required
           />
 
-          <label for="manufacturer">Manufacturer:</label>
+          <label for="manufacturer" style="margin-right:1rem;margin-left:1rem;">Manufacturer:</label>
           <input
             pInputText
             type="text"
@@ -450,7 +451,7 @@
             required
           />
 
-          <label for="serialNumber">Serial Number:</label>
+          <label for="serialNumber" style="margin-right:1rem;margin-left:1rem;">Serial Number:</label>
           <input
             pInputText
             type="text"
@@ -636,6 +637,7 @@
             type="text"
             id="envelopes3d"
             [(ngModel)]="formData.agvGeometry.envelopes3d"
+            style="margin-right: 13%;"
             name="envelopes3d"
           />
         </div>
@@ -731,6 +733,7 @@
             type="text"
             id="timing"
             [(ngModel)]="formData.protocolLimits.timing"
+            style="margin-right: 13%;"
             name="timing"
           />
         </div>
@@ -778,6 +781,7 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select AGV Kinematic"
+            styleClass="custom-dropdown"
           />
 
           <label for="agvClass">AGV Class:</label>
@@ -788,6 +792,7 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select AGV Class"
+            styleClass="custom-dropdown"
           />
         </div>
         <div class="rob-inp2">
@@ -821,6 +826,7 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select LocalizationTypes"
+            [style]="{'margin-right':'4.2rem'}"
           />
         </div>
         <button pButton type="button" (click)="saveTypeSpecification()">

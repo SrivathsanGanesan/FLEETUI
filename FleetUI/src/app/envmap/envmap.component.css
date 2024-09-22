@@ -282,17 +282,24 @@ canvas {
 }
 .close-btn {
   position: absolute;
-  top: -5px;
-  right: 2px;
-  border: 1px solid red;
+  top: -12px;
+  right: -15px;
   background-color: white;
-  color: #ff7373;
+  border: 2px solid red;
+  border-radius: 50%;
+  color: red;
   font-size: 20px;
   font-weight: bolder;
   padding: 5px;
-  border: none;
-  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: none; */
+  /* border-radius: 5px; */
   cursor: pointer;
+  z-index: 10;
 }
 
 .intermediate-nodes-dialog {
@@ -723,6 +730,19 @@ button {
     fill: white; /* Change color on hover */
   }
 
+  .close-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: red; /* Color for the close icon */
+  }
+
+  .close-btn:hover {
+    background-color: #da2127;
+  }
+
+  .close-btn:hover svg {
+    fill: white; /* Change color on hover */
+  }
   .input-groupg {
     display: flex;
     flex-wrap: nowrap;
