@@ -784,7 +784,8 @@ export class EnvmapComponent implements AfterViewInit {
     this.actions.splice(index, 1); // Remove the action from the list
   }
   addAction(): void {
-    if (this.selectedAction) {
+    if (this.selectedAction && this.selectedNode) {
+      
       let action: any;
 
       if (this.selectedAction === 'Move') {
@@ -819,8 +820,8 @@ export class EnvmapComponent implements AfterViewInit {
       this.actionOptions = this.actionOptions.filter(option => option.value !== this.selectedAction);
       // this.actions.push(action);
       this.nodes = this.nodes.map((node) => {
-        console.log(this.selectedNode?.nodeId, node?.nodeId);
-        if (this.selectedNode?.nodeId === node?.nodeId) node.actions.push(action);
+        console.log(this.selectedNode?.nodeId, node.nodeId);
+        if (this.selectedNode?.nodeId === node.nodeId) node.actions.push(action);
         return node;
       });
       this.cdRef.detectChanges();
@@ -1414,7 +1415,15 @@ onImagePopupCanvasClick(event: MouseEvent): void {
             continue;
           }
         }
+        
         // this.cdRef.detectChanges();
+        // Remove selected action from the dropdown options
+        let actionOpt = this.selectedNode.actions.map(action => action.actionType);
+        this.actionOptions = []
+        if(!actionOpt.includes('Move')) this.actionOptions.push({label: 'Move', value: 'Move'})
+        if(!actionOpt.includes('Dock')) this.actionOptions.push({label: 'Dock', value: 'Dock'})
+        if(!actionOpt.includes('Undock')) this.actionOptions.push({label: 'Undock', value: 'Undock'})
+
         this.showNodeDetailsPopup();
         return;
       }
@@ -1994,33 +2003,10 @@ onImagePopupCanvasClick(event: MouseEvent): void {
         this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
       }
     }
-    // Transform Nodes array to NodeDetails format
-    this.NodeDetails = this.nodes.map((node, index) => ({
-      nodeID: `node_${String(node.nodeId).padStart(3, '0')}`, // Format nodeID as a string
-      sequenceId: index + 1, // SequenceId is based on the order of nodes
-      nodeDescription: this.nodeDetails.description || '', // Use node description
-      intermediate_node: this.nodeDetails.intermediate_node, // Bind checkbox value
-      waiting_node: this.nodeDetails.waiting_node, // Bind checkbox value
-      released: true,
-      nodePosition: {
-        x: node.nodePosition.x,
-        y: node.nodePosition.y,
-        orientation: node.nodePosition.orientation, // Use the latest orientation angle here
-      },
-      actions: this.actions, // Include actions here
-    }));
 
-    // Log the JSON object to the console
-    console.log(this.nodes);
-    console.log(this.edges);
-    console.log(this.assets);
-    console.log(this.zones);
-
-    // // Save the JSON object to a file
-    // const blob = new Blob([JSON.stringify(updatedNodeDetails, null, 2)], {
-    //   type: 'application/json',
-    // });
-    // saveAs(blob, 'node-details.json');
+    if(this.selectedNode){
+      console.log(this.moveParameters, this.dockParameters, this.undockParameters);
+    }
 
     // Clear all the details for the previous node
     this.Nodes = []; // Clear the Nodes array
