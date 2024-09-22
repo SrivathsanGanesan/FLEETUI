@@ -682,6 +682,7 @@ export class EnvmapComponent implements AfterViewInit {
       if (this.resolutionInput) {
         this.resolutionInput.nativeElement.value = ''; // Reset the input field
       }
+      this.validationError=null;
   }
   moveParameters = {
     maxLinearVelocity: '',
