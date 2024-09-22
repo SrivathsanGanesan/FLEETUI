@@ -1,9 +1,10 @@
 import { environment } from '../../environments/environment.development';
 import { ExportService } from '../export.service';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ProjectService } from '../services/project.service';
 import { timeStamp } from 'console';
-import { PageEvent } from '@angular/material/paginator';
+// import { PageEvent } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-userlogs',
@@ -11,6 +12,7 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrl: './userlogs.component.css',
 })
 export class Userlogscomponent {
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   mapData: any | null = null;
   activeFilter: any;
   ONBtn: any;
@@ -22,12 +24,9 @@ export class Userlogscomponent {
   currentTable = 'task';
   currentTab: any;
   filteredTaskData: any[] = [];
-  onPageChange(event: PageEvent) {
-    this.setPaginatedData();
-  }
-  setPaginatedData() {
-    throw new Error('Method not implemented.');
-  }
+  paginatedData: any[] = [];
+  paginatedData1: any[] = [];
+  paginatedData2: any[] = [];
 
   // Your task data
   taskData: any[] = [];
@@ -86,6 +85,7 @@ export class Userlogscomponent {
           };
         });
         this.filteredTaskData = this.taskData;
+        this.setPaginatedData();
         // console.log(taskLogs);
       })
       .catch((err) => {
@@ -123,6 +123,8 @@ export class Userlogscomponent {
             desc: roboErr.DESCRIPTION,
           };
         });
+        // this.robotData = this.paginatedData2;
+        this.setPaginatedData();
       })
       .catch((err) => {
         console.log(err);
@@ -158,10 +160,33 @@ export class Userlogscomponent {
             desc: fleetErr.desc,
           };
         });
+        this.setPaginatedData();
       })
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  setPaginatedData() {
+    if (this.paginator) {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.paginatedData = this.taskData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+      this.paginatedData1 = this.robotData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+      this.paginatedData2 = this.fleetData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+    }
+  }
+
+  onPageChange(event: PageEvent) {
+    this.setPaginatedData();
   }
 
   togglePopup() {

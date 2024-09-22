@@ -109,6 +109,8 @@ export class ConfigurationComponent implements AfterViewInit {
 
   robotData: any[] = [];
   paginatedData: any[] = [];
+  paginatedData1: any[] = [];
+  paginatedData2: any[] = [];
   constructor(
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
@@ -271,6 +273,7 @@ export class ConfigurationComponent implements AfterViewInit {
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
         this.filteredRobotData = this.robotData;
+        this.setPaginatedData();
       })
       .catch((error) => {
         console.log(error);
@@ -336,6 +339,14 @@ export class ConfigurationComponent implements AfterViewInit {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       this.paginatedData = this.filteredEnvData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+      this.paginatedData1 = this.filteredRobotData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+      this.paginatedData2 = this.ipScanData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
@@ -605,6 +616,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
         if (poll.Status === 'online')
           this.ipScanData = [...this.ipScanData, poll];
+          this.setPaginatedData();
         this.cdRef.detectChanges();
       } catch (error) {
         console.error('Error parsing SSE data:', error);
