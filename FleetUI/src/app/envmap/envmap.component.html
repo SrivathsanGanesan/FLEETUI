@@ -167,7 +167,7 @@
                 styleClass="small-dropdown"
               ></p-dropdown>
             </div>
-            <div *ngIf="validationError" class="validation-error">{{ validationError }}</div>
+            <!-- <div *ngIf="validationError" class="validation-error">{{ validationError }}</div> -->
           </div>
 
           <div *ngIf="actions.length > 0" class="action-div">
@@ -330,15 +330,12 @@
               <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.undockingDistance" style="margin-right: 20rem;"/><br />
             </div>
               <button (click)="addAction()">Add</button>
-
           </div>
 
         </div>
 
 
       </div>
-
-
       </div>
     </div>
       <!-- Transparent canvas for plotting points -->
@@ -383,7 +380,7 @@
         </div>
 
         <button (click)="openRobotPopup()">Add Robots</button>
-        <button (click)="removeRobots()">Remove Robots</button>
+        <!-- <button (click)="removeRobots()">Remove Robots</button> -->
         <button (click)="saveOpt()">Save</button>
         <button (click)="toggleOptionsMenu()">Back</button>
       </div>
@@ -423,7 +420,11 @@
 <div *ngIf="isPopupVisible" class="popup-overlay1">
   <div class="popup-content1">
     <h4>Select Zone Type</h4>
+    <!-- <div *ngIf="selectedZone">
+      Selected zone type: {{ selectedZone?.type }}
+    </div> -->
     <select [(ngModel)]="zoneType">
+      <!-- <option value="" disabled selected>Select zone type</option> -->
       <option *ngFor="let zone of zoneTypeList" [value]="zone">
         {{ zone }}
       </option>
@@ -438,9 +439,11 @@
   </div>
 </div>
 
+
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
     <h3>Edge Details</h3>
+    
     <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
     <div class="form-row">
       <label for="edgeId">Edge ID:</label>
@@ -614,6 +617,7 @@
     <div *ngIf="showEdgeError" class="error-message">
       All required fields must be provided.
     </div>
+    
     <div class="form-buttons">
       <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
       <button type="button" id="formBTN" (click)="deleteEdge()">Delete</button>
@@ -635,6 +639,7 @@
           type="number"
           id="undockingDistance"
           name="undockingDistance"
+          placeholder="Enter undockingDistance"
           [(ngModel)]="undockingDistance"
           min="1"
           max="1000"
@@ -648,6 +653,8 @@
           type="text"
           id="description"
           name="description"
+          
+          placeholder="Enter Docking Description"
           [(ngModel)]="description"
           required
         />
@@ -659,7 +666,7 @@
       >
         {{ validationMessage }}
       </div>
-      <div>
+      <div class="Dock_btn">
         <button type="button" (click)="deleteSelectedAsset()">Delete</button>
         <button type="button" (click)="savePopupData()">Save</button>
         <button type="button" (click)="closePopup1()">Cancel</button>
@@ -673,7 +680,7 @@
     <p>Enter Number of Nodes</p>
     <input pInputText
       type="number"
-
+      min="0"
       [(ngModel)]="numberOfIntermediateNodes"
       placeholder="Number of nodes"
       (ngModelChange)="onInputChanged()"

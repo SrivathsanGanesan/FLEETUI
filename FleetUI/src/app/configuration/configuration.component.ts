@@ -277,7 +277,13 @@ export class ConfigurationComponent implements AfterViewInit {
       });
   }
 
-  editRobo(robo: any) {}
+  editRobo(robo: any) {
+    console.log(robo);
+    this.formData = robo.grossInfo;
+    this.isPopupOpen = !this.isPopupOpen;
+    // this.newItem = { ...item }; // Initialize with the clicked item's data
+    this.cdRef.detectChanges();
+  }
 
   deleteRobo(robo: any) {
     let project = this.projectService.getSelectedProject();
@@ -329,37 +335,16 @@ export class ConfigurationComponent implements AfterViewInit {
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.filteredTaskData.slice(
+      this.paginatedData = this.filteredEnvData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
     }
   }
-
+  
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
-    // Search method
-    onSearch(event: Event): void {
-      const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
-  
-      if (!inputValue) {
-        this.filteredEnvData = this.EnvData;
-      } else {
-        this.filteredEnvData = this.EnvData.filter((item) =>
-          Object.values(item).some((val) =>
-            String(val).toLowerCase().includes(inputValue)
-          )
-        );
-      }
-  
-      // Reset the paginator after filtering
-      if (this.paginator) {
-        this.paginator.firstPage();
-      }
-  
-      this.setPaginatedData(); // Update paginated data after filtering
-    }
 
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {
@@ -629,6 +614,7 @@ export class ConfigurationComponent implements AfterViewInit {
       });
   }
   stopScanning() {
+    this.isScanning = false;
     this.eventSource.close();
     return;
   }

@@ -510,6 +510,7 @@ export class EnvmapComponent implements AfterViewInit {
       );
       this.redrawCanvas();
     }
+
     if (this.selectedRobo) {
       this.robos = this.robos.filter(
         (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
@@ -668,7 +669,10 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
-    this.distanceBetweenPoints=null;
+      this.points = [];
+      this.showDistanceDialog = false;
+      this.distanceBetweenPoints = null; // Reset distance if applicable
+      this.isDistanceConfirmed=false;
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -1153,6 +1157,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.points = [];
       this.showDistanceDialog = false;
       this.distanceBetweenPoints = null; // Reset distance if applicable
+      this.isDistanceConfirmed=false;
 
       // Redraw the image if necessary without resetting canvas size
       const img = new Image();
@@ -1163,31 +1168,39 @@ export class EnvmapComponent implements AfterViewInit {
     }
     console.clear();
   }
-  @HostListener('click', ['$event'])
-  onImagePopupCanvasClick(event: MouseEvent): void {
-    if (!this.showImagePopup || !this.imagePopupCanvas) return;
-    const targetElement = event.target as HTMLElement;
-    // Check if the click was on the "Clear" button, and if so, return early
-    if (targetElement.classList.contains('clear-btn')) {
-      return;
-    }
-    const canvas = this.imagePopupCanvas.nativeElement;
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+@HostListener('click', ['$event'])
+onImagePopupCanvasClick(event: MouseEvent): void {
+  if (!this.showImagePopup || !this.imagePopupCanvas) return;
 
-    if (this.points.length < 2) {
-      this.points.push({ x, y });
-      this.plotPointOnImagePopupCanvas(x, y);
+  const targetElement = event.target as HTMLElement;
 
-      if (this.points.length === 2) {
-        console.log('Two points plotted:', this.points);
-        const distance = this.calculateDistance(this.points[0], this.points[1]);
-        console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
-        this.showDistanceDialog = true; // Show the distance input dialog
-      }
+  // Ignore clicks on the "close" button
+  if (targetElement.classList.contains('close-btn')) {
+    return;
+  }
+
+  // Ignore clicks on the "clear" button
+  if (targetElement.classList.contains('clear-btn')) {
+    return;
+  }
+
+  const canvas = this.imagePopupCanvas.nativeElement;
+  const rect = canvas.getBoundingClientRect();
+  const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+  const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+
+  if (this.points.length < 2) {
+    this.points.push({ x, y });
+    this.plotPointOnImagePopupCanvas(x, y);
+
+    if (this.points.length === 2) {
+      console.log('Two points plotted:', this.points);
+      const distance = this.calculateDistance(this.points[0], this.points[1]);
+      console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
+      this.showDistanceDialog = true; // Show the distance input dialog
     }
   }
+}
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -1304,6 +1317,7 @@ export class EnvmapComponent implements AfterViewInit {
     const distance = Math.sqrt((x - firstPoint.x) ** 2 + (y - firstPoint.y) ** 2);
     return distance < threshold;
   }
+  public showZoneText: boolean = false;
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
@@ -1315,12 +1329,25 @@ export class EnvmapComponent implements AfterViewInit {
       (event.clientY - rect.top) *
       (this.overlayCanvas.nativeElement.height / rect.height);
 
-    for (const zone of this.zones) {
-      const firstPoint = zone.pos[0]; // The first point of the zone
-      if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
-        this.selectedZone = zone; // Store the selected zone
-        this.zoneType = zone.type;
-        this.showZoneTypePopup();
+  for (const zone of this.zones) {
+    const firstPoint = zone.pos[0]; // The first point of the zone
+    if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
+      this.selectedZone = zone; // Store the selected zone
+      this.zoneType = zone.type; // Prepopulate the selected zone type
+      this.showZoneTypePopup(); // Display the popup
+      return;
+    }
+  }
+    for (const robo of this.robos) {
+      if (this.isRobotClicked(robo, x, y)) {
+        // this.isConfirmationVisible = true;
+        const confirmDelete = confirm('Do you want to delete this robot?');
+        if (confirmDelete) {
+          // Remove the robot from the robos array
+          this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
+          // Redraw the canvas after deleting the robot
+          this.redrawCanvas();
+        }
         return;
       }
     }
@@ -1391,10 +1418,9 @@ export class EnvmapComponent implements AfterViewInit {
 
   savePopupData(): void {
     this.validationMessage = null;
-    // Convert undockingDistance to number for validation
     const undockingDistanceNumber = Number(this.undockingDistance);
-
-    // Validate if undockingDistance is within range and both fields are filled
+  
+    // Validate undockingDistance
     if (
       !undockingDistanceNumber ||
       undockingDistanceNumber < 1 ||
@@ -1403,26 +1429,33 @@ export class EnvmapComponent implements AfterViewInit {
       this.validationMessage = 'Undocking Distance must be between 1 and 1000.';
       return;
     }
-
+  
+    // Validate description
     if (!this.description || this.description.trim() === '') {
       this.validationMessage = 'Please enter a description.';
       return;
     }
-
+  
+    // Check for description length
+    if (this.description.length > 255) {
+      this.validationMessage = 'Description cannot exceed 255 characters.';
+      return;
+    }
+  
     if (this.selectedAsset) {
-      // Find the asset and update its properties
       this.assets = this.assets.map((asset) => {
-        if (asset) {
+        if (this.selectedAsset?.id === asset.id) {
           asset.undockingDistance = parseInt(this.undockingDistance);
-          asset.desc = this.description; //this.selectedAsset?.desc ? this.selectedAsset?.desc : ''
+          asset.desc = this.description;
         }
         return asset;
       });
       this.redrawCanvas();
     }
-
+  
     this.closePopup1();
   }
+  
   closePopup1(): void {
     this.DockPopup = false;
     this.undockingDistance = '';
@@ -1546,17 +1579,17 @@ export class EnvmapComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
 
     if (image && ctx) {
-      const imageSize = 20;
+      const imageSize = 30;
 
       // Highlight the selected robot with a border or background
-      // yet tp replace..
-      // if (isSelected) {
-      //   ctx.beginPath();
-      //   ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
-      //   ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
-      //   ctx.fill();
-      //   ctx.closePath();
-      // }
+
+      if (!isSelected) {
+        ctx.beginPath();
+        ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.4)'; // Semi-transparent red
+        ctx.fill();
+        ctx.closePath();
+      }
 
       // Draw the robot image
       ctx.drawImage(
@@ -1774,9 +1807,7 @@ export class EnvmapComponent implements AfterViewInit {
 
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
-}
-
-
+  }
   onInputChanged(): void {
     this.isEnterButtonVisible =
       this.numberOfIntermediateNodes !== null &&
@@ -1794,8 +1825,8 @@ export class EnvmapComponent implements AfterViewInit {
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
 
           if(this.isPositionOccupied(x, transformedY, 'node')){
-            alert('stop bro');
-            this.nodes = this.nodes.filter(node =>
+            alert('Nodes cannot plotted as there are nodes or assets are between them');
+            this.nodes = this.nodes.filter(node => 
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
             this.closeIntermediateNodesDialog()
@@ -1803,8 +1834,8 @@ export class EnvmapComponent implements AfterViewInit {
             return;
           }
           if(this.isOverLappingWithOtherNodesInPlotting(x, y)){
-            alert('stop bro');
-            this.nodes = this.nodes.filter(node =>
+            alert('Nodes cannot plotted as there are nodes or assets are between them');
+            this.nodes = this.nodes.filter(node => 
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
             this.closeIntermediateNodesDialog()
@@ -2377,7 +2408,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: number; max: number } {
     if (!polygon || polygon.length === 0) {
-      console.error("Invalid polygon data");
+      // console.error("Invalid polygon data");
       return { min: 0, max: 0 };
     }
 
@@ -2444,12 +2475,12 @@ export class EnvmapComponent implements AfterViewInit {
   }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 30;
-    return (
-      x >= robo.pos.x - imageSize / 2 &&
-      x <= robo.pos.x + imageSize / 2 &&
-      y >= robo.pos.y - imageSize / 2 &&
-      y <= robo.pos.y + imageSize / 2
-    );
+    const roboX = robo.pos.x;
+    const roboY = robo.pos.y;
+  
+    // Check if the click is within the robot's bounds (circle radius check)
+    const distance = Math.sqrt((x - roboX) ** 2 + (y - roboY) ** 2);
+    return distance <= imageSize * 1.5; // Adjust this based on the robot's size
   }
   onCancel(): void {
     // Clear the plotted points and reset the zone plotting state
@@ -2464,16 +2495,26 @@ export class EnvmapComponent implements AfterViewInit {
   openRobotPopup(): void {
     this.isRobotPopupVisible = true;
   }
-  removeRobots(): void {
-
-    this.isConfirmationVisible = true;
-
-    // Remove selected robots
-    // this.robos = this.robos.filter(
-    //   (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
-    // );
-    // this.redrawCanvas();
-  }
+  // removeRobots(): void {
+  //   // Check if there are any robots to remove
+  //   if (this.robos.length === 0) {
+  //     console.log("No robots to remove.");
+  //     return; // Exit the function if no robots are present
+  //   }
+  
+  //   // If robots are present, show the confirmation
+  //   this.isConfirmationVisible = true;
+  
+  //   // If confirmed, proceed with removing the selected robots
+  //   // Uncomment and modify based on your confirmation logic
+  //   // this.robos = this.robos.filter(
+  //   //   (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
+  //   // );
+  
+  //   // Redraw the canvas after removing robots
+  //   // this.redrawCanvas();
+  // }
+  
   showZoneTypePopup(): void {
     this.zoneType = null;
     this.isPopupVisible = true;
@@ -2666,15 +2707,28 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
       }
+      let robotClicked = false; // Track if the robot was clicked
+
+      // Check if a robot is clicked
       for (const robo of this.robos) {
         if (this.isRobotClicked(robo, x, y)) {
           this.selectedRobo = robo;
           this.draggingRobo = true;
           this.originalRoboPosition = { x: robo.pos.x, y: robo.pos.y };
-          this.redrawCanvas();
-          return;
+          this.redrawCanvas(); // Redraw the canvas after selecting the robot
+          robotClicked = true;
+          break;
         }
       }
+  
+      if (!robotClicked) {
+        // Deselect the robot if clicked elsewhere on the canvas
+        this.selectedRobo = null;
+        // this.redrawCanvas()x; // Redraw the canvas after deselecting the robot
+      }
+  
+      // Handle other types of clicks like zone plotting, asset dragging, etc.
+
       let nodeClicked = false;
       for (const node of this.nodes) {
         if (this.isNodeClicked(node, x, y)) {
@@ -3054,9 +3108,10 @@ export class EnvmapComponent implements AfterViewInit {
         this.plottedPoints = [];
       });
 
-      this.robos.forEach((robo) =>
-        this.plotRobo(robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
-      );
+      for (const robo of this.robos) {
+        const isSelected = this.selectedRobo && this.selectedRobo.roboDet.id === robo.roboDet.id;
+        this.plotRobo(robo.pos.x, robo.pos.y, !isSelected);
+      }
 
       // Draw assets, zones, and robots
       this.assets.forEach((asset) =>
@@ -3150,6 +3205,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   hidePopup(): void {
     this.showPopup = false;
+    this.showEdgeError = false;
   }
   // Method to delete the edge
   deleteEdge(): void {
