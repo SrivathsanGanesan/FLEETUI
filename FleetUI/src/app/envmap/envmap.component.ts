@@ -679,6 +679,9 @@ export class EnvmapComponent implements AfterViewInit {
       this.showDistanceDialog = false;
       this.distanceBetweenPoints = null; // Reset distance if applicable
       this.isDistanceConfirmed=false;
+      if (this.resolutionInput) {
+        this.resolutionInput.nativeElement.value = ''; // Reset the input field
+      }
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -1341,9 +1344,9 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     
     const firstPoint = zone.pos[0]; // The first point of the zone
     if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
-      this.isPopupVisible = true;
       this.zoneType = zone.type; // Prepopulate the selected zone type
       this.selectedZone = zone; // Store the selected zone
+      this.isPopupVisible = true;
       // this.showZoneTypePopup(); // Display the popup
       return;
     }
