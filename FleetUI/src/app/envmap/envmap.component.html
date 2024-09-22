@@ -419,12 +419,14 @@
         />
       </svg>
     </button> -->
-    <div class="button-container" *ngIf="!showImage">
+    <div  *ngIf="!showImage">
       <div *ngIf="validationError" class="validation-error">
         {{ validationError }}
       </div>
+      <div class="button-container">
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
+    </div>
     </div>
   </div>
 </div>

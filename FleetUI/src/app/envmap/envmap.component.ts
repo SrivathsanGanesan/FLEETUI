@@ -679,6 +679,10 @@ export class EnvmapComponent implements AfterViewInit {
       this.showDistanceDialog = false;
       this.distanceBetweenPoints = null; // Reset distance if applicable
       this.isDistanceConfirmed=false;
+      if (this.resolutionInput) {
+        this.resolutionInput.nativeElement.value = ''; // Reset the input field
+      }
+      this.validationError=null;
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -711,6 +715,7 @@ export class EnvmapComponent implements AfterViewInit {
     undockingDistance: '',
   };
   onActionChange(): void {
+    
     this.resetParameters();
     this.showActionForm();
     this.validateForm();
@@ -808,6 +813,10 @@ export class EnvmapComponent implements AfterViewInit {
         this.actionCounter++;
       }
 
+
+  
+      // Remove selected action from the dropdown options
+      this.actionOptions = this.actionOptions.filter(option => option.value !== this.selectedAction);
       // this.actions.push(action);
       this.nodes = this.nodes.map((node) => {
         console.log(this.selectedNode?.nodeId, node?.nodeId);
@@ -828,10 +837,26 @@ export class EnvmapComponent implements AfterViewInit {
   closeNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = false;
   }
+  allActions = [
+    { label: 'Move', value: 'Move' },
+    { label: 'Dock', value: 'Dock' },
+    { label: 'Undock', value: 'Undock' }
+  ];
+
   removeAction(index: number): void {
-    this.actions.splice(index, 1);
-    this.hideActionForms();
+    const removedAction = this.actions[index];
+    this.actions.splice(index, 1); // Remove action from the list
+  
+    // Add the removed action back to the dropdown options
+    const actionToAddBack = this.allActions.find(option => option.value === removedAction.actionType);
+    if (actionToAddBack) {
+      this.actionOptions.push(actionToAddBack);
+    }
+  
+    // Sort the dropdown options again to maintain the original order
+    this.actionOptions.sort((a, b) => this.allActions.findIndex(opt => opt.value === a.value) - this.allActions.findIndex(opt => opt.value === b.value));
   }
+  
   isOptionDisabled(option: string): boolean {
     return this.actions.some((action) => action.actionType === option);
   }
@@ -1341,9 +1366,9 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     
     const firstPoint = zone.pos[0]; // The first point of the zone
     if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
-      this.isPopupVisible = true;
       this.zoneType = zone.type; // Prepopulate the selected zone type
       this.selectedZone = zone; // Store the selected zone
+      this.isPopupVisible = true;
       // this.showZoneTypePopup(); // Display the popup
       return;
     }
@@ -1472,6 +1497,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     this.DockPopup = false;
     this.undockingDistance = '';
     this.description = '';
+    this.validationMessage=""
     this.selectedAssetId = null;
   }
   showNodeDetailsPopup(): void {
@@ -1886,14 +1912,9 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       this.closeIntermediateNodesDialog();
     }
   }
-    // Define the available actions for the dropdown
-  actionOptions = [
-    { label: 'Move', value: 'Move' },
-    { label: 'Dock', value: 'Dock' },
-    { label: 'Undock', value: 'Undock' }
-  ];
-
-   // Validation logic
+  // Define the available actions for the dropdown
+  actionOptions = [...this.allActions];
+  // Validation logic
   validateForm() {
     if (!this.nodeDetails.description) {
       this.validationError = 'Node Description is required.';

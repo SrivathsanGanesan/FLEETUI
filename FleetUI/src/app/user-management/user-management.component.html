@@ -43,13 +43,13 @@
         @if(userCredentials.length != 0) {
           @for (user of userCredentials; track user) {
             <span class="w-full twoColors text-black font-medium duration-300 flex items-center justify-between px-3">
-              <span class="w-[30%] h-[50px] flex items-center justify-between  border-black">
-                <p class="flex text-[14px] items-center justify-start pl-3 border-l-2 border-white h-full capitalize w-full">{{user!.userName}}</p>
+              <span class="w-[30%] h-[50px] flex items-center justify-between  ">
+                <p class="flex text-[14px] items-center justify-start pl-3  h-full capitalize w-full">{{user!.userName}}</p>
               </span>
               <span class="flex text-[14px] w-[80%] h-[50px] items-center justify-between">
-                <p class="w-full text-[14px] flex items-center pl-3 border-l-2 border-white h-full justify-start  border-black">{{user!.userRole}}</p>
-                <p class="w-full text-[14px] flex items-center pl-3 border-l-2 border-white h-full justify-start capitalizeborder-r-2 border-black">{{user!.createdBy}}</p>
-                <p class="w-full text-[14px] flex items-center pl-3 border-l-2 border-white h-full justify-start  border-black">{{user!.createdOn}}</p>
+                <p class="w-full text-[14px] flex items-center pl-3   h-full justify-start ">{{user!.userRole}}</p>
+                <p class="w-full text-[14px] flex items-center pl-3   h-full justify-start capitalizeborder-r-2 ">{{user!.createdBy}}</p>
+                <p class="w-full text-[14px] flex items-center pl-3  h-full justify-start  ">{{user!.createdOn}}</p>
 
 
                 <span class="flex gap-5 items-center justify-center w-full">
@@ -270,7 +270,7 @@
     <div class="w-[600px] bg-white flex flex-col gap-5 rounded-[20px] shadow-[0_0_100px_#00000060] border-l-[22px] border-[#D30000] p-10">
        <!-- Title -->
        <span class="flex flex-col items-start justify-center">
-        <p class=" text-[35px] text-black font-bold">Delete</p>
+        <p class=" text-[35px] text-[#DA2127] font-bold">Delete</p>
         <p class=" flex items-center justify-center gap-2 text-[14px] font-medium text-[#7B7B7B]">
           Delete an user
           <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">

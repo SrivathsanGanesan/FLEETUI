@@ -29,19 +29,105 @@
   .sidebar:hover {
     width: 220px;
   }
-
   .notification-popup {
     position: absolute;
-    top: 52px; /* Adjust according to your layout */
-    right: 190px; /* Adjust according to your layout */
+    top: 52px; 
+    right: 190px; 
     background-color: white;
     border: 1px solid #ffffff;
-    box-shadow: 0px 0.25px 6px #FF7373;
-    padding: 10px 10px 0 10px;
+    box-shadow: 0px 0.25px 6px #7b7b7b;
+    padding: 5px;
     border-radius: 10px;
     font-family: Arial, Helvetica, sans-serif;
-    z-index: 1000; /* Ensure it is on top */
+    z-index: 1000;
+    width: 300px;
+    height: auto;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
   }
+  
+  .notification-popup.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0); /* Slide in from above */
+  }
+  
+  .notification-popup h3 {
+    font-size: 24px;
+    
+    color: #f10909;
+  }
+  
+  .notification-popup ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .notification-popup li {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f8f8f8;
+    border-left: 5px solid #5bc0de; /* Light blue border */
+    border-radius: 5px;
+    animation: fadeIn 0.5s ease-in-out; /* Animate list items */
+  }
+  
+  .notification-popup li:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Close Button */
+  .notification-popup .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    transition: color 0.2s;
+  }
+  
+  .notification-popup .close-btn:hover {
+    color: #ff5252; /* Red hover effect */
+  }
+  
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* No notifications styling */
+  .no-notifications {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    text-align: center;
+    flex-direction: column;
+  }
+  
+  .no-notifications svg {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+  
+  .no-notifications span {
+    font-size: 14px;
+    color: #888;
+  }
+  
+  
 
   .Profile-popup {
     position: absolute;

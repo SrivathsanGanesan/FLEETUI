@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { fadeAnimation } from './app.animations';
 
+import { LoaderService } from './loader.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,5 +14,9 @@ export class AppComponent {
   getRouteAnimationData(outlet: any) {
     return outlet && outlet.activatedRouteData && outlet.activatedRouteData.animation;
   }
+
+  loading$ = this.loaderService.loading$;
+
+  constructor(private loaderService: LoaderService) {}
   
 }

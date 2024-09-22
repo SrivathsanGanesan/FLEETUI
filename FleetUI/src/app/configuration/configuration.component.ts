@@ -334,9 +334,8 @@ export class ConfigurationComponent implements AfterViewInit {
     return item.taskId; // or any unique identifier like taskId
   }
 
-
   setPaginatedData() {
-    if (this.paginator) {
+    if (this.paginator && this.currentTable === 'Environment') {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       this.paginatedData = this.filteredEnvData.slice(
         startIndex,
@@ -347,6 +346,20 @@ export class ConfigurationComponent implements AfterViewInit {
         startIndex + this.paginator.pageSize
       );
       this.paginatedData2 = this.ipScanData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+    }
+    if (this.paginator && this.currentTable === 'robot') {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.paginatedData = this.filteredRobotData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+    }
+    if (this.paginator && this.currentTable === 'ipScanner') {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.paginatedData = this.ipScanData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
@@ -455,7 +468,7 @@ export class ConfigurationComponent implements AfterViewInit {
       this.selectedMap?.id === item.id &&
       this.selectedMap?.mapName === item.mapName
     )
-      return false;
+    return false;
     return true;
     // return this.selectedMap && this.selectedMap !== item;
   }
@@ -676,6 +689,7 @@ export class ConfigurationComponent implements AfterViewInit {
   showImageUploadPopup = false;
   openImageUploadPopup(): void {
     this.showImageUploadPopup = true;
+    this.resetFilters();
   }
 
   closeImageUploadPopup(): void {
@@ -693,9 +707,6 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
 
-  searchTermChanged() {
-    this.filterData();
-  }
 
   showIPScannerPopup = false;
 
@@ -787,8 +798,6 @@ export class ConfigurationComponent implements AfterViewInit {
   // yet to work..
   showTable(table: string) {
     this.currentTable = table;
-    // Clear search term and reset date inputs when switching between tabs
-    // Clear search term and reset date inputs when switching between tabs
     this.searchTerm = ''; // Clear the search term
     this.startDate = null; // Clear the start date
     this.endDate = null; // Clear the end date
@@ -800,6 +809,9 @@ export class ConfigurationComponent implements AfterViewInit {
       this.filteredRobotData = [...this.robotData]; // Reset to the original data
       this.fetchRobos();
     }
+    this.filterData();
+  }
+  searchTermChanged() {
     this.filterData();
   }
 
@@ -830,7 +842,13 @@ export class ConfigurationComponent implements AfterViewInit {
       );
     }
   }
-
+  resetFilters() {
+    this.searchTerm = ''; // Reset search term
+    this.startDate = null; // Reset start date
+    this.endDate = null; // Reset end date
+    this.filteredEnvData = [...this.EnvData]; // Reset environment data filter
+    this.filteredRobotData = [...this.robotData]; // Reset robot data filter
+  }
   onDateFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const filter = selectElement?.value || '';

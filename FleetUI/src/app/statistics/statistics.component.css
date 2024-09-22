@@ -219,7 +219,7 @@
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 0.2rem;
+  padding: 0.4rem;
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -309,6 +309,9 @@
   position: relative;
   margin-bottom: 1%;
   flex: 1 1 18vw; /* Allow the items to resize with a flexible basis */
+  flex-grow: 1;
+    flex-basis: 0;
+    overflow: hidden;
 }
  
 @media (min-width: 1200px) {

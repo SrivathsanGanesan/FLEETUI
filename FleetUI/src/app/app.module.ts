@@ -55,6 +55,7 @@ import { FaqComponent } from './faq/faq.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ContactusComponent } from './support/Addons/contactus/contactus.component';
 import { DialogModule } from 'primeng/dialog';
+import { LoaderComponent } from './loader/loader.component';
 import { TimerComponent } from './timer/timer.component';
 
 
@@ -97,6 +98,7 @@ import { TimerComponent } from './timer/timer.component';
     SupportComponent,
     FaqComponent,
     ContactusComponent,
+    LoaderComponent,
     TimerComponent
   ],
   imports: [
