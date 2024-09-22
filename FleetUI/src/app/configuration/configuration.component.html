@@ -20,7 +20,6 @@
           <div class="search-box">
             <input
               type="text"
-              (input)="onSearch($event)"
               placeholder="Search For Something..."
               class="search-input"
               [(ngModel)]="searchTerm"
@@ -119,7 +118,7 @@
                 <tr *ngIf="filteredEnvData.length === 0">
                   <td colspan="5" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of filteredEnvData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
+                <tr *ngFor="let item of filteredEnvData">
                   <td>
                     {{ item.mapName }}
                   </td>
@@ -161,11 +160,11 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'Environment' && !imageUploaded"
+              *ngIf="currentTable === 'Environment' && !imageUploaded && filteredEnvData.length > 5"
             >
               <mat-paginator
-                [length]="filteredEnvData.length"
-                [pageSize]="10"
+                [length]="filteredTaskData.length"
+                [pageSize]="5"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
                 showFirstLastButtons
@@ -209,11 +208,11 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded"
+              *ngIf="currentTable === 'robot' && !imageUploaded && filteredEnvData.length > 5"
             >
               <mat-paginator
-                [length]="filteredRobotData.length"
-                [pageSize]="10"
+                [length]="filteredData.length"
+                [pageSize]="5"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
                 showFirstLastButtons
@@ -288,17 +287,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="ipScanData.length === 0">
+                <tr *ngIf="ipScanData.length === 0 ">
                   <td colspan="6" class="iconTable">No data found</td>
                 </tr>
-                <tr
-                  *ngFor="
-                    let item of ipScanData;
-                    index as i;
-                    trackBy: trackByTaskId
-                  "
-                  [class.paused]="item.paused"
-                >
+                <tr *ngFor="let item of ipScanData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td>{{ item.ip }}</td>
                   <td>{{ item.mac }}</td>
                   <td>{{ item.host }}</td>
@@ -316,11 +308,11 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded"
+              *ngIf="currentTable === 'robot' && !imageUploaded && filteredEnvData.length > 5"
             >
               <mat-paginator
-                [length]="ipScanData.length"
-                [pageSize]="10"
+                [length]="filteredTaskData.length"
+                [pageSize]="15"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
                 showFirstLastButtons
