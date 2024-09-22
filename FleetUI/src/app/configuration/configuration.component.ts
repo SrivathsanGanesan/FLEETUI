@@ -233,7 +233,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.setPaginatedData();
     this.searchTerm = '';
     this.searchTermChanged();
-    
+
   }
 
   fetchRobos() {
@@ -262,12 +262,12 @@ export class ConfigurationComponent implements AfterViewInit {
       })
       .then((data) => {
         console.log(data);
-        /* this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Robots Fetched Successfully',
-          life: 4000,
-        }); */
+        // this.messageService.add({
+        //   severity: 'success',
+        //   summary: 'Success',
+        //   detail: 'Robots Fetched Successfully',
+        //   life: 4000,
+        // });
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
         this.filteredRobotData = this.robotData;
@@ -277,7 +277,13 @@ export class ConfigurationComponent implements AfterViewInit {
       });
   }
 
-  editRobo(robo: any) {}
+  editRobo(robo: any) {
+    console.log(robo);
+    this.formData = robo.grossInfo;
+    this.isPopupOpen = !this.isPopupOpen;
+    // this.newItem = { ...item }; // Initialize with the clicked item's data
+    this.cdRef.detectChanges();
+  }
 
   deleteRobo(robo: any) {
     let project = this.projectService.getSelectedProject();
@@ -329,7 +335,7 @@ export class ConfigurationComponent implements AfterViewInit {
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.filteredTaskData.slice(
+      this.paginatedData = this.filteredEnvData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
@@ -339,10 +345,11 @@ export class ConfigurationComponent implements AfterViewInit {
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
+  //Commit Changed
     // Search method
     onSearch(event: Event): void {
       const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
-  
+
       if (!inputValue) {
         this.filteredEnvData = this.EnvData;
       } else {
@@ -352,12 +359,12 @@ export class ConfigurationComponent implements AfterViewInit {
           )
         );
       }
-  
+
       // Reset the paginator after filtering
       if (this.paginator) {
         this.paginator.firstPage();
       }
-  
+
       this.setPaginatedData(); // Update paginated data after filtering
     }
 
