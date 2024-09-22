@@ -82,7 +82,7 @@ th, td {
   border: 1px solid #ffffff;
   padding: 5px;
   height: 30px;
-  text-align: center;
+  text-align: left;
 }
 
 th {
@@ -95,7 +95,8 @@ th {
 }
 
 td {
-  text-align: center;
+  padding: 10px 20px;
+  text-align: left;
   font-size: 13px;
 }
 

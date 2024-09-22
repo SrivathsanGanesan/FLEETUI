@@ -82,6 +82,7 @@
 /* Statistics container */
 /* Statistics container */
 .statistics-container {
+  
   position: absolute;
   top: 7%;
   right: 1%;
@@ -365,7 +366,7 @@ h2 {
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 0.2rem;
+  padding: 0.4rem;
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -454,7 +455,7 @@ h2 {
 }
 
 .radial{
-  flex-grow: 1;
+  flex: 2 1 35%; /* Flex-grow 2, flex-shrink 1, takes 60% of available space */
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
@@ -463,33 +464,45 @@ h2 {
   min-height: 270px; /* Ensures a minimum height for smaller screens */
 
 }
-/* The operation pie chart should directly apply these styles */
-app-operation-pie {
-  
-  flex-grow: 1;
-  background-color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  padding: 1%;
-  width: 35%;
-  height: 270px;
-}
 
+
+/* Responsive adjustments */
 @media (max-width: 1200px) {
   .charts-container {
-    flex-direction: column;
+    flex-direction: column; /* Stack charts vertically on smaller screens */
   }
-  .robot-uptime-chart,
-  app-operation-pie {
-    width: 100%;
-    height: auto;
+  .area-chart-container,
+  .donut-chart-container {
+    width: 100%; /* Full width for both charts */
+    height: auto; /* Let the height adjust automatically on smaller screens */
   }
 }
-
+ 
+/* Responsive adjustments for very small screens */
 @media (max-width: 768px) {
-  .robot-uptime-chart,
-  app-operation-pie {
-    height: 250px;
+  .area-chart-container,
+  .donut-chart-container {
+    height: 250px; /* Adjust height for small screens */
   }
 }
-
+/* Ensure the legend inside the donut chart scales properly */
+.apexcharts-legend {
+  font-size: 1.2vw; /* Adjust font size for legend */
+  display: flex;
+  justify-content: center;
+}
+.apexcharts-datalabel-label,
+.apexcharts-datalabel-value {
+  font-size: 1.2em !important;
+  font-weight: medium !important;
+  color: #000000 !important;
+  text-anchor: middle !important;
+  dominant-baseline: middle !important;
+  pointer-events: none !important;
+}
+ 
+.apexcharts-legend-series {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

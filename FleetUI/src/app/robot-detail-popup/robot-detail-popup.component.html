@@ -14,7 +14,7 @@
 
     
     <!-- wifi module -->
-    <div class="wifi-signal absolute z-50 top-[0px]  w-[80vw] h-[30vh]">
+    <div class="wifi-signal ">
       <div class="wifi-style flex z-50">
         <div class="wifi" [ngClass]="currentSignalClass"></div> 
       </div>
@@ -36,7 +36,7 @@
 
     
 
-    <div class="robot-detail-container relative">
+    <div class="robot-detail-container relative ">
       <svg
       width="590" 
       height="832"
@@ -475,11 +475,21 @@
         </div>
         <span class="error-value">{{ data.error }}</span>
       </div>
-      <!-- <div class="button-container">
-        <button mat-button color="warn" (click)="onClose()">
-          <span class="button-text">Close</span>
+      <div class="button-container">
+        <button class="close-button" (click)="onClose()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+          >
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path
+              d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"
+            />
+          </svg>
         </button>
-      </div> -->
+      </div>
     </div>
   </div>
     

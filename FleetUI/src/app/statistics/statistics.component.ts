@@ -13,7 +13,7 @@ export class StatisticsComponent {
   operationPie: number[] = [0, 0, 0, 0, 0];
   selectedMap: any | null = null;
   operationActivities: any[] = [];
-
+  
   // this.operationActivities = [
   // { taskId: 9, taskName: 'AMR-003', task: 'Transporting materials', progress: 90, status: 'Actively Working', },
   // ];
@@ -38,7 +38,12 @@ export class StatisticsComponent {
   ) {
     if (!this.selectedMap) this.selectedMap = this.projectService.getMapData();
   }
+  
 
+  onViewAllClick() {
+    this.router.navigate(['/tasks']); // Navigate to tasks page
+  }
+  
   setView(view: string): void {
     this.currentView = view;
     if (view === 'robot') {

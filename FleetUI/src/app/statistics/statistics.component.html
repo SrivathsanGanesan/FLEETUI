@@ -155,7 +155,8 @@
               (input)="onSearch($event)"
             />
           </div>
-          <button class="view-all-btn">View All</button>
+          <button class="view-all-btn" (click)="onViewAllClick()">View All</button>
+
         </div>
         <table class="activity-table">
           <tr *ngFor="let activity of this.filteredOperationActivities">

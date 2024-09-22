@@ -103,4 +103,8 @@ export class RobotDashboardComponent implements OnInit {
       this.router.navigate(['/statistics/operation']);
     }
   }
+
+  onViewAllClick() {
+    this.router.navigate(['/tasks']); // Navigate to the tasks page
+  }
 }
