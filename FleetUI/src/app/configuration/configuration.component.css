@@ -933,8 +933,8 @@ border: none;
 /* 
 edit button */
 .edit-button {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background-color: rgb(20, 20, 20);
   border: none;
@@ -994,8 +994,8 @@ edit button */
  /* Delete */
  .delete-button {
   margin-left: 10px;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background-color: rgb(20, 20, 20);
   border: none;
