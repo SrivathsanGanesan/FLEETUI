@@ -254,7 +254,13 @@ export class ConfigurationComponent implements AfterViewInit {
       });
   }
 
-  editRobo(robo: any) {}
+  editRobo(robo: any) {
+    console.log(robo);
+    this.formData = robo.grossInfo;
+    this.isPopupOpen = !this.isPopupOpen;
+    // this.newItem = { ...item }; // Initialize with the clicked item's data
+    this.cdRef.detectChanges();
+  }
 
   deleteRobo(robo: any) {
     let project = this.projectService.getSelectedProject();
@@ -297,18 +303,17 @@ export class ConfigurationComponent implements AfterViewInit {
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.ipScanData = this.filteredTaskData.slice(
+      this.ipScanData = this.filteredEnvData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
     }
   }
-
+  
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
-
-
+  
 
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {

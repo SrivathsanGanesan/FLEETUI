@@ -669,10 +669,10 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
-    this.points = [];
-    this.showDistanceDialog = false;
-    this.distanceBetweenPoints = null; // Reset distance if applicable
-    this.isDistanceConfirmed=false;
+      this.points = [];
+      this.showDistanceDialog = false;
+      this.distanceBetweenPoints = null; // Reset distance if applicable
+      this.isDistanceConfirmed=false;
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -1277,6 +1277,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     const distance = Math.sqrt((x - firstPoint.x) ** 2 + (y - firstPoint.y) ** 2);
     return distance < threshold;
   }
+  public showZoneText: boolean = false;
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
@@ -1288,15 +1289,15 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       (event.clientY - rect.top) *
       (this.overlayCanvas.nativeElement.height / rect.height);
 
-    for (const zone of this.zones) {
-      const firstPoint = zone.pos[0]; // The first point of the zone
-      if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
-        this.selectedZone = zone; // Store the selected zone
-        this.zoneType = zone.type;
-        this.showZoneTypePopup();
-        return;
-      }
+  for (const zone of this.zones) {
+    const firstPoint = zone.pos[0]; // The first point of the zone
+    if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
+      this.selectedZone = zone; // Store the selected zone
+      this.zoneType = zone.type; // Prepopulate the selected zone type
+      this.showZoneTypePopup(); // Display the popup
+      return;
     }
+  }
     for (const robo of this.robos) {
       if (this.isRobotClicked(robo, x, y)) {
         // this.isConfirmationVisible = true;
@@ -1398,7 +1399,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     if (this.selectedAsset) {
       // Find the asset and update its properties
       this.assets = this.assets.map((asset) => {
-        if (asset) {
+        if (this.selectedAsset?.id===asset.id) {
           asset.undockingDistance = parseInt(this.undockingDistance);
           asset.desc = this.description; //this.selectedAsset?.desc ? this.selectedAsset?.desc : ''
         }
@@ -1760,9 +1761,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
 
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
-}
-
-
+  }
   onInputChanged(): void {
     this.isEnterButtonVisible =
       this.numberOfIntermediateNodes !== null &&
@@ -2363,7 +2362,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   }
   private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: number; max: number } {
     if (!polygon || polygon.length === 0) {
-      console.error("Invalid polygon data");
+      // console.error("Invalid polygon data");
       return { min: 0, max: 0 };
     }
 
@@ -2679,7 +2678,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       if (!robotClicked) {
         // Deselect the robot if clicked elsewhere on the canvas
         this.selectedRobo = null;
-        this.redrawCanvas(); // Redraw the canvas after deselecting the robot
+        // this.redrawCanvas()x; // Redraw the canvas after deselecting the robot
       }
   
       // Handle other types of clicks like zone plotting, asset dragging, etc.
@@ -2709,8 +2708,6 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       }
     }
   }
-
-  
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -3162,6 +3159,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   }
   hidePopup(): void {
     this.showPopup = false;
+    this.showEdgeError = false;
   }
   // Method to delete the edge
   deleteEdge(): void {
