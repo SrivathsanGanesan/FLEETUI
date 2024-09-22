@@ -166,6 +166,36 @@ const starvationRate = async (req, res) => {
     // );
     // let throughput = mapData.throughPut;
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        starvation: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        starvation: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
     starvationRateArr.push({
       rate: Math.floor(Math.random() * 100),
       time: new Date().toLocaleString("en-IN", {
@@ -229,6 +259,36 @@ const pickAccuracy = async (req, res) => {
     // );
     // let throughput = mapData.throughPut;
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        pickAccuracy: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        pickAccuracy: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
     pickAccuracyArr.push({
       rate: Math.floor(Math.random() * 100),
       time: new Date().toLocaleString("en-IN", {
@@ -292,6 +352,36 @@ const errRate = async (req, res) => {
     // );
     // let throughput = mapData.throughPut;
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        errRate: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        errRate: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
     errRateArr.push({
       rate: Math.floor(Math.random() * 100),
       time: new Date().toLocaleString("en-IN", {
