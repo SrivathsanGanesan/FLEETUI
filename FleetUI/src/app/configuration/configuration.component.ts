@@ -233,7 +233,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.setPaginatedData();
     this.searchTerm = '';
     this.searchTermChanged();
-    
+
   }
 
   fetchRobos() {
@@ -262,12 +262,12 @@ export class ConfigurationComponent implements AfterViewInit {
       })
       .then((data) => {
         console.log(data);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Robots Fetched Successfully',
-          life: 4000,
-        });
+        // this.messageService.add({
+        //   severity: 'success',
+        //   summary: 'Success',
+        //   detail: 'Robots Fetched Successfully',
+        //   life: 4000,
+        // });
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
         this.filteredRobotData = this.robotData;
@@ -354,10 +354,32 @@ export class ConfigurationComponent implements AfterViewInit {
       );
     }
   }
-  
+
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
+  //Commit Changed
+    // Search method
+    onSearch(event: Event): void {
+      const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
+
+      if (!inputValue) {
+        this.filteredEnvData = this.EnvData;
+      } else {
+        this.filteredEnvData = this.EnvData.filter((item) =>
+          Object.values(item).some((val) =>
+            String(val).toLowerCase().includes(inputValue)
+          )
+        );
+      }
+
+      // Reset the paginator after filtering
+      if (this.paginator) {
+        this.paginator.firstPage();
+      }
+
+      this.setPaginatedData(); // Update paginated data after filtering
+    }
 
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {
