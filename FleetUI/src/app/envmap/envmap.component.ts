@@ -1337,16 +1337,18 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       (this.overlayCanvas.nativeElement.height / rect.height);
 
   for (const zone of this.zones) {
+    
     const firstPoint = zone.pos[0]; // The first point of the zone
     if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
-      this.selectedZone = zone; // Store the selected zone
       this.zoneType = zone.type; // Prepopulate the selected zone type
+      this.selectedZone = zone; // Store the selected zone
       this.showZoneTypePopup(); // Display the popup
       return;
     }
   }
     for (const robo of this.robos) {
-      if (this.isRobotClicked(robo, x, y)) {
+
+      if (this.isRobotClicked(robo, x, y)) {        
         this.robotToDelete = robo;  // Store the robot that was right-clicked
         this.isConfirmationVisible = true;
         // const confirmDelete = confirm('Do you want to delete this robot?');
@@ -2456,6 +2458,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     return [minX, minY, maxX, maxY];
   }
   onZoneTypeSelected(zoneType: ZoneType): void {
+    
     this.zoneType = zoneType;
 
     if (this.isZoneOverlapping(this.plottedPoints)) {
@@ -2496,6 +2499,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     this.isZonePlottingEnabled = false;
     this.isPopupVisible = false;
     this.firstPlottedPoint = null;
+    
 
     // Redraw the canvas to remove the temporary zone points
     this.redrawCanvas();

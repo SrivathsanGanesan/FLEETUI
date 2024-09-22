@@ -399,11 +399,11 @@
         />
       </svg>
     </button> -->
-    <div *ngIf="validationError" class="validation-error">
-      {{ validationError }}
-    </div>
-    <div class="button-container" *ngIf="!showImage">
 
+    <div class="button-container" *ngIf="!showImage">
+      <div *ngIf="validationError" class="validation-error">
+        {{ validationError }}
+      </div>
       <button *ngIf="fileName && !showImage" (click)="open()">Open</button>
       <button (click)="close()">Close</button>
     </div>
@@ -420,19 +420,13 @@
 <div *ngIf="isPopupVisible" class="popup-overlay1">
   <div class="popup-content1">
     <h4>Select Zone Type</h4>
-    <!-- <div *ngIf="selectedZone">
-      Selected zone type: {{ selectedZone?.type }}
-    </div> -->
     <select [(ngModel)]="zoneType">
-      <!-- <option value="" disabled selected>Select zone type</option> -->
       <option *ngFor="let zone of zoneTypeList" [value]="zone">
         {{ zone }}
       </option>
     </select>
     <div>
-      <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">
-        Confirm
-      </button>
+      <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">Confirm</button>
       <button (click)="onDeleteZone()">Delete</button>
       <button (click)="onCancel()">Cancel</button>
     </div>
