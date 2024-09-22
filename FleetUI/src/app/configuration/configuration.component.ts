@@ -629,6 +629,7 @@ export class ConfigurationComponent implements AfterViewInit {
       });
   }
   stopScanning() {
+    this.isScanning = false;
     this.eventSource.close();
     return;
   }
