@@ -137,6 +137,7 @@ export class EnvmapComponent implements AfterViewInit {
   robos: Robo[] = []; // Org_robos
   selectedAction: string| null = null;
   validationError: string | null = null;
+  
   Nodes: {
     id: number;
     x: number;
@@ -1340,9 +1341,10 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     
     const firstPoint = zone.pos[0]; // The first point of the zone
     if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
+      this.isPopupVisible = true;
       this.zoneType = zone.type; // Prepopulate the selected zone type
       this.selectedZone = zone; // Store the selected zone
-      this.showZoneTypePopup(); // Display the popup
+      // this.showZoneTypePopup(); // Display the popup
       return;
     }
   }
