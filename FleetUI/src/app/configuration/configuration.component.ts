@@ -525,7 +525,7 @@ export class ConfigurationComponent implements AfterViewInit {
   loadData() {
     // Fetch or initialize data here
     // this.EnvData = []; // Replace with actual data fetching
-
+    this.setPaginatedData(); //changes made for Realoading the Data
     this.filterData(); // Initial filter application
   }
 

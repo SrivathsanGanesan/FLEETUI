@@ -49,7 +49,7 @@
               id="resolution"
               #resolutionInput
               placeholder="Resolution"
-              (keyup.enter)="open()" 
+              (keyup.enter)="open()"
               (input)="onInputResolution($event)"
             />
             <p id="or">or</p>
@@ -95,7 +95,17 @@
     <div *ngIf="showImagePopup" class="image-popup-overlay">
       <div class="image-popup-content">
         <canvas class="imagePopupCanvas" #imagePopupCanvas></canvas>
-        <button class="close-btn" (click)="closeImagePopup()">X</button>
+        <button class="close-btn" (click)="closeImagePopup()"> <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+        >
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"
+          />
+        </svg></button>
         <button
           *ngIf="isDistanceConfirmed"
           class="save-btn"
@@ -136,7 +146,17 @@
         (click)="close()"
         *ngIf="!isPlottingEnabled && !isZonePlottingEnabled"
       >
-        X
+          <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+        >
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"
+          />
+        </svg>
       </button>
 
       <canvas class="plottinglayer" #overlayCanvas *ngIf="showImage"></canvas>
@@ -184,7 +204,7 @@
 
           <div class="input-group1">
             <label for="nodeDescription" class="label">Node Description:</label>
-            <input pInputTextArea
+            <input pInputText
               type="text"
               id="nodeDescription"
               [(ngModel)]="nodeDetails.description"
@@ -436,7 +456,7 @@
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
     <h3>Edge Details</h3>
-    
+
     <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
     <div class="form-row">
       <label for="edgeId">Edge ID:</label>
@@ -472,7 +492,7 @@
 
     <div class="form-row">
       <label for="released">Released:</label>
-      <input 
+      <input
         id="released"
         type="checkbox"
         [(ngModel)]="currentEdge.released"
@@ -571,7 +591,7 @@
 
     <div class="form-row">
       <label for="rotationAllowed">Rotation Allowed:</label>
-      <input 
+      <input
         id="rotationAllowed"
         type="checkbox"
         [(ngModel)]="currentEdge.rotationAllowed"
@@ -610,7 +630,7 @@
     <div *ngIf="showEdgeError" class="error-message">
       All required fields must be provided.
     </div>
-    
+
     <div class="form-buttons">
       <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
       <button type="button" id="formBTN" (click)="deleteEdge()">Delete</button>
@@ -646,7 +666,7 @@
           type="text"
           id="description"
           name="description"
-          
+
           placeholder="Enter Docking Description"
           [(ngModel)]="description"
           required

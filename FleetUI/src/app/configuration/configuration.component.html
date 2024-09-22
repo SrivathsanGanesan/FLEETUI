@@ -429,7 +429,7 @@
         </div>
 
         <div class="rob-inp">
-          <label for="robotName">Robot Name:</label>
+          <label for="robotName" style="margin-right:1rem;margin-left:1rem;">Robot Name:</label>
           <input
             pInputText
             type="text"
@@ -439,7 +439,7 @@
             required
           />
 
-          <label for="manufacturer">Manufacturer:</label>
+          <label for="manufacturer" style="margin-right:1rem;margin-left:1rem;">Manufacturer:</label>
           <input
             pInputText
             type="text"
@@ -449,7 +449,7 @@
             required
           />
 
-          <label for="serialNumber">Serial Number:</label>
+          <label for="serialNumber" style="margin-right:1rem;margin-left:1rem;">Serial Number:</label>
           <input
             pInputText
             type="text"
@@ -635,6 +635,7 @@
             type="text"
             id="envelopes3d"
             [(ngModel)]="formData.agvGeometry.envelopes3d"
+            style="margin-right: 13%;"
             name="envelopes3d"
           />
         </div>
@@ -730,6 +731,7 @@
             type="text"
             id="timing"
             [(ngModel)]="formData.protocolLimits.timing"
+            style="margin-right: 13%;"
             name="timing"
           />
         </div>
@@ -777,6 +779,7 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select AGV Kinematic"
+            styleClass="custom-dropdown"
           />
 
           <label for="agvClass">AGV Class:</label>
@@ -787,6 +790,7 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select AGV Class"
+            styleClass="custom-dropdown"
           />
         </div>
         <div class="rob-inp2">
@@ -820,6 +824,7 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select LocalizationTypes"
+            [style]="{'margin-right':'4.2rem'}"
           />
         </div>
         <button pButton type="button" (click)="saveTypeSpecification()">
