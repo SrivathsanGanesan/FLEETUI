@@ -1418,10 +1418,9 @@ onImagePopupCanvasClick(event: MouseEvent): void {
 
   savePopupData(): void {
     this.validationMessage = null;
-    // Convert undockingDistance to number for validation
     const undockingDistanceNumber = Number(this.undockingDistance);
-
-    // Validate if undockingDistance is within range and both fields are filled
+  
+    // Validate undockingDistance
     if (
       !undockingDistanceNumber ||
       undockingDistanceNumber < 1 ||
@@ -1430,26 +1429,33 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       this.validationMessage = 'Undocking Distance must be between 1 and 1000.';
       return;
     }
-
+  
+    // Validate description
     if (!this.description || this.description.trim() === '') {
       this.validationMessage = 'Please enter a description.';
       return;
     }
-
+  
+    // Check for description length
+    if (this.description.length > 255) {
+      this.validationMessage = 'Description cannot exceed 255 characters.';
+      return;
+    }
+  
     if (this.selectedAsset) {
-      // Find the asset and update its properties
       this.assets = this.assets.map((asset) => {
-        if (this.selectedAsset?.id===asset.id) {
+        if (this.selectedAsset?.id === asset.id) {
           asset.undockingDistance = parseInt(this.undockingDistance);
-          asset.desc = this.description; //this.selectedAsset?.desc ? this.selectedAsset?.desc : ''
+          asset.desc = this.description;
         }
         return asset;
       });
       this.redrawCanvas();
     }
-
+  
     this.closePopup1();
   }
+  
   closePopup1(): void {
     this.DockPopup = false;
     this.undockingDistance = '';
