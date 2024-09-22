@@ -554,7 +554,12 @@ export class EnvmapComponent implements AfterViewInit {
       });
 
     }
-
+    if (this.robotToDelete) {
+      // Remove the robot from the robos array
+      this.robos = this.robos.filter(r => r.roboDet.id !== this.robotToDelete.roboDet.id);
+      // Redraw the canvas after deleting the robot
+      this.redrawCanvas();
+    }
     // Disable delete mode after confirmation
     this.isDeleteModeEnabled = false;
 
@@ -1318,6 +1323,8 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     return distance < threshold;
   }
   public showZoneText: boolean = false;
+  robotToDelete: any; // Store the robot to be deleted
+
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
@@ -1340,14 +1347,15 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   }
     for (const robo of this.robos) {
       if (this.isRobotClicked(robo, x, y)) {
-        // this.isConfirmationVisible = true;
-        const confirmDelete = confirm('Do you want to delete this robot?');
-        if (confirmDelete) {
-          // Remove the robot from the robos array
-          this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
-          // Redraw the canvas after deleting the robot
-          this.redrawCanvas();
-        }
+        this.robotToDelete = robo;  // Store the robot that was right-clicked
+        this.isConfirmationVisible = true;
+        // const confirmDelete = confirm('Do you want to delete this robot?');
+        // if (confirmDelete) {
+        //   // Remove the robot from the robos array
+        //   this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
+        //   // Redraw the canvas after deleting the robot
+        //   this.redrawCanvas();
+        // }
         return;
       }
     }
