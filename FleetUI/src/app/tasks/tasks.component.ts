@@ -12,6 +12,10 @@ import { MessageService } from 'primeng/api';
 })
 export class TasksComponent implements OnInit, AfterViewInit {
   i: any;
+
+  isLoading = true;
+
+
   // activeButton: number | null = null;
 
   // handleClick(index: number): void {
@@ -94,6 +98,11 @@ export class TasksComponent implements OnInit, AfterViewInit {
     });
     this.filteredTaskData = this.tasks;
     this.setPaginatedData();
+
+    // Simulate some delay, such as an API call
+    setTimeout(() => {
+      this.isLoading = false; // Hide loader after the delay
+    }, 3000); // Delay of 3 seconds
   }
 
   // Ensure the paginator is initialized before setting paginated data
