@@ -685,22 +685,22 @@ export class EnvmapComponent implements AfterViewInit {
       this.validationError=null;
   }
   moveParameters = {
-    maxLinearVelocity: '',
-    maxAngularVelocity: '',
-    maxToleranceAtGoalX: '',
-    maxToleranceAtGoalY: '',
-    maxToleranceAtGoalOrientation: '',
+    maxLinearVelocity: 0,
+    maxAngularVelocity: 0,
+    maxToleranceAtGoalX: 0,
+    maxToleranceAtGoalY: 0,
+    maxToleranceAtGoalOrientation: 0,
     endPointOrientation: false,
     autoRobotMode: 'mode1', // Default mode
   };
   dockParameters = {
-    maxLinearVelocity: '',
-    maxAngularVelocity: '',
-    maxToleranceAtGoalX: '',
-    maxToleranceAtGoalY: '',
-    maxToleranceAtGoalOrientation: '',
-    goalOffsetX: '',
-    goalOffsetY: '',
+    maxLinearVelocity: 0,
+    maxAngularVelocity: 0,
+    maxToleranceAtGoalX: 0,
+    maxToleranceAtGoalY: 0,
+    maxToleranceAtGoalOrientation: 0,
+    goalOffsetX: 0,
+    goalOffsetY: 0,
     goalOffsetOrientation: '',
     endPointOrientation: false,
     dockingType: 'mode1',
@@ -722,22 +722,22 @@ export class EnvmapComponent implements AfterViewInit {
   }
   resetParameters(): void {
     this.moveParameters = {
-      maxLinearVelocity: '',
-      maxAngularVelocity: '',
-      maxToleranceAtGoalX: '',
-      maxToleranceAtGoalY: '',
-      maxToleranceAtGoalOrientation: '',
+      maxLinearVelocity: 0,
+      maxAngularVelocity: 0,
+      maxToleranceAtGoalX: 0,
+      maxToleranceAtGoalY: 0,
+      maxToleranceAtGoalOrientation: 0,
       endPointOrientation: false,
       autoRobotMode: 'mode1',
     };
     this.dockParameters = {
-      maxLinearVelocity: '',
-      maxAngularVelocity: '',
-      maxToleranceAtGoalX: '',
-      maxToleranceAtGoalY: '',
-      maxToleranceAtGoalOrientation: '',
-      goalOffsetX: '',
-      goalOffsetY: '',
+      maxLinearVelocity: 0,
+      maxAngularVelocity: 0,
+      maxToleranceAtGoalX: 0,
+      maxToleranceAtGoalY: 0,
+      maxToleranceAtGoalOrientation: 0,
+      goalOffsetX: 0,
+      goalOffsetY: 0,
       goalOffsetOrientation: '',
       endPointOrientation: false,
       dockingType: 'mode1',
@@ -789,6 +789,10 @@ export class EnvmapComponent implements AfterViewInit {
       let action: any;
 
       if (this.selectedAction === 'Move') {
+        if(!this.moveParameters.maxLinearVelocity && !this.moveParameters.maxAngularVelocity && !this.moveParameters.maxToleranceAtGoalX && !this.moveParameters.maxToleranceAtGoalY && !this.moveParameters.maxToleranceAtGoalOrientation){
+          this.validationError = 'Move parameters are required else set to 0 in default.';
+          return
+        }
         action = {
           actionType: this.selectedAction,
           actionId: `action_${this.actionCounter}`,
@@ -797,6 +801,10 @@ export class EnvmapComponent implements AfterViewInit {
         };
         this.actionCounter++;
       } else if (this.selectedAction === 'Dock') {
+        if(!this.dockParameters.maxLinearVelocity && !this.dockParameters.maxAngularVelocity && !this.dockParameters.maxToleranceAtGoalX && !this.dockParameters.maxToleranceAtGoalY && !this.dockParameters.goalOffsetX && !this.dockParameters.goalOffsetY && !this.dockParameters.goalOffsetOrientation){
+          this.validationError = 'Dock parameters are required else set to 0 in default.'; 
+          return          
+        }
         action = {
           actionType: this.selectedAction,
           actionId: `action_${this.actionCounter}`,
@@ -805,6 +813,10 @@ export class EnvmapComponent implements AfterViewInit {
         };
         this.actionCounter++;
       } else if (this.selectedAction === 'Undock') {
+        if(!this.undockParameters.maxAngularVelocity && !this.undockParameters.maxAngularVelocity && !this.undockParameters.maxToleranceAtGoalX && !this.undockParameters.maxToleranceAtGoalY && !this.undockParameters.maxToleranceAtGoalOrientation){
+          this.validationError = 'Undock parameters are required else set to 0 in default.';
+          return
+        }
         action = {
           actionType: this.selectedAction,
           actionId: `action_${this.actionCounter}`,
@@ -1962,21 +1974,21 @@ onImagePopupCanvasClick(event: MouseEvent): void {
         !this.moveParameters.maxLinearVelocity ||
         !this.moveParameters.maxAngularVelocity
       ) {
-        this.validationError = 'All Move Action fields are required.';
+        // this.validationError = 'All Move Action fields are required.'; // yet to uncomment..
       }
     } else if (this.selectedAction === 'Dock') {
       if (
         !this.dockParameters.maxAngularVelocity ||
         !this.dockParameters.goalOffsetX
       ) {
-        this.validationError = 'All Dock Action fields are required.';
+        // this.validationError = 'All Dock Action fields are required.';
       }
     } else if (this.selectedAction === 'Undock') {
       if (
         !this.undockParameters.maxLinearVelocity ||
         !this.undockParameters.maxToleranceAtGoalX
       ) {
-        this.validationError = 'All Undock Action fields are required.';
+        // this.validationError = 'All Undock Action fields are required.';
       }
     }
 
