@@ -56,6 +56,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ContactusComponent } from './support/Addons/contactus/contactus.component';
 import { DialogModule } from 'primeng/dialog';
 import { LoaderComponent } from './loader/loader.component';
+import { TimerComponent } from './timer/timer.component';
 
 
 
@@ -97,7 +98,8 @@ import { LoaderComponent } from './loader/loader.component';
     SupportComponent,
     FaqComponent,
     ContactusComponent,
-    LoaderComponent
+    LoaderComponent,
+    TimerComponent
   ],
   imports: [
     NgApexchartsModule,

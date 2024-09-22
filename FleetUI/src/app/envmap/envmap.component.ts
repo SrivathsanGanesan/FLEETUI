@@ -137,6 +137,7 @@ export class EnvmapComponent implements AfterViewInit {
   robos: Robo[] = []; // Org_robos
   selectedAction: string| null = null;
   validationError: string | null = null;
+  
   Nodes: {
     id: number;
     x: number;
@@ -554,7 +555,12 @@ export class EnvmapComponent implements AfterViewInit {
       });
 
     }
-
+    if (this.robotToDelete) {
+      // Remove the robot from the robos array
+      this.robos = this.robos.filter(r => r.roboDet.id !== this.robotToDelete.roboDet.id);
+      // Redraw the canvas after deleting the robot
+      this.redrawCanvas();
+    }
     // Disable delete mode after confirmation
     this.isDeleteModeEnabled = false;
 
@@ -673,6 +679,10 @@ export class EnvmapComponent implements AfterViewInit {
       this.showDistanceDialog = false;
       this.distanceBetweenPoints = null; // Reset distance if applicable
       this.isDistanceConfirmed=false;
+      if (this.resolutionInput) {
+        this.resolutionInput.nativeElement.value = ''; // Reset the input field
+      }
+      this.validationError=null;
   }
   moveParameters = {
     maxLinearVelocity: '',
@@ -1318,6 +1328,8 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     return distance < threshold;
   }
   public showZoneText: boolean = false;
+  robotToDelete: any; // Store the robot to be deleted
+
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
@@ -1330,24 +1342,28 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       (this.overlayCanvas.nativeElement.height / rect.height);
 
   for (const zone of this.zones) {
+    
     const firstPoint = zone.pos[0]; // The first point of the zone
     if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
-      this.selectedZone = zone; // Store the selected zone
       this.zoneType = zone.type; // Prepopulate the selected zone type
-      this.showZoneTypePopup(); // Display the popup
+      this.selectedZone = zone; // Store the selected zone
+      this.isPopupVisible = true;
+      // this.showZoneTypePopup(); // Display the popup
       return;
     }
   }
     for (const robo of this.robos) {
-      if (this.isRobotClicked(robo, x, y)) {
-        // this.isConfirmationVisible = true;
-        const confirmDelete = confirm('Do you want to delete this robot?');
-        if (confirmDelete) {
-          // Remove the robot from the robos array
-          this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
-          // Redraw the canvas after deleting the robot
-          this.redrawCanvas();
-        }
+
+      if (this.isRobotClicked(robo, x, y)) {        
+        this.robotToDelete = robo;  // Store the robot that was right-clicked
+        this.isConfirmationVisible = true;
+        // const confirmDelete = confirm('Do you want to delete this robot?');
+        // if (confirmDelete) {
+        //   // Remove the robot from the robos array
+        //   this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
+        //   // Redraw the canvas after deleting the robot
+        //   this.redrawCanvas();
+        // }
         return;
       }
     }
@@ -2448,6 +2464,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     return [minX, minY, maxX, maxY];
   }
   onZoneTypeSelected(zoneType: ZoneType): void {
+    
     this.zoneType = zoneType;
 
     if (this.isZoneOverlapping(this.plottedPoints)) {
@@ -2488,6 +2505,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     this.isZonePlottingEnabled = false;
     this.isPopupVisible = false;
     this.firstPlottedPoint = null;
+    
 
     // Redraw the canvas to remove the temporary zone points
     this.redrawCanvas();

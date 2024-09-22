@@ -233,7 +233,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.setPaginatedData();
     this.searchTerm = '';
     this.searchTermChanged();
-    
+
   }
 
   fetchRobos() {
@@ -262,12 +262,12 @@ export class ConfigurationComponent implements AfterViewInit {
       })
       .then((data) => {
         console.log(data);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Robots Fetched Successfully',
-          life: 4000,
-        });
+        // this.messageService.add({
+        //   severity: 'success',
+        //   summary: 'Success',
+        //   detail: 'Robots Fetched Successfully',
+        //   life: 4000,
+        // });
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
         this.filteredRobotData = this.robotData;
@@ -331,20 +331,55 @@ export class ConfigurationComponent implements AfterViewInit {
     return item.taskId; // or any unique identifier like taskId
   }
 
-
   setPaginatedData() {
-    if (this.paginator) {
+    if (this.paginator && this.currentTable === 'Environment') {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       this.paginatedData = this.filteredEnvData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
     }
+    if (this.paginator && this.currentTable === 'robot') {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.paginatedData = this.filteredRobotData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+    }
+    if (this.paginator && this.currentTable === 'ipScanner') {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.paginatedData = this.ipScanData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+    }
   }
-  
+
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
+  //Commit Changed
+    // Search method
+    onSearch(event: Event): void {
+      const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
+
+      if (!inputValue) {
+        this.filteredEnvData = this.EnvData;
+      } else {
+        this.filteredEnvData = this.EnvData.filter((item) =>
+          Object.values(item).some((val) =>
+            String(val).toLowerCase().includes(inputValue)
+          )
+        );
+      }
+
+      // Reset the paginator after filtering
+      if (this.paginator) {
+        this.paginator.firstPage();
+      }
+
+      this.setPaginatedData(); // Update paginated data after filtering
+    }
 
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {
@@ -422,7 +457,7 @@ export class ConfigurationComponent implements AfterViewInit {
       this.selectedMap?.id === item.id &&
       this.selectedMap?.mapName === item.mapName
     )
-      return false;
+    return false;
     return true;
     // return this.selectedMap && this.selectedMap !== item;
   }
@@ -642,6 +677,7 @@ export class ConfigurationComponent implements AfterViewInit {
   showImageUploadPopup = false;
   openImageUploadPopup(): void {
     this.showImageUploadPopup = true;
+    this.resetFilters();
   }
 
   closeImageUploadPopup(): void {
@@ -659,9 +695,6 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
 
-  searchTermChanged() {
-    this.filterData();
-  }
 
   showIPScannerPopup = false;
 
@@ -753,8 +786,6 @@ export class ConfigurationComponent implements AfterViewInit {
   // yet to work..
   showTable(table: string) {
     this.currentTable = table;
-    // Clear search term and reset date inputs when switching between tabs
-    // Clear search term and reset date inputs when switching between tabs
     this.searchTerm = ''; // Clear the search term
     this.startDate = null; // Clear the start date
     this.endDate = null; // Clear the end date
@@ -766,6 +797,9 @@ export class ConfigurationComponent implements AfterViewInit {
       this.filteredRobotData = [...this.robotData]; // Reset to the original data
       this.fetchRobos();
     }
+    this.filterData();
+  }
+  searchTermChanged() {
     this.filterData();
   }
 
@@ -796,7 +830,13 @@ export class ConfigurationComponent implements AfterViewInit {
       );
     }
   }
-
+  resetFilters() {
+    this.searchTerm = ''; // Reset search term
+    this.startDate = null; // Reset start date
+    this.endDate = null; // Reset end date
+    this.filteredEnvData = [...this.EnvData]; // Reset environment data filter
+    this.filteredRobotData = [...this.robotData]; // Reset robot data filter
+  }
   onDateFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const filter = selectElement?.value || '';

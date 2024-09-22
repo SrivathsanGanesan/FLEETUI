@@ -41,6 +41,7 @@
             <input
               type="date"
               id="start-date"
+              
               (change)="onDateChange($event)"
               class="date-input"
               [min]="minDate"
@@ -51,6 +52,7 @@
             <input
               type="date"
               id="end-date"
+          
               (change)="onDateChange($event)"
               class="date-input"
               [min]="minDate"
@@ -208,10 +210,10 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded && filteredEnvData.length > 5"
+              *ngIf="currentTable === 'robot' && !imageUploaded && filteredRobotData.length > 5"
             >
               <mat-paginator
-                [length]="filteredData.length"
+                [length]="filteredRobotData.length"
                 [pageSize]="5"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
@@ -308,11 +310,11 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded && filteredEnvData.length > 5"
+              *ngIf="currentTable === 'robot' && !imageUploaded && ipScanData.length > 5"
             >
               <mat-paginator
-                [length]="filteredTaskData.length"
-                [pageSize]="15"
+                [length]="ipScanData.length"
+                [pageSize]="5"
                 [pageSizeOptions]="[5, 10, 15]"
                 (page)="onPageChange($event)"
                 showFirstLastButtons

@@ -15,6 +15,7 @@ import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { SupportComponent } from './support/support.component';
 import { FaqComponent } from './faq/faq.component';
+import { AuthService } from './auth.service';
 
 const routes: Routes = [
   {
@@ -53,7 +54,7 @@ const routes: Routes = [
     component: ConfigurationComponent,
     canActivate: [AuthGuard, ProjectGuard],
   },
- 
+
   {
     path: 'dashboard',
     component: DashboardComponent,
@@ -93,5 +94,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
+  providers:[AuthService]
 })
 export class AppRoutingModule {}
