@@ -1,3 +1,4 @@
+const { get } = require("mongoose");
 const { Map, Robo } = require("../../../application/models/mapSchema");
 
 const eventStreamHeader = {
@@ -5,6 +6,26 @@ const eventStreamHeader = {
   "Cache-Control": "no-cache",
   Connection: "keep-alive",
 };
+
+const getSampSeries = () => {
+  let arr = [];
+  for (let i = 1; i <= 5; i++) {
+    arr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        // day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
+  }
+  return arr;
+};
+
+let throughPutArr = getSampSeries();
+let starvationRateArr = getSampSeries();
+let pickAccuracyArr = getSampSeries();
+let errRateArr = getSampSeries();
 //..
 
 const getFleetThroughput = (req, res, next) => {
@@ -32,49 +53,13 @@ const getFleetThroughput = (req, res, next) => {
 
 const throughput = async (req, res, next) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     //..
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
-    let dummyStat = [
-      {
-        TotalNumberRobots: 5,
-        TotalTimeElasped: 3600,
-        TotalTaskCount: 100,
-        TotalThroughPutPerHour: 12,
-        TimeStamp: 1725305782000,
-      },
-      {
-        TotalNumberRobots: 4,
-        TotalTimeElasped: 3600,
-        TotalTaskCount: 90,
-        TotalThroughPutPerHour: 22.5,
-        TimeStamp: 1725309382000,
-      },
-      {
-        TotalNumberRobots: 5,
-        TotalTimeElasped: 3600,
-        TotalTaskCount: 100,
-        TotalThroughPutPerHour: 75,
-        TimeStamp: 1725312982000,
-      },
-      {
-        TotalNumberRobots: 4,
-        TotalTimeElasped: 3600,
-        TotalTaskCount: 90,
-        TotalThroughPutPerHour: 28.5,
-        TimeStamp: 1725402987000,
-      },
-      {
-        TotalNumberRobots: 5,
-        TotalTimeElasped: 3600,
-        TotalTaskCount: 100,
-        TotalThroughPutPerHour: 45,
-        TimeStamp: 1725406587000,
-      },
-    ];
-    let InProgress = 3;
+
     const mapData = await Map.findOne({ _id: mapId });
     // const mapData = await Map.findOneAndUpdate(
     //   { _id: mapId },
@@ -88,9 +73,46 @@ const throughput = async (req, res, next) => {
     // );
     // let throughput = mapData.throughPut;
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        throughput: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        throughput: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    throughPutArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      throughput: { Stat: dummyStat, InProgress: InProgress },
+      throughput: throughPutArr,
       // throughput: throughput,
     });
   } catch (err) {
@@ -126,6 +148,7 @@ const getFleetStarvation = (req, res, next) => {
 
 const starvationRate = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
@@ -143,9 +166,16 @@ const starvationRate = async (req, res) => {
     // );
     // let throughput = mapData.throughPut;
 
+    starvationRateArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      starvation: Math.floor(Math.random() * 30) + 10,
+      starvation: starvationRateArr,
       map: mapData,
     });
   } catch (err) {
@@ -181,6 +211,7 @@ const getFleetPickAccuracy = async (req, res) => {
 
 const pickAccuracy = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
@@ -198,9 +229,16 @@ const pickAccuracy = async (req, res) => {
     // );
     // let throughput = mapData.throughPut;
 
+    pickAccuracyArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      pickAccuracy: Math.floor(Math.random() * 30) + 10,
+      pickAccuracy: pickAccuracyArr,
       map: mapData,
     });
   } catch (err) {
@@ -236,6 +274,7 @@ const getFleetErrRate = async (req, res) => {
 
 const errRate = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
@@ -253,9 +292,16 @@ const errRate = async (req, res) => {
     // );
     // let throughput = mapData.throughPut;
 
+    errRateArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      errRate: Math.floor(Math.random() * 30) + 10,
+      errRate: errRateArr,
       map: mapData,
     });
   } catch (err) {

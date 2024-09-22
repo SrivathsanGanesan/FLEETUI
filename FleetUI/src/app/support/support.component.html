@@ -1,7 +1,7 @@
 <div class="layout-container">
     <app-sidenavbar></app-sidenavbar>
  <div class="support-page-container">
-    
+
     <div class="header-section">
         <h1 class="header-title">Support</h1>
         <div class="subheader-container">
@@ -13,26 +13,26 @@
           />
         </div>
       </div>
-  
+
     <div class="support-sections">
       <!-- <div class="support-section">
         <img src="assets/icons/help-center.svg" alt="Help Center">
         <h3>Help Center</h3>
         <p>Access articles and guides.</p>
       </div> -->
-  
+
       <!-- <div class="support-section">
         <img src="assets/icons/contact-info.png" alt="Contact Info">
         <h3>Contact Info</h3>
         <p>Reach out to our team.</p>
       </div> -->
-  
+
       <div class="support-section">
         <img src="assets/icons/folder.png" alt="Documentation">
         <h3>Documentation</h3>
         <p>Find technical docs and guides.</p>
       </div>
-  
+
       <div class="support-section">
         <img src="assets/icons/training.png" alt="Training Resource">
         <h3>Training Resource</h3>
@@ -48,9 +48,9 @@
           </div>
         </div>
       </div>
-      
-      
-  
+
+
+
       <div class="support-section">
         <img src="assets/icons/faq.png" alt="FAQ">
         <h3>FAQ</h3>
@@ -61,67 +61,17 @@
             <h3>Frequently Asked Questions (FAQ)</h3>
             <p>Find answers to commonly asked questions</p>
           </div>
-        
+
       </div>
-  
+
       <div class="support-section">
-        <img src="assets/icons/contact.png" alt="Contact Support">
-        <h3>Contact Us</h3>
-        <p>Get in touch with our support team.</p>
+        <app-contactus></app-contactus>
+      </div> <!--cut-->
+            <!-- </div> -->
 
-                    <!-- Button to trigger the popup -->
-            <button (click)="openPopup()">Contact Us</button>
-
-            <!-- Popup modal -->
-            <div id="popup" class="popup-overlay" *ngIf="isPopupOpen">
-            <div class="popup-content">
-                <span class="close" (click)="closePopup()">&times;</span>
-                <h2>Talk to our Automation expert for free</h2>
-                <p>Drop-in your query and we will get back at the drop of a hat with our innovative automation solutions!</p>
-                
-                <form>
-                <div class="form-row">
-                    <label for="enquiryReason">Enquiry Reason*</label>
-                    <select id="enquiryReason" required>
-                    <option value="" disabled selected>Select a reason</option>
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Product Info">Product Info</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label for="fullName">Full Name*</label>
-                    <input type="text" id="fullName" required>
-                </div>
-                <div class="form-row">
-                    <label for="emailId">Email Id*</label>
-                    <input type="email" id="emailId" required>
-                </div>
-                <div class="form-row">
-                    <label for="mobile">Mobile with Country Code*</label>
-                    <input type="tel" id="mobile" required>
-                </div>
-                <div class="form-row">
-                    <label for="jobTitle">Job Title*</label>
-                    <input type="text" id="jobTitle" required>
-                </div>
-                <div class="form-row">
-                    <label for="organization">Organization*</label>
-                    <input type="text" id="organization" required>
-                </div>
-                <div class="form-row">
-                    <input type="checkbox" id="privacyPolicy" required>
-                    <label for="privacyPolicy">I agree to the Privacy Policy and Terms of Use</label>
-                </div>
-                <div class="form-row">
-                    <button type="submit">Submit</button>
-                </div>
-                </form>
-            </div>
-            </div>
-
-      </div>
+      <!-- </div> -->
     </div>
-  
+
     <div class="social-media-container">
       <h3>Follow Us</h3>
       <div class="social-media-icons">
@@ -133,4 +83,3 @@
     </div>
   </div>
 </div>
-  

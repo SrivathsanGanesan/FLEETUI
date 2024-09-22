@@ -229,12 +229,12 @@ table {
   border-radius: 10px;
   border-spacing: 0;
   overflow: auto;
-  border: 1px solid #ccc;
+  border: 1px solid #fff;
   border-radius: 10px;
 }
 
 th, td {
-  border: 1px solid #ffffff;
+  border: 0px solid #ffffff;
   padding:10px 5px 10px 0px;
   height: 30px;
 }

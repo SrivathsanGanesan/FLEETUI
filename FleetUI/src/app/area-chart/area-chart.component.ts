@@ -32,13 +32,13 @@ export type ChartOptions = {
   styleUrls: ['./area-chart.component.css'],
 })
 export class AreaChartComponent implements OnInit {
-
- currentFilter: string = 'today'; // To track the selected filter
+  currentFilter: string = 'today'; // To track the selected filter
 
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
   selectedMap: any | null = null;
+  [key: string]: any; // index signature..
 
   throughputArr: number[] = [0];
   throughputXaxisSeries: string[] = [];
@@ -57,6 +57,13 @@ export class AreaChartComponent implements OnInit {
   taskAllocationTimeInterval: any | null = null;
   pickAccTimeInterval: any | null = null;
   errRateTimeInterval: any | null = null;
+
+  intervals: string[] = [
+    'throuputTimeInterval',
+    'starvationTimeInterval',
+    'pickAccTimeInterval',
+    'errRateTimeInterval',
+  ];
 
   constructor(
     private projectService: ProjectService,
@@ -153,233 +160,309 @@ export class AreaChartComponent implements OnInit {
         this.updateStarvationRate();
         break;
       case 'data3':
-        this.updateTaskAllocation();
-        break;
-      case 'data4':
         this.updatePickAccuracy();
         break;
-      case 'data5':
+      case 'data4':
         this.updateErrorRate();
         break;
     }
   }
 
-   // Apply filter function when a filter is selected
-   applyFilter(filter: string) {
-    this.currentFilter = filter; // Update the current filter
-    this.updateChartWithFilter(); // Re-fetch data with the new filter
-  }
-  updateChartWithFilter() {
-    throw new Error('Method not implemented.');
-  }
-  async updateThroughput() {
-    if (!this.selectedMap || this.throuputTimeInterval) return;
-    this.clearAllIntervals(this.throuputTimeInterval);
+  applyFilter(event: any) {
+    this.currentFilter = event.target.value.toLowerCase();
 
+    // this.intervals.forEach((interval) => {
+    //   if (this[interval]) {
+    if (this.selectedMetric === 'Throughput')
+      this.updateChart('data1', this.selectedMetric);
+    else if (this.selectedMetric === 'Starvation rate')
+      this.updateChart('data2', this.selectedMetric);
+    else if (this.selectedMetric === 'Pick accuracy')
+      this.updateChart('data3', this.selectedMetric);
+    else if (this.selectedMetric === 'Erorr rate')
+      this.updateChart('data4', this.selectedMetric);
+    // return;
+    // }
+    // });
+  }
+
+  plotChart(seriesName: string, data: any[], time: any[], limit: number = 12) {
+    const limitedData = data.length > limit ? data.slice(-limit) : data;
+    const limitedTime = time.length > limit ? time.slice(-limit) : time;
+
+    // this.chartOptions.series = [{ name: seriesName, data: limitedData }];
+    this.chart.updateOptions(
+      {
+        series: [{ name: seriesName, data: limitedData }],
+        xaxis: { categories: limitedTime },
+      },
+      false, // Don't replot the entire chart
+      true // Smooth transitions
+    );
+  }
+
+  async fetchChartData(
+    endpoint: string,
+    timeSpan: string,
+    startTime: string, // alter to date..
+    endTime: string
+  ) {
     const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/graph/throughput/${this.selectedMap.id}`,
+      `http://${environment.API_URL}:${environment.PORT}/graph/${endpoint}/${this.selectedMap.id}`,
       {
         method: 'POST',
         credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timeSpan: timeSpan, // e.g. 'Daily' or 'Weekly'
+          startTime: startTime,
+          endTime: endTime,
+        }),
       }
     );
-    const data = await response.json();
+    return await response.json();
+  }
 
-    if (data.throughput && data.throughput.Stat)
-      this.throughputArr = data.throughput.Stat.map((stat: any) => {
-        let time = new Date(stat.TimeStamp).toLocaleString('en-IN', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-        });
+  async updateThroughput() {
+    // this.chartOptions.xaxis.range = 12; // get use of it..
+    if (this.currentFilter === 'week' || this.currentFilter === 'month') {
+      clearInterval(this.throuputTimeInterval);
+      const data = await this.fetchChartData(
+        'throughput',
+        this.currentFilter,
+        '',
+        ''
+      );
+      let seriesData = [];
+      let seriesTime = [];
 
-        this.throughputXaxisSeries = [...this.throughputXaxisSeries, time];
-        // this.throughputXaxisSeries.push(time);
-        return stat.TotalThroughPutPerHour;
-      });
+      if (data.throughput) {
+        seriesData = data.throughput.map((stat: any) => stat.rate);
+        seriesTime = data.throughput.map((stat: any) => stat.time);
+      }
+      this.plotChart('Throughput', seriesData, seriesTime, 30);
+      return;
+    }
 
-    this.chartOptions.series = [{ data: this.throughputArr }];
-    this.chartOptions.xaxis = { categories: this.throughputXaxisSeries };
+    if (!this.selectedMap && this.throuputTimeInterval) return;
 
-    // this.cdRef.detectChanges();
+    const data = await this.fetchChartData(
+      'throughput',
+      this.currentFilter,
+      '',
+      ''
+    );
+
+    if (data.throughput) {
+      this.throughputArr = data.throughput.map((stat: any) => stat.rate);
+      this.throughputXaxisSeries = data.throughput.map(
+        (stat: any) => stat.time
+      );
+    }
+    this.plotChart(
+      'Throughput',
+      this.throughputArr,
+      this.throughputXaxisSeries
+    ); // this.selectedMetric..
+
+    this.throuputTimeInterval = setInterval(async () => {
+      const data = await this.fetchChartData(
+        'throughput',
+        this.currentFilter,
+        '',
+        ''
+      );
+      if (data.throughput) {
+        this.throughputArr = data.throughput.map((stat: any) => stat.rate);
+        this.throughputXaxisSeries = data.throughput.map(
+          (stat: any) => stat.time
+        );
+      }
+      this.plotChart(
+        'Throughput',
+        this.throughputArr,
+        this.throughputXaxisSeries
+      );
+    }, 1000 * 2);
   }
 
   async updateStarvationRate() {
-    let temp = [];
-    let tempTime = [];
-    if (!this.selectedMap || this.starvationTimeInterval) return;
-    this.clearAllIntervals(this.starvationTimeInterval);
-    this.chartOptions.xaxis.range = 12;
+    // this.chartOptions.xaxis.range = 12;
     let startTime = new Date().setHours(0, 0, 0, 0); // set current time to starting time of the current day..
     let endTime = new Date().setMilliseconds(0); // time in milliseconds..
+    if (this.currentFilter === 'week' || this.currentFilter === 'month') {
+      clearInterval(this.starvationTimeInterval);
+      const data = await this.fetchChartData(
+        'starvationrate',
+        this.currentFilter,
+        '',
+        ''
+      );
+      let seriesData = [];
+      let seriesTime = [];
 
-    try {
-      this.starvationTimeInterval = setInterval(async () => {
-        let response = await fetch(
-          `http://${environment.API_URL}:${environment.PORT}/graph/starvationrate/${this.selectedMap.id}`,
-          {
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify({
-              timeSpan: 'Daily', // Weekly
-              startTime: startTime,
-              endTime: endTime,
-            }),
-          }
-        );
-        let data = await response.json();
-        if (!data.map) {
-          clearInterval(this.starvationTimeInterval);
-          return;
-        }
-
-        this.starvationArr.push(data.starvation);
-        tempTime.push(new Date().toLocaleTimeString()); // yet to take..
-        if (this.starvationArr.length > 12)
-          temp = this.starvationArr.slice(-12);
-        else temp = [...this.starvationArr];
-
-        this.chartOptions.series = [{ data: temp }];
-        this.chart.updateOptions(
-          {
-            // series: [{ data: temp }],
-            xaxis: {
-              categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
-            },
-          },
-          false, // Do not completely replot the chart
-          true // Allow smooth transitions
-        );
-      }, 1000 * 2);
-    } catch (err) {
-      console.log('Err occured here : ', err);
+      if (data.starvation) {
+        seriesData = data.starvation.map((stat: any) => stat.rate);
+        seriesTime = data.starvation.map((stat: any) => stat.time);
+      }
+      this.plotChart('Starvation rate', seriesData, seriesTime, 30);
+      return;
     }
-  }
 
-  // yet to remove..
-  async updateTaskAllocation() {
-    if (!this.selectedMap || this.taskAllocationTimeInterval) return;
-    this.clearAllIntervals(this.taskAllocationTimeInterval);
-    this.chartOptions.series = [
-      {
-        name: 'Series 3',
-        data: [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
-      },
-    ];
-    this.chartOptions.xaxis.categories = [
-      'Dec 01',
-      'Dec 02',
-      'Dec 03',
-      'Dec 04',
-      'Dec 05',
-      'Dec 06',
-      'Dec 07',
-      'Dec 08',
-      'Dec 09',
-      'Dec 10',
-      'Dec 11',
-    ];
+    if (!this.selectedMap && this.starvationTimeInterval) return;
+
+    const data = await this.fetchChartData(
+      'starvationrate',
+      this.currentFilter,
+      '',
+      ''
+    );
+    if (data.starvation) {
+      this.starvationArr = data.starvation.map((stat: any) => stat.rate);
+      this.starvationXaxisSeries = data.starvation.map(
+        (stat: any) => stat.time
+      );
+    }
+    this.plotChart(
+      'Starvation rate',
+      this.starvationArr,
+      this.starvationXaxisSeries
+    ); // this.selectedMetric..
+
+    if (this.currentFilter !== 'daily') return;
+    this.starvationTimeInterval = setInterval(async () => {
+      const data = await this.fetchChartData(
+        'starvationrate',
+        this.currentFilter,
+        '',
+        ''
+      );
+      if (data.starvation) {
+        this.starvationArr = data.starvation.map((stat: any) => stat.rate);
+        this.starvationXaxisSeries = data.starvation.map(
+          (stat: any) => stat.time
+        );
+      }
+      this.plotChart(
+        'Starvation rate',
+        this.starvationArr,
+        this.starvationXaxisSeries
+      );
+    }, 1000 * 2);
   }
 
   async updatePickAccuracy() {
-    let temp = [];
-    let tempTime = [];
-    if (!this.selectedMap || this.pickAccTimeInterval) return;
-    this.clearAllIntervals(this.pickAccTimeInterval);
-    this.chartOptions.xaxis.range = 12;
     let startTime = new Date().setHours(0, 0, 0, 0); // set current time to starting time of the current day..
     let endTime = new Date().setMilliseconds(0); // time in milliseconds..
+    if (this.currentFilter === 'week' || this.currentFilter === 'month') {
+      clearInterval(this.pickAccTimeInterval);
+      const data = await this.fetchChartData(
+        'pickaccuracy',
+        this.currentFilter,
+        '',
+        ''
+      );
+      let seriesData = [];
+      let seriesTime = [];
 
-    try {
-      this.pickAccTimeInterval = setInterval(async () => {
-        let response = await fetch(
-          `http://${environment.API_URL}:${environment.PORT}/graph/pickaccuracy/${this.selectedMap.id}`,
-          {
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify({
-              timeSpan: 'Daily', // Weekly
-              startTime: startTime,
-              endTime: endTime,
-            }),
-          }
-        );
-        let data = await response.json();
-        if (!data.map) {
-          clearInterval(this.pickAccTimeInterval);
-          return;
-        }
-
-        this.pickAccuracyArr.push(data.pickAccuracy);
-        tempTime.push(new Date().toLocaleTimeString()); // yet to take..
-        if (this.pickAccuracyArr.length > 12)
-          temp = this.pickAccuracyArr.slice(-12);
-        else temp = [...this.pickAccuracyArr];
-
-        this.chartOptions.series = [{ data: temp }];
-        this.chart.updateOptions(
-          {
-            // series: [{ data: temp }],
-            xaxis: {
-              categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
-            },
-          },
-          false, // Do not completely replot the chart
-          true // Allow smooth transitions
-        );
-      }, 1000 * 2);
-    } catch (err) {
-      console.log('Err occured here : ', err);
+      if (data.pickAccuracy) {
+        seriesData = data.pickAccuracy.map((stat: any) => stat.rate);
+        seriesTime = data.pickAccuracy.map((stat: any) => stat.time);
+      }
+      this.plotChart('Pick accuracy', seriesData, seriesTime, 30);
+      return;
     }
+
+    if (!this.selectedMap && this.pickAccTimeInterval) return;
+
+    const data = await this.fetchChartData(
+      'pickaccuracy',
+      this.currentFilter,
+      '',
+      ''
+    );
+    if (data.pickAccuracy) {
+      this.pickAccuracyArr = data.pickAccuracy.map((stat: any) => stat.rate);
+      this.pickAccXaxisSeries = data.pickAccuracy.map((stat: any) => stat.time);
+    }
+    this.plotChart(
+      'Pick accuracy',
+      this.pickAccuracyArr,
+      this.pickAccXaxisSeries
+    );
+
+    if (this.currentFilter !== 'daily') return;
+    this.pickAccTimeInterval = setInterval(async () => {
+      const data = await this.fetchChartData(
+        'pickaccuracy',
+        this.currentFilter,
+        '',
+        ''
+      );
+      if (data.pickAccuracy) {
+        this.pickAccuracyArr = data.pickAccuracy.map((stat: any) => stat.rate);
+        this.pickAccXaxisSeries = data.pickAccuracy.map(
+          (stat: any) => stat.time
+        );
+      }
+      this.plotChart(
+        'Pick accuracy',
+        this.pickAccuracyArr,
+        this.pickAccXaxisSeries
+      );
+    }, 1000 * 2);
   }
 
   async updateErrorRate() {
-    let temp = [];
-    let tempTime = [];
-    if (!this.selectedMap || this.errRateTimeInterval) return;
-    this.clearAllIntervals(this.errRateTimeInterval);
-    this.chartOptions.xaxis.range = 12;
     let startTime = new Date().setHours(0, 0, 0, 0); // set current time to starting time of the current day..
     let endTime = new Date().setMilliseconds(0); // time in milliseconds..
+    if (this.currentFilter === 'week' || this.currentFilter === 'month') {
+      clearInterval(this.errRateTimeInterval);
+      const data = await this.fetchChartData(
+        'err-rate',
+        this.currentFilter,
+        '',
+        ''
+      );
+      let seriesData = [];
+      let seriesTime = [];
+
+      if (data.errRate) {
+        seriesData = data.errRate.map((stat: any) => stat.rate);
+        seriesTime = data.errRate.map((stat: any) => stat.time);
+      }
+      this.plotChart('Error rate', seriesData, seriesTime, 30);
+      return;
+    }
+
+    if (!this.selectedMap && this.errRateTimeInterval) return;
 
     try {
+      const data = await this.fetchChartData(
+        'err-rate',
+        this.currentFilter,
+        '',
+        ''
+      );
+      if (data.errRate) {
+        this.errRateArr = data.errRate.map((stat: any) => stat.rate);
+        this.errRateXaxisSeries = data.errRate.map((stat: any) => stat.time);
+      }
+      this.plotChart('Error rate', this.errRateArr, this.errRateXaxisSeries); // this.selectedMetric..
+
+      if (this.currentFilter !== 'daily') return;
       this.errRateTimeInterval = setInterval(async () => {
-        let response = await fetch(
-          `http://${environment.API_URL}:${environment.PORT}/graph/err-rate/${this.selectedMap.id}`,
-          {
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify({
-              timeSpan: 'Daily', // Weekly
-              startTime: startTime,
-              endTime: endTime,
-            }),
-          }
+        const data = await this.fetchChartData(
+          'err-rate',
+          this.currentFilter,
+          '',
+          ''
         );
-        let data = await response.json();
-        if (!data.map) {
-          clearInterval(this.errRateTimeInterval);
-          return;
+        if (data.errRate) {
+          this.errRateArr = data.errRate.map((stat: any) => stat.rate);
+          this.errRateXaxisSeries = data.errRate.map((stat: any) => stat.time);
         }
-
-        this.errRateArr.push(data.errRate);
-        tempTime.push(new Date().toLocaleTimeString()); // yet to take..
-        if (this.errRateArr.length > 12) temp = this.errRateArr.slice(-12);
-        else temp = [...this.errRateArr];
-
-        this.chartOptions.series = [{ data: temp }];
-        this.chart.updateOptions(
-          {
-            // series: [{ data: temp }],
-            xaxis: {
-              categories: tempTime.length > 12 ? tempTime.slice(-12) : tempTime,
-            },
-          },
-          false, // Do not completely replot the chart
-          true // Allow smooth transitions
-        );
+        this.plotChart('Error rate', this.errRateArr, this.errRateXaxisSeries);
       }, 1000 * 2);
     } catch (err) {
       console.log('Err occured here : ', err);
@@ -387,25 +470,11 @@ export class AreaChartComponent implements OnInit {
   }
 
   clearAllIntervals(currInterval: any) {
-    if (currInterval !== this.throuputTimeInterval) {
-      clearInterval(this.throuputTimeInterval);
-      this.throuputTimeInterval = 0;
-    }
-    if (currInterval !== this.starvationTimeInterval) {
-      clearInterval(this.starvationTimeInterval);
-      this.starvationTimeInterval = 0;
-    }
-    if (currInterval !== this.taskAllocationTimeInterval) {
-      clearInterval(this.taskAllocationTimeInterval);
-      this.taskAllocationTimeInterval = 0;
-    }
-    if (currInterval !== this.pickAccTimeInterval) {
-      clearInterval(this.pickAccTimeInterval);
-      this.pickAccTimeInterval = 0;
-    }
-    if (currInterval !== this.errRateTimeInterval) {
-      clearInterval(this.errRateTimeInterval);
-      this.errRateTimeInterval = 0;
-    }
+    this.intervals.forEach((interval) => {
+      if (currInterval !== this[interval]) {
+        clearInterval(this[interval]);
+        this[interval] = 0;
+      }
+    });
   }
 }

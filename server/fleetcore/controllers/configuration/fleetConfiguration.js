@@ -19,6 +19,7 @@ const getMacAddress = (ip) => {
   });
 };
 
+// need to use dhcp server to resolve hostname by ip.. in later.. instead of reverse loopup on dns server or local dns server..!
 const getHost = (ip) => {
   if (ip === "") return;
   return new Promise((resolve, reject) => {
@@ -37,6 +38,10 @@ const scanIp = async (req, res) => {
   const { startIp, endIp } = req.params;
   try {
     const ipRange = getIPRange(`${startIp}-${endIp}`); // "192.168.24.90-192.168.36.183"
+    /* req.on("close", () => {
+      console.log("Client closed the connection, in the way of scanning  ip.");
+      return res.end();
+    }); */
 
     res.writeHead(200, eventStreamHeader);
     for (let ip of ipRange) {
