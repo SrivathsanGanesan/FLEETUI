@@ -10,12 +10,11 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./statistics.component.css'],
 })
 export class StatisticsComponent {
-
   currentView: string = 'operation'; // Default to 'operation'
   operationPie: number[] = [0, 0, 0, 0, 0];
   selectedMap: any | null = null;
   operationActivities: any[] = [];
-  
+
   // this.operationActivities = [
   // { taskId: 9, taskName: 'AMR-003', task: 'Transporting materials', progress: 90, status: 'Actively Working', },
   // ];
@@ -29,14 +28,18 @@ export class StatisticsComponent {
     { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
     // { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   ];
-  
-  statisticsData: any = {}; // Initialize the array with mock data
 
+  statisticsData: any = {
+    systemThroughput: 0,
+    systemThroughputChange: 3.5,
+    systemUptime: 0,
+    systemUptimeChange: 0.2,
+    successRate: 0,
+    successRateChange: -1.5,
+    responsiveness: 0,
+    responsivenessChange: 5.2,
+  }; // Initialize the array with mock data
 
-  
-
-
-  
   filteredOperationActivities = this.operationActivities;
   filteredNotifications = this.notifications;
 
@@ -47,12 +50,11 @@ export class StatisticsComponent {
   ) {
     if (!this.selectedMap) this.selectedMap = this.projectService.getMapData();
   }
-  
 
   onViewAllClick() {
     this.router.navigate(['/tasks']); // Navigate to tasks page
   }
-  
+
   setView(view: string): void {
     this.currentView = view;
     if (view === 'robot') {
@@ -66,6 +68,7 @@ export class StatisticsComponent {
     this.router.navigate(['/statistics/operation']); // Default to operation view
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) return;
+    this.getGrossStatus();
     this.operationPie = await this.fetchTasksStatus();
     setInterval(async () => {
       this.operationPie = await this.fetchTasksStatus();
@@ -81,18 +84,44 @@ export class StatisticsComponent {
       //   currTasks[0],
       // ];
     }, 1000 * 10);
+  }
 
+  async fetchFleetStatus(endpoint: string, bodyData = {}): Promise<any> {
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-gross-status/${endpoint}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData),
+      }
+    );
 
-    this.statisticsData = {
-      systemThroughput: 15,
-      systemThroughputChange: 3.5,
-      systemUptime: 99.9,
-      systemUptimeChange: 0.2,
-      successRate: 95,
-      successRateChange: -1.5,
-      responsiveness: 200,
-      responsivenessChange: 5.2
-    };
+    return await response.json();
+  }
+
+  // async to synchronous...
+  async getGrossStatus() {
+    const mapId = this.selectedMap.id;
+
+    let throughputData = await this.fetchFleetStatus('system-throughput', {
+      mapId: mapId,
+    });
+    if (throughputData.systemThroughput)
+      this.statisticsData.systemThroughput = throughputData.systemThroughput;
+    let uptime = await this.fetchFleetStatus('system-uptime', { mapId: mapId });
+    if (uptime.systemUptime)
+      this.statisticsData.systemUptime = uptime.systemUptime;
+    let successRate = await this.fetchFleetStatus('success-rate', {
+      mapId: mapId,
+    });
+    if (successRate.successRate)
+      this.statisticsData.successRate = successRate.successRate;
+    let responsiveness = await this.fetchFleetStatus('system-responsiveness', {
+      mapId: mapId,
+    });
+    if (responsiveness.systemResponsiveness)
+      this.statisticsData.responsiveness = responsiveness.systemResponsiveness;
   }
 
   async fetchCurrTasksStatus(): Promise<number[]> {
