@@ -1,26 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { LoaderService } from '../loader.service'; // Adjust the path accordingly
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-loader',
   templateUrl: './loader.component.html',
   styleUrl: './loader.component.css'
 })
-export class LoaderComponent implements OnInit {
+export class LoaderComponent {
 
-  constructor(private loaderService: LoaderService) {}
+  isLoading = true;
 
+  // Example method to simulate page load or API call
   ngOnInit() {
-    this.loadData();
-  }
-
-  loadData() {
-    this.loaderService.show(); // Show loader before starting the operation
-
-    // Simulate data fetching with a timeout
+    // Simulate some delay, such as an API call
     setTimeout(() => {
-      // Your actual data fetching logic here
-      this.loaderService.hide(); // Hide loader after data is fetched
-    }, 2000); // Example delay
+      this.isLoading = false; // Hide loader after the delay
+    }, 3000); // Delay of 3 seconds
   }
+
 }

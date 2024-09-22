@@ -129,18 +129,7 @@
   
   
 
-  .Profile-popup {
-    position: absolute;
-    top: 52px; /* Adjust according to your layout */
-    right: 30px; /* Adjust according to your layout */
-    background-color: white;
-    border: 1px solid #ffffff;
-    box-shadow: 0px 0.25px 6px #FF7373;
-    padding: 10px 10px 0 10px;
-    border-radius: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    z-index: 1000; /* Ensure it is on top */
-  }
+  
 
   .topbar {
     width: 100%;
@@ -344,6 +333,6 @@ app-fullscreen-button{
 
   .timer{
     margin-right:2rem;
-    margin-top:0rem;
+    margin-top: 0.8rem;
   }
 
