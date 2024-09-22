@@ -313,7 +313,6 @@ export class ConfigurationComponent implements AfterViewInit {
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
-  
 
   async selectMap(map: any) {
     if (this.selectedMap?.id === map.id) {
