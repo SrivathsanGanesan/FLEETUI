@@ -331,11 +331,24 @@ export class ConfigurationComponent implements AfterViewInit {
     return item.taskId; // or any unique identifier like taskId
   }
 
-
   setPaginatedData() {
-    if (this.paginator) {
+    if (this.paginator && this.currentTable === 'Environment') {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       this.paginatedData = this.filteredEnvData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+    }
+    if (this.paginator && this.currentTable === 'robot') {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.paginatedData = this.filteredRobotData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+    }
+    if (this.paginator && this.currentTable === 'ipScanner') {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.paginatedData = this.ipScanData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
