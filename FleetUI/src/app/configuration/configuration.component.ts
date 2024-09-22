@@ -262,12 +262,12 @@ export class ConfigurationComponent implements AfterViewInit {
       })
       .then((data) => {
         console.log(data);
-        this.messageService.add({
+        /* this.messageService.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Robots Fetched Successfully',
           life: 4000,
-        });
+        }); */
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
         this.filteredRobotData = this.robotData;
