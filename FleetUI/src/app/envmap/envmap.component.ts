@@ -1262,6 +1262,8 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     const input = event.target as HTMLInputElement;
     this.ratio = Number(input.value);
   }
+  originX:number | null = null;
+  originY:number | null = null;
   open(): void {
     this.validationError = null;
 
@@ -1288,7 +1290,8 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     } else {
       console.error('Resolution input element not found via ViewChild.');
     }
-  
+    
+
     if (this.mapName && this.siteName && this.imageSrc ) {
       this.fileName = null;
       this.showImage = true;
