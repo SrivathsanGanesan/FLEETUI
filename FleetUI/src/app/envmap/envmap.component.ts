@@ -516,7 +516,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.robos = this.robos.filter(
         (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
       );
-
       this.redrawCanvas();
     }
 
@@ -1636,6 +1635,28 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       ctx.stroke();
     }
   }
+  placeRobots(selectedRobots: any[]): void {
+    if (!this.overlayCanvas) return;
+
+    selectedRobots.forEach((robot) => {
+      const x = 0 + this.roboInitOffset;
+      const y = 100;
+
+      if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
+        alert('Robot already in map!');
+        return;
+      }
+
+      const robo: Robo = {
+        roboDet: robot,
+        pos: { x: x, y: y, orientation: 0 } // You can add the orientation property later
+      };
+      this.robos.push(robo);
+
+      this.roboInitOffset += 60;
+      this.plotRobo(x, y);
+    });
+  }
   plotRobo(x: number, y: number, isSelected: boolean = false): void {
     const image = this.robotImages['robotB'];
     const canvas = this.overlayCanvas.nativeElement;
@@ -2561,29 +2582,6 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     this.isRobotPopupVisible = false;
   }
 
-  placeRobots(selectedRobots: any[]): void {
-    if (!this.overlayCanvas) return;
-
-    selectedRobots.forEach((robot) => {
-      const x = 0 + this.roboInitOffset;
-      const y = 100;
-
-      if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
-        alert('Robot already in map!');
-        return;
-      }
-
-      // Add the selected robot with its position
-      const newRobo: Robo = { roboDet: robot, pos: { x: x, y: y, orientation: 0 } }; // Can add orientation if needed
-      this.robos.push(newRobo);
-
-      // Increment the offset to place the next robot at a different position
-      this.roboInitOffset += 60;
-
-      // Plot the robot on the canvas
-      this.plotRobo(x, y);
-    });
-  }
   private originalZonePointPosition: { x: number; y: number } | null = null;
   // Helper function to check if a node overlaps with another node or asset
   drawSelectionBox(start: { x: number, y: number }, end: { x: number, y: number }): void {
