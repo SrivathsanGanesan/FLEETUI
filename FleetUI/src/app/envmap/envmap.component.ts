@@ -3020,10 +3020,15 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       // Check if the robot is overlapping with another one
       if (this.isOverlappingWithOtherRobos(this.selectedRobo)) {
         // Reset the robot to its original position if overlapping
+        this.draggingRobo = false;
+
         this.selectedRobo.pos.x = this.originalRoboPosition!.x;
         this.selectedRobo.pos.y = this.originalRoboPosition!.y;
         alert('Overlapping detected! Robot has been reset to its original position.');
+        this.redrawCanvas();
+        return
       }
+
       this.draggingRobo = false;
       if(this.selectedRobo){
         this.robos = this.robos.map((robo) => {
