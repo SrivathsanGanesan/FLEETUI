@@ -238,3 +238,22 @@
 .input:checked + .label {
   background-color: red;
 }
+
+
+
+
+
+/* toggle */
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
