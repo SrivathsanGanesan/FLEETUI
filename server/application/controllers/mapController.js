@@ -39,7 +39,7 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 };
 
 const sendNodeGraph = async ({ endpoint, bodyData }) => {
-  let response = await fetch(`http://192.168.225.97:8080/fms/amr/${endpoint}`, {
+  let response = await fetch(`http://192.168.1.6:8080/fms/amr/${endpoint}`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -68,7 +68,11 @@ const mapInsert = async (req, res) => {
   let data1 = await sendNodeGraph({
     endpoint: "save_graph",
     bodyData: nodeGraph,
-  }); */
+  });
+
+  if (data1.errorCode !== 100) {
+    res.status(500).json({ msg: "not attained" });
+  } */
 
   // return res.end(); // yet to remove..
   try {

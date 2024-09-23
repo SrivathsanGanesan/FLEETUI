@@ -35,6 +35,25 @@ const eventStreamHeader = {
   Connection: "keep-alive",
 };
 
+const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
+  let response = await fetch(`http://192.168.1.6:8080/fms/amr/${endpoint}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Basic cm9vdDp0b29y",
+    },
+    body: JSON.stringify(bodyData),
+  });
+  if (!response.ok) {
+    console.log("failed while sending node graph");
+    return null;
+  }
+  let data = await response.json();
+  return data;
+};
+//..
+
 // initMqttConnection();
 const getAgvTelemetry = (req, res) => {
   const mapId = req.params.mapId;
@@ -56,6 +75,26 @@ const getAgvTelemetry = (req, res) => {
   } catch (err) {
     console.error("Error in getAgvTelemetry:", err);
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+  }
+};
+
+const getRoboPos = async (req, res) => {
+  const mapId = req.params.mapId;
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(400).json({ msg: "Map not found!", map: null });
+    // const map = await Map.findOne({ _id: mapId });
+    let roboPos = await fetchGetAmrLoc({
+      endpoint: "get_AMR_Locations",
+      bodyData: {},
+    });
+    return res.status(200).json({ roboPos: roboPos, data: "msg sent" });
+  } catch (error) {
+    console.error("Error in getAgvTelemetry:", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
 
@@ -196,5 +235,6 @@ module.exports = {
   getRoboActivities,
   getRoboFactSheet,
   getRoboDetails,
+  getRoboPos,
   mqttClient,
 };
