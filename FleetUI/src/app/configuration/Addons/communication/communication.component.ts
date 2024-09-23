@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ProjectService } from '../../../services/project.service';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-communication',
@@ -15,9 +17,27 @@ export class CommunicationComponent {
     { name: 'MQTT', key: 'Q' },
   ];
 
+  selectedMap: any | null = null;
   selectedCategory: any = null; // No initial selection
 
-  ngOnInit() {}
+  formData: any = {
+    externalInterfaceIp: '',
+    externalInterfaceType: '',
+    roboInterfaceIp: '',
+    roboInterfaceType: '',
+    selectedCategory: '',
+  };
+
+  constructor(private projectService: ProjectService) {}
+
+  ngOnInit() {
+    this.selectedMap = this.projectService.getMapData();
+  }
+
+  saveCommParams() {
+    this.formData.selectedCategory = this.selectedCategory.name;
+    console.log(this.formData); // handle data here..
+  }
 
   selectCategory(category: any) {
     this.selectedCategory = category; // Method to select a category programmatically

@@ -8,20 +8,20 @@
               <h4><b>WES Communications:</b></h4>
               <div class="field">
                 <label for="name">External Inteface IP :  </label>
-                <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+                <input class="input" type="text" minlength="7" maxlength="15" size="15"  placeholder="Enter" [(ngModel)]="formData.externalInterfaceIp" pInputText required/>
 
                 <label for="name" style="margin-left: 8rem;">External Inteface Type : </label>
-                <input type="text" placeholder="Enter IP"  pInputText/>
+                <input type="text" placeholder="Enter IP" [(ngModel)]="formData.externalInterfaceType" pInputText/>
               </div>
             </div>
             <div class="head2">
               <h4><b>Communication</b> </h4>
               <div class="field2">
                 <label for="name" style="margin-right: 1.5rem;">Robot Inteface IP :  </label>
-                <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+                <input class="input" type="text" minlength="7" maxlength="15" size="15"  placeholder="Enter" [(ngModel)]="formData.roboInterfaceIp" pInputText required/>
 
                 <label for="name" style="margin-left: 8rem;margin-right: 2rem;">Robot Inteface Type : </label>
-                <input type="text" placeholder="Enter IP"  pInputText/>
+                <input type="text" placeholder="Enter IP" [(ngModel)]="formData.roboInterfaceType"  pInputText/>
               </div>
             </div>
             <div class="radio">
@@ -50,6 +50,7 @@
             class="block mt-1 pt-2 "
             icon="pi pi-check-circle"
             styleClass="p-button-danger p-button1"
+            (onClick)="saveCommParams()"
           ></p-button>
         </div>
       <!-- </form> -->
