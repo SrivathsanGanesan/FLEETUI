@@ -129,14 +129,14 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData();
   }
   onChanges(){
-    // this.loadData();
+    this.loadData();
     this.filterData();
-    // this.setPaginatedData();
+    this.setPaginatedData();
     console.log("data added");
   }
 
   ngOnInit() {
-    // this.setPaginatedData()
+    this.setPaginatedData()
     this.cdRef.detectChanges();
     const today = new Date();
     const pastFiveYears = new Date();
@@ -190,7 +190,7 @@ export class ConfigurationComponent implements AfterViewInit {
         );
         this.filteredEnvData = this.EnvData;
         this.setPaginatedData();
-        // this.cdRef.detectChanges();
+        this.cdRef.detectChanges();
         if (!this.projectService.getIsMapSet()) {
           this.selectedMap = this.EnvData[0];
           let imgUrl = '';
@@ -340,14 +340,6 @@ export class ConfigurationComponent implements AfterViewInit {
     if (this.paginator && this.currentTable === 'Environment') {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       this.paginatedData = this.filteredEnvData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
-      this.paginatedData1 = this.filteredRobotData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
-      this.paginatedData2 = this.ipScanData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
