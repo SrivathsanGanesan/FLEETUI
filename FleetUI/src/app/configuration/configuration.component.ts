@@ -124,17 +124,19 @@ export class ConfigurationComponent implements AfterViewInit {
   reloadTable() {
     // Call the method that fetches the table data to reload the table
     console.log("data reloaded")
+    this.setPaginatedData();
     this.loadData();
     this.filterData();
   }
   onChanges(){
-    this.loadData();
+    // this.loadData();
     this.filterData();
+    // this.setPaginatedData();
     console.log("data added");
   }
 
   ngOnInit() {
-    this.setPaginatedData()
+    // this.setPaginatedData()
     this.cdRef.detectChanges();
     const today = new Date();
     const pastFiveYears = new Date();

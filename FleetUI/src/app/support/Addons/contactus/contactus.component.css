@@ -426,3 +426,10 @@ align-items: center;
 .para{
   font-size: small;
 }
+
+
+/* .address{
+  display: flex;
+  justify-items: left;
+  flex-wrap: wrap;
+} */

@@ -20,7 +20,7 @@
       <div class="search-filter-container">
         <!-- Search Bar -->
         <div class="search-box">
-          <input type="text" placeholder="Search For Something..." />
+          <input type="text" (input)="onSearch($event)" placeholder="Search For Something..." />
           <button class="search-btn">
             <img
               src="../../assets/icons/download-removebg-preview.png"
