@@ -22,8 +22,28 @@ export class TaskComponent {
     this.selectedMap = this.projectService.getMapData();
   }
 
-  saveTaskParams() {
-    console.log(this.selectedCategory.name); // handle data here..
+  async saveTaskParams() {
+    if (!this.selectedCategory) {
+      console.log('select type');
+      return;
+    }
+    // console.log(this.selectedCategory.name); // handle data here..
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/task`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          taskManagerType: this.selectedCategory.name,
+        }),
+      }
+    );
+
+    let data = await response.json();
+    console.log(data);
+    if (data.isSet) console.log('configured!');
   }
 
   selectCategory(category: any) {

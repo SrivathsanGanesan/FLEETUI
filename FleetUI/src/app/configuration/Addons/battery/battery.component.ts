@@ -23,20 +23,36 @@ export class BatteryComponent {
   };
 
   constructor(private fb: FormBuilder, private projectService: ProjectService) {
-    this.batteryForm = this.fb.group({
+    /* this.batteryForm = this.fb.group({
       battery: [
         50,
         [Validators.required, Validators.min(0), Validators.max(100)],
       ], // Default to 50%
-    });
+    }); */
   }
 
   ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
   }
 
-  saveBatteryParams() {
-    console.log(this.batteryForm); // handle here..
+  async saveBatteryParams() {
+    // console.log(this.batteryForm); // handle here..
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/battery`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          batteryParams: this.batteryForm,
+        }),
+      }
+    );
+
+    let data = await response.json();
+    console.log(data);
+    if (data.isSet) console.log('configured!');
   }
 
   onBatteryChange() {

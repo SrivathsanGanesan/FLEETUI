@@ -49,6 +49,10 @@ app.use("/err-logs", errLogRouter);
 const fleetGrossStatusRouter = require("./fleetcore/routes/fleetGrossStatusRouter");
 app.use("/fleet-gross-status", fleetGrossStatusRouter);
 
+// config fleet parameter..
+const fleetParamsConfigurationRouter = require("./fleetcore/routes/fleetParamsConfigurationRouter");
+app.use("/config-fleet-params", fleetParamsConfigurationRouter);
+
 app.listen(process.env.PORT, (err) => {
   err
     ? console.log("error while connecting : ", err)

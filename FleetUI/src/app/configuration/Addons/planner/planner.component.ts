@@ -38,9 +38,29 @@ export class PlannerComponent {
     this.selectedMap = this.projectService.getMapData();
   }
 
-  savePlanner() {
+  async savePlanner() {
     if (!this.selectedMap) return;
+    if (!this.selectedPlanner) {
+      console.log('select planner type');
+      return;
+    }
     this.formData.plannerType = this.selectedPlanner.name;
     // console.log(this.formData); handle here..
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/planner`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          plannerParams: this.formData,
+        }),
+      }
+    );
+
+    let data = await response.json();
+    console.log(data);
+    if (data.isSet) console.log('configured!');
   }
 }

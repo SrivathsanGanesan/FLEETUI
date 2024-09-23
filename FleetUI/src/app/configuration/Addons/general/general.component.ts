@@ -67,7 +67,7 @@ export class GeneralComponent {
     this.selectedMap = this.projectService.getMapData();
   }
 
-  saveParams() {
+  async saveParams() {
     if (!this.selectedMap) {
       console.log('no map selected');
       return;
@@ -77,5 +77,21 @@ export class GeneralComponent {
     this.formData.selectedRoboManagerType = this.selectedRoboManagerType.name;
     this.formData.selectedTaskManagerType = this.selectedTaskManagerType.name;
     console.log(this.formData); // handle the form here..
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/general`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          generalParams: this.formData,
+        }),
+      }
+    );
+
+    let data = await response.json();
+    console.log(data);
+    if (data.isSet) console.log('configured!');
   }
 }

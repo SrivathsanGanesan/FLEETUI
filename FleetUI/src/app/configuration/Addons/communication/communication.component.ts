@@ -34,9 +34,29 @@ export class CommunicationComponent {
     this.selectedMap = this.projectService.getMapData();
   }
 
-  saveCommParams() {
+  async saveCommParams() {
+    if (!this.selectedCategory) {
+      console.log('select type');
+      return;
+    }
     this.formData.selectedCategory = this.selectedCategory.name;
-    console.log(this.formData); // handle data here..
+    // console.log(this.formData); // handle data here..
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/communication`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          communicationParams: this.formData,
+        }),
+      }
+    );
+
+    let data = await response.json();
+    console.log(data);
+    if (data.isSet) console.log('configured!');
   }
 
   selectCategory(category: any) {
