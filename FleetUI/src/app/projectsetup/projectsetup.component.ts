@@ -427,7 +427,13 @@ export class ProjectsetupComponent {
           return;
         }
 
-        this.projectService.setSelectedProject(data.project);
+        let project_data = {
+          _id:data.project._id,
+          projectName:data.project.projectName,
+          createdAt:data.project.createdAt,
+          updatedAt:data.project.updatedAt
+        }
+        this.projectService.setSelectedProject(project_data);
         this.projectService.setProjectCreated(true);
         this.router.navigate(['/dashboard']);
 
