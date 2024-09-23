@@ -521,7 +521,7 @@ h2 {
 
 /* Donut chart container */
 .donut-chart-container {
-  flex: 2 1 38%; /* Flex-grow 1, flex-shrink 1, takes 35% of available space */
+  flex: 1 1 35%; /* Flex-grow 1, flex-shrink 1, takes 35% of available space */
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
@@ -539,7 +539,7 @@ h2 {
   .area-chart-container,
   .donut-chart-container {
     width: 100%; /* Full width for both charts */
-    height: auto; /* Let the height adjust automatically on smaller screens */
+    
   }
 }
  

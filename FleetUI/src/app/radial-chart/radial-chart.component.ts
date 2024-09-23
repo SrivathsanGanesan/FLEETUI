@@ -30,7 +30,7 @@ export class RadialChartComponent implements OnInit {
     this.chartOptions = {
       series: this.roboStatePie,
       chart: {
-        height: 370,
+        height: 345,
         type: 'radialBar',
       },
       plotOptions: {

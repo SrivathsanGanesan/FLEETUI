@@ -38,6 +38,7 @@ export class RobotPopupComponent {
       credentials: 'include'
     });
     let data = await response.json();
+    
     this.listedRobo = data.populatedRobos;
     let id = 0;
     this.availableRobots = data.populatedRobos.map((robo : any)=>{

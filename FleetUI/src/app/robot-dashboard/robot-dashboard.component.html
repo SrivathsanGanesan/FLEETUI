@@ -1,5 +1,6 @@
 <div class="container" #screen>
   <app-sidenavbar></app-sidenavbar>
+  <app-loader></app-loader>
   <div class="mainContent">
     <div class="robot-dashboard-container">
       <!-- <app-operation-pie
@@ -224,7 +225,7 @@
                 (input)="onSearchNotifications($event)"
               />
             </div>
-            <button class="view-all-btn">View All</button>
+            <!-- <button class="view-all-btn">View All</button> -->
           </div>
           <table class="notifications-table">
             <tr *ngFor="let notification of filteredNotifications">

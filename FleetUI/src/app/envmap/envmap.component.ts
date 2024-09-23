@@ -685,34 +685,34 @@ export class EnvmapComponent implements AfterViewInit {
       this.validationError=null;
   }
   moveParameters = {
-    maxLinearVelocity: '',
-    maxAngularVelocity: '',
-    maxToleranceAtGoalX: '',
-    maxToleranceAtGoalY: '',
-    maxToleranceAtGoalOrientation: '',
+    maxLinearVelocity: 0,
+    maxAngularVelocity: 0,
+    maxToleranceAtGoalX: 0,
+    maxToleranceAtGoalY: 0,
+    maxToleranceAtGoalOrientation: 0,
     endPointOrientation: false,
     autoRobotMode: 'mode1', // Default mode
   };
   dockParameters = {
-    maxLinearVelocity: '',
-    maxAngularVelocity: '',
-    maxToleranceAtGoalX: '',
-    maxToleranceAtGoalY: '',
-    maxToleranceAtGoalOrientation: '',
-    goalOffsetX: '',
-    goalOffsetY: '',
+    maxLinearVelocity: 0,
+    maxAngularVelocity: 0,
+    maxToleranceAtGoalX: 0,
+    maxToleranceAtGoalY: 0,
+    maxToleranceAtGoalOrientation: 0,
+    goalOffsetX: 0,
+    goalOffsetY: 0,
     goalOffsetOrientation: '',
     endPointOrientation: false,
     dockingType: 'mode1',
   };
   undockParameters = {
-    maxLinearVelocity: '',
-    maxAngularVelocity: '',
-    maxToleranceAtGoalX: '',
-    maxToleranceAtGoalY: '',
-    maxToleranceAtGoalOrientation: '',
+    maxLinearVelocity: 0,
+    maxAngularVelocity: 0,
+    maxToleranceAtGoalX: 0,
+    maxToleranceAtGoalY: 0,
+    maxToleranceAtGoalOrientation: 0,
     endPointOrientation: false,
-    undockingDistance: '',
+    undockingDistance: 0,
   };
   onActionChange(): void {
     
@@ -722,34 +722,34 @@ export class EnvmapComponent implements AfterViewInit {
   }
   resetParameters(): void {
     this.moveParameters = {
-      maxLinearVelocity: '',
-      maxAngularVelocity: '',
-      maxToleranceAtGoalX: '',
-      maxToleranceAtGoalY: '',
-      maxToleranceAtGoalOrientation: '',
+      maxLinearVelocity: 0,
+      maxAngularVelocity: 0,
+      maxToleranceAtGoalX: 0,
+      maxToleranceAtGoalY: 0,
+      maxToleranceAtGoalOrientation: 0,
       endPointOrientation: false,
       autoRobotMode: 'mode1',
     };
     this.dockParameters = {
-      maxLinearVelocity: '',
-      maxAngularVelocity: '',
-      maxToleranceAtGoalX: '',
-      maxToleranceAtGoalY: '',
-      maxToleranceAtGoalOrientation: '',
-      goalOffsetX: '',
-      goalOffsetY: '',
+      maxLinearVelocity: 0,
+      maxAngularVelocity: 0,
+      maxToleranceAtGoalX: 0,
+      maxToleranceAtGoalY: 0,
+      maxToleranceAtGoalOrientation: 0,
+      goalOffsetX: 0,
+      goalOffsetY: 0,
       goalOffsetOrientation: '',
       endPointOrientation: false,
       dockingType: 'mode1',
     };
     this.undockParameters = {
-      maxLinearVelocity: '',
-      maxAngularVelocity: '',
-      maxToleranceAtGoalX: '',
-      maxToleranceAtGoalY: '',
-      maxToleranceAtGoalOrientation: '',
+      maxLinearVelocity: 0,
+      maxAngularVelocity: 0,
+      maxToleranceAtGoalX: 0,
+      maxToleranceAtGoalY: 0,
+      maxToleranceAtGoalOrientation: 0,
       endPointOrientation: false,
-      undockingDistance: '',
+      undockingDistance: 0,
     };
   }
   showActionForm(): void {
@@ -784,10 +784,15 @@ export class EnvmapComponent implements AfterViewInit {
     this.actions.splice(index, 1); // Remove the action from the list
   }
   addAction(): void {
-    if (this.selectedAction) {
+    if (this.selectedAction && this.selectedNode) {
+      
       let action: any;
 
       if (this.selectedAction === 'Move') {
+        if(!this.moveParameters.maxLinearVelocity && !this.moveParameters.maxAngularVelocity && !this.moveParameters.maxToleranceAtGoalX && !this.moveParameters.maxToleranceAtGoalY && !this.moveParameters.maxToleranceAtGoalOrientation){
+          this.validationError = 'Move parameters are required else set to 0 in default.';
+          return
+        }
         action = {
           actionType: this.selectedAction,
           actionId: `action_${this.actionCounter}`,
@@ -796,6 +801,10 @@ export class EnvmapComponent implements AfterViewInit {
         };
         this.actionCounter++;
       } else if (this.selectedAction === 'Dock') {
+        if(!this.dockParameters.maxLinearVelocity && !this.dockParameters.maxAngularVelocity && !this.dockParameters.maxToleranceAtGoalX && !this.dockParameters.maxToleranceAtGoalY && !this.dockParameters.goalOffsetX && !this.dockParameters.goalOffsetY && !this.dockParameters.goalOffsetOrientation){
+          this.validationError = 'Dock parameters are required else set to 0 in default.'; 
+          return          
+        }
         action = {
           actionType: this.selectedAction,
           actionId: `action_${this.actionCounter}`,
@@ -804,6 +813,10 @@ export class EnvmapComponent implements AfterViewInit {
         };
         this.actionCounter++;
       } else if (this.selectedAction === 'Undock') {
+        if(!this.undockParameters.maxAngularVelocity && !this.undockParameters.maxAngularVelocity && !this.undockParameters.maxToleranceAtGoalX && !this.undockParameters.maxToleranceAtGoalY && !this.undockParameters.maxToleranceAtGoalOrientation){
+          this.validationError = 'Undock parameters are required else set to 0 in default.';
+          return
+        }
         action = {
           actionType: this.selectedAction,
           actionId: `action_${this.actionCounter}`,
@@ -819,8 +832,8 @@ export class EnvmapComponent implements AfterViewInit {
       this.actionOptions = this.actionOptions.filter(option => option.value !== this.selectedAction);
       // this.actions.push(action);
       this.nodes = this.nodes.map((node) => {
-        console.log(this.selectedNode?.nodeId, node?.nodeId);
-        if (this.selectedNode?.nodeId === node?.nodeId) node.actions.push(action);
+        console.log(this.selectedNode?.nodeId, node.nodeId);
+        if (this.selectedNode?.nodeId === node.nodeId) node.actions.push(action);
         return node;
       });
       this.cdRef.detectChanges();
@@ -1414,7 +1427,15 @@ onImagePopupCanvasClick(event: MouseEvent): void {
             continue;
           }
         }
+        
         // this.cdRef.detectChanges();
+        // Remove selected action from the dropdown options
+        let actionOpt = this.selectedNode.actions.map(action => action.actionType);
+        this.actionOptions = []
+        if(!actionOpt.includes('Move')) this.actionOptions.push({label: 'Move', value: 'Move'})
+        if(!actionOpt.includes('Dock')) this.actionOptions.push({label: 'Dock', value: 'Dock'})
+        if(!actionOpt.includes('Undock')) this.actionOptions.push({label: 'Undock', value: 'Undock'})
+
         this.showNodeDetailsPopup();
         return;
       }
@@ -1446,7 +1467,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   onDeleteZone(): void {
     if (this.selectedZone) {
       // Remove the selected zone from the zones array
-      this.zones = this.zones.filter((zone) => zone !== this.selectedZone);
+      this.zones = this.zones.filter((zone) => zone.id !== this.selectedZone?.id);
       this.selectedZone = null;
 
       // Hide the popup and redraw the canvas to reflect the deletion
@@ -1953,21 +1974,21 @@ onImagePopupCanvasClick(event: MouseEvent): void {
         !this.moveParameters.maxLinearVelocity ||
         !this.moveParameters.maxAngularVelocity
       ) {
-        this.validationError = 'All Move Action fields are required.';
+        // this.validationError = 'All Move Action fields are required.'; // yet to uncomment..
       }
     } else if (this.selectedAction === 'Dock') {
       if (
         !this.dockParameters.maxAngularVelocity ||
         !this.dockParameters.goalOffsetX
       ) {
-        this.validationError = 'All Dock Action fields are required.';
+        // this.validationError = 'All Dock Action fields are required.';
       }
     } else if (this.selectedAction === 'Undock') {
       if (
         !this.undockParameters.maxLinearVelocity ||
         !this.undockParameters.maxToleranceAtGoalX
       ) {
-        this.validationError = 'All Undock Action fields are required.';
+        // this.validationError = 'All Undock Action fields are required.';
       }
     }
 
@@ -1994,33 +2015,10 @@ onImagePopupCanvasClick(event: MouseEvent): void {
         this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
       }
     }
-    // Transform Nodes array to NodeDetails format
-    this.NodeDetails = this.nodes.map((node, index) => ({
-      nodeID: `node_${String(node.nodeId).padStart(3, '0')}`, // Format nodeID as a string
-      sequenceId: index + 1, // SequenceId is based on the order of nodes
-      nodeDescription: this.nodeDetails.description || '', // Use node description
-      intermediate_node: this.nodeDetails.intermediate_node, // Bind checkbox value
-      waiting_node: this.nodeDetails.waiting_node, // Bind checkbox value
-      released: true,
-      nodePosition: {
-        x: node.nodePosition.x,
-        y: node.nodePosition.y,
-        orientation: node.nodePosition.orientation, // Use the latest orientation angle here
-      },
-      actions: this.actions, // Include actions here
-    }));
 
-    // Log the JSON object to the console
-    console.log(this.nodes);
-    console.log(this.edges);
-    console.log(this.assets);
-    console.log(this.zones);
-
-    // // Save the JSON object to a file
-    // const blob = new Blob([JSON.stringify(updatedNodeDetails, null, 2)], {
-    //   type: 'application/json',
-    // });
-    // saveAs(blob, 'node-details.json');
+    if(this.selectedNode){
+      console.log(this.moveParameters, this.dockParameters, this.undockParameters);
+    }
 
     // Clear all the details for the previous node
     this.Nodes = []; // Clear the Nodes array

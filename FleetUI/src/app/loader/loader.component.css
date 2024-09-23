@@ -1,30 +1,60 @@
-/* Full-screen white background when loader is active */
-.loader-overlay {
+/* Loader Background to cover full screen */
+.loader-background {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: white; /* White background */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+    z-index: 9999; /* Ensures the loader is above all other content */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensure it appears above all content */
   }
   
-  /* Loader spinner */
-  .loader {
-    border: 8px solid #f3f3f3; /* Light gray */
-    border-top: 8px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 60px; /* Size of the spinner */
-    height: 60px; /* Size of the spinner */
-    animation: spin 1s linear infinite; /* Animation */
+  /* Adjust loader bars */
+  .middle {
+    display: flex;
+    gap: 5px; /* Adds a small gap between bars */
   }
   
-  /* Spinner animation */
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  .bar {
+    width: 10px;
+    height: 70px;
+    display: inline-block;
+    transform-origin: bottom center;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    animation: loader 1.2s linear infinite;
+    background-color: transparent;
   }
   
+  .bar1 { animation-delay: 0.1s; }
+  .bar2 { animation-delay: 0.2s; }
+  .bar3 { animation-delay: 0.3s; }
+  .bar4 { animation-delay: 0.4s; }
+  .bar5 { animation-delay: 0.5s; }
+  .bar6 { animation-delay: 0.6s; }
+  .bar7 { animation-delay: 0.7s; }
+  .bar8 { animation-delay: 0.8s; }
+  
+  @keyframes loader {
+    0% {
+      transform: scaleY(0.1);
+      background: transparent;
+    }
+    50% {
+      transform: scaleY(1);
+      background: #e74c3c; /* Red color */
+    }
+    100% {
+      transform: scaleY(0.1);
+      background: transparent;
+    }
+  }
+  .sidebar {
+    position: relative; /* Ensure it has a positioning context */
+    z-index: 10000; /* Higher than loader */
+    /* Other styles */
+  }
+    
