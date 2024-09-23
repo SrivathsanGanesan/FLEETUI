@@ -24,6 +24,8 @@ export class Userlogscomponent {
   currentTable = 'task';
   currentTab: any;
   filteredTaskData: any[] = [];
+  filteredTaskData1: any[] = [];
+  filteredTaskData2: any[] = [];
   paginatedData: any[] = [];
   paginatedData1: any[] = [];
   paginatedData2: any[] = [];
@@ -123,7 +125,7 @@ export class Userlogscomponent {
             desc: roboErr.DESCRIPTION,
           };
         });
-        // this.robotData = this.paginatedData2;
+        this.filteredTaskData1 = this.robotData;
         this.setPaginatedData();
       })
       .catch((err) => {
@@ -160,6 +162,7 @@ export class Userlogscomponent {
             desc: fleetErr.desc,
           };
         });
+        this.filteredTaskData2 = this.fleetData;
         this.setPaginatedData();
       })
       .catch((err) => {
@@ -170,15 +173,15 @@ export class Userlogscomponent {
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.taskData.slice(
+      this.paginatedData = this.filteredTaskData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
-      this.paginatedData1 = this.robotData.slice(
+      this.paginatedData1 = this.filteredTaskData1.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
-      this.paginatedData2 = this.fleetData.slice(
+      this.paginatedData2 = this.filteredTaskData2.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
@@ -194,8 +197,20 @@ export class Userlogscomponent {
 
     if (!inputValue) {
       this.filteredTaskData = this.taskData;
+      this.filteredTaskData1 = this.robotData;
+      this.filteredTaskData2 = this.fleetData;
     } else {
-      this.taskData = this.taskData.filter((item) =>
+      this.filteredTaskData = this.taskData.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(inputValue)
+        )
+      );
+      this.filteredTaskData1 = this.robotData.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(inputValue)
+        )
+      );
+      this.filteredTaskData2 = this.fleetData.filter((item) =>
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(inputValue)
         )
