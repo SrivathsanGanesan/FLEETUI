@@ -185,7 +185,7 @@
               </mat-paginator>
             </div>
 
-            <table *ngIf="currentTable === 'robot'">
+            <table *ngIf="currentTable === 'robot' && !imageUploaded">
               <thead>
                 <tr>
                   <th>S.no</th>
@@ -198,7 +198,7 @@
                 <tr *ngIf="paginatedData1.length === 0">
                   <td colspan="4" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of robotData; index as i">
+                <tr *ngFor="let item of paginatedData1; index as i; trackBy: trackByTaskId">
                   <td>{{ i + 1 }}</td>
                   <td>{{ item.roboName }}</td>
                   <td>{{ item.ipAdd }}</td>
