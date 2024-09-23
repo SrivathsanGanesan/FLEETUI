@@ -25,11 +25,16 @@ export class GeneralComponent {
     selectedRoboManagerType: '',
     selectedTaskManagerType: '',
     fleetServerMode: 0,
-    serverIP: '',
-    serverPort: '',
-    databaseIp: '',
+    serverIP: '0.0.0.0',
+    serverPort: '8080',
+    databaseIp: '0.0.0.0',
     databaseName: '',
   };
+
+  selectedDb: any = { name: '', code: '' };
+  selectedIp: any = { name: '', code: '' };
+  selectedRoboManagerType: any = { name: '', code: '' };
+  selectedTaskManagerType: any = { name: '', code: '' };
 
   dtype: any[] = [
     { name: 'PostgreSQL', code: 'NY' },
@@ -39,21 +44,21 @@ export class GeneralComponent {
 
   iptype: any[] = [
     { name: 'Static', code: 'NY' },
-    { name: 'Dynamic', code: 'RM' },
+    { name: 'Dynamic', code: 'RMD' },
     { name: 'Public', code: 'LDN' },
     { name: 'Private', code: 'LDM' },
   ];
 
   robotManagerType: any[] = [
-    { name: 'RMtype_1', code: 'NY' },
-    { name: 'RMtype_2', code: 'RM' },
-    { name: 'RMtype_3', code: 'LDN' },
+    { name: 'RMtype_1', code: 'MY' },
+    { name: 'RMtype_2', code: 'RO' },
+    { name: 'RMtype_3', code: 'LDC' },
   ];
 
   taskManagerType: any[] = [
-    { name: 'TaskMtype_1', code: 'NY' },
-    { name: 'TaskMtype_2', code: 'RM' },
-    { name: 'TaskMtype_3', code: 'LDN' },
+    { name: 'TaskMtype_1', code: 'UY' },
+    { name: 'TaskMtype_2', code: 'RI' },
+    { name: 'TaskMtype_3', code: 'LQN' },
   ];
 
   constructor(private projectService: ProjectService) {}
@@ -67,6 +72,10 @@ export class GeneralComponent {
       console.log('no map selected');
       return;
     }
-    console.log(this.formData);
+    this.formData.selectedDb = this.selectedDb.name;
+    this.formData.selectedIp = this.selectedIp.name;
+    this.formData.selectedRoboManagerType = this.selectedRoboManagerType.name;
+    this.formData.selectedTaskManagerType = this.selectedTaskManagerType.name;
+    console.log(this.formData); // handle the form here..
   }
 }

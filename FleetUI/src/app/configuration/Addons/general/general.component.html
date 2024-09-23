@@ -25,11 +25,11 @@
             </div>
             <div class="field">
               <label for="type">Database Type : </label><br>
-              <p-dropdown appendTo="body"  [options]="dtype" [(ngModel)]="formData.selectedDb" optionLabel="name" placeholder="Select"></p-dropdown>
+              <p-dropdown appendTo="body"  [options]="dtype" [(ngModel)]="selectedDb" optionLabel="name" placeholder="Select"></p-dropdown>
             </div>
             <div class="field">
               <label for="type">Server IP Type : </label><br>
-              <p-dropdown appendTo="body" [options]="iptype" [(ngModel)]="formData.selectedIp" optionLabel="name" placeholder="Select"></p-dropdown>
+              <p-dropdown appendTo="body" [options]="iptype" [(ngModel)]="selectedIp" optionLabel="name" placeholder="Select"></p-dropdown>
             </div>
           </div>
 
@@ -40,11 +40,11 @@
             </div>
             <div class="field">
               <label for="type">Robot Manager Type : </label><br>
-              <p-dropdown appendTo="body"  [options]="robotManagerType" [(ngModel)]="formData.selectedRoboManagerType" optionLabel="name" placeholder="Select"></p-dropdown>
+              <p-dropdown appendTo="body"  [options]="robotManagerType" [(ngModel)]="selectedRoboManagerType" optionLabel="name" placeholder="Select"></p-dropdown>
             </div>
             <div class="field">
               <label for="type" style="margin-right: 1rem;">Task Manager Type  : </label><br>
-              <p-dropdown appendTo="body"  [options]="taskManagerType" [(ngModel)]="formData.selectedTaskManagerType" optionLabel="name" placeholder="Select"></p-dropdown>
+              <p-dropdown appendTo="body"  [options]="taskManagerType" [(ngModel)]="selectedTaskManagerType" optionLabel="name" placeholder="Select"></p-dropdown>
             </div>
           </div>
           <div class="field mt-1">
