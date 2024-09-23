@@ -12,11 +12,41 @@
 
       class="Nlogo"
     />
-    <img
-      src="../../assets/icons/Lan_icon.svg"
-      routerLink="/language"
-      class="Llogo"
-    />
+
+
+       <div class="relative">
+      <div class="relative flex items-center justify-between px-2 py-0 hover:drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] gap-10 duration-300" (click) = "languageChange()">
+        <span class="flex items-center justify-center gap-2">
+          <div [(innerHTML)]=flagSvg class="rounded-[2px]">
+ 
+            </div>
+            <p class="font-semibold select-none" style="margin-top: 13px;">{{flagName}}</p>
+
+        </span>
+ 
+        <svg [ngClass]="{'rotate-180': languageArrowState}" class="duration-300" width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.75505 8.33739L0 2.58245L1.91834 0.664062L5.75505 4.50076L9.59169 0.664062L11.51 2.58245L5.75505 8.33739Z" fill="black"/>
+        </svg>
+     </div>
+     @if (languageArrowState) {
+      <div class="flex flex-col gap-2 p-3 bg-[#f9f9f9] absolute top-[44px] left-0 rounded-lg border-2">
+        @for (flag of flags; track flag) {
+          <div class="hover:bg-[#f0f0f0] p-2 rounded-[5px] duration-200" (click)="changeFlag(flag.order)">
+            <span class="w-[110px] flex items-center justify-start gap-2">
+              <div [(innerHTML)]=flag.flagComp class="rounded-[2px]">
+                </div>
+              <p class="font-semibold select-none" style="margin-top: 13px;">{{flag.nameTag}}</p>
+            </span>
+          </div>
+        }
+      </div>
+ 
+    }
+ 
+    </div>
+
+
+
     <div class="Profile">
       <img
         src="../../assets/icons/Profile_icon.svg"
