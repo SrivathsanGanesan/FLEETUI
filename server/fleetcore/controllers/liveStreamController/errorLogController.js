@@ -6,6 +6,7 @@ let errTaskLogs = {
 // let notifications = [];
 for (let i = 1; i < 100; i++) {
   errTaskLogs.notifications.push({
+    taskId : `task_${i}`,
     name: `ERR00${i}`,
     description: "Battery low",
     fix: ["Recharge the battery"],

@@ -137,7 +137,7 @@
           </tr>
           <tr *ngFor="let item of paginatedData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
             <td class="table-cell">{{ item.dateTime }}</td>
-            <td class="table-cell">{{ i + 1 }}</td>
+            <td class="table-cell">{{ item.taskId}}</td>
             <td class="table-cell">{{ item.taskName }}</td>
             <td class="table-cell">{{ item.errCode }}</td>
             <td class="table-cell">{{ item.criticality }}</td>

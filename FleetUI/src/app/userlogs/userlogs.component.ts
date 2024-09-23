@@ -79,7 +79,7 @@ export class Userlogscomponent {
         this.taskData = taskLogs.notifications.map((taskErr: any) => {
           return {
             dateTime: new Date().toDateString(),
-            taskId: 'task_001',
+            taskId: taskErr.taskId,
             taskName: 'Pick Packs',
             errCode: taskErr.name,
             criticality: taskErr.criticality,

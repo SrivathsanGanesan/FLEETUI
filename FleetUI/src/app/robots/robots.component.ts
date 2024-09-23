@@ -30,7 +30,6 @@ export interface Robot {
   averagetransfertime: string;
   averagedockingtime: string;
   // Add other fields as needed
-  
 }
 
 @Component({
@@ -47,132 +46,8 @@ export class RobotsComponent implements OnInit {
   ];
   currentSignalClass: string = 'none'; // Default class
   robots: Robot[] = [];
-  searchQuery: string = '';  // To hold the search input
+  searchQuery: string = ''; // To hold the search input
   filteredRobots: Robot[] = []; // To store filtered robots
-  /* robots: Robot[] = [
-    {
-    id: 1,
-    serialNumber: '50000',
-    name: 'Forklift AGV',
-    imageUrl: '../../assets/robots/agv1.png',
-    status: 'Active',
-    battery: '40%',
-    temperature: '59 C',
-    networkstrength: '90 dBi',
-    robotutilization: ' 43 %',
-    cpuutilization: '90 %',
-    memory: '10 %',
-    error: '10',
-    batteryPercentage: 77,
-    isCharging: true, // This will control whether the icon is shown
-    totalPicks: '31',
-    totalDrops: '28',
-    SignalStrength: 'Weak',
-    averagedischarge:20,
-    averageChargingTime:'1.30',
-    currentspeed: '1.5',
-    averagespeed: '0.9',
-    maximumspeed: '2.0',
-    averagetransfertime: '2.03',
-    averagedockingtime: '1.40',
-  },
-    {
-      id: 2,
-      serialNumber: '101589',
-      name: 'Forklift AGV',
-      imageUrl: '../../assets/robots/agv1.png',
-      status: 'Active',
-      battery: '40%',
-      temperature: '57 C',
-      networkstrength: '80 dBi',
-      robotutilization: ' 85 %',
-      cpuutilization: '80 %',
-      memory: '20 %',
-      error: '20',
-      batteryPercentage: 7,
-      isCharging: true, // This will control whether the icon is shown
-      totalPicks: '31',
-      totalDrops: '28',
-      SignalStrength: 'Searching',
-    },
-    {
-      id: 3,
-      serialNumber: '101589',
-      name: 'Forklift AGV',
-      imageUrl: '../../assets/robots/agv1.png',
-      status: 'Active',
-      battery: '40%',
-      temperature: '01 C',
-      networkstrength: '70 dBi',
-      robotutilization: ' 90 %',
-      cpuutilization: '70 %',
-      memory: '30 %',
-      error: '30',
-      batteryPercentage: 10,
-      isCharging: true, // This will control whether the icon is shown
-      totalPicks: '31',
-      totalDrops: '28',
-      SignalStrength: 'Weak',
-    },
-    {
-      id: 4,
-      serialNumber: '101589',
-      name: 'Forklift AGV',
-      imageUrl: '../../assets/robots/agv1.png',
-      status: 'Active',
-      battery: '40%',
-      temperature: '100 C',
-      networkstrength: '60 dBi',
-      robotutilization: ' 60 %',
-      cpuutilization: '60 %',
-      memory: '40 %',
-      error: '40',
-      batteryPercentage: 40,
-      isCharging: true, // This will control whether the icon is shown
-      totalPicks: '31',
-      totalDrops: '28',
-      SignalStrength: 'Full',
-    },
-    {
-      id: 5,
-      serialNumber: '101589',
-      name: 'Forklift AGV',
-      imageUrl: '../../assets/robots/agv1.png',
-      status: 'Active',
-      battery: '40%',
-      temperature: '55 C',
-      networkstrength: '50 dBi',
-      robotutilization: ' 40 %',
-      cpuutilization: '50 %',
-      memory: '50 %',
-      error: '50',
-      batteryPercentage: 41,
-      isCharging: true, // This will control whether the icon is shown
-      totalPicks: '31',
-      totalDrops: '28',
-      SignalStrength: 'Full',
-    },
-    {
-      id: 6,
-      serialNumber: '101589',
-      name: 'Forklift AGV',
-      imageUrl: '../../assets/robots/agv1.png',
-      status: 'Active',
-      battery: '40%',
-      temperature: '55 C',
-      networkstrength: '90 dBi',
-      robotutilization: ' 23 %',
-      cpuutilization: '40 %',
-      memory: '60 %',
-      error: '60',
-      batteryPercentage: 90,
-      isCharging: false, // This will control whether the icon is shown
-      totalPicks: '31',
-      totalDrops: '28',
-      SignalStrength: 'Full',
-    },
-    // Add more robots...
-  ]; */
 
   mapDetails: any | null = null;
   showPopup = false;
@@ -193,7 +68,7 @@ export class RobotsComponent implements OnInit {
     let grossFactSheet = await this.fetchAllRobos();
     this.robots = grossFactSheet.map((robo) => {
       robo.imageUrl = '../../assets/robots/agv1.png';
-      robo.networkstrength = `${robo.networkstrength} dBm`;
+      // robo.networkstrength = `${robo.networkstrength}`;
       if (robo.networkstrength < 20) robo.SignalStrength = 'Weak';
       else if (robo.networkstrength < 40) robo.SignalStrength = 'Medium';
       else if (robo.networkstrength < 80) robo.SignalStrength = 'Full';
@@ -205,16 +80,18 @@ export class RobotsComponent implements OnInit {
   }
   filterRobots(): void {
     const query = this.searchQuery.toLowerCase();
-  
+
     this.filteredRobots = this.robots.filter((robot) => {
       const idMatch = robot.id.toString().includes(query);
-      const serialNumberMatch = robot.serialNumber.toLowerCase().includes(query);
+      const serialNumberMatch = robot.serialNumber
+        .toLowerCase()
+        .includes(query);
       const nameMatch = robot.name.toLowerCase().includes(query);
-  
+
       return idMatch || serialNumberMatch || nameMatch;
     });
   }
-  
+
   async fetchAllRobos(): Promise<any[]> {
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fms-amrs`,
