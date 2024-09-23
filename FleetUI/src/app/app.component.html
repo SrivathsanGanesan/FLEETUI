@@ -1,5 +1,6 @@
 <div [@fadeAnimation]="getRouteAnimationData(outlet)" [@.disabled]="!outlet.isActivated">
   <p-toast></p-toast>
+  <!-- <app-sidenavbar></app-sidenavbar> -->
   <router-outlet #outlet="outlet"></router-outlet>
  
   <app-loader *ngIf="loading$ | async"></app-loader>

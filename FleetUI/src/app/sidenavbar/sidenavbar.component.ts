@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, HostListener, Renderer2, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
@@ -14,18 +14,29 @@ export class SidenavbarComponent implements OnInit {
   showNotificationPopup = false; // Property to track popup visibility
   showProfilePopup = false;
   isSidebarEnlarged = false; // Property to track sidebar enlargement
-
+  
   isNotificationVisible = false;
 
   languageArrowState = false;
+
 
   private autoCloseTimeout: any;
   notifications: string[] = []; // Initially empty
   constructor(
     private authService: AuthService,
     private router: Router,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private eRef: ElementRef,
   ) {}
+
+   // This will listen for clicks on the entire document
+   @HostListener('document:click', ['$event'])
+   handleClickOutside(event: Event) {
+     // Check if the click is outside the notification popup
+     if (!this.eRef.nativeElement.contains(event.target)) {
+       this.closePopup();
+     }
+   }
 
   ngOnInit() {
     const user = this.authService.getUser();
@@ -35,12 +46,15 @@ export class SidenavbarComponent implements OnInit {
     }
   }
 
+
   toggleNotificationPopup() {
     this.showNotificationPopup = !this.showNotificationPopup;
   }
    // Function to show the notification popup
    showNotification() {
     this.isNotificationVisible = true;
+    this.languageArrowState =  false;
+    this.showProfilePopup = false;
     this.startAutoClose(); // Start auto-close timer when popup is shown
   }
 
@@ -54,7 +68,8 @@ export class SidenavbarComponent implements OnInit {
   startAutoClose() {
     this.clearAutoClose(); // Clear any existing timer
     this.autoCloseTimeout = setTimeout(() => {
-      this.isNotificationVisible = false;
+      this.closePopup();
+      this.languageArrowState = false;
     }, 5000); // 5 seconds
   }
 
@@ -71,12 +86,16 @@ export class SidenavbarComponent implements OnInit {
     }
   }
 
-
-
-
+  closePopup(){
+    this.languageArrowState = false;
+    this.showProfilePopup = false;
+    this.isNotificationVisible = false;
+  }
 
   toggleProfilePopup() {
     this.showProfilePopup = !this.showProfilePopup;
+    this.isNotificationVisible = false;
+    this.languageArrowState = false;
   }
 
   toggleSidebar(isEnlarged: boolean) {
@@ -128,6 +147,8 @@ export class SidenavbarComponent implements OnInit {
 
   languageChange() {
     this.languageArrowState = !this.languageArrowState;
+    this.isNotificationVisible = false;
+    this.showProfilePopup= false;
   }
  
   flagSvg = this.flags[0].flagComp

@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
+import { ProjectService } from '../../../services/project.service';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
-  styleUrl: './task.component.css'
+  styleUrl: './task.component.css',
 })
 export class TaskComponent {
+  selectedMap: any | null = null;
   categories: any[] = [
     { name: 'FIFO', key: 'A' },
     { name: 'LP', key: 'B' },
@@ -13,13 +16,17 @@ export class TaskComponent {
 
   selectedCategory: any = null; // Ensure no selection initially
 
+  constructor(private projectService: ProjectService) {}
+
   ngOnInit() {
-    // Optionally, set the selectedCategory programmatically later if needed
-    // For example, you might set it based on some condition or user action
-    // this.selectedCategory = this.categories[1]; // Uncomment if you need to select a category later
+    this.selectedMap = this.projectService.getMapData();
+  }
+
+  saveTaskParams() {
+    console.log(this.selectedCategory.name); // handle data here..
   }
 
   selectCategory(category: any) {
-    this.selectedCategory = category; // Method to select a category programmatically
+    this.selectedCategory = category;
   }
 }

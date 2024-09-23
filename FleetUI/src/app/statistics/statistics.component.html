@@ -30,7 +30,7 @@
       </div>
     </div>
     <div *ngIf="currentView === 'operation'">
-      
+
       <div class="statistics-container">
         <!-- Stat card 1 -->
         <div class="stat-card stat-card-1">
@@ -57,7 +57,7 @@
             </section>
           </div>
         </div>
-      
+
         <!-- Stat card 2 -->
         <div class="stat-card stat-card-2">
           <div class="stat-value">System uptime</div>
@@ -83,7 +83,7 @@
             </section>
           </div>
         </div>
-      
+
         <!-- Stat card 3 -->
         <div class="stat-card stat-card-3">
           <div class="stat-value">Success rate</div>
@@ -109,7 +109,7 @@
             </section>
           </div>
         </div>
-      
+
         <!-- Stat card 4 -->
         <div class="stat-card stat-card-4">
           <div class="stat-value">Responsiveness</div>
@@ -137,8 +137,8 @@
         </div>
       </div>
 
-      
-      
+
+
 
     <div class="charts-container">
       <div class="area-chart-container">
@@ -200,7 +200,9 @@
         </div>
         <table class="notifications-table">
           <tr *ngFor="let notification of filteredNotifications">
-            <td>{{ notification.message }} - {{ notification.timestamp }}</td>
+            <td>{{ notification.message }}</td>
+            <td>{{notification.taskId}}</td>
+            <td class="align">{{ notification.timestamp }}</td>
           </tr>
         </table>
       </div>

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProjectService } from '../../../services/project.service';
+import { environment } from '../../../../environments/environment.development';
+
 interface DB {
   name: string;
   code: string;
@@ -7,44 +10,36 @@ interface DB {
 @Component({
   selector: 'app-battery',
   templateUrl: './battery.component.html',
-  styleUrl: './battery.component.css'
+  styleUrl: './battery.component.css',
 })
 export class BatteryComponent {
-  dtype: DB[] | undefined;
-  iptype: DB[] | undefined;
+  selectedMap: any | null = null;
+  batteryForm: any = {
+    minBattery: 0,
+    maxBattery: 0,
+    warningBattery: 0,
+    warningVoltage: 0,
+    minimumVoltage: 0,
+  };
 
-    selectedDb: DB | undefined;
-
-    ngOnInit() {
-        this.dtype = [
-            { name: 'PostgreSQL', code: 'NY' },
-            { name: 'MongoDB', code: 'RM' },
-            { name: 'SQL', code: 'LDN' },
-        ];
-        this.iptype = [
-          { name: 'PostgreSQL', code: 'NY' },
-          { name: 'MongoDB', code: 'RM' },
-          { name: 'SQL', code: 'LDN' },
-      ];
-    }
-
-    batteryForm: FormGroup;
-
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private projectService: ProjectService) {
     this.batteryForm = this.fb.group({
-      battery: [50, [Validators.required, Validators.min(0), Validators.max(100)]], // Default to 50%
+      battery: [
+        50,
+        [Validators.required, Validators.min(0), Validators.max(100)],
+      ], // Default to 50%
     });
+  }
+
+  ngOnInit() {
+    this.selectedMap = this.projectService.getMapData();
+  }
+
+  saveBatteryParams() {
+    console.log(this.batteryForm); // handle here..
   }
 
   onBatteryChange() {
     // Additional logic on battery percentage change if needed
-  }
-
-  onSubmit() {
-    if (this.batteryForm.valid) {
-      const batteryPercentage = this.batteryForm.value.battery;
-      console.log('Battery Percentage:', batteryPercentage);
-      // Handle battery percentage submission logic here
-    }
   }
 }

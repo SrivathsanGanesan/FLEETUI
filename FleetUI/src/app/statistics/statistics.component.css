@@ -10,7 +10,7 @@
   box-sizing: border-box;
   background-color: white;
 }
- 
+
 .header {
   margin-top: 1%;
   padding: 0;
@@ -18,19 +18,19 @@
   z-index: 0;
   position: relative;
 }
- 
+
 /* Ensure the sidebar has a higher z-index */
 .sidebar {
   position: relative;
   z-index: 100;
 }
- 
+
 /* Container for the slider buttons */
 .slider-buttons-container {
   position: relative;
   z-index: 0;
 }
- 
+
 .slider-buttons {
   display: flex;
   margin-top: 3%;
@@ -44,7 +44,7 @@
   position: relative;
   z-index: 2;
 }
- 
+
 .slider-buttons button {
   flex: 1;
   padding: 2%;
@@ -55,11 +55,11 @@
   font-weight: bold;
   z-index: 3;
 }
- 
+
 .slider-buttons button.active {
   color: white;
 }
- 
+
 .slider {
   position: absolute;
   width: 50%;
@@ -68,15 +68,15 @@
   z-index: 2;
   transition: transform 0.3s ease;
 }
- 
+
 .slider.left {
   transform: translateX(0);
 }
- 
+
 .slider.right {
   transform: translateX(100%);
 }
- 
+
 
 /*
 .search-filter-container {
@@ -92,7 +92,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
- 
+
 .search-box {
   display: flex;
   align-items: center;
@@ -101,7 +101,7 @@
   background-color: #ffffff;
   width: 100%;
 }
- 
+
 .search-box input {
   border: none;
   padding: 1%;
@@ -110,11 +110,11 @@
   font-size: 1vw;
   border-radius: 25px 0 0 25px;
 }
- 
+
 .search-box input::placeholder {
   color: #aaa;
 }
- 
+
 .search-btn {
   background-color: #ff5c5c;
   color: white;
@@ -128,17 +128,17 @@
   border-radius: 0 25px 25px 0;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
- 
+
 .search-btn img {
   width: 60%;
   height: auto;
 }
- 
+
 .search-btn:hover {
   background-color: #e64e4e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 } */
- 
+
 /* Table stylings */
 /* Table stylings */
 
@@ -287,6 +287,10 @@
   z-index: 2;
 }
 
+.align{
+  padding-left:5rem;
+}
+
 /* Statistics container */
 /* Statistics container */
 .statistics-container {
@@ -297,7 +301,7 @@
   justify-content: space-between;
   gap: 2%;
 }
- 
+
 .stat-card,.sale-card {
    background-color: #ffffff;
   padding: 1%;
@@ -313,12 +317,12 @@
     flex-basis: 0;
     overflow: hidden;
 }
- 
+
 @media (min-width: 1200px) {
   .statistics-container {
     height: 70vh; /* Larger screens will have 70% of viewport height */
   }
-  
+
   .stat-card {
     height: 16vh; /* Fixed height for larger screens */
   }
@@ -429,48 +433,48 @@ h2 {
   width: 6vw; /* Adjust the width of the chart */
   height: 7vw; /* Keep height proportional to the width */
 }
- 
+
 .loading svg polyline {
   fill: none;
   stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
- 
+
 .stat-chart svg {
   width: 100%;
   height: auto;
 }
- 
+
 /* Specific styling for Stat Card 1 (red color) */
 .stat-card-1 .loading svg polyline#back {
   stroke: #ff4d5033;
 }
- 
+
 .stat-card-1 .loading svg polyline#front {
   stroke: #da2127;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
 }
- 
+
 /* Specific styling for Stat Card 2 (yellow color) */
 .stat-card-2 .loading svg polyline#back {
   stroke: #ffc10733;
 }
- 
+
 .stat-card-2 .loading svg polyline#front {
   stroke: #ffc107;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
 }
- 
+
 /* Specific styling for Stat Card 3 (green color) */
 .stat-card-3 .loading svg polyline#back {
   stroke: #4caf5033;
 }
- 
+
 .stat-card-3 .loading svg polyline#front {
   stroke: #4caf50;
   stroke-dasharray: 48, 144;
@@ -482,14 +486,14 @@ h2 {
 .stat-card-4 .loading svg polyline#back {
   stroke: #4c57af33;
 }
- 
+
 .stat-card-4 .loading svg polyline#front {
   stroke: #212dd3;
   stroke-dasharray: 48, 144;
   stroke-dashoffset: 192;
   animation: dash_682 1.4s linear infinite;
 }
- 
+
 /* Keyframes for dash animation */
 @keyframes dash_682 {
   72.5% {
@@ -530,7 +534,7 @@ h2 {
   min-height: 270px; /* Ensures a minimum height for smaller screens */
 }
 
- 
+
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .charts-container {
@@ -539,10 +543,10 @@ h2 {
   .area-chart-container,
   .donut-chart-container {
     width: 100%; /* Full width for both charts */
-    
+
   }
 }
- 
+
 /* Responsive adjustments for very small screens */
 @media (max-width: 768px) {
   .area-chart-container,
@@ -565,7 +569,7 @@ h2 {
   dominant-baseline: middle !important;
   pointer-events: none !important;
 }
- 
+
 .apexcharts-legend-series {
   display: flex;
   justify-content: center;
@@ -573,7 +577,7 @@ h2 {
 }
 
 
-/* 
+/*
 new slider button */
 /* Container for the slider buttons */
 /* .slider-buttons-container {
@@ -682,3 +686,17 @@ new slider button */
 } */
 
 
+::ng-deep .activity-table tr:nth-child(odd) {
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+::ng-deep .activity-table tr {
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}

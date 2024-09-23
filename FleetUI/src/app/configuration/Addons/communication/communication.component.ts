@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-communication',
   templateUrl: './communication.component.html',
-  styleUrl: './communication.component.css'
+  styleUrl: './communication.component.css',
 })
 export class CommunicationComponent {
   categories: any[] = [
@@ -17,11 +17,7 @@ export class CommunicationComponent {
 
   selectedCategory: any = null; // No initial selection
 
-  ngOnInit() {
-    // Optionally, set the selectedCategory programmatically later if needed
-    // For example, you might set it based on some condition or user action
-    // this.selectedCategory = this.categories[1]; // Uncomment if you need to select a category later
-  }
+  ngOnInit() {}
 
   selectCategory(category: any) {
     this.selectedCategory = category; // Method to select a category programmatically

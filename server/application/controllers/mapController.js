@@ -37,14 +37,40 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   );
   return proj;
 };
+
+const sendNodeGraph = async ({ endpoint, bodyData }) => {
+  let response = await fetch(`http://192.168.225.97:8080/fms/amr/${endpoint}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Basic cm9vdDp0b29y",
+    },
+    body: JSON.stringify(bodyData),
+  });
+  if (!response.ok) {
+    console.log("failed while sending node graph");
+    return null;
+  }
+  let data = await response.json();
+  return data;
+};
 //..
 
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
-  /* let dest = path.resolve(`proj_assets/nodeGraph/nodeGraph.txt`);
-  await fs.writeFileSync(dest, JSON.stringify(req.body, null, 2), (err) => {});
-  // console.log(req.body);
-  return; // yet to remove.. */
+
+  /* const { nodes, edges } = mapData; // send node graph..
+  let nodeGraph = {
+    nodes: nodes,
+    edges: edges,
+  };
+  let data1 = await sendNodeGraph({
+    endpoint: "save_graph",
+    bodyData: nodeGraph,
+  }); */
+
+  // return res.end(); // yet to remove..
   try {
     const {
       projectName,

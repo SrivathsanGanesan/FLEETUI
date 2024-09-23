@@ -8,33 +8,33 @@
                 <div class="field">
                   <label for="name">Fleet Planner Type :  </label>
                   <!-- <input class="input" type=" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/> -->
-                  <p-dropdown appendTo="body" [options]="dtype" [(ngModel)]="selectedDb" optionLabel="name" placeholder="Select"></p-dropdown>
+                  <p-dropdown appendTo="body" [options]="plannerType" [(ngModel)]="selectedPlanner" optionLabel="name" placeholder="Select"></p-dropdown>
                   <label for="name" style="margin-left: 8rem;">External Inteface Type : </label>
-                  <input type="text" placeholder="Enter IP"  pInputText/>
+                  <input type="text" placeholder="Enter IP" [(ngModel)]="formData.externalInterfaceType"  pInputText/>
                 </div>
               </div>
               <div class="head2" style="width: -webkit-fill-available;">
                 <span><b>Agent Parameters : </b> </span>
                 <div class="field2">
                   <label for="name" style="margin-right: 5.5rem;">MAX_LINEAR_VELOCITY :  </label>
-                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" [(ngModel)]="formData.maxLinearVelocity" pInputText required/>
 
                   <label for="name" style="margin-left: 65px;">MAX_ROBOTS_COUNT : </label>
-                  <input type="text" placeholder="Enter IP"  pInputText/>
+                  <input xlass="input" type="number" placeholder="Enter" [(ngModel)]="formData.maxRobotsCount"  pInputText/>
                 </div>
                 <div class="form2">
                   <label for="name" style="margin-right: 3.9rem;">SAFE_THRESHOLD :  </label>
-                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" [(ngModel)]="formData.safeThreshhold" pInputText required/>
 
                   <label for="name">LOOK_AHEAD :  </label>
-                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" [(ngModel)]="formData.lookAhead" pInputText required/>
                 </div>
                 <div class="form2">
                   <label for="name">MAX_POINTS_TO_RESERVE :  </label>
-                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" [(ngModel)]="formData.maxPointstoRes" pInputText required/>
 
                   <label for="name">FIELD_OF_VIEW :  </label>
-                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/>
+                  <input class="input" type="number" minlength="7" maxlength="15" size="15"  placeholder="Enter" [(ngModel)]="formData.FOV" pInputText required/>
                 </div>
               </div>
               <!-- <div class="radio">
@@ -63,6 +63,7 @@
               class="block mt-1 pt-2 "
               icon="pi pi-check-circle"
               styleClass="p-button-danger p-button1"
+              (onClick)="savePlanner()"
             ></p-button>
           </div>
         <!-- </form> -->
