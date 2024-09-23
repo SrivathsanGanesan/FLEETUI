@@ -268,3 +268,24 @@ canvas {
 }
 
 
+/* no map */
+.no-map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Fullscreen height */
+  text-align: center;
+}
+
+.no-map-image {
+  max-width: 50%;
+  height: auto;
+}
+
+.no-map-text {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: 550;
+  color: #7B7B7B;
+}
