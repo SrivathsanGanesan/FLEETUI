@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { MessageService } from 'primeng/api';
@@ -31,9 +31,23 @@ export class RobotPopupComponent {
   listedRobo : any[]=[];
   availableRobots : any[]=[];
 
-
+  ngOnChanges(){
+    this.listedRobo = [];
+    let avlRobo = this.robos.map((robo)=> robo.roboDet);
+    this.availableRobots.forEach((robo) => {
+      // Check if the robot is NOT present in avlRobo
+      const isPresent = avlRobo.some((avrobo) => avrobo.id === robo.id);
+    
+      // If the robot is not found in avlRobo, push it into listedRobo
+      if (!isPresent) {
+        this.listedRobo.push(robo);
+      }
+    });
+  }
 
   async ngOnInit(){
+    
+    this.listedRobo = [];
     if(!this.mapName) return;
     let res1 = await fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.mapName}`,{ method:'GET', credentials:'include' });
     let mapData = await res1.json();
@@ -41,18 +55,33 @@ export class RobotPopupComponent {
     let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.map._id}`, { method: 'GET', credentials: 'include' });
     let data = await response.json();
     
-    this.listedRobo = data.populatedRobos;
-    let id = 0;
+    // this.listedRobo = data.populatedRobos;
+    let avlRobo = this.robos.map((robo)=> robo.roboDet);
+    let finalizeRobo: any[] = []
+    // let id = 0;
     this.availableRobots = data.populatedRobos.map((robo : any)=>{
-      id++;
+      // id++;
       return {
-        id : id,
-        roboId : robo._id.toString().slice(18),
+        // id : id,
+        id : robo._id.toString().slice(17),
         roboName : robo.roboName,
         ipAdd : robo.ipAdd,
-        selected : true,
+        selected : false,
       }
     })
+    
+    this.availableRobots.forEach((robo) => {
+      // Check if the robot is NOT present in avlRobo
+      const isPresent = avlRobo.some((avrobo) => avrobo.id === robo.id);
+    
+      // If the robot is not found in avlRobo, push it into listedRobo
+      if (!isPresent) {
+        finalizeRobo.push(robo);
+      }
+    });
+    
+    this.listedRobo = finalizeRobo;
+    
   }
 
   closePopup() {
@@ -63,21 +92,28 @@ export class RobotPopupComponent {
   addSelectedRobots() {
     // Filter the selected robots from listedRobo (since this is what's used in the template)
     const selectedRobots = this.listedRobo.filter((robot) => robot.selected);
+    // console.log(selectedRobots);
+    // return
 
     if (selectedRobots.length > 0) {
         // Emit the selected robots
-        this.addRobot.emit(selectedRobots);
+      this.addRobot.emit(selectedRobots);
+        // Mark the robots as placed
+        selectedRobots.forEach((robot) => {
+        robot.placed = true;  // Mark the robot as placed
+        robot.selected = false; // Deselect the robot after placing
+    });
 
-        this.showError = false;
+      this.showError = false;
 
-        // Show success toast message
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Robots added successfully!',
-        });
+      // Show success toast message
+      this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Robots added successfully!',
+      });
 
-        this.close.emit(); // Close the popup after success
+      this.close.emit(); // Close the popup after success
     } else {
         this.showError = true;
         // Show error toast message
