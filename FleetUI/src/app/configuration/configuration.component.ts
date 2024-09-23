@@ -71,7 +71,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
   searchTerm: string = '';
   filteredEnvData: any[] = [];
-  filteredTaskData: any[] = [];
+  filteredipData: any[] = [];
   filteredRobotData: any[] = [];
 
   isPopupOpen: boolean = false;
@@ -130,8 +130,9 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   onChanges(){
     this.loadData();
+    this.reloadTable();
     this.filterData();
-    this.setPaginatedData();
+    // this.setPaginatedData();
     console.log("data added");
   }
 
@@ -189,6 +190,7 @@ export class ConfigurationComponent implements AfterViewInit {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         this.filteredEnvData = this.EnvData;
+        // this.EnvData = this.filteredEnvData;
         this.setPaginatedData();
         this.cdRef.detectChanges();
         if (!this.projectService.getIsMapSet()) {
@@ -233,7 +235,7 @@ export class ConfigurationComponent implements AfterViewInit {
     //   .catch((error) => {
     //     console.log(error);
     //   });
-    this.filteredEnvData = this.EnvData;
+    // this.filteredEnvData = this.EnvData;
     this.setPaginatedData();
     this.searchTerm = '';
     this.searchTermChanged();
@@ -274,8 +276,6 @@ export class ConfigurationComponent implements AfterViewInit {
         // });
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
-        this.filteredRobotData = this.robotData;
-        this.setPaginatedData();
       })
       .catch((error) => {
         console.log(error);
@@ -343,17 +343,18 @@ export class ConfigurationComponent implements AfterViewInit {
         startIndex,
         startIndex + this.paginator.pageSize
       );
+      this.filterData();
     }
-    if (this.paginator && this.currentTable === 'robot') {
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.filteredRobotData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
-    }
+    // if (this.paginator && this.currentTable === 'robot') {
+    //   const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    //   this.paginatedData = this.filteredRobotData.slice(
+    //     startIndex,
+    //     startIndex + this.paginator.pageSize
+    //   );
+    // }
     if (this.paginator && this.currentTable === 'ipScanner') {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.ipScanData.slice(
+      this.paginatedData = this.filteredipData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
@@ -623,6 +624,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
         if (poll.Status === 'online')
           this.ipScanData = [...this.ipScanData, poll];
+        this.ipScanData = this.filteredipData;
           this.setPaginatedData();
         this.cdRef.detectChanges();
       } catch (error) {
@@ -784,6 +786,7 @@ export class ConfigurationComponent implements AfterViewInit {
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
+  
   startDate: Date | null = null;
   endDate: Date | null = null;
   minDate!: string;

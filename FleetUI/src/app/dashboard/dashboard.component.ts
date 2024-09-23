@@ -92,6 +92,7 @@ export class DashboardComponent implements AfterViewInit {
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
   showModelCanvas: boolean = false; // Initially hide the modelCanvas
+selectedMap: any;
 
   constructor(
     private projectService: ProjectService,
