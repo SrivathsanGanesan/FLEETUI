@@ -26,7 +26,17 @@ let throughPutArr = getSampSeries();
 let starvationRateArr = getSampSeries();
 let pickAccuracyArr = getSampSeries();
 let errRateArr = getSampSeries();
+
+let cpuUtilArr = getSampSeries();
+let roboUtilArr = getSampSeries();
+let batteryStatArr = getSampSeries();
+let memoryStatArr = getSampSeries();
+let networkStatArr = getSampSeries();
+let idleTimeArr = getSampSeries();
+let roboErrRateArr = getSampSeries();
 //..
+
+// Operation..
 
 const getFleetThroughput = (req, res, next) => {
   fetch(`http://fleetIp:8080/fms/amr/get_throughput_stats`, {
@@ -402,6 +412,8 @@ const errRate = async (req, res) => {
   }
 };
 
+// robo..
+
 const getRoboFleetGraph = async () => {
   fetch(`http://fleetIp:8080/-----`, {
     method: "POST",
@@ -427,16 +439,53 @@ const getRoboFleetGraph = async () => {
 
 const getCpuUtilization = async (req, res) => {
   const mapId = req.params.mapId;
-
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        cpuUtil: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        cpuUtil: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    cpuUtilArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      cpuUtil: Math.floor(Math.random() * 30) + 10,
+      cpuUtil: cpuUtilArr,
       map: mapData,
     });
   } catch (err) {
@@ -449,15 +498,53 @@ const getCpuUtilization = async (req, res) => {
 
 const getRoboUtilization = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        roboUtil: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        roboUtil: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    roboUtilArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      roboUtil: Math.floor(Math.random() * 30) + 10,
+      roboUtil: roboUtilArr,
       map: mapData,
     });
   } catch (err) {
@@ -470,15 +557,53 @@ const getRoboUtilization = async (req, res) => {
 
 const getBatteryStat = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        batteryStat: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        batteryStat: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    batteryStatArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      batteryStat: Math.floor(Math.random() * 30) + 10,
+      batteryStat: batteryStatArr,
       map: mapData,
     });
   } catch (err) {
@@ -491,15 +616,53 @@ const getBatteryStat = async (req, res) => {
 
 const getMemoryStat = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        memoryStat: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        memoryStat: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    memoryStatArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      memoryStat: Math.floor(Math.random() * 30) + 10,
+      memoryStat: memoryStatArr,
       map: mapData,
     });
   } catch (err) {
@@ -512,15 +675,53 @@ const getMemoryStat = async (req, res) => {
 
 const getNetworkStat = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        networkStat: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        networkStat: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    networkStatArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      networkStat: Math.floor(Math.random() * 30) + 10,
+      networkStat: networkStatArr,
       map: mapData,
     });
   } catch (err) {
@@ -533,15 +734,53 @@ const getNetworkStat = async (req, res) => {
 
 const getIdleTime = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        idleTime: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        idleTime: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    idleTimeArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      idleTime: Math.floor(Math.random() * 30) + 10,
+      idleTime: idleTimeArr,
       map: mapData,
     });
   } catch (err) {
@@ -554,15 +793,53 @@ const getIdleTime = async (req, res) => {
 
 const getRoboErr = async (req, res) => {
   const mapId = req.params.mapId;
+  const { timeSpan } = req.body;
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    if (timeSpan === "week")
+      return res.status(200).json({
+        msg: "data sent",
+        roboErr: Array.from({ length: 7 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    else if (timeSpan === "month")
+      return res.status(200).json({
+        msg: "data sent",
+        roboErr: Array.from({ length: 30 }, () => {
+          return {
+            rate: Math.floor(Math.random() * 100),
+            time: new Date().toLocaleString("en-IN", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }),
+          };
+        }),
+      });
+    roboErrRateArr.push({
+      rate: Math.floor(Math.random() * 100),
+      time: new Date().toLocaleString("en-IN", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    });
     return res.status(200).json({
       msg: "data sent",
-      roboErr: Math.floor(Math.random() * 30) + 10,
+      roboErr: roboErrRateArr,
       map: mapData,
     });
   } catch (err) {

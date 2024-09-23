@@ -23,10 +23,9 @@ export class RobotPopupComponent {
   listedRobo : any[]=[];
   availableRobots : any[]=[];
 
-
-
   async ngOnInit(){
     if(!this.mapName) return;
+    if(this.listedRobo.length) return;
     let res1 = await fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.mapName}`,{
       method:'GET',
       credentials:'include'
@@ -48,7 +47,7 @@ export class RobotPopupComponent {
         roboId : robo._id.toString().slice(18),
         roboName : robo.roboName,
         ipAdd : robo.ipAdd,
-        selected : true,
+        
       }
     })
     // console.log(this.availableRobots);

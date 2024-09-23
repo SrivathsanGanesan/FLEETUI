@@ -516,6 +516,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.robos = this.robos.filter(
         (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
       );
+
       this.redrawCanvas();
     }
 
@@ -2559,6 +2560,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   closeRobotPopup(): void {
     this.isRobotPopupVisible = false;
   }
+
   placeRobots(selectedRobots: any[]): void {
     if (!this.overlayCanvas) return;
 
@@ -2571,10 +2573,14 @@ onImagePopupCanvasClick(event: MouseEvent): void {
         return;
       }
 
-      const robo: Robo = { roboDet: robot, pos :{x: x, y: y, orientation : 0} }; // yet to add orientation..
-      this.robos.push(robo);
+      // Add the selected robot with its position
+      const newRobo: Robo = { roboDet: robot, pos: { x: x, y: y, orientation: 0 } }; // Can add orientation if needed
+      this.robos.push(newRobo);
 
+      // Increment the offset to place the next robot at a different position
       this.roboInitOffset += 60;
+
+      // Plot the robot on the canvas
       this.plotRobo(x, y);
     });
   }
