@@ -1258,7 +1258,7 @@ export class ConfigurationComponent implements AfterViewInit {
       projectName: project.projectName,
       mapId: currMap.id,
       mapName: currMap.mapName,
-      roboName: this.formData.serialNumber,
+      roboName: this.formData.robotName,
       ipAdd: this.currentRoboDet.ip,
       macAdd: this.currentRoboDet.mac,
       grossInfo: this.formData,
