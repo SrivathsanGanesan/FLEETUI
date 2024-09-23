@@ -124,12 +124,14 @@ export class ConfigurationComponent implements AfterViewInit {
   reloadTable() {
     // Call the method that fetches the table data to reload the table
     console.log("data reloaded")
+    this.setPaginatedData();
     this.loadData();
     this.filterData();
   }
   onChanges(){
     this.loadData();
     this.filterData();
+    this.setPaginatedData();
     console.log("data added");
   }
 
@@ -188,7 +190,7 @@ export class ConfigurationComponent implements AfterViewInit {
         );
         this.filteredEnvData = this.EnvData;
         this.setPaginatedData();
-        // this.cdRef.detectChanges();
+        this.cdRef.detectChanges();
         if (!this.projectService.getIsMapSet()) {
           this.selectedMap = this.EnvData[0];
           let imgUrl = '';
@@ -338,14 +340,6 @@ export class ConfigurationComponent implements AfterViewInit {
     if (this.paginator && this.currentTable === 'Environment') {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       this.paginatedData = this.filteredEnvData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
-      this.paginatedData1 = this.filteredRobotData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
-      this.paginatedData2 = this.ipScanData.slice(
         startIndex,
         startIndex + this.paginator.pageSize
       );
@@ -1258,7 +1252,7 @@ export class ConfigurationComponent implements AfterViewInit {
       projectName: project.projectName,
       mapId: currMap.id,
       mapName: currMap.mapName,
-      roboName: this.formData.serialNumber,
+      roboName: this.formData.robotName,
       ipAdd: this.currentRoboDet.ip,
       macAdd: this.currentRoboDet.mac,
       grossInfo: this.formData,

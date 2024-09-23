@@ -53,14 +53,14 @@
   width: 103%;
   border-radius: 10px;
   margin-top: 10px;
-  max-height: 23.5rem;
+  max-height: 25rem;
   overflow-y: auto;
 }
 
 /* Table Styling */
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: 99%;
   max-height: 500px;
   border-radius: 10px;
   border-spacing: 0;
@@ -95,7 +95,7 @@ th {
 }
 
 td {
-  padding: 10px 20px;
+  padding: 5px 20px;
   text-align: left;
   font-size: 13px;
 }
@@ -408,7 +408,7 @@ tr:nth-child(even) {
 .paginator-container {
   display: flex;
   justify-content: center;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 /* Paginator wrapper */

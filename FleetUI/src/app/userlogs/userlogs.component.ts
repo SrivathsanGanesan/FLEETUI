@@ -189,6 +189,42 @@ export class Userlogscomponent {
     this.setPaginatedData();
   }
 
+  onSearch(event: Event): void {
+    const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
+
+    if (!inputValue) {
+      this.filteredTaskData = this.taskData;
+    } else {
+      this.taskData = this.taskData.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(inputValue)
+        )
+      );
+    }
+
+    // Reset the paginator after filtering
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+
+    this.setPaginatedData(); // Update paginated data after filtering
+  }
+  trackByTaskId(index: number, item: any): number {
+    return item.taskId; // or any unique identifier like taskId
+  }
+
+  onCancel(item: any) {
+    // Find the index of the item in the tasks array and remove it
+    const index = this.taskData.indexOf(item);
+    if (index > -1) {
+      this.taskData.splice(index, 1); // Remove the task from the tasks array
+    }
+
+    // Update the filteredTaskData and reapply pagination
+    this.filteredTaskData = [...this.taskData]; // Ensure it's updated
+    this.setPaginatedData(); // Recalculate the displayed paginated data
+  }
+
   togglePopup() {
     throw new Error('Method not implemented.');
   }
@@ -285,11 +321,11 @@ export class Userlogscomponent {
     this.activeFilter = filter;
   }
 
-  onSearch(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const query = inputElement.value;
-    // Implement your search logic here
-  }
+  // onSearch(event: Event): void {
+  //   const inputElement = event.target as HTMLInputElement;
+  //   const query = inputElement.value;
+  //   // Implement your search logic here
+  // }
 
   onDateFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
