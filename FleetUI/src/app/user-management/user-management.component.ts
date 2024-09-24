@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment.development';
 import { AuthService } from '../auth.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MessageService } from 'primeng/api';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-user-management',
@@ -10,12 +11,16 @@ import { MessageService } from 'primeng/api';
   styleUrl: './user-management.component.css',
 })
 export class UserManagementComponent implements OnInit {
-onPageChange($event: PageEvent) {
-throw new Error('Method not implemented.');
-}
-filteredTaskData: any;
-  constructor(private authService: AuthService, private messageService: MessageService) {}
+  onPageChange($event: PageEvent) {
+    throw new Error('Method not implemented.');
+  }
+  filteredTaskData: any;
+  constructor(
+    private authService: AuthService,
+    private messageService: MessageService
+  ) {}
 
+  // selectedProj
   userId = 0;
   userName = '';
   passWord = '';
@@ -114,7 +119,7 @@ filteredTaskData: any;
     },
     {
       order: 2,
-      nameTag: 'TASKS',
+      nameTag: 'ROBOTS',
       isAvail: 0,
       create: 1,
       edit: 2,
@@ -242,6 +247,7 @@ filteredTaskData: any;
     return '';
   }
 
+  // create user..
   createUser() {
     console.log(this.passwordState, this.confrimPasswordState);
     this.resetPassword();
@@ -329,7 +335,12 @@ filteredTaskData: any;
           alert('Person with this credentials already exist');
           return;
         }
-        this.messageService.add({ severity: 'success', summary:`${this.userName}`, detail: 'User Created Successfully', life: 4000 });
+        this.messageService.add({
+          severity: 'success',
+          summary: `${this.userName}`,
+          detail: 'User Created Successfully',
+          life: 4000,
+        });
         console.log('User created successfully:', data);
 
         // Fetch updated user list after successful creation
@@ -362,7 +373,12 @@ filteredTaskData: any;
     if (findingAdmin.length <= 1 && userRole === 'Administrator') {
       // alert('Should have atleast one admin');
       this.deleteUserPopUp();
-      this.messageService.add({ severity: 'error', summary: 'Failed ', detail: 'Should have atleast one admin', life: 5000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Failed ',
+        detail: 'Should have atleast one admin',
+        life: 5000,
+      });
       return;
     }
     console.log('DELETE:', username); // Log the username to delete
@@ -372,7 +388,12 @@ filteredTaskData: any;
 
     if (!userToDelete) {
       console.error('User not found for deletion:', username);
-      this.messageService.add({ severity: 'error', summary: 'Failed ', detail: 'Should have atleast one admin', life: 5000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Failed ',
+        detail: 'Should have atleast one admin',
+        life: 5000,
+      });
       return;
     }
 
@@ -393,13 +414,13 @@ filteredTaskData: any;
             `Failed to delete user (${response.status} ${response.statusText})`
           );
         }
-          // Successfully deleted user
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: `User ${username} has been deleted successfully`,
-            life: 5000,
-          });
+        // Successfully deleted user
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `User ${username} has been deleted successfully`,
+          life: 5000,
+        });
         this.fetchUsers();
         // Remove the user from the local list
         // this.userCredentials = this.userCredentials.filter(
@@ -459,7 +480,7 @@ filteredTaskData: any;
         severity: 'error',
         summary: 'User Creation Failed',
         detail: 'User creation process was canceled.',
-        life: 4000
+        life: 4000,
       });
     }
     console.log(this.passwordState, this.confrimPasswordState);
@@ -528,7 +549,7 @@ filteredTaskData: any;
           severity: 'error',
           summary: 'Failed',
           detail: 'Error fetching user permissions',
-          life: 5000
+          life: 5000,
         });
       });
   }
@@ -548,7 +569,7 @@ filteredTaskData: any;
         severity: 'error',
         summary: 'Failed',
         detail: 'No user selected for updating permissions',
-        life: 5000
+        life: 5000,
       });
       return;
     }
@@ -605,24 +626,24 @@ filteredTaskData: any;
       .then((data) => {
         console.log('User updated successfully:', data);
         // Success toast
-                this.messageService.add({
-                  severity: 'success',
-                  summary: 'Success',
-                  detail: `User ${this.user.userName}'s permissions have been updated successfully`,
-                  life: 5000
-                });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `User ${this.user.userName}'s permissions have been updated successfully`,
+          life: 5000,
+        });
         // Optionally refresh the user list or update the local user list
         this.fetchUsers();
       })
       .catch((error) => {
         console.error('Error updating user:', error);
-                // Error toast
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Failed',
-                  detail: 'Error updating user permissions',
-                  life: 5000
-                });
+        // Error toast
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed',
+          detail: 'Error updating user permissions',
+          life: 5000,
+        });
       });
 
     // Close the popup
