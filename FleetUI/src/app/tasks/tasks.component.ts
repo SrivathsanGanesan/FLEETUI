@@ -100,7 +100,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     this.setPaginatedData();
 
     // Simulate some delay, such as an API call
-    
+
   }
 
   // Ensure the paginator is initialized before setting paginated data
@@ -121,7 +121,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
-  
+
   // Search method
   onSearch(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
@@ -144,7 +144,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     this.setPaginatedData(); // Update paginated data after filtering
   }
 
-  
+
   exportData(format: string) {
     const data = this.tasks;
 
@@ -208,5 +208,5 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   // cancel popup
 
-  
+
 }

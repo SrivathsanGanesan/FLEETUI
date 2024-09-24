@@ -10,9 +10,9 @@ const {
 const fleetParamsConfigurationRouter = express.Router();
 
 fleetParamsConfigurationRouter.post("/general", setGeneralParam);
-fleetParamsConfigurationRouter.post("/planner", setGeneralParam);
-fleetParamsConfigurationRouter.post("/task", setGeneralParam);
-fleetParamsConfigurationRouter.post("/battery", setGeneralParam);
-fleetParamsConfigurationRouter.post("/communication", setGeneralParam);
+fleetParamsConfigurationRouter.post("/planner", setPlannerParam);
+fleetParamsConfigurationRouter.post("/task", setTaskParam);
+fleetParamsConfigurationRouter.post("/battery", setBatteryParam);
+fleetParamsConfigurationRouter.post("/communication", setCommunicationParam);
 
 module.exports = fleetParamsConfigurationRouter;

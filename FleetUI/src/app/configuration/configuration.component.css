@@ -219,6 +219,7 @@
   border-radius: 10px;
   /* max-height: 23.5rem; */
   overflow-y: auto;
+  /* table-layout: fixed; */
 }
 
 
@@ -231,6 +232,7 @@ table {
   border-spacing: 0;
   overflow: auto;
   border: 1px solid #fff;
+  table-layout: fixed;
   border-radius: 10px;
 }
 
@@ -931,7 +933,7 @@ border: none;
   text-overflow: ellipsis; /* Show '...' for overflow text */
 }
 
-/* 
+/*
 edit button */
 .edit-button {
   width: 30px;
@@ -958,7 +960,7 @@ edit button */
   fill: white;
  }
  .edit-button:hover {
-  width: 120px;
+  width: 90px;
   border-radius: 50px;
   transition-duration: 0.3s;
   background-color: rgb(255, 69, 69);
