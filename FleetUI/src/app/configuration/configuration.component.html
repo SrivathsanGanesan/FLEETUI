@@ -119,12 +119,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="paginatedData.length === 0">
+                <tr *ngIf="EnvData.length === 0">
                   <td colspan="5" class="iconTable">No data found</td>
                 </tr>
                 <tr
                   *ngFor="
-                    let item of paginatedData;
+                    let item of EnvData;
                     index as i;
                     trackBy: trackByTaskId
                   "
@@ -171,10 +171,10 @@
                 </tr>
               </tbody>
             </table>
-            <div  >
+            <div *ngIf="currentTable === 'Environment' && filteredEnvData.length == EnvData.length"  >
             <div
               class="paginator-container"
-              *ngIf="EnvData.length > 5"
+              *ngIf="EnvData.length > 5 "
             >
               <mat-paginator
                 [length]="filteredEnvData.length"

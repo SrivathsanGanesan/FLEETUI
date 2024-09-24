@@ -149,7 +149,7 @@ export class ConfigurationComponent implements AfterViewInit {
     let currMapData = this.projectService.getMapData();
     if (currMapData) {
       this.selectedMap = currMapData;
-      this.setPaginatedData();
+      // this.setPaginatedData();
     }
 
     this.mapData = this.projectService.getSelectedProject(); // _id
@@ -347,6 +347,7 @@ export class ConfigurationComponent implements AfterViewInit {
         // Use pagination logic for more than 5 items
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
         this.paginatedData = this.filteredEnvData.slice(startIndex, startIndex + this.paginator.pageSize);
+        this.filterData();
       }
     } else if (this.currentTable === 'robot') {
       if (this.filteredRobotData.length <= 5) {
