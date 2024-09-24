@@ -171,48 +171,48 @@ export class DashboardComponent implements AfterViewInit {
       return;
     }
     this.loadCanvas();
-    this.fetchRoboPos();
+    // this.fetchRoboPos();
   }
 
-  async fetchRoboPos() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-    const imageWidth = 32; // Set this to the actual width of the plotted image
-    const imageHeight = 25; // Set this to the actual height of the plotted image
+//   async fetchRoboPos() {
+//     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+//     const ctx = canvas.getContext('2d');
+//     const imageWidth = 32; // Set this to the actual width of the plotted image
+//     const imageHeight = 25; // Set this to the actual height of the plotted image
 
-    let x = 50; // Starting x position
-    let y = 50; // Starting y position
-    const step = 1; // Increment step for each position change
-    const max = 1000; // Maximum limit for x and y positions
-    let i = 0;
+//     let x = 50; // Starting x position
+//     let y = 50; // Starting y position
+//     const step = 1; // Increment step for each position change
+//     const max = 1000; // Maximum limit for x and y positions
+//     let i = 0;
 
-    let currInterval = setInterval(() => {
-        if (ctx && x <= max && y <= max) {
-            if (i > 0) {
-                // Clear only the previous robot image area
-                ctx.clearRect(
-                    x - step - imageWidth / 2,
-                    y - step - imageHeight / 2,
-                    imageWidth,
-                    imageHeight
-                );
-            }
+//     let currInterval = setInterval(() => {
+//         if (ctx && x <= max && y <= max) {
+//             if (i > 0) {
+//                 // Clear only the previous robot image area
+//                 ctx.clearRect(
+//                     x - step - imageWidth / 2,
+//                     y - step - imageHeight / 2,
+//                     imageWidth,
+//                     imageHeight
+//                 );
+//             }
 
-            // Log the current x and y position to the console
-            console.log(`Robot Position: X = ${x}, Y = ${y}`);
+//             // Log the current x and y position to the console
+//             console.log(`Robot Position: X = ${x}, Y = ${y}`);
 
-            // Plot the robot at the current position
-            this.plotRobo(ctx, x, y);
+//             // Plot the robot at the current position
+//             this.plotRobo(ctx, x, y);
 
-            // Increment x and y
-            x += step;
-            y += step;
-            i++;
-        } else {
-            clearInterval(currInterval);
-        }
-    }, 1000 * 0.5); // Update position every 0.5 seconds
-}
+//             // Increment x and y
+//             x += step;
+//             y += step;
+//             i++;
+//         } else {
+//             clearInterval(currInterval);
+//         }
+//     }, 1000 * 0.5); // Update position every 0.5 seconds
+// }
 
   // async fetchRoboPos() {
   //   let response = await fetch(
