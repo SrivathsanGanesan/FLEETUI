@@ -1037,9 +1037,11 @@ export class ConfigurationComponent implements AfterViewInit {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) isDeleted = await this.deleteMap(item);
       if (isDeleted) {
-        this.projectService.setIsMapSet(false);
-        this.projectService.clearMapData();
-        this.ngOnInit();
+        if(item.id === this.projectService.getMapData().id){
+          this.projectService.setIsMapSet(false);
+          this.projectService.clearMapData();
+          this.ngOnInit();
+        }
         // Assuming currentTable determines which data array to modify
         if (this.currentTable === 'Environment') {
           this.EnvData = this.EnvData.filter((i) => i !== item);
