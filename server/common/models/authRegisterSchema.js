@@ -14,6 +14,54 @@ const userProjListschema = new Schema(
   { _id: false, versionKey: false }
 );
 
+const userPermission = new Schema(
+  {
+    dashBoard: {
+      enable: { type: Boolean, default: false },
+      create: { type: Boolean, default: false },
+      edit: { type: Boolean, default: false },
+      delete: { type: Boolean, default: false },
+      // view: { type: Boolean, default: false },
+    },
+    statistics: {
+      enable: { type: Boolean, default: false },
+      create: { type: Boolean, default: false },
+      edit: { type: Boolean, default: false },
+      delete: { type: Boolean, default: false },
+      // view: { type: Boolean, default: false },
+    },
+    robots: {
+      enable: { type: Boolean, default: false },
+      create: { type: Boolean, default: false },
+      edit: { type: Boolean, default: false },
+      delete: { type: Boolean, default: false },
+      // view: { type: Boolean, default: false },
+    },
+    configuration: {
+      enable: { type: Boolean, default: false },
+      create: { type: Boolean, default: false },
+      edit: { type: Boolean, default: false },
+      delete: { type: Boolean, default: false },
+      // view: { type: Boolean, default: false },
+    },
+    errLogs: {
+      enable: { type: Boolean, default: false },
+      create: { type: Boolean, default: false },
+      edit: { type: Boolean, default: false },
+      delete: { type: Boolean, default: false },
+      // view: { type: Boolean, default: false },
+    },
+    tasks: {
+      enable: { type: Boolean, default: false },
+      create: { type: Boolean, default: false },
+      edit: { type: Boolean, default: false },
+      delete: { type: Boolean, default: false },
+      // view: { type: Boolean, default: false },
+    },
+  },
+  { _id: false, versionKey: false }
+);
+
 const authRegisterSchema = new Schema(
   {
     name: {
@@ -37,6 +85,10 @@ const authRegisterSchema = new Schema(
       min: 1,
       max: 3,
     },
+    permissions: {
+      type: userPermission,
+      default: { userPermission },
+    },
     createdBy: {
       type: String,
       default: "",
@@ -55,4 +107,4 @@ const authRegisterModel = userManagementConnection.model(
   "User"
 );
 
-module.exports = { authRegisterModel, userProjListschema };
+module.exports = { authRegisterModel, userProjListschema, userPermission };
