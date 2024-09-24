@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProjectService } from '../../../services/project.service';
 import { environment } from '../../../../environments/environment.development';
@@ -17,7 +17,7 @@ export class GeneralComponent {
   // dtype: DB[] | undefined;
   // iptype: DB[] | undefined;
 
-  selectedMap: any | null = null;
+  selectedProject: any | null = null;
 
   formData: any = {
     selectedDb: '',
@@ -61,14 +61,54 @@ export class GeneralComponent {
     { name: 'TaskMtype_3', code: 'LQN' },
   ];
 
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private projectService: ProjectService,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
-  ngOnInit() {
-    this.selectedMap = this.projectService.getMapData();
+  async ngOnInit() {
+    this.selectedProject = this.projectService.getSelectedProject();
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.selectedProject._id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+    if (!response.ok) {
+      console.log('Err with status code of ', response.status);
+    }
+    let data = await response.json();
+    const { General } = data.project.fleetParams;
+    if (!General) return;
+    // this.selectedDb.name = General.selectedDb; // here...
+    this.selectedDb = this.dtype.find(
+      (category) => category.name === General.selectedDb
+    );
+    this.selectedIp = this.iptype.find(
+      (category) => category.name === General.selectedIp
+    );
+    this.selectedRoboManagerType = this.robotManagerType.find(
+      (category) => category.name === General.selectedRoboManagerType
+    );
+    this.selectedTaskManagerType = this.taskManagerType.find(
+      (category) => category.name === General.selectedTaskManagerType
+    );
+    this.formData = {
+      selectedDb: General.selectedDb,
+      selectedIp: General.selectedIp,
+      selectedRoboManagerType: General.selectedRoboManagerType,
+      selectedTaskManagerType: General.selectedTaskManagerType,
+      fleetServerMode: General.fleetServerMode,
+      serverIP: General.serverIP,
+      serverPort: General.serverPort,
+      databaseIp: General.databaseIp,
+      databaseName: General.databaseName,
+    };
   }
 
   async saveParams() {
-    if (!this.selectedMap) {
+    if (!this.selectedProject) {
       console.log('no map selected');
       return;
     }
@@ -77,21 +117,32 @@ export class GeneralComponent {
     this.formData.selectedRoboManagerType = this.selectedRoboManagerType.name;
     this.formData.selectedTaskManagerType = this.selectedTaskManagerType.name;
     console.log(this.formData); // handle the form here..
-    let response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/general`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mapId: this.selectedMap.id,
-          generalParams: this.formData,
-        }),
-      }
-    );
 
-    let data = await response.json();
-    console.log(data);
-    if (data.isSet) console.log('configured!');
+    try {
+      let response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/general`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectId: this.selectedProject._id,
+            generalParams: this.formData,
+          }),
+        }
+      );
+      if (!response.ok)
+        throw new Error(`err while saving db, ${response.status}`);
+
+      let data = await response.json();
+      // console.log(data);
+      if (data.isSet) {
+        alert('Fleet configured!');
+        return;
+      }
+      alert('Fleet not configured!');
+    } catch (error) {
+      console.log('Err occured :', error);
+    }
   }
 }
