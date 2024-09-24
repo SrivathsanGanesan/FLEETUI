@@ -13,7 +13,7 @@ interface DB {
   styleUrl: './battery.component.css',
 })
 export class BatteryComponent {
-  selectedMap: any | null = null;
+  selectedProj: any | null = null;
   batteryForm: any = {
     minBattery: 0,
     maxBattery: 0,
@@ -31,28 +31,59 @@ export class BatteryComponent {
     }); */
   }
 
-  ngOnInit() {
-    this.selectedMap = this.projectService.getMapData();
+  async ngOnInit() {
+    this.selectedProj = this.projectService.getSelectedProject();
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.selectedProj._id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+    if (!response.ok) {
+      console.log('Err with status code of ', response.status);
+    }
+    let data = await response.json();
+    const { Battery } = data.project.fleetParams;
+    if (!Battery) return;
+    this.batteryForm = {
+      minBattery: Battery.minBattery,
+      maxBattery: Battery.maxBattery,
+      warningBattery: Battery.warningBattery,
+      warningVoltage: Battery.warningVoltage,
+      minimumVoltage: Battery.minimumVoltage,
+    };
   }
 
   async saveBatteryParams() {
     // console.log(this.batteryForm); // handle here..
-    let response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/battery`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mapId: this.selectedMap.id,
-          batteryParams: this.batteryForm,
-        }),
-      }
-    );
+    try {
+      let response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/battery`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectId: this.selectedProj._id,
+            batteryParams: this.batteryForm,
+          }),
+        }
+      );
 
-    let data = await response.json();
-    console.log(data);
-    if (data.isSet) console.log('configured!');
+      if (!response.ok)
+        throw new Error(`err while saving db, ${response.status}`);
+
+      let data = await response.json();
+      // console.log(data);
+      if (data.isSet) {
+        alert('Fleet configured!');
+        return;
+      }
+      alert('Fleet not configured!');
+    } catch (error) {
+      console.log('Err occured :', error);
+    }
   }
 
   onBatteryChange() {

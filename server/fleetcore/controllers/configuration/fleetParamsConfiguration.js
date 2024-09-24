@@ -2,15 +2,26 @@ const { Map, Robo } = require("../../../application/models/mapSchema");
 const { projectModel, siteModel } = require("../../models/projectSchema");
 
 const setGeneralParam = async (req, res) => {
-  const { mapId } = req.body;
+  const { projectId, generalParams } = req.body;
   try {
-    const isMapExist = await Map.findOne({ _id: mapId });
-    if (!isMapExist)
-      return res.status(422).json({ map: null, msg: "map not found" });
+    const isProjExist = await projectModel.findOne({ _id: projectId });
+    if (!isProjExist)
+      return res.status(422).json({ project: null, msg: "project not found" });
+    let updatedProj = await projectModel.findOneAndUpdate(
+      { _id: projectId },
+      {
+        $set: { "fleetParams.General": generalParams },
+      },
+      { new: true }
+    );
+    if (!updatedProj)
+      return res
+        .status(500)
+        .json({ isSet: false, project: null, msg: "project not updated..!" });
     return res.status(200).json({
       isSet: true,
       msg: "data sent",
-      map: true,
+      project: updatedProj,
     });
   } catch (error) {
     console.error("Error in taskLogs:", error);
@@ -23,11 +34,22 @@ const setGeneralParam = async (req, res) => {
 };
 
 const setPlannerParam = async (req, res) => {
-  const { mapId } = req.body;
+  const { projectId, plannerParams } = req.body;
   try {
-    const isMapExist = await Map.findOne({ _id: mapId });
-    if (!isMapExist)
-      return res.status(422).json({ map: null, msg: "map not found" });
+    const isProjExist = await projectModel.findOne({ _id: projectId });
+    if (!isProjExist)
+      return res.status(422).json({ project: null, msg: "project not found" });
+    let updatedProj = await projectModel.findOneAndUpdate(
+      { _id: projectId },
+      {
+        $set: { "fleetParams.Planner": plannerParams },
+      },
+      { new: true }
+    );
+    if (!updatedProj)
+      return res
+        .status(500)
+        .json({ isSet: false, project: null, msg: "project not updated..!" });
     return res.status(200).json({
       isSet: true,
       msg: "data sent",
@@ -44,11 +66,22 @@ const setPlannerParam = async (req, res) => {
 };
 
 const setTaskParam = async (req, res) => {
-  const { mapId } = req.body;
+  const { projectId, taskParams } = req.body;
   try {
-    const isMapExist = await Map.findOne({ _id: mapId });
-    if (!isMapExist)
-      return res.status(422).json({ map: null, msg: "map not found" });
+    const isProjExist = await projectModel.findOne({ _id: projectId });
+    if (!isProjExist)
+      return res.status(422).json({ project: null, msg: "project not found" });
+    let updatedProj = await projectModel.findOneAndUpdate(
+      { _id: projectId },
+      {
+        $set: { "fleetParams.Task": taskParams },
+      },
+      { new: true }
+    );
+    if (!updatedProj)
+      return res
+        .status(500)
+        .json({ isSet: false, project: null, msg: "project not updated..!" });
     return res.status(200).json({
       isSet: true,
       msg: "data sent",
@@ -65,11 +98,22 @@ const setTaskParam = async (req, res) => {
 };
 
 const setBatteryParam = async (req, res) => {
-  const { mapId } = req.body;
+  const { projectId, batteryParams } = req.body;
   try {
-    const isMapExist = await Map.findOne({ _id: mapId });
-    if (!isMapExist)
-      return res.status(422).json({ map: null, msg: "map not found" });
+    const isProjExist = await projectModel.findOne({ _id: projectId });
+    if (!isProjExist)
+      return res.status(422).json({ project: null, msg: "project not found" });
+    let updatedProj = await projectModel.findOneAndUpdate(
+      { _id: projectId },
+      {
+        $set: { "fleetParams.Battery": batteryParams },
+      },
+      { new: true }
+    );
+    if (!updatedProj)
+      return res
+        .status(500)
+        .json({ isSet: false, project: null, msg: "project not updated..!" });
     return res.status(200).json({
       isSet: true,
       msg: "data sent",
@@ -86,11 +130,22 @@ const setBatteryParam = async (req, res) => {
 };
 
 const setCommunicationParam = async (req, res) => {
-  const { mapId } = req.body;
+  const { projectId, communicationParams } = req.body;
   try {
-    const isMapExist = await Map.findOne({ _id: mapId });
-    if (!isMapExist)
-      return res.status(422).json({ map: null, msg: "map not found" });
+    const isProjExist = await projectModel.findOne({ _id: projectId });
+    if (!isProjExist)
+      return res.status(422).json({ project: null, msg: "project not found" });
+    let updatedProj = await projectModel.findOneAndUpdate(
+      { _id: projectId },
+      {
+        $set: { "fleetParams.Communication": communicationParams },
+      },
+      { new: true }
+    );
+    if (!updatedProj)
+      return res
+        .status(500)
+        .json({ isSet: false, project: null, msg: "project not updated..!" });
     return res.status(200).json({
       isSet: true,
       msg: "data sent",
