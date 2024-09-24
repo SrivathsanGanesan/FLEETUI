@@ -1227,39 +1227,39 @@ export class EnvmapComponent implements AfterViewInit {
     }
     console.clear();
   }
-@HostListener('click', ['$event'])
-onImagePopupCanvasClick(event: MouseEvent): void {
-  if (!this.showImagePopup || !this.imagePopupCanvas) return;
+  @HostListener('click', ['$event'])
+  onImagePopupCanvasClick(event: MouseEvent): void {
+    if (!this.showImagePopup || !this.imagePopupCanvas) return;
 
-  const targetElement = event.target as HTMLElement;
+    const targetElement = event.target as HTMLElement;
 
-  // Ignore clicks on the "close" button
-  if (targetElement.classList.contains('close-btn')) {
-    return;
-  }
+    // Ignore clicks on the "close" button
+    if (targetElement.classList.contains('close-btn')) {
+      return;
+    }
 
-  // Ignore clicks on the "clear" button
-  if (targetElement.classList.contains('clear-btn')) {
-    return;
-  }
+    // Ignore clicks on the "clear" button
+    if (targetElement.classList.contains('clear-btn')) {
+      return;
+    }
 
-  const canvas = this.imagePopupCanvas.nativeElement;
-  const rect = canvas.getBoundingClientRect();
-  const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-  const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+    const canvas = this.imagePopupCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
 
-  if (this.points.length < 2) {
-    this.points.push({ x, y });
-    this.plotPointOnImagePopupCanvas(x, y);
+    if (this.points.length < 2) {
+      this.points.push({ x, y });
+      this.plotPointOnImagePopupCanvas(x, y);
 
-    if (this.points.length === 2) {
-      console.log('Two points plotted:', this.points);
-      const distance = this.calculateDistance(this.points[0], this.points[1]);
-      console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
-      this.showDistanceDialog = true; // Show the distance input dialog
+      if (this.points.length === 2) {
+        console.log('Two points plotted:', this.points);
+        const distance = this.calculateDistance(this.points[0], this.points[1]);
+        console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
+        this.showDistanceDialog = true; // Show the distance input dialog
+      }
     }
   }
-}
   private plotPointOnImagePopupCanvas(x: number, y: number): void {
     const canvas = this.imagePopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -1477,6 +1477,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     if (clickedEdge) {
       this.currentEdge = clickedEdge; // Set the current edge details
       this.showPopup = true; // Show the popup
+      return
     }
   }
   onDeleteZone(): void {
@@ -1811,6 +1812,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       this.onMouseUp.bind(this)
     );
   }
+  
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
     this.isPlottingEnabled = true;
@@ -1948,7 +1950,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
             this.nodes = this.nodes.filter(node =>
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
-            this.closeIntermediateNodesDialog()
+            this.closeIntermediateNodesDialog();
             this.redrawCanvas();
             return;
           }
@@ -1995,8 +1997,46 @@ onImagePopupCanvasClick(event: MouseEvent): void {
           this.nodeCounter++; // Increment the node counter
         }
       }
+      this.plotMulNodesEdges()// call here..
       this.closeIntermediateNodesDialog();
     }
+  }
+  
+  plotMulNodesEdges(){
+    if (this.currMulNode.length >= 2) {
+      let secondValue = this.currMulNode[1];
+      this.currMulNode.splice(1, 1);
+      this.currMulNode.push(secondValue);
+    }
+    let arr = this.currMulNode;
+    for(let i = 0; i < arr.length-1; i++){
+      let edge : Edge;
+
+      // console.log(this.currMulNode);
+      edge = {
+        edgeId: this.edgeCounter.toString(),
+        sequenceId: this.edgeCounter,
+        edgeDescription: '',
+        released: true,
+        startNodeId: arr[i].nodeId,
+        endNodeId: arr[i+1].nodeId,
+        maxSpeed: 0,
+        maxHeight: 0,
+        minHeight: 0,
+        orientation: 0,
+        orientationType: '',
+        direction: this.direction == 'uni' ? 'UN_DIRECTIONAL' : 'BI_DIRECTIONAL',
+        rotationAllowed: true,
+        maxRotationSpeed: 0,
+        length: 0,
+        action: [],
+      };
+      this.edges.push(edge);
+      this.edgeCounter++;
+
+      // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
+    }
+    this.redrawCanvas();
   }
   // Define the available actions for the dropdown
   actionOptions = [...this.allActions];
@@ -2399,7 +2439,6 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       this.onMouseUp.bind(this)
     );
   }
-
   startZonePlotting(): void {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;
@@ -2622,11 +2661,9 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     this.zoneType = null;
     this.isPopupVisible = true;
   }
-
   closeRobotPopup(): void {
     this.isRobotPopupVisible = false;
   }
-
   private originalZonePointPosition: { x: number; y: number } | null = null;
   // Helper function to check if a node overlaps with another node or asset
   drawSelectionBox(start: { x: number, y: number }, end: { x: number, y: number }): void {
@@ -3169,7 +3206,6 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     const dy = mouseY - asset.y;
     return dx * dx + dy * dy <= radius * radius;
   }
-
   private updateAssetPosition(id: number, x: number, y: number): void {
     // Implement logic to update asset position in your data structure
     // Example: Find and update asset in this.assets
@@ -3295,40 +3331,50 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   isPointOnEdge(edge: Edge, x: number, y: number): boolean {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-
+  
     if (!ctx) return false;
-
+  
     const startNode = this.nodes.find((node) => node.nodeId === edge.startNodeId);
     const endNode = this.nodes.find((node) => node.nodeId === edge.endNodeId);
-
+  
     if (!startNode || !endNode) return false;
-
+  
     const startPos = { x: startNode.nodePosition.x, y: canvas.height - startNode.nodePosition.y };
     const endPos = { x: endNode.nodePosition.x, y: canvas.height - endNode.nodePosition.y };
-
-    // Calculate distance from point (x, y) to the line segment
+  
+    // Calculate the length of the line
     const lineLength = Math.sqrt(
       Math.pow(endPos.x - startPos.x, 2) + Math.pow(endPos.y - startPos.y, 2)
     );
+  
+    // Calculate the projection of the point onto the line
     const projection =
       ((x - startPos.x) * (endPos.x - startPos.x) +
         (y - startPos.y) * (endPos.y - startPos.y)) /
       Math.pow(lineLength, 2);
-
+  
+    // Constrain projection to be between 0 and 1 (within the line segment)
+    if (projection < 0 || projection > 1) {
+      return false; // Point is outside the segment
+    }
+  
+    // Calculate the closest point on the line segment
     const closestPoint = {
       x: startPos.x + projection * (endPos.x - startPos.x),
       y: startPos.y + projection * (endPos.y - startPos.y),
     };
-
+  
+    // Calculate the distance from the point (x, y) to the closest point on the line
     const distance = Math.sqrt(
       Math.pow(x - closestPoint.x, 2) + Math.pow(y - closestPoint.y, 2)
     );
-
+  
     // Define a threshold distance for "close enough" to the line segment
     const threshold = 10; // Adjust this threshold as needed
-
+  
     return distance < threshold;
   }
+  
   submitEdgeDetails(): void {
     // Handle form submission, e.g., save edge details
     this.showPopup = false;

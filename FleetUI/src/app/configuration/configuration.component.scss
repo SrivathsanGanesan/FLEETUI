@@ -1,7 +1,6 @@
 @import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
-
 /* Main Content Styling */
 .mainContent {
   position: absolute;
@@ -23,7 +22,7 @@
   font-size: 36px;
   font-weight: bold;
   color: #DA2127;
-  margin-top: 20px;
+  margin-bottom: 0;
 }
 .popup-overlay {
   position: fixed;
@@ -61,7 +60,7 @@
 }
 
 
-.flex{
+.flex1{
   display: flex;
   text-wrap: nowrap;
 }
@@ -199,7 +198,6 @@
 .subheader-container {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .subheader-text {
@@ -588,7 +586,7 @@ tr:nth-child(even) {
   margin-left: 10px;
 }
 .Enddate-label{
-  margin-left: 60px;
+  margin-left: 15px;
 }
 .tab-menu {
   list-style: none;

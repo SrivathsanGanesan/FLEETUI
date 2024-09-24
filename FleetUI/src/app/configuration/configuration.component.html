@@ -1,10 +1,14 @@
 <div class="sidenavbar">
 
+<div id="container">
+
+  <!-- Sidebar -->
   <app-sidenavbar></app-sidenavbar>
-  <div>
+  <app-loader></app-loader>
+
 
     <div class="mainContent">
-      <app-loader></app-loader>
+
       <div class="header-section">
         <h1 class="header-title">{{ activeHeader }}</h1>
         <div class="subheader-container">
@@ -253,7 +257,7 @@
               <input
                 pInputText
                 id="ipRangeFrom"
-                type="text"
+                type="number"
                 placeholder="255.255.0.0"
                 [(ngModel)]="startIP"
               />
@@ -426,7 +430,6 @@
         </div>
       </div>
     </div>
-  </div>
 </div>
 
 <!-- Popup form -->
