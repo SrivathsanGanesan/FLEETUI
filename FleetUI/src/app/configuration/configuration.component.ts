@@ -860,8 +860,7 @@ export class ConfigurationComponent implements AfterViewInit {
         const date = new Date(item.date);
         const normalizedDate = this.normalizeDate(date); // Normalize the item's date
         const withinDateRange =
-          (!this.startDate ||
-            normalizedDate >= this.normalizeDate(this.startDate)) &&
+          (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
           (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate)); // Normalize the end date
 
         return (
@@ -871,14 +870,27 @@ export class ConfigurationComponent implements AfterViewInit {
           withinDateRange
         );
       });
+
+      // Reset paginator to the first page and update paginated data
+      if (this.paginator) {
+        this.paginator.pageIndex = 0;  // Reset to the first page after filtering
+      }
+      this.setPaginatedData(); // Trigger pagination logic after filtering
     } else if (this.currentTable === 'robot') {
       this.filteredRobotData = this.robotData.filter(
         (item) =>
           item.roboName.toLowerCase().includes(term) ||
           item.ipAdd.toLowerCase().includes(term)
       );
+
+      // Reset paginator to the first page and update paginated data
+      if (this.paginator) {
+        this.paginator.pageIndex = 0;
+      }
+      this.setPaginatedData(); // Trigger pagination logic after filtering
     }
   }
+
   resetFilters() {
     this.searchTerm = ''; // Reset search term
     this.startDate = null; // Reset start date
