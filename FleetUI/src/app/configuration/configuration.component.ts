@@ -640,8 +640,8 @@ export class ConfigurationComponent implements AfterViewInit {
 
         if (poll.Status === 'online')
           this.ipScanData = [...this.ipScanData, poll];
-        this.ipScanData = this.filteredipData;
-          this.setPaginatedData();
+        // this.ipScanData = this.filteredipData;
+          // this.setPaginatedData();
         this.cdRef.detectChanges();
       } catch (error) {
         console.error('Error parsing SSE data:', error);
