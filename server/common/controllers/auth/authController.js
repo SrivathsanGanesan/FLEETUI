@@ -98,36 +98,39 @@ const logout = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { name, role, password, createdBy } = req.body.user;
+  const { projectId, projectName, name, role, password, createdBy } =
+    req.body.user;
   try {
     const alterPass = name + password;
     const hashhedPassword = await bcrypt.hash(alterPass, 2);
     const doc = await authRegisterModel.findOne({ name: name, role: role });
-    if (!doc) {
-      const newData = new authRegisterModel({
-        name: name,
-        password: hashhedPassword,
-        role: role,
-        priority: role === "Administrator" ? 1 : role === "Maintainer" ? 2 : 3,
-        createdBy: createdBy,
-      });
+    if (doc)
+      return res
+        .status(409) // 409 - already exists!
+        .json({ isExist: true, msg: "person already exists" });
 
-      const updatedDoc = await newData.save();
-      return res.status(200).json({
-        operation: "succeed",
-        updatedDoc: {
-          name: updatedDoc.name,
-          role: updatedDoc.role,
-          id: updatedDoc._id,
-          password: password,
-          projects: updatedDoc.projects,
-          createdBy: updatedDoc.createdBy,
-        },
-      });
-    }
-    return res
-      .status(409) // 409 - already exists!
-      .json({ isExist: true, msg: "person already exists" });
+    const newData = new authRegisterModel({
+      name: name,
+      password: hashhedPassword,
+      role: role,
+      priority: role === "Administrator" ? 1 : role === "Maintainer" ? 2 : 3,
+      projects: [{ projectId: projectId, projectName: projectName }],
+      createdBy: createdBy,
+    });
+
+    const updatedDoc = await newData.save();
+
+    return res.status(200).json({
+      operation: "succeed",
+      updatedDoc: {
+        name: updatedDoc.name,
+        role: updatedDoc.role,
+        id: updatedDoc._id,
+        password: password,
+        projects: updatedDoc.projects,
+        createdBy: updatedDoc.createdBy,
+      },
+    });
   } catch (err) {
     console.log("err occ : ", err);
     return res
