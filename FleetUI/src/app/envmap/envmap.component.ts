@@ -1663,7 +1663,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     const ctx = canvas.getContext('2d');
 
     if (image && ctx) {
-      const imageSize = 30;
+      const imageSize = 20;
 
       // Highlight the selected robot with a border or background
 

@@ -345,20 +345,23 @@ export class ConfigurationComponent implements AfterViewInit {
       );
       this.filterData();
     }
-    // if (this.paginator && this.currentTable === 'robot') {
+    console.log(this.paginatedData1);
+    
+    if (this.paginator && this.currentTable === 'robot') {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      this.paginatedData1 = this.filteredRobotData.slice(
+        startIndex,
+        startIndex + this.paginator.pageSize
+      );
+      this.filterData();
+    }
+    // if (this.paginator && this.currentTable === 'ipScanner') {
     //   const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-    //   this.paginatedData = this.filteredRobotData.slice(
+    //   this.paginatedData = this.filteredipData.slice(
     //     startIndex,
     //     startIndex + this.paginator.pageSize
     //   );
     // }
-    if (this.paginator && this.currentTable === 'ipScanner') {
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.filteredipData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
-    }
   }
 
   onPageChange(event: PageEvent) {
@@ -371,6 +374,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
       if (!inputValue) {
         this.filteredEnvData = this.EnvData;
+        this.filteredRobotData = this.robotData;
       } else {
         this.filteredEnvData = this.EnvData.filter((item) =>
           Object.values(item).some((val) =>
@@ -378,7 +382,7 @@ export class ConfigurationComponent implements AfterViewInit {
           )
         );
       }
-
+      
       // Reset the paginator after filtering
       if (this.paginator) {
         this.paginator.firstPage();
