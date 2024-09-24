@@ -1,10 +1,13 @@
-<div class="">
-<app-sidenavbar></app-sidenavbar>
 
-  <div>
+<div id="container">
+  
+  <!-- Sidebar -->
+  <app-sidenavbar></app-sidenavbar>
+  <app-loader></app-loader>
+  
 
     <div class="mainContent">
-      <app-loader></app-loader>
+
       <div class="header-section">
         <h1 class="header-title">{{ activeHeader }}</h1>
         <div class="subheader-container">
@@ -425,7 +428,6 @@
         </div>
       </div>
     </div>
-  </div>
 </div>
 
 <!-- Popup form -->
