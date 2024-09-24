@@ -171,9 +171,10 @@
                 </tr>
               </tbody>
             </table>
+            <div  >
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'Environment' && !imageUploaded"
+              *ngIf="EnvData.length > 5"
             >
               <mat-paginator
                 [length]="filteredEnvData.length"
@@ -184,6 +185,7 @@
               >
               </mat-paginator>
             </div>
+          </div>
 
             <table *ngIf="currentTable === 'robot' && !imageUploaded">
               <thead>
@@ -225,8 +227,8 @@
             >
             <mat-paginator
             [length]="filteredRobotData.length"
-            [pageSize]="5"  
-            [pageSizeOptions]="[5, 10]" 
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10]"
             (page)="onPageChange($event)"
             showFirstLastButtons
           >
