@@ -669,11 +669,17 @@
           type="text"
           id="description"
           name="description"
-
           placeholder="Enter Docking Description"
           [(ngModel)]="description"
+          maxlength="255"
+          (ngModelChange)="checkDescriptionLength()"
           required
         />
+
+        <!-- Display warning if description exceeds 255 characters -->
+        <div *ngIf="descriptionWarning" class="warning-message">
+          Description cannot exceed 255 characters.
+        </div>
       </div>
       <div
         *ngIf="validationMessage"

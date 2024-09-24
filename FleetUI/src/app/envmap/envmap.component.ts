@@ -105,6 +105,7 @@ export class EnvmapComponent implements AfterViewInit {
   @Output() refreshTable = new EventEmitter<void>();  // Add this
   @Output() closePopup = new EventEmitter<void>();
   @Output() newEnvEvent = new EventEmitter<any>();
+  @Output() save = new EventEmitter<void>();//emit the save function
   @ViewChild('imageCanvas', { static: false })
   imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas', { static: false })
@@ -116,7 +117,7 @@ export class EnvmapComponent implements AfterViewInit {
   @ViewChild('yInput') yInput!: ElementRef<HTMLInputElement>;
   @ViewChild('nodeDetailsPopup', { static: false })
   nodeDetailsPopup!: ElementRef<HTMLDivElement>;
-  
+
 
   projData: any;
   form: FormData | null = null;
@@ -137,7 +138,7 @@ export class EnvmapComponent implements AfterViewInit {
   robos: Robo[] = []; // Org_robos
   selectedAction: string| null = null;
   validationError: string | null = null;
-  
+
   Nodes: {
     id: number;
     x: number;
@@ -292,7 +293,7 @@ export class EnvmapComponent implements AfterViewInit {
   private selectionEnd: { x: number; y: number } | null = null;
   private nodesToDelete: Node[] = [];
   isOpen: boolean = false;
-
+  descriptionWarning: boolean = false;
   currMulNode : Node[] = [];
 
   setDirection(direction: 'uni' | 'bi'): void {
@@ -365,6 +366,14 @@ export class EnvmapComponent implements AfterViewInit {
           ? parseInt(this.zones[this.zones.length - 1].id) + 1
           : this.zoneCounter;
       this.open();
+    }
+  }
+  checkDescriptionLength() {
+    // Check if the description exceeds 255 characters
+    if (this.description && this.description.length > 255) {
+      this.descriptionWarning = true;
+    } else {
+      this.descriptionWarning = false;
     }
   }
   ngAfterViewInit(): void {
@@ -715,7 +724,7 @@ export class EnvmapComponent implements AfterViewInit {
     undockingDistance: 0,
   };
   onActionChange(): void {
-    
+
     this.resetParameters();
     this.showActionForm();
     this.validateForm();
@@ -785,7 +794,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   addAction(): void {
     if (this.selectedAction && this.selectedNode) {
-      
+
       let action: any;
 
       if (this.selectedAction === 'Move') {
@@ -802,8 +811,8 @@ export class EnvmapComponent implements AfterViewInit {
         this.actionCounter++;
       } else if (this.selectedAction === 'Dock') {
         if(!this.dockParameters.maxLinearVelocity && !this.dockParameters.maxAngularVelocity && !this.dockParameters.maxToleranceAtGoalX && !this.dockParameters.maxToleranceAtGoalY && !this.dockParameters.goalOffsetX && !this.dockParameters.goalOffsetY && !this.dockParameters.goalOffsetOrientation){
-          this.validationError = 'Dock parameters are required else set to 0 in default.'; 
-          return          
+          this.validationError = 'Dock parameters are required else set to 0 in default.';
+          return
         }
         action = {
           actionType: this.selectedAction,
@@ -827,7 +836,7 @@ export class EnvmapComponent implements AfterViewInit {
       }
 
 
-  
+
       // Remove selected action from the dropdown options
       this.actionOptions = this.actionOptions.filter(option => option.value !== this.selectedAction);
       // this.actions.push(action);
@@ -859,17 +868,17 @@ export class EnvmapComponent implements AfterViewInit {
   removeAction(index: number): void {
     const removedAction = this.actions[index];
     this.actions.splice(index, 1); // Remove action from the list
-  
+
     // Add the removed action back to the dropdown options
     const actionToAddBack = this.allActions.find(option => option.value === removedAction.actionType);
     if (actionToAddBack) {
       this.actionOptions.push(actionToAddBack);
     }
-  
+
     // Sort the dropdown options again to maintain the original order
     this.actionOptions.sort((a, b) => this.allActions.findIndex(opt => opt.value === a.value) - this.allActions.findIndex(opt => opt.value === b.value));
   }
-  
+
   isOptionDisabled(option: string): boolean {
     return this.actions.some((action) => action.actionType === option);
   }
@@ -929,7 +938,12 @@ export class EnvmapComponent implements AfterViewInit {
         ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
       };
     } else {
-      alert('No image uploaded.');
+      // alert('No image uploaded.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Warning',
+        detail: 'No image uploaded.!',
+      });
     }
   }
   private calculateDistance(
@@ -1189,6 +1203,7 @@ export class EnvmapComponent implements AfterViewInit {
     link.click();
     this.showImagePopup = false;
     this.isDistanceConfirmed = false; // Reset the state for future use
+    this.save.emit;
   }
   clearCanvas(): void {
     const canvas = this.imagePopupCanvas.nativeElement;
@@ -1303,7 +1318,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     } else {
       console.error('Resolution input element not found via ViewChild.');
     }
-    
+
 
     if (this.mapName && this.siteName && this.imageSrc ) {
       this.fileName = null;
@@ -1333,7 +1348,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       if (this.imageBase64) {
         this.mapService.setOnCreateMapImg(this.imageBase64);  // Save the Base64 image in the cookie
       }
-    } 
+    }
     else{
       this.validationError="Please enter Map name and Site name"
     }
@@ -1379,7 +1394,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       (this.overlayCanvas.nativeElement.height / rect.height);
 
   for (const zone of this.zones) {
-    
+
     const firstPoint = zone.pos[0]; // The first point of the zone
     if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
       this.zoneType = zone.type; // Prepopulate the selected zone type
@@ -1391,7 +1406,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   }
     for (const robo of this.robos) {
 
-      if (this.isRobotClicked(robo, x, y)) {        
+      if (this.isRobotClicked(robo, x, y)) {
         this.robotToDelete = robo;  // Store the robot that was right-clicked
         this.isConfirmationVisible = true;
         // const confirmDelete = confirm('Do you want to delete this robot?');
@@ -1427,7 +1442,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
             continue;
           }
         }
-        
+
         // this.cdRef.detectChanges();
         // Remove selected action from the dropdown options
         let actionOpt = this.selectedNode.actions.map(action => action.actionType);
@@ -1480,7 +1495,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   savePopupData(): void {
     this.validationMessage = null;
     const undockingDistanceNumber = Number(this.undockingDistance);
-  
+
     // Validate undockingDistance
     if (
       !undockingDistanceNumber ||
@@ -1490,19 +1505,19 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       this.validationMessage = 'Undocking Distance must be between 1 and 1000.';
       return;
     }
-  
+
     // Validate description
     if (!this.description || this.description.trim() === '') {
       this.validationMessage = 'Please enter a description.';
       return;
     }
-  
+
     // Check for description length
     if (this.description.length > 255) {
       this.validationMessage = 'Description cannot exceed 255 characters.';
       return;
     }
-  
+
     if (this.selectedAsset) {
       this.assets = this.assets.map((asset) => {
         if (this.selectedAsset?.id === asset.id) {
@@ -1513,10 +1528,10 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       });
       this.redrawCanvas();
     }
-  
+
     this.closePopup1();
   }
-  
+
   closePopup1(): void {
     this.DockPopup = false;
     this.undockingDistance = '';
@@ -1643,7 +1658,12 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       const y = 100;
 
       if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
-        alert('Robot already in map!');
+        // alert('Robot already in map!');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Robot already in map!'
+        });
         return;
       }
 
@@ -1724,7 +1744,12 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     const ctx = canvas.getContext('2d')!;
     const transformedY = canvas.height - y; // Flip the Y-axis
     if (this.isPositionOccupied(x, y, 'node')) {
-      alert('This position is already occupied by a node or asset. Please choose a different location.');
+      // alert('This position is already occupied by a node or asset. Please choose a different location.');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Please choose different Location',
+        detail: 'This position is already occupies by a node or asset.'
+      });
       return;
     }
 
@@ -1802,7 +1827,12 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     const transformedY = canvas.height - y; // Flip the Y-axis
 
     if (this.isPositionOccupied(x, y, 'node')) {
-        alert('This position is already occupied by a node or asset. Please choose a different location.');
+        // alert('This position is already occupied by a node or asset. Please choose a different location.');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Please choose different Location',
+          detail: 'This position is already occupies by a node or asset.'
+        });
         return;
     }
 
@@ -1909,8 +1939,13 @@ onImagePopupCanvasClick(event: MouseEvent): void {
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
 
           if(this.isPositionOccupied(x, transformedY, 'node')){
-            alert('Nodes cannot plotted as there are nodes or assets are between them');
-            this.nodes = this.nodes.filter(node => 
+            // alert('Nodes cannot plotted as there are nodes or assets are between them');
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Warning',
+              detail: 'Nodes Cannot plotted as there are nodes or assets are between them'
+            });
+            this.nodes = this.nodes.filter(node =>
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
             this.closeIntermediateNodesDialog()
@@ -1918,8 +1953,13 @@ onImagePopupCanvasClick(event: MouseEvent): void {
             return;
           }
           if(this.isOverLappingWithOtherNodesInPlotting(x, y)){
-            alert('Nodes cannot plotted as there are nodes or assets are between them');
-            this.nodes = this.nodes.filter(node => 
+            // alert('Nodes cannot plotted as there are nodes or assets are between them');
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Warning',
+              detail: 'Nodes cannot plotted as there are nodes or assets are between them.'
+            });
+            this.nodes = this.nodes.filter(node =>
               !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
             );
             this.closeIntermediateNodesDialog()
@@ -2504,11 +2544,16 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     return [minX, minY, maxX, maxY];
   }
   onZoneTypeSelected(zoneType: ZoneType): void {
-    
+
     this.zoneType = zoneType;
 
     if (this.isZoneOverlapping(this.plottedPoints)) {
-      alert('Zone overlaps with an existing zone!');
+      // alert('Zone overlaps with an existing zone!');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Zone overlaps with an existing zone!.'
+      });
       return; // Do not allow drawing
     }
 
@@ -2534,7 +2579,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     const imageSize = 30;
     const roboX = robo.pos.x;
     const roboY = robo.pos.y;
-  
+
     // Check if the click is within the robot's bounds (circle radius check)
     const distance = Math.sqrt((x - roboX) ** 2 + (y - roboY) ** 2);
     return distance <= imageSize * 1.5; // Adjust this based on the robot's size
@@ -2545,7 +2590,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
     this.isZonePlottingEnabled = false;
     this.isPopupVisible = false;
     this.firstPlottedPoint = null;
-    
+
 
     // Redraw the canvas to remove the temporary zone points
     this.redrawCanvas();
@@ -2559,20 +2604,20 @@ onImagePopupCanvasClick(event: MouseEvent): void {
   //     console.log("No robots to remove.");
   //     return; // Exit the function if no robots are present
   //   }
-  
+
   //   // If robots are present, show the confirmation
   //   this.isConfirmationVisible = true;
-  
+
   //   // If confirmed, proceed with removing the selected robots
   //   // Uncomment and modify based on your confirmation logic
   //   // this.robos = this.robos.filter(
   //   //   (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
   //   // );
-  
+
   //   // Redraw the canvas after removing robots
   //   // this.redrawCanvas();
   // }
-  
+
   showZoneTypePopup(): void {
     this.zoneType = null;
     this.isPopupVisible = true;
@@ -2676,7 +2721,12 @@ onImagePopupCanvasClick(event: MouseEvent): void {
             Math.abs(y - this.firstPlottedPoint.y) <= radius
           ) {
             if (this.plottedPoints.length < 3) {
-              alert('should at least minimum 3 zone points to plot!');
+              // alert('should at least minimum 3 zone points to plot!');
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Warning',
+                detail: 'Should atleast minimum 3 zone points to plot!.'
+              });
               return;
             }
             this.isZonePlottingEnabled = false;
@@ -2760,13 +2810,13 @@ onImagePopupCanvasClick(event: MouseEvent): void {
           break;
         }
       }
-  
+
       if (!robotClicked) {
         // Deselect the robot if clicked elsewhere on the canvas
         this.selectedRobo = null;
         // this.redrawCanvas()x; // Redraw the canvas after deselecting the robot
       }
-  
+
       // Handle other types of clicks like zone plotting, asset dragging, etc.
 
       let nodeClicked = false;
@@ -2804,7 +2854,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
 
     if (this.isDeleteModeEnabled && this.selectionStart) {
       this.selectionEnd = { x, y };
-      
+
       this.redrawCanvas();
       this.drawSelectionBox(this.selectionStart, this.selectionEnd);
       // Redraw canvas with selection box
@@ -2822,6 +2872,11 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       if (this.isPointTooClose(x, y, this.plottedPoints)) {
         // Optionally show an alert or message
         console.warn('The point is too close to an existing zone point');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'The point is too close to an existing zone point.'
+        });
         return;
       }
 
@@ -2900,7 +2955,7 @@ onImagePopupCanvasClick(event: MouseEvent): void {
         const nodeX = node.nodePosition.x;
         const nodeY = node.nodePosition.y;
         const radius = 10;  // Assuming nodes may have a radius
-        
+
         return (nodeX + radius >= minX && nodeX - radius <= maxX) &&
                (nodeY + radius >= minY && nodeY - radius <= maxY);
       });
@@ -2929,7 +2984,12 @@ onImagePopupCanvasClick(event: MouseEvent): void {
         this.selectedZonePoint.y = this.originalZonePointPosition?.y
           ? this.originalZonePointPosition?.y
           : y;
-        alert('Zone point overlaps with another zone!');
+        // alert('Zone point overlaps with another zone!');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Warning',
+          detail: 'Zone point overlaps with another zone!',life:4000
+        });
         // this.selectedZonePoint = null;
         this.redrawCanvas();
         return;
@@ -2999,13 +3059,23 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       if(this.isPositionOccupied(x,transformedY,'asset')){
         this.selectedAsset.x = this.originalAssetPosition!.x;
         this.selectedAsset.y = this.originalAssetPosition!.y;
-        alert('Overlapping detected! Asset has been reset to its original position.');
+        // alert('Overlapping detected! Asset has been reset to its original position.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Warning',
+          detail: 'Overlapping detected! Asset has been reset to its original position.'
+        });
         this.redrawCanvas();
       }
       if(this.isOverlappingwithOtherAssets(this.selectedAsset)){
         this.selectedAsset.x = this.originalAssetPosition!.x;
         this.selectedAsset.y = this.originalAssetPosition!.y;
-        alert('Overlapping detected! Asset has been reset to its original position.');
+        // alert('Overlapping detected! Asset has been reset to its original position.');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Overlapping detected! Asset has been reset to its original position.'
+        });
         this.redrawCanvas();
       }
 
@@ -3024,7 +3094,12 @@ onImagePopupCanvasClick(event: MouseEvent): void {
 
         this.selectedRobo.pos.x = this.originalRoboPosition!.x;
         this.selectedRobo.pos.y = this.originalRoboPosition!.y;
-        alert('Overlapping detected! Robot has been reset to its original position.');
+        // alert('Overlapping detected! Robot has been reset to its original position.');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Overlapping detected! Asset has been reset to its original position.'
+        });
         this.redrawCanvas();
         return
       }
@@ -3050,13 +3125,23 @@ onImagePopupCanvasClick(event: MouseEvent): void {
       if(this.isPositionOccupied(x, y,'node')){
         this.selectedNode.nodePosition.x = this.originalNodePosition!.x;
         this.selectedNode.nodePosition.y = this.originalNodePosition!.y;
-        alert('node lapping with other assets');
+        // alert('node lapping with other assets');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Node lapping with other assets'
+        });
       }
 
       if(this.isOverLappingWithOtherNodes(this.selectedNode)){
         this.selectedNode.nodePosition.x = this.originalNodePosition!.x;
         this.selectedNode.nodePosition.y = this.originalNodePosition!.y;
-        alert('Overlapping detected! node has been reset to its original position.');
+        // alert('Overlapping detected! node has been reset to its original position.');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Overlapping detected! Asset has been reset to its original position.'
+        });
       }
       this.redrawCanvas();
       this.nodes = this.nodes.map((node) => {

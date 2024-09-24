@@ -13,6 +13,11 @@
   backdrop-filter: blur(5px);
   pointer-events: none;
 }
+.warning-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
 .UDform{
   padding: 10px;
 }
