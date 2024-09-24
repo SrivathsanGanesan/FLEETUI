@@ -31,8 +31,8 @@ interface Poll {
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.css'],
-  // encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
+  styleUrls: ['./configuration.component.scss'],
+  encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
 })
 export class ConfigurationComponent implements AfterViewInit {
   // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
@@ -126,6 +126,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.loadData(); // Ensure data is reloaded properly
     this.setPaginatedData(); // Ensure the paginated data is set correctly after loading
     this.filterData(); // Optional if you are applying filters
+    // this.resetFilters();
   }
   onChanges(){
     this.loadData();
@@ -134,6 +135,12 @@ export class ConfigurationComponent implements AfterViewInit {
     // this.setPaginatedData();
     console.log("data added");
   }
+
+
+  onPopupSave(){
+    this.resetFilters();
+  }
+
 
   ngOnInit() {
     this.loadData();
@@ -419,66 +426,62 @@ export class ConfigurationComponent implements AfterViewInit {
       this.setPaginatedData(); // Update paginated data after filtering
     }
 
-  async selectMap(map: any) {
-    if (this.selectedMap?.id === map.id) {
-      // Deselect if the same map is clicked again
+    async selectMap(map: any) {
+      if (this.selectedMap?.id === map.id) {
+        // Deselect if the same map is clicked again
+        this.projectService.clearMapData();
+        this.projectService.setIsMapSet(false);
+
+        // Clear the selected map (no map selected after deselection)
+        this.selectedMap = null;
+        return;
+      }
+
+      // Select a new map
+      this.selectedMap = map;
+
       this.projectService.clearMapData();
-      this.projectService.setIsMapSet(false);
-      if (!this.EnvData.length) return;
 
-      this.selectedMap = this.EnvData[0];
-      this.ngOnInit();
+      try {
+        const response = await fetch(
+          `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+        );
 
-      if (this.projectService.getIsMapSet()) return;
-      // this.projectService.setIsMapSet(true);
-      return;
-    }
+        if (!response.ok) {
+          console.error('Error while fetching map data : ', response.status);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `Error while fetching map data: ${response.status}`,
+          });
+          return; // Stop execution if the fetch fails
+        }
 
-    // Select a new map
-    this.selectedMap = map;
-    if (!this.EnvData.length) return;
+        const data = await response.json();
 
-    this.projectService.clearMapData();
+        this.projectService.setMapData({
+          ...map,
+          imgUrl: data.map.imgUrl,
+        });
 
-    try {
-      const response = await fetch(
-        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
-      );
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Map Selected',
+          detail: `Successfully loaded map: ${map.mapName}`,
+        });
 
-      if (!response.ok) {
-        console.error('Error while fetching map data : ', response.status);
+        if (this.projectService.getIsMapSet()) return;
+        this.projectService.setIsMapSet(true);
+      } catch (error) {
+        console.error('Fetch error:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: `Error while fetching map data: ${response.status}`,
+          detail: `Error fetching map`,
         });
-        return; // Stop execution if the fetch fails
       }
-
-      const data = await response.json();
-
-      this.projectService.setMapData({
-        ...map,
-        imgUrl: data.map.imgUrl,
-      });
-
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Map Selected',
-        detail: `Successfully loaded map: ${map.mapName}`,
-      });
-
-      if (this.projectService.getIsMapSet()) return;
-      this.projectService.setIsMapSet(true);
-    } catch (error) {
-      console.error('Fetch error:', error);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: `Error fetching map`,
-      });
     }
-  }
+
 
   async getMapImgUrl(map: any): Promise<any> {
     const response = await fetch(
@@ -491,14 +494,9 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   isButtonDisabled(item: any): boolean {
-    if (
-      this.selectedMap?.id === item.id &&
-      this.selectedMap?.mapName === item.mapName
-    )
-    return false;
-    return true;
-    // return this.selectedMap && this.selectedMap !== item;
+    return this.selectedMap?.id === item.id;
   }
+
 
   ngOnChanges() {
     this.filterData();
@@ -552,8 +550,11 @@ export class ConfigurationComponent implements AfterViewInit {
   // }
 
   // Utility function to remove the time part of a date
-  normalizeDate(date: Date): Date {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // normalizeDate(date: Date): Date {
+  //   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // }
+  normalizeDate(date: Date): string {
+    return this.formatDate(date); // Strips time information, returns 'YYYY-MM-DD'
   }
 
   selectedrobotData = [
@@ -720,7 +721,13 @@ export class ConfigurationComponent implements AfterViewInit {
   }
   showImageUploadPopup = false;
   openImageUploadPopup(): void {
+      // Reset the search filters
+  this.startDate = null;
+  this.endDate = null;
+  this.searchTerm = ''; // If you have a search term, reset it as we
     this.showImageUploadPopup = true;
+    this.setPaginatedData();
+    this.filterData();
     this.resetFilters();
   }
 
@@ -876,18 +883,6 @@ export class ConfigurationComponent implements AfterViewInit {
         this.paginator.pageIndex = 0;  // Reset to the first page after filtering
       }
       this.setPaginatedData(); // Trigger pagination logic after filtering
-    } else if (this.currentTable === 'robot') {
-      this.filteredRobotData = this.robotData.filter(
-        (item) =>
-          item.roboName.toLowerCase().includes(term) ||
-          item.ipAdd.toLowerCase().includes(term)
-      );
-
-      // Reset paginator to the first page and update paginated data
-      if (this.paginator) {
-        this.paginator.pageIndex = 0;
-      }
-      this.setPaginatedData(); // Trigger pagination logic after filtering
     }
   }
 
@@ -911,20 +906,37 @@ export class ConfigurationComponent implements AfterViewInit {
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
-  onDateChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const id = input.id;
-    const value = input.value;
+  // onDateChange(event: any) { old
+  //   const input = event.target as HTMLInputElement;
+  //   const id = input.id;
+  //   const value = input.value;
 
-    if (id === 'start-date') {
+  //   if (id === 'start-date' ) {
+  //     this.startDate = value ? new Date(value) : null;
+  //   } else if (id === 'end-date') {
+  //     this.endDate = value ? new Date(value) : null;
+  //   }
+
+  //   this.filterData(); // Apply filters whenever the date changes
+  // }
+  onDateChange(value: string, field: 'start' | 'end') {  //new
+    if (field === 'start') {
       this.startDate = value ? new Date(value) : null;
-    } else if (id === 'end-date') {
+    } else if (field === 'end') {
       this.endDate = value ? new Date(value) : null;
     }
-
-    this.filterData(); // Apply filters whenever the date changes
+    this.filterData(); // Call filter logic after date change
   }
 
+  // onDateChange(event: any) {  //recent
+  //   const selectedDate = event.target.value;  // This is in 'YYYY-MM-DD' format
+  //   if (event.target.id === 'start-date') {
+  //     this.startDate = selectedDate;
+  //   } else if (event.target.id === 'end-date') {
+  //     this.endDate = selectedDate;
+  //   }
+  //   this.filterData();  // Call your filter function after setting the date
+  // }
   setCurrentTable(table: string) {
     this.currentTable = table;
   }

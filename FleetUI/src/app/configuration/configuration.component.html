@@ -1,10 +1,11 @@
+<div class="sidenavbar">
 
 <div id="container">
-  
+
   <!-- Sidebar -->
   <app-sidenavbar></app-sidenavbar>
   <app-loader></app-loader>
-  
+
 
     <div class="mainContent">
 
@@ -44,25 +45,25 @@
         <!-- Date Filter and Date Inputs -->
         <div class="date-filters" *ngIf="currentTable === 'Environment'">
           <div class="date-inputs">
-            <label for="start-date" class="date-label">Start Date:</label>
-            <input
-              type="date"
-              id="start-date"
-              (change)="onDateChange($event)"
-              class="date-input"
-              [min]="minDate"
-              [max]="maxDate"
-            />
+            <label for="start-date">Start Date:</label>
+              <input pInputText
+                type="date"
+                id="start-date"
+                [ngModel]="startDate ? formatDate(startDate) : null"
+                (ngModelChange)="onDateChange($event, 'start')"
+                [min]="minDate"
+                [max]="maxDate"
+              />
 
-            <label for="end-date" class="Enddate-label">End Date:</label>
-            <input
-              type="date"
-              id="end-date"
-              (change)="onDateChange($event)"
-              class="date-input"
-              [min]="minDate"
-              [max]="maxDate"
-            />
+              <label for="end-date">End Date:</label>
+              <input pInputText
+                type="date"
+                id="end-date"
+                [ngModel]="endDate ? formatDate(endDate) : null"
+                (ngModelChange)="onDateChange($event, 'end')"
+                [min]="minDate"
+                [max]="maxDate"
+              />
           </div>
         </div>
       </div>
@@ -423,6 +424,7 @@
               [EnvData]="this.EnvData"
               [currEditMap]="this.currEditMap"
               [currEditMapDet]="this.currEditMapDet"
+              (save)="onPopupSave()"
               (closePopup)="closeImageUploadPopup()"
               (currEditMapChange)="onCurrEditMapChange($event)"
               (refreshTable)="reloadTable()"
