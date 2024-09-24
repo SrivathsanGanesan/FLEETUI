@@ -218,6 +218,7 @@
   border-radius: 10px;
   /* max-height: 23.5rem; */
   overflow-y: auto;
+  /* table-layout: fixed; */
 }
 
 
@@ -230,6 +231,7 @@ table {
   border-spacing: 0;
   overflow: auto;
   border: 1px solid #fff;
+  table-layout: fixed;
   border-radius: 10px;
 }
 

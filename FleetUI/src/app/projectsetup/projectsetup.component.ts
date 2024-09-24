@@ -89,6 +89,10 @@ export class ProjectsetupComponent {
     this.isProjDiv2Visible = !this.isProjDiv2Visible;
     this.isProjDiv1Visible = false;
     this.isProjDiv3Visible = false;
+    this.form = null;
+    this.selectedFile = null;
+    this.selectedProject = '';
+    this.selectedFileName = 'Import Project File';
     if (!this.isProjDiv1Visible) {
       this.sitename = '';
       this.projectname = '';
@@ -428,11 +432,11 @@ export class ProjectsetupComponent {
         }
 
         let project_data = {
-          _id:data.project._id,
-          projectName:data.project.projectName,
-          createdAt:data.project.createdAt,
-          updatedAt:data.project.updatedAt
-        }
+          _id: data.project._id,
+          projectName: data.project.projectName,
+          createdAt: data.project.createdAt,
+          updatedAt: data.project.updatedAt,
+        };
         this.projectService.setSelectedProject(project_data);
         this.projectService.setProjectCreated(true);
         this.router.navigate(['/dashboard']);

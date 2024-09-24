@@ -119,12 +119,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="EnvData.length === 0">
+                <tr *ngIf="paginatedData.length === 0">
                   <td colspan="5" class="iconTable">No data found</td>
                 </tr>
                 <tr
                   *ngFor="
-                    let item of EnvData;
+                    let item of paginatedData;
                     index as i;
                     trackBy: trackByTaskId
                   "
@@ -174,7 +174,7 @@
             <div *ngIf="currentTable === 'Environment' && filteredEnvData.length == EnvData.length"  >
             <div
               class="paginator-container"
-              *ngIf="EnvData.length > 5 "
+              *ngIf="filteredEnvData.length > 5 "
             >
               <mat-paginator
                 [length]="filteredEnvData.length"
@@ -197,10 +197,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="paginatedData1.length === 0">
+                <tr *ngIf="robotData.length === 0">
                   <td colspan="4" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of paginatedData1; index as i; trackBy: trackByTaskId">
+                <tr *ngFor="let item of robotData; index as i; trackBy: trackByTaskId">
                   <td>{{ i + 1 }}</td>
                   <td>{{ item.roboName }}</td>
                   <td>{{ item.ipAdd }}</td>
@@ -223,7 +223,7 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded"
+              *ngIf="currentTable === 'robot' && !imageUploaded && robotData.length > 5"
             >
             <mat-paginator
             [length]="filteredRobotData.length"

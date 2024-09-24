@@ -118,16 +118,14 @@ export class ConfigurationComponent implements AfterViewInit {
     public dialog: MatDialog, // Inject MatDialog
     private messageService: MessageService
   ) {
-    this.filteredEnvData = this.EnvData;
-    this.filteredRobotData = this.robotData;
+    this.filteredEnvData = [...this.EnvData];
+    // this.filteredRobotData = this.robotData;
   }
 
   reloadTable() {
-    // Call the method that fetches the table data to reload the table
-    console.log("data reloaded")
-    this.setPaginatedData();
-    this.loadData();
-    this.filterData();
+    this.loadData(); // Ensure data is reloaded properly
+    this.setPaginatedData(); // Ensure the paginated data is set correctly after loading
+    this.filterData(); // Optional if you are applying filters
   }
   onChanges(){
     this.loadData();
@@ -138,7 +136,9 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   ngOnInit() {
-    this.setPaginatedData()
+    this.loadData();
+    this.setPaginatedData();
+    this.filteredEnvData = [...this.EnvData];
     this.cdRef.detectChanges();
     const today = new Date();
     const pastFiveYears = new Date();
@@ -149,7 +149,7 @@ export class ConfigurationComponent implements AfterViewInit {
     let currMapData = this.projectService.getMapData();
     if (currMapData) {
       this.selectedMap = currMapData;
-      // this.setPaginatedData();
+      this.setPaginatedData();
     }
 
     this.mapData = this.projectService.getSelectedProject(); // _id
@@ -187,11 +187,12 @@ export class ConfigurationComponent implements AfterViewInit {
             });
           })
           .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
+
         this.EnvData.sort(
           (a: any, b: any) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-        this.filteredEnvData = this.EnvData;
+        this.filteredEnvData = [...this.EnvData];
         // this.EnvData = this.filteredEnvData;
         this.setPaginatedData();
         this.cdRef.detectChanges();
@@ -238,7 +239,7 @@ export class ConfigurationComponent implements AfterViewInit {
     //     console.log(error);
     //   });
     // this.filteredEnvData = this.EnvData;
-    this.setPaginatedData();
+    // this.setPaginatedData();
     this.searchTerm = '';
     this.searchTermChanged();
 
@@ -338,41 +339,60 @@ export class ConfigurationComponent implements AfterViewInit {
     return item.taskId; // or any unique identifier like taskId
   }
 
+  // setPaginatedData() {
+  //   if (this.currentTable === 'Environment') {
+  //     // Step 1: Ensure that data is loaded and available
+  //     if (!this.EnvData || this.EnvData.length === 0) {
+  //       return; // Prevent setting paginated data if no data is available
+  //     }
+
+  //     // Step 2: Handle small datasets (<= 5 items)
+  //     if (this.filteredEnvData.length <= 5) {
+  //       this.paginatedData = [...this.filteredEnvData]; // Show all data without pagination
+  //     } else if (this.paginator?.pageIndex !== undefined && this.paginator?.pageSize !== undefined) {
+  //       // Step 3: Handle larger datasets (use pagination)
+  //       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+  //       this.paginatedData = this.filteredEnvData.slice(startIndex, startIndex + this.paginator.pageSize);
+  //     }
+  //   } else if (this.currentTable === 'robot') {
+  //     // Same logic for the robot table
+  //     if (!this.filteredRobotData || this.filteredRobotData.length === 0) {
+  //       return;
+  //     }
+
+  //     if (this.filteredRobotData.length <= 5) {
+  //       this.paginatedData1 = this.filteredRobotData;
+  //     } else if (this.paginator?.pageIndex !== undefined && this.paginator?.pageSize !== undefined) {
+  //       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+  //       this.paginatedData1 = this.filteredRobotData.slice(startIndex, startIndex + this.paginator.pageSize);
+  //     }
+  //   }
+  // }
+
   setPaginatedData() {
     if (this.currentTable === 'Environment') {
-      if (this.filteredEnvData.length <= 5) {
-        // No need for pagination, show all data
-        this.paginatedData = this.filteredEnvData;
-      } else if (this.paginator?.pageIndex !== undefined && this.paginator?.pageSize !== undefined) {
-        // Use pagination logic for more than 5 items
-        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-        this.paginatedData = this.filteredEnvData.slice(startIndex, startIndex + this.paginator.pageSize);
-        this.filterData();
-      }
-    } else if (this.currentTable === 'robot') {
-      if (this.filteredRobotData.length <= 5) {
-        // No need for pagination, show all data
-        this.paginatedData1 = this.filteredRobotData;
-      } else if (this.paginator?.pageIndex !== undefined && this.paginator?.pageSize !== undefined) {
-        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-        this.paginatedData1 = this.filteredRobotData.slice(startIndex, startIndex + this.paginator.pageSize);
+      const pageSize = this.paginator?.pageSize || 5;  // Default pageSize to 5 if paginator is not yet available
+      const pageIndex = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
+
+      // Paginate the data based on current page and page size
+      const startIndex = pageIndex * pageSize;
+      const endIndex = startIndex + pageSize;
+
+      this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
+
+      // Optionally, ensure that the paginator reflects the right page size and length
+      if (this.paginator) {
+        this.paginator.length = this.filteredEnvData.length;
       }
     }
-
-    this.filterData();  // Ensure this is necessary for your logic
   }
 
-
-
+  // Ensure pagination is triggered on page change
   onPageChange(event: PageEvent) {
-    if (this.filteredEnvData.length > 5) {
-      this.paginator.pageIndex = event.pageIndex;
-      this.paginator.pageSize = event.pageSize;
-      this.setPaginatedData();
-    }
+    this.paginator.pageIndex = event.pageIndex;
+    this.paginator.pageSize = event.pageSize;
+    this.setPaginatedData();  // Update paginated data on page change
   }
-
-
 
 
   //Commit Changed
@@ -640,8 +660,8 @@ export class ConfigurationComponent implements AfterViewInit {
 
         if (poll.Status === 'online')
           this.ipScanData = [...this.ipScanData, poll];
-        this.ipScanData = this.filteredipData;
-          this.setPaginatedData();
+        // this.ipScanData = this.filteredipData;
+          // this.setPaginatedData();
         this.cdRef.detectChanges();
       } catch (error) {
         console.error('Error parsing SSE data:', error);
@@ -840,8 +860,7 @@ export class ConfigurationComponent implements AfterViewInit {
         const date = new Date(item.date);
         const normalizedDate = this.normalizeDate(date); // Normalize the item's date
         const withinDateRange =
-          (!this.startDate ||
-            normalizedDate >= this.normalizeDate(this.startDate)) &&
+          (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
           (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate)); // Normalize the end date
 
         return (
@@ -851,14 +870,27 @@ export class ConfigurationComponent implements AfterViewInit {
           withinDateRange
         );
       });
+
+      // Reset paginator to the first page and update paginated data
+      if (this.paginator) {
+        this.paginator.pageIndex = 0;  // Reset to the first page after filtering
+      }
+      this.setPaginatedData(); // Trigger pagination logic after filtering
     } else if (this.currentTable === 'robot') {
       this.filteredRobotData = this.robotData.filter(
         (item) =>
           item.roboName.toLowerCase().includes(term) ||
           item.ipAdd.toLowerCase().includes(term)
       );
+
+      // Reset paginator to the first page and update paginated data
+      if (this.paginator) {
+        this.paginator.pageIndex = 0;
+      }
+      this.setPaginatedData(); // Trigger pagination logic after filtering
     }
   }
+
   resetFilters() {
     this.searchTerm = ''; // Reset search term
     this.startDate = null; // Reset start date
@@ -1037,9 +1069,11 @@ export class ConfigurationComponent implements AfterViewInit {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) isDeleted = await this.deleteMap(item);
       if (isDeleted) {
-        this.projectService.setIsMapSet(false);
-        this.projectService.clearMapData();
-        this.ngOnInit();
+        if(item.id === this.projectService.getMapData().id){
+          this.projectService.setIsMapSet(false);
+          this.projectService.clearMapData();
+          this.ngOnInit();
+        }
         // Assuming currentTable determines which data array to modify
         if (this.currentTable === 'Environment') {
           this.EnvData = this.EnvData.filter((i) => i !== item);
