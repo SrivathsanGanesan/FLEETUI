@@ -17,7 +17,7 @@ export class CommunicationComponent {
     { name: 'MQTT', key: 'Q' },
   ];
 
-  selectedMap: any | null = null;
+  selectedProj: any | null = null;
   selectedCategory: any = null; // No initial selection
 
   formData: any = {
@@ -30,8 +30,31 @@ export class CommunicationComponent {
 
   constructor(private projectService: ProjectService) {}
 
-  ngOnInit() {
-    this.selectedMap = this.projectService.getMapData();
+  async ngOnInit() {
+    this.selectedProj = this.projectService.getSelectedProject();
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.selectedProj._id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+    if (!response.ok) {
+      console.log('Err with status code of ', response.status);
+    }
+    let data = await response.json();
+    const { Communication } = data.project.fleetParams;
+    if (!Communication) return;
+    this.selectedCategory = this.categories.find(
+      (category) => category.name === Communication.selectedCategory
+    );
+    this.formData = {
+      externalInterfaceIp: Communication.externalInterfaceIp,
+      externalInterfaceType: Communication.externalInterfaceType,
+      roboInterfaceIp: Communication.roboInterfaceIp,
+      roboInterfaceType: Communication.roboInterfaceType,
+      selectedCategory: Communication.selectedCategory,
+    };
   }
 
   async saveCommParams() {
@@ -41,22 +64,33 @@ export class CommunicationComponent {
     }
     this.formData.selectedCategory = this.selectedCategory.name;
     // console.log(this.formData); // handle data here..
-    let response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/communication`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mapId: this.selectedMap.id,
-          communicationParams: this.formData,
-        }),
-      }
-    );
+    try {
+      let response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/config-fleet-params/communication`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectId: this.selectedProj._id,
+            communicationParams: this.formData,
+          }),
+        }
+      );
 
-    let data = await response.json();
-    console.log(data);
-    if (data.isSet) console.log('configured!');
+      if (!response.ok)
+        throw new Error(`err while saving db, ${response.status}`);
+
+      let data = await response.json();
+      // console.log(data);
+      if (data.isSet) {
+        alert('Fleet configured!');
+        return;
+      }
+      alert('Fleet not configured!');
+    } catch (error) {
+      console.log('Err occured :', error);
+    }
   }
 
   selectCategory(category: any) {

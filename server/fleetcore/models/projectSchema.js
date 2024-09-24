@@ -2,6 +2,17 @@ const { Schema, model } = require("mongoose");
 const { siteSchema, roboProjSchema } = require("./sitesSchema");
 const { projectConnection } = require("../../common/db_config");
 
+const fleetParamsSchema = new Schema(
+  {
+    General: { type: Schema.Types.Mixed, default: {} },
+    Planner: { type: Schema.Types.Mixed, default: {} },
+    Task: { type: Schema.Types.Mixed, default: {} },
+    Battery: { type: Schema.Types.Mixed, default: {} },
+    Communication: { type: Schema.Types.Mixed, default: {} },
+  },
+  { timestamps: true, versionKey: false, _id: false }
+);
+
 const projectSchema = new Schema(
   {
     projectName: {
@@ -17,6 +28,10 @@ const projectSchema = new Schema(
     robots: {
       type: [roboProjSchema],
       default: [],
+    },
+    fleetParams: {
+      type: fleetParamsSchema,
+      default: {},
     },
   },
   { timestamps: true, versionKey: false }

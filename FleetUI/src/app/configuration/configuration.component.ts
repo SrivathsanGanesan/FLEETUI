@@ -40,7 +40,7 @@ export class ConfigurationComponent implements AfterViewInit {
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayLayer', { static: false }) overlayLayer!: ElementRef;
-  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+  @ViewChild(MatPaginator) paginator!: MatPaginator ;
 
 
   nodes: Array<{ x: number; y: number; id: number }> = [];
@@ -69,6 +69,7 @@ export class ConfigurationComponent implements AfterViewInit {
   selectedMap: any = null;
   mapData: any = null;
 
+  isPagination: boolean =false;
   searchTerm: string = '';
   filteredEnvData: any[] = [];
   filteredipData: any[] = [];
@@ -148,6 +149,7 @@ export class ConfigurationComponent implements AfterViewInit {
     let currMapData = this.projectService.getMapData();
     if (currMapData) {
       this.selectedMap = currMapData;
+      this.setPaginatedData();
     }
 
     this.mapData = this.projectService.getSelectedProject(); // _id
@@ -337,36 +339,41 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   setPaginatedData() {
-    if (this.paginator && this.currentTable === 'Environment') {
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.filteredEnvData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
-      this.filterData();
+    if (this.currentTable === 'Environment') {
+      if (this.filteredEnvData.length <= 5) {
+        // No need for pagination, show all data
+        this.paginatedData = this.filteredEnvData;
+      } else if (this.paginator?.pageIndex !== undefined && this.paginator?.pageSize !== undefined) {
+        // Use pagination logic for more than 5 items
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        this.paginatedData = this.filteredEnvData.slice(startIndex, startIndex + this.paginator.pageSize);
+      }
+    } else if (this.currentTable === 'robot') {
+      if (this.filteredRobotData.length <= 5) {
+        // No need for pagination, show all data
+        this.paginatedData1 = this.filteredRobotData;
+      } else if (this.paginator?.pageIndex !== undefined && this.paginator?.pageSize !== undefined) {
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        this.paginatedData1 = this.filteredRobotData.slice(startIndex, startIndex + this.paginator.pageSize);
+      }
     }
-    console.log(this.paginatedData1);
-    
-    if (this.paginator && this.currentTable === 'robot') {
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData1 = this.filteredRobotData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
-      this.filterData();
-    }
-    // if (this.paginator && this.currentTable === 'ipScanner') {
-    //   const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-    //   this.paginatedData = this.filteredipData.slice(
-    //     startIndex,
-    //     startIndex + this.paginator.pageSize
-    //   );
-    // }
+
+    this.filterData();  // Ensure this is necessary for your logic
   }
 
+
+
   onPageChange(event: PageEvent) {
-    this.setPaginatedData();
+    if (this.filteredEnvData.length > 5) {
+      this.paginator.pageIndex = event.pageIndex;
+      this.paginator.pageSize = event.pageSize;
+      this.setPaginatedData();
+    }
   }
+
+
+
+
   //Commit Changed
     // Search method
     onSearch(event: Event): void {
@@ -382,7 +389,7 @@ export class ConfigurationComponent implements AfterViewInit {
           )
         );
       }
-      
+
       // Reset the paginator after filtering
       if (this.paginator) {
         this.paginator.firstPage();
@@ -541,7 +548,11 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData(); // Initial filter application
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+      if (this.paginator) {
+    this.setPaginatedData(); // Safe to access paginator here
+  }
+  }
 
   drawConnectivity() {
     const canvas = this.uploadedCanvas?.nativeElement;
@@ -737,6 +748,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
     this.EnvData.push(newEntry);
     this.filteredEnvData = [...this.EnvData];
+    this.setPaginatedData();
   }
 
   isCalibrationLayerVisible = false;
@@ -772,7 +784,8 @@ export class ConfigurationComponent implements AfterViewInit {
   setActiveButton(button: string) {
     this.activeButton = button;
     this.isTransitioning = true;
-
+    this.filterData();
+    this.setPaginatedData();
     this.activeButton = button;
     this.activeHeader = this.getHeader(button);
     this.isTransitioning = false;
@@ -790,7 +803,7 @@ export class ConfigurationComponent implements AfterViewInit {
   setFleetTab(tab: string): void {
     this.fleetTab = tab;
   }
-  
+
   startDate: Date | null = null;
   endDate: Date | null = null;
   minDate!: string;
@@ -799,6 +812,8 @@ export class ConfigurationComponent implements AfterViewInit {
   // yet to work..
   showTable(table: string) {
     this.currentTable = table;
+    this.setPaginatedData();
+    this.filterData();
     this.searchTerm = ''; // Clear the search term
     this.startDate = null; // Clear the start date
     this.endDate = null; // Clear the end date
