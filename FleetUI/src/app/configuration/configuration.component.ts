@@ -431,55 +431,39 @@ export class ConfigurationComponent implements AfterViewInit {
         // Deselect if the same map is clicked again
         this.projectService.clearMapData();
         this.projectService.setIsMapSet(false);
-
-        // Clear the selected map (no map selected after deselection)
-        this.selectedMap = null;
-        return;
-      }
-
-      // Select a new map
-      this.selectedMap = map;
-
-      this.projectService.clearMapData();
-
-      try {
+        if (!this.EnvData.length) return;
+        this.selectedMap = this.EnvData[0];
         const response = await fetch(
-          `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+          `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
         );
-
-        if (!response.ok) {
+        if (!response.ok)
           console.error('Error while fetching map data : ', response.status);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: `Error while fetching map data: ${response.status}`,
-          });
-          return; // Stop execution if the fetch fails
-        }
-
-        const data = await response.json();
-
-        this.projectService.setMapData({
-          ...map,
-          imgUrl: data.map.imgUrl,
-        });
-
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Map Selected',
-          detail: `Successfully loaded map: ${map.mapName}`,
-        });
+        let data = await response.json();
+        let { map } = data;
+        this.ngOnInit();
 
         if (this.projectService.getIsMapSet()) return;
         this.projectService.setIsMapSet(true);
-      } catch (error) {
-        console.error('Fetch error:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: `Error fetching map`,
-        });
+        return;
       }
+      // Select a new map
+      this.selectedMap = map;
+      if (!this.EnvData.length) return;
+      this.projectService.clearMapData();
+      const response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+      );
+      if (!response.ok)
+        console.error('Error while fetching map data : ', response.status);
+      let data = await response.json();
+
+      this.projectService.setMapData({
+        ...map,
+        imgUrl: data.map.imgUrl,
+      });
+
+      if (this.projectService.getIsMapSet()) return;
+      this.projectService.setIsMapSet(true);
     }
 
 
