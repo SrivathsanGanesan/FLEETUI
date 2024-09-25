@@ -60,7 +60,7 @@ const sendNodeGraph = async ({ endpoint, bodyData }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  const { nodes, edges } = mapData; // send node graph..
+  /* const { nodes, edges } = mapData; // send node graph..
   let nodeGraph = {
     nodes: nodes,
     edges: edges,
@@ -72,7 +72,7 @@ const mapInsert = async (req, res) => {
 
   if (data1.errorCode !== 100) {
     res.status(500).json({ msg: "not attained" });
-  }
+  } */
 
   // return res.end(); // yet to remove..
   try {

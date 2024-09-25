@@ -85,11 +85,11 @@ const getRoboPos = async (req, res) => {
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
     // const map = await Map.findOne({ _id: mapId });
-    let roboPos = await fetchGetAmrLoc({
+    /* let roboPos = await fetchGetAmrLoc({
       endpoint: "get_AMR_Locations",
       bodyData: {},
-    });
-    return res.status(200).json({ roboPos: roboPos, data: "msg sent" });
+    }); */
+    return res.status(200).json({ roboPos: null, data: "msg sent" });
   } catch (error) {
     console.error("Error in getAgvTelemetry:", error);
     res
