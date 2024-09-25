@@ -163,7 +163,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   isNodeDetailsPopupVisible = false; // Control popup visibility
   public ratio: number | null = null; // Store the resolution ratio (meters per pixel)
-  origin : {x : number, y : number} = {x : 0, y : 0};
+  origin : {x : number, y : number, z : number} = { x : 0, y : 0, w : 0 };
   plottingMode: 'single' | 'multi' | null = null;
   isPlottingEnabled: boolean = false;
   isDrawing: boolean = false;
