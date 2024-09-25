@@ -1062,6 +1062,7 @@ export class ConfigurationComponent implements AfterViewInit {
           siteName: item.siteName,
           ratio: map.mpp,
           imgUrl: `http://${map.imgUrl}`,
+          origin: map.origin,
           nodes: map.nodes,
           edges: map.edges,
           assets: map.stations,
