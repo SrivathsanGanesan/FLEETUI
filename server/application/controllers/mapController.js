@@ -86,7 +86,7 @@ const mapInsert = async (req, res) => {
       edges,
       stations,
       zones,
-      roboPos,
+      origin,
     } = mapData;
     const map = await Map.exists({ mapName: mapName });
     if (map) return res.json({ exits: true, msg: "Map name already exits" });
@@ -132,6 +132,7 @@ const mapInsert = async (req, res) => {
       nodes,
       edges,
       stations,
+      origin,
     }).save();
     const MapId = newMap._id;
     const proj = await insertMapId({ MapId, mapName, projectName, siteName });
