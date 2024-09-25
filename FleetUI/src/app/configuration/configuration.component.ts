@@ -145,6 +145,7 @@ export class ConfigurationComponent implements AfterViewInit {
   ngOnInit() {
     this.loadData();
     this.setPaginatedData();
+    this.selectFirstMapIfNoneSelected();
     this.filteredEnvData = [...this.EnvData];
     this.cdRef.detectChanges();
     const today = new Date();
@@ -465,6 +466,69 @@ export class ConfigurationComponent implements AfterViewInit {
       if (this.projectService.getIsMapSet()) return;
       this.projectService.setIsMapSet(true);
     }
+    // This method can be called when the component is initialized or when a new map is created
+      private selectFirstMapIfNoneSelected() {
+        if (!this.selectedMap && this.EnvData.length > 0) {
+            this.selectMap(this.EnvData[0]);
+        }
+      }
+  //   async selectMap(map: any) {
+  //     if (this.selectedMap?.id === map.id) {
+  //         // Deselect if the same map is clicked again
+  //         this.projectService.clearMapData();
+  //         this.projectService.setIsMapSet(false);
+  //         if (!this.EnvData.length) return;
+
+  //         // Automatically select the first item after deselection
+  //         this.selectedMap = this.EnvData[0];
+  //         const response = await fetch(
+  //           `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
+  //         );
+  //         if (!response.ok)
+  //             console.error('Error while fetching map data : ', response.status);
+
+  //         let data = await response.json();
+  //         this.projectService.setMapData({
+  //             ...this.EnvData[0],
+  //             imgUrl: data.map.imgUrl,
+  //         });
+
+  //         this.projectService.setIsMapSet(true);
+  //         return;
+  //     }
+
+  //     // Select a new map
+  //     this.selectedMap = map;
+  //     if (!this.EnvData.length) return;
+  //     this.projectService.clearMapData();
+  //     const response = await fetch(
+  //       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+  //     );
+  //     if (!response.ok)
+  //         console.error('Error while fetching map data : ', response.status);
+
+  //     let data = await response.json();
+  //     this.projectService.setMapData({
+  //         ...map,
+  //         imgUrl: data.map.imgUrl,
+  //     });
+
+  //     this.projectService.setIsMapSet(true);
+  // }
+
+  // // This method can be called when the component is initialized or when a new map is created
+  // private selectFirstMapIfNoneSelected() {
+  //     if (!this.selectedMap && this.EnvData.length > 0) {
+  //         this.selectMap(this.EnvData[0]);
+  //     }
+  // }
+
+  // // Call this method in ngOnInit to ensure the first map is selected when the component is initialized
+  // // ngOnInit() {
+  // //     this.selectFirstMapIfNoneSelected();
+  // //     // Other initialization logic
+  // // }
+
 
 
   async getMapImgUrl(map: any): Promise<any> {
