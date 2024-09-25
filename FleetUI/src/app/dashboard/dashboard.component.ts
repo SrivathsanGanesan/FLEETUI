@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   ViewChild,
+  ElementRef
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
@@ -40,7 +41,7 @@ enum ZoneType {
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
-
+  @ViewChild('myCanvas', { static: false }) overlayCanvas!: ElementRef<HTMLCanvasElement>;
   eventSource!: EventSource;
   ONBtn = false;
   showDashboard = false;
@@ -173,47 +174,87 @@ export class DashboardComponent implements AfterViewInit {
     // this.fetchRoboPos();
   }
 
-  async fetchRoboPos() {
-    let response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      }
-    );
-    let data = await response.json();
-    const { locations } = data.roboPos;
-    let amrPos = locations.map((roboLoc: any) => {
-      return roboLoc.dockPose.position;
-    });
+//   async fetchRoboPos() {
+//     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+//     const ctx = canvas.getContext('2d');
+//     const imageWidth = 32; // Set this to the actual width of the plotted image
+//     const imageHeight = 25; // Set this to the actual height of the plotted image
 
-    // console.log(amrPos);
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-    const imageWidth = 32; // Set this to the actual width of the plotted image
-    const imageHeight = 25; // Set this to the actual height of the plotted image
+//     let x = 50; // Starting x position
+//     let y = 50; // Starting y position
+//     const step = 1; // Increment step for each position change
+//     const max = 1000; // Maximum limit for x and y positions
+//     let i = 0;
 
-    // Clear only the previous image area
-    const clearPreviousImage = (x: number, y: number) => {
-      ctx?.clearRect(
-        x - imageWidth / 2,
-        y - imageHeight / 2,
-        imageWidth,
-        imageHeight
-      );
-    };
+//     let currInterval = setInterval(() => {
+//         if (ctx && x <= max && y <= max) {
+//             if (i > 0) {
+//                 // Clear only the previous robot image area
+//                 ctx.clearRect(
+//                     x - step - imageWidth / 2,
+//                     y - step - imageHeight / 2,
+//                     imageWidth,
+//                     imageHeight
+//                 );
+//             }
 
-    let i = 0;
-    let currInterval = setInterval(() => {
-      if (ctx && i < amrPos.length) {
-        if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
-        // const transformedY = imgS.height - amrPos[i].y;
-        // console.log(amrPos[i].x, amrPos[i].y);
-        this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
-        i++;
-      } else clearInterval(currInterval);
-    }, 1000 * 2);
-  }
+//             // Log the current x and y position to the console
+//             console.log(`Robot Position: X = ${x}, Y = ${y}`);
+
+//             // Plot the robot at the current position
+//             this.plotRobo(ctx, x, y);
+
+//             // Increment x and y
+//             x += step;
+//             y += step;
+//             i++;
+//         } else {
+//             clearInterval(currInterval);
+//         }
+//     }, 1000 * 0.5); // Update position every 0.5 seconds
+// }
+
+  // async fetchRoboPos() {
+  //   let response = await fetch(
+  //     `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
+  //     {
+  //       method: 'GET',
+  //       credentials: 'include',
+  //     }
+  //   );
+  //   let data = await response.json();
+  //   const { locations } = data.roboPos;
+  //   let amrPos = locations.map((roboLoc: any) => {
+  //     return roboLoc.dockPose.position;
+  //   });
+
+  //   // console.log(amrPos);
+  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+  //   const ctx = canvas.getContext('2d');
+  //   const imageWidth = 32; // Set this to the actual width of the plotted image
+  //   const imageHeight = 25; // Set this to the actual height of the plotted image
+
+  //   // Clear only the previous image area
+  //   const clearPreviousImage = (x: number, y: number) => {
+  //     ctx?.clearRect(
+  //       x - imageWidth / 2,
+  //       y - imageHeight / 2,
+  //       imageWidth,
+  //       imageHeight
+  //     );
+  //   };
+
+  //   let i = 0;
+  //   let currInterval = setInterval(() => {
+  //     if (ctx && i < amrPos.length) {
+  //       if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
+  //       // const transformedY = imgS.height - amrPos[i].y;
+  //       // console.log(amrPos[i].x, amrPos[i].y);
+  //       this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
+  //       i++;
+  //     } else clearInterval(currInterval);
+  //   }, 1000 * 2);
+  // }
 
   async onInitMapImg() {
     let project = this.projectService.getSelectedProject();

@@ -13,6 +13,11 @@
   backdrop-filter: blur(5px);
   pointer-events: none;
 }
+.warning-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
 .UDform{
   padding: 10px;
 }
@@ -221,6 +226,11 @@ h2 {
   height: 160px; /* Full height of the parent container */
   margin: 20px 20px;
 }
+.node-separator{
+  width: 2px; /* Thickness of the vertical line */
+  background-color: #000000; /* Color of the vertical line */
+  margin: 0px 20px;
+}
 #or{
   font-size: 10px;
   margin: 10px 5px;
@@ -246,7 +256,7 @@ h2 {
 
 } */
 .image-container {
-  /* margin-top: 10px; */
+  margin-top: 10px;
   position: relative;
 }
 

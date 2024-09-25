@@ -20,6 +20,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToastModule } from 'primeng/toast';
+import { SidenavbarComponent } from '../sidenavbar/sidenavbar.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { ToastModule } from 'primeng/toast';
              TaskComponent,
              BatteryComponent,
              CommunicationComponent,
+             
 
   ],
   imports: [
@@ -43,7 +45,8 @@ import { ToastModule } from 'primeng/toast';
     InputGroupAddonModule,
     DropdownModule,
     RadioButtonModule,
-    ToastModule
+    ToastModule,
+    
 
   ],
   exports: [
