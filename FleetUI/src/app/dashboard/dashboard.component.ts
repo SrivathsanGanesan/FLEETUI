@@ -162,7 +162,6 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
-  // guess no need..
   async ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
@@ -170,147 +169,44 @@ export class DashboardComponent implements AfterViewInit {
       return;
     }
     this.loadCanvas();
-    // this.fetchRoboPos();
+    await this.fetchRoboPos();
   }
-
-  async fetchRoboPos() {
-    let response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      }
-    );
-    let data = await response.json();
-    const { locations } = data.roboPos;
-    let amrPos = locations.map((roboLoc: any) => {
-      return roboLoc.dockPose.position;
-    });
-
-    // console.log(amrPos);
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-    const imageWidth = 32; // Set this to the actual width of the plotted image
-    const imageHeight = 25; // Set this to the actual height of the plotted image
-
-    // Clear only the previous image area
-    const clearPreviousImage = (x: number, y: number) => {
-      ctx?.clearRect(
-        x - imageWidth / 2,
-        y - imageHeight / 2,
-        imageWidth,
-        imageHeight
-      );
-    };
-
-    let i = 0;
-    let currInterval = setInterval(() => {
-      if (ctx && i < amrPos.length) {
-        if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
-        // const transformedY = imgS.height - amrPos[i].y;
-        // console.log(amrPos[i].x, amrPos[i].y);
-        this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
-        i++;
-      } else clearInterval(currInterval);
-    }, 1000 * 2);
-  }
-
-  async onInitMapImg() {
-    let project = this.projectService.getSelectedProject();
-    let mapArr = [];
-
-    const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${project._id}`,
-      { credentials: 'include' }
-    );
-    if (!response.ok)
-      console.error('Error while fetching map data : ', response.status);
-    let data = await response.json();
-    let projectSites = data.project.sites;
-    mapArr = projectSites.flatMap((sites: any) => {
-      return sites.maps.map((map: any) => {
-        let date = new Date(map?.createdAt);
-        let createdAt = date.toLocaleString('en-IN', {
-          month: 'short',
-          year: 'numeric',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-        });
-
-        return {
-          id: map.mapId,
-          mapName: map.mapName,
-          siteName: sites.siteName,
-          date: createdAt,
-          createdAt: map.createdAt, // for sorting..
-        };
-      });
-    });
-    mapArr.sort(
-      (a: any, b: any) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
-    if (!mapArr.length) return;
-    const mapResponse = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapArr[0].mapName}`
-    );
-    let mapData = await mapResponse.json();
-    this.projectService.setMapData({
-      ...mapArr[0],
-      imgUrl: mapData.map.imgUrl,
-    });
-    this.loadCanvas();
-  }
-
-  // start-stop the operation!
-  startStopOpt() {
-    if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
-    if (this.throughputComponent) this.throughputComponent.getThroughPutIfOn();
-  }
-
-  toggleONBtn() {
-    this.ONBtn = !this.ONBtn;
-    if (this.ONBtn) this.getliveAmrPos();
-    if (!this.ONBtn) this.eventSource.close(); // try take of it..
-  }
-
-  getOnBtnImage(): string {
-    return this.ONBtn
-      ? '../../assets/icons/off.svg'
-      : '../../assets/icons/on.svg';
-  }
-
   async toggleModelCanvas() {
+    // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
     if (!this.showModelCanvas) {
       this.nodes = [];
-    } else await this.getMapDetails();
+    }  else {
+      await this.getMapDetails();
+      // await this.fetchRoboPos(); // Call fetchRoboPos when showing model canvas
+    }
     this.loadCanvas(); // Redraw the canvas based on the updated state
+    // this.fetchRoboPos();
   }
+  loadCanvas() {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
 
-  getliveAmrPos() {
-    const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos`;
-    if (this.eventSource) this.eventSource.close();
+    if (ctx) {
+      const img = new Image();
+      let imgName = this.projectService.getMapData();
+      img.src = `http://${imgName.imgUrl}`;
 
-    this.eventSource = new EventSource(URL);
-    this.eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log(data);
-      } catch (error) {
-        console.error('Error parsing SSE data:', error);
-      }
-    };
+      img.onload = () => {
+        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+        canvas.height =
+          canvas.parentElement?.clientHeight || window.innerHeight;
+        this.draw(ctx, img);
 
-    this.eventSource.onerror = (error) => {
-      console.error('SSE error:', error);
-      this.eventSource.close();
-    };
+        // // Conditionally draw nodes based on showModelCanvas flag
+        // if (this.showModelCanvas) {
+        //   this.nodes.forEach((node) => {
+        //     this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
+        //   });
+        // }
+      };
+    }
   }
-
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -381,39 +277,263 @@ export class DashboardComponent implements AfterViewInit {
     // );
     // ctx.restore(); // Reset transformation after drawing
   }
+  async fetchRoboPos() {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+    const imageWidth = 45; // Set this to the actual width of the robot image
+    const imageHeight = 25; // Set this to the actual height of the robot image
+  
+    let x = 200; // Starting x position
+    let y = 260; // Starting y position
+    const step = 1; // Increment step for each position change
+    const maxX = 420; // Maximum limit for X position
+    const maxY = 460; // Maximum limit for Y position
+    let orientation = 0; // Initial orientation of the robot (0 deg)
+  
+    const mapImage = new Image();
+    let map = this.projectService.getMapData(); // Replace this with the correct path to the map image
+    mapImage.src = `http://${map.imgUrl}`;
+    await mapImage.decode(); // Wait for the image to load
+  
+    let currInterval = setInterval(() => {
+      if (ctx && (x <= maxX || y <= maxY)) {
+        // Clear the entire canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        // Redraw the map
+        ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height); 
+  
+        // Only redraw other elements if the model canvas is shown
+        if (this.showModelCanvas) {
+          this.redrawOtherElements(ctx, mapImage); // Pass the mapImage for transformations
+        }
+  
+        // Move along X-axis until it reaches 420
+        if (x < maxX) {
+          x += step; // Increment x
+        } else {
+          // Once x reaches 420, change orientation to 270 deg and start moving Y-axis
+          orientation = 270;
+          if (y < maxY) {
+            y += step; // Move Y to max 420
+          }
+        }
+  
+        // Log the current x, y position and orientation
+        console.log(`Robot Position: X = ${x}, Y = ${y}, Orientation = ${orientation}°`);
+  
+        // Plot the robot at the current position with the updated orientation
+        this.plotRobo(ctx, x, y, orientation);
+  
+      } else {
+        clearInterval(currInterval);
+      }
+    }, 1000 * 0.025); // Update position every 0.025 seconds
+  }
 
   plotRobo(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
+    orientation: number,
     isSelected: boolean = false
   ): void {
     const image = this.robotImages['robotB'];
-    // const canvas = this.overlayCanvas.nativeElement;
-    // const ctx = canvas.getContext('2d');
-
+    const imageSize = 25;
+  
     if (image && ctx) {
-      const imageSize = 20;
-
-      // Highlight the selected robot with a border or background
-      // if (isSelected) { yet to replaced..
-      //   ctx.beginPath();
-      //   ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
-      //   ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red
-      //   ctx.fill();
-      //   ctx.closePath();
-      // }
-
-      // Draw the robot image
+      ctx.save(); // Save the current context before rotation
+      ctx.translate(x, y); // Move the rotation point to the robot's center
+      ctx.rotate((orientation * Math.PI) / 180); // Rotate by the given orientation angle (converted to radians)
       ctx.drawImage(
         image,
-        x - imageSize / 2,
-        y - imageSize / 2,
+        -imageSize / 2,
+        -imageSize / 2,
         imageSize * 1.3,
         imageSize
       );
+      ctx.restore(); // Restore the context after rotation
     }
+  } 
+  redrawOtherElements(ctx: CanvasRenderingContext2D ,img: HTMLImageElement) {
+    // // Redraw nodes, edges, assets, and zones
+    this.nodes.forEach((node) => {
+      const transformedY = img.height - node.nodePosition.y;
+      this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+    });
+
+    // Draw edges between nodes
+    this.edges.forEach((edge) => {
+      const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
+      const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
+      if (startNode && endNode) {
+        const startPos = {
+          x: startNode.nodePosition.x,
+          y: startNode.nodePosition.y,
+        };
+        const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+        const transformedStartY = img.height - startPos.y;
+        const transformedEndY = img.height - endPos.y;
+        this.drawEdge(
+          ctx,
+          { x: startPos.x, y: transformedStartY },
+          { x: endPos.x, y: transformedEndY },
+          edge.direction,
+          edge.startNodeId,
+          edge.endNodeId
+        );
+      }
+    });
+
+    this.zones.forEach((zone) => {
+      // Re-plot the points of the zone
+      // zone.pos.forEach((point, index) => {
+      //   // Plot the first point in violet and others in red
+      //   const isFirstPoint = index === 0;
+      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
+      // });
+      this.plottedPoints = zone.pos;
+      this.zoneType = zone.type;
+      this.drawLayer(ctx);
+      this.plottedPoints = [];
+    });
+
+    this.assets.forEach((asset) =>
+      this.plotAsset(ctx, asset.x, asset.y, asset.type)
+    );
   }
+  
+  // async fetchRoboPos() {
+  //   let response = await fetch(
+  //     `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
+  //     {
+  //       method: 'GET',
+  //       credentials: 'include',
+  //     }
+  //   );
+  //   let data = await response.json();
+  //   const { locations } = data.roboPos;
+  //   let amrPos = locations.map((roboLoc: any) => {
+  //     return roboLoc.dockPose.position;
+  //   });
+
+  //   // console.log(amrPos);
+  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+  //   const ctx = canvas.getContext('2d');
+  //   const imageWidth = 32; // Set this to the actual width of the plotted image
+  //   const imageHeight = 25; // Set this to the actual height of the plotted image
+
+  //   // Clear only the previous image area
+  //   const clearPreviousImage = (x: number, y: number) => {
+  //     ctx?.clearRect(
+  //       x - imageWidth / 2,
+  //       y - imageHeight / 2,
+  //       imageWidth,
+  //       imageHeight
+  //     );
+  //   };
+
+  //   let i = 0;
+  //   let currInterval = setInterval(() => {
+  //     if (ctx && i < amrPos.length) {
+  //       if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
+  //       // const transformedY = imgS.height - amrPos[i].y;
+  //       // console.log(amrPos[i].x, amrPos[i].y);
+  //       this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
+  //       i++;
+  //     } else clearInterval(currInterval);
+  //   }, 1000 * 2);
+  // }
+
+  async onInitMapImg() {
+    let project = this.projectService.getSelectedProject();
+    let mapArr = [];
+
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${project._id}`,
+      { credentials: 'include' }
+    );
+    if (!response.ok)
+      console.error('Error while fetching map data : ', response.status);
+    let data = await response.json();
+    let projectSites = data.project.sites;
+    mapArr = projectSites.flatMap((sites: any) => {
+      return sites.maps.map((map: any) => {
+        let date = new Date(map?.createdAt);
+        let createdAt = date.toLocaleString('en-IN', {
+          month: 'short',
+          year: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+        });
+
+        return {
+          id: map.mapId,
+          mapName: map.mapName,
+          siteName: sites.siteName,
+          date: createdAt,
+          createdAt: map.createdAt, // for sorting..
+        };
+      });
+    });
+    mapArr.sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    if (!mapArr.length) return;
+    const mapResponse = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapArr[0].mapName}`
+    );
+    let mapData = await mapResponse.json();
+    this.projectService.setMapData({
+      ...mapArr[0],
+      imgUrl: mapData.map.imgUrl,
+    });
+    this.loadCanvas();
+  }
+
+  // start-stop the operation!
+  startStopOpt() {
+    if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
+    if (this.throughputComponent) this.throughputComponent.getThroughPutIfOn();
+  }
+
+  toggleONBtn() {
+    this.ONBtn = !this.ONBtn;
+    if (this.ONBtn) this.getliveAmrPos();
+    if (!this.ONBtn) this.eventSource.close(); // try take of it..
+  }
+
+  getOnBtnImage(): string {
+    return this.ONBtn
+      ? '../../assets/icons/off.svg'
+      : '../../assets/icons/on.svg';
+  }
+
+  getliveAmrPos() {
+    const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos`;
+    if (this.eventSource) this.eventSource.close();
+
+    this.eventSource = new EventSource(URL);
+    this.eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log(data);
+      } catch (error) {
+        console.error('Error parsing SSE data:', error);
+      }
+    };
+
+    this.eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      this.eventSource.close();
+    };
+  }
+
+
+
 
   private plotAsset(
     ctx: CanvasRenderingContext2D,
@@ -648,30 +768,7 @@ export class DashboardComponent implements AfterViewInit {
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
 
-  loadCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
 
-    if (ctx) {
-      const img = new Image();
-      let imgName = this.projectService.getMapData();
-      img.src = `http://${imgName.imgUrl}`;
-
-      img.onload = () => {
-        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height =
-          canvas.parentElement?.clientHeight || window.innerHeight;
-        this.draw(ctx, img);
-
-        // // Conditionally draw nodes based on showModelCanvas flag
-        // if (this.showModelCanvas) {
-        //   this.nodes.forEach((node) => {
-        //     this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
-        //   });
-        // }
-      };
-    }
-  }
   captureCanvas() {
     const element = document.getElementById('container');
     console.log('Container element:', element); // Log the container to check if it exists

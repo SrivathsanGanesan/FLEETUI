@@ -22,7 +22,7 @@
   font-size: 36px;
   font-weight: bold;
   color: #DA2127;
-  margin-bottom: 0;
+  margin-top: 20px;
 }
 .popup-overlay {
   position: fixed;
@@ -60,7 +60,7 @@
 }
 
 
-.flex1{
+.flex{
   display: flex;
   text-wrap: nowrap;
 }
@@ -198,6 +198,7 @@
 .subheader-container {
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .subheader-text {
@@ -586,7 +587,7 @@ tr:nth-child(even) {
   margin-left: 10px;
 }
 .Enddate-label{
-  margin-left: 15px;
+  margin-left: 60px;
 }
 .tab-menu {
   list-style: none;
