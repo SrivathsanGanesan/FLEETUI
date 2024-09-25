@@ -4,6 +4,8 @@ import { AuthService } from '../auth.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MessageService } from 'primeng/api';
 import { ProjectService } from '../services/project.service';
+import { log } from 'node:console';
+import { stat } from 'node:fs';
 
 @Component({
   selector: 'app-user-management',
@@ -17,10 +19,11 @@ export class UserManagementComponent implements OnInit {
   filteredTaskData: any;
   constructor(
     private authService: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private projectService: ProjectService
   ) {}
 
-  // selectedProj
+  selectedProject: any | null = null;
   userId = 0;
   userName = '';
   passWord = '';
@@ -44,6 +47,11 @@ export class UserManagementComponent implements OnInit {
   deleteUserRole = '';
 
   ngOnInit(): void {
+    this.selectedProject = this.projectService.getSelectedProject();
+    if (!this.selectedProject && !this.selectedProject._id) {
+      console.log('no project selected!');
+      return;
+    }
     let user = this.authService.getUser();
     if (!user) {
       console.log('Current user state not found');
@@ -215,10 +223,11 @@ export class UserManagementComponent implements OnInit {
           let formattedDate = `${createdDate} - ${createdTime}`;
 
           return {
-            userId: user._id, // Assuming MongoDB `_id` is used as userId
+            userId: user._id,
             userName: user.name,
             userRole: user.role,
-            createdBy: user.createdBy, // Fetch createdBy from the response
+            // userPermissions: user.permissions, // user permission..
+            createdBy: user.createdBy,
             createdOn: formattedDate,
           };
         });
@@ -295,6 +304,8 @@ export class UserManagementComponent implements OnInit {
     // Prepare the new user object
     const newUser = {
       // userId: this.userId - 1, //this.userId - 1
+      projectName: this.selectedProject.projectName,
+      projectId: this.selectedProject._id,
       name: this.userName, // this.userName
       role: this.userRole, //this.userRole
       password: this.passWord, //this.passWord
@@ -486,22 +497,23 @@ export class UserManagementComponent implements OnInit {
     console.log(this.passwordState, this.confrimPasswordState);
   }
 
-  userPermissionPopUpOpen(username: string) {
-    this.user = this.userCredentials.find((user) => username === user.userName);
-
+  // fetch user-permissions pop-up..
+  userPermissionPopUpOpen(userId: string) {
+    this.user = this.userCredentials.find((user) => userId === user.userId);
     if (this.user) {
       console.log('User found:', this.user.userName);
       // Fetch user permissions and update the state
-      this.fetchUserPermissions(this.user.userName);
+      this.fetchUserPermissions(this.user.userId);
       this.userPermissionOCstate = !this.userPermissionOCstate;
     } else {
-      console.error('User not found:', username);
+      console.error('User not found:', userId);
     }
   }
 
-  fetchUserPermissions(username: string) {
+  // fetch user permission..
+  fetchUserPermissions(userId: string) {
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/api/users/${username}/permissions`
+      `http://${environment.API_URL}:${environment.PORT}/auth/get-permissions/${userId}`
     )
       .then((response) => {
         if (!response.ok) {
@@ -510,7 +522,7 @@ export class UserManagementComponent implements OnInit {
         return response.json();
       })
       .then((data) => {
-        console.log('Fetched user permissions:', data);
+        // console.log(data.permissions);
         // Update the local permission state
         this.userPermissionState = [
           [
@@ -521,25 +533,39 @@ export class UserManagementComponent implements OnInit {
             data.permissions.dashboard.view,
           ],
           [
-            data.permissions.mission.enable,
-            data.permissions.mission.create,
-            data.permissions.mission.edit,
-            data.permissions.mission.delete,
-            data.permissions.mission.view,
+            data.permissions.statistics.enable,
+            data.permissions.statistics.create,
+            data.permissions.statistics.edit,
+            data.permissions.statistics.delete,
+            data.permissions.statistics.view,
           ],
           [
-            data.permissions.transition.enable,
-            data.permissions.transition.create,
-            data.permissions.transition.edit,
-            data.permissions.transition.delete,
-            data.permissions.transition.view,
+            data.permissions.robots.enable,
+            data.permissions.robots.create,
+            data.permissions.robots.edit,
+            data.permissions.robots.delete,
+            data.permissions.robots.view,
           ],
           [
-            data.permissions.paths.enable,
-            data.permissions.paths.create,
-            data.permissions.paths.edit,
-            data.permissions.paths.delete,
-            data.permissions.paths.view,
+            data.permissions.configuration.enable,
+            data.permissions.configuration.create,
+            data.permissions.configuration.edit,
+            data.permissions.configuration.delete,
+            data.permissions.configuration.view,
+          ],
+          [
+            data.permissions.errLogs.enable,
+            data.permissions.errLogs.create,
+            data.permissions.errLogs.edit,
+            data.permissions.errLogs.delete,
+            data.permissions.errLogs.view,
+          ],
+          [
+            data.permissions.tasks.enable,
+            data.permissions.tasks.create,
+            data.permissions.tasks.edit,
+            data.permissions.tasks.delete,
+            data.permissions.tasks.view,
           ],
         ];
       })
@@ -559,9 +585,27 @@ export class UserManagementComponent implements OnInit {
   }
 
   changeUserPermission(option: number, i: number) {
+    if (i === 0 && this.userPermissionState[option][i]) {
+      for (let i = 0; i <= 4; i++) this.userPermissionState[option][i] = false;
+      return;
+    }
+
+    let firstState = this.userPermissionState[option]
+      .slice(1)
+      .filter((state) => state); // filter => only returns condition met..!
+
+    if (firstState.length === 1) this.userPermissionState[option][0] = false;
+    if (
+      !this.userPermissionState[option][0] &&
+      !this.userPermissionState[option][i]
+    )
+      this.userPermissionState[option][0] = true;
+
+    // needed one..!
     this.userPermissionState[option][i] = !this.userPermissionState[option][i];
   }
 
+  // save edited permissions..
   saveEditPermission() {
     if (!this.user) {
       console.error('No user selected for updating permissions');
@@ -583,38 +627,56 @@ export class UserManagementComponent implements OnInit {
         delete: this.userPermissionState[0][3],
         view: this.userPermissionState[0][4],
       },
-      Statistics: {
+      statistics: {
         enable: this.userPermissionState[1][0],
         create: this.userPermissionState[1][1],
         edit: this.userPermissionState[1][2],
         delete: this.userPermissionState[1][3],
         view: this.userPermissionState[1][4],
       },
-      configuration: {
+      robots: {
         enable: this.userPermissionState[2][0],
         create: this.userPermissionState[2][1],
         edit: this.userPermissionState[2][2],
         delete: this.userPermissionState[2][3],
         view: this.userPermissionState[2][4],
       },
-      Errorlogs: {
+      configuration: {
         enable: this.userPermissionState[3][0],
         create: this.userPermissionState[3][1],
         edit: this.userPermissionState[3][2],
         delete: this.userPermissionState[3][3],
         view: this.userPermissionState[3][4],
       },
+      errLogs: {
+        enable: this.userPermissionState[4][0],
+        create: this.userPermissionState[4][1],
+        edit: this.userPermissionState[4][2],
+        delete: this.userPermissionState[4][3],
+        view: this.userPermissionState[4][4],
+      },
+      tasks: {
+        enable: this.userPermissionState[5][0],
+        create: this.userPermissionState[5][1],
+        edit: this.userPermissionState[5][2],
+        delete: this.userPermissionState[5][3],
+        view: this.userPermissionState[5][4],
+      },
     };
 
     // Send the PUT request to update the user permissions
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/api/users/${this.user.userName}/permissions`,
+      `http://${environment.API_URL}:${environment.PORT}/auth/edit-permissions`,
       {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ permissions: updatedPermissions }),
+        credentials: 'include',
+        body: JSON.stringify({
+          userId: this.user.userId,
+          permissions: updatedPermissions,
+        }),
       }
     )
       .then((response) => {

@@ -16,47 +16,47 @@ const userProjListschema = new Schema(
 
 const userPermission = new Schema(
   {
-    dashBoard: {
+    dashboard: {
       enable: { type: Boolean, default: false },
       create: { type: Boolean, default: false },
       edit: { type: Boolean, default: false },
       delete: { type: Boolean, default: false },
-      // view: { type: Boolean, default: false },
+      view: { type: Boolean, default: false },
     },
     statistics: {
       enable: { type: Boolean, default: false },
       create: { type: Boolean, default: false },
       edit: { type: Boolean, default: false },
       delete: { type: Boolean, default: false },
-      // view: { type: Boolean, default: false },
+      view: { type: Boolean, default: false },
     },
     robots: {
       enable: { type: Boolean, default: false },
       create: { type: Boolean, default: false },
       edit: { type: Boolean, default: false },
       delete: { type: Boolean, default: false },
-      // view: { type: Boolean, default: false },
+      view: { type: Boolean, default: false },
     },
     configuration: {
       enable: { type: Boolean, default: false },
       create: { type: Boolean, default: false },
       edit: { type: Boolean, default: false },
       delete: { type: Boolean, default: false },
-      // view: { type: Boolean, default: false },
+      view: { type: Boolean, default: false },
     },
     errLogs: {
       enable: { type: Boolean, default: false },
       create: { type: Boolean, default: false },
       edit: { type: Boolean, default: false },
       delete: { type: Boolean, default: false },
-      // view: { type: Boolean, default: false },
+      view: { type: Boolean, default: false },
     },
     tasks: {
       enable: { type: Boolean, default: false },
       create: { type: Boolean, default: false },
       edit: { type: Boolean, default: false },
       delete: { type: Boolean, default: false },
-      // view: { type: Boolean, default: false },
+      view: { type: Boolean, default: false },
     },
   },
   { _id: false, versionKey: false }

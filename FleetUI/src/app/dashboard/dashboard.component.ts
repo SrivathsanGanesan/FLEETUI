@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   ViewChild,
+  ElementRef
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
@@ -40,7 +41,7 @@ enum ZoneType {
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
-
+  @ViewChild('myCanvas', { static: false }) overlayCanvas!: ElementRef<HTMLCanvasElement>;
   eventSource!: EventSource;
   ONBtn = false;
   showDashboard = false;
