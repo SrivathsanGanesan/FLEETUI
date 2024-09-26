@@ -20,6 +20,7 @@ import { AnyAaaaRecord } from 'node:dns';
 import { log } from 'node:console';
 import { MessageService } from 'primeng/api';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { FormBuilder } from '@angular/forms';
 
 interface Poll {
   ip: string;
@@ -53,6 +54,7 @@ export class ConfigurationComponent implements AfterViewInit {
   isPopupVisible: boolean = false;
   isTransitioning: boolean = false;
   activeButton: string = 'Environment'; // Default active button
+  // activ-btn: string ='typeSpecificationLink';
   activeHeader: string = 'Environment'; // Default header
   chosenImageName = ''; // Initialize chosenImageName with an empty string
   imageUploaded: boolean = false; // To track if an image is uploaded
@@ -112,11 +114,13 @@ export class ConfigurationComponent implements AfterViewInit {
   paginatedData: any[] = [];
   paginatedData1: any[] = [];
   paginatedData2: any[] = [];
+  Addform:any;
   constructor(
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: FormBuilder,
   ) {
     this.filteredEnvData = [...this.EnvData];
     // this.filteredRobotData = this.robotData;
@@ -320,6 +324,7 @@ export class ConfigurationComponent implements AfterViewInit {
       .then((data) => {
         if (data.isRoboExists) {
           this.fetchRobos();
+          this.loadData();
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -429,49 +434,61 @@ export class ConfigurationComponent implements AfterViewInit {
 
     async selectMap(map: any) {
       if (this.selectedMap?.id === map.id) {
-        // Deselect if the same map is clicked again
-        this.projectService.clearMapData();
-        this.projectService.setIsMapSet(false);
-        if (!this.EnvData.length) return;
-        this.selectedMap = this.EnvData[0];
-        const response = await fetch(
-          `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
-        );
-        if (!response.ok)
-          console.error('Error while fetching map data : ', response.status);
-        let data = await response.json();
-        let { map } = data;
-        this.ngOnInit();
+          // Deselect the current map if the same map is clicked again
+          this.projectService.clearMapData();
+          this.projectService.setIsMapSet(false);
 
-        if (this.projectService.getIsMapSet()) return;
-        this.projectService.setIsMapSet(true);
-        return;
+          this.selectedMap = this.EnvData.length ? this.EnvData[0] : null;
+          if (this.selectedMap) {
+              await this.loadMapData(this.selectedMap);
+          }
+
+          // Store the selected map in localStorage or service
+          if (this.selectedMap) {
+              localStorage.setItem('selectedMapId', this.selectedMap.id);
+          } else {
+              localStorage.removeItem('selectedMapId');
+          }
+
+          return;
       }
-      // Select a new map
+
+      // Select the new map
       this.selectedMap = map;
-      if (!this.EnvData.length) return;
-      this.projectService.clearMapData();
+      await this.loadMapData(map);
+
+      // Store the selected map in localStorage or service
+      if (this.selectedMap) {
+          localStorage.setItem('selectedMapId', this.selectedMap.id);
+      } else {
+          localStorage.removeItem('selectedMapId');
+      }
+  }
+
+  private async loadMapData(map: any) {
       const response = await fetch(
-        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+          `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
       );
-      if (!response.ok)
-        console.error('Error while fetching map data : ', response.status);
-      let data = await response.json();
-
+      if (!response.ok) {
+          console.error('Error while fetching map data : ', response.status);
+          return;
+      }
+      const data = await response.json();
       this.projectService.setMapData({
-        ...map,
-        imgUrl: data.map.imgUrl,
+          ...map,
+          imgUrl: data.map.imgUrl,
       });
+  }
 
-      if (this.projectService.getIsMapSet()) return;
-      this.projectService.setIsMapSet(true);
-    }
+
     // This method can be called when the component is initialized or when a new map is created
       private selectFirstMapIfNoneSelected() {
         if (!this.selectedMap && this.EnvData.length > 0) {
             this.selectMap(this.EnvData[0]);
         }
       }
+
+
   //   async selectMap(map: any) {
   //     if (this.selectedMap?.id === map.id) {
   //         // Deselect if the same map is clicked again
@@ -528,6 +545,7 @@ export class ConfigurationComponent implements AfterViewInit {
   // //     this.selectFirstMapIfNoneSelected();
   // //     // Other initialization logic
   // // }
+
 
 
 
@@ -1220,6 +1238,47 @@ export class ConfigurationComponent implements AfterViewInit {
       description: '',
     },
   };
+  resetForm() {
+    this.formData = {
+      robotName: '',
+      manufacturer: '',
+      serialNumber: '',
+      typeSpecification: {
+        seriesName: '',
+        seriesDescription: '',
+        agvKinematic: '',
+        agvClass: undefined as any | undefined,
+        maxLoadMass: 0,
+        localizationTypes: '',
+        navigationTypes: '',
+      },
+      protocolLimits: {
+        maxStringLens: '',
+        maxArrayLens: '',
+        timing: '',
+      },
+      protocolFeatures: {
+        optionalParameters: '',
+        actionScopes: '',
+        actionParameters: '',
+        resultDescription: '',
+      },
+      agvGeometry: {
+        wheelDefinitions: '',
+        envelopes2d: '',
+        envelopes3d: '',
+      },
+      loadSpecification: {
+        loadPositions: '',
+        loadSets: '',
+      },
+      localizationParameters: {
+        type: '',
+        description: '',
+      },
+    };
+  }
+
   // cities: any[] | undefined;
 
   // selectedCity: DB | undefined;
@@ -1238,7 +1297,7 @@ export class ConfigurationComponent implements AfterViewInit {
   toggleTypeSpecificationForm(event: Event): void {
     event.preventDefault();
     this.closeAllForms();
-    this.isTypeSpecificationFormVisible = !this.isTypeSpecificationFormVisible;
+    this.isTypeSpecificationFormVisible = true;
     this.cdRef.detectChanges();
   }
 
@@ -1357,6 +1416,8 @@ export class ConfigurationComponent implements AfterViewInit {
 
   saveItem(): void {
     this.isPopupOpen = false;
+    this.resetForm();
+
     this.cdRef.detectChanges();
   }
 
