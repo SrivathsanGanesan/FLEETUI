@@ -163,6 +163,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   isNodeDetailsPopupVisible = false; // Control popup visibility
   public ratio: number | null = null; // Store the resolution ratio (meters per pixel)
+  origin : {x : number, y : number, w : number} = { x : 0, y : 0, w : 0 };
   plottingMode: 'single' | 'multi' | null = null;
   isPlottingEnabled: boolean = false;
   isDrawing: boolean = false;
@@ -323,6 +324,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.siteName = this.currEditMapDet.siteName;
       this.ratio = this.currEditMapDet.ratio;
       this.imageSrc = this.currEditMapDet.imgUrl;
+      this.origin = this.currEditMapDet.origin;
       this.nodes = this.currEditMapDet.nodes.map((node : Node)=>{
         node.nodePosition.x = node.nodePosition.x / (this.ratio || 1);
         node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
@@ -347,6 +349,7 @@ export class EnvmapComponent implements AfterViewInit {
         robo.pos.y = robo.pos.y / (this.ratio || 1);
         return robo;
       })
+console.log(this.origin);
 
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
@@ -956,29 +959,29 @@ export class EnvmapComponent implements AfterViewInit {
   }
   updateEditedMap() {
     this.nodes = this.nodes.map((node)=>{
-      node.nodePosition.x = node.nodePosition.x * (this.ratio || 1);
-      node.nodePosition.y = node.nodePosition.y * (this.ratio || 1);
+      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) + (this.origin.x || 0));
+      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) + (this.origin.y || 0));
       return node;
     });
 
     this.assets = this.assets.map((asset) => {
-      asset.x = asset.x * (this.ratio || 1);
-      asset.y = asset.y * (this.ratio || 1);
+      asset.x = ((asset.x * (this.ratio || 1))+ (this.origin.x || 0));
+      asset.y = ((asset.y * (this.ratio || 1))+ (this.origin.y || 0));
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = pos.x * (this.ratio || 1);
-        pos.y = pos.y * (this.ratio || 1);
+        pos.x = ((pos.x * (this.ratio || 1))+ (this.origin.x || 0));
+        pos.y = ((pos.y * (this.ratio || 1))+ (this.origin.y || 0));
         return pos;
       });
       return zone;
     });
 
     this.robos = this.robos.map((robo) => {
-      robo.pos.x = robo.pos.x * (this.ratio || 1);
-      robo.pos.y = robo.pos.y * (this.ratio || 1);
+      robo.pos.x = ((robo.pos.x * (this.ratio || 1))+ (this.origin.x || 0));
+      robo.pos.y = ((robo.pos.y * (this.ratio || 1))+ (this.origin.y || 0));
       return robo;
     });
 
@@ -986,7 +989,7 @@ export class EnvmapComponent implements AfterViewInit {
       mapName: null,
       siteName: null,
       mpp: null,
-      origin: null,
+      // origin: null,
       nodes: this.nodes,
       edges: this.edges,
       zones: this.zones,
@@ -1049,29 +1052,29 @@ export class EnvmapComponent implements AfterViewInit {
     }
 
     this.nodes = this.nodes.map((node) => {
-      node.nodePosition.x = node.nodePosition.x * (this.ratio || 1);
-      node.nodePosition.y = node.nodePosition.y * (this.ratio || 1);
+      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) + (this.origin.x || 0));
+      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) + (this.origin.y || 0));
       return node;
     });
 
     this.assets = this.assets.map((asset) => {
-      asset.x = asset.x * (this.ratio || 1);
-      asset.y = asset.y * (this.ratio || 1);
+      asset.x = ((asset.x * (this.ratio || 1))+ (this.origin.x || 0));
+      asset.y = ((asset.y * (this.ratio || 1))+ (this.origin.y || 0));
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = pos.x * (this.ratio || 1);
-        pos.y = pos.y * (this.ratio || 1);
+        pos.x = ((pos.x * (this.ratio || 1))+ (this.origin.x || 0));
+        pos.y = ((pos.y * (this.ratio || 1))+ (this.origin.y || 0));
         return pos;
       });
       return zone;
     });
 
     this.robos = this.robos.map((robo) => {
-      robo.pos.x = robo.pos.x * (this.ratio || 1);
-      robo.pos.y = robo.pos.y * (this.ratio || 1);
+      robo.pos.x = ((robo.pos.x * (this.ratio || 1))+ (this.origin.x || 0));
+      robo.pos.y = ((robo.pos.y * (this.ratio || 1))+ (this.origin.y || 0));
       return robo;
     });
 
@@ -1081,6 +1084,7 @@ export class EnvmapComponent implements AfterViewInit {
       siteName: this.siteName,
       mapName: this.mapName,
       mpp: this.ratio,
+      origin:this.origin,
       imgUrl: '',
       zones: this.zones,
       edges: this.edges,
@@ -1088,7 +1092,7 @@ export class EnvmapComponent implements AfterViewInit {
       stations: this.assets,
       roboPos: this.robos,
     };
-
+console.log(this.origin)
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData));
 
@@ -1290,8 +1294,8 @@ export class EnvmapComponent implements AfterViewInit {
     const input = event.target as HTMLInputElement;
     this.ratio = Number(input.value);
   }
-  originX:number | null = null;
-  originY:number | null = null;
+  // originX:number | null = null;
+  // originY:number | null = null;
   open(): void {
     this.validationError = null;
 
