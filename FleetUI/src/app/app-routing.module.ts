@@ -72,15 +72,15 @@ const routes: Routes = [
     canActivate: [AuthGuard, ProjectGuard], // Ensure both guards are here
   },
 
-  // { path: 'statistics/operation', component: StatisticsComponent },
-  // { path: 'statistics/robot', component: RobotDashboardComponent },
-  // { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' },
+
   { path: 'statistics/operation', component: StatisticsComponent },
   { path: 'statistics/robot', component: RobotDashboardComponent },
   { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' },
+  
   { path: 'faq', component: FaqComponent },
   { path: 'support', component: SupportComponent },
-  // viewall for  operation
+
+  // view all for  operation
     { path: 'statistics', component: StatisticsComponent },
     { path: 'tasks', component: TasksComponent }, // Define the tasks route
     { path: '', redirectTo: '/statistics', pathMatch: 'full' } ,// Default route

@@ -60,6 +60,17 @@ import { TimerComponent } from './timer/timer.component';
 
 
 
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputMaskModule } from 'primeng/inputmask';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -120,7 +131,12 @@ import { TimerComponent } from './timer/timer.component';
     ToastModule,
     AppServerModule,
     CheckboxModule,
-    DialogModule
+    DialogModule,
+    InputGroupModule,
+    InputSwitchModule,
+    InputTextareaModule,
+    InputMaskModule,
+    InputGroupAddonModule,
   ],
   providers: [
     // provideClientHydration()
