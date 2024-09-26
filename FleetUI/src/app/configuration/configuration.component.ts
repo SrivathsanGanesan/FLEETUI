@@ -1152,7 +1152,7 @@ export class ConfigurationComponent implements AfterViewInit {
         if(item.id === this.projectService.getMapData().id){
           this.projectService.setIsMapSet(false);
           this.projectService.clearMapData();
-          this.ngOnInit();
+          // this.ngOnInit();
         }
         // Assuming currentTable determines which data array to modify
         if (this.currentTable === 'Environment') {
@@ -1163,8 +1163,10 @@ export class ConfigurationComponent implements AfterViewInit {
           this.filteredRobotData = this.filteredRobotData.filter(
             (i) => i !== item
           );
+          this.reloadTable();
         }
-        this.ngOnInit();
+        // this.ngOnInit();
+        this.reloadTable();
         console.log('Item deleted:', item);
         this.messageService.add({
           severity: 'success',
