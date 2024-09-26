@@ -292,6 +292,47 @@ export class DashboardComponent implements AfterViewInit {
   
     // ctx.restore(); // Reset transformation after drawing
   }
+  // async fetchRoboPos() {
+  //   let response = await fetch(
+  //     `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
+  //     {
+  //       method: 'GET',
+  //       credentials: 'include',
+  //     }
+  //   );
+  //   let data = await response.json();
+  //   const { locations } = data.roboPos;
+  //   let amrPos = locations.map((roboLoc: any) => {
+  //     return roboLoc.dockPose.position;
+  //   });
+
+  //   // console.log(amrPos);
+  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+  //   const ctx = canvas.getContext('2d');
+  //   const imageWidth = 32; // Set this to the actual width of the plotted image
+  //   const imageHeight = 25; // Set this to the actual height of the plotted image
+
+  //   // Clear only the previous image area
+  //   const clearPreviousImage = (x: number, y: number) => {
+  //     ctx?.clearRect(
+  //       x - imageWidth / 2,
+  //       y - imageHeight / 2,
+  //       imageWidth,
+  //       imageHeight
+  //     );
+  //   };
+
+  //   let i = 0;
+  //   let currInterval = setInterval(() => {
+  //     if (ctx && i < amrPos.length) {
+  //       if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
+  //       // const transformedY = imgS.height - amrPos[i].y;
+  //       // console.log(amrPos[i].x, amrPos[i].y);
+  //       this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
+  //       i++;
+  //     } else clearInterval(currInterval);
+  //   }, 1000 * 2);
+  // }
   async fetchRoboPos() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -428,47 +469,7 @@ export class DashboardComponent implements AfterViewInit {
     );
   }
   
-  // async fetchRoboPos() {
-  //   let response = await fetch(
-  //     `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
-  //     {
-  //       method: 'GET',
-  //       credentials: 'include',
-  //     }
-  //   );
-  //   let data = await response.json();
-  //   const { locations } = data.roboPos;
-  //   let amrPos = locations.map((roboLoc: any) => {
-  //     return roboLoc.dockPose.position;
-  //   });
 
-  //   // console.log(amrPos);
-  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-  //   const ctx = canvas.getContext('2d');
-  //   const imageWidth = 32; // Set this to the actual width of the plotted image
-  //   const imageHeight = 25; // Set this to the actual height of the plotted image
-
-  //   // Clear only the previous image area
-  //   const clearPreviousImage = (x: number, y: number) => {
-  //     ctx?.clearRect(
-  //       x - imageWidth / 2,
-  //       y - imageHeight / 2,
-  //       imageWidth,
-  //       imageHeight
-  //     );
-  //   };
-
-  //   let i = 0;
-  //   let currInterval = setInterval(() => {
-  //     if (ctx && i < amrPos.length) {
-  //       if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
-  //       // const transformedY = imgS.height - amrPos[i].y;
-  //       // console.log(amrPos[i].x, amrPos[i].y);
-  //       this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
-  //       i++;
-  //     } else clearInterval(currInterval);
-  //   }, 1000 * 2);
-  // }
 
   async onInitMapImg() {
     let project = this.projectService.getSelectedProject();

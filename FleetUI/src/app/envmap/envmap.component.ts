@@ -2037,9 +2037,9 @@ console.log(this.origin)
       };
       this.edges.push(edge);
       this.edgeCounter++;
-
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
+    this.direction= null;
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
