@@ -30,7 +30,7 @@ canvas {
   top: 0;
   height: 800;
   width: 1350;
-  /* background-color: rgba(212, 125, 125, 0.447); */
+  background-color: rgba(212, 125, 125, 0.447);
   left: 0;
 }
 
@@ -289,3 +289,4 @@ canvas {
   font-weight: 550;
   color: #7B7B7B;
 }
+

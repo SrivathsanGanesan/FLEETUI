@@ -41,7 +41,7 @@ enum ZoneType {
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
-  @ViewChild('myCanvas', { static: false }) overlayCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('myCanvas', { static: false }) myCanvas!: ElementRef<HTMLCanvasElement>;
   eventSource!: EventSource;
   ONBtn = false;
   showDashboard = false;
@@ -94,6 +94,10 @@ export class DashboardComponent implements AfterViewInit {
   private stream: MediaStream | null = null; // Store the MediaStream here
   showModelCanvas: boolean = false; // Initially hide the modelCanvas
   selectedMap: any | null = null;
+  mapImageWidth: number = 0; // To store the width of the map image
+  mapImageHeight: number = 0; // To store the height of the map image
+  mapImageX: number = 0; // To store the X position of the map image
+  mapImageY: number = 0; // To store the Y position of the map image
 
   constructor(
     private projectService: ProjectService,
@@ -102,8 +106,14 @@ export class DashboardComponent implements AfterViewInit {
     if (this.projectService.getIsMapSet()) return;
     this.onInitMapImg(); // yet to remove..
   }
-
   ngAfterViewInit(): void {
+    console.log('myCanvas:', this.myCanvas);
+    if (this.myCanvas) {
+      const canvas = this.myCanvas.nativeElement;
+      this.addMouseMoveListener(canvas);
+    } else {
+      console.error('myCanvas is undefined');
+    }
     this.robotImages = {
       robotB: new Image(),
     };
@@ -117,7 +127,41 @@ export class DashboardComponent implements AfterViewInit {
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
-
+  addMouseMoveListener(canvas: HTMLCanvasElement) {
+    const tooltip = document.getElementById('tooltip')!;
+    canvas.addEventListener('mousemove', (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+  
+      // Adjust for zoom and pan
+      const imgX = (mouseX - this.offsetX) / this.zoomLevel;
+      const imgY = (mouseY - this.offsetY) / this.zoomLevel;
+  
+      // Check if the mouse is within the bounds of the map image
+      const isInsideMap =
+        imgX >= this.mapImageX &&
+        imgX <= this.mapImageX + this.mapImageWidth &&
+        imgY >= this.mapImageY &&
+        imgY <= this.mapImageY + this.mapImageHeight;
+  
+      if (isInsideMap) {
+        console.log(this.ratio)
+        // Set tooltip content and position
+        tooltip.textContent = `X = ${(Math.round(imgX))*this.ratio}, Y = ${Math.round(imgY)*this.ratio}`;
+        tooltip.style.display = 'block';
+        tooltip.style.left = `${event.clientX}px`;
+        tooltip.style.top = `${event.clientY}px`; // Adjust 10px below the cursor
+      } else {
+        tooltip.style.display = 'none'; // Hide tooltip if outside
+      }
+    });
+  
+    canvas.addEventListener('mouseleave', () => {
+      tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
+    });
+  }
+  
   async getMapDetails() {
     let mapData = this.projectService.getMapData();
     let response = await fetch(
@@ -129,6 +173,7 @@ export class DashboardComponent implements AfterViewInit {
     if (!data.map) return;
     mapData = data.map;
     this.ratio = data.map.mpp;
+    
 
     this.nodes = mapData.nodes.map((node: any) => {
       // yet to interface in this component..
@@ -164,11 +209,13 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async ngOnInit() {
+    
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
       await this.onInitMapImg();
       return;
     }
+     this.getMapDetails();
     this.loadCanvas();
     await this.fetchRoboPos();
   }
@@ -192,11 +239,15 @@ export class DashboardComponent implements AfterViewInit {
       const img = new Image();
       let imgName = this.projectService.getMapData();
       img.src = `http://${imgName.imgUrl}`;
+      this.mapImageWidth = img.width * this.zoomLevel;
+      this.mapImageHeight = img.height * this.zoomLevel;
+
+      this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
+      this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
 
       img.onload = () => {
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height =
-          canvas.parentElement?.clientHeight || window.innerHeight;
+        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
         this.draw(ctx, img);
 
         // // Conditionally draw nodes based on showModelCanvas flag
@@ -219,7 +270,7 @@ export class DashboardComponent implements AfterViewInit {
     const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
     // Apply transformation for panning and zooming
     ctx.save();
-    ctx.translate(centerX, centerY);
+    ctx.translate(this.mapImageX, this.mapImageY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
 
     // Draw the image
@@ -276,7 +327,7 @@ export class DashboardComponent implements AfterViewInit {
     // this.robos.forEach((robo) =>
     //   this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
     // );
-    // ctx.restore(); // Reset transformation after drawing
+    ctx.restore(); // Reset transformation after drawing
   }
   async fetchRoboPos() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -320,7 +371,7 @@ export class DashboardComponent implements AfterViewInit {
         }
   
         // Log the current x, y position and orientation
-        console.log(`Robot Position: X = ${x}, Y = ${y}, Orientation = ${orientation}°`);
+        // console.log(`Robot Position: X = ${x}, Y = ${y}, Orientation = ${orientation}°`);
   
         // Plot the robot at the current position with the updated orientation
         this.plotRobo(ctx, x, y, orientation);
