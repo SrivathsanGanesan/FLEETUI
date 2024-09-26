@@ -497,20 +497,20 @@ export class UserManagementComponent implements OnInit {
     console.log(this.passwordState, this.confrimPasswordState);
   }
 
-  // permissions pop-up..
-  userPermissionPopUpOpen(username: string) {
-    this.user = this.userCredentials.find((user) => username === user.userName);
+  // fetch user-permissions pop-up..
+  userPermissionPopUpOpen(userId: string) {
+    this.user = this.userCredentials.find((user) => userId === user.userId);
     if (this.user) {
       console.log('User found:', this.user.userName);
       // Fetch user permissions and update the state
       this.fetchUserPermissions(this.user.userId);
       this.userPermissionOCstate = !this.userPermissionOCstate;
     } else {
-      console.error('User not found:', username);
+      console.error('User not found:', userId);
     }
   }
 
-  // handle here..
+  // fetch user permission..
   fetchUserPermissions(userId: string) {
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/auth/get-permissions/${userId}`

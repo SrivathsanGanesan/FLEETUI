@@ -18,6 +18,19 @@
   font-size: 0.9em;
   margin-top: 5px;
 }
+
+.p-inputtext{
+  padding: 0 !important;
+  width: 240px;
+  height: 35px !important;
+  font-size: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important ;
+  align-content: center !important;
+  padding: 0rem 0.75rem !important;
+}
+
 .UDform{
   padding: 10px;
 }
@@ -61,16 +74,16 @@
 }
 .popup-content1 input{
   text-align: center;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   font-size: 10px;
-  border-bottom: 1px solid black;
+  /* border-bottom: 1px solid black; */
 }
 .popup-content1 select{
   text-align: center;
   border-radius: 5px;
   font-size: 15px;
   padding: 10px;
-  border-bottom: 1px solid black;
+  /* border-bottom: 1px solid black; */
 }
 
 .popup-content1 button{
@@ -141,7 +154,8 @@ h2 {
   /* width: 120px;
   border: none;
   font-size: xx-small; */
-  border-bottom:1px solid #000000;
+  /* border-bottom:1px solid #000000; */
+  margin-right: 5px;
 }
 .OpenandLocate{
   margin-left: 15px;
@@ -216,7 +230,7 @@ h2 {
   padding: 8px;
   margin-bottom: 10px;
 
-  border-bottom:1px solid #000000;
+  /* border-bottom:1px solid #000000; */
   border-radius: 4px;
   text-align: center;
 }
@@ -477,14 +491,14 @@ canvas {
   font-weight: bold;
 } */
 .sampleCSS {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   margin: 20px;
 }
 
 .action-container select{
 
-  border-bottom:1px solid black ;
+  /* border-bottom:1px solid black ; */
   background-color: transparent;
   font-size: 15px;
   margin-left: 10px;

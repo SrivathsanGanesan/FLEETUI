@@ -3,8 +3,10 @@ const {
   projectModel,
   siteModel,
 } = require("../../fleetcore/models/projectSchema");
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
+const { log } = require("console");
 
 const deleteImage = (imgName) => {
   const dest = path.resolve(`proj_assets/dashboardMap/${imgName}`);
@@ -39,15 +41,18 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 };
 
 const sendNodeGraph = async ({ endpoint, bodyData }) => {
-  let response = await fetch(`http://192.168.1.6:8080/fms/amr/${endpoint}`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Basic cm9vdDp0b29y",
-    },
-    body: JSON.stringify(bodyData),
-  });
+  let response = await fetch(
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic cm9vdDp0b29y",
+      },
+      body: JSON.stringify(bodyData),
+    }
+  );
   if (!response.ok) {
     console.log("failed while sending node graph");
     return null;
@@ -60,10 +65,34 @@ const sendNodeGraph = async ({ endpoint, bodyData }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  /* const { nodes, edges } = mapData; // send node graph..
-  let nodeGraph = {
-    nodes: nodes,
-    edges: edges,
+  const { nodes, edges } = mapData; // send node graph..
+  let fleetNodes = [];
+  let fleetEdges = [];
+  nodes.forEach((node) => {
+    fleetNodes.push({
+      name: node.nodeId,
+      pose: {
+        position: {
+          x: node.nodePosition.x,
+          y: node.nodePosition.y,
+          z: node.nodePosition.orientation,
+        },
+      },
+      type: 1,
+    });
+  });
+  edges.forEach((edge) => {
+    fleetEdges.push({
+      from: edge.startNodeId,
+      isUniDirectional: true,
+      name: `${edge.startNodeId}|${edge.endNodeId}`,
+      to: edge.endNodeId,
+    });
+  });
+
+  /* let nodeGraph = {
+    nodes: fleetNodes,
+    edges: fleetEdges,
   };
   let data1 = await sendNodeGraph({
     endpoint: "save_graph",
@@ -86,8 +115,9 @@ const mapInsert = async (req, res) => {
       edges,
       stations,
       zones,
-      roboPos,
+      origin,
     } = mapData;
+
     const map = await Map.exists({ mapName: mapName });
     if (map) return res.json({ exits: true, msg: "Map name already exits" });
     const projDoc = await projectModel.exists({
@@ -132,6 +162,7 @@ const mapInsert = async (req, res) => {
       nodes,
       edges,
       stations,
+      origin,
     }).save();
     const MapId = newMap._id;
     const proj = await insertMapId({ MapId, mapName, projectName, siteName });

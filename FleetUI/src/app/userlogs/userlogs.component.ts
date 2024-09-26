@@ -12,7 +12,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
   styleUrl: './userlogs.component.css',
 })
 export class Userlogscomponent {
-  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   mapData: any | null = null;
   activeFilter: any;
   ONBtn: any;
@@ -191,6 +191,7 @@ export class Userlogscomponent {
   onPageChange(event: PageEvent) {
     this.setPaginatedData();
   }
+
 
   onSearch(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
