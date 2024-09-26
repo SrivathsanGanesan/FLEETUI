@@ -36,15 +36,18 @@ const eventStreamHeader = {
 };
 
 const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
-  let response = await fetch(`http://192.168.1.6:8080/fms/amr/${endpoint}`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Basic cm9vdDp0b29y",
-    },
-    body: JSON.stringify(bodyData),
-  });
+  let response = await fetch(
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/poseData`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic cm9vdDp0b29y",
+      },
+      // body: JSON.stringify(bodyData),
+    }
+  );
   if (!response.ok) {
     console.log("failed while sending node graph");
     return null;
@@ -86,7 +89,7 @@ const getRoboPos = async (req, res) => {
       return res.status(400).json({ msg: "Map not found!", map: null });
     // const map = await Map.findOne({ _id: mapId });
     /* let roboPos = await fetchGetAmrLoc({
-      endpoint: "get_AMR_Locations",
+      endpoint: "poseData",
       bodyData: {},
     }); */
     return res.status(200).json({ roboPos: null, data: "msg sent" });
