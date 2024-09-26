@@ -6,7 +6,6 @@ const {
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
-const { log } = require("console");
 
 const deleteImage = (imgName) => {
   const dest = path.resolve(`proj_assets/dashboardMap/${imgName}`);
@@ -40,6 +39,80 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   return proj;
 };
 
+// roll (X), pitch (Y), yaw (Z)
+const ToQuaternion_ = (roll, pitch, yaw) => {
+  const cy = Math.cos(yaw * 0.5);
+  const sy = Math.sin(yaw * 0.5);
+  const cp = Math.cos(pitch * 0.5);
+  const sp = Math.sin(pitch * 0.5);
+  const cr = Math.cos(roll * 0.5);
+  const sr = Math.sin(roll * 0.5);
+
+  const q = {
+    x: sr * cp * cy - cr * sp * sy,
+    y: cr * sp * cy + sr * cp * sy,
+    z: cr * cp * sy - sr * sp * cy,
+    w: cr * cp * cy + sr * sp * sy,
+  };
+
+  return q;
+};
+
+const getPosition = (node, poseArr) => {
+  return poseArr.length > 0
+    ? {
+        x: node.nodePosition.x,
+        y: node.nodePosition.y,
+        z: node.nodePosition.orientation,
+      }
+    : { x: 0, y: 0, z: 0 };
+};
+
+const getFleetNodes = (nodes) => {
+  return nodes.map((node) => {
+    let moveAction = node.actions.filter(
+      (action) => action.actionType === "Move"
+    );
+    let dockAction = node.actions.filter(
+      (action) => action.actionType === "Dock"
+    );
+    let undockAction = node.actions.filter(
+      (action) => action.actionType === "Undock"
+    );
+    let preDockPos = getPosition(node, moveAction);
+    let dockPos = getPosition(node, dockAction);
+    let undockPos = getPosition(node, undockAction);
+    let x = 0;
+    let y = 0;
+    let z = node.nodePosition.orientation; // angle of rotaion in that certain axis..
+    return {
+      name: node.nodeId,
+      locationDescription: node.nodeDescription,
+      type: 2,
+      preDockPose: {
+        position: preDockPos,
+        orientation: ToQuaternion_(x, y, z),
+      },
+      dockPose: {
+        position: dockPos,
+        orientation: ToQuaternion_(x, y, z),
+        dockParams: {
+          xOffset: dockPos.length ? dockPos[0].parameters.goalOffsetX : 0,
+          yOffset: dockPos.length ? dockPos[0].parameters.goalOffsetY : 0,
+          dockingType:
+            dockPos.length && dockPos[0].parameters.dockingType === "mode2"
+              ? 2
+              : 1,
+        },
+      },
+      unDockPose: {
+        position: undockPos,
+        orientation: ToQuaternion_(x, y, z),
+      },
+    };
+  });
+};
+
 const sendNodeGraph = async ({ endpoint, bodyData }) => {
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
@@ -65,30 +138,29 @@ const sendNodeGraph = async ({ endpoint, bodyData }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  const { nodes, edges } = mapData; // send node graph..
-  let fleetNodes = [];
+  /*   const { nodes, edges } = mapData; // send node graph..
   let fleetEdges = [];
-  nodes.forEach((node) => {
-    fleetNodes.push({
-      name: node.nodeId,
-      pose: {
-        position: {
-          x: node.nodePosition.x,
-          y: node.nodePosition.y,
-          z: node.nodePosition.orientation,
-        },
-      },
-      type: 1,
-    });
-  });
   edges.forEach((edge) => {
     fleetEdges.push({
       from: edge.startNodeId,
-      isUniDirectional: true,
+      isUniDirectional: edge.direction === "UN_DIRECTIONAL" ? true : false,
       name: `${edge.startNodeId}|${edge.endNodeId}`,
       to: edge.endNodeId,
     });
   });
+
+  let fleetNodes = getFleetNodes(nodes);
+  let nodeGraph = {
+    nodes: fleetNodes,
+    edges: fleetEdges,
+  };
+  const filePath = path.resolve(
+    __dirname,
+    "../../proj_assets/nodeGraph/nodeGraph.txt"
+  );
+
+  // const data = JSON.parse(fs.readFileSync(filePath));
+  fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {}); */
 
   /* let nodeGraph = {
     nodes: fleetNodes,

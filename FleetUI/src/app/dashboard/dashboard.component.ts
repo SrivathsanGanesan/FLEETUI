@@ -129,7 +129,7 @@ export class DashboardComponent implements AfterViewInit {
   }
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     
-    const tooltip = document.getElementById('tooltip')!;
+    const tooltip = document.getElementById('Pos_tooltip')!;
     canvas.addEventListener('mousemove', (event) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
@@ -142,16 +142,16 @@ export class DashboardComponent implements AfterViewInit {
       // Check if the mouse is within the bounds of the map image
       const isInsideMap =
         imgX >= this.mapImageX &&
-        imgX <= this.mapImageX + this.mapImageWidth &&
+        imgX <= this.mapImageX + (this.mapImageWidth / this.zoomLevel) &&
         imgY >= this.mapImageY &&
-        imgY <= this.mapImageY + this.mapImageHeight;
+        imgY <= this.mapImageY + (this.mapImageHeight / this.zoomLevel);
   
       if (isInsideMap) {
         // Set tooltip content and position
         tooltip.textContent = `X = ${(Math.round(imgX))*this.ratio}, Y = ${Math.round(imgY)*this.ratio}`;
         tooltip.style.display = 'block';
-        tooltip.style.left = `${event.clientX}px`;
-        tooltip.style.top = `${event.clientY}px`; // Adjust 10px below the cursor
+        tooltip.style.left = `${event.clientX}`;
+        tooltip.style.top = `${event.clientY}`; // Adjust 10px below the cursor
       } else {
         tooltip.style.display = 'none'; // Hide tooltip if outside
       }
@@ -290,20 +290,61 @@ export class DashboardComponent implements AfterViewInit {
       }
     });
   
-    ctx.restore(); // Reset transformation after drawing
+    // ctx.restore(); // Reset transformation after drawing
   }
+  // async fetchRoboPos() {
+  //   let response = await fetch(
+  //     `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
+  //     {
+  //       method: 'GET',
+  //       credentials: 'include',
+  //     }
+  //   );
+  //   let data = await response.json();
+  //   const { locations } = data.roboPos;
+  //   let amrPos = locations.map((roboLoc: any) => {
+  //     return roboLoc.dockPose.position;
+  //   });
+
+  //   // console.log(amrPos);
+  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+  //   const ctx = canvas.getContext('2d');
+  //   const imageWidth = 32; // Set this to the actual width of the plotted image
+  //   const imageHeight = 25; // Set this to the actual height of the plotted image
+
+  //   // Clear only the previous image area
+  //   const clearPreviousImage = (x: number, y: number) => {
+  //     ctx?.clearRect(
+  //       x - imageWidth / 2,
+  //       y - imageHeight / 2,
+  //       imageWidth,
+  //       imageHeight
+  //     );
+  //   };
+
+  //   let i = 0;
+  //   let currInterval = setInterval(() => {
+  //     if (ctx && i < amrPos.length) {
+  //       if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
+  //       // const transformedY = imgS.height - amrPos[i].y;
+  //       // console.log(amrPos[i].x, amrPos[i].y);
+  //       this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
+  //       i++;
+  //     } else clearInterval(currInterval);
+  //   }, 1000 * 2);
+  // }
   async fetchRoboPos() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    const mapImage = new Image();
-  
+    
     let x = 200; // Starting x position
     let y = 260; // Starting y position
     const step = 1; // Increment step for each position change
     const maxX = 420; // Maximum limit for X position
     const maxY = 460; // Maximum limit for Y position
     let orientation = 0; // Initial orientation of the robot (0 deg)
-  
+    
+    const mapImage = new Image();
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load
@@ -320,20 +361,21 @@ export class DashboardComponent implements AfterViewInit {
   
         // Center the image on the canvas
         const centerX = (canvas.width - imgWidth) / 2 ;
-        const centerY = (canvas.height - imgHeight) / 2;
+        const centerY = (canvas.height - imgHeight) / 2 ;
   
         // Apply transformation for panning and zooming
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.scale(this.zoomLevel, this.zoomLevel);
+        ctx.restore(); // Reset transformation after drawing
   
         // Draw the map image
-        ctx.drawImage(mapImage, 0, 0);
-  
+        ctx.drawImage(mapImage, 0, 0,);
+        
         if (this.showModelCanvas) {
           this.redrawOtherElements(ctx, mapImage); // Pass the mapImage for transformations
         }
-  
+        
         // Update robot position
         if (x < maxX) {
           x += step; // Increment x
@@ -347,11 +389,12 @@ export class DashboardComponent implements AfterViewInit {
         // Plot the robot at the updated position
         this.plotRobo(ctx, x, y, orientation);
   
-        ctx.restore(); // Reset transformation after drawing
+        // ctx.restore(); // Reset transformation after drawing
       } else {
         clearInterval(currInterval);
       }
     }, 1000 * 0.025); // Update position every 0.025 seconds
+    
   }
   
   plotRobo(
@@ -426,47 +469,7 @@ export class DashboardComponent implements AfterViewInit {
     );
   }
   
-  // async fetchRoboPos() {
-  //   let response = await fetch(
-  //     `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
-  //     {
-  //       method: 'GET',
-  //       credentials: 'include',
-  //     }
-  //   );
-  //   let data = await response.json();
-  //   const { locations } = data.roboPos;
-  //   let amrPos = locations.map((roboLoc: any) => {
-  //     return roboLoc.dockPose.position;
-  //   });
 
-  //   // console.log(amrPos);
-  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-  //   const ctx = canvas.getContext('2d');
-  //   const imageWidth = 32; // Set this to the actual width of the plotted image
-  //   const imageHeight = 25; // Set this to the actual height of the plotted image
-
-  //   // Clear only the previous image area
-  //   const clearPreviousImage = (x: number, y: number) => {
-  //     ctx?.clearRect(
-  //       x - imageWidth / 2,
-  //       y - imageHeight / 2,
-  //       imageWidth,
-  //       imageHeight
-  //     );
-  //   };
-
-  //   let i = 0;
-  //   let currInterval = setInterval(() => {
-  //     if (ctx && i < amrPos.length) {
-  //       if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
-  //       // const transformedY = imgS.height - amrPos[i].y;
-  //       // console.log(amrPos[i].x, amrPos[i].y);
-  //       this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
-  //       i++;
-  //     } else clearInterval(currInterval);
-  //   }, 1000 * 2);
-  // }
 
   async onInitMapImg() {
     let project = this.projectService.getSelectedProject();
