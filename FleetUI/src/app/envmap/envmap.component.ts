@@ -326,7 +326,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.imageSrc = this.currEditMapDet.imgUrl;
       this.origin = this.currEditMapDet.origin;
       this.nodes = this.currEditMapDet.nodes.map((node : Node)=>{
-        node.nodePosition.x = node.nodePosition.x / (this.ratio || 1);
+        node.nodePosition.x = (node.nodePosition.x / (this.ratio || 1));
         node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
         return node;
       });
@@ -959,29 +959,29 @@ console.log(this.origin);
   }
   updateEditedMap() {
     this.nodes = this.nodes.map((node)=>{
-      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)));
-      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)));
+      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1))+ (this.origin.x || 0));
+      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1))+ (this.origin.y || 0));
       return node;
     });
 
     this.assets = this.assets.map((asset) => {
-      asset.x = ((asset.x * (this.ratio || 1)));
-      asset.y = ((asset.y * (this.ratio || 1)));
+      asset.x = ((asset.x * (this.ratio || 1))+ (this.origin.x || 0));
+      asset.y = ((asset.y * (this.ratio || 1))+ (this.origin.y || 0));
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = ((pos.x * (this.ratio || 1)));
-        pos.y = ((pos.y * (this.ratio || 1)));
+        pos.x = ((pos.x * (this.ratio || 1))+ (this.origin.x || 0));
+        pos.y = ((pos.y * (this.ratio || 1))+ (this.origin.y || 0));
         return pos;
       });
       return zone;
     });
 
     this.robos = this.robos.map((robo) => {
-      robo.pos.x = ((robo.pos.x * (this.ratio || 1)));
-      robo.pos.y = ((robo.pos.y * (this.ratio || 1)));
+      robo.pos.x = ((robo.pos.x * (this.ratio || 1))+ (this.origin.x || 0));
+      robo.pos.y = ((robo.pos.y * (this.ratio || 1))+ (this.origin.y || 0));
       return robo;
     });
 
@@ -989,7 +989,7 @@ console.log(this.origin);
       mapName: null,
       siteName: null,
       mpp: null,
-      // origin: null,
+      origin: null,
       nodes: this.nodes,
       edges: this.edges,
       zones: this.zones,
@@ -1084,7 +1084,7 @@ console.log(this.origin);
       siteName: this.siteName,
       mapName: this.mapName,
       mpp: this.ratio,
-      origin:this.origin,
+      origin: this.origin,
       imgUrl: '',
       zones: this.zones,
       edges: this.edges,
@@ -1092,7 +1092,7 @@ console.log(this.origin);
       stations: this.assets,
       roboPos: this.robos,
     };
-console.log(this.origin)
+
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData));
 
@@ -1404,6 +1404,7 @@ console.log(this.origin)
       this.zoneType = zone.type; // Prepopulate the selected zone type
       this.selectedZone = zone; // Store the selected zone
       this.isPopupVisible = true;
+      this.isDeleteVisible=true;
       // this.showZoneTypePopup(); // Display the popup
       return;
     }
@@ -1815,6 +1816,7 @@ console.log(this.origin)
       'mouseup',
       this.onMouseUp.bind(this)
     );
+    
   }
 
   setPlottingMode(mode: 'single' | 'multi'): void {
@@ -2443,11 +2445,13 @@ console.log(this.origin)
       this.onMouseUp.bind(this)
     );
   }
+  isDeleteVisible = true; 
   startZonePlotting(): void {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;
     this.plottedPoints = []; // Reset previously plotted points
     this.zonePointCount = 0; // Reset the point count for each new zone plotting session
+    this.isDeleteVisible = false;
   }
   plotZonePoint(x: number, y: number, isFirstPoint: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -3205,7 +3209,7 @@ console.log(this.origin)
     mouseX: number,
     mouseY: number
   ): boolean {
-    const radius = 25; // Adjust radius to match asset size
+    const radius = 10; // Adjust radius to match asset size
     const dx = mouseX - asset.x;
     const dy = mouseY - asset.y;
     return dx * dx + dy * dy <= radius * radius;

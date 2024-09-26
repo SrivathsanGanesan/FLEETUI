@@ -63,8 +63,8 @@
           class="origin-coor"
           style="display: flex; align-items: center; gap: 10px"
         >
-        <input pInputText type="number" id="X" placeholder="X" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
-        <input pInputText type="number" id="Y" placeholder="Y" #originY [(ngModel)]="origin.y" (keyup.enter)="open()" />
+        <input pInputText type="number" id="X" placeholder="X" min="0" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
+        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.x" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
@@ -365,7 +365,7 @@
         class="options-container"
         *ngIf="!isPlottingEnabled && !isOptionsMenuVisible && !isZonePlottingEnabled "
       >
-        <button (click)="toggleOptionsMenu()">
+        <button (click)="toggleOptionsMenu()" >
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div>
@@ -449,7 +449,7 @@
     </select>
     <div>
       <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">Confirm</button>
-      <button (click)="onDeleteZone()">Delete</button>
+      <button *ngIf="isDeleteVisible" (click)="onDeleteZone()">Delete</button>
       <button (click)="onCancel()">Cancel</button>
     </div>
   </div>
