@@ -959,29 +959,29 @@ console.log(this.origin);
   }
   updateEditedMap() {
     this.nodes = this.nodes.map((node)=>{
-      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) + (this.origin.x || 0));
-      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) + (this.origin.y || 0));
+      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)));
+      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)));
       return node;
     });
 
     this.assets = this.assets.map((asset) => {
-      asset.x = ((asset.x * (this.ratio || 1))+ (this.origin.x || 0));
-      asset.y = ((asset.y * (this.ratio || 1))+ (this.origin.y || 0));
+      asset.x = ((asset.x * (this.ratio || 1)));
+      asset.y = ((asset.y * (this.ratio || 1)));
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = ((pos.x * (this.ratio || 1))+ (this.origin.x || 0));
-        pos.y = ((pos.y * (this.ratio || 1))+ (this.origin.y || 0));
+        pos.x = ((pos.x * (this.ratio || 1)));
+        pos.y = ((pos.y * (this.ratio || 1)));
         return pos;
       });
       return zone;
     });
 
     this.robos = this.robos.map((robo) => {
-      robo.pos.x = ((robo.pos.x * (this.ratio || 1))+ (this.origin.x || 0));
-      robo.pos.y = ((robo.pos.y * (this.ratio || 1))+ (this.origin.y || 0));
+      robo.pos.x = ((robo.pos.x * (this.ratio || 1)));
+      robo.pos.y = ((robo.pos.y * (this.ratio || 1)));
       return robo;
     });
 

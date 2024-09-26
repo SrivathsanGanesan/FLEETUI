@@ -128,15 +128,16 @@ export class DashboardComponent implements AfterViewInit {
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
   addMouseMoveListener(canvas: HTMLCanvasElement) {
+    
     const tooltip = document.getElementById('tooltip')!;
     canvas.addEventListener('mousemove', (event) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
-  
+      const transY = canvas.height - mouseY;
       // Adjust for zoom and pan
       const imgX = (mouseX - this.offsetX) / this.zoomLevel;
-      const imgY = (mouseY - this.offsetY) / this.zoomLevel;
+      const imgY = (transY - this.offsetY) / this.zoomLevel;
   
       // Check if the mouse is within the bounds of the map image
       const isInsideMap =
@@ -146,7 +147,6 @@ export class DashboardComponent implements AfterViewInit {
         imgY <= this.mapImageY + this.mapImageHeight;
   
       if (isInsideMap) {
-        console.log(this.ratio)
         // Set tooltip content and position
         tooltip.textContent = `X = ${(Math.round(imgX))*this.ratio}, Y = ${Math.round(imgY)*this.ratio}`;
         tooltip.style.display = 'block';
@@ -239,101 +239,63 @@ export class DashboardComponent implements AfterViewInit {
       const img = new Image();
       let imgName = this.projectService.getMapData();
       img.src = `http://${imgName.imgUrl}`;
-      this.mapImageWidth = img.width * this.zoomLevel;
-      this.mapImageHeight = img.height * this.zoomLevel;
-
-      this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-      this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
-
+  
       img.onload = () => {
+        // Set canvas dimensions based on its container
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height =canvas.parentElement?.clientHeight || window.innerHeight;
+        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+  
+        // Calculate the scaled image dimensions
+        this.mapImageWidth = img.width * this.zoomLevel;
+        this.mapImageHeight = img.height * this.zoomLevel;
+  
+        // Center the image on the canvas
+        this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
+        this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+  
+        // Draw the image and other elements
         this.draw(ctx, img);
-
-        // // Conditionally draw nodes based on showModelCanvas flag
-        // if (this.showModelCanvas) {
-        //   this.nodes.forEach((node) => {
-        //     this.drawNode(ctx, node.nodePosition.x, node.nodePosition.y, node.nodeId);
-        //   });
-        // }
-      };
-    }
+      };}
   }
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Calculate the position to center the image
-    const imgWidth = img.width * this.zoomLevel;
-    const imgHeight = img.height * this.zoomLevel;
-
-    const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
-    const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
-    // Apply transformation for panning and zooming
+  
+    // Apply transformation for centering, zooming, and panning
     ctx.save();
     ctx.translate(this.mapImageX, this.mapImageY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
-
-    // Draw the image
+  
+    // Draw the map image
     ctx.drawImage(img, 0, 0);
-
+  
     if (!this.showModelCanvas) return;
-    // Draw nodes on the image
+  
+    // Draw nodes and other elements
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
-
-    // Draw edges between nodes
+  
+    // Draw edges and other elements similarly
     this.edges.forEach((edge) => {
       const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
       const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
       if (startNode && endNode) {
-        const startPos = {
-          x: startNode.nodePosition.x,
-          y: startNode.nodePosition.y,
-        };
+        const startPos = { x: startNode.nodePosition.x, y: startNode.nodePosition.y };
         const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
         const transformedStartY = img.height - startPos.y;
         const transformedEndY = img.height - endPos.y;
-        this.drawEdge(
-          ctx,
-          { x: startPos.x, y: transformedStartY },
-          { x: endPos.x, y: transformedEndY },
-          edge.direction,
-          edge.startNodeId,
-          edge.endNodeId
-        );
+        this.drawEdge(ctx, { x: startPos.x, y: transformedStartY }, { x: endPos.x, y: transformedEndY }, edge.direction, edge.startNodeId, edge.endNodeId);
       }
     });
-
-    this.zones.forEach((zone) => {
-      // Re-plot the points of the zone
-      // zone.pos.forEach((point, index) => {
-      //   // Plot the first point in violet and others in red
-      //   const isFirstPoint = index === 0;
-      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
-      // });
-      this.plottedPoints = zone.pos;
-      this.zoneType = zone.type;
-      this.drawLayer(ctx);
-      this.plottedPoints = [];
-    });
-
-    this.assets.forEach((asset) =>
-      this.plotAsset(ctx, asset.x, asset.y, asset.type)
-    );
-
-    // yet to uncomment
-    // this.robos.forEach((robo) =>
-    //   this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
-    // );
+  
     ctx.restore(); // Reset transformation after drawing
   }
   async fetchRoboPos() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    const imageWidth = 45; // Set this to the actual width of the robot image
-    const imageHeight = 25; // Set this to the actual height of the robot image
+    const mapImage = new Image();
   
     let x = 200; // Starting x position
     let y = 260; // Starting y position
@@ -342,46 +304,56 @@ export class DashboardComponent implements AfterViewInit {
     const maxY = 460; // Maximum limit for Y position
     let orientation = 0; // Initial orientation of the robot (0 deg)
   
-    const mapImage = new Image();
-    let map = this.projectService.getMapData(); // Replace this with the correct path to the map image
+    let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load
-  
+
     let currInterval = setInterval(() => {
       if (ctx && (x <= maxX || y <= maxY)) {
+        
         // Clear the entire canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height); 
-        // Redraw the map
-        ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height); 
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-        // Only redraw other elements if the model canvas is shown
+        // Calculate the scaled image dimensions
+        const imgWidth = mapImage.width * this.zoomLevel;
+        const imgHeight = mapImage.height * this.zoomLevel;
+  
+        // Center the image on the canvas
+        const centerX = (canvas.width - imgWidth) / 2 ;
+        const centerY = (canvas.height - imgHeight) / 2;
+  
+        // Apply transformation for panning and zooming
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.scale(this.zoomLevel, this.zoomLevel);
+  
+        // Draw the map image
+        ctx.drawImage(mapImage, 0, 0);
+  
         if (this.showModelCanvas) {
           this.redrawOtherElements(ctx, mapImage); // Pass the mapImage for transformations
         }
   
-        // Move along X-axis until it reaches 420
+        // Update robot position
         if (x < maxX) {
           x += step; // Increment x
         } else {
-          // Once x reaches 420, change orientation to 270 deg and start moving Y-axis
-          orientation = 270;
+          orientation = 270; // Change orientation after x limit
           if (y < maxY) {
-            y += step; // Move Y to max 420
+            y += step; // Increment y
           }
         }
   
-        // Log the current x, y position and orientation
-        // console.log(`Robot Position: X = ${x}, Y = ${y}, Orientation = ${orientation}°`);
-  
-        // Plot the robot at the current position with the updated orientation
+        // Plot the robot at the updated position
         this.plotRobo(ctx, x, y, orientation);
   
+        ctx.restore(); // Reset transformation after drawing
       } else {
         clearInterval(currInterval);
       }
     }, 1000 * 0.025); // Update position every 0.025 seconds
   }
-
+  
   plotRobo(
     ctx: CanvasRenderingContext2D,
     x: number,
