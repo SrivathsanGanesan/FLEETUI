@@ -3,18 +3,19 @@
   position: fixed;
   top: 50%;
   display: grid;
-  grid-template-columns:  repeat(auto-fit, minmax(150px, 1fr));
+  // grid-template-columns:  repeat(auto-fit, minmax(150px, 1fr));
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90%;
-  height: 90%;
-  background-color: white;
+  width: 90vw;
+  height: 90vh;
+  background-color: #d1d0d0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000; /* Ensures it appears above other content */
+  padding: 10px;
 }
 
 .left-side{
@@ -35,12 +36,13 @@
 
 /* Content Styling */
 .left-side {
-  background-color: #f5f5f5; /* Light grey background */
+  background-color: #d1d0d0; /* Light grey background */
 }
 
 .right-side {
   background-color: #ffffff; /* White background */
   border-left: 2px solid #e0e0e0; /* Adds a slight divider between left and right */
+  border-radius: 15px;
 }
 /* Header Section */
 .header-container {
@@ -72,41 +74,53 @@
   align-items: center;
 }
 
-.wifi-icon {
-  width: 30px;
-  margin-right: 10px;
+// .wifi-icon {
+//   width: 30px;
+//   margin-right: 10px;
   
-}
+// }
 
-.wifi-percentage {
-  font-size: 1.2rem;
-}
+// .wifi-percentage {
+//   font-size: 1.2rem;
+// }
 
 /* Task and Map Section */
 .task-map-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   justify-content: space-between;
-  gap: 3%;
+  gap: 1%;
+  height: 31%;
   // padding: 10px;
 }
 
 .task-container {
-  flex: 0 0 65%; /* 60% width */
+  flex: 0 0 62%; /* 60% width */
   background-color: #ff6b6b;
-  margin: 5px; /* Optional: Add a background to distinguish */
-  padding: 10px; /* Optional: Add padding for better spacing */
+  margin: 10px; /* Optional: Add a background to distinguish */
+  padding: 10px; 
   border-radius: 10px;
+  
+  
   
  
 }
 
-.map-container {
-  flex: 0 0 30%; /* 30% width */
-  background-color: #ffffff; /* Optional: Add a background to distinguish */
-  padding: 10px; /* Optional: Add padding for better spacing */
+ .map-container {
+  flex: 0 0 30%; /* 60% width */
+  background-color: #ffffff;
+  margin: 10px; /* Optional: Add a background to distinguish */
+  padding: 10px; 
   border-radius: 10px;
+
+//   flex: 0 0 30%; 
+//   background-color: #ffffff; 
+//   padding: 10px; 
+//   border-radius: 10px;
+//   height: 100%;
+//   margin: 10px;
   
-}
+ }
 
 .map-container-item{
   background-color: #fff;
@@ -167,10 +181,13 @@
   font-weight: 500;
 }
 .networkstrength-value {
+  color: #000000;
   font-size: 40px;
-  font-weight: medium;
-  color: #000;
-  margin-top: 10px;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
 }
 
 
@@ -209,10 +226,13 @@
   }
 
   .robottemperature-value {
-    font-size: 40px;
-    font-weight: medium;
-    color: #000;
-    margin-top: 20px;
+    color: #000000;
+  font-size: 40px;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
   }
 
 //  robot utilization
@@ -246,18 +266,22 @@
 }
 
 .robot-utilization-label {
+ 
   color: #000000;
   font-size: 14px;
   font-family: Inter;
   font-weight: 500;
+  
 }
 
 .robot-utilization-value {
+  color: #000000;
   font-size: 40px;
-  font-weight: medium;
-  color: #000;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
   margin-top: 20px;
-  // width: 100%;
 }
 
 
@@ -300,7 +324,7 @@
   font-family: Inter, sans-serif;
   font-weight: 500;
   width: 100%;
-  text-align: left;
+  text-align: center;
   margin-top: 10px;
 }
 
@@ -352,7 +376,7 @@
   font-family: Inter, sans-serif;
   font-weight: 500;
   width: 100%;
-  text-align: left;
+  text-align: center;
   margin-top: 20px;
 }
 
@@ -415,7 +439,7 @@
   font-family: Inter, sans-serif;
   font-weight: 500;
   width: 100%;
-  text-align: left;
+  text-align: center;
 } 
 .error-value{
   color: #000000;
@@ -423,7 +447,7 @@
   font-family: Inter, sans-serif;
   font-weight: 500;
   width: 100%;
-  text-align: left;
+  text-align: center;
   margin-top: 20px;
 
 }
@@ -431,15 +455,20 @@
 /* Metrics Section */
 .metrics-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  margin-top: 10px;
-  grid-gap: 9%;
-  padding: 10px;
+  gap:20px;
+  // height: 100%;
+  // justify-content: stretch;
+  // align-items: stretch;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows:repeat(2,1fr) ;
+  
+  // padding: 10px;
 }
 
 .metric-item {
   background-color: #fff;
   padding: 15px;
+  height: 100%;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -517,12 +546,23 @@
 }
 
 .speed-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+ 
+  box-sizing: border-box;
+
   /* Styling for speed stats container */
   border: 1px solid #ccc; /* Optional border */
   padding: 10px; /* Adds padding inside the speed stats */
-  background: #a0a0a0; /* Optional background color */
-  width: 200px; /* Set width for speed container */
-  border-radius: 10px;
+  background: #59595999; /* Optional background color */
+  
+  border-radius: 20px;
+
+  
+  flex-shrink: 1;
 }
 
 
@@ -829,7 +869,14 @@
   
 }
 
+.wifi-style{
+  width: 30px;
+   margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
 
+}
   @mixin getWifi($size) {
     $anim: 1.5s linear infinite;
     $border-width: $size/2.35;
@@ -951,8 +998,6 @@
   .wifi {
     @include getWifi(30px);  
     transform: translate(-25%);
-
-
   }
 
   // battery details
@@ -994,3 +1039,316 @@
     text-align: left;
     width: 100%;
   }
+
+
+
+
+  // .speed-container
+  /* Container for the current speed section */
+.current-speed-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 116px; /* Adjust width as needed */
+}
+
+/* Label styling */
+.label {
+  color: #6e6e6e;
+  font-size: 14px; /* Reduced font size */
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  text-align: center;
+  width: -webkit-fill-available;
+}
+/* Container for speed value and unit */
+.speed-value-container,
+.transfer-value-container,
+.docking-value-container {
+  display: flex;
+  flex-direction: row; /* Align value and unit horizontally */
+  align-items: center;
+  justify-content: center; /* Center align horizontally */
+  gap: 4px; /* Add a small gap between value and unit */
+  width: auto; /* Adjust width dynamically */
+}
+
+/* Speed value styling */
+.speed-value,
+.time-value {
+  color: #000000;
+  font-size: 16px; /* Adjust size as needed */
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  text-align: right; /* Align text to the right */
+}
+
+/* Unit styling */
+.unit {
+  color: #000000;
+  font-size: 16px; /* Adjust size as needed */
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  text-align: left; /* Align text to the left */
+  margin-left: 4px; /* Add margin between value and unit */
+  width: auto; /* Auto width for flexibility */
+}
+
+/* Container for average speed and other details */
+.speed-details-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px; /* Keep gap between items */
+  width: 100%; /* Full width for the container */
+}
+
+/* Container for average speed */
+.average-speed-container,
+.transfer-time-container,
+.maximum-speed-container,
+.docking-time-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px; /* Adjust gap between items */
+  width: auto; /* Adjust width dynamically */
+}
+
+/* Label styling for all */
+.label {
+  color: #6e6e6e;
+  font-size: 15px; /* Adjust font size as needed */
+  
+  font-weight: 500;
+  text-align: center;
+  width: auto; /* Auto width for dynamic adjustment */
+}
+
+/* Average speed, transfer time, and docking time value styling */
+.speed-value,
+.time-value {
+  color: #000000;
+  font-size: 20px; /* Adjust as needed */
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  text-align: right;
+  padding: 5px;
+}
+
+
+//  connect
+.status-button {
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 2px solid rgb(0, 255, 0); /* Initial green stroke */
+  color: rgb(4, 190, 4); /* Initial green color */
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.status-button.connected {
+  border-color: red; /* Red stroke when connected */
+  color: red; /* Red text color when connected */
+}
+
+.status-button:hover {
+  background-color: rgba(0, 128, 0, 0.1); /* Green hover effect */
+}
+
+.status-button.connected:hover {
+  background-color: rgba(255, 0, 0, 0.1); /* Red hover effect */
+}
+
+
+
+// active and inactive
+  .status-container {
+   
+    display: flex;
+    align-items: center;
+    flex: 1;
+    padding: 10px 20px;
+    border: 2px solid #535353; /* Green border initially */
+    border-radius: 10px;
+  }
+  
+  .status-indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .status-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Active state (green circle) */
+  .active {
+    background-color: #08ff08; /* Green */
+  }
+  
+  /* Inactive state (glowing red circle) */
+  .inactive {
+    background-color: #fc0000; /* Red */
+    box-shadow: 0 0 8px #ff4560; /* Glowing red effect */
+  }
+  
+  /* Inactive state border change */
+  .status-container.inactive {
+    border-color: #ff4560; /* Red border when inactive */
+  }
+
+
+  // emergency stop
+
+  /* Emergency stop */
+
+.switch {
+ 
+ 
+  position: relative;
+  z-index: 50;
+  margin-top: 40px;
+ }
+
+
+.switch input {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 100;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.switch.demo3 {
+  width: 130px;
+  height: 30px;
+}
+
+.switch.demo3 label {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #d72424;
+  border-radius: 50px;
+  box-shadow: inset 0 4px 8px 2px rgba(248, 6, 6, 0.2), 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.switch.demo3 label:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+  border-radius: inherit;
+  background: #ababab;
+  background: linear-gradient(#f2f2f2, #ababab);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+.switch.demo3 label:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -18px;
+  right: -18px;
+  bottom: -18px;
+  left: -18px;
+  border-radius: inherit;
+  background: #eee;
+  background: linear-gradient(#e5e7e6, #eee);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  filter: blur(1px);
+}
+
+.switch.demo3 label i {
+  display: block;
+  height: 100%;
+  width: 60%;
+  border-radius: inherit;
+  position: absolute;
+  z-index: 2;
+  right: 40%;
+  top: 0;
+  background: linear-gradient(#f7f2f6, #b2ac9e);
+  box-shadow: inset 0 1px 0 white, 0 0 8px rgba(0, 0, 0, 0.3), 0 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+.switch.demo3 label i:after {
+  content: "";
+  position: absolute;
+  left: 15%;
+  top: 25%;
+  width: 70%;
+  height: 50%;
+  background: linear-gradient(#cbc7bc, #d2cbc3);
+  border-radius: inherit;
+}
+
+.switch.demo3 label i:before {
+  content: "stop";
+  text-transform: uppercase;
+  font-style: normal;
+  font-weight: medium;
+  color: white; /* Changed to white */
+  text-shadow: 0 1px 0 #bcb8ae, 0 -1px 0 #97958e;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  position: absolute;
+  top: 50%;
+  margin-top: -12px;
+  right: -60%;
+}
+
+.switch.demo3 input:checked ~ label {
+  background: #346d0b;
+}
+
+.switch.demo3 input:checked ~ label i {
+  right: -1%;
+}
+
+.switch.demo3 input:checked ~ label i:before {
+  content: "run"; /* Changed to run */
+  right: 115%;
+  color: white; /* Changed to white */
+  text-shadow: 0 1px 0 #afcb9b, 0 -1px 0 #111311;
+}
+
+.switch.demo3 .tooltip {
+  position: absolute;
+  bottom: 100%; /* Position above the switch */
+  left: 50%;
+  transform: translateX(-50%); /* Center the tooltip horizontally */
+  background-color: #f80808; /* Tooltip background color */
+  color: #fff; /* Tooltip text color */
+  padding: 10px 20px; /* Padding for the tooltip */
+  border-radius: 10px; /* Rounded corners */
+  font-size: 16px; /* Adjust font size */
+  opacity: 0; /* Start hidden */
+  visibility: hidden; /* Initially invisible */
+  white-space: nowrap; /* Prevent line wrapping */
+  transition: opacity 0.2s ease, visibility 0.2s ease; /* Smooth appearance */
+}
+
+.switch.demo3 label:hover + .tooltip {
+  opacity: 1; /* Show tooltip on hover */
+  visibility: visible;
+}
