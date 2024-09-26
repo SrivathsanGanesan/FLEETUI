@@ -50,13 +50,18 @@
 .robopopup-content {
   background: white;
   border-radius: 20px;
-  padding: 30px;
+  padding: 20px;
   gap: 20px;
   max-height: 600px;
   width: auto;
   text-align: center;
   /* display: flex; */
   overflow: auto; /* Enables scrolling within the content */
+}
+
+.btn-rob{
+  display:flex;
+  justify-content:flex-end;
 }
 
 
@@ -116,13 +121,29 @@
   flex-direction: row;
   align-content: center;
   align-items: center;
-  margin-right: 32rem;
+  margin-right: 36rem;
+}
+.robb-inp{
+  padding: 6px;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  // justify-content: space-between;
+  align-items: center;
+}
+.robb-inp1{
+  padding: 6px;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .modal-header {
   position: relative;
   text-align: center;
-  padding: 15px;
+  padding: -6px;
 }
 
 .close-icon {
@@ -221,6 +242,17 @@
   /* table-layout: fixed; */
 }
 
+.p-inputtext{
+  padding: 0 !important;
+  width: 240px;
+  height: 35px !important;
+  font-size: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important ;
+  align-content: center !important;
+  padding: 0rem 0.75rem !important;
+}
 
 /* Table Styling */
 table {
@@ -926,9 +958,13 @@ border: none;
     min-height: var(--mat-paginator-container-size);
 }
 
+.inputype{
+  width: 240px;
+
+}
 
 .custom-dropdown {
-  width: 242px; /* Set the fixed width */
+  width: 240px; /* Set the fixed width */
   white-space: nowrap; /* Prevent text from wrapping */
   /* overflow: hidden; Hide overflow text */
   text-overflow: ellipsis; /* Show '...' for overflow text */

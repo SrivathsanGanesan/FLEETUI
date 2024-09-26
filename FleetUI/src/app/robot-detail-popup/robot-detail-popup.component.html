@@ -8,7 +8,7 @@
         <p class="robot-id">ID: 33c6</p>
       </div>
       <div class="header-right">
-        <div class="wifi-style flex z-50">
+        <div class="wifi-style ">
           <div class="wifi" [ngClass]="currentSignalClass"></div> 
         </div>
         <p class="wifi-percentage">76%</p>
@@ -337,7 +337,7 @@
           </div>
           <span class="text-error_1864-1825">Error</span>
         </div>
-        <span class="error-value">{{ data.error }}</span>
+        <span class="error-value">{{ data.error }} %</span>
       </div>
 
     </div>
@@ -345,15 +345,37 @@
 
    </div>
 
-<div class="right-side">
+<div class="right-side p-5">
   <div class="top">
     <!-- Robot Image and Control Section Grid -->
     <div class="robot-control-grid">
       <!-- Control Buttons Section -->
       <div class="control-section">
-        <button class="connect-btn">Connect</button>
-        <p class="status-inactive">Inactive</p>
-        <button class="stop-btn">STOP</button>
+
+        <!-- connect button -->
+        <button 
+        class="status-button absolute z-50 top-[0px] w-[10vw] h-[8vh] 
+        {{ isConnected ? 'connected' : '' }}" 
+        (click)="toggleConnection()">
+        {{ isConnected ? 'Disconnect' : 'Connect' }}
+      </button>
+
+        <!-- <button class="connect-btn">Connect</button> -->
+
+        <!-- Status container -->
+        <div class="status-container z-50 top-[0px]  w-[10vw] h-[8vh]">
+          <span class="status-indicator" [ngClass]="isActive ? 'active' : 'inactive'"></span>
+          <span class="status-text">{{ isActive ? 'Active' : 'Inactive' }}</span>
+        </div>
+        <!-- <p class="status-inactive">Inactive</p> -->
+
+        <!-- emergency stop -->
+      <div class="switch demo3">
+        <input type="checkbox" id="emergencyStop" />
+        <label for="emergencyStop"><i></i></label>
+        <span class="tooltip">Emergency Stop</span>
+      </div>
+        <!-- <button class="stop-btn">STOP</button> -->
       </div>
   
       <!-- Robot Image Section -->
@@ -400,10 +422,51 @@
         
 
         <div class="speed-container">
-            <div class="speed-stats">
-                <p>Current Speed: 2 m/s</p>
-                <p>Average Speed: 0 m/s</p>
-                <p>Max Speed: 5 m/s</p>
+            <div class="w-full items-center justify-center">
+              <div class="w-full items-center justify-center mt-3 mb-5">
+                <p class="w-full text-center flex justify-center">Current speed</p>
+                <div class="speed-value-container -mt-2">
+                  <span class="speed-value">{{ data.currentspeed }}</span>
+                  <span class="unit">m/s</span>
+                </div>
+              </div>
+            
+              <div class="speed-details-container">
+                <div class="average-speed-container">
+                  <div class="speed-value-container">
+                    <span class="speed-value">{{ data.averagespeed }}</span>
+                    <span class="unit">m/s</span>
+                  </div>
+                  <span class="label">Average speed</span>
+            
+                  <!-- Added Average Transfer Time -->
+                  <div class="transfer-time-container">
+                    <div class="transfer-value-container">
+                      <span class="time-value">{{ data.averagetransfertime }}</span>
+                      <span class="unit">min</span>
+                    </div>
+                    <span class="label">Average Transfer Time</span>
+                  </div>
+                </div>
+            
+                <div class="maximum-speed-container">
+                  <div class="speed-value-container">
+                    <span class="speed-value">{{ data.maximumspeed }}</span>
+                    <span class="unit">m/s</span>
+                  </div>
+                  <span class="label">Maximum speed</span>
+            
+                  <!-- Added Average Docking Time -->
+                  <div class="docking-time-container">
+                    <div class="docking-value-container">
+                      <span class="time-value">{{ data.averagedockingtime }}</span>
+                      <span class="unit">min</span>
+                    </div>
+                    <span class="label">Average Docking Time</span>
+                  </div>
+                </div>
+              </div>
+          
             </div>
         </div>
     </div>

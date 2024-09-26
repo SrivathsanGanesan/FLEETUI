@@ -53,7 +53,7 @@
                 (ngModelChange)="onDateChange($event, 'start')"
                 [min]="minDate"
                 [max]="maxDate"
-                style="height: 35px"
+                style="height: 35px; width: 150px"
               />
 
               <label for="end-date">End Date:</label>
@@ -64,7 +64,7 @@
                 (ngModelChange)="onDateChange($event, 'end')"
                 [min]="minDate"
                 [max]="maxDate"
-                style="height: 35px"
+                style="height: 35px; width: 150px"
               />
           </div>
         </div>
@@ -439,10 +439,10 @@
 </div>
 
 <!-- Popup form -->
-<div *ngIf="isPopupOpen" class="popup-overlay">
+<div *ngIf="isPopupOpen" class="popup-overlay" formGroup="formData">
   <div class="robopopup-content">
     <div>
-      <form (ngSubmit)="saveItem()">
+      <form (ngSubmit)="saveItem()" formGroup="formData">
         <div class="modal-header">
           <span class="close-icon close-button" (click)="closeroboPopup()">
             <svg
@@ -602,13 +602,13 @@
           <button pButton type="button" (click)="saveLocalizationParameters()">
             Save
           </button>
-          <button
+          <!-- <button
             pButton
             type="button"
             (click)="closeLocalizationParametersForm()"
           >
             Close
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -640,9 +640,9 @@
           <button pButton type="button" (click)="saveLoadSpecification()">
             Save
           </button>
-          <button pButton type="button" (click)="closeLoadSpecificationForm()">
+          <!-- <button pButton type="button" (click)="closeLoadSpecificationForm()">
             Close
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -676,7 +676,7 @@
             type="text"
             id="envelopes3d"
             [(ngModel)]="formData.agvGeometry.envelopes3d"
-            style="margin-right: 13%"
+            style="margin-right: .1rem"
             name="envelopes3d"
           />
         </div>
@@ -684,9 +684,9 @@
           <button pButton type="button" (click)="saveAGVGeometry()">
             Save
           </button>
-          <button pButton type="button" (click)="closeAGVGeometryForm()">
+          <!-- <button pButton type="button" (click)="closeAGVGeometryForm()">
             Close
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -700,6 +700,7 @@
             id="optionalParameters"
             [(ngModel)]="formData.protocolFeatures.optionalParameters"
             name="optionalParameters"
+            class="inputype"
           />
 
           <label for="actionScopes">Action Scopes:</label>
@@ -709,6 +710,7 @@
             id="actionScopes"
             [(ngModel)]="formData.protocolFeatures.actionScopes"
             name="actionScopes"
+            class="inputype"
           />
         </div>
         <div class="rob-inp2" style="margin-left: 23px">
@@ -721,6 +723,7 @@
             id="actionParameters"
             [(ngModel)]="formData.protocolFeatures.actionParameters"
             name="actionParameters"
+            class="inputype"
           />
 
           <label for="resultDescription">Result Description:</label>
@@ -730,15 +733,16 @@
             id="resultDescription"
             [(ngModel)]="formData.protocolFeatures.resultDescription"
             name="resultDescription"
+            class="inputype"
           />
         </div>
         <div>
           <button pButton type="button" (click)="saveProtocolFeatures()">
             Save
           </button>
-          <button pButton type="button" (click)="closeProtocolFeaturesForm()">
+          <!-- <button pButton type="button" (click)="closeProtocolFeaturesForm()">
             Close
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -754,6 +758,7 @@
             id="maxStringLens"
             [(ngModel)]="formData.protocolLimits.maxStringLens"
             name="maxStringLens"
+            class="inputype"
           />
 
           <label for="maxArrayLens">Max Array Lengths:</label>
@@ -763,6 +768,7 @@
             id="maxArrayLens"
             [(ngModel)]="formData.protocolLimits.maxArrayLens"
             name="maxArrayLens"
+            class="inputype"
           />
         </div>
         <div class="rob-inp3">
@@ -772,17 +778,18 @@
             type="text"
             id="timing"
             [(ngModel)]="formData.protocolLimits.timing"
-            style="margin-right: 13%"
+            style="margin-right: .2rem"
             name="timing"
+            class="inputype"
           />
         </div>
         <div>
           <button pButton type="button" (click)="saveProtocolLimits()">
             Save
           </button>
-          <button pButton type="button" (click)="closeProtocolLimitsForm()">
+          <!-- <button pButton type="button" (click)="closeProtocolLimitsForm()">
             Close
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -791,7 +798,7 @@
         class="type-specification-form"
       >
         <div class="rob-inp">
-          <label for="seriesName" style="margin-right: 4rem"
+          <label for="seriesName" style="margin-right: 3.3rem"
             >Series Name:</label
           >
           <input
@@ -800,6 +807,8 @@
             id="seriesName"
             [(ngModel)]="formData.typeSpecification.seriesName"
             name="seriesName"
+            class="inputype"
+            style="margin-right:1rem;"
           />
 
           <label for="seriesDescription">Series Description:</label>
@@ -809,6 +818,7 @@
             id="seriesDescription"
             [(ngModel)]="formData.typeSpecification.seriesDescription"
             name="seriesDescription"
+            class="inputype"
           />
         </div>
         <div class="rob-inp1">
@@ -842,6 +852,8 @@
             id="maxLoadMass"
             [(ngModel)]="formData.typeSpecification.maxLoadMass"
             name="maxLoadMass"
+            class="inputype"
+            style="margin-right: 1.2rem;"
           />
 
           <label for="localizationTypes">Localization Types:</label>
@@ -852,10 +864,11 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select LocalizationTypes"
+            styleClass="custom-dropdown"
           />
         </div>
         <div class="rob-inp3">
-          <label for="navigationTypes" style="margin-right: 5rem"
+          <label for="navigationTypes" style="margin-right: 2rem"
             >Navigation Types:</label
           >
           <!-- <input  pInputText  type="text" id="navigationTypes" [(ngModel)]="formData.typeSpecification.navigationTypes" name="navigationTypes"> -->
@@ -865,20 +878,21 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select LocalizationTypes"
-            [style]="{ 'margin-right': '4.2rem' }"
+            [style]="{ 'margin-right': '1.2rem' }"
+            styleClass="custom-dropdown"
           />
         </div>
         <button pButton type="button" (click)="saveTypeSpecification()">
           Save
         </button>
-        <button pButton type="button" (click)="closeTypeSpecificationForm()">
+        <!-- <button pButton type="button" (click)="closeTypeSpecificationForm()">
           Close
-        </button>
+        </button> -->
       </div>
     </div>
     <div class="btn-rob">
       <button pButton class="p-button1" type="submit" (click)="saveRoboInfo()">
-        Save
+        Submit
       </button>
       <!-- <button pButton class="p-button1" type="button" (click)="closeroboPopup()">Close</button> -->
     </div>

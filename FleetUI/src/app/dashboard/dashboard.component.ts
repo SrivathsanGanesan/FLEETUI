@@ -3,7 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   ViewChild,
-  ElementRef
+  ElementRef,
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
@@ -41,7 +41,8 @@ enum ZoneType {
 export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
-  @ViewChild('myCanvas', { static: false }) myCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('myCanvas', { static: false })
+  myCanvas!: ElementRef<HTMLCanvasElement>;
   eventSource!: EventSource;
   ONBtn = false;
   showDashboard = false;
@@ -217,14 +218,16 @@ export class DashboardComponent implements AfterViewInit {
     }
      this.getMapDetails();
     this.loadCanvas();
-    await this.fetchRoboPos();
+    setInterval(async () => {
+      await this.fetchRoboPos();
+    }, 1000*0.1);
   }
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
     if (!this.showModelCanvas) {
       this.nodes = [];
-    }  else {
+    } else {
       await this.getMapDetails();
       // await this.fetchRoboPos(); // Call fetchRoboPos when showing model canvas
     }
@@ -330,6 +333,58 @@ export class DashboardComponent implements AfterViewInit {
     ctx.restore(); // Reset transformation after drawing
   }
   async fetchRoboPos() {
+    // Fetch the robot position data
+    let response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
+        {
+            method: 'GET',
+            credentials: 'include',
+        }
+    );
+    let data = await response.json();
+    const { robots } = data.roboPos;
+    let amrPos = robots[1].pose.position;
+
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+    const imageWidth = 32; // Set this to the actual width of the robot image
+    const imageHeight = 25; // Set this to the actual height of the robot image
+    const mapImageHeight = canvas.height; // Assuming the map image is drawn to fill the canvas height
+
+    // Calculate the inverted Y position
+    const invertedY = mapImageHeight - (0.05 / amrPos.y / 0.05);
+
+    // Load and draw the map image
+    const mapImage = new Image();
+    let map = this.projectService.getMapData(); // Assuming this returns the map details
+    mapImage.src = `http://${map.imgUrl}`;
+    await mapImage.decode(); // Wait for the image to load
+
+
+
+    if (ctx) {
+        // Clear and redraw the entire canvas and map
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Redraw the map image
+        ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height);
+
+        // Redraw other elements if necessary
+        if (this.showModelCanvas) {
+            this.redrawOtherElements(ctx, mapImage); // Pass the mapImage for transformations
+        }
+
+        // Plot the robot with the inverted Y coordinate
+        this.plotRobo(
+            ctx,
+            0.05 / amrPos.x / 0.05,
+            invertedY,
+            amrPos.z
+        );
+    }
+}
+
+
+  /* async fetchRoboPos() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
     const imageWidth = 45; // Set this to the actual width of the robot image
@@ -380,18 +435,18 @@ export class DashboardComponent implements AfterViewInit {
         clearInterval(currInterval);
       }
     }, 1000 * 0.025); // Update position every 0.025 seconds
-  }
+  } */
 
   plotRobo(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
-    orientation: number,
+    orientation: number, // z
     isSelected: boolean = false
   ): void {
     const image = this.robotImages['robotB'];
     const imageSize = 25;
-  
+
     if (image && ctx) {
       ctx.save(); // Save the current context before rotation
       ctx.translate(x, y); // Move the rotation point to the robot's center
@@ -405,8 +460,8 @@ export class DashboardComponent implements AfterViewInit {
       );
       ctx.restore(); // Restore the context after rotation
     }
-  } 
-  redrawOtherElements(ctx: CanvasRenderingContext2D ,img: HTMLImageElement) {
+  }
+  redrawOtherElements(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     // // Redraw nodes, edges, assets, and zones
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
@@ -453,48 +508,6 @@ export class DashboardComponent implements AfterViewInit {
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
     );
   }
-  
-  // async fetchRoboPos() {
-  //   let response = await fetch(
-  //     `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`,
-  //     {
-  //       method: 'GET',
-  //       credentials: 'include',
-  //     }
-  //   );
-  //   let data = await response.json();
-  //   const { locations } = data.roboPos;
-  //   let amrPos = locations.map((roboLoc: any) => {
-  //     return roboLoc.dockPose.position;
-  //   });
-
-  //   // console.log(amrPos);
-  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-  //   const ctx = canvas.getContext('2d');
-  //   const imageWidth = 32; // Set this to the actual width of the plotted image
-  //   const imageHeight = 25; // Set this to the actual height of the plotted image
-
-  //   // Clear only the previous image area
-  //   const clearPreviousImage = (x: number, y: number) => {
-  //     ctx?.clearRect(
-  //       x - imageWidth / 2,
-  //       y - imageHeight / 2,
-  //       imageWidth,
-  //       imageHeight
-  //     );
-  //   };
-
-  //   let i = 0;
-  //   let currInterval = setInterval(() => {
-  //     if (ctx && i < amrPos.length) {
-  //       if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
-  //       // const transformedY = imgS.height - amrPos[i].y;
-  //       // console.log(amrPos[i].x, amrPos[i].y);
-  //       this.plotRobo(ctx, amrPos[i].x, amrPos[i].y);
-  //       i++;
-  //     } else clearInterval(currInterval);
-  //   }, 1000 * 2);
-  // }
 
   async onInitMapImg() {
     let project = this.projectService.getSelectedProject();
@@ -583,9 +596,6 @@ export class DashboardComponent implements AfterViewInit {
       this.eventSource.close();
     };
   }
-
-
-
 
   private plotAsset(
     ctx: CanvasRenderingContext2D,
@@ -819,7 +829,6 @@ export class DashboardComponent implements AfterViewInit {
     this.isPanning = !this.isPanning;
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
-
 
   captureCanvas() {
     const element = document.getElementById('container');

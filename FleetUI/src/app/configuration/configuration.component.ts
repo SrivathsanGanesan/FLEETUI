@@ -320,6 +320,7 @@ export class ConfigurationComponent implements AfterViewInit {
       .then((data) => {
         if (data.isRoboExists) {
           this.fetchRobos();
+          // this.loadData();
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -449,8 +450,22 @@ export class ConfigurationComponent implements AfterViewInit {
       }
       // Select a new map
       this.selectedMap = map;
-      if (!this.EnvData.length) return;
-      this.projectService.clearMapData();
+      await this.loadMapData(map);
+
+      // Store the selected map in localStorage or service
+      if (this.selectedMap) {
+          localStorage.setItem('selectedMapId', this.selectedMap.id);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Map Selected',
+            detail: `Successfully loaded map: ${map.mapName}`,
+          });
+      } else {
+          localStorage.removeItem('selectedMapId');
+      }
+  }
+
+  private async loadMapData(map: any) {
       const response = await fetch(
         `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
       );
@@ -744,6 +759,11 @@ export class ConfigurationComponent implements AfterViewInit {
   stopScanning() {
     this.isScanning = false;
     this.eventSource.close();
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Info',
+      detail: 'Sacnning Stopped',
+    });
     return;
   }
 
@@ -1062,7 +1082,6 @@ export class ConfigurationComponent implements AfterViewInit {
           siteName: item.siteName,
           ratio: map.mpp,
           imgUrl: `http://${map.imgUrl}`,
-          origin: map.origin,
           nodes: map.nodes,
           edges: map.edges,
           assets: map.stations,
@@ -1133,7 +1152,7 @@ export class ConfigurationComponent implements AfterViewInit {
         if(item.id === this.projectService.getMapData().id){
           this.projectService.setIsMapSet(false);
           this.projectService.clearMapData();
-          this.ngOnInit();
+          // this.ngOnInit();
         }
         // Assuming currentTable determines which data array to modify
         if (this.currentTable === 'Environment') {
@@ -1144,7 +1163,10 @@ export class ConfigurationComponent implements AfterViewInit {
           this.filteredRobotData = this.filteredRobotData.filter(
             (i) => i !== item
           );
+          this.reloadTable();
         }
+        // this.ngOnInit();
+        this.reloadTable();
         console.log('Item deleted:', item);
         this.messageService.add({
           severity: 'success',
