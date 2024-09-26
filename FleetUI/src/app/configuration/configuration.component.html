@@ -53,7 +53,7 @@
                 (ngModelChange)="onDateChange($event, 'start')"
                 [min]="minDate"
                 [max]="maxDate"
-                style="height: 35px"
+                style="height: 35px; width: 150px"
               />
 
               <label for="end-date">End Date:</label>
@@ -64,7 +64,7 @@
                 (ngModelChange)="onDateChange($event, 'end')"
                 [min]="minDate"
                 [max]="maxDate"
-                style="height: 35px"
+                style="height: 35px; width: 150px"
               />
           </div>
         </div>
@@ -676,7 +676,7 @@
             type="text"
             id="envelopes3d"
             [(ngModel)]="formData.agvGeometry.envelopes3d"
-            style="margin-right: 1.3rem"
+            style="margin-right: .1rem"
             name="envelopes3d"
           />
         </div>
@@ -868,7 +868,7 @@
           />
         </div>
         <div class="rob-inp3">
-          <label for="navigationTypes" style="margin-right: 8rem"
+          <label for="navigationTypes" style="margin-right: 2rem"
             >Navigation Types:</label
           >
           <!-- <input  pInputText  type="text" id="navigationTypes" [(ngModel)]="formData.typeSpecification.navigationTypes" name="navigationTypes"> -->
@@ -878,7 +878,7 @@
             optionLabel="name"
             optionValue="value"
             placeholder="Select LocalizationTypes"
-            [style]="{ 'margin-right': '6rem' }"
+            [style]="{ 'margin-right': '1.2rem' }"
             styleClass="custom-dropdown"
           />
         </div>
