@@ -324,7 +324,7 @@ export class ConfigurationComponent implements AfterViewInit {
       .then((data) => {
         if (data.isRoboExists) {
           this.fetchRobos();
-          this.loadData();
+          // this.loadData();
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -460,6 +460,11 @@ export class ConfigurationComponent implements AfterViewInit {
       // Store the selected map in localStorage or service
       if (this.selectedMap) {
           localStorage.setItem('selectedMapId', this.selectedMap.id);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Map Selected',
+            detail: `Successfully loaded map: ${map.mapName}`,
+          });
       } else {
           localStorage.removeItem('selectedMapId');
       }
@@ -762,6 +767,11 @@ export class ConfigurationComponent implements AfterViewInit {
   stopScanning() {
     this.isScanning = false;
     this.eventSource.close();
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Info',
+      detail: 'Sacnning Stopped',
+    });
     return;
   }
 
@@ -1163,6 +1173,7 @@ export class ConfigurationComponent implements AfterViewInit {
             (i) => i !== item
           );
         }
+        this.ngOnInit();
         console.log('Item deleted:', item);
         this.messageService.add({
           severity: 'success',
