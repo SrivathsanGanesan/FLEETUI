@@ -20,7 +20,6 @@ import { AnyAaaaRecord } from 'node:dns';
 import { log } from 'node:console';
 import { MessageService } from 'primeng/api';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { FormBuilder } from '@angular/forms';
 
 interface Poll {
   ip: string;
@@ -54,7 +53,6 @@ export class ConfigurationComponent implements AfterViewInit {
   isPopupVisible: boolean = false;
   isTransitioning: boolean = false;
   activeButton: string = 'Environment'; // Default active button
-  // activ-btn: string ='typeSpecificationLink';
   activeHeader: string = 'Environment'; // Default header
   chosenImageName = ''; // Initialize chosenImageName with an empty string
   imageUploaded: boolean = false; // To track if an image is uploaded
@@ -114,13 +112,11 @@ export class ConfigurationComponent implements AfterViewInit {
   paginatedData: any[] = [];
   paginatedData1: any[] = [];
   paginatedData2: any[] = [];
-  Addform:any;
   constructor(
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
-    private messageService: MessageService,
-    private fb: FormBuilder,
+    private messageService: MessageService
   ) {
     this.filteredEnvData = [...this.EnvData];
     // this.filteredRobotData = this.robotData;
@@ -434,26 +430,25 @@ export class ConfigurationComponent implements AfterViewInit {
 
     async selectMap(map: any) {
       if (this.selectedMap?.id === map.id) {
-          // Deselect the current map if the same map is clicked again
-          this.projectService.clearMapData();
-          this.projectService.setIsMapSet(false);
+        // Deselect if the same map is clicked again
+        this.projectService.clearMapData();
+        this.projectService.setIsMapSet(false);
+        if (!this.EnvData.length) return;
+        this.selectedMap = this.EnvData[0];
+        const response = await fetch(
+          `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
+        );
+        if (!response.ok)
+          console.error('Error while fetching map data : ', response.status);
+        let data = await response.json();
+        let { map } = data;
+        this.ngOnInit();
 
-          this.selectedMap = this.EnvData.length ? this.EnvData[0] : null;
-          if (this.selectedMap) {
-              await this.loadMapData(this.selectedMap);
-          }
-
-          // Store the selected map in localStorage or service
-          if (this.selectedMap) {
-              localStorage.setItem('selectedMapId', this.selectedMap.id);
-          } else {
-              localStorage.removeItem('selectedMapId');
-          }
-
-          return;
+        if (this.projectService.getIsMapSet()) return;
+        this.projectService.setIsMapSet(true);
+        return;
       }
-
-      // Select the new map
+      // Select a new map
       this.selectedMap = map;
       await this.loadMapData(map);
 
@@ -472,28 +467,26 @@ export class ConfigurationComponent implements AfterViewInit {
 
   private async loadMapData(map: any) {
       const response = await fetch(
-          `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
       );
-      if (!response.ok) {
-          console.error('Error while fetching map data : ', response.status);
-          return;
-      }
-      const data = await response.json();
+      if (!response.ok)
+        console.error('Error while fetching map data : ', response.status);
+      let data = await response.json();
+
       this.projectService.setMapData({
-          ...map,
-          imgUrl: data.map.imgUrl,
+        ...map,
+        imgUrl: data.map.imgUrl,
       });
-  }
 
-
+      if (this.projectService.getIsMapSet()) return;
+      this.projectService.setIsMapSet(true);
+    }
     // This method can be called when the component is initialized or when a new map is created
       private selectFirstMapIfNoneSelected() {
         if (!this.selectedMap && this.EnvData.length > 0) {
             this.selectMap(this.EnvData[0]);
         }
       }
-
-
   //   async selectMap(map: any) {
   //     if (this.selectedMap?.id === map.id) {
   //         // Deselect if the same map is clicked again
@@ -550,7 +543,6 @@ export class ConfigurationComponent implements AfterViewInit {
   // //     this.selectFirstMapIfNoneSelected();
   // //     // Other initialization logic
   // // }
-
 
 
 
@@ -1090,7 +1082,6 @@ export class ConfigurationComponent implements AfterViewInit {
           siteName: item.siteName,
           ratio: map.mpp,
           imgUrl: `http://${map.imgUrl}`,
-          origin: map.origin,
           nodes: map.nodes,
           edges: map.edges,
           assets: map.stations,
@@ -1250,47 +1241,6 @@ export class ConfigurationComponent implements AfterViewInit {
       description: '',
     },
   };
-  resetForm() {
-    this.formData = {
-      robotName: '',
-      manufacturer: '',
-      serialNumber: '',
-      typeSpecification: {
-        seriesName: '',
-        seriesDescription: '',
-        agvKinematic: '',
-        agvClass: undefined as any | undefined,
-        maxLoadMass: 0,
-        localizationTypes: '',
-        navigationTypes: '',
-      },
-      protocolLimits: {
-        maxStringLens: '',
-        maxArrayLens: '',
-        timing: '',
-      },
-      protocolFeatures: {
-        optionalParameters: '',
-        actionScopes: '',
-        actionParameters: '',
-        resultDescription: '',
-      },
-      agvGeometry: {
-        wheelDefinitions: '',
-        envelopes2d: '',
-        envelopes3d: '',
-      },
-      loadSpecification: {
-        loadPositions: '',
-        loadSets: '',
-      },
-      localizationParameters: {
-        type: '',
-        description: '',
-      },
-    };
-  }
-
   // cities: any[] | undefined;
 
   // selectedCity: DB | undefined;
@@ -1309,7 +1259,7 @@ export class ConfigurationComponent implements AfterViewInit {
   toggleTypeSpecificationForm(event: Event): void {
     event.preventDefault();
     this.closeAllForms();
-    this.isTypeSpecificationFormVisible = true;
+    this.isTypeSpecificationFormVisible = !this.isTypeSpecificationFormVisible;
     this.cdRef.detectChanges();
   }
 
@@ -1428,8 +1378,6 @@ export class ConfigurationComponent implements AfterViewInit {
 
   saveItem(): void {
     this.isPopupOpen = false;
-    this.resetForm();
-
     this.cdRef.detectChanges();
   }
 
