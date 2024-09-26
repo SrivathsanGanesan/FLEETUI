@@ -15,7 +15,7 @@ export class AppComponent {
     return outlet && outlet.activatedRouteData && outlet.activatedRouteData.animation;
   }
 
-  loading$ = this.loaderService.loading$;
+ 
 
   constructor(private loaderService: LoaderService) {}
   
