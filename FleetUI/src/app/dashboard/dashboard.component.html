@@ -10889,10 +10889,9 @@
       <!-- Text -->
       <p class="py-4 font-bold text-[24px] text-[#00000050] -mt-20"> - No Maps Found -</p>
     </div>
-    
-    <!-- Canvases -->
+    <div id="tooltip" style="position: absolute; display: none; background: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; border-radius: 4px; padding: 5px; z-index: 1000;"></div>    <!-- Canvases -->
     <!-- <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas> -->
-    <canvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
+    <canvas #myCanvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
     
     <!-- ON Button -->
     <div class="ONBtn" (click)="startStopOpt()">
