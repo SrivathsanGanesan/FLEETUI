@@ -18,7 +18,10 @@
   font-size: 0.9em;
   margin-top: 5px;
 }
-
+.Orientation_input{
+  padding: 10px;
+  border-radius: 5px;
+}
 .p-inputtext{
   padding: 0 !important;
   width: 240px;

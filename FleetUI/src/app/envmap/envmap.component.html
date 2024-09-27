@@ -724,6 +724,32 @@
     </button>
   </div>
 </div>
+<div *ngIf="isRoboConfirmationVisible" class="popup-overlay1">
+  <div class="popup-content1">
+    <!-- Show these buttons initially -->
+    <div *ngIf="!isConfirmingDelete">
+      <div>
+         <h5>Enter Orientation</h5>
+    <div>
+      <input type="number" min="0" max="360" placeholder="in Deg" class="Orientation_input" [(ngModel)]="inputOrientationAngle">
+      <button type="button">Save</button>
+    </div></div>
+      <!-- <button type="button" >Set Orientation</button> -->
+      <button type="button" (click)="showDeleteConfirmation()">Remove Robot</button>
+      <button type="button" (click)="cancelDelete()">Cancel</button>
+    </div>
+
+    <!-- Show confirmation message and buttons when 'Remove Robot' is clicked -->
+    <div *ngIf="isConfirmingDelete">
+      <p>Are you sure you want to Remove?</p>
+      <div>
+        <button type="button" (click)="confirmRoboDelete()">Confirm</button>
+        <button type="button" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div *ngIf="isConfirmationVisible" class="popup-overlay1">
   <div class="popup-content1">

@@ -340,7 +340,7 @@ export class DashboardComponent implements AfterViewInit {
     let x = 200; // Starting x position
     let y = 260; // Starting y position
     const step = 1; // Increment step for each position change
-    const maxX = 420; // Maximum limit for X position
+    const maxX = 390; // Maximum limit for X position
     const maxY = 460; // Maximum limit for Y position
     let orientation = 0; // Initial orientation of the robot (0 deg)
     
