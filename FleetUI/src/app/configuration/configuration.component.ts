@@ -20,6 +20,7 @@ import { AnyAaaaRecord } from 'node:dns';
 import { log } from 'node:console';
 import { MessageService } from 'primeng/api';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { FormBuilder } from '@angular/forms';
 
 interface Poll {
   ip: string;
@@ -75,6 +76,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
 
+  addForm: any;
   isPopupOpen: boolean = false;
   isScanning = false;
   EnvData: any[] = []; // map details..
@@ -116,10 +118,50 @@ export class ConfigurationComponent implements AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: FormBuilder,
   ) {
     this.filteredEnvData = [...this.EnvData];
-    this.filteredRobotData = [...this.robotData];
+    // this.filteredRobotData = [...this.robotData];
+    // this.filteredRobotData = this.robotData;
+    this.addForm = this.fb.group({
+      robotName: '',
+    manufacturer: '',
+    serialNumber: '',
+    typeSpecification: {
+      seriesName: '',
+      seriesDescription: '',
+      agvKinematic: '',
+      agvClass: undefined as any | undefined,
+      maxLoadMass: 0,
+      localizationTypes: '',
+      navigationTypes: '',
+    },
+    protocolLimits: {
+      maxStringLens: '',
+      maxArrayLens: '',
+      timing: '',
+    },
+    protocolFeatures: {
+      optionalParameters: '',
+      actionScopes: '',
+      actionParameters: '',
+      resultDescription: '',
+    },
+    agvGeometry: {
+      wheelDefinitions: '',
+      envelopes2d: '',
+      envelopes3d: '',
+    },
+    loadSpecification: {
+      loadPositions: '',
+      loadSets: '',
+    },
+    localizationParameters: {
+      type: '',
+      description: '',
+    },
+    })
   }
 
   reloadTable() {
@@ -306,7 +348,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.formData = robo.grossInfo;
     this.isPopupOpen = !this.isPopupOpen;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
-    this.cdRef.detectChanges();
+    // this.cdRef.detectChanges();
   }
 
   deleteRobo(robo: any) {
@@ -1419,6 +1461,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
   saveItem(): void {
     this.isPopupOpen = false;
+    this.addForm.reset();
     this.cdRef.detectChanges();
   }
 
