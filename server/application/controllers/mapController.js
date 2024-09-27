@@ -6,6 +6,7 @@ const {
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
+const { log } = require("console");
 
 const deleteImage = (imgName) => {
   const dest = path.resolve(`proj_assets/dashboardMap/${imgName}`);
@@ -59,7 +60,7 @@ const ToQuaternion_ = (roll, pitch, yaw) => {
 };
 
 const getPosition = (node, poseArr) => {
-  return poseArr.length > 0
+  return poseArr.length
     ? {
         x: node.nodePosition.x,
         y: node.nodePosition.y,
@@ -80,6 +81,7 @@ const getFleetNodes = (nodes) => {
       (action) => action.actionType === "Undock"
     );
     let preDockPos = getPosition(node, moveAction);
+
     let dockPos = getPosition(node, dockAction);
     let undockPos = getPosition(node, undockAction);
     let x = 0;
@@ -138,7 +140,7 @@ const sendNodeGraph = async ({ endpoint, bodyData }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  /*   const { nodes, edges } = mapData; // send node graph..
+  const { nodes, edges } = mapData; // send node graph..
   let fleetEdges = [];
   edges.forEach((edge) => {
     fleetEdges.push({
@@ -160,7 +162,8 @@ const mapInsert = async (req, res) => {
   );
 
   // const data = JSON.parse(fs.readFileSync(filePath));
-  fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {}); */
+  // fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
+  return res.end();
 
   /* let nodeGraph = {
     nodes: fleetNodes,
