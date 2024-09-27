@@ -309,14 +309,6 @@ export class DashboardComponent implements AfterViewInit {
     // console.log(amrPos);
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    
-    let x = 200; // Starting x position
-    let y = 260; // Starting y position
-    const step = 1; // Increment step for each position change
-    const maxX = 390; // Maximum limit for X position
-    const maxY = 460; // Maximum limit for Y position
-    let orientation = 0; // Initial orientation of the robot (0 deg)
-    
 
     const imageWidth = 35; // Set this to the actual width of the plotted image
     const imageHeight = 25; // Set this to the actual height of the plotted image
