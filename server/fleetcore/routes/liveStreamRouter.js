@@ -4,9 +4,9 @@ const {
   getGrossTaskStatus,
   getRoboStateCount,
   getRoboActivities,
-  getRoboFactSheet,
   getRoboDetails,
   getRoboPos,
+  showSpline,
 } = require("../controllers/liveStreamController/telemetryController");
 
 const liveStreamRouter = express.Router();
@@ -16,5 +16,6 @@ liveStreamRouter.post("/get-tasks-status/:mapId", getGrossTaskStatus);
 liveStreamRouter.post("/get-robos-state/:mapId", getRoboStateCount);
 liveStreamRouter.post("/get-robo-activities", getRoboActivities);
 liveStreamRouter.post("/get-fms-amrs", getRoboDetails);
+liveStreamRouter.post("/show-spline", showSpline);
 
 module.exports = liveStreamRouter;

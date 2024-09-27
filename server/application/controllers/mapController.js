@@ -6,7 +6,6 @@ const {
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
-const { log } = require("console");
 
 const deleteImage = (imgName) => {
   const dest = path.resolve(`proj_assets/dashboardMap/${imgName}`);
@@ -115,7 +114,7 @@ const getFleetNodes = (nodes) => {
   });
 };
 
-const sendNodeGraph = async ({ endpoint, bodyData }) => {
+const postFleetData = async ({ endpoint, bodyData }) => {
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
@@ -160,6 +159,7 @@ const mapInsert = async (req, res) => {
     __dirname,
     "../../proj_assets/nodeGraph/nodeGraph.txt"
   );
+  console.log(roboInitialise);
 
   // const data = JSON.parse(fs.readFileSync(filePath));
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
@@ -169,12 +169,17 @@ const mapInsert = async (req, res) => {
     nodes: fleetNodes,
     edges: fleetEdges,
   };
-  let data1 = await sendNodeGraph({
+  let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",
     bodyData: nodeGraph,
   });
 
-  if (data1.errorCode !== 100) {
+  let roboInitRes = postFleetData({
+    endpoint: "initialise",
+    bodyData: roboInitialise,
+  });
+
+  if (sentNodeGraphRes.errorCode !== 100 && roboInitRes.errorCode !== 100) {
     res.status(500).json({ msg: "not attained" });
   } */
 

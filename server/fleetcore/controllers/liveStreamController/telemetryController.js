@@ -113,6 +113,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
   let data = await response.json();
   return data;
 };
+
 //..
 
 // initMqttConnection();
@@ -150,6 +151,29 @@ const getRoboPos = async (req, res) => {
     res
       .status(500)
       .json({ error: error.message, msg: "Internal Server Error" });
+  }
+};
+
+const showSpline = async (req, res) => {
+  const { mapId } = req.body;
+  let splineData = {
+    robotId: 0,
+    enable: true,
+  };
+  let splineRes = await fetchGetAmrLoc("showSpline", splineData);
+  if (splineRes.errorCode !== 1000) {
+    res.status(500).json({ isShowSplined: false, msg: "not attained" });
+  }
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res
+        .status(400)
+        .json({ isShowSplined: false, msg: "Map not found!", map: null });
+    return res.status(200).json({ isShowSplined: true, msg: "path set!" });
+  } catch (error) {
+    console.error("Error in show_spline  :", err);
+    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
   }
 };
 
@@ -225,8 +249,6 @@ const getRoboActivities = async (req, res) => {
   }
 };
 
-const getRoboFactSheet = async (req, res) => {};
-
 const getRoboDetails = async (req, res) => {
   const { mapId } = req.body;
   try {
@@ -288,9 +310,9 @@ module.exports = {
   getGrossTaskStatus,
   getRoboStateCount,
   getRoboActivities,
-  getRoboFactSheet,
   getRoboDetails,
   getRoboPos,
+  showSpline,
   mqttClient,
   rabbitMqClient,
   rabbitMQChannel,
