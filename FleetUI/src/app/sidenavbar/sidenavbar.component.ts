@@ -14,7 +14,7 @@ export class SidenavbarComponent implements OnInit {
   showNotificationPopup = false; // Property to track popup visibility
   showProfilePopup = false;
   isSidebarEnlarged = false; // Property to track sidebar enlargement
-  
+
   isNotificationVisible = false;
 
   languageArrowState = false;
@@ -145,12 +145,16 @@ export class SidenavbarComponent implements OnInit {
 
   ]
 
+  trackFlag(index: number, flag: any): number {
+    return flag.order; // Use the unique identifier for tracking
+  }
+  
   languageChange() {
     this.languageArrowState = !this.languageArrowState;
     this.isNotificationVisible = false;
     this.showProfilePopup= false;
   }
- 
+
   flagSvg = this.flags[0].flagComp
   flagName = this.flags[0].nameTag
 
