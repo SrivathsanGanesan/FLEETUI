@@ -6,10 +6,10 @@
             <div class="form-control">
               <div class="head1">
                 <div class="field">
-                  <label for="name">Fleet Planner Type :  </label>
+                  <label for="name" style="margin-right: 1rem; display: flex; align-items: center;">Fleet Planner Type :  </label>
                   <!-- <input class="input" type=" minlength="7" maxlength="15" size="15"  placeholder="Enter" pInputText required/> -->
                   <p-dropdown appendTo="body" [options]="plannerType" [(ngModel)]="selectedPlanner" optionLabel="name" placeholder="Select"></p-dropdown>
-                  <label for="name" style="margin-left: 8rem;">External Inteface Type : </label>
+                  <label for="name" style="margin-right: 1rem; display: flex; align-items: center; margin-left: 8rem;">External Inteface Type : </label>
                   <input type="text" placeholder="Enter IP" [(ngModel)]="formData.externalInterfaceType"  pInputText/>
                 </div>
               </div>

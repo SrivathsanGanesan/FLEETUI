@@ -16,6 +16,7 @@
 
 .field {
   margin-bottom: 15px;
+  display: flex;
 }
 
 
@@ -51,7 +52,7 @@ label {
 
 ::ng-deep .p-dropdown{
   width: 10rem;
-  height: 3rem;
+  /* height: 3rem; */
 }
 
 input[type="text"],

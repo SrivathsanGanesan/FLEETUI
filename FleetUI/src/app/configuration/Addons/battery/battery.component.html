@@ -5,7 +5,7 @@
         <div class="container">
           <div class="form-control">
             <div class="field">
-              <label for="name">Minimum Battery :  </label>
+              <label for="name" style="margin-right: 1.5rem;">Minimum Battery :  </label>
               <input class="input" type="number" min="0"  placeholder="Enter Battery" style="width: 10rem;" pInputText [(ngModel)]="batteryForm.minBattery" required/>
             </div>
             <div class="field">
@@ -13,14 +13,14 @@
               <input type="number" placeholder="Enter Battery" minlength="7" maxlength="15" size="15" style="width: 10rem;"  pInputText [(ngModel)]="batteryForm.maxBattery" />
             </div>
             <div class="field">
-              <label for="name">Warning Battery :  </label>
+              <label for="name" style="margin-right:2rem">Warning Battery :  </label>
               <input class="input" placeholder="Enter Battery" type="number" style="width: 10rem;" min="1000" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" max="9999"  placeholder="Enter" pInputText [(ngModel)]="batteryForm.warningBattery" required/>
             </div>
           </div>
 
           <div class="form2">
             <div class="field">
-              <label for="ip">Warning Voltage : </label>
+              <label for="ip" style="margin-right:1.7rem">Warning Voltage : </label>
               <input type="number"  placeholder="Enter Voltage" minlength="7" maxlength="15" size="15" style="width: 10rem;" [(ngModel)]="batteryForm.warningVoltage" pInputText/>
             </div>
             <div class="field">
