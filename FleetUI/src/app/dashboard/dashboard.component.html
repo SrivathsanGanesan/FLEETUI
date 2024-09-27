@@ -8,7 +8,7 @@
   <!-- Main Content -->
   <div class="mainContent">
 
-    <div *ngIf="!selectedMap" class="no-map-container">
+    <div *ngIf="!myCanvas" class="no-map-container">
       <!-- Image -->
       <!-- <img src="assets/maps/dashboard.jpg" alt="No Map Available" class="no-map-image">  -->
       <span class="flex size-[550px] -mt-20">
@@ -10889,10 +10889,9 @@
       <!-- Text -->
       <p class="py-4 font-bold text-[24px] text-[#00000050] -mt-20"> - No Maps Found -</p>
     </div>
-    
-    <!-- Canvases -->
+    <div id="Pos_tooltip" style="position: absolute; display: none; background: transparent; border: 0px solid #ccc; border-radius: 4px; padding: 5px; z-index: 2;font-size: 10px;"></div>    <!-- Canvases -->
     <!-- <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas> -->
-    <canvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
+    <canvas #myCanvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
     
     <!-- ON Button -->
     <div class="ONBtn" (click)="startStopOpt()">

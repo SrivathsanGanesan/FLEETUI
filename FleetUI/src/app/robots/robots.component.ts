@@ -203,9 +203,7 @@ export class RobotsComponent implements OnInit {
 
   openRobotDetail(robot: Robot): void {
     this.dialog.open(RobotDetailPopupComponent, {
-      width: "100%",
-      height: "100%",
-      position : {top:"50%", left: "50%"},
+      width: '50%',
       data: robot,
     });
   }
