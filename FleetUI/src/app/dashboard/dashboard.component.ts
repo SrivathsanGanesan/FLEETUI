@@ -43,6 +43,7 @@ export class DashboardComponent implements AfterViewInit {
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
   @ViewChild('myCanvas', { static: false }) myCanvas!: ElementRef<HTMLCanvasElement>;
   eventSource!: EventSource;
+  posEventSource!: EventSource;
   ONBtn = false;
   showDashboard = false;
   selectedFloor = 'Floor 1';
@@ -209,7 +210,6 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async ngOnInit() {
-    
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
       await this.onInitMapImg();
@@ -217,7 +217,7 @@ export class DashboardComponent implements AfterViewInit {
     }
      this.getMapDetails();
     this.loadCanvas();
-    await this.fetchRoboPos();
+    // await this.fetchRoboPos();
   }
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
@@ -346,12 +346,12 @@ export class DashboardComponent implements AfterViewInit {
         ctx.scale(this.zoomLevel, this.zoomLevel);
         ctx.restore(); // Reset transformation after drawing
   
-        // Draw the map image
-        ctx.drawImage(mapImage, 0, 0,);
-        
         if (this.showModelCanvas) {
           this.redrawOtherElements(ctx, mapImage); // Pass the mapImage for transformations
         }
+        // Draw the map image
+        ctx.drawImage(mapImage, 0, 0,);
+        
 
         // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
         // const transformedY = imgS.height - amrPos[i].y;
@@ -368,7 +368,7 @@ export class DashboardComponent implements AfterViewInit {
   //   let x = 200; // Starting x position
   //   let y = 260; // Starting y position
   //   const step = 1; // Increment step for each position change
-  //   const maxX = 420; // Maximum limit for X position
+  //   const maxX = 390; // Maximum limit for X position
   //   const maxY = 460; // Maximum limit for Y position
   //   let orientation = 0; // Initial orientation of the robot (0 deg)
     
@@ -549,16 +549,51 @@ export class DashboardComponent implements AfterViewInit {
     this.loadCanvas();
   }
 
+  async enableRobot(){
+    // posEventSource
+    const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`;
+    if (this.posEventSource) this.posEventSource.close();
+
+    this.posEventSource = new EventSource(URL);
+    this.posEventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log(data);
+      } catch (error) {
+        console.error('Error parsing SSE data:', error);
+      }
+    };
+
+    this.posEventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      this.posEventSource.close();
+    };
+  }
+
+  async showSpline(){
+    if(!this.selectedMap.id) return
+    let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/show-spline`,{
+      method:'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mapId : this.selectedMap.id,
+      }),
+    });
+    let data = await response.json();
+    if(data.isShowSplined) this.enableRobot();
+  }
   // start-stop the operation!
   startStopOpt() {
+    this.showSpline();
     if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
     if (this.throughputComponent) this.throughputComponent.getThroughPutIfOn();
   }
 
   toggleONBtn() {
     this.ONBtn = !this.ONBtn;
-    if (this.ONBtn) this.getliveAmrPos();
-    if (!this.ONBtn) this.eventSource.close(); // try take of it..
+    // if (this.ONBtn) this.getliveAmrPos(); // yet to uncomment!
+    if (!this.ONBtn && this.eventSource) this.eventSource.close(); // try take of it..
   }
 
   getOnBtnImage(): string {
