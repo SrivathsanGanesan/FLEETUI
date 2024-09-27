@@ -20,6 +20,7 @@ import { AnyAaaaRecord } from 'node:dns';
 import { log } from 'node:console';
 import { MessageService } from 'primeng/api';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { FormBuilder } from '@angular/forms';
 
 interface Poll {
   ip: string;
@@ -75,6 +76,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
 
+  addForm: any;
   isPopupOpen: boolean = false;
   isScanning = false;
   EnvData: any[] = []; // map details..
@@ -116,10 +118,50 @@ export class ConfigurationComponent implements AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: FormBuilder,
   ) {
     this.filteredEnvData = [...this.EnvData];
+    // this.filteredRobotData = [...this.robotData];
     // this.filteredRobotData = this.robotData;
+    this.addForm = this.fb.group({
+      robotName: '',
+    manufacturer: '',
+    serialNumber: '',
+    typeSpecification: {
+      seriesName: '',
+      seriesDescription: '',
+      agvKinematic: '',
+      agvClass: undefined as any | undefined,
+      maxLoadMass: 0,
+      localizationTypes: '',
+      navigationTypes: '',
+    },
+    protocolLimits: {
+      maxStringLens: '',
+      maxArrayLens: '',
+      timing: '',
+    },
+    protocolFeatures: {
+      optionalParameters: '',
+      actionScopes: '',
+      actionParameters: '',
+      resultDescription: '',
+    },
+    agvGeometry: {
+      wheelDefinitions: '',
+      envelopes2d: '',
+      envelopes3d: '',
+    },
+    loadSpecification: {
+      loadPositions: '',
+      loadSets: '',
+    },
+    localizationParameters: {
+      type: '',
+      description: '',
+    },
+    })
   }
 
   reloadTable() {
@@ -147,6 +189,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.setPaginatedData();
     this.selectFirstMapIfNoneSelected();
     this.filteredEnvData = [...this.EnvData];
+    this.filteredRobotData = [...this.robotData];
     this.cdRef.detectChanges();
     const today = new Date();
     const pastFiveYears = new Date();
@@ -177,12 +220,12 @@ export class ConfigurationComponent implements AfterViewInit {
             return sites.maps.map((map: any) => {
               let date = new Date(map?.createdAt);
               let createdAt = date.toLocaleString('en-IN', {
-                month: 'short',
+                month: 'numeric',
                 year: 'numeric',
                 day: 'numeric',
                 hour: 'numeric',
                 minute: 'numeric',
-                second: 'numeric',
+                
               });
 
               return {
@@ -255,6 +298,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
   fetchRobos() {
     let mapData = this.projectService.getMapData();
+    // this.filteredRobotData = this.mapData;
     if (!mapData) return;
 
     fetch(
@@ -279,6 +323,7 @@ export class ConfigurationComponent implements AfterViewInit {
       })
       .then((data) => {
         console.log(data);
+        // this.filteredRobotData = data.populatedRobos;
         // this.messageService.add({
         //   severity: 'success',
         //   summary: 'Success',
@@ -287,10 +332,15 @@ export class ConfigurationComponent implements AfterViewInit {
         // });
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
+        console.log(this.robotData)
+        this.filteredRobotData = this.robotData;
+        console.log(this.filteredRobotData)
+        // this.filteredRobotData = data.populatedRobos;
       })
       .catch((error) => {
         console.log(error);
       });
+      
   }
 
   editRobo(robo: any) {
@@ -298,7 +348,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.formData = robo.grossInfo;
     this.isPopupOpen = !this.isPopupOpen;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
-    this.cdRef.detectChanges();
+    // this.cdRef.detectChanges();
   }
 
   deleteRobo(robo: any) {
@@ -388,13 +438,39 @@ export class ConfigurationComponent implements AfterViewInit {
       const endIndex = startIndex + pageSize;
 
       this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
+      // this.paginatedData1 = this.filteredRobotData.slice(startIndex,endIndex);
+      console.log(this.filteredEnvData);
+      // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         this.paginator.length = this.filteredEnvData.length;
+        // this.paginator.length  = this.filteredRobotData.length;
+        console.log(this.filteredEnvData);
+        // console.log(this.filteredRobotData);
       }
+    }else if(this.currentTable === 'robot'){
+      const pageSize = this.paginator?.pageSize || 5;  // Default pageSize to 5 if paginator is not yet available
+      const pageIndex = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
+
+      // Paginate the data based on current page and page size
+      const startIndex = pageIndex * pageSize;
+      const endIndex = startIndex + pageSize;
+
+      // this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
+      this.paginatedData1 = this.filteredRobotData.slice(startIndex,endIndex);
+      // console.log(this.filteredEnvData);
+      console.log(this.filteredRobotData);
+
+      // Optionally, ensure that the paginator reflects the right page size and length
+      if (this.paginator) {
+        // this.paginator.length = this.filteredEnvData.length;
+        this.paginator.length  = this.filteredRobotData.length;
+        // console.log(this.filteredEnvData);
+        console.log(this.filteredRobotData);
     }
   }
+}
 
   // Ensure pagination is triggered on page change
   onPageChange(event: PageEvent) {
@@ -414,6 +490,11 @@ export class ConfigurationComponent implements AfterViewInit {
         this.filteredRobotData = this.robotData;
       } else {
         this.filteredEnvData = this.EnvData.filter((item) =>
+          Object.values(item).some((val) =>
+            String(val).toLowerCase().includes(inputValue)
+          )
+        );
+        this.filteredRobotData = this.robotData.filter((item) =>
           Object.values(item).some((val) =>
             String(val).toLowerCase().includes(inputValue)
           )
@@ -918,7 +999,7 @@ export class ConfigurationComponent implements AfterViewInit {
     if (this.currentTable === 'environment') {
       this.filteredEnvData = [...this.EnvData]; // Reset to the original data
     } else if (this.currentTable === 'robot') {
-      this.filteredRobotData = [...this.robotData]; // Reset to the original data
+      // this.filteredRobotData = [...this.robotData]; // Reset to the original data
       this.fetchRobos();
     }
     this.filterData();
@@ -1160,7 +1241,7 @@ export class ConfigurationComponent implements AfterViewInit {
           this.filteredEnvData = this.EnvData;
           this.cdRef.detectChanges();
         } else if (this.currentTable === 'robot') {
-          this.filteredRobotData = this.filteredRobotData.filter(
+          this.filteredRobotData = this.robotData.filter(
             (i) => i !== item
           );
           this.reloadTable();
@@ -1380,6 +1461,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
   saveItem(): void {
     this.isPopupOpen = false;
+    this.addForm.reset();
     this.cdRef.detectChanges();
   }
 
@@ -1432,9 +1514,9 @@ export class ConfigurationComponent implements AfterViewInit {
         }
         if (data.robo) {
           this.robotData = [...this.robotData, data.robo];
-          this.filteredRobotData = this.robotData;
+          // this.filteredRobotData = [...this.robotData];
           this.cdRef.detectChanges();
-          // alert('robo Added to db');
+          alert('robo Added to db');
           return;
         }
       });

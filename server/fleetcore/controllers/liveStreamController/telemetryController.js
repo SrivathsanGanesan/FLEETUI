@@ -1,12 +1,14 @@
-const mqtt = require("mqtt");
+const amqp = require("amqplib");
 const { Map, Robo } = require("../../../application/models/mapSchema");
 require("dotenv").config();
 
 let mqttClient = null;
 let endResponse = null;
-let factScheetAmr = [];
 
-const initMqttConnection = () => {
+let rabbitMqClient = null;
+let rabbitMQChannel = null;
+
+/* const initMqttConnection = () => {
   if (mqttClient) mqttClient.end();
   mqttClient = mqtt.connect(
     `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`
@@ -28,11 +30,67 @@ const initMqttConnection = () => {
     endResponse.end();
   });
 };
+ */
 
 const eventStreamHeader = {
   "Content-Type": "text/event-stream",
   "Cache-Control": "no-cache",
   Connection: "keep-alive",
+};
+
+const initRabbitMQConnection = async () => {
+  try {
+    // "http://13.202.100.211:15672/"
+    rabbitMqClient = await amqp.connect(
+      `amqp://${process.env.RABBITMQ_SERVER}:${process.env.RABBITMQ_PORT}`
+    );
+    rabbitMQChannel = await rabbitMqClient.createChannel();
+  } catch (error) {
+    console.error("Error while connecting rabbitmq :", error.message);
+  }
+};
+
+const receiveMessage = async (queueName, req, res) => {
+  if (!rabbitMQChannel) return;
+  // remove previous or existing event listenr to prevent memory leaks.. which overwhelmed bcz of listeners..
+  req.removeListener("close", () => {
+    return res.end();
+  });
+  req.on("close", () => {
+    return res.end();
+  });
+  try {
+    let queueInfo = await rabbitMQChannel.assertQueue(queueName, {
+      durable: true, // queue remains even rabbitmq server restarts..
+    });
+    if (!queueInfo.messageCount) {
+      let resInfo = {
+        messageCount: queueInfo.messageCount,
+        msg: "queue is empty!",
+      };
+      res.write(`data: ${JSON.stringify(resInfo)}\n\n`);
+      return res.end();
+    } else
+      rabbitMQChannel.consume(queueName, (msg) => {
+        if (msg) {
+          const messageContent = msg.content.toString();
+          let robos = JSON.parse(messageContent);
+          res.write(`data: ${JSON.stringify(robos)}\n\n`);
+
+          rabbitMQChannel.ack(msg);
+        }
+      });
+  } catch (error) {
+    console.error("Error connection messages :", error);
+    if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {
+      console.error("Queue properties mismatch. Please verify queue settings.");
+    }
+    return res.status(500).json({
+      errInReceivingMsg: true,
+      error: error.message,
+      msg: "Error while receiving message",
+    });
+  }
 };
 
 const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
@@ -58,22 +116,17 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
 //..
 
 // initMqttConnection();
+// initRabbitMQConnection();
+
 const getAgvTelemetry = (req, res) => {
   const mapId = req.params.mapId;
-  initMqttConnection();
+  // initMqttConnection();
   endResponse = res;
   try {
     res.writeHead(200, eventStreamHeader);
 
     res.on("close", () => {
       res.end();
-    });
-
-    mqttClient.subscribe("map/map1", { qos: 0 });
-    mqttClient.on("message", (topic, message) => {
-      let pos = { topic: topic, message: message.toString("utf8") };
-      res.write(`data: ${JSON.stringify(pos)}\n\n`);
-      // console.log(topic, message.toString("utf8"));
     });
   } catch (err) {
     console.error("Error in getAgvTelemetry:", err);
@@ -82,17 +135,16 @@ const getAgvTelemetry = (req, res) => {
 };
 
 const getRoboPos = async (req, res) => {
+  const queueName = "FMS.CONFIRM-TASK"; // queue name...
   const mapId = req.params.mapId;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
+    res.writeHead(200, eventStreamHeader);
+    await receiveMessage(queueName, req, res);
     // const map = await Map.findOne({ _id: mapId });
-    /* let roboPos = await fetchGetAmrLoc({
-      endpoint: "poseData",
-      bodyData: {},
-    }); */
-    return res.status(200).json({ roboPos: null, data: "msg sent" });
+    // return res.status(200).json({ roboPos: null, data: "msg sent" });
   } catch (error) {
     console.error("Error in getAgvTelemetry:", error);
     res
@@ -240,4 +292,6 @@ module.exports = {
   getRoboDetails,
   getRoboPos,
   mqttClient,
+  rabbitMqClient,
+  rabbitMQChannel,
 };

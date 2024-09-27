@@ -179,7 +179,7 @@ body, .card, .popup-menu {
     .card-container-wrapper {
       display: flex;
     gap: 4rem;
-    // overflow-x: scroll;
+    overflow-x: scroll;
     padding: 4rem;
     }
 
@@ -750,3 +750,6 @@ border-radius: 2px; /* Rounded edges matching the container */
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+
+// Arrow

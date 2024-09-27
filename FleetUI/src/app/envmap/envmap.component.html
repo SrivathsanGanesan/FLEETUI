@@ -175,8 +175,8 @@
           <p>Node Details</p>
 
           <div class="action-container">
-            <div class="action">
-              <label for="nodeAction" class="label" style="margin-right: 1rem;">Add Action:</label>
+            <div class="action" class="display:flex; text-wrap:nowrap; align-items:center ">
+              <label for="nodeAction" class="label" style="margin-right: 8rem;">Add Action:</label>
               <p-dropdown
                 id="nodeAction"
                 [options]="actionOptions"
@@ -185,6 +185,7 @@
                 placeholder="Select Action"
                 [autoDisplayFirst]="false"
                 styleClass="small-dropdown"
+                [style]="{'width':'143px !important'}"
               ></p-dropdown>
             </div>
             <!-- <div *ngIf="validationError" class="validation-error">{{ validationError }}</div> -->
@@ -203,7 +204,7 @@
           </div>
 
           <div class="input-group1">
-            <label for="nodeDescription" class="label">Node Description:</label>
+            <label for="nodeDescription" class="label" style="margin-right: 2.8rem;">Node Description:</label>
             <input pInputText
               type="text"
               id="nodeDescription"
@@ -315,7 +316,7 @@
                 styleClass="small-dropdown"
                 [autoDisplayFirst]="false"
                 placeholder="Select Docking Type"
-                [style]="{'height':'32px','fontSize':'12px','display':'flex','align-items':'center','marginRight':'17rem'}"
+                [style]="{'height':'32px','width':'7rem','fontSize':'12px','display':'flex','align-items':'center','marginRight':'17rem'}"
               ></p-dropdown><br />
             </div>
               <button (click)="addAction()">Add</button>
@@ -459,182 +460,186 @@
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
     <h3>Edge Details</h3>
+    <div class="flex-items">
+      <div class="first">
+        <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
+        <div class="form-row">
+          <label for="edgeId" style="padding-right: 3rem;">Edge ID:</label>
+          <input pInputText
+            id="edgeId"
+            [(ngModel)]="currentEdge.edgeId"
+            name="edgeId"
+            required
+          />
+        </div>
 
-    <!-- <form (ngSubmit)="submitEdgeDetails()"> -->
-    <div class="form-row">
-      <label for="edgeId">Edge ID:</label>
-      <input pInputText
-        id="edgeId"
-        [(ngModel)]="currentEdge.edgeId"
-        name="edgeId"
-        required
-      />
-    </div>
+        <div class="form-row">
+          <label for="sequenceId" style="padding-right: .7rem;">Sequence ID:</label>
+          <input pInputText
+            id="sequenceId"
+            type="number"
+            min="0"
+            max="1000"
+            [(ngModel)]="currentEdge.sequenceId"
+            name="sequenceId"
+            required
+          />
+        </div>
 
-    <div class="form-row">
-      <label for="sequenceId">Sequence ID:</label>
-      <input pInputText
-        id="sequenceId"
-        type="number"
-        min="0"
-        max="1000"
-        [(ngModel)]="currentEdge.sequenceId"
-        name="sequenceId"
-        required
-      />
-    </div>
+        <div class="form-row">
+          <label for="edgeDescription" style="padding-right: 1.2rem;">Description:</label>
+          <input pInputText
+            id="edgeDescription"
+            [(ngModel)]="currentEdge.edgeDescription"
+            name="edgeDescription"
+          />
+        </div>
 
-    <div class="form-row">
-      <label for="edgeDescription">Description:</label>
-      <input pInputText
-        id="edgeDescription"
-        [(ngModel)]="currentEdge.edgeDescription"
-        name="edgeDescription"
-      />
-    </div>
+        <div class="form-row">
+          <label for="startNodeId" style="padding-right: .2rem;">Start Node ID:</label>
+          <input pInputText
+            id="startNodeId"
+            [(ngModel)]="currentEdge.startNodeId"
+            name="startNodeId"
+            readonly
+          />
+        </div>
 
-    <div class="form-row">
-      <label for="released">Released:</label>
-      <input
-        id="released"
-        type="checkbox"
-        [(ngModel)]="currentEdge.released"
-        name="released"
-      />
-    </div>
+        <div class="form-row">
+          <label for="released" style="padding-right: 5rem;">Released:</label>
+          <input
+            id="released"
+            type="checkbox"
+            [(ngModel)]="currentEdge.released"
+            name="released"
+          />
+        </div>
 
-    <div class="form-row">
-      <label for="startNodeId">Start Node ID:</label>
-      <input pInputText
-        id="startNodeId"
-        [(ngModel)]="currentEdge.startNodeId"
-        name="startNodeId"
-        readonly
-      />
-    </div>
+        <div class="form-row">
+          <label for="rotationAllowed" style="padding-right: 1.3rem;">Rotation Allowed:</label>
+          <input
+            id="rotationAllowed"
+            type="checkbox"
+            [(ngModel)]="currentEdge.rotationAllowed"
+            name="rotationAllowed"
+          />
+        </div>
+      </div>
+      <div class="third">
+        <div class="form-row">
+          <label for="endNodeId" style="padding-right: 2.2rem;">End Node ID:</label>
+          <input pInputText
+            id="endNodeId"
+            [(ngModel)]="currentEdge.endNodeId"
+            name="endNodeId"
+            readonly
+          />
+        </div>
 
-    <div class="form-row">
-      <label for="endNodeId">End Node ID:</label>
-      <input pInputText
-        id="endNodeId"
-        [(ngModel)]="currentEdge.endNodeId"
-        name="endNodeId"
-        readonly
-      />
-    </div>
+        <div class="form-row">
+          <label for="maxSpeed">Max Speed (m/s):</label>
+          <input pInputText
+            id="maxSpeed"
+            type="number"
+            min="0"
+            max="1000"
+            [(ngModel)]="currentEdge.maxSpeed"
+            name="maxSpeed"
+          />
+        </div>
 
-    <div class="form-row">
-      <label for="maxSpeed">Max Speed (m/s):</label>
-      <input pInputText
-        id="maxSpeed"
-        type="number"
-        min="0"
-        max="1000"
-        [(ngModel)]="currentEdge.maxSpeed"
-        name="maxSpeed"
-      />
-    </div>
+        <div class="form-row">
+          <label for="maxHeight" style="padding-right: .8rem;">Max Height (m):</label>
+          <input pInputText
+            id="maxHeight"
+            type="number"
+            min="0"
+            max="1000"
+            [(ngModel)]="currentEdge.maxHeight"
+            name="maxHeight"
+          />
+        </div>
 
-    <div class="form-row">
-      <label for="maxHeight">Max Height (m):</label>
-      <input pInputText
-        id="maxHeight"
-        type="number"
-        min="0"
-        max="1000"
-        [(ngModel)]="currentEdge.maxHeight"
-        name="maxHeight"
-      />
-    </div>
+          <div class="form-row1">
+            <label for="minHeight" style="padding-right: 1.2rem;">Min Height (m):</label>
+            <input pInputText
+              id="minHeight"
+              type="number"
+              min="0"
+              max="1000"
+              [(ngModel)]="currentEdge.minHeight"
+              name="minHeight"
+            />
+          </div>
 
-    <div class="form-row">
-      <label for="minHeight">Min Height (m):</label>
-      <input pInputText
-        id="minHeight"
-        type="number"
-        min="0"
-        max="1000"
-        [(ngModel)]="currentEdge.minHeight"
-        name="minHeight"
-      />
-    </div>
+          <div class="form-row1">
+            <label for="orientation" style="padding-right: .5rem;">Orientation (rad):</label>
+            <input pInputText
+              id="orientation"
+              type="number"
+              min="0"
+              max="1000"
+              [(ngModel)]="currentEdge.orientation"
+              name="orientation"
+            />
+          </div>
+        </div>
+        <div class="second">
+          <div class="form-row1">
+            <label for="orientationType" style="padding-right: 5rem;">Orientation Type:</label>
+            <input pInputText
+              id="orientationType"
+              [(ngModel)]="currentEdge.orientationType"
+              name="orientationType"
+            />
+          </div>
 
-    <div class="form-row">
-      <label for="orientation">Orientation (rad):</label>
-      <input pInputText
-        id="orientation"
-        type="number"
-        min="0"
-        max="1000"
-        [(ngModel)]="currentEdge.orientation"
-        name="orientation"
-      />
-    </div>
+          <div class="form-row1">
+            <label for="direction" style="padding-right: 8.5rem;">Direction:</label>
+            <select pInputText
+              id="direction"
+              [(ngModel)]="currentEdge.direction"
+              name="direction"
+            >
+              <option value="UN_DIRECTIONAL">Uni-directional</option>
+              <option value="BI_DIRECTIONAL">Bi-directional</option>
+            </select>
+          </div>
 
-    <div class="form-row">
-      <label for="orientationType">Orientation Type:</label>
-      <input pInputText
-        id="orientationType"
-        [(ngModel)]="currentEdge.orientationType"
-        name="orientationType"
-      />
-    </div>
+          <div class="form-row1">
+            <label for="maxRotationSpeed">Max Rotation Speed (rad/s):</label>
+            <input pInputText
+              id="maxRotationSpeed"
+              type="number"
+              min="0"
+              max="100"
+              [(ngModel)]="currentEdge.maxRotationSpeed"
+              name="maxRotationSpeed"
+            />
+          </div>
 
-    <div class="form-row">
-      <label for="direction">Direction:</label>
-      <select pInputText
-        id="direction"
-        [(ngModel)]="currentEdge.direction"
-        name="direction"
-      >
-        <option value="UN_DIRECTIONAL">Uni-directional</option>
-        <option value="BI_DIRECTIONAL">Bi-directional</option>
-      </select>
-    </div>
+          <div class="form-row1">
+            <label for="length" style="padding-right: 9.8rem;">Length:</label>
+            <input pInputText
+              id="length"
+              type="number"
+              min="0"
+              max="100"
+              [(ngModel)]="currentEdge.length"
+              name="length"
+            />
+          </div>
 
-    <div class="form-row">
-      <label for="rotationAllowed">Rotation Allowed:</label>
-      <input
-        id="rotationAllowed"
-        type="checkbox"
-        [(ngModel)]="currentEdge.rotationAllowed"
-        name="rotationAllowed"
-      />
-    </div>
-
-    <div class="form-row">
-      <label for="maxRotationSpeed">Max Rotation Speed (rad/s):</label>
-      <input pInputText
-        id="maxRotationSpeed"
-        type="number"
-        min="0"
-        max="100"
-        [(ngModel)]="currentEdge.maxRotationSpeed"
-        name="maxRotationSpeed"
-      />
-    </div>
-
-    <div class="form-row">
-      <label for="length">Length:</label>
-      <input pInputText
-        id="length"
-        type="number"
-        min="0"
-        max="100"
-        [(ngModel)]="currentEdge.length"
-        name="length"
-      />
-    </div>
-
-    <div class="form-row">
-      <label for="action">Actions:</label>
-      <input pInputText id="action" [(ngModel)]="currentEdge.action" name="action" />
-    </div>
-    <div *ngIf="showEdgeError" class="error-message">
-      All required fields must be provided.
-    </div>
-
-    <div class="form-buttons">
+          <div class="form-row1">
+            <label for="action" style="padding-right: 9.5rem;">Actions:</label>
+            <input pInputText id="action" [(ngModel)]="currentEdge.action" name="action" />
+          </div>
+          <div *ngIf="showEdgeError" class="error-message">
+            All required fields must be provided.
+          </div>
+        </div>
+      </div>
+    <div class="form-buttonss">
       <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
       <button type="button" id="formBTN" (click)="deleteEdge()">Delete</button>
       <button type="button" id="formBTN" (click)="hidePopup()">Cancel</button>

@@ -3,10 +3,14 @@
   flex-direction: column;
   width: 30%;
   margin-right: 20px;
+  box-sizing: border-box; /* Ensures consistent width including padding/margins */
 }
+
 .form2{
   margin-right: 15rem;
 }
+
+
 
 .container {
   display: flex;
@@ -40,11 +44,12 @@
 
 .field {
   margin-bottom: 25px;
+  display: flex;
 }
 
 label {
   /* font-weight: bold; */
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
 /* input {

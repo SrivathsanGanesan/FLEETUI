@@ -45,7 +45,7 @@
     }
     50% {
       transform: scaleY(1);
-      background: #e74c3c; /* Red color */
+      background: #ed2c1a; /* Red color */
     }
     100% {
       transform: scaleY(0.1);

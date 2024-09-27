@@ -61,6 +61,7 @@ export class RobotsComponent implements OnInit {
     // this.mapDetails = this.projectService.getMapData();
   }
 
+  
   async ngOnInit() {
     // this.setSignalStrength('Weak'); // Change this value to test different signals
     this.mapDetails = this.projectService.getMapData();

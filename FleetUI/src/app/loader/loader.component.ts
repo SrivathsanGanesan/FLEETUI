@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 })
 export class LoaderComponent {
 
-  isLoading = false;
+  isLoading = true;
 
   // Example method to simulate page load or API call
   ngOnInit() {

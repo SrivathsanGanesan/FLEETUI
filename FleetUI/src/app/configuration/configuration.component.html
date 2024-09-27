@@ -203,10 +203,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="robotData.length === 0">
+                <tr *ngIf="paginatedData1.length === 0">
                   <td colspan="4" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of robotData; index as i; trackBy: trackByTaskId">
+                <tr *ngFor="let item of paginatedData1; index as i; trackBy: trackByTaskId">
                   <td>{{ i + 1 }}</td>
                   <td>{{ item.roboName }}</td>
                   <td>{{ item.ipAdd }}</td>
@@ -233,7 +233,7 @@
             </table>
             <div
               class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded && robotData.length > 5"
+              *ngIf="currentTable === 'robot' && !imageUploaded"
             >
             <mat-paginator
             [length]="filteredRobotData.length"
@@ -332,7 +332,7 @@
                     <!-- Add icon -->
                     <button (click)="openPopup(item)" class="icon-button">
                       <!-- You can use Font Awesome or any other icon library -->
-                      <img src="../../assets/icons/add.svg" />
+                      <img alt="" src="../../assets/icons/add.svg" />
                     </button>
                   </td>
                 </tr>

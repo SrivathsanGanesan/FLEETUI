@@ -13,6 +13,10 @@
   backdrop-filter: blur(5px);
   pointer-events: none;
 }
+
+::ng-deep .p-dropdown{
+  width: 17rem !important;
+}
 .warning-message {
   color: red;
   font-size: 0.9em;
@@ -65,7 +69,7 @@
   background: white;
   border-radius: 20px;
   padding: 30px;
-  gap: 20px;
+  gap: 8px;
   width: auto;
   max-height: 500px;
   overflow: auto;
@@ -75,6 +79,19 @@
   align-items: center;
   overflow: auto; /* Enables scrolling within the content */
 }
+
+.flex-items{
+  display: flex !important;
+  column-gap: 1.5rem !important;
+}
+
+.form-row, .form-row1{
+  display: flex !important ;
+  flex-direction: row !important;
+  columns: 20px;
+  margin-bottom: 1rem;
+}
+
 .popup-content1 input{
   text-align: center;
   /* border: 1px solid black; */
@@ -278,7 +295,7 @@ h2 {
 }
 
 .closenode-btn,.savenode-btn,.Delnode-btn{
-  padding: 20px;
+  padding: 10px;
 }
 
 
@@ -375,10 +392,11 @@ canvas {
   opacity: 1; /* Slightly dim the image on hover */
 }
 .node_details{
-  margin: 0px 20px 0px 20px;
+  /* margin: 0px 20px 0px 20px; */
   padding: 15px;
   flex-direction: column;
   border-radius: 10px;
+  width: 35rem;
 }
 /* .node_details {
   display: flex;
@@ -487,17 +505,17 @@ canvas {
   /* background-color: transparent; */
   border: 1px solid #ccc;
 }
-/* .sampleCSS {
+.sampleCSS {
   display: flex;
 
   font-size: 10px;
-  font-weight: bold;
-} */
-.sampleCSS {
+  /* font-weight: bold; */
+}
+/* .sampleCSS {
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin: 20px;
-}
+} */
 
 .action-container select{
 
@@ -794,6 +812,8 @@ button {
 .small-dropdown {
       height: 12px !important; /* Override default height */
       font-size: small; /* Adjust font size accordingly for readability */
+      width: 143px
 }
+
 
 
