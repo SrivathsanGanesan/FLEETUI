@@ -84,7 +84,7 @@
 
   <!-- Create User Popup -->
   <div [ngClass]="{'hidden': !userCreatePopUp}" class="absolute flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50">
-    <div class="popup w-[700px] py-10 bg-[#D9D9D9]">
+    <div class="popup w-[700px] py-7 bg-[#D9D9D9]">
       <!-- Title -->
       <span class="flex flex-col items-start justify-center gap-3.5">
         <p class=" text-[35px] text-[#DA2127]  font-bold">Create User</p>
@@ -103,20 +103,20 @@
         </p>
       </span>
       <!-- User Credentials Form -->
-      <div class="w-full h-full flex flex-col items-start justify-start mt-10 gap-7">
+      <div class="w-full h-full flex flex-col items-start justify-start mt-10 gap-5">
         <!-- Username and UserRole -->
         <span class="w-full flex items-center justify-center gap-5">
-          <input [(ngModel)] = "userName" type="text" placeholder="Username" class="w-full text-[15px] font-medium py-2 pt-5 px-5 outline-none bg-transparent border-b-2 border-black">
+          <input [(ngModel)] = "userName" type="text" placeholder="Username" class="w-full p-[8px] rounded-[4px] border-2 border-[#CCC] outline-none">
           <!-- DropDown -->
-          <span class="relative w-[30%] flex px-4 py-3 items-center justify-between gap-5" (click)="userRoleChange()">
+          <span class="relative w-[40%] flex px-4 py-3 items-center justify-between gap-5 rounded-lg shadow-[0_0_30px_#00000030]" (click)="userRoleChange()">
             <p class="font-semibold capitalize text-[14px]">{{userRole}}</p>
-            <svg [ngClass]="{'rotateArrow': userRoleOCstate}" class="duration-300 shadow" width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg [ngClass]="{'rotateArrow': userRoleOCstate}" class="duration-300" width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7.00007 12.3125L0 5.42194L2.33335 3.125L7.00007 7.71879L11.6667 3.125L14 5.42194L7.00007 12.3125Z" fill="black"/>
               </svg>
 
               <!-- DropDown Options -->
             @if (userRoleOCstate) {
-              <span class="absolute enterAnimation bg-white top-[100%] z-50 w-full px-2 py-3 rounded-sm flex flex-col items-center justify-center gap-3">
+              <span class="absolute enterAnimation bg-white top-[110%] left-0 rounded-lg shadow-[0_0_30px_#00000020] z-50 w-full px-2 py-3 flex flex-col items-center justify-center gap-3">
                 @for (user of userRoleCredentials; track user) {
                   <p class="w-full font-semibold text-[14px] capitalize hover:bg-[#a3a3a3] p-2 rounded-md cursor-pointer pl-2" (click)="changeUserRole(user.order)">{{user.userRole}}</p>
                 }
@@ -128,21 +128,23 @@
         <span class="w-full flex-col relative flex items-start justify-between gap-3">
           <span class="w-full flex gap-10 items-center justify-center">
             <span class="w-full relative flex items-center justify-end">
-              <input [(ngModel)] = "passWord" type="{{passwordType}}" placeholder="Password" class="bg-transparent w-full font-medium text-[15px] py-2 pt-5 px-5 outline-none border-b-2 border-black">
-              <p class="absolute text-[10px] right-2 bottom-3 w-14 flex items-center justify-center py-1 rounded-[2px] cursor-pointer" (click)="showPassword()">{{passwordView}}</p>
+              <input [(ngModel)] = "passWord" type="{{passwordType}}" placeholder="Password" class="bg-transparent w-full p-[8px] rounded-[4px] border-2 border-[#CCC] outline-none">
+              <p class="absolute text-[10px] right-2 bottom-1 w-14 flex items-center justify-center py-1 rounded-[2px] cursor-pointer" (click)="showPassword()">{{passwordView}}</p>
             </span>
 
             <span class="w-full relative flex items-center justify-end">
-              <input [(ngModel)] = "confrimPassword" type="{{confrimPasswordType}}" placeholder="Confrim Password" class="bg-transparent w-full font-medium text-[15px] py-2 pt-5 px-5 outline-none border-b-2 border-black">
-              <p class="absolute text-[10px] right-2 bottom-3 w-14 flex items-center justify-center py-1 rounded-[2px] cursor-pointer" (click)="showConfrimPassword()">{{confrimPasswordView}}</p>
+              <input [(ngModel)] = "confrimPassword" type="{{confrimPasswordType}}" placeholder="Confrim Password" class="bg-transparent w-full p-[8px] rounded-[4px] border-2 border-[#CCC] outline-none">
+              <p class="absolute text-[10px] right-2 bottom-1 w-14 flex items-center justify-center py-1 rounded-[2px] cursor-pointer" (click)="showConfrimPassword()">{{confrimPasswordView}}</p>
             </span>
           </span>
           <p class="absolute top-[calc(100%+5px)] text-red-500">{{errorMessage}}</p>
         </span>
 
-        <div class="flex gap-7 mt-10">
-          <button (click)="createUser()" class="w-[120px] py-[8px] rounded-md bg-[#D30000] text-[14px] text-white font-semibold">Create User</button>
-          <button (click)="userCreatePopUpOpen(true)" class="w-[120px] py-[8px] rounded-md border-2 border-[#D30000] text-[14px] text-[#D30000] font-semibold">Cancel</button>
+        <div class="flex w-full items-center mt-10 gap-5 justify-end">
+          <span class="flex gap-5 items-center">
+            <button (click)="createUser()" class="w-[120px] py-[8px] rounded-md bg-[#D30000] text-[14px] text-white font-semibold">Create User</button>
+            <button (click)="userCreatePopUpOpen(true)" class="w-[120px] py-[8px] rounded-md border-2 border-[#D30000] text-[14px] text-[#D30000] font-semibold">Cancel</button>  
+          </span>
         </div>
       </div>
     </div>

@@ -32,7 +32,6 @@ export interface Robot {
   SignalStrength: string;
   error: string;
   batteryPercentage: number;
-  // new
   averagedischarge: number;
   averageChargingTime: string;
   currentspeed: string;
@@ -60,8 +59,8 @@ export class RobotDetailPopupComponent {
   toggleConnection() {
     this.isConnected = !this.isConnected;
   }
-
-  isActive: boolean = false; // Initially true
+// active & Inactive
+  isActive: boolean = true; // Initially true
 
   toggleStatus() {
     this.isActive = !this.isActive; // Toggle between true and false
