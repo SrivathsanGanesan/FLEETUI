@@ -116,7 +116,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
 //..
 
 // initMqttConnection();
-initRabbitMQConnection();
+// initRabbitMQConnection();
 
 const getAgvTelemetry = (req, res) => {
   const mapId = req.params.mapId;
