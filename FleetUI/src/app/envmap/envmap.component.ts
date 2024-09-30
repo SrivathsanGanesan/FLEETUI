@@ -301,6 +301,16 @@ export class EnvmapComponent implements AfterViewInit {
   // selectedNodeId: string; // Variable to store the selected node
   public selectedNodeId: string | null = null;
   
+  isFullScreen: boolean = false;
+
+  toggleFullScreen() {
+    this.isFullScreen = !this.isFullScreen;
+  }
+
+  close1() {
+    this.showImage = false;
+    this.isFullScreen = false; // Reset fullscreen when closing
+  }
 
   setRobotAtNode(): void {
     const canvas = this.overlayCanvas.nativeElement;

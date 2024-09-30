@@ -140,7 +140,11 @@
       class="image-container"
       *ngIf="showImage"
       [ngStyle]="{ 'pointer-events': showImage ? 'auto' : 'none' }"
+      [ngClass]="{ 'fullscreen': isFullScreen }"
     >
+      <!-- Full-Screen Toggle Button -->
+  <!-- <button class="fullscreen-btn" (click)="toggleFullScreen()">Toggle Full-Screen</button> -->
+    
       <button
         class="close-btn"
         (click)="close()"
