@@ -296,7 +296,9 @@ export class EnvmapComponent implements AfterViewInit {
   isOpen: boolean = false;
   descriptionWarning: boolean = false;
   currMulNode : Node[] = [];
-
+  newOrientationAngle: number = 0;
+  inputOrientationAngle: number = 0; // The value entered by the user
+  
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
     this.deselectNode();
@@ -483,8 +485,12 @@ console.log(this.origin);
     //   );
     // }
   }
+  isConfirmingDelete: boolean = false;
   isConfirmationVisible: boolean = false;
-
+  isRoboConfirmationVisible: boolean = false;
+  showDeleteConfirmation(): void {
+    this.isConfirmingDelete = true;
+  }
   deleteSelectedNode(): void {
     if (this.selectedNode) {
       // Show confirmation dialog
@@ -493,6 +499,21 @@ console.log(this.origin);
       console.log('No node selected to delete.');
     }
     this.isNodeDetailsPopupVisible = false;
+  }
+  confirmRoboDelete():void{
+    if (this.selectedRobo) {
+      this.robos = this.robos.filter(
+        (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
+      );
+      this.redrawCanvas();
+    }
+    if (this.robotToDelete) {
+      // Remove the robot from the robos array
+      this.robos = this.robos.filter(r => r.roboDet.id !== this.robotToDelete.roboDet.id);
+      // Redraw the canvas after deleting the robot
+      this.redrawCanvas();
+    }
+    this.isRoboConfirmationVisible=false;
   }
   confirmDelete(): void {
     if (this.nodesToDelete.length > 0) {
@@ -567,12 +588,12 @@ console.log(this.origin);
       });
 
     }
-    if (this.robotToDelete) {
-      // Remove the robot from the robos array
-      this.robos = this.robos.filter(r => r.roboDet.id !== this.robotToDelete.roboDet.id);
-      // Redraw the canvas after deleting the robot
-      this.redrawCanvas();
-    }
+    // if (this.robotToDelete) {
+    //   // Remove the robot from the robos array
+    //   this.robos = this.robos.filter(r => r.roboDet.id !== this.robotToDelete.roboDet.id);
+    //   // Redraw the canvas after deleting the robot
+    //   this.redrawCanvas();
+    // }
     // Disable delete mode after confirmation
     this.isDeleteModeEnabled = false;
 
@@ -681,9 +702,10 @@ console.log(this.origin);
   // }
 
   cancelDelete(): void {
+    this.isConfirmingDelete
+    this.isRoboConfirmationVisible = false;
     // Hide confirmation dialog without deleting
     // this.isDeleteModeEnabled = false;
-    this.isConfirmationVisible = false;
   }
   closeImagePopup(): void {
     this.showImagePopup = false;
@@ -959,29 +981,29 @@ console.log(this.origin);
   }
   updateEditedMap() {
     this.nodes = this.nodes.map((node)=>{
-      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1))+ (this.origin.x || 0));
-      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1))+ (this.origin.y || 0));
+      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)));
+      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)));
       return node;
-    });
+    })
 
     this.assets = this.assets.map((asset) => {
-      asset.x = ((asset.x * (this.ratio || 1))+ (this.origin.x || 0));
-      asset.y = ((asset.y * (this.ratio || 1))+ (this.origin.y || 0));
+      asset.x = ((asset.x * (this.ratio || 1)));
+      asset.y = ((asset.y * (this.ratio || 1)));
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = ((pos.x * (this.ratio || 1))+ (this.origin.x || 0));
-        pos.y = ((pos.y * (this.ratio || 1))+ (this.origin.y || 0));
+        pos.x = ((pos.x * (this.ratio || 1)));
+        pos.y = ((pos.y * (this.ratio || 1)));
         return pos;
       });
       return zone;
     });
 
     this.robos = this.robos.map((robo) => {
-      robo.pos.x = ((robo.pos.x * (this.ratio || 1))+ (this.origin.x || 0));
-      robo.pos.y = ((robo.pos.y * (this.ratio || 1))+ (this.origin.y || 0));
+      robo.pos.x = ((robo.pos.x * (this.ratio || 1)));
+      robo.pos.y = ((robo.pos.y * (this.ratio || 1)));
       return robo;
     });
 
@@ -1035,6 +1057,24 @@ console.log(this.origin);
         });
       });
   }
+  ToQuaternion_(roll : number, pitch : number, yaw : number){
+    const cy = Math.cos(yaw * 0.5);
+    const sy = Math.sin(yaw * 0.5);
+    const cp = Math.cos(pitch * 0.5);
+    const sp = Math.sin(pitch * 0.5);
+    const cr = Math.cos(roll * 0.5);
+    const sr = Math.sin(roll * 0.5);
+   
+    const q = {
+      x: sr * cp * cy - cr * sp * sy,
+      y: cr * sp * cy + sr * cp * sy,
+      z: cr * cp * sy - sr * sp * cy,
+      w: cr * cp * cy + sr * sp * sy,
+    };
+   
+    return q;
+  };
+
   saveOpt() {
     if (this.currEditMap) {
       this.updateEditedMap();
@@ -1078,6 +1118,22 @@ console.log(this.origin);
       return robo;
     });
 
+    let orientation = {x :0, y : 0, z : 0, w : 0};
+    if(this.nodes.length)
+    orientation = this.ToQuaternion_(0,0,this.nodes[0].nodePosition.orientation);
+
+    let roboInit  = {
+      id: 0,
+      pose: {
+        position: {
+            x: this.nodes[0].nodePosition.x,
+            y: this.nodes[0].nodePosition.y,
+            z: this.nodes[0].nodePosition.orientation
+        },
+        orientation: orientation
+      }
+    }
+      
     this.form = new FormData();
     const mapData = {
       projectName: this.projData.projectName,
@@ -1091,6 +1147,7 @@ console.log(this.origin);
       nodes: this.nodes,
       stations: this.assets,
       roboPos: this.robos,
+      roboInitialise : roboInit
     };
 
     this.form?.append('mapImg', this.selectedImage);
@@ -1413,7 +1470,8 @@ console.log(this.origin);
 
       if (this.isRobotClicked(robo, x, y)) {
         this.robotToDelete = robo;  // Store the robot that was right-clicked
-        this.isConfirmationVisible = true;
+        this.isRoboConfirmationVisible = true;
+        
         // const confirmDelete = confirm('Do you want to delete this robot?');
         // if (confirmDelete) {
         //   // Remove the robot from the robos array
@@ -1745,6 +1803,7 @@ console.log(this.origin);
 
     return nodeOccupied || assetOccupied;
   }
+
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -2664,7 +2723,6 @@ console.log(this.origin);
   //   // Redraw the canvas after removing robots
   //   // this.redrawCanvas();
   // }
-
   showZoneTypePopup(): void {
     this.zoneType = null;
     this.isPopupVisible = true;
@@ -2843,7 +2901,6 @@ console.log(this.origin);
         }
       }
       let robotClicked = false; // Track if the robot was clicked
-
       // Check if a robot is clicked
       for (const robo of this.robos) {
         if (this.isRobotClicked(robo, x, y)) {
@@ -3246,7 +3303,9 @@ console.log(this.origin);
     if (ctx) {
       this.cdRef.detectChanges;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+      this.assets.forEach((asset) =>
+        this.plotAsset(asset.x, asset.y, asset.type)
+      );
       // Draw nodes
       this.nodes.forEach((node) => this.drawNode(node, 'blue', false));
 
@@ -3288,9 +3347,7 @@ console.log(this.origin);
       }
 
       // Draw assets, zones, and robots
-      this.assets.forEach((asset) =>
-        this.plotAsset(asset.x, asset.y, asset.type)
-      );
+
     }
   }
   drawConnections(): void {
@@ -3332,6 +3389,11 @@ console.log(this.origin);
   }
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
+
+  }
+  toggleCalibrationLayer(): void {
+    this.isCalibrationLayerVisible = !this.isCalibrationLayerVisible;
+    this.isOptionsMenuVisible = false; // Hide options menu when calibration layer is visible
   }
   hideCalibrationLayer(): void {
     this.isOptionsMenuVisible = false;

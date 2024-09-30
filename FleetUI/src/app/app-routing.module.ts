@@ -76,7 +76,7 @@ const routes: Routes = [
   { path: 'statistics/operation', component: StatisticsComponent },
   { path: 'statistics/robot', component: RobotDashboardComponent },
   { path: '', redirectTo: '/statistics/operation', pathMatch: 'full' },
-  
+
   { path: 'faq', component: FaqComponent },
   { path: 'support', component: SupportComponent },
 
@@ -91,12 +91,12 @@ const routes: Routes = [
     { path: '', redirectTo: '/robot-dashboard', pathMatch: 'full' }, // Default route
 
     { path: 'loader', component: LoaderComponent, canActivate: [AuthGuard] },
-  
+
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers:[AuthService]
+  providers:[AuthService,AuthGuard]
 })
 export class AppRoutingModule {}
