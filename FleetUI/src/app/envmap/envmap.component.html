@@ -268,7 +268,7 @@
             </div>
             <div class="input-groupg">
               <label>Auto Robot Operation Mode:</label>
-              <select [(ngModel)]="moveParameters.autoRobotMode" style="margin-right: 20rem;">
+              <select [(ngModel)]="moveParameters.autoRobotMode" style="margin-right: 20.5rem;">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
               </select><br/>
@@ -308,7 +308,7 @@
               <label>End Point Orientation:</label>
               <input type="checkbox" [(ngModel)]="dockParameters.endPointOrientation" style="height: 20px;" /><br />
             </div>
-            <div class="input-groupg">
+            <!-- <div class="input-groupg">
               <label for="Waiting_Stn" class="label">Docking Type</label>
               <p-dropdown appendTo="body"
                 [options]="dockingTypes"
@@ -316,8 +316,16 @@
                 styleClass="small-dropdown"
                 [autoDisplayFirst]="false"
                 placeholder="Select Docking Type"
-                [style]="{'height':'32px','width':'7rem','fontSize':'12px','display':'flex','align-items':'center','marginRight':'17rem'}"
+                styleClass="align-dropdown"
+                [style]="{'height':'32px','width':'7rem !important','fontSize':'12px','display':'flex','align-items':'center','marginRight':'19.5rem'}"
               ></p-dropdown><br />
+            </div> -->
+            <div class="input-groupg">
+              <label>Docking Type:</label>
+              <select [(ngModel)]="dockParameters.dockingType" style="margin-right: 20.5rem;" placeholder="Select Docking Type">
+                <option value="mode1">Mode 1</option>
+                <option value="mode2">Mode 2</option>
+              </select><br/>
             </div>
               <button (click)="addAction()">Add</button>
 

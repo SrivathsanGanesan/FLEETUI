@@ -1803,6 +1803,7 @@ console.log(this.origin);
 
     return nodeOccupied || assetOccupied;
   }
+
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -3388,6 +3389,11 @@ console.log(this.origin);
   }
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
+
+  }
+  toggleCalibrationLayer(): void {
+    this.isCalibrationLayerVisible = !this.isCalibrationLayerVisible;
+    this.isOptionsMenuVisible = false; // Hide options menu when calibration layer is visible
   }
   hideCalibrationLayer(): void {
     this.isOptionsMenuVisible = false;
