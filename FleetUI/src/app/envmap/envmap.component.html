@@ -192,7 +192,7 @@
           </div>
 
           <div *ngIf="actions.length > 0" class="action-div">
-            <p>Actions:</p>
+            <p style="font-size: 15px;">Actions:</p>
             <div class="action-buttons">
               <div *ngFor="let action of actions; let i = index" class="action-item">
                 <button class="action-button" (click)="editAction(i)">
@@ -204,12 +204,12 @@
           </div>
 
           <div class="input-group1">
-            <label for="nodeDescription" class="label" style="margin-right: 2.8rem;">Node Description:</label>
+            <label for="nodeDescription" class="label" style="margin-right: 5.2rem;">Node Description:</label>
             <input pInputText
               type="text"
               id="nodeDescription"
               [(ngModel)]="nodeDetails.description"
-              [style]="{'height':'30px','width':'50%'}"
+              [style]="{'height':'30px','width':'16rem'}"
             /><br />
           </div>
             <div class="input-group">
@@ -222,8 +222,8 @@
                   [(ngModel)]="nodeDetails.intermediate_node"
                 /><br />
               </div>
-              <div>
-                <label for="Waiting_Stn" class="label">Waiting Node</label>
+              <div style="margin-right: 2.5rem;">
+                <label for="Waiting_Stn" class="label" style="margin-left:10rem">Waiting Node</label>
                 <p-checkbox
                   id="Waiting_Stn"
                   [binary]="true"
@@ -268,7 +268,7 @@
             </div>
             <div class="input-groupg">
               <label>Auto Robot Operation Mode:</label>
-              <select [(ngModel)]="moveParameters.autoRobotMode" style="margin-right: 20.5rem;">
+              <select [(ngModel)]="moveParameters.autoRobotMode" style="margin-right: 20.5rem; padding: 6px;">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
               </select><br/>
@@ -741,14 +741,15 @@
   <div class="popup-content1">
     <!-- Show these buttons initially -->
     <div *ngIf="!isConfirmingDelete">
-      <div>
-         <h5>Enter Orientation</h5>
+      <div class="orientation">
+         <h5 style="margin-right:1rem;">Enter Orientation</h5>
     <div>
-      <input type="number" min="0" max="360" placeholder="in Deg" class="Orientation_input" [(ngModel)]="inputOrientationAngle">
-      <button type="button">Save</button>
+      <input pInputText type="number" min="0" max="360" placeholder="in Deg" class="Orientation_input" [(ngModel)]="inputOrientationAngle">
+
     </div></div>
       <!-- <button type="button" >Set Orientation</button> -->
       <button type="button" (click)="showDeleteConfirmation()">Remove Robot</button>
+      <button type="button">Save</button>
       <button type="button" (click)="cancelDelete()">Cancel</button>
     </div>
 

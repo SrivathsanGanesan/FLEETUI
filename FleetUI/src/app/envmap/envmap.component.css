@@ -15,7 +15,7 @@
 }
 
 ::ng-deep .p-dropdown{
-  width: 17rem ;
+  width: 16rem ;
 }
 .align-dropdown{
   height:32px;
@@ -221,7 +221,7 @@ h2 {
   margin: 0 auto;
 }
 .validation-error{
-  font-size: 15px;
+  font-size: 10px;
   color: #ff3333;
   /* padding: 10px; */
 }
@@ -302,9 +302,9 @@ h2 {
   position: relative;
 }
 
-.closenode-btn,.savenode-btn,.Delnode-btn{
+/* .closenode-btn,.savenode-btn,.Delnode-btn{
   padding: 10px;
-}
+} */
 
 
 canvas {
@@ -419,7 +419,7 @@ canvas {
   display: flex;
   flex-direction: row;
   margin-bottom: 1rem;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-content: center;
   flex-wrap: wrap;
 }
@@ -427,7 +427,7 @@ canvas {
   display: flex;
   flex-direction: row;
   margin-bottom: 1rem;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-content: center;
   flex-wrap: wrap;
 }
@@ -495,6 +495,13 @@ canvas {
   gap:10px;
 }
 
+.orientation{
+  display: flex;
+  align-content: center;
+  align-items: center;
+  margin-left: 1rem;
+}
+
 .node-details-popup p{
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
@@ -548,6 +555,7 @@ canvas {
   background-color: rgba(255, 0, 0, 0.493);
   font-size: 10px;
   color: #f8f8f8;
+  padding: 10px;
 }
 
 .distance-error-message{
@@ -592,7 +600,7 @@ canvas {
 }
 .calibration-layer {
   position: absolute;
-  bottom: 10px;
+  bottom: -50px;
   width: 100%;
   left: 50%;
   transform: translateX(-50%);
@@ -665,12 +673,12 @@ canvas {
 } */
 
 button {
-  padding: 10px;
+  padding: 6px 26px;
   background-color: #ff3333;
   color: #fff;
   font-size: 15px;
   border: none;
-  border-radius: 10px;
+  border-radius: 5px;
   cursor: pointer;
 }
 .image-popup-overlay{
