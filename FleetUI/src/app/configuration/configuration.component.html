@@ -154,6 +154,7 @@
                       </button>
 
                       <!-- delete button -->
+                       
 
                       <button class="delete-button" (click)="deleteItem(item)">
                         <svg class="delete-svgIcon" viewBox="0 0 448 512">
@@ -293,6 +294,11 @@
                 Stop
               </button>
               <div *ngIf="isScanning" class="loading-spinner"></div>
+
+              <div class="simulation-container">
+                <button class="simulation-button" (click)="startSimulation()">Simulation</button>
+              </div>
+
             </div>
 
             <div class="popup-overlay" *ngIf="showIPScannerPopup">
@@ -303,6 +309,8 @@
             </div>
 
             <table *ngIf="currentTable === 'robot'">
+
+              
               <thead>
                 <tr>
                   <th>IP</th>
@@ -340,6 +348,7 @@
                 </tr>
               </tbody>
             </table>
+            
             <div
               class="paginator-container"
               *ngIf="currentTable === 'robot' && !imageUploaded"

@@ -2,35 +2,11 @@ const amqp = require("amqplib");
 const { Map, Robo } = require("../../../application/models/mapSchema");
 require("dotenv").config();
 
-let mqttClient = null;
-let endResponse = null;
+// let mqttClient = null;
+// let endResponse = null;
 
 let rabbitMqClient = null;
 let rabbitMQChannel = null;
-
-/* const initMqttConnection = () => {
-  if (mqttClient) mqttClient.end();
-  mqttClient = mqtt.connect(
-    `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`
-  ); // .connect(host,  {username: , password:  })
-
-  mqttClient.on("connect", () => {
-    // mqttClient.subscribe("maps/map1", { qos: 0 });
-    console.log("Mqtt client connected");
-  });
-
-  mqttClient.on("error", (err) => {
-    console.log("Mqtt Err occured : ", err);
-    mqttClient.end();
-    endResponse.end();
-  });
-
-  mqttClient.on("disconnect", () => {
-    console.log("Mqtt client disconnected");
-    endResponse.end();
-  });
-};
- */
 
 const eventStreamHeader = {
   "Content-Type": "text/event-stream",
@@ -77,15 +53,15 @@ const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
     //   res.write(`data: ${JSON.stringify(resInfo)}\n\n`);
     //   return res.end();
     // } else
-      rabbitMQChannel.consume(queueName, (msg) => {
-        if (msg) {
-          const messageContent = msg.content.toString();
-          let robos = JSON.parse(messageContent);
-          res.write(`data: ${JSON.stringify(robos)}\n\n`);
+    rabbitMQChannel.consume(queueName, (msg) => {
+      if (msg) {
+        const messageContent = msg.content.toString();
+        let robos = JSON.parse(messageContent);
+        res.write(`data: ${JSON.stringify(robos)}\n\n`);
 
-          rabbitMQChannel.ack(msg);
-        }
-      });
+        rabbitMQChannel.ack(msg);
+      }
+    });
   } catch (error) {
     console.error("Error connection messages :", error);
     if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {
@@ -123,12 +99,11 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
 //..
 
 // initMqttConnection();
-initRabbitMQConnection();
+// initRabbitMQConnection();
 
 const getAgvTelemetry = (req, res) => {
   const mapId = req.params.mapId;
   // initMqttConnection();
-  endResponse = res;
   try {
     res.writeHead(200, eventStreamHeader);
 
@@ -321,7 +296,6 @@ module.exports = {
   getRoboDetails,
   getRoboPos,
   showSpline,
-  mqttClient,
   rabbitMqClient,
   rabbitMQChannel,
 };

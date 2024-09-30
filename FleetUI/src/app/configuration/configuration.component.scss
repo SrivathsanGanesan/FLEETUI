@@ -400,6 +400,34 @@ tr:nth-child(even) {
     fill: white; /* Change color on hover */
   }
 
+
+  // simulation button
+
+  .simulation-container {
+    display: flex;
+    // flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; /* This will move the button to the end */
+  width: 100vh;
+    gap: 10px;
+  }
+  
+  .simulation-button {
+    background-color: #ff0000;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .simulation-button:hover {
+    background-color: #cc0000;
+  }
+  
+
+  
 .Create-button {
   padding: 10px 20px;
   background-color: #ff3333;

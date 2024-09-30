@@ -8,6 +8,7 @@
     "ng-apexcharts": "^1.11.0",
     "ng2-charts": "^6.0.1",
     "papaparse": "^5.4.1",
+    "primeng": "^17.18.11",
     "tailwindcss": "^3.4.11",
     "xlsx": "^0.18.5"
   }

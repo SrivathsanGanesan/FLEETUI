@@ -10893,6 +10893,24 @@
     <!-- <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas> -->
     <canvas #myCanvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
 
+    <div class="dropdown">
+      <!-- Dropdown Button with Arrow -->
+      <button class="dropdown-button" (click)="toggleDropdown()">
+        Enable Robot
+        <svg [ngClass]="{'rotate': isDropdownOpen}" class="duration-300" width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.00007 12.3125L0 5.42194L2.33335 3.125L7.00007 7.71879L11.6667 3.125L14 5.42194L7.00007 12.3125Z" fill="white"/>
+          </svg>
+      </button>
+      
+      <!-- Dropdown content -->
+      <div class="dropdown-content" *ngIf="isDropdownOpen">
+        <div *ngFor="let robot of robots" class="dropdown-item">
+          <span>{{ robot.name }}</span>
+          <button class="enable-button" (click)="activateRobot(robot)">Enable</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ON Button -->
     <div class="ONBtn" (click)="startStopOpt()">
       <img [src]="getOnBtnImage()" (click)="toggleONBtn()" />
