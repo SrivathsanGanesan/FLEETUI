@@ -1,8 +1,8 @@
 <div [@fadeAnimation]="getRouteAnimationData(outlet)" [@.disabled]="!outlet.isActivated">
 
   <p-toast></p-toast>
-  <!-- <div *ngIf="getRouter().url !== '/' && getRouter().url !== '/project_setup'"> -->
-    <div>
+  <div *ngIf="getRouter().url !== '/' && getRouter().url !== '/project_setup'">
+    <!-- <div> -->
     <app-sidenavbar></app-sidenavbar>
   </div>
 
