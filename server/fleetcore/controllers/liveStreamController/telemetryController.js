@@ -50,27 +50,33 @@ const initRabbitMQConnection = async () => {
   }
 };
 
-const receiveMessage = async (queueName, req, res) => {
+const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
   if (!rabbitMQChannel) return;
   // remove previous or existing event listenr to prevent memory leaks.. which overwhelmed bcz of listeners..
-  req.removeListener("close", () => {
+  /* req.removeListener("close", () => {
     return res.end();
-  });
+  }); */
   req.on("close", () => {
     return res.end();
   });
   try {
+    // topic or direct or fanout, which describes what type of exchange it is..
+    let exchangeInfo = await rabbitMQChannel.assertExchange(exchange, "topic", {
+      durable: true,
+    });
+
     let queueInfo = await rabbitMQChannel.assertQueue(queueName, {
       durable: true, // queue remains even rabbitmq server restarts..
     });
-    if (!queueInfo.messageCount) {
-      let resInfo = {
-        messageCount: queueInfo.messageCount,
-        msg: "queue is empty!",
-      };
-      res.write(`data: ${JSON.stringify(resInfo)}\n\n`);
-      return res.end();
-    } else
+    await rabbitMQChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
+    // if (!queueInfo.messageCount) {
+    //   let resInfo = {
+    //     messageCount: queueInfo.messageCount,
+    //     msg: "queue is empty!",
+    //   };
+    //   res.write(`data: ${JSON.stringify(resInfo)}\n\n`);
+    //   return res.end();
+    // } else
       rabbitMQChannel.consume(queueName, (msg) => {
         if (msg) {
           const messageContent = msg.content.toString();
@@ -95,7 +101,7 @@ const receiveMessage = async (queueName, req, res) => {
 
 const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
   let response = await fetch(
-    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/poseData`,
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
       method: "GET",
       credentials: "include",
@@ -103,7 +109,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
         "Content-Type": "application/json",
         Authorization: "Basic cm9vdDp0b29y",
       },
-      // body: JSON.stringify(bodyData),
+      body: JSON.stringify(bodyData),
     }
   );
   if (!response.ok) {
@@ -117,7 +123,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
 //..
 
 // initMqttConnection();
-// initRabbitMQConnection();
+initRabbitMQConnection();
 
 const getAgvTelemetry = (req, res) => {
   const mapId = req.params.mapId;
@@ -136,14 +142,16 @@ const getAgvTelemetry = (req, res) => {
 };
 
 const getRoboPos = async (req, res) => {
+  const exchange = "amq.topic";
   const queueName = "FMS.CONFIRM-TASK"; // queue name...
+  const routingKey = "FMS";
   const mapId = req.params.mapId;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
     res.writeHead(200, eventStreamHeader);
-    await receiveMessage(queueName, req, res);
+    await receiveMessage(exchange, queueName, routingKey, req, res);
     // const map = await Map.findOne({ _id: mapId });
     // return res.status(200).json({ roboPos: null, data: "msg sent" });
   } catch (error) {

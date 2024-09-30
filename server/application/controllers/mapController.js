@@ -140,6 +140,7 @@ const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
   const { nodes, edges, roboInitialise } = mapData; // send node graph..
+  console.log(roboInitialise);
   let fleetEdges = [];
   edges.forEach((edge) => {
     fleetEdges.push({
@@ -159,29 +160,40 @@ const mapInsert = async (req, res) => {
     __dirname,
     "../../proj_assets/nodeGraph/nodeGraph.txt"
   );
-  console.log(roboInitialise);
+  // console.log(roboInitialise);
 
   // const data = JSON.parse(fs.readFileSync(filePath));
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
   // return res.end();
 
-  /* let nodeGraph = {
-    nodes: fleetNodes,
-    edges: fleetEdges,
-  };
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",
     bodyData: nodeGraph,
   });
 
-  let roboInitRes = postFleetData({
+  let roboInitRes = await postFleetData({
     endpoint: "initialise",
     bodyData: roboInitialise,
   });
 
-  if (sentNodeGraphRes.errorCode !== 100 && roboInitRes.errorCode !== 100) {
+  let splineRes = await postFleetData({
+    endpoint: "showSpline",
+    bodyData: { robotId: 0, enable: true },
+  });
+
+  let enableRes = await postFleetData({
+    endpoint: "enableRobot",
+    bodyData: { robotId: 0, enable: true },
+  });
+
+  if (
+    sentNodeGraphRes.errorCode !== 100 &&
+    roboInitRes.errorCode !== 100 &&
+    splineRes.errorCode !== 100 &&
+    enableRes.errorCode !== 100
+  ) {
     res.status(500).json({ msg: "not attained" });
-  } */
+  }
 
   // return res.end(); // yet to remove..
   try {
