@@ -171,20 +171,26 @@ const mapInsert = async (req, res) => {
     bodyData: nodeGraph,
   });
 
-  let roboInitRes = postFleetData({
+  let roboInitRes = await postFleetData({
     endpoint: "initialise",
     bodyData: roboInitialise,
   });
 
-  let splineRes = postFleetData({
+  let splineRes = await postFleetData({
     endpoint: "showSpline",
+    bodyData: { robotId: 0, enable: true },
+  });
+
+  let enableRes = await postFleetData({
+    endpoint: "enableRobot",
     bodyData: { robotId: 0, enable: true },
   });
 
   if (
     sentNodeGraphRes.errorCode !== 100 &&
     roboInitRes.errorCode !== 100 &&
-    splineRes.errorCode !== 100
+    splineRes.errorCode !== 100 &&
+    enableRes.errorCode !== 100
   ) {
     res.status(500).json({ msg: "not attained" });
   }

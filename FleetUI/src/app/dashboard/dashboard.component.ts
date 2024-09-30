@@ -306,7 +306,7 @@ export class DashboardComponent implements AfterViewInit {
 
     // ctx.restore(); // Reset transformation after drawing
   }
-  async fetchRoboPos(amrPos: any[]) {
+  async fetchRoboPos(x: number, y: number, yaw: number) {
     // console.log(amrPos);
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -328,7 +328,7 @@ export class DashboardComponent implements AfterViewInit {
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load
 
-    if (ctx && amrPos.length) {
+    if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Calculate the scaled image dimensions
@@ -352,15 +352,9 @@ export class DashboardComponent implements AfterViewInit {
       ctx.drawImage(mapImage, 0, 0);
 
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
-      const transformedY =
-        mapImage.height - amrPos[0].pose.position.y / this.ratio;
+      const transformedY = canvas.height - y;
       // console.log(amrPos[i].x, amrPos[i].y);
-      this.plotRobo(
-        ctx,
-        amrPos[0].pose.position.x / this.ratio,
-        transformedY,
-        amrPos[0].pose.position.z
-      );
+      this.plotRobo(ctx, x, transformedY, yaw);
     }
   }
   // async fetchRoboPos() {
@@ -427,13 +421,35 @@ export class DashboardComponent implements AfterViewInit {
 
   // }
 
+  /* plotRobo(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    orientation: number
+  ) {
+    const image = this.robotImages['robotB'];
+    const imageSize = 25;
+
+    if (image && ctx) {
+      ctx.save(); // Save the current context before rotation
+      ctx.translate(x, y); // Move the rotation point to the robot's center
+      ctx.rotate((orientation * Math.PI) / 180); // Rotate by the given orientation angle (converted to radians)
+      ctx.drawImage(
+        image,
+        -imageSize / 2,
+        -imageSize / 2,
+        imageSize * 1.3,
+        imageSize
+      );
+      ctx.restore(); // Restore the context after rotation
+    }
+  } */
   plotRobo(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
-    orientation: number,
-    isSelected: boolean = false
-  ): void {
+    orientation: number
+  ) {
     const image = this.robotImages['robotB'];
     const imageSize = 25;
 
@@ -451,6 +467,7 @@ export class DashboardComponent implements AfterViewInit {
       ctx.restore(); // Restore the context after rotation
     }
   }
+
   redrawOtherElements(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     // // Redraw nodes, edges, assets, and zones
     this.nodes.forEach((node) => {
@@ -549,6 +566,16 @@ export class DashboardComponent implements AfterViewInit {
     this.loadCanvas();
   }
 
+  quaternionToYaw(w: number, x: number, y: number, z: number): number {
+    // Calculate the yaw (rotation around the Z-axis)
+    const yaw = Math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z));
+
+    // Convert yaw from radians to degrees, if necessary
+    const yawDegrees = yaw * (180 / Math.PI);
+
+    return yawDegrees;
+  }
+
   async enableRobot() {
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
@@ -563,13 +590,40 @@ export class DashboardComponent implements AfterViewInit {
 
     this.posEventSource = new EventSource(URL);
     this.posEventSource.onmessage = (event) => {
+      const robotsData: any = {};
+
       try {
         const data = JSON.parse(event.data);
-        console.log(data); // here it is..
-        // console.log(data.robots[0].pose.position);
-        if (ctx && data.robots)
-          // this.plotRobo( ctx, data.robots[0].pose.position.x / this.ratio, data.robots[0].pose.position.y / this.ratio, data.robots[0].pose.position.z );
-          this.fetchRoboPos(data.robots);
+        // console.log(data.robots); // here it is..
+
+        if (ctx && data.robots.length) {
+          // Loop through each robot to update their pose and position
+          data.robots.forEach(async (robot: any) => {
+            let complexVal = {
+              w: robot.pose.orientation.w,
+              x: robot.pose.orientation.x,
+              y: robot.pose.orientation.y,
+              z: robot.pose.orientation.z,
+            };
+
+            let posX = robot.pose.position.x / 0.05;
+            let posY = robot.pose.position.y / 0.05;
+
+            let yaw = this.quaternionToYaw(
+              complexVal.w,
+              complexVal.x,
+              complexVal.y,
+              complexVal.z
+            );
+
+            // Store each robot's position and orientation using the robot ID
+            robotsData[robot.id] = { posX, posY, yaw: yaw };
+            console.log(robot.pose.position.x, robot.pose.position.y);
+
+            // Re-plot all robots
+            await this.plotAllRobots(robotsData);
+          });
+        }
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
@@ -579,6 +633,41 @@ export class DashboardComponent implements AfterViewInit {
       console.error('SSE error:', error);
       this.posEventSource.close();
     };
+  }
+  async plotAllRobots(robotsData: any) {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+
+    const mapImage = new Image();
+    let map = this.projectService.getMapData();
+    mapImage.src = `http://${map.imgUrl}`;
+    await mapImage.decode(); // Wait for the image to load
+
+    if (ctx) {
+      // Clear the whole canvas before redrawing the map and all robots
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Calculate the scaled image dimensions and center the image on the canvas
+      const imgWidth = mapImage.width * this.zoomLevel;
+      const imgHeight = mapImage.height * this.zoomLevel;
+      const centerX = (canvas.width - imgWidth) / 2;
+      const centerY = (canvas.height - imgHeight) / 2;
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.scale(this.zoomLevel, this.zoomLevel);
+      ctx.drawImage(mapImage, 0, 0);
+      ctx.restore(); // Reset transformation after drawing the map
+
+      // Plot each robot on the map
+      Object.keys(robotsData).forEach((robotId) => {
+        const { posX, posY, yaw } = robotsData[robotId];
+
+        // Transform the Y-axis and plot the robot
+        const transformedY = canvas.height - posY;
+        this.plotRobo(ctx, posX, transformedY, -yaw);
+      });
+    }
   }
 
   async showSpline() {
