@@ -283,36 +283,71 @@ export class DashboardComponent implements AfterViewInit {
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-    // Apply transformation for centering, zooming, and panning
+    // Calculate the position to center the image
+    const imgWidth = img.width * this.zoomLevel;
+    const imgHeight = img.height * this.zoomLevel;
+
+    const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+    const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
+    // Apply transformation for panning and zooming
     ctx.save();
-    ctx.translate(this.mapImageX, this.mapImageY);
+    ctx.translate(centerX, centerY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
-  
-    // Draw the map image
+
+    // Draw the image
     ctx.drawImage(img, 0, 0);
-  
+
     if (!this.showModelCanvas) return;
-  
-    // Draw nodes and other elements
+    // Draw nodes on the image
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
-  
-    // Draw edges and other elements similarly
+
+    // Draw edges between nodes
     this.edges.forEach((edge) => {
       const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
       const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
       if (startNode && endNode) {
-        const startPos = { x: startNode.nodePosition.x, y: startNode.nodePosition.y };
+        const startPos = {
+          x: startNode.nodePosition.x,
+          y: startNode.nodePosition.y,
+        };
         const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
         const transformedStartY = img.height - startPos.y;
         const transformedEndY = img.height - endPos.y;
-        this.drawEdge(ctx, { x: startPos.x, y: transformedStartY }, { x: endPos.x, y: transformedEndY }, edge.direction, edge.startNodeId, edge.endNodeId);
+        this.drawEdge(
+          ctx,
+          { x: startPos.x, y: transformedStartY },
+          { x: endPos.x, y: transformedEndY },
+          edge.direction,
+          edge.startNodeId,
+          edge.endNodeId
+        );
       }
     });
-  
+
+    this.zones.forEach((zone) => {
+      // Re-plot the points of the zone
+      // zone.pos.forEach((point, index) => {
+      //   // Plot the first point in violet and others in red
+      //   const isFirstPoint = index === 0;
+      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
+      // });
+      this.plottedPoints = zone.pos;
+      this.zoneType = zone.type;
+      this.drawLayer(ctx);
+      this.plottedPoints = [];
+    });
+
+    this.assets.forEach((asset) =>
+      this.plotAsset(ctx, asset.x, asset.y, asset.type)
+    );
+
+    // yet to uncomment
+    // this.robos.forEach((robo) =>
+    //   this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
+    // );
     // ctx.restore(); // Reset transformation after drawing
   }
 
