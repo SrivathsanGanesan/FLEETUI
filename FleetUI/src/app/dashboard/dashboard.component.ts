@@ -279,51 +279,43 @@ export class DashboardComponent implements AfterViewInit {
       };
     }
   }
+
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
     // Apply transformation for centering, zooming, and panning
     ctx.save();
     ctx.translate(this.mapImageX, this.mapImageY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
-
+  
     // Draw the map image
     ctx.drawImage(img, 0, 0);
-
+  
     if (!this.showModelCanvas) return;
-
+  
     // Draw nodes and other elements
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
-
+  
     // Draw edges and other elements similarly
     this.edges.forEach((edge) => {
       const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
       const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
       if (startNode && endNode) {
-        const startPos = {
-          x: startNode.nodePosition.x,
-          y: startNode.nodePosition.y,
-        };
+        const startPos = { x: startNode.nodePosition.x, y: startNode.nodePosition.y };
         const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
         const transformedStartY = img.height - startPos.y;
         const transformedEndY = img.height - endPos.y;
-        this.drawEdge(
-          ctx,
-          { x: startPos.x, y: transformedStartY },
-          { x: endPos.x, y: transformedEndY },
-          edge.direction,
-          edge.startNodeId,
-          edge.endNodeId
-        );
+        this.drawEdge(ctx, { x: startPos.x, y: transformedStartY }, { x: endPos.x, y: transformedEndY }, edge.direction, edge.startNodeId, edge.endNodeId);
       }
     });
-
+  
     // ctx.restore(); // Reset transformation after drawing
   }
+
   async fetchRoboPos(x: number, y: number, yaw: number) {
     // console.log(amrPos);
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
