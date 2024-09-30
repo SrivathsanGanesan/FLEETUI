@@ -741,15 +741,26 @@
   <div class="popup-content1">
     <!-- Show these buttons initially -->
     <div *ngIf="!isConfirmingDelete">
-      <div class="orientation">
+      <!-- <div>
+        <h5>Set Robot Position at Node</h5>
+        <div>
+          <select [(ngModel)]="selectedNodeId">
+            <option *ngFor="let node of nodes" [value]="node.nodeId">
+              Node: {{ node.nodeId }}
+            </option>
+          </select>
+        <button (click)="setRobotAtNode()">Set</button>
+      </div>
+      </div> -->
+      <!-- <div class="orientation">
          <h5 style="margin-right:1rem;">Enter Orientation</h5>
     <div>
       <input pInputText type="number" min="0" max="360" placeholder="in Deg" class="Orientation_input" [(ngModel)]="inputOrientationAngle">
 
-    </div></div>
+    </div></div> -->
       <!-- <button type="button" >Set Orientation</button> -->
       <button type="button" (click)="showDeleteConfirmation()">Remove Robot</button>
-      <button type="button">Save</button>
+ 
       <button type="button" (click)="cancelDelete()">Cancel</button>
     </div>
 
