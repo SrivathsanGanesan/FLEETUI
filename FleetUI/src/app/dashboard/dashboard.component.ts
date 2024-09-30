@@ -47,6 +47,7 @@ export class DashboardComponent implements AfterViewInit {
   posEventSource!: EventSource;
   ONBtn = false;
   showDashboard = false;
+  isDropdownOpen = false;
   selectedFloor = 'Floor 1';
   floors = ['Floor 1'];
   zoomLevel = 0.9;
@@ -163,6 +164,25 @@ export class DashboardComponent implements AfterViewInit {
     canvas.addEventListener('mouseleave', () => {
       tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
     });
+  }
+
+
+   // List of robots
+   robots = [
+    { name: 'Robot 1', enabled: false },
+    { name: 'Robot 2', enabled: false },
+    { name: 'Robot 3', enabled: false }
+  ];
+
+  // Toggle the dropdown menu
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  // Enable a robot
+  activateRobot(robot: any) {
+    robot.enabled = true;
+    console.log(`${robot.name} has been enabled.`);
   }
 
   async getMapDetails() {
