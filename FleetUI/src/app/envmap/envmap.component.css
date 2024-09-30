@@ -48,6 +48,7 @@
 
 .UDform{
   padding: 10px;
+  display: flex;
 }
 .popup-overlay1 {
   position: fixed;
@@ -612,6 +613,13 @@ canvas {
   gap: 10px;
   border-radius: 8px;
   z-index: 10;
+}
+
+h2{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 36px;
+  font-weight: bold;
+  color: #da2127;
 }
 
 .dropdown {

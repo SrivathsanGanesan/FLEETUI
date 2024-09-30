@@ -1930,7 +1930,7 @@ console.log(this.origin);
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
     this.isPlottingEnabled = true;
-    this.toggleOptionsMenu();
+    // this.toggleOptionsMenu();
 
     if (mode === 'multi') {
       // this.nodes = [];
