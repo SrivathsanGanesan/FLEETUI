@@ -30,7 +30,7 @@
         <span class="w-[30%] text-[14px] h-[55px] flex items-center justify-between">
           <p class=" text-[14px] flex items-center h-full justify-start w-full ">Name</p>
         </span>
-        <span class="flex text-[14px] h-[55px] w-[80%] items-center justify-between">
+        <span class="flex text-[14px] h-[40px] w-[80%] items-center justify-between">
           <p class="w-full text-[14px] flex items-center h-full pl-3 justify-start ">User Type</p>
           <p class="w-full text-[14px] flex items-center h-full pl-3 justify-start ">Created By</p>
           <p class="w-full text-[14px] flex items-center h-full pl-3 justify-start ">Created on</p>
@@ -73,8 +73,19 @@
             </span>
           }
         }
+        
       </span>
+      <div class="paginator-container" *ngIf="filteredData.length > 5" >
+        <mat-paginator
+           [length]="filteredData.length"
+           [pageSize]="5"
+           [pageSizeOptions]="[5, 10, ]"
+           (page)="onPageChange($event)"
+           showFirstLastButtons>       
+        </mat-paginator>
+     </div>
     </div>
+
 
 
 
