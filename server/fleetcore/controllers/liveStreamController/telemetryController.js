@@ -2,35 +2,11 @@ const amqp = require("amqplib");
 const { Map, Robo } = require("../../../application/models/mapSchema");
 require("dotenv").config();
 
-let mqttClient = null;
-let endResponse = null;
+// let mqttClient = null;
+// let endResponse = null;
 
 let rabbitMqClient = null;
 let rabbitMQChannel = null;
-
-/* const initMqttConnection = () => {
-  if (mqttClient) mqttClient.end();
-  mqttClient = mqtt.connect(
-    `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`
-  ); // .connect(host,  {username: , password:  })
-
-  mqttClient.on("connect", () => {
-    // mqttClient.subscribe("maps/map1", { qos: 0 });
-    console.log("Mqtt client connected");
-  });
-
-  mqttClient.on("error", (err) => {
-    console.log("Mqtt Err occured : ", err);
-    mqttClient.end();
-    endResponse.end();
-  });
-
-  mqttClient.on("disconnect", () => {
-    console.log("Mqtt client disconnected");
-    endResponse.end();
-  });
-};
- */
 
 const eventStreamHeader = {
   "Content-Type": "text/event-stream",
@@ -50,36 +26,42 @@ const initRabbitMQConnection = async () => {
   }
 };
 
-const receiveMessage = async (queueName, req, res) => {
+const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
   if (!rabbitMQChannel) return;
   // remove previous or existing event listenr to prevent memory leaks.. which overwhelmed bcz of listeners..
-  req.removeListener("close", () => {
+  /* req.removeListener("close", () => {
     return res.end();
-  });
+  }); */
   req.on("close", () => {
     return res.end();
   });
   try {
+    // topic or direct or fanout, which describes what type of exchange it is..
+    let exchangeInfo = await rabbitMQChannel.assertExchange(exchange, "topic", {
+      durable: true,
+    });
+
     let queueInfo = await rabbitMQChannel.assertQueue(queueName, {
       durable: true, // queue remains even rabbitmq server restarts..
     });
-    if (!queueInfo.messageCount) {
-      let resInfo = {
-        messageCount: queueInfo.messageCount,
-        msg: "queue is empty!",
-      };
-      res.write(`data: ${JSON.stringify(resInfo)}\n\n`);
-      return res.end();
-    } else
-      rabbitMQChannel.consume(queueName, (msg) => {
-        if (msg) {
-          const messageContent = msg.content.toString();
-          let robos = JSON.parse(messageContent);
-          res.write(`data: ${JSON.stringify(robos)}\n\n`);
+    await rabbitMQChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
+    // if (!queueInfo.messageCount) {
+    //   let resInfo = {
+    //     messageCount: queueInfo.messageCount,
+    //     msg: "queue is empty!",
+    //   };
+    //   res.write(`data: ${JSON.stringify(resInfo)}\n\n`);
+    //   return res.end();
+    // } else
+    rabbitMQChannel.consume(queueName, (msg) => {
+      if (msg) {
+        const messageContent = msg.content.toString();
+        let robos = JSON.parse(messageContent);
+        res.write(`data: ${JSON.stringify(robos)}\n\n`);
 
-          rabbitMQChannel.ack(msg);
-        }
-      });
+        rabbitMQChannel.ack(msg);
+      }
+    });
   } catch (error) {
     console.error("Error connection messages :", error);
     if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {
@@ -95,7 +77,7 @@ const receiveMessage = async (queueName, req, res) => {
 
 const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
   let response = await fetch(
-    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/poseData`,
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
       method: "GET",
       credentials: "include",
@@ -103,7 +85,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
         "Content-Type": "application/json",
         Authorization: "Basic cm9vdDp0b29y",
       },
-      // body: JSON.stringify(bodyData),
+      body: JSON.stringify(bodyData),
     }
   );
   if (!response.ok) {
@@ -113,6 +95,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
   let data = await response.json();
   return data;
 };
+
 //..
 
 // initMqttConnection();
@@ -121,7 +104,6 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
 const getAgvTelemetry = (req, res) => {
   const mapId = req.params.mapId;
   // initMqttConnection();
-  endResponse = res;
   try {
     res.writeHead(200, eventStreamHeader);
 
@@ -135,14 +117,16 @@ const getAgvTelemetry = (req, res) => {
 };
 
 const getRoboPos = async (req, res) => {
+  const exchange = "amq.topic";
   const queueName = "FMS.CONFIRM-TASK"; // queue name...
+  const routingKey = "FMS";
   const mapId = req.params.mapId;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
     res.writeHead(200, eventStreamHeader);
-    await receiveMessage(queueName, req, res);
+    await receiveMessage(exchange, queueName, routingKey, req, res);
     // const map = await Map.findOne({ _id: mapId });
     // return res.status(200).json({ roboPos: null, data: "msg sent" });
   } catch (error) {
@@ -150,6 +134,29 @@ const getRoboPos = async (req, res) => {
     res
       .status(500)
       .json({ error: error.message, msg: "Internal Server Error" });
+  }
+};
+
+const showSpline = async (req, res) => {
+  const { mapId } = req.body;
+  let splineData = {
+    robotId: 0,
+    enable: true,
+  };
+  let splineRes = await fetchGetAmrLoc("showSpline", splineData);
+  if (splineRes.errorCode !== 1000) {
+    res.status(500).json({ isShowSplined: false, msg: "not attained" });
+  }
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res
+        .status(400)
+        .json({ isShowSplined: false, msg: "Map not found!", map: null });
+    return res.status(200).json({ isShowSplined: true, msg: "path set!" });
+  } catch (error) {
+    console.error("Error in show_spline  :", err);
+    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
   }
 };
 
@@ -225,8 +232,6 @@ const getRoboActivities = async (req, res) => {
   }
 };
 
-const getRoboFactSheet = async (req, res) => {};
-
 const getRoboDetails = async (req, res) => {
   const { mapId } = req.body;
   try {
@@ -288,10 +293,9 @@ module.exports = {
   getGrossTaskStatus,
   getRoboStateCount,
   getRoboActivities,
-  getRoboFactSheet,
   getRoboDetails,
   getRoboPos,
-  mqttClient,
+  showSpline,
   rabbitMqClient,
   rabbitMQChannel,
 };

@@ -3,7 +3,7 @@
 <div id="container">
 
   <!-- Sidebar -->
-  <app-sidenavbar></app-sidenavbar>
+  <!-- <app-sidenavbar></app-sidenavbar> -->
   <app-loader></app-loader>
 
 
@@ -154,6 +154,7 @@
                       </button>
 
                       <!-- delete button -->
+                       
 
                       <button class="delete-button" (click)="deleteItem(item)">
                         <svg class="delete-svgIcon" viewBox="0 0 448 512">
@@ -231,18 +232,20 @@
                 </tr>
               </tbody>
             </table>
-            <div
-              class="paginator-container"
-              *ngIf="currentTable === 'robot' && !imageUploaded"
-            >
-            <mat-paginator
-            [length]="filteredRobotData.length"
-            [pageSize]="5"
-            [pageSizeOptions]="[5, 10]"
-            (page)="onPageChange($event)"
-            showFirstLastButtons
-          >
-          </mat-paginator>
+            <div *ngIf="currentTable === 'robot' && filteredRobotData.length == robotData.length">
+                <div
+                  class="paginator-container"
+                  *ngIf="filteredRobotData.length > 5"
+                >
+                    <mat-paginator
+                    [length]="filteredRobotData.length"
+                    [pageSize]="5"
+                    [pageSizeOptions]="[5, 10]"
+                    (page)="onPageChange($event)"
+                    showFirstLastButtons
+                  >
+                  </mat-paginator>
+                </div>
             </div>
             <!-- <button
               class="ASR-button"
@@ -291,6 +294,11 @@
                 Stop
               </button>
               <div *ngIf="isScanning" class="loading-spinner"></div>
+
+              <div class="simulation-container">
+                <button class="simulation-button" (click)="startSimulation()">Simulation</button>
+              </div>
+
             </div>
 
             <div class="popup-overlay" *ngIf="showIPScannerPopup">
@@ -301,6 +309,8 @@
             </div>
 
             <table *ngIf="currentTable === 'robot'">
+
+              
               <thead>
                 <tr>
                   <th>IP</th>
@@ -338,6 +348,7 @@
                 </tr>
               </tbody>
             </table>
+            
             <div
               class="paginator-container"
               *ngIf="currentTable === 'robot' && !imageUploaded"

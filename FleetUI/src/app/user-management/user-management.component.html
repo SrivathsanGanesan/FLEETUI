@@ -1,4 +1,4 @@
-<app-sidenavbar></app-sidenavbar>
+<!-- <app-sidenavbar></app-sidenavbar> -->
 <div class=" mainContent">
 
   <app-loader></app-loader>
@@ -30,7 +30,7 @@
         <span class="w-[30%] text-[14px] h-[55px] flex items-center justify-between">
           <p class=" text-[14px] flex items-center h-full justify-start w-full ">Name</p>
         </span>
-        <span class="flex text-[14px] h-[55px] w-[80%] items-center justify-between">
+        <span class="flex text-[14px] h-[40px] w-[80%] items-center justify-between">
           <p class="w-full text-[14px] flex items-center h-full pl-3 justify-start ">User Type</p>
           <p class="w-full text-[14px] flex items-center h-full pl-3 justify-start ">Created By</p>
           <p class="w-full text-[14px] flex items-center h-full pl-3 justify-start ">Created on</p>
@@ -73,8 +73,19 @@
             </span>
           }
         }
+        
       </span>
+      <div class="paginator-container" *ngIf="filteredData.length > 5" >
+        <mat-paginator
+           [length]="filteredData.length"
+           [pageSize]="5"
+           [pageSizeOptions]="[5, 10, ]"
+           (page)="onPageChange($event)"
+           showFirstLastButtons>       
+        </mat-paginator>
+     </div>
     </div>
+
 
 
 
@@ -143,7 +154,7 @@
         <div class="flex w-full items-center mt-10 gap-5 justify-end">
           <span class="flex gap-5 items-center">
             <button (click)="createUser()" class="w-[120px] py-[8px] rounded-md bg-[#D30000] text-[14px] text-white font-semibold">Create User</button>
-            <button (click)="userCreatePopUpOpen(true)" class="w-[120px] py-[8px] rounded-md border-2 border-[#D30000] text-[14px] text-[#D30000] font-semibold">Cancel</button>  
+            <button (click)="userCreatePopUpOpen(true)" class="w-[120px] py-[8px] rounded-md border-2 border-[#D30000] text-[14px] text-[#D30000] font-semibold">Cancel</button>
           </span>
         </div>
       </div>
@@ -205,19 +216,19 @@
 
                   <!-- Create Toggle -->
                   <span class="w-full flex items-center justify-start gap-3">
-                  
+
                     <label class="switch">
                       <input type="checkbox" [checked]="userPermissionState[permission.order][permission.create]" (change)="changeUserPermission(permission.order, permission.create)" class="sr-only peer">
 
                       <span class="slider"></span>
                     </label>
                     <p class="text-[15px] font-medium">CREATE</p>
-                  
+
                 </span>
 
                   <!-- Edit Toggle -->
                   <span class="w-full flex items-center justify-start gap-3">
-                  
+
                     <input type="checkbox" [checked]="userPermissionState[permission.order][permission.edit]" (change)="changeUserPermission(permission.order, permission.edit)" class="sr-only peer">
                     <label class="switch">
                       <input type="checkbox" [checked]="userPermissionState[permission.order][permission.edit]" (change)="changeUserPermission(permission.order, permission.edit)" class="sr-only peer">
@@ -225,24 +236,24 @@
                       <span class="slider"></span>
                     </label>
                     <p class="text-[15px] font-medium">EDIT</p>
-                  
+
                 </span>
 
                   <!-- Delete Toggle -->
                   <span class="w-full flex items-center justify-start gap-3">
-                  
+
                     <label class="switch">
                       <input type="checkbox" [checked]="userPermissionState[permission.order][permission.delete]" (change)="changeUserPermission(permission.order, permission.delete)" class="sr-only peer">
 
                       <span class="slider"></span>
                     </label>
                     <p class="text-[15px] font-medium">DELETE</p>
-                  
+
                 </span>
 
                   <!-- View Toggle -->
                   <span class="w-full flex items-center justify-start gap-3">
-                 
+
                     <input type="checkbox" [checked]="userPermissionState[permission.order][permission.view]" (change)="changeUserPermission(permission.order, permission.view)" class="sr-only peer">
                     <label class="switch">
                       <input type="checkbox" [checked]="userPermissionState[permission.order][permission.view]" (change)="changeUserPermission(permission.order, permission.view)" class="sr-only peer">
@@ -251,7 +262,7 @@
                     </label>
                     <p class="text-[15px] font-medium text-center">VIEW</p>
 
-                
+
                 </span>
 
                 </span>
@@ -272,7 +283,7 @@
     <div class="w-[600px] bg-white flex flex-col gap-5 rounded-[20px] shadow-[0_0_100px_#00000060] p-10">
        <!-- Title -->
        <span class="flex flex-col items-start justify-center">
-        <p class=" text-[35px] text-[#DA2127] font-bold">Delete</p>
+        <p class=" text-[35px] text-[#DA2127] font-bold mb-10px">Delete</p>
         <p class=" flex items-center justify-center gap-2 text-[14px] font-medium text-[#7B7B7B]">
           Delete an user
           <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">

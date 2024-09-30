@@ -69,7 +69,7 @@ export class ConfigurationComponent implements AfterViewInit {
   connectivityPoints: { x: number; y: number }[] = []; // Store selected points for connectivity
   selectedMap: any = null;
   mapData: any = null;
-
+  isSimulating: boolean = false;
   isPagination: boolean =false;
   searchTerm: string = '';
   filteredEnvData: any[] = [];
@@ -183,7 +183,12 @@ export class ConfigurationComponent implements AfterViewInit {
     this.resetFilters();
   }
 
-
+// Simulation
+  startSimulation() {
+    this.isSimulating = true;
+    console.log("Simulation started...");
+  }
+  
   ngOnInit() {
     this.loadData();
     this.setPaginatedData();

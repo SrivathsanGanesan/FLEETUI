@@ -1,5 +1,5 @@
 <div class="container" #screen>
-  <app-sidenavbar></app-sidenavbar>
+  <!-- <app-sidenavbar></app-sidenavbar> -->
   <app-loader></app-loader>
   <div class="mainContent">
     <div class="robot-dashboard-container">
@@ -42,7 +42,7 @@
       <!-- Stat Cards Section -->
       <!-- Stat card 1 -->
       <div class="statistics-container">
-       
+
       <div class="stat-card stat-card-1">
         <div class="stat-value">Average speed</div>
         <h2>{{ statisticsData. averageSpeed || 'Loading...' }}</h2>
@@ -67,7 +67,7 @@
           </section>
         </div>
       </div>
-    
+
       <!-- Stat card 2 -->
       <div class="stat-card stat-card-2">
         <div class="stat-value">Total distance</div>
@@ -93,7 +93,7 @@
           </section>
         </div>
       </div>
-    
+
       <!-- Stat card 3 -->
       <div class="stat-card stat-card-3">
         <div class="stat-value">Robot utilization</div>
@@ -119,7 +119,7 @@
           </section>
         </div>
       </div>
-    
+
       <!-- Stat card 4 -->
       <div class="stat-card stat-card-4">
         <div class="stat-value">Network connection</div>
@@ -149,7 +149,7 @@
 
       <!-- <div class="charts-container">
               <div class="robot-uptime-chart">
-                
+
                 <app-chart-timeline></app-chart-timeline>
               </div>
               <app-operation-pie
@@ -230,7 +230,7 @@
           <table class="notifications-table">
             <tr *ngFor="let notification of filteredNotifications">
               <td>{{ notification.message }}</td>
-              <td>{{ notification.timestamp }}</td>
+              <td class="align">{{ notification.timestamp }}</td>
             </tr>
           </table>
         </div>

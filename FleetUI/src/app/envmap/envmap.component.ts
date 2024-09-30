@@ -298,7 +298,68 @@ export class EnvmapComponent implements AfterViewInit {
   currMulNode : Node[] = [];
   newOrientationAngle: number = 0;
   inputOrientationAngle: number = 0; // The value entered by the user
+  // selectedNodeId: string; // Variable to store the selected node
+  public selectedNodeId: string | null = null;
   
+  isFullScreen: boolean = false;
+
+  toggleFullScreen() {
+    this.isFullScreen = !this.isFullScreen;
+  }
+
+  close1() {
+    this.showImage = false;
+    this.isFullScreen = false; // Reset fullscreen when closing
+  }
+
+  setRobotAtNode(): void {
+    const canvas = this.overlayCanvas.nativeElement;
+  
+    if (!this.selectedNodeId) {
+      this.messageService.add({ severity: 'warn', summary: 'No Node Selected', detail: 'Please select a node to set the robot position.' });
+      return;
+    }
+  
+    // Find the selected node based on the selectedNodeId
+    const selectedNode = this.nodes.find(node => node.nodeId === this.selectedNodeId);
+  
+    if (!selectedNode) {
+      this.messageService.add({ severity: 'error', summary: 'Invalid Node', detail: 'Selected node not found.' });
+      return;
+    }
+  
+    // Now, plot the robot at the selected node's position
+    const robot = {
+      roboDet: {
+        id: this.generateRobotId(), // Method to generate robot IDs
+      },
+      pos: {
+        x: selectedNode.nodePosition.x,
+        y: canvas.height - selectedNode.nodePosition.y, // Transform Y coordinate
+        orientation: 0 // Set the orientation value if needed
+      }
+    };
+    
+    // Add the robot to the robos array
+    this.robos.push(robot);
+    
+    // this.robos = this.robos.map(robo => {
+    //   robo.id === robo.id 
+    //     robo.pos = {
+    //       x, y,orientation
+    //     }
+    //     return robo
+    // })
+    // Redraw the canvas to reflect the new robot
+    this.redrawCanvas();
+  
+    this.isRoboConfirmationVisible = false; // Optionally, hide the popup
+  }
+  
+
+  generateRobotId(): string {
+    return 'robot_' + (this.robos.length + 1);
+  }
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
     this.deselectNode();
@@ -1074,7 +1135,6 @@ console.log(this.origin);
    
     return q;
   };
-
   saveOpt() {
     if (this.currEditMap) {
       this.updateEditedMap();
@@ -1595,7 +1655,6 @@ console.log(this.origin);
 
     this.closePopup1();
   }
-
   closePopup1(): void {
     this.DockPopup = false;
     this.undockingDistance = '';
@@ -1803,6 +1862,7 @@ console.log(this.origin);
 
     return nodeOccupied || assetOccupied;
   }
+
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
@@ -1880,7 +1940,7 @@ console.log(this.origin);
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
     this.isPlottingEnabled = true;
-    this.toggleOptionsMenu();
+    // this.toggleOptionsMenu();
 
     if (mode === 'multi') {
       // this.nodes = [];
@@ -3343,10 +3403,8 @@ console.log(this.origin);
       for (const robo of this.robos) {
         const isSelected = this.selectedRobo && this.selectedRobo.roboDet.id === robo.roboDet.id;
         this.plotRobo(robo.pos.x, robo.pos.y, !isSelected);
+
       }
-
-      // Draw assets, zones, and robots
-
     }
   }
   drawConnections(): void {
@@ -3388,6 +3446,11 @@ console.log(this.origin);
   }
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
+
+  }
+  toggleCalibrationLayer(): void {
+    this.isCalibrationLayerVisible = !this.isCalibrationLayerVisible;
+    this.isOptionsMenuVisible = false; // Hide options menu when calibration layer is visible
   }
   hideCalibrationLayer(): void {
     this.isOptionsMenuVisible = false;
