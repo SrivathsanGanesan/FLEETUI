@@ -310,7 +310,7 @@ h2 {
 
 canvas {
   border: 1px solid #ccc;
-  max-height: 95vh; /* Ensure content doesn't exceed viewport height */
+  max-height: 75vh; /* Ensure content doesn't exceed viewport height */
   max-width: 1420px;
   /* width: 1400px;
   height: 580px; */
@@ -320,7 +320,7 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  max-height: 95vh; /* Ensure content doesn't exceed viewport height */
+  max-height: 75vh; /* Ensure content doesn't exceed viewport height */
   max-width: 1420px;
   /* width: 100px;
   height: 50px; */
