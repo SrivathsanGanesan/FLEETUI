@@ -165,8 +165,6 @@ export class DashboardComponent implements AfterViewInit {
       tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
     });
   }
-
-
    // List of robots
    robots = [
     { name: 'Robot 1', enabled: false },
