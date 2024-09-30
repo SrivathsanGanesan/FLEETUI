@@ -38,6 +38,7 @@
           "user-select"
         ]
       }
-    ]
+    ],
+    "typescript-config/consistent-casing": "off"
   }
 }
