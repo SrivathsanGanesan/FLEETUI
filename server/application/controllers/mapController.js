@@ -139,7 +139,7 @@ const postFleetData = async ({ endpoint, bodyData }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  const { nodes, edges, roboInitialise } = mapData; // send node graph..
+  /* const { nodes, edges, roboInitialise } = mapData; // send node graph..
   console.log(roboInitialise);
   let fleetEdges = [];
   edges.forEach((edge) => {
@@ -160,9 +160,7 @@ const mapInsert = async (req, res) => {
     __dirname,
     "../../proj_assets/nodeGraph/nodeGraph.txt"
   );
-  // console.log(roboInitialise);
 
-  // const data = JSON.parse(fs.readFileSync(filePath));
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
   // return res.end();
 
@@ -193,7 +191,7 @@ const mapInsert = async (req, res) => {
     enableRes.errorCode !== 100
   ) {
     res.status(500).json({ msg: "not attained" });
-  }
+  } */
 
   // return res.end(); // yet to remove..
   try {
