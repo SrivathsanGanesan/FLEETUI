@@ -93,8 +93,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData, method = "GET" }) => {
       console.log("failed while sending node graph");
       return null;
     }
-    let data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     if (error.cause) return error.cause?.code;
     console.log("Err while sending data to fleet : ", error);
@@ -102,13 +101,11 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData, method = "GET" }) => {
 };
 
 // initMqttConnection();
-// initRabbitMQConnection();
+initRabbitMQConnection();
 
 const initializeRobo = async (req, res) => {
   const { mapId, initializeRobo } = req.body;
   // console.log(initializeRobo);
-
-  // initMqttConnection();
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
@@ -128,12 +125,16 @@ const initializeRobo = async (req, res) => {
       });
 
     if (initRoboPos.errorCode === 1000 && showsplinePos.errorCode === 1000)
-      return res
-        .status(200)
-        .json({ fleet_response: initRoboPos, msg: "data sent" });
-    return res
-      .status(400)
-      .json({ amrId: null, msg: "data not attained by fleet" });
+      return res.status(200).json({
+        isInitialized: true,
+        fleet_response: initRoboPos,
+        msg: "data sent",
+      });
+    return res.status(400).json({
+      isInitialized: false,
+      amrId: null,
+      msg: "data not attained by fleet",
+    });
   } catch (err) {
     console.error("Error in getAgvTelemetry:", err);
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
@@ -181,6 +182,36 @@ const showSpline = async (req, res) => {
   } catch (error) {
     console.error("Error in show_spline  :", err);
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+  }
+};
+
+const enableRobo = async (req, res) => {
+  const { mapId, roboToEnable } = req.body;
+
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res
+        .status(400)
+        .json({ isShowSplined: false, msg: "Map not found!", map: null });
+
+    let enableRoboRes = await fetchGetAmrLoc({
+      endpoint: "enableRobot",
+      bodyData: roboToEnable,
+      method: "POST",
+    });
+
+    if (enableRoboRes.errorCode !== 1000)
+      return res
+        .status(500)
+        .json({ isRoboEnabled: false, msg: "not attained" });
+
+    return res.status(200).json({ isRoboEnabled: true, msg: "path set!" });
+  } catch (error) {
+    console.error("Error in enable_robot  :", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
 
@@ -320,6 +351,7 @@ module.exports = {
   getRoboDetails,
   getRoboPos,
   showSpline,
+  enableRobo,
   rabbitMqClient,
   rabbitMQChannel,
 };

@@ -10904,8 +10904,8 @@
       
       <!-- Dropdown content -->
       <div class="dropdown-content" *ngIf="isDropdownOpen">
-        <div *ngFor="let robot of robots" class="dropdown-item">
-          <span>{{ robot.name }}</span>
+        <div *ngFor="let robot of robos" class="dropdown-item">
+          <span>{{ robot.roboDet.id }}</span>|<span>{{ robot.roboDet.roboName }}</span>
           <button class="enable-button" (click)="activateRobot(robot)">Enable</button>
         </div>
       </div>
