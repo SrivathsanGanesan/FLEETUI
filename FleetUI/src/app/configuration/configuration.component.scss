@@ -358,14 +358,22 @@ tr:nth-child(even) {
   transition: border 0.2s;
 }
 
-/* Export Button Container */
 .Create-button-container {
   position: fixed;
-    bottom: 20px;
-    right: 50px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
+  bottom: 20px;
+  right: 20px;
 }
+
+.Create-button {
+  padding: 10px 20px;
+  background-color: #ff3333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
 
 
   /* Close Button Styles */
@@ -427,16 +435,7 @@ tr:nth-child(even) {
   }
   
 
-  
-.Create-button {
-  padding: 10px 20px;
-  background-color: #ff3333;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 20px;
-  cursor: pointer;
-}
+
 .Open-button {
   padding: 10px;
   background-color: #ff3333;

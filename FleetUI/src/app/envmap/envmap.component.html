@@ -237,7 +237,7 @@
             </div>
 
           <div class="Node-btn">
-            <div *ngIf="validationError" class="validation-error">{{ validationError }}</div>
+            <div *ngIf="validationError" class="validation-error">*{{ validationError }}</div>
           </div>
           <div class="Node-btn">
             <button class="Delnode-btn" (click)="deleteSelectedNode()">Delete Node</button>

@@ -560,6 +560,12 @@ export class EnvmapComponent implements AfterViewInit {
       this.isConfirmationVisible = true;
     } else {
       console.log('No node selected to delete.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No node selected to delete.',
+        life: 4000,
+      });
     }
     this.isNodeDetailsPopupVisible = false;
   }
@@ -637,7 +643,12 @@ export class EnvmapComponent implements AfterViewInit {
           edge.endNodeId !== this.selectedNode?.nodeId
         );
       });
-
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Nodes Deleted Successfully',
+        life: 4000,
+      });
       // Clear the selected node
       this.selectedNode = null;
       // Redraw the canvas
