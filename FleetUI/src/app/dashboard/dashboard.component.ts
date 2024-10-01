@@ -165,11 +165,11 @@ export class DashboardComponent implements AfterViewInit {
       tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
     });
   }
-   // List of robots
-   robots = [
+  // List of robots
+  robots = [
     { name: 'Robot 1', enabled: false },
     { name: 'Robot 2', enabled: false },
-    { name: 'Robot 3', enabled: false }
+    { name: 'Robot 3', enabled: false },
   ];
 
   // Toggle the dropdown menu
@@ -177,10 +177,30 @@ export class DashboardComponent implements AfterViewInit {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  // Enable a robot
-  activateRobot(robot: any) {
+  async enable_robot(robot: any) {
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/enable-robot`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          roboToEnable: {
+            robotId: robot.roboDet.id,
+            enable: true,
+          },
+        }),
+      }
+    );
+    return await response.json();
+  }
+
+  async activateRobot(robot: any) {
     robot.enabled = true;
-    console.log(`${robot.name} has been enabled.`);
+    let data = await this.enable_robot(robot);
+    console.log(data);
+    // console.log(`${robot.name} has been enabled.`);
   }
 
   async getMapDetails() {
@@ -662,7 +682,7 @@ export class DashboardComponent implements AfterViewInit {
             );
 
             // Store each robot's position and orientation using the robot ID
-            robotsData[robot.id] = { posX, posY, yaw: 0 };
+            robotsData[robot.id] = { posX, posY, yaw: yaw };
             console.log(robot.pose.position.x, robot.pose.position.y);
 
             // Re-plot all robots

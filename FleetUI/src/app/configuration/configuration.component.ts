@@ -36,7 +36,7 @@ interface Poll {
   encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
 })
 export class ConfigurationComponent implements AfterViewInit {
-  // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
+  @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
@@ -1543,6 +1543,7 @@ export class ConfigurationComponent implements AfterViewInit {
   openPopup(item: any) {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
+    this.addForm.reset();
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
   }

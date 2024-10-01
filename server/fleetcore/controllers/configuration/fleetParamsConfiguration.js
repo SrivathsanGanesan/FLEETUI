@@ -1,5 +1,6 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
 const { projectModel, siteModel } = require("../../models/projectSchema");
+const convert = require("xml-js");
 
 const setGeneralParam = async (req, res) => {
   const { projectId, generalParams } = req.body;
@@ -160,6 +161,16 @@ const setCommunicationParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
+
+/* let json = {
+  root: { serverIp: "127.0.0.1", serverPort: 3300 },
+};
+let xmlData = convert.json2xml(json, {
+  compact: true,
+  ignoreComment: true,
+  spaces: 4,
+});
+console.log(xmlData); */
 
 module.exports = {
   setGeneralParam,

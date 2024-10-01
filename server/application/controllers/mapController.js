@@ -41,7 +41,7 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 
 // send node graph..
 const saveNodeGraph = async (mapData) => {
-  const { nodes, edges, roboInitialise } = mapData;
+  const { nodes, edges } = mapData;
   // console.log(roboInitialise); // yet to uncomment..
   let fleetEdges = [];
   edges.forEach((edge) => {
@@ -203,7 +203,7 @@ const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
   /* let isGraphSent = await saveNodeGraph(mapData);
-   if (!isGraphSent)
+  if (!isGraphSent)
     return res.status(500).json({
       map: null,
       msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
@@ -309,6 +309,12 @@ const mapGet = async (req, res) => {
 const mapUpdate = async (req, res) => {
   const queMapName = req.params.mapName;
   const mapData = req.body;
+  /*  let isGraphSent = await saveNodeGraph(mapData); // uncomment to work without fleet..
+  if (!isGraphSent)
+    return res.status(500).json({
+      map: null,
+      msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
+    }); */
   try {
     const map = await Map.exists({ mapName: queMapName });
     if (!map)
