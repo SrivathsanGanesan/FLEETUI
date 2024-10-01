@@ -144,7 +144,7 @@
     >
       <!-- Full-Screen Toggle Button -->
   <!-- <button class="fullscreen-btn" (click)="toggleFullScreen()">Toggle Full-Screen</button> -->
-    
+
       <button
         class="close-btn"
         (click)="close()"
@@ -384,13 +384,13 @@
       </div> -->
       <div class="calibration-layer" >
         <div class="dropdown">
-          <button class="">Add Node</button>
+          <button class="c-button">Add Node</button>
           <div class="dropdown-content">
             <button (click)="setPlottingMode('single')">Single Node</button>
             <button (click)="setPlottingMode('multi')">Multi Node</button>
           </div>
         </div>
-        <button class="mul-del" (click)="MuldelMode()">Delete Multiple Nodes</button>
+        <button class="mul-del c-button" (click)="MuldelMode()">Delete Multiple Nodes</button>
         <div class="dropdown">
           <button class="">Connectivity</button>
           <div class="dropdown-content">
@@ -415,7 +415,7 @@
         <button (click)="openRobotPopup()">Add Robots</button>
         <!-- <button (click)="removeRobots()">Remove Robots</button> -->
         <button (click)="saveOpt()">Save</button>
-        <button (click)="toggleOptionsMenu()">Back</button>
+        <!-- <button (click)="toggleOptionsMenu()">Back</button> -->
       </div>
     </div>
 
@@ -688,16 +688,17 @@
           name="description"
           placeholder="Enter Docking Description"
           [(ngModel)]="description"
-          maxlength="255"
+          maxlength="300"
           (ngModelChange)="checkDescriptionLength()"
           required
         />
 
-        <!-- Display warning if description exceeds 255 characters -->
-        <div *ngIf="descriptionWarning" class="warning-message">
-          Description cannot exceed 255 characters.
-        </div>
+
       </div>
+      <!-- Display warning if description exceeds 255 characters -->
+      <!-- <div *ngIf="descriptionWarning" class="warning-message">
+        *Description cannot exceed 255 characters.
+      </div> -->
       <div
         *ngIf="validationMessage"
         class="validation-message"
@@ -764,7 +765,7 @@
     </div></div> -->
       <!-- <button type="button" >Set Orientation</button> -->
       <button type="button" (click)="showDeleteConfirmation()">Remove Robot</button>
- 
+
       <button type="button" (click)="cancelDelete()">Cancel</button>
     </div>
 

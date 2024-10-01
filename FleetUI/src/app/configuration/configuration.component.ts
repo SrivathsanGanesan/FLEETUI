@@ -188,7 +188,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isSimulating = true;
     console.log("Simulation started...");
   }
-  
+
   ngOnInit() {
     this.loadData();
     this.setPaginatedData();
@@ -230,7 +230,7 @@ export class ConfigurationComponent implements AfterViewInit {
                 day: 'numeric',
                 hour: 'numeric',
                 minute: 'numeric',
-                
+
               });
 
               return {
@@ -345,7 +345,7 @@ export class ConfigurationComponent implements AfterViewInit {
       .catch((error) => {
         console.log(error);
       });
-      
+
   }
 
   editRobo(robo: any) {
@@ -1024,6 +1024,7 @@ export class ConfigurationComponent implements AfterViewInit {
           (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
           (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate)); // Normalize the end date
 
+
         return (
           (item.mapName.toLowerCase().includes(term) ||
             item.siteName.toLowerCase().includes(term) ||
@@ -1031,6 +1032,9 @@ export class ConfigurationComponent implements AfterViewInit {
           withinDateRange
         );
       });
+      console.log(this.startDate);
+      console.log(this.endDate);
+      console.log(this.filteredEnvData);
 
       // Reset paginator to the first page and update paginated data
       if (this.paginator) {
@@ -1047,11 +1051,11 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filteredEnvData = [...this.EnvData]; // Reset environment data filter
     this.filteredRobotData = [...this.robotData]; // Reset robot data filter
   }
-  onDateFilterChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const filter = selectElement?.value || '';
-    // Implement your date filter logic here
-  }
+  // onDateFilterChange(event: Event): void {
+  //   const selectElement = event.target as HTMLSelectElement;
+  //   const filter = selectElement?.value || '';
+  //   // Implement your date filter logic here
+  // }
 
   // Function to format date to 'YYYY-MM-DD' format for input type="date"
   formatDate(date: Date): string {
