@@ -36,7 +36,7 @@ interface Poll {
   encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
 })
 export class ConfigurationComponent implements AfterViewInit {
-  // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
+  @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
