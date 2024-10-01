@@ -39,6 +39,63 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   return proj;
 };
 
+// send node graph..
+const saveNodeGraph = async (mapData) => {
+  const { nodes, edges, roboInitialise } = mapData;
+  // console.log(roboInitialise); // yet to uncomment..
+  let fleetEdges = [];
+  edges.forEach((edge) => {
+    fleetEdges.push({
+      from: edge.startNodeId,
+      isUniDirectional: edge.direction === "UN_DIRECTIONAL" ? true : false,
+      name: `${edge.startNodeId}|${edge.endNodeId}`,
+      to: edge.endNodeId,
+    });
+  });
+
+  let fleetNodes = getFleetNodes(nodes);
+  let nodeGraph = {
+    nodes: fleetNodes,
+    edges: fleetEdges,
+  };
+  const filePath = path.resolve(
+    __dirname,
+    "../../proj_assets/nodeGraph/nodeGraph.txt"
+  );
+
+  fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
+
+  let sentNodeGraphRes = await postFleetData({
+    endpoint: "save_graph",
+    bodyData: nodeGraph,
+  });
+
+  /* let roboInitRes = await postFleetData({
+    endpoint: "initialise",
+    bodyData: roboInitialise,
+  });
+
+  let splineRes = await postFleetData({
+    endpoint: "showSpline",
+    bodyData: { robotId: 0, enable: true },
+  });
+
+  if (
+    sentNodeGraphRes.errorCode !== 100 &&
+    roboInitRes.errorCode !== 100 &&
+    splineRes.errorCode !== 100
+  ) {
+    res.status(500).json({ msg: "not attained" });
+  } */
+
+  if (
+    sentNodeGraphRes?.errorCode !== 100 ||
+    sentNodeGraphRes?.error === "UND_ERR_CONNECT_TIMEOUT"
+  )
+    return false;
+  return true;
+};
+
 // roll (X), pitch (Y), yaw (Z)
 const ToQuaternion_ = (roll, pitch, yaw) => {
   const cy = Math.cos(yaw * 0.5);
@@ -115,83 +172,42 @@ const getFleetNodes = (nodes) => {
 };
 
 const postFleetData = async ({ endpoint, bodyData }) => {
-  let response = await fetch(
-    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic cm9vdDp0b29y",
-      },
-      body: JSON.stringify(bodyData),
+  try {
+    let response = await fetch(
+      `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Basic cm9vdDp0b29y",
+        },
+        body: JSON.stringify(bodyData),
+      }
+    );
+    if (!response.ok) {
+      console.log("failed while sending node graph");
+      return null;
     }
-  );
-  if (!response.ok) {
-    console.log("failed while sending node graph");
-    return null;
+    let data = await response.json();
+    return data;
+  } catch (error) {
+    if (error.cause) return error.cause?.code;
+    console.log("Err while sending data to fleet : ", error);
   }
-  let data = await response.json();
-  return data;
 };
-//..
+
+// <<-----------------[Middleware]----------------->>
 
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  /* const { nodes, edges, roboInitialise } = mapData; // send node graph..
-  console.log(roboInitialise);
-  let fleetEdges = [];
-  edges.forEach((edge) => {
-    fleetEdges.push({
-      from: edge.startNodeId,
-      isUniDirectional: edge.direction === "UN_DIRECTIONAL" ? true : false,
-      name: `${edge.startNodeId}|${edge.endNodeId}`,
-      to: edge.endNodeId,
-    });
-  });
-
-  let fleetNodes = getFleetNodes(nodes);
-  let nodeGraph = {
-    nodes: fleetNodes,
-    edges: fleetEdges,
-  };
-  const filePath = path.resolve(
-    __dirname,
-    "../../proj_assets/nodeGraph/nodeGraph.txt"
-  );
-
-  fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
-  // return res.end();
-
-  let sentNodeGraphRes = await postFleetData({
-    endpoint: "save_graph",
-    bodyData: nodeGraph,
-  });
-
-  let roboInitRes = await postFleetData({
-    endpoint: "initialise",
-    bodyData: roboInitialise,
-  });
-
-  let splineRes = await postFleetData({
-    endpoint: "showSpline",
-    bodyData: { robotId: 0, enable: true },
-  });
-
-  let enableRes = await postFleetData({
-    endpoint: "enableRobot",
-    bodyData: { robotId: 0, enable: true },
-  });
-
-  if (
-    sentNodeGraphRes.errorCode !== 100 &&
-    roboInitRes.errorCode !== 100 &&
-    splineRes.errorCode !== 100 &&
-    enableRes.errorCode !== 100
-  ) {
-    res.status(500).json({ msg: "not attained" });
-  } */
+  /* let isGraphSent = await saveNodeGraph(mapData);
+   if (!isGraphSent)
+    return res.status(500).json({
+      map: null,
+      msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
+    }); */
 
   // return res.end(); // yet to remove..
   try {

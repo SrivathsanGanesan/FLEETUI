@@ -75,41 +75,65 @@ const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
   }
 };
 
-const fetchGetAmrLoc = async ({ endpoint, bodyData }) => {
-  let response = await fetch(
-    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
-    {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic cm9vdDp0b29y",
-      },
-      body: JSON.stringify(bodyData),
+const fetchGetAmrLoc = async ({ endpoint, bodyData, method = "GET" }) => {
+  try {
+    let response = await fetch(
+      `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+      {
+        method: method,
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Basic cm9vdDp0b29y",
+        },
+        body: JSON.stringify(bodyData),
+      }
+    );
+    if (!response.ok) {
+      console.log("failed while sending node graph");
+      return null;
     }
-  );
-  if (!response.ok) {
-    console.log("failed while sending node graph");
-    return null;
+    let data = await response.json();
+    return data;
+  } catch (error) {
+    if (error.cause) return error.cause?.code;
+    console.log("Err while sending data to fleet : ", error);
   }
-  let data = await response.json();
-  return data;
 };
-
-//..
 
 // initMqttConnection();
 // initRabbitMQConnection();
 
-const getAgvTelemetry = (req, res) => {
-  const mapId = req.params.mapId;
+const initializeRobo = async (req, res) => {
+  const { mapId, initializeRobo } = req.body;
+  // console.log(initializeRobo);
+
   // initMqttConnection();
   try {
-    res.writeHead(200, eventStreamHeader);
-
-    res.on("close", () => {
-      res.end();
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(400).json({ msg: "Map not found!", map: null });
+    let initRoboPos = await fetchGetAmrLoc({
+      endpoint: "initialise",
+      bodyData: initializeRobo,
+      method: "POST",
     });
+
+    let showsplinePos = null;
+    if (initRoboPos.errorCode === 1000)
+      showsplinePos = await fetchGetAmrLoc({
+        endpoint: "showSpline",
+        bodyData: { robotId: initializeRobo.id, enable: true },
+        method: "POST",
+      });
+
+    if (initRoboPos.errorCode === 1000 && showsplinePos.errorCode === 1000)
+      return res
+        .status(200)
+        .json({ fleet_response: initRoboPos, msg: "data sent" });
+    return res
+      .status(400)
+      .json({ amrId: null, msg: "data not attained by fleet" });
   } catch (err) {
     console.error("Error in getAgvTelemetry:", err);
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
@@ -255,12 +279,12 @@ const getRoboDetails = async (req, res) => {
         name: robot.roboName,
         imageUrl: "",
         status: "Active",
-        battery: Math.floor(Math.random() * 80).toString() + " %",
-        temperature: Math.floor(Math.random() * 40).toString() + " C",
+        battery: Math.floor(Math.random() * 80).toString() + "",
+        temperature: Math.floor(Math.random() * 40).toString() + "",
         networkstrength: Math.floor(Math.random() * 80),
-        robotutilization: Math.floor(Math.random() * 80).toString() + " %",
-        cpuutilization: Math.floor(Math.random() * 80).toString() + " %",
-        memory: Math.floor(Math.random() * 70).toString() + " %",
+        robotutilization: Math.floor(Math.random() * 80).toString() + "",
+        cpuutilization: Math.floor(Math.random() * 80).toString() + "",
+        memory: Math.floor(Math.random() * 70).toString() + "",
         error: Math.floor(Math.random() * 50).toString(),
         batteryPercentage: Math.floor(Math.random() * 100),
         isCharging: Math.floor(Math.random() * 40) > 20 ? true : false,
@@ -289,7 +313,7 @@ const getRoboDetails = async (req, res) => {
 };
 
 module.exports = {
-  getAgvTelemetry,
+  initializeRobo,
   getGrossTaskStatus,
   getRoboStateCount,
   getRoboActivities,

@@ -327,7 +327,7 @@ export class ConfigurationComponent implements AfterViewInit {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         // this.filteredRobotData = data.populatedRobos;
         // this.messageService.add({
         //   severity: 'success',
@@ -337,9 +337,9 @@ export class ConfigurationComponent implements AfterViewInit {
         // });
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
-        console.log(this.robotData)
+        // console.log(this.robotData)
         this.filteredRobotData = this.robotData;
-        console.log(this.filteredRobotData)
+        // console.log(this.filteredRobotData)
         // this.filteredRobotData = data.populatedRobos;
       })
       .catch((error) => {
@@ -444,14 +444,14 @@ export class ConfigurationComponent implements AfterViewInit {
 
       this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
       // this.paginatedData1 = this.filteredRobotData.slice(startIndex,endIndex);
-      console.log(this.filteredEnvData);
+      // console.log(this.filteredEnvData);
       // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         this.paginator.length = this.filteredEnvData.length;
         // this.paginator.length  = this.filteredRobotData.length;
-        console.log(this.filteredEnvData);
+        // console.log(this.filteredEnvData);
         // console.log(this.filteredRobotData);
       }
     }else if(this.currentTable === 'robot'){
@@ -465,14 +465,14 @@ export class ConfigurationComponent implements AfterViewInit {
       // this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
       this.paginatedData1 = this.filteredRobotData.slice(startIndex,endIndex);
       // console.log(this.filteredEnvData);
-      console.log(this.filteredRobotData);
+      // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         // this.paginator.length = this.filteredEnvData.length;
         this.paginator.length  = this.filteredRobotData.length;
         // console.log(this.filteredEnvData);
-        console.log(this.filteredRobotData);
+        // console.log(this.filteredRobotData);
     }
   }
 }
@@ -1168,6 +1168,7 @@ export class ConfigurationComponent implements AfterViewInit {
           siteName: item.siteName,
           ratio: map.mpp,
           imgUrl: `http://${map.imgUrl}`,
+          origin: map.origin,
           nodes: map.nodes,
           edges: map.edges,
           assets: map.stations,
@@ -1507,7 +1508,7 @@ export class ConfigurationComponent implements AfterViewInit {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.error) return;
         else if (data.isIpMacExists) {
           console.log(data.msg);
