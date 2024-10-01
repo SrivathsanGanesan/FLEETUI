@@ -281,6 +281,7 @@ export class EnvmapComponent implements AfterViewInit {
     length: 0,
     action: [],
   };
+  selectedMap : any | null = null;
   showPopup = false;
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
   DockPopup: boolean = false; // To control the popup visibility
@@ -300,7 +301,7 @@ export class EnvmapComponent implements AfterViewInit {
   inputOrientationAngle: number = 0; // The value entered by the user
   // selectedNodeId: string; // Variable to store the selected node
   public selectedNodeId: string | null = null;
-  
+
   isFullScreen: boolean = false;
 
   toggleFullScreen() {
@@ -312,6 +313,54 @@ export class EnvmapComponent implements AfterViewInit {
     this.isFullScreen = false; // Reset fullscreen when closing
   }
 
+  setRobotAtNode(): void {
+    const canvas = this.overlayCanvas.nativeElement;
+
+    if (!this.selectedNodeId) {
+      this.messageService.add({ severity: 'warn', summary: 'No Node Selected', detail: 'Please select a node to set the robot position.' });
+      return;
+    }
+
+    // Find the selected node based on the selectedNodeId
+    const selectedNode = this.nodes.find(node => node.nodeId === this.selectedNodeId);
+
+    if (!selectedNode) {
+      this.messageService.add({ severity: 'error', summary: 'Invalid Node', detail: 'Selected node not found.' });
+      return;
+    }
+
+    // Now, plot the robot at the selected node's position
+    const robot = {
+      roboDet: {
+        id: this.generateRobotId(), // Method to generate robot IDs
+      },
+      pos: {
+        x: selectedNode.nodePosition.x,
+        y: canvas.height - selectedNode.nodePosition.y, // Transform Y coordinate
+        orientation: 0 // Set the orientation value if needed
+      }
+    };
+
+    // Add the robot to the robos array
+    this.robos.push(robot);
+
+    // this.robos = this.robos.map(robo => {
+    //   robo.id === robo.id
+    //     robo.pos = {
+    //       x, y,orientation
+    //     }
+    //     return robo
+    // })
+    // Redraw the canvas to reflect the new robot
+    this.redrawCanvas();
+
+    this.isRoboConfirmationVisible = false; // Optionally, hide the popup
+  }
+
+
+  generateRobotId(): string {
+    return 'robot_' + (this.robos.length + 1);
+  }
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
     this.deselectNode();
@@ -333,13 +382,15 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.currEditMap) this.showImage = true;
   }
   ngOnInit() {
+    this.selectedMap = this.projectService.getMapData();
+    if(!this.selectedMap) return;
     if (this.currEditMap) {
       this.showImage = true;
       this.mapName = this.currEditMapDet.mapName;
       this.siteName = this.currEditMapDet.siteName;
       this.ratio = this.currEditMapDet.ratio;
       this.imageSrc = this.currEditMapDet.imgUrl;
-      this.origin = this.currEditMapDet.origin;
+      this.origin = {x : this.currEditMapDet.origin.x, y : this.currEditMapDet.origin.y, w : this.currEditMapDet.origin.w};
       this.nodes = this.currEditMapDet.nodes.map((node : Node)=>{
         node.nodePosition.x = (node.nodePosition.x / (this.ratio || 1));
         node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
@@ -364,7 +415,6 @@ export class EnvmapComponent implements AfterViewInit {
         robo.pos.y = robo.pos.y / (this.ratio || 1);
         return robo;
       })
-console.log(this.origin);
 
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
@@ -510,6 +560,12 @@ console.log(this.origin);
       this.isConfirmationVisible = true;
     } else {
       console.log('No node selected to delete.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No node selected to delete.',
+        life: 4000,
+      });
     }
     this.isNodeDetailsPopupVisible = false;
   }
@@ -587,7 +643,12 @@ console.log(this.origin);
           edge.endNodeId !== this.selectedNode?.nodeId
         );
       });
-
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Nodes Deleted Successfully',
+        life: 4000,
+      });
       // Clear the selected node
       this.selectedNode = null;
       // Redraw the canvas
@@ -1077,14 +1138,14 @@ console.log(this.origin);
     const sp = Math.sin(pitch * 0.5);
     const cr = Math.cos(roll * 0.5);
     const sr = Math.sin(roll * 0.5);
-   
+
     const q = {
       x: sr * cp * cy - cr * sp * sy,
       y: cr * sp * cy + sr * cp * sy,
       z: cr * cp * sy - sr * sp * cy,
       w: cr * cp * cy + sr * sp * sy,
     };
-   
+
     return q;
   };
   saveOpt() {
@@ -1145,7 +1206,7 @@ console.log(this.origin);
         orientation: orientation
       }
     }
-      
+
     this.form = new FormData();
     const mapData = {
       projectName: this.projData.projectName,
@@ -1483,7 +1544,7 @@ console.log(this.origin);
       if (this.isRobotClicked(robo, x, y)) {
         this.robotToDelete = robo;  // Store the robot that was right-clicked
         this.isRoboConfirmationVisible = true;
-        
+
         // const confirmDelete = confirm('Do you want to delete this robot?');
         // if (confirmDelete) {
         //   // Remove the robot from the robos array
@@ -1727,13 +1788,50 @@ console.log(this.origin);
   }
   selectedRobots: any[] = [ /* Selected robot(s) */ ]; // Predefined robot(s) to initialize
 
+  positionToQuaternion(position : any) {
+    const angle = position.orientation;  // z contains the rotation angle (in radians)
+    
+    // Calculate quaternion for rotation around z-axis
+    const quaternion = {
+        x: 0,  // No rotation around x-axis
+        y: 0,  // No rotation around y-axis
+        z: Math.sin(angle / 2),  // Rotation around z-axis
+        w: Math.cos(angle / 2)   // Scalar part of the quaternion
+    };
+
+    return quaternion;
+}
+
 // Method to initialize the selected robot and log its details
-initializeRobot(): void {
-  if (this.robotToDelete) {
-    console.log('Initializing Robot:', this.robotToDelete);
-  } else {
-    console.log('No robot selected.');
+async initializeRobot(): Promise<void> {
+  let ratio = this.ratio ? this.ratio : 1;
+  let quaternion = { x:0, y:0, z:0, w:1 };
+  const transformedY = this.overlayCanvas.nativeElement.height - this.robotToDelete.pos.y;
+  this.robotToDelete.pos.x = this.robotToDelete.pos.x * ratio;
+  this.robotToDelete.pos.y = transformedY * ratio;
+  // quaternion = this.positionToQuaternion(this.robotToDelete.pos);
+  let initializeRobo = {
+    id : this.robotToDelete.roboDet.id,
+    pose:{
+      position: {
+        x: this.robotToDelete.pos.x,
+        y: this.robotToDelete.pos.y,
+        z: this.robotToDelete.pos.orientation
+        },
+      orientation: quaternion
+    }
   }
+  let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/initialize-robot`,{
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      mapId : this.selectedMap.id,
+      initializeRobo : initializeRobo
+    }),
+  })
+  let data = await response.json();
+  console.log(data);
 }
 
 placeRobots(selectedRobots: any[]): void {
@@ -1910,7 +2008,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       'mouseup',
       this.onMouseUp.bind(this)
     );
-    
+
   }
 
   setPlottingMode(mode: 'single' | 'multi'): void {
@@ -2539,7 +2637,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.onMouseUp.bind(this)
     );
   }
-  isDeleteVisible = true; 
+  isDeleteVisible = true;
   startZonePlotting(): void {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;

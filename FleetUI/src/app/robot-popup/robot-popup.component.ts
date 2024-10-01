@@ -46,6 +46,7 @@ export class RobotPopupComponent {
   }
 
   async ngOnInit(){
+    let roboCounter : number = 0;
     
     this.listedRobo = [];
     if(!this.mapName) return;
@@ -57,18 +58,26 @@ export class RobotPopupComponent {
     
     // this.listedRobo = data.populatedRobos;
     let avlRobo = this.robos.map((robo)=> robo.roboDet);
+    if(this.robos.length)
+      roboCounter = this.robos[this.robos.length-1].roboDet.id;
+    
+    
+    
     let finalizeRobo: any[] = []
     // let id = 0;
     this.availableRobots = data.populatedRobos.map((robo : any)=>{
+      
       // id++;
+      roboCounter+=1;
       return {
         // id : id,
-        id : robo._id.toString().slice(17),
+        id : roboCounter,
         roboName : robo.roboName,
         ipAdd : robo.ipAdd,
         selected : false,
       }
     })
+    
     
     this.availableRobots.forEach((robo) => {
       // Check if the robot is NOT present in avlRobo

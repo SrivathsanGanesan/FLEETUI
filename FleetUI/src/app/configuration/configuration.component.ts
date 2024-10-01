@@ -188,7 +188,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isSimulating = true;
     console.log("Simulation started...");
   }
-  
+
   ngOnInit() {
     this.loadData();
     this.setPaginatedData();
@@ -230,7 +230,7 @@ export class ConfigurationComponent implements AfterViewInit {
                 day: 'numeric',
                 hour: 'numeric',
                 minute: 'numeric',
-                
+
               });
 
               return {
@@ -327,7 +327,7 @@ export class ConfigurationComponent implements AfterViewInit {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         // this.filteredRobotData = data.populatedRobos;
         // this.messageService.add({
         //   severity: 'success',
@@ -337,15 +337,15 @@ export class ConfigurationComponent implements AfterViewInit {
         // });
         if (data.error) return;
         if (data.populatedRobos) this.robotData = data.populatedRobos;
-        console.log(this.robotData)
+        // console.log(this.robotData)
         this.filteredRobotData = this.robotData;
-        console.log(this.filteredRobotData)
+        // console.log(this.filteredRobotData)
         // this.filteredRobotData = data.populatedRobos;
       })
       .catch((error) => {
         console.log(error);
       });
-      
+
   }
 
   editRobo(robo: any) {
@@ -444,14 +444,14 @@ export class ConfigurationComponent implements AfterViewInit {
 
       this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
       // this.paginatedData1 = this.filteredRobotData.slice(startIndex,endIndex);
-      console.log(this.filteredEnvData);
+      // console.log(this.filteredEnvData);
       // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         this.paginator.length = this.filteredEnvData.length;
         // this.paginator.length  = this.filteredRobotData.length;
-        console.log(this.filteredEnvData);
+        // console.log(this.filteredEnvData);
         // console.log(this.filteredRobotData);
       }
     }else if(this.currentTable === 'robot'){
@@ -465,14 +465,14 @@ export class ConfigurationComponent implements AfterViewInit {
       // this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
       this.paginatedData1 = this.filteredRobotData.slice(startIndex,endIndex);
       // console.log(this.filteredEnvData);
-      console.log(this.filteredRobotData);
+      // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         // this.paginator.length = this.filteredEnvData.length;
         this.paginator.length  = this.filteredRobotData.length;
         // console.log(this.filteredEnvData);
-        console.log(this.filteredRobotData);
+        // console.log(this.filteredRobotData);
     }
   }
 }
@@ -1023,6 +1023,7 @@ export class ConfigurationComponent implements AfterViewInit {
         const withinDateRange =
           (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
           (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate)); // Normalize the end date
+          console.log(this.filteredEnvData);
 
         return (
           (item.mapName.toLowerCase().includes(term) ||
@@ -1031,6 +1032,9 @@ export class ConfigurationComponent implements AfterViewInit {
           withinDateRange
         );
       });
+      console.log(this.startDate);
+      console.log(this.endDate);
+      console.log(this.EnvData);
 
       // Reset paginator to the first page and update paginated data
       if (this.paginator) {
@@ -1047,11 +1051,11 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filteredEnvData = [...this.EnvData]; // Reset environment data filter
     this.filteredRobotData = [...this.robotData]; // Reset robot data filter
   }
-  onDateFilterChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const filter = selectElement?.value || '';
-    // Implement your date filter logic here
-  }
+  // onDateFilterChange(event: Event): void {
+  //   const selectElement = event.target as HTMLSelectElement;
+  //   const filter = selectElement?.value || '';
+  //   // Implement your date filter logic here
+  // }
 
   // Function to format date to 'YYYY-MM-DD' format for input type="date"
   formatDate(date: Date): string {
@@ -1168,6 +1172,7 @@ export class ConfigurationComponent implements AfterViewInit {
           siteName: item.siteName,
           ratio: map.mpp,
           imgUrl: `http://${map.imgUrl}`,
+          origin: map.origin,
           nodes: map.nodes,
           edges: map.edges,
           assets: map.stations,
@@ -1507,7 +1512,7 @@ export class ConfigurationComponent implements AfterViewInit {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.error) return;
         else if (data.isIpMacExists) {
           console.log(data.msg);
@@ -1536,6 +1541,7 @@ export class ConfigurationComponent implements AfterViewInit {
   openPopup(item: any) {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
+    this.addForm.reset();
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
   }

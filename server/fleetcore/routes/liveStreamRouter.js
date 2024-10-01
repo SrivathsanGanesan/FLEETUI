@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  getAgvTelemetry,
+  initializeRobo,
   getGrossTaskStatus,
   getRoboStateCount,
   getRoboActivities,
@@ -15,6 +15,7 @@ liveStreamRouter.get("/live-AMR-pos/:mapId", getRoboPos);
 liveStreamRouter.post("/get-tasks-status/:mapId", getGrossTaskStatus);
 liveStreamRouter.post("/get-robos-state/:mapId", getRoboStateCount);
 liveStreamRouter.post("/get-robo-activities", getRoboActivities);
+liveStreamRouter.post("/initialize-robot", initializeRobo);
 liveStreamRouter.post("/get-fms-amrs", getRoboDetails);
 liveStreamRouter.post("/show-spline", showSpline);
 

@@ -639,7 +639,7 @@ export class DashboardComponent implements AfterViewInit {
 
       try {
         const data = JSON.parse(event.data);
-        // console.log(data.robots); // here it is..
+        // console.log(data.robots.pose); // here it is..
 
         if (ctx && data.robots.length) {
           // Loop through each robot to update their pose and position
@@ -662,7 +662,7 @@ export class DashboardComponent implements AfterViewInit {
             );
 
             // Store each robot's position and orientation using the robot ID
-            robotsData[robot.id] = { posX, posY, yaw: yaw };
+            robotsData[robot.id] = { posX, posY, yaw: 0 };
             console.log(robot.pose.position.x, robot.pose.position.y);
 
             // Re-plot all robots
