@@ -1023,7 +1023,7 @@ export class ConfigurationComponent implements AfterViewInit {
         const withinDateRange =
           (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
           (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate)); // Normalize the end date
-
+          console.log(this.filteredEnvData);
 
         return (
           (item.mapName.toLowerCase().includes(term) ||
@@ -1034,7 +1034,7 @@ export class ConfigurationComponent implements AfterViewInit {
       });
       console.log(this.startDate);
       console.log(this.endDate);
-      console.log(this.filteredEnvData);
+      console.log(this.EnvData);
 
       // Reset paginator to the first page and update paginated data
       if (this.paginator) {
