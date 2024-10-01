@@ -141,7 +141,7 @@
   margin-right: 10px;
 }
 h2 {
-  font-size: 20px;
+  font-size: 18px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
@@ -617,7 +617,7 @@ canvas {
 
 h2{
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 36px;
+  font-size: 25px;
   font-weight: bold;
   color: #da2127;
 }
@@ -681,7 +681,16 @@ h2{
 } */
 
 button {
-  /* padding: 6px 26px; */
+  padding: 6px 26px;
+  background-color: #ff3333;
+  color: #fff;
+  font-size: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.calibration-layer button {
+  padding: 10px !important;
   background-color: #ff3333;
   color: #fff;
   font-size: 15px;

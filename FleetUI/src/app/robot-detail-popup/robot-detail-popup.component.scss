@@ -6,7 +6,7 @@
   top: 5vh; /* Centered vertically */
   left: 10vw; /* Centered horizontally */
   right:5vw;
-  background-color: rgb(232, 230, 230); /* Adjust background if needed */
+  background-color: rgb(232, 230, 230); 
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 15px; /* Optional: adds rounded corners */
   z-index: 1000; /* Ensure it's above other content */
@@ -464,60 +464,73 @@ border-radius: 15px; /* Rounded edges matching the container */
 .details-container {
   position: relative;
   box-sizing: border-box;
-  border-radius: 15px;
-  background: #ff7373;
-  width: 427px;
-  height: 158px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ff5f6d, #ff1e1e); /* Glossy red gradient */
+  width: 450px;
+  height: 160px;
+  padding: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  transition: transform 0.3s ease-in-out;
+}
+
+
+// .details-container {
+//   position: relative;
+//   box-sizing: border-box;
+//   border-radius: 20px;
+//   background: linear-gradient(135deg, #4facfe, #00f2fe); 
+//   width: 450px;
+//   height: 160px;
+//   padding: 10px;
+//   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+//   transition: transform 0.3s ease-in-out;
+// }
+
+
+.details-container:hover {
+  transform: translateY(-5px); /* Lift the container on hover */
 }
 
 .details-content {
-  top: 19px;
-  left: 25px;
-  position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 25px;
-  box-sizing: border-box;
-  width: 388px;
+  width: 100%;
 }
 
 .details-title {
   color: #ffffff;
-  font-size: 24px;
-  font-family: Inter, sans-serif; 
-  font-weight: 500;
+  font-size: 20px; /* Slightly larger font */
+  font-family: 'Inter', sans-serif; 
+  font-weight: 600; /* Bold for emphasis */
   text-align: left;
-  width: -webkit-fill-available;
+  width: 100%;
+  margin-bottom: 10px; /* Added space below title */
 }
 
 .details-info {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 29px;
-  box-sizing: border-box;
-  width: -webkit-fill-available;
+  gap: 10px; /* Reduced gap for more compact look */
 }
 
 .current-task,
 .current-map {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  // justify-content: space-between; 
+  gap: 10px;
   align-items: center;
-  gap: 36px;
-  box-sizing: border-box;
-  width: -webkit-fill-available;
+  width: 100%;
+  padding: 10px 15px; /* Added padding */
+  background: rgba(255, 255, 255, 0.2); /* Translucent background */
+  border-radius: 12px; /* Rounded corners for task/map boxes */
 }
 
 .current-task-label,
 .current-map-label {
   color: #ffffff;
-  font-size: 16px;
-  font-family: Inter, sans-serif; /* Added fallback */
+  font-size: 14px; /* Slightly larger */
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   text-align: left;
 }
@@ -525,11 +538,12 @@ border-radius: 15px; /* Rounded edges matching the container */
 .current-task-value,
 .current-map-value {
   color: #ffffff;
-  font-size: 16px;
-  font-family: Inter, sans-serif; /* Added fallback */
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
-  text-align: left;
+  text-align: right;
 }
+
 
 
 
@@ -1293,7 +1307,7 @@ border-radius: 15px; /* Rounded edges matching the container */
     @mixin getWifi($size) {
       $anim: 1.5s linear infinite;
       $border-width: $size/2.35;
-      $line-color: #28a808;
+      $line-color: #4bed22;
       $line-color-weak: rgba($line-color, 0.4);
       $trans: 0.3s linear;
   

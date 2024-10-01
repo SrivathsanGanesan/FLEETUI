@@ -301,7 +301,7 @@ export class EnvmapComponent implements AfterViewInit {
   inputOrientationAngle: number = 0; // The value entered by the user
   // selectedNodeId: string; // Variable to store the selected node
   public selectedNodeId: string | null = null;
-  
+
   isFullScreen: boolean = false;
 
   toggleFullScreen() {
@@ -313,6 +313,54 @@ export class EnvmapComponent implements AfterViewInit {
     this.isFullScreen = false; // Reset fullscreen when closing
   }
 
+  setRobotAtNode(): void {
+    const canvas = this.overlayCanvas.nativeElement;
+
+    if (!this.selectedNodeId) {
+      this.messageService.add({ severity: 'warn', summary: 'No Node Selected', detail: 'Please select a node to set the robot position.' });
+      return;
+    }
+
+    // Find the selected node based on the selectedNodeId
+    const selectedNode = this.nodes.find(node => node.nodeId === this.selectedNodeId);
+
+    if (!selectedNode) {
+      this.messageService.add({ severity: 'error', summary: 'Invalid Node', detail: 'Selected node not found.' });
+      return;
+    }
+
+    // Now, plot the robot at the selected node's position
+    const robot = {
+      roboDet: {
+        id: this.generateRobotId(), // Method to generate robot IDs
+      },
+      pos: {
+        x: selectedNode.nodePosition.x,
+        y: canvas.height - selectedNode.nodePosition.y, // Transform Y coordinate
+        orientation: 0 // Set the orientation value if needed
+      }
+    };
+
+    // Add the robot to the robos array
+    this.robos.push(robot);
+
+    // this.robos = this.robos.map(robo => {
+    //   robo.id === robo.id
+    //     robo.pos = {
+    //       x, y,orientation
+    //     }
+    //     return robo
+    // })
+    // Redraw the canvas to reflect the new robot
+    this.redrawCanvas();
+
+    this.isRoboConfirmationVisible = false; // Optionally, hide the popup
+  }
+
+
+  generateRobotId(): string {
+    return 'robot_' + (this.robos.length + 1);
+  }
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
     this.deselectNode();
@@ -1079,14 +1127,14 @@ export class EnvmapComponent implements AfterViewInit {
     const sp = Math.sin(pitch * 0.5);
     const cr = Math.cos(roll * 0.5);
     const sr = Math.sin(roll * 0.5);
-   
+
     const q = {
       x: sr * cp * cy - cr * sp * sy,
       y: cr * sp * cy + sr * cp * sy,
       z: cr * cp * sy - sr * sp * cy,
       w: cr * cp * cy + sr * sp * sy,
     };
-   
+
     return q;
   };
   saveOpt() {
@@ -1147,7 +1195,7 @@ export class EnvmapComponent implements AfterViewInit {
         orientation: orientation
       }
     }
-      
+
     this.form = new FormData();
     const mapData = {
       projectName: this.projData.projectName,
@@ -1485,7 +1533,7 @@ export class EnvmapComponent implements AfterViewInit {
       if (this.isRobotClicked(robo, x, y)) {
         this.robotToDelete = robo;  // Store the robot that was right-clicked
         this.isRoboConfirmationVisible = true;
-        
+
         // const confirmDelete = confirm('Do you want to delete this robot?');
         // if (confirmDelete) {
         //   // Remove the robot from the robos array
@@ -1949,7 +1997,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       'mouseup',
       this.onMouseUp.bind(this)
     );
-    
+
   }
 
   setPlottingMode(mode: 'single' | 'multi'): void {
@@ -2578,7 +2626,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.onMouseUp.bind(this)
     );
   }
-  isDeleteVisible = true; 
+  isDeleteVisible = true;
   startZonePlotting(): void {
     this.toggleOptionsMenu();
     this.isZonePlottingEnabled = true;
