@@ -36,7 +36,7 @@ interface Poll {
   encapsulation: ViewEncapsulation.ShadowDom, // Use shadow DOM to isolate styles
 })
 export class ConfigurationComponent implements AfterViewInit {
-  // @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
+  @ViewChild(EnvmapComponent) envmapComponent!: EnvmapComponent;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadedCanvas', { static: false })
   uploadedCanvas!: ElementRef<HTMLCanvasElement>;
@@ -1255,8 +1255,9 @@ export class ConfigurationComponent implements AfterViewInit {
             (i) => i !== item
           );
           this.reloadTable();
+          this.setPaginatedData();
         }
-        // this.ngOnInit();
+        this.ngOnInit();
         this.reloadTable();
         console.log('Item deleted:', item);
         this.messageService.add({
@@ -1538,6 +1539,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isPopupOpen = false;
     this.cdRef.detectChanges();
   }
+
   openPopup(item: any) {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;

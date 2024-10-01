@@ -101,7 +101,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData, method = "GET" }) => {
 };
 
 // initMqttConnection();
-initRabbitMQConnection();
+// initRabbitMQConnection();
 
 const initializeRobo = async (req, res) => {
   const { mapId, initializeRobo } = req.body;

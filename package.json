@@ -5,6 +5,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
+    "lite-server": "^2.6.1",
     "ng-apexcharts": "^1.11.0",
     "ng2-charts": "^6.0.1",
     "papaparse": "^5.4.1",
