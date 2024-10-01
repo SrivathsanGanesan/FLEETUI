@@ -4,6 +4,7 @@ logs
 *.log
 
 server/proj_assets/*/*.png
+server/proj_assets/*/*.txt
 # ig it would need!
 **/*/*.png 
 

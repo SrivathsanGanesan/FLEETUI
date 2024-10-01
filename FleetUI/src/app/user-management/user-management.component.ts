@@ -39,6 +39,7 @@ export class UserManagementComponent implements OnInit {
   userCreatePopUp = false;
   deleteUserOCstate = false;
   userCredentialsTemplate: any = {};
+  filteredData:any[] = [];
   user: any;
   currUserName: string | null = null;
   deleteUserName = '';
@@ -231,7 +232,10 @@ export class UserManagementComponent implements OnInit {
             createdOn: formattedDate,
           };
         });
+        console.log(this.userCredentials);  //prints the user credentials
+        this.filteredData = this.userCredentials;
       })
+      
       .catch((error) => {
         console.error('Error fetching users:', error);
       });

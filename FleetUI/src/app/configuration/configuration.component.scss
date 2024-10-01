@@ -408,7 +408,7 @@ tr:nth-child(even) {
     // flex-direction: column;
     align-items: center;
     justify-content: flex-end; /* This will move the button to the end */
-  width: 100vh;
+  width: 70vh;
     gap: 10px;
   }
   
@@ -850,9 +850,10 @@ border: none;
 
 }
 
-.calibration-layer button:hover {
-  background-color: #5b5b5e96;
-}
+// .calibration-layer button:hover {
+//   background-color: #5b5b5e96;
+// }
+
 .node.selected {
   border: 2px solid rgb(3, 1, 1);
   border-radius: 40%;

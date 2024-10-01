@@ -298,7 +298,20 @@ export class EnvmapComponent implements AfterViewInit {
   currMulNode : Node[] = [];
   newOrientationAngle: number = 0;
   inputOrientationAngle: number = 0; // The value entered by the user
+  // selectedNodeId: string; // Variable to store the selected node
+  public selectedNodeId: string | null = null;
   
+  isFullScreen: boolean = false;
+
+  toggleFullScreen() {
+    this.isFullScreen = !this.isFullScreen;
+  }
+
+  close1() {
+    this.showImage = false;
+    this.isFullScreen = false; // Reset fullscreen when closing
+  }
+
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
     this.deselectNode();
@@ -1074,7 +1087,6 @@ console.log(this.origin);
    
     return q;
   };
-
   saveOpt() {
     if (this.currEditMap) {
       this.updateEditedMap();
@@ -1595,7 +1607,6 @@ console.log(this.origin);
 
     this.closePopup1();
   }
-
   closePopup1(): void {
     this.DockPopup = false;
     this.undockingDistance = '';
@@ -1714,61 +1725,85 @@ console.log(this.origin);
       ctx.stroke();
     }
   }
-  placeRobots(selectedRobots: any[]): void {
-    if (!this.overlayCanvas) return;
+  selectedRobots: any[] = [ /* Selected robot(s) */ ]; // Predefined robot(s) to initialize
 
-    selectedRobots.forEach((robot) => {
-      const x = 0 + this.roboInitOffset;
-      const y = 100;
-
-      if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
-        // alert('Robot already in map!');
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Warning',
-          detail: 'Robot already in map!'
-        });
-        return;
-      }
-
-      const robo: Robo = {
-        roboDet: robot,
-        pos: { x: x, y: y, orientation: 0 } // You can add the orientation property later
-      };
-      this.robos.push(robo);
-
-      this.roboInitOffset += 60;
-      this.plotRobo(x, y);
-    });
+// Method to initialize the selected robot and log its details
+initializeRobot(): void {
+  if (this.robotToDelete) {
+    console.log('Initializing Robot:', this.robotToDelete);
+  } else {
+    console.log('No robot selected.');
   }
-  plotRobo(x: number, y: number, isSelected: boolean = false): void {
-    const image = this.robotImages['robotB'];
-    const canvas = this.overlayCanvas.nativeElement;
-    const ctx = canvas.getContext('2d');
+}
 
-    if (image && ctx) {
-      const imageSize = 20;
+placeRobots(selectedRobots: any[]): void {
+  if (!this.overlayCanvas) return;
+  const canvas = this.overlayCanvas.nativeElement;
 
-      // Highlight the selected robot with a border or background
+  selectedRobots.forEach((robot) => {
+    const x = 0 + this.roboInitOffset;
+    const y = canvas.height - 100;
+    const orientation = (90) ;
 
-      if (!isSelected) {
-        ctx.beginPath();
-        ctx.arc(x, y, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.4)'; // Semi-transparent red
-        ctx.fill();
-        ctx.closePath();
-      }
-
-      // Draw the robot image
-      ctx.drawImage(
-        image,
-        x - imageSize / 2,
-        y - imageSize / 2,
-        imageSize * 1.3,
-        imageSize
-      );
+    if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
+      // alert('Robot already in map!');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Robot already in map!'
+      });
+      return;
     }
+
+    // Setting the orientation to 90 degrees (converted to radians)
+
+    // Create and store robot details with the new orientation
+    const robo: Robo = {
+      roboDet: robot, // Add orientation to roboDet
+      pos: { x: x, y: y, orientation } // Store orientation in pos as well
+    };
+    this.robos.push(robo);
+
+    this.roboInitOffset += 60;
+    this.plotRobo(x, y, false, orientation); // Pass the orientation to plotRobo
+  });
+}
+
+plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number = 0): void {
+  const image = this.robotImages['robotB'];
+  const canvas = this.overlayCanvas.nativeElement;
+  const ctx = canvas.getContext('2d');
+
+  if (image && ctx) {
+    const imageSize = 20;
+
+    ctx.save(); // Save the current state of the canvas before applying transformations
+
+    // Translate to the robot's position and rotate by the orientation
+    ctx.translate(x, y);
+    ctx.rotate(orientation); // Rotate by the specified orientation (90 degrees)
+
+    if (!isSelected) {
+      ctx.beginPath();
+      ctx.arc(0, 0, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.4)'; // Semi-transparent red
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // Draw the robot image, which is now rotated
+    ctx.drawImage(
+      image,
+      -imageSize / 2, // Adjust for rotation
+      -imageSize / 2,
+      imageSize * 1.3,
+      imageSize
+    );
+
+    ctx.restore(); // Restore the original canvas state
   }
+}
+
   drawText(
     ctx: CanvasRenderingContext2D,
     text: string,
@@ -1881,7 +1916,7 @@ console.log(this.origin);
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
     this.isPlottingEnabled = true;
-    this.toggleOptionsMenu();
+    // this.toggleOptionsMenu();
 
     if (mode === 'multi') {
       // this.nodes = [];
@@ -3344,10 +3379,8 @@ console.log(this.origin);
       for (const robo of this.robos) {
         const isSelected = this.selectedRobo && this.selectedRobo.roboDet.id === robo.roboDet.id;
         this.plotRobo(robo.pos.x, robo.pos.y, !isSelected);
+
       }
-
-      // Draw assets, zones, and robots
-
     }
   }
   drawConnections(): void {
