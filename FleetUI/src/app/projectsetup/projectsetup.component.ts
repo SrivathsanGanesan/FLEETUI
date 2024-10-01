@@ -4,7 +4,6 @@ import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../environments/environment.development';
-import { error, log } from 'node:console';
 import { MessageService } from 'primeng/api';
 
 interface Project {
@@ -247,6 +246,9 @@ export class ProjectsetupComponent {
     if (file) {
       console.log('File selected:', file.name);
       this.selectedFileName = file.name; // Update the variable with the file name
+      // restrict only 15 char..!
+      if (this.selectedFileName.length > 15)
+        this.selectedFileName = this.selectedFileName.substring(0, 15) + '..';
     }
     this.renamedProj = '';
     let projRename = {
