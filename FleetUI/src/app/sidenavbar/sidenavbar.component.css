@@ -200,8 +200,31 @@
   .Logo {
     height: 45px;
     width: 45px;
-    margin: 15px 0 0 10px;
+    /* margin: 15px 0 0 10px; */
     border-radius: 15px;
+  }
+
+  .logo2{
+    height: 45px;
+    border-radius: 15px !important;
+  }
+
+  .logo2{
+    opacity: 0;
+  }
+
+  .logo-container{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .sidebar:hover .logo2{
+    opacity: 1;
+  }
+  .sidebar:hover .Logo{
+    opacity: 0;
+    display: none;
   }
 
   .icons {
