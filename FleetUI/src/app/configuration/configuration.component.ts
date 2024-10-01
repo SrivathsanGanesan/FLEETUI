@@ -1541,6 +1541,7 @@ export class ConfigurationComponent implements AfterViewInit {
   openPopup(item: any) {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
+    this.addForm.reset();
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
   }

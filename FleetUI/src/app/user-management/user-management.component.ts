@@ -1,11 +1,12 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, ViewChild } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { AuthService } from '../auth.service';
-import { PageEvent } from '@angular/material/paginator';
+// import { PageEvent } from '@angular/material/paginator';
 import { MessageService } from 'primeng/api';
 import { ProjectService } from '../services/project.service';
 import { log } from 'node:console';
 import { stat } from 'node:fs';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-user-management',
@@ -13,9 +14,7 @@ import { stat } from 'node:fs';
   styleUrl: './user-management.component.css',
 })
 export class UserManagementComponent implements OnInit {
-  onPageChange($event: PageEvent) {
-    throw new Error('Method not implemented.');
-  }
+
   filteredTaskData: any;
   constructor(
     private authService: AuthService,
@@ -23,6 +22,7 @@ export class UserManagementComponent implements OnInit {
     private projectService: ProjectService
   ) {}
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator ;
   selectedProject: any | null = null;
   userId = 0;
   userName = '';
@@ -40,6 +40,7 @@ export class UserManagementComponent implements OnInit {
   deleteUserOCstate = false;
   userCredentialsTemplate: any = {};
   filteredData:any[] = [];
+  paginatedData:any[] = [];
   user: any;
   currUserName: string | null = null;
   deleteUserName = '';
@@ -60,6 +61,7 @@ export class UserManagementComponent implements OnInit {
     }
     this.currUserName = user.name;
     this.fetchUsers();
+    this.setPaginatedData();
   }
 
   userPermissionState = [
@@ -234,6 +236,7 @@ export class UserManagementComponent implements OnInit {
         });
         console.log(this.userCredentials);  //prints the user credentials
         this.filteredData = this.userCredentials;
+        this.setPaginatedData();
       })
       
       .catch((error) => {
@@ -260,6 +263,32 @@ export class UserManagementComponent implements OnInit {
     return '';
   }
 
+  setPaginatedData(){
+    const pageSize = this.paginator?.pageSize || 5;
+    const pageIndex = this.paginator?.pageIndex || 0;
+
+    // Paginate the data based on current page and page size
+    const startIndex = pageIndex * pageSize;
+    const endIndex = startIndex + pageSize;
+
+    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
+    console.log(this.paginatedData);
+
+    if(this.paginator){
+      this.paginator.length = this.filteredData.length;
+    }
+
+  }
+
+    // Ensure pagination is triggered on page change
+    onPageChange(event: PageEvent) {
+      this.paginator.pageIndex = event.pageIndex;
+      this.paginator.pageSize = event.pageSize;
+      this.setPaginatedData();  // Update paginated data on page change
+    }
+  trackByTaskId(index: number, item: any): number {
+    return item.taskId; // or any unique identifier like taskId
+  }
   // create user..
   createUser() {
     console.log(this.passwordState, this.confrimPasswordState);
@@ -436,6 +465,7 @@ export class UserManagementComponent implements OnInit {
           detail: `User ${username} has been deleted successfully`,
           life: 5000,
         });
+        this.setPaginatedData();
         this.fetchUsers();
         // Remove the user from the local list
         // this.userCredentials = this.userCredentials.filter(
@@ -453,6 +483,7 @@ export class UserManagementComponent implements OnInit {
   getDeleteUser(userName: any, userRole: any) {
     this.deleteUserName = userName;
     this.deleteUserRole = userRole;
+    this.setPaginatedData();
     console.log(this.deleteUserName);
     this.deleteUserPopUp();
   }
