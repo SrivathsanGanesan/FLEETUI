@@ -1809,6 +1809,7 @@ async initializeRobot(): Promise<void> {
   const transformedY = this.overlayCanvas.nativeElement.height - this.robotToDelete.pos.y;
   this.robotToDelete.pos.x = this.robotToDelete.pos.x * ratio;
   this.robotToDelete.pos.y = transformedY * ratio;
+  
   // quaternion = this.positionToQuaternion(this.robotToDelete.pos);
   let initializeRobo = {
     id : this.robotToDelete.roboDet.id,
@@ -1821,6 +1822,7 @@ async initializeRobot(): Promise<void> {
       orientation: quaternion
     }
   }
+
   let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/initialize-robot`,{
     method: 'POST',
     credentials: 'include',
@@ -1832,6 +1834,12 @@ async initializeRobot(): Promise<void> {
   })
   let data = await response.json();
   console.log(data);
+  // this.cancelDelete();
+  if(data.isInitialized){ 
+    alert('robo Initialized!');
+    return;
+  }
+  if(data.msg) alert(data.msg)
 }
 
 placeRobots(selectedRobots: any[]): void {

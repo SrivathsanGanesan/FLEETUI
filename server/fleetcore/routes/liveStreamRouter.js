@@ -7,6 +7,7 @@ const {
   getRoboDetails,
   getRoboPos,
   showSpline,
+  enableRobo,
 } = require("../controllers/liveStreamController/telemetryController");
 
 const liveStreamRouter = express.Router();
@@ -18,5 +19,6 @@ liveStreamRouter.post("/get-robo-activities", getRoboActivities);
 liveStreamRouter.post("/initialize-robot", initializeRobo);
 liveStreamRouter.post("/get-fms-amrs", getRoboDetails);
 liveStreamRouter.post("/show-spline", showSpline);
+liveStreamRouter.post("/enable-robot", enableRobo);
 
 module.exports = liveStreamRouter;
