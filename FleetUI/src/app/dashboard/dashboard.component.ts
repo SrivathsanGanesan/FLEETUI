@@ -365,9 +365,9 @@ export class DashboardComponent implements AfterViewInit {
     );
 
     // yet to uncomment
-    // this.robos.forEach((robo) =>
-    //   this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
-    // );
+    this.robos.forEach((robo) =>
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
+    );
     // ctx.restore(); // Reset transformation after drawing
   }
 

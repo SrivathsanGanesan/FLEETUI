@@ -1261,8 +1261,9 @@ export class ConfigurationComponent implements AfterViewInit {
             (i) => i !== item
           );
           this.reloadTable();
+          this.setPaginatedData();
         }
-        // this.ngOnInit();
+        this.ngOnInit();
         this.reloadTable();
         console.log('Item deleted:', item);
         this.messageService.add({
@@ -1526,6 +1527,10 @@ export class ConfigurationComponent implements AfterViewInit {
     // roboName | serial Number, ip add, mac add, grossInfo
     let project = this.projectService.getSelectedProject();
     let currMap = this.projectService.getMapData();
+    if(!project || !currMap){
+      alert('map not selected');
+      return;
+    }
     const roboDetails = {
       projectName: project.projectName,
       mapId: currMap.id,
@@ -1591,6 +1596,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isPopupOpen = false;
     this.cdRef.detectChanges();
   }
+
   openPopup(item: any) {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
