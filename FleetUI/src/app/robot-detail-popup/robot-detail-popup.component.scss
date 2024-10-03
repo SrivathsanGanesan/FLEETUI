@@ -191,7 +191,9 @@
 .switch.demo3 .tooltip {
   position: absolute;
   bottom: 100%; /* Position above the switch */
+
   left: 50%;
+  margin-bottom: 25px;
   transform: translateX(-50%); /* Center the tooltip horizontally */
   background-color: #f80808; /* Tooltip background color */
   color: #fff; /* Tooltip text color */
@@ -1097,12 +1099,10 @@ border-radius: 15px; /* Rounded edges matching the container */
 }
 
 .pick-drop-label {
-  color: #000000;
-  font-size: 18px;
-  font-family: Inter;
+  font-size: 16px;
+  font-family: Inter, sans-serif; 
   font-weight: 500;
-  text-align: left;
-  white-space: nowrap; /* Prevent text from wrapping */
+  color: #000000;
 }
 
 .pick-drop-values {
@@ -1256,7 +1256,7 @@ border-radius: 15px; /* Rounded edges matching the container */
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 8px;
+  gap: 12px;
   box-sizing: border-box;
   width: 124px;
   
