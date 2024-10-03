@@ -198,8 +198,10 @@
               <thead>
                 <tr>
                   <th>S.no</th>
-                  <th>Robot Name</th>
                   <th>IP Address</th>
+                  <th>AMR ID</th>
+                  <th>UUID</th>
+                  <th>AMR Name</th>
                   <th class="iconTable">Edit/Delete</th>
                 </tr>
               </thead>
@@ -209,8 +211,10 @@
                 </tr>
                 <tr *ngFor="let item of paginatedData1; index as i; trackBy: trackByTaskId">
                   <td>{{ i + 1 }}</td>
-                  <td>{{ item.roboName }}</td>
                   <td>{{ item.ipAdd }}</td>
+                  <td>{{ item.ipAdd }}</td>
+                  <td>{{ item.ipAdd }}</td>
+                  <td>{{ item.roboName }}</td>
                   <td class="iconTable">
                     <div class="edit">
                       <button class="edit-button" (click)="editRobo(item)">
