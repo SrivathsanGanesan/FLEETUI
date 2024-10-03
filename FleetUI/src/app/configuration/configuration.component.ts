@@ -510,6 +510,7 @@ export class ConfigurationComponent implements AfterViewInit {
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         // this.paginator.length = this.filteredEnvData.length;
+        
         this.paginator.length  = this.filteredRobotData.length;
         // console.log(this.filteredEnvData);
         // console.log(this.filteredRobotData);

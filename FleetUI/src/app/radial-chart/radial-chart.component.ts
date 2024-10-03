@@ -59,7 +59,7 @@ export class RadialChartComponent implements OnInit {
         },
       },
       fill: {
-        colors: ['#00FE0A', '#1EC4E8', '#fa050e'], // Green, Yellow, Red
+        colors: ['#59ED9D', '#FECC6A', '#FF6E6E'], // Green, Yellow, Red
       },
       stroke: {
         lineCap: 'round', // Rounded end of bars for better visual
