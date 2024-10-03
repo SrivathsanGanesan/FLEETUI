@@ -34,7 +34,7 @@
 ::ng-deep .p-button.p-button-danger {
   /* width: 70% !important; */
   height: 31px !important;
-  /* margin-top: 19rem; */
+  margin-top: 1rem;
 }
 
 ::ng-deep .p-button {

@@ -258,7 +258,7 @@ const mapInsert = async (req, res) => {
 
     if (req.file === undefined)
       return res.status(400).json({ msg: "file missing", isFileExist: false });
-    mapData.imgUrl = `localhost:3000/dashboard/${req.file.filename}`;
+    mapData.imgUrl = `${process.env.BASE_URL}:${process.env.PORT}/dashboard/${req.file.filename}`;
 
     const newMap = await new Map({
       mapName,
@@ -309,12 +309,14 @@ const mapGet = async (req, res) => {
 const mapUpdate = async (req, res) => {
   const queMapName = req.params.mapName;
   const mapData = req.body;
-  /*  let isGraphSent = await saveNodeGraph(mapData); // uncomment to work without fleet..
+
+  /* let isGraphSent = await saveNodeGraph(mapData); // uncomment to work without fleet..
   if (!isGraphSent)
     return res.status(500).json({
       map: null,
       msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
     }); */
+
   try {
     const map = await Map.exists({ mapName: queMapName });
     if (!map)

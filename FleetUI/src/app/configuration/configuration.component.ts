@@ -81,6 +81,8 @@ export class ConfigurationComponent implements AfterViewInit {
   isScanning = false;
   EnvData: any[] = []; // map details..
   currentRoboDet: any | null = null;
+  isRoboInEdit: boolean = false;
+  currEditRobo : any | null = null;
 
   currEditMap: boolean = false;
   currEditMapDet: any | null = null;
@@ -339,6 +341,7 @@ export class ConfigurationComponent implements AfterViewInit {
         if (data.populatedRobos) this.robotData = data.populatedRobos;
         // console.log(this.robotData)
         this.filteredRobotData = this.robotData;
+        this.setPaginatedData();
         // console.log(this.filteredRobotData)
         // this.filteredRobotData = data.populatedRobos;
       })
@@ -348,12 +351,43 @@ export class ConfigurationComponent implements AfterViewInit {
 
   }
 
+  // edit robo..
   editRobo(robo: any) {
-    console.log(robo);
+    // console.log(robo);
     this.formData = robo.grossInfo;
     this.isPopupOpen = !this.isPopupOpen;
+    this.isRoboInEdit = !this.isRoboInEdit;
+    this.currEditRobo = robo;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     // this.cdRef.detectChanges();
+  }
+
+  async updateRobo(){
+    if(!this.currEditRobo.roboName){
+      alert('seems robo not selected');
+      return;
+    }
+    let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/robo-configuration/${this.currEditRobo.roboName}`,{
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        roboName : this.formData.robotName === this.currEditRobo.roboName ? null : this.formData.robotName,
+        grossInfo : this.formData
+      }),
+    })
+
+    let data = await response.json();
+    console.log(data);
+    if(data.roboExists === true){
+      alert('robo with this name already exists!');
+      // return;
+    }
+    else if(data.updatedData){
+      alert('robo updated');
+      // return;
+    }
+    this.closeroboPopup();
   }
 
   deleteRobo(robo: any) {
@@ -381,6 +415,9 @@ export class ConfigurationComponent implements AfterViewInit {
             summary: 'Success',
             detail: 'Robot deleted successfully!',
           });
+          this.loadData();
+          this.reloadTable();
+          this.setPaginatedData();
         } else {
           this.messageService.add({
             severity: 'error',
@@ -397,6 +434,9 @@ export class ConfigurationComponent implements AfterViewInit {
           detail: 'An error occurred while deleting the robot.',
         });
       });
+      this.loadData();
+      this.reloadTable();
+      this.setPaginatedData();
   }
 
   trackByTaskId(index: number, item: any): number {
@@ -1335,6 +1375,46 @@ export class ConfigurationComponent implements AfterViewInit {
       description: '',
     },
   };
+  reset(){
+    this.formData = {
+      robotName: '',
+      manufacturer: '',
+      serialNumber: '',
+      typeSpecification: {
+        seriesName: '',
+        seriesDescription: '',
+        agvKinematic: '',
+        agvClass: undefined as any | undefined,
+        maxLoadMass: 0,
+        localizationTypes: '',
+        navigationTypes: '',
+      },
+      protocolLimits: {
+        maxStringLens: '',
+        maxArrayLens: '',
+        timing: '',
+      },
+      protocolFeatures: {
+        optionalParameters: '',
+        actionScopes: '',
+        actionParameters: '',
+        resultDescription: '',
+      },
+      agvGeometry: {
+        wheelDefinitions: '',
+        envelopes2d: '',
+        envelopes3d: '',
+      },
+      loadSpecification: {
+        loadPositions: '',
+        loadSets: '',
+      },
+      localizationParameters: {
+        type: '',
+        description: '',
+      },
+    };
+  }
   // cities: any[] | undefined;
 
   // selectedCity: DB | undefined;
@@ -1481,6 +1561,14 @@ export class ConfigurationComponent implements AfterViewInit {
     // roboName | serial Number, ip add, mac add, grossInfo
     let project = this.projectService.getSelectedProject();
     let currMap = this.projectService.getMapData();
+    if(!project || !currMap){
+      alert('map not selected');
+      return;
+    }
+    if(this.isRoboInEdit){
+      this.updateRobo();
+      return;
+    }
     const roboDetails = {
       projectName: project.projectName,
       mapId: currMap.id,
@@ -1527,7 +1615,14 @@ export class ConfigurationComponent implements AfterViewInit {
           this.robotData = [...this.robotData, data.robo];
           // this.filteredRobotData = [...this.robotData];
           this.cdRef.detectChanges();
-          alert('robo Added to db');
+          // alert('robo Added to db');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Robo Added to Database Successfully!.',
+          })
+          this.setPaginatedData();
+          this.reloadTable();
           return;
         }
       });
@@ -1544,6 +1639,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
     this.addForm.reset();
+    this.reset();
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
   }
