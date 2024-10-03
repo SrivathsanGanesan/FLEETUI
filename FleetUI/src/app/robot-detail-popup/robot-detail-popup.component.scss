@@ -193,13 +193,13 @@
   bottom: 100%; /* Position above the switch */
 
   left: 50%;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   transform: translateX(-50%); /* Center the tooltip horizontally */
-  background-color: #f80808; /* Tooltip background color */
+  background-color: #737373; /* Tooltip background color */
   color: #fff; /* Tooltip text color */
-  padding: 10px 20px; /* Padding for the tooltip */
+  padding: 5px 20px; 
   border-radius: 10px; /* Rounded corners */
-  font-size: 16px; /* Adjust font size */
+  font-size: 14px; /* Adjust font size */
   opacity: 0; /* Start hidden */
   visibility: hidden; /* Initially invisible */
   white-space: nowrap; /* Prevent line wrapping */
