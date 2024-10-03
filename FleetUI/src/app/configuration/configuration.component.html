@@ -208,7 +208,7 @@
                   <td colspan="4" class="iconTable">No data found</td>
                 </tr>
                 <tr *ngFor="let item of paginatedData1; index as i;">
-                  <td>{{ i + 1 }}</td>
+                  <td>{{ i + 1 + (paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10) }}</td>
                   <td>{{ item.roboName }}</td>
                   <td>{{ item.ipAdd }}</td>
                   <td class="iconTable">
@@ -295,9 +295,9 @@
               </button>
               <div *ngIf="isScanning" class="loading-spinner"></div>
 
-              <!-- <div class="simulation-container">
+              <div class="simulation-container">
                 <button class="simulation-button" (click)="startSimulation()">Simulation</button>
-              </div> -->
+              </div>
 
             </div>
 

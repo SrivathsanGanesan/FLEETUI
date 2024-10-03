@@ -10905,8 +10905,16 @@
       <!-- Dropdown content -->
       <div class="dropdown-content" *ngIf="isDropdownOpen">
         <div *ngFor="let robot of robos" class="dropdown-item">
-          <span>{{ robot.roboDet.id }}</span>|<span>{{ robot.roboDet.roboName }}</span>
-          <button class="enable-button" (click)="activateRobot(robot)">Enable</button>
+          <span>{{ robot.roboDet.id }}</span><span>{{ robot.roboDet.roboName }}</span>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="robot.isActive" (change)="activateRobot(robot)">
+            <div class="slider"></div>
+            <div class="slider-card">
+              <div class="slider-card-face slider-card-front"></div>
+              <div class="slider-card-face slider-card-back"></div>
+            </div>
+          </label>
+          
         </div>
       </div>
     </div>

@@ -35,15 +35,15 @@
 }
 
 .healthy-color {
-  background-color: #00FE0A; /* Healthy color */
+  background-color: #59ED9D; /* Healthy color */
 }
 
 .inactive-color {
-  background-color: #1EC4E8; /* Inactive color */
+  background-color: #FECC6A; /* Inactive color */
 }
 
 .error-color {
-  background-color: #fa050e; /* Error color */
+  background-color: #FF6E6E; /* Error color */
 }
 
 

@@ -61,7 +61,20 @@ export class DashboardComponent implements AfterViewInit {
   edges: any[] = [];
   zones: any[] = [];
   assets: any[] = [];
-  robos: any[] = [];
+  robos: any[] = [
+    {
+    roboDet : {
+      id : 1,
+      roboName : 'MR500'
+    },
+    isActive : true},
+    {
+      roboDet : {
+        id : 2,
+        roboName : 'MR1000'
+      },
+      isActive : true}
+];
   ratio: number = 1;
   plottedPoints: { id: number; x: number; y: number }[] = [];
   zoneType: ZoneType | null = null; // Selected zone type
@@ -241,14 +254,15 @@ export class DashboardComponent implements AfterViewInit {
       return zone;
     });
 
-    this.robos = mapData.roboPos.map((robo: any) => {
-      robo.pos.x = robo.pos.x / (this.ratio || 1);
-      robo.pos.y = robo.pos.y / (this.ratio || 1);
-      return robo;
-    });
+    // this.robos = mapData.roboPos.map((robo: any) => {
+    //   robo.pos.x = robo.pos.x / (this.ratio || 1);
+    //   robo.pos.y = robo.pos.y / (this.ratio || 1);
+    //   return robo;
+    // });
   }
 
   async ngOnInit() {
+    
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
       await this.onInitMapImg();
