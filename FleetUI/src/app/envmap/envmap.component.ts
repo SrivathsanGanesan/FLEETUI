@@ -2596,6 +2596,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     this.firstNode = null;
     this.secondNode = null;
     this.direction = null;
+    this.selectedNodeId = '';  // Reset the selected node ID
   }
   private deselectNode(): void {
     if (this.selectedNode) {

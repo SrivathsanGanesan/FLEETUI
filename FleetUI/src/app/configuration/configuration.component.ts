@@ -382,6 +382,9 @@ export class ConfigurationComponent implements AfterViewInit {
             summary: 'Success',
             detail: 'Robot deleted successfully!',
           });
+          this.loadData();
+          this.reloadTable();
+          this.setPaginatedData();
         } else {
           this.messageService.add({
             severity: 'error',
@@ -398,6 +401,9 @@ export class ConfigurationComponent implements AfterViewInit {
           detail: 'An error occurred while deleting the robot.',
         });
       });
+      this.loadData();
+      this.reloadTable();
+      this.setPaginatedData();
   }
 
   trackByTaskId(index: number, item: any): number {
@@ -1336,6 +1342,46 @@ export class ConfigurationComponent implements AfterViewInit {
       description: '',
     },
   };
+  reset(){
+    this.formData = {
+      robotName: '',
+      manufacturer: '',
+      serialNumber: '',
+      typeSpecification: {
+        seriesName: '',
+        seriesDescription: '',
+        agvKinematic: '',
+        agvClass: undefined as any | undefined,
+        maxLoadMass: 0,
+        localizationTypes: '',
+        navigationTypes: '',
+      },
+      protocolLimits: {
+        maxStringLens: '',
+        maxArrayLens: '',
+        timing: '',
+      },
+      protocolFeatures: {
+        optionalParameters: '',
+        actionScopes: '',
+        actionParameters: '',
+        resultDescription: '',
+      },
+      agvGeometry: {
+        wheelDefinitions: '',
+        envelopes2d: '',
+        envelopes3d: '',
+      },
+      loadSpecification: {
+        loadPositions: '',
+        loadSets: '',
+      },
+      localizationParameters: {
+        type: '',
+        description: '',
+      },
+    };
+  }
   // cities: any[] | undefined;
 
   // selectedCity: DB | undefined;
@@ -1482,6 +1528,10 @@ export class ConfigurationComponent implements AfterViewInit {
     // roboName | serial Number, ip add, mac add, grossInfo
     let project = this.projectService.getSelectedProject();
     let currMap = this.projectService.getMapData();
+    if(!project || !currMap){
+      alert('map not selected');
+      return;
+    }
     const roboDetails = {
       projectName: project.projectName,
       mapId: currMap.id,
@@ -1528,7 +1578,14 @@ export class ConfigurationComponent implements AfterViewInit {
           this.robotData = [...this.robotData, data.robo];
           // this.filteredRobotData = [...this.robotData];
           this.cdRef.detectChanges();
-          alert('robo Added to db');
+          // alert('robo Added to db');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Robo Added to Database Successfully!.',
+          })
+          this.setPaginatedData();
+          this.reloadTable();
           return;
         }
       });
@@ -1545,6 +1602,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
     this.addForm.reset();
+    this.reset();
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
   }

@@ -646,12 +646,13 @@
             <label for="action" style="padding-right: 9.5rem;">Actions:</label>
             <input pInputText id="action" [(ngModel)]="currentEdge.action" name="action" />
           </div>
-          <div *ngIf="showEdgeError" class="error-message">
-            All required fields must be provided.
-          </div>
+
         </div>
       </div>
     <div class="form-buttonss">
+      <div *ngIf="showEdgeError" class="error-message">
+        All required fields must be provided.
+      </div>
       <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
       <button type="button" id="formBTN" (click)="deleteEdge()">Delete</button>
       <button type="button" id="formBTN" (click)="hidePopup()">Cancel</button>

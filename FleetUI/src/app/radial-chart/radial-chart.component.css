@@ -35,16 +35,18 @@
 }
 
 .healthy-color {
-  background-color: #00a3e3; /* Healthy color */
+  background-color: #00FE0A; /* Healthy color */
 }
 
 .inactive-color {
-  background-color: #00e396; /* Inactive color */
+  background-color: #1EC4E8; /* Inactive color */
 }
 
 .error-color {
-  background-color: #feb019; /* Error color */
+  background-color: #fa050e; /* Error color */
 }
+
+
 
 .label-text {
   font-size: 16px;
@@ -54,6 +56,6 @@
 
 .label-value {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: medium;
   color: #555; /* Adjust color as needed */
 }
