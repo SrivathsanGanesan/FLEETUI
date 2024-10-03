@@ -384,10 +384,17 @@ export class ConfigurationComponent implements AfterViewInit {
       // return;
     }
     else if(data.updatedData){
-      alert('robo updated');
+      // alert('robo updated');
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Updated',
+        detail: 'Robo Details Udated Successfully',
+        life: 4000,
+      });
       // return;
     }
     this.closeroboPopup();
+    this.ngOnInit();
   }
 
   deleteRobo(robo: any) {
@@ -510,7 +517,7 @@ export class ConfigurationComponent implements AfterViewInit {
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         // this.paginator.length = this.filteredEnvData.length;
-        
+
         this.paginator.length  = this.filteredRobotData.length;
         // console.log(this.filteredEnvData);
         // console.log(this.filteredRobotData);
@@ -1614,20 +1621,20 @@ export class ConfigurationComponent implements AfterViewInit {
         }
         if (data.robo) {
           this.robotData = [...this.robotData, data.robo];
+          this.ngOnInit();
           // this.filteredRobotData = [...this.robotData];
-          this.cdRef.detectChanges();
+          // this.cdRef.detectChanges();
           // alert('robo Added to db');
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Robo Added to Database Successfully!.',
           })
-          this.setPaginatedData();
-          this.reloadTable();
           return;
         }
       });
     this.isPopupOpen = false;
+    this.ngOnInit();
     this.cdRef.detectChanges();
   }
 
