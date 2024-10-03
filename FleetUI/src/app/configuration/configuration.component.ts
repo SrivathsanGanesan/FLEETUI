@@ -1481,6 +1481,10 @@ export class ConfigurationComponent implements AfterViewInit {
     // roboName | serial Number, ip add, mac add, grossInfo
     let project = this.projectService.getSelectedProject();
     let currMap = this.projectService.getMapData();
+    if(!project || !currMap){
+      alert('map not selected');
+      return;
+    }
     const roboDetails = {
       projectName: project.projectName,
       mapId: currMap.id,
