@@ -339,6 +339,7 @@ export class ConfigurationComponent implements AfterViewInit {
         if (data.populatedRobos) this.robotData = data.populatedRobos;
         // console.log(this.robotData)
         this.filteredRobotData = this.robotData;
+        this.setPaginatedData();
         // console.log(this.filteredRobotData)
         // this.filteredRobotData = data.populatedRobos;
       })
