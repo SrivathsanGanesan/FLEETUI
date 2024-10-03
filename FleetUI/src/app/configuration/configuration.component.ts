@@ -1055,7 +1055,7 @@ export class ConfigurationComponent implements AfterViewInit {
       // this.filteredRobotData = [...this.robotData]; // Reset to the original data
       this.fetchRobos();
     }
-    this.filterData();
+    // this.filterData();
   }
   searchTermChanged() {
     this.filterData();
@@ -1071,7 +1071,7 @@ export class ConfigurationComponent implements AfterViewInit {
         const withinDateRange =
           (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
           (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate)); // Normalize the end date
-          console.log(this.filteredEnvData);
+
 
         return (
           (item.mapName.toLowerCase().includes(term) ||
@@ -1082,12 +1082,13 @@ export class ConfigurationComponent implements AfterViewInit {
       });
       console.log(this.startDate);
       console.log(this.endDate);
-      console.log(this.EnvData);
+
 
       // Reset paginator to the first page and update paginated data
       if (this.paginator) {
         this.paginator.pageIndex = 0;  // Reset to the first page after filtering
       }
+      // this.ngOnInit();
       this.setPaginatedData(); // Trigger pagination logic after filtering
     }
   }
