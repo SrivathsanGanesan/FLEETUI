@@ -698,7 +698,7 @@ export class UserManagementComponent implements OnInit {
         view: this.userPermissionState[5][4],
       },
     };
-
+    
     // Send the PUT request to update the user permissions
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/auth/edit-permissions`,

@@ -101,6 +101,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     this.filteredTaskData = this.tasks;
     console.log(this.tasks);
     this.setPaginatedData();
+    
 
     // Simulate some delay, such as an API call
   }
