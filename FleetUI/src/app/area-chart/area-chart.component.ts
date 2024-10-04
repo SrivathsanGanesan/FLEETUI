@@ -13,6 +13,7 @@ import {
 } from 'ng-apexcharts';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
+import { timeStamp } from 'console';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -204,6 +205,7 @@ export class AreaChartComponent implements OnInit {
     endTime: string
   ) {
     // alter to date..
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/${endpoint}/${this.selectedMap.id}`,
       {
@@ -212,8 +214,8 @@ export class AreaChartComponent implements OnInit {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           timeSpan: timeSpan, // e.g. 'Daily' or 'Weekly'
-          startTime: startTime,
-          endTime: endTime,
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
         }),
       }
     );
@@ -255,10 +257,22 @@ export class AreaChartComponent implements OnInit {
       '',
       ''
     );
+    let { Stat } = data.throughput;
+    // console.log(Stat);
+
     if (data.throughput) {
-      this.throughputArr = data.throughput.map((stat: any) => stat.rate);
-      this.throughputXaxisSeries = data.throughput.map(
-        (stat: any) => stat.time
+      // this.throughputArr = data.throughput.map((stat: any) => stat.rate);
+      this.throughputArr = Stat.map((stat: any) => stat.TotalThroughPutPerHour);
+
+      this.throughputXaxisSeries = Stat.map(
+        // (stat: any) => stat.time
+        (stat: any) =>
+          new Date().toLocaleString('en-IN', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+          })
       );
     }
     this.plotChart(
@@ -285,7 +299,7 @@ export class AreaChartComponent implements OnInit {
         this.throughputArr,
         this.throughputXaxisSeries
       );
-    }, 1000 * 2);
+    }, 1000 * 60 * 60);
   }
 
   async updateStarvationRate() {
@@ -497,5 +511,18 @@ export class AreaChartComponent implements OnInit {
       clearInterval(this.errRateTimeInterval);
       this.errRateTimeInterval = 0;
     }
+  }
+
+  getTimeStampsOfDay() {
+    let currentTime = Math.floor(new Date().getTime() / 1000);
+    let startTimeOfDay = this.getStartOfDay();
+    return {
+      timeStamp1: startTimeOfDay,
+      timeStamp2: currentTime,
+    };
+  }
+
+  getStartOfDay() {
+    return Math.floor(new Date().setHours(0, 0, 0) / 1000);
   }
 }

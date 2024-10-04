@@ -103,10 +103,14 @@
         <img src="../../assets/icons/Tasks_icons.svg" alt="" class="Llogo" />
         <span class="label">Tasks</span>
       </div>
-      <div class="icon7" routerLink="/usermanagement" routerLinkActive="active">
-        <img src="../../assets/icons/Usermanagement_icons.svg" alt="" class="Llogo" />
-        <span class="label">User Management</span>
-      </div>
+
+      @if (cookieValue.role === "Administrator") {
+        <div class="icon7" routerLink="/usermanagement" routerLinkActive="active">
+          <img src="../../assets/icons/Usermanagement_icons.svg" alt="" class="Llogo" />
+          <span class="label">User Management</span>
+        </div>
+      }
+
       <div class="icon8" routerLink="/support" routerLinkActive="active">
         <img src="../../assets/icons/support.svg" alt=""  class="Llogo" />
         <span class="label">Support</span>
