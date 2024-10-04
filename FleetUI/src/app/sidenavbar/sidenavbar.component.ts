@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, HostListener, Renderer2, OnDestroy } fro
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-sidenavbar',
@@ -14,6 +15,7 @@ export class SidenavbarComponent implements OnInit {
   showNotificationPopup = false; // Property to track popup visibility
   showProfilePopup = false;
   isSidebarEnlarged = false; // Property to track sidebar enlargement
+  cookieValue:any;
 
   isNotificationVisible = false;
 
@@ -27,6 +29,7 @@ export class SidenavbarComponent implements OnInit {
     private router: Router,
     private projectService: ProjectService,
     private eRef: ElementRef,
+    private cookieService: CookieService
   ) {}
 
    // This will listen for clicks on the entire document
@@ -44,6 +47,7 @@ export class SidenavbarComponent implements OnInit {
       this.username = user.name;
       this.userrole = user.role;
     }
+    this.cookieValue = JSON.parse(this.cookieService.get("_user"));
   }
 
 
