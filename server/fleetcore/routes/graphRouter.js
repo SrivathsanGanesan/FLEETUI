@@ -1,7 +1,7 @@
 const express = require("express");
 const graphRouter = express.Router();
 const {
-  getFleetThroughput,
+  // getFleetThroughput,
   throughput,
   getFleetStarvation,
   starvationRate,

@@ -17,6 +17,7 @@ import { SupportComponent } from './support/support.component';
 import { FaqComponent } from './faq/faq.component';
 import { AuthService } from './auth.service';
 import { LoaderComponent } from './loader/loader.component';
+import { AdminGuard } from './admin.guard';
 
 const routes: Routes = [
   {
@@ -64,7 +65,7 @@ const routes: Routes = [
   {
     path: 'usermanagement',
     component: UserManagementComponent,
-    canActivate: [AuthGuard, ProjectGuard], // Ensure both guards are here
+    canActivate: [AdminGuard], // Ensure both guards are here
   },
   {
     path: 'support',

@@ -13,9 +13,6 @@ import { MessageService } from 'primeng/api';
 export class TasksComponent implements OnInit, AfterViewInit {
   i: any;
 
-
-
-
   // activeButton: number | null = null;
 
   // handleClick(index: number): void {
@@ -64,6 +61,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
   ) {}
 
   async ngOnInit() {
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
     const response = await fetch(
@@ -74,38 +72,56 @@ export class TasksComponent implements OnInit, AfterViewInit {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mapId: this.mapData.id,
-          timeStamp1: '',
-          timeStamp2: '',
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
         }),
       }
     );
     // if (!response.ok)
     //   throw new Error(`Error with status code of : ${response.status}`);
     let data = await response.json();
-    const { tasks } = data;
-    this.tasks = tasks.map((task: any) => {
-      return {
-        taskId: task.task_id,
-        taskName: task.sub_task[0]?.task_type
-          ? task.sub_task[0]?.task_type
-          : 'N/A',
-        status: task.task_status.status,
-        roboName: task.agent_name,
-        sourceDestination: task.sub_task[0]?.source_location
-          ? task.sub_task[0]?.source_location
-          : 'N/A',
-      };
-    });
+    // console.log(data);
+    if (!data.tasks) return;
+    const { tasks } = data.tasks;
+
+    if (tasks)
+      this.tasks = tasks.map((task: any) => {
+        return {
+          taskId: task.task_id,
+          taskName: task.sub_task[0]?.task_type
+            ? task.sub_task[0]?.task_type
+            : 'N/A',
+          status: task.task_status.status,
+          roboName: task.agent_ID,
+          sourceDestination: task.sub_task[0]?.source_location
+            ? task.sub_task[0]?.source_location
+            : 'N/A',
+        };
+      });
     this.filteredTaskData = this.tasks;
+    console.log(this.tasks);
     this.setPaginatedData();
+    
 
     // Simulate some delay, such as an API call
-
   }
 
   // Ensure the paginator is initialized before setting paginated data
   ngAfterViewInit() {
-    //   this.setPaginatedData(); // Set initial paginated data after view is initialized
+    this.setPaginatedData(); // Set initial paginated data after view is initialized
+  }
+
+  getTimeStampsOfDay() {
+    let currentTime = Math.floor(new Date().getTime() / 1000);
+    let startTimeOfDay = this.getStartOfDay();
+    return {
+      timeStamp1: startTimeOfDay,
+      timeStamp2: currentTime,
+    };
+  }
+
+  getStartOfDay() {
+    return Math.floor(new Date().setHours(0, 0, 0) / 1000);
   }
 
   setPaginatedData() {
@@ -116,6 +132,18 @@ export class TasksComponent implements OnInit, AfterViewInit {
         startIndex + this.paginator.pageSize
       );
     }
+  }
+
+  shouldShowPaginator(): boolean {
+    return this.filteredTaskData.length > 5;
+  }
+
+  updateData() {
+    // This should be called after data change (e.g., after filtering or sorting)
+    if (this.paginator) {
+      this.paginator.pageIndex = 0; // Reset to the first page
+    }
+    this.setPaginatedData(); // Update paginated data
   }
 
   onPageChange(event: PageEvent) {
@@ -143,7 +171,6 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
     this.setPaginatedData(); // Update paginated data after filtering
   }
-
 
   exportData(format: string) {
     const data = this.tasks;
@@ -205,8 +232,5 @@ export class TasksComponent implements OnInit, AfterViewInit {
     this.isPopupVisible = false;
   }
 
-
   // cancel popup
-
-
 }

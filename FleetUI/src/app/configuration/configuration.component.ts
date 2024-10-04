@@ -227,12 +227,11 @@ export class ConfigurationComponent implements AfterViewInit {
             return sites.maps.map((map: any) => {
               let date = new Date(map?.createdAt);
               let createdAt = date.toLocaleString('en-IN', {
-                month: 'numeric',
+                month: 'short',
                 year: 'numeric',
                 day: 'numeric',
                 hour: 'numeric',
                 minute: 'numeric',
-
               });
 
               return {
@@ -384,10 +383,17 @@ export class ConfigurationComponent implements AfterViewInit {
       // return;
     }
     else if(data.updatedData){
-      alert('robo updated');
+      // alert('robo updated');
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Updated',
+        detail: 'Robo Details Udated Successfully',
+        life: 4000,
+      });
       // return;
     }
     this.closeroboPopup();
+    this.ngOnInit();
   }
 
   deleteRobo(robo: any) {
@@ -510,7 +516,7 @@ export class ConfigurationComponent implements AfterViewInit {
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         // this.paginator.length = this.filteredEnvData.length;
-        
+
         this.paginator.length  = this.filteredRobotData.length;
         // console.log(this.filteredEnvData);
         // console.log(this.filteredRobotData);
@@ -1048,7 +1054,7 @@ export class ConfigurationComponent implements AfterViewInit {
       // this.filteredRobotData = [...this.robotData]; // Reset to the original data
       this.fetchRobos();
     }
-    this.filterData();
+    // this.filterData();
   }
   searchTermChanged() {
     this.filterData();
@@ -1064,7 +1070,7 @@ export class ConfigurationComponent implements AfterViewInit {
         const withinDateRange =
           (!this.startDate || normalizedDate >= this.normalizeDate(this.startDate)) &&
           (!this.endDate || normalizedDate <= this.normalizeDate(this.endDate)); // Normalize the end date
-          console.log(this.filteredEnvData);
+
 
         return (
           (item.mapName.toLowerCase().includes(term) ||
@@ -1075,12 +1081,13 @@ export class ConfigurationComponent implements AfterViewInit {
       });
       console.log(this.startDate);
       console.log(this.endDate);
-      console.log(this.EnvData);
+
 
       // Reset paginator to the first page and update paginated data
       if (this.paginator) {
         this.paginator.pageIndex = 0;  // Reset to the first page after filtering
       }
+      // this.ngOnInit();
       this.setPaginatedData(); // Trigger pagination logic after filtering
     }
   }
@@ -1614,20 +1621,20 @@ export class ConfigurationComponent implements AfterViewInit {
         }
         if (data.robo) {
           this.robotData = [...this.robotData, data.robo];
+          this.ngOnInit();
           // this.filteredRobotData = [...this.robotData];
-          this.cdRef.detectChanges();
+          // this.cdRef.detectChanges();
           // alert('robo Added to db');
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Robo Added to Database Successfully!.',
           })
-          this.setPaginatedData();
-          this.reloadTable();
           return;
         }
       });
     this.isPopupOpen = false;
+    this.ngOnInit();
     this.cdRef.detectChanges();
   }
 

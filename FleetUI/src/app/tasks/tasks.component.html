@@ -87,24 +87,27 @@
                 <tr>
                   <th>S.no</th>
                   <th>Task ID</th>
-                  <th>Task Name</th>
+                  <th>Task Type</th>
                   <th>Status</th>
                   <th>Robot Name</th>
-                  <th>Source and Destination</th>
+                  <th>Source</th>
+                  <th>Destination</th>
+
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngIf="paginatedData.length === 0">
+                <tr *ngIf="filteredTaskData.length === 0">
                   <td colspan="6" class="iconTable">No data found</td>
                 </tr>
-                <tr *ngFor="let item of paginatedData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
+                <tr *ngFor="let item of filteredTaskData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td>{{ i + 1 + (paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10) }}</td>
                   <td>{{ item.taskId }}</td>
-                  <td>{{ item.taskName }}</td>
+                  <td>{{ item.tasktype }}</td>
                   <td>{{ item.status }}</td>
                   <td>{{ item.roboName }}</td>
-                  <td>{{ item.sourceDestination }}</td>
+                  <td>{{ item.source }}</td>
+                  <td>{{ item.Destination }}</td>
                   <td>
                     <!-- Switch Container -->
                     <div class="switch-container">
@@ -137,7 +140,7 @@
 
 
         <!-- Paginator -->
-    <div class="paginator-container" *ngIf="paginatedData.length > 5">
+    <div  class="paginator-container" >
       <mat-paginator
         [length]="filteredTaskData.length"
         [pageSize]="10"

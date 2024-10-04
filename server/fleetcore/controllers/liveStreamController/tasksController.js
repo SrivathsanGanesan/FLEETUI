@@ -81,34 +81,26 @@ for (let i = 1; i < 100; i++) {
   });
 }
 
-const getFleetTask = (req, res, next) => {
-  fetch(`http://fleetIp:8080/fms/amr/get_tasks_list`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        req.responseStatus = "NOT_OK";
-        return next();
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      req.fleetData = data;
-    })
-    .catch((err) => {
-      req.fleetErr = err;
-    });
-  next();
+const getFleetTask = async (endpoint, bodyData) => {
+  let response = await fetch(
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic cm9vdDp0b29y",
+      },
+      body: JSON.stringify(bodyData),
+    }
+  );
+
+  return await response.json();
 };
 
 const getTasks = async (req, res) => {
-  const { mapId } = req.body;
+  const { mapId, timeStamp1, timeStamp2 } = req.body;
   try {
-    //..
-    let taskData = req.fleetData;
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(500).json({ msg: "map not exists", map: null });
@@ -123,6 +115,11 @@ const getTasks = async (req, res) => {
       // { new: true } // which returns the updated document of the Map..
     ); */
 
+    let bodyData = {
+      timeStamp1: timeStamp1,
+      timeStamp2: timeStamp2,
+    };
+    let tasks = await getFleetTask("get_tasks_list", bodyData);
     return res.status(200).json({
       msg: "data sent",
       tasks: tasks,

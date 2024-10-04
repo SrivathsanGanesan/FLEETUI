@@ -52,6 +52,7 @@ export class Userlogscomponent {
       console.log('Seems no map has been selected');
       return;
     }
+    // data rendering
     this.getTaskLogs();
     this.getRoboLogs();
     this.getFleetLogs();
@@ -225,6 +226,7 @@ export class Userlogscomponent {
 
     this.setPaginatedData(); // Update paginated data after filtering
   }
+  
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
   }
