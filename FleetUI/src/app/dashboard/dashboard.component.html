@@ -10891,6 +10891,8 @@
     </div>
     <div id="Pos_tooltip" style="position: absolute; bottom: 5px; right:5px; display: none; background: transparent; border: 0px solid #ccc; border-radius: 4px; padding: 5px; z-index: 2;font-size: 10px;"></div>    <!-- Canvases -->
     <!-- <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas> -->
+
+
     <canvas #myCanvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
 
     <div class="dropdown">
@@ -11016,5 +11018,10 @@
 
   </div>
 
+</div>
+
+<div id="robo-popup" style="position: absolute; display: none;  padding: 10px;">
+  <button (click)="initializeRobo()">Initialize Robo</button><br>
+  <button (click)="cancelAction()">Cancel</button>
 </div>
 
