@@ -149,7 +149,7 @@
   </div>
 </div>
              <!-- Paginator -->
-      <div class="paginator-container" *ngIf="currentTable === 'task' && filteredTaskData.length > 5">
+      <div class="paginator-container" *ngIf="currentTable === 'task' && filteredTaskData.length > 0">
         <mat-paginator
           [length]="filteredTaskData.length"
           [pageSize]="10"
@@ -192,7 +192,7 @@
   </div>
 </div>
              <!-- Paginator -->
-    <div class="paginator-container" *ngIf="currentTable === 'robot' && robotData.length > 5">
+    <div class="paginator-container" *ngIf="currentTable === 'robot' && robotData.length > 0">
       <mat-paginator
         [length]="robotData.length"
         [pageSize]="10"
@@ -235,7 +235,7 @@
 </div>
 
        <!-- Paginator -->
-    <div class="paginator-container" *ngIf="currentTable === 'fleet' && fleetData.length > 5">
+    <div class="paginator-container" *ngIf="currentTable === 'fleet' && fleetData.length > 0">
       <mat-paginator
         [length]="fleetData.length"
         [pageSize]="10"

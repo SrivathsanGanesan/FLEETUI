@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProjectService } from '../../../services/project.service';
 import { environment } from '../../../../environments/environment.development';
+import { FormBuilder } from '@angular/forms';
 
 interface DB {
   name: string;
@@ -19,17 +20,7 @@ export class GeneralComponent {
 
   selectedProject: any | null = null;
 
-  formData: any = {
-    selectedDb: '',
-    selectedIp: '',
-    selectedRoboManagerType: '',
-    selectedTaskManagerType: '',
-    fleetServerMode: 0,
-    serverIP: '0.0.0.0',
-    serverPort: '8080',
-    databaseIp: '0.0.0.0',
-    databaseName: '',
-  };
+  formData: any ;
 
   selectedDb: any = { name: '', code: '' };
   selectedIp: any = { name: '', code: '' };
@@ -63,8 +54,21 @@ export class GeneralComponent {
 
   constructor(
     private projectService: ProjectService,
-    private cdRef: ChangeDetectorRef
-  ) {}
+    private cdRef: ChangeDetectorRef,
+    private fb: FormBuilder,
+  ) {
+    this.formData = this.fb.group({
+      selectedDb: '',
+      selectedIp: '',
+      selectedRoboManagerType: '',
+      selectedTaskManagerType: '',
+      fleetServerMode: '',
+      serverIP: '',
+      serverPort: '',
+      databaseIp: '',
+      databaseName: '',
+    })
+  }
 
   async ngOnInit() {
     this.selectedProject = this.projectService.getSelectedProject();
