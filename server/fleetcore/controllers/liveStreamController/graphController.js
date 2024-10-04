@@ -38,32 +38,24 @@ let roboErrRateArr = getSampSeries();
 
 // Operation..
 
-const getFleetThroughput = (req, res, next) => {
-  fetch(`http://fleetIp:8080/fms/amr/get_throughput_stats`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        req.responseStatus = "NOT_OK";
-        return next();
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      req.fleetData = data;
-    })
-    .catch((err) => {
-      req.fleetErr = err;
-    });
-  next();
+const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
+  let response = await fetch(
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic cm9vdDp0b29y",
+      },
+      body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2 }),
+    }
+  );
+  return await response.json();
 };
 
 const throughput = async (req, res, next) => {
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  const { timeSpan, timeStamp1, timeStamp2 } = req.body;
   try {
     //..
     const isMapExist = await Map.exists({ _id: mapId });
@@ -71,17 +63,11 @@ const throughput = async (req, res, next) => {
       return res.status(500).json({ msg: "map not found!", map: null });
 
     const mapData = await Map.findOne({ _id: mapId });
-    // const mapData = await Map.findOneAndUpdate(
-    //   { _id: mapId },
-    //   {
-    //     $push: {
-    //       "throughPut.Stat": { $each: dummyStat }, // can push multiple entries to the array using $each
-    //       "throughPut.inProg": InProgress,
-    //     },
-    //   },
-    //   { new: true }
+    // let fleetThroughput = await getFleetSeriesData(
+    //   timeStamp1,
+    //   timeStamp2,
+    //   "get_throughput_stats"
     // );
-    // let throughput = mapData.throughPut;
 
     if (timeSpan === "week")
       return res.status(200).json({
@@ -123,7 +109,7 @@ const throughput = async (req, res, next) => {
     return res.status(200).json({
       msg: "data sent",
       throughput: throughPutArr,
-      // throughput: throughput,
+      // throughput: fleetThroughput,
     });
   } catch (err) {
     console.log("error occured : ", err);
@@ -851,7 +837,6 @@ const getRoboErr = async (req, res) => {
 };
 
 module.exports = {
-  getFleetThroughput,
   throughput,
   getFleetStarvation,
   starvationRate,
