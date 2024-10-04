@@ -227,12 +227,11 @@ export class ConfigurationComponent implements AfterViewInit {
             return sites.maps.map((map: any) => {
               let date = new Date(map?.createdAt);
               let createdAt = date.toLocaleString('en-IN', {
-                month: 'numeric',
+                month: 'short',
                 year: 'numeric',
                 day: 'numeric',
                 hour: 'numeric',
                 minute: 'numeric',
-
               });
 
               return {

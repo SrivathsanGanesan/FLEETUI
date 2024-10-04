@@ -47,6 +47,8 @@ export class UserManagementComponent implements OnInit {
   passwordView = 'SHOW';
   confrimPasswordView = 'SHOW';
   deleteUserRole = '';
+  pageSize:any = 0
+  pageNumber:any = 0
 
   ngOnInit(): void {
     this.selectedProject = this.projectService.getSelectedProject();
@@ -214,7 +216,7 @@ export class UserManagementComponent implements OnInit {
           // let createdOn = dateString.getDate() + "/" + dateString.getMonth() + "/" + dateString.getFullYear()
           let createdDate = dateString.toLocaleDateString('en-IN', {
             day: '2-digit',
-            month: '2-digit',
+            month: 'short',
             year: '2-digit',
           });
 
@@ -277,15 +279,18 @@ export class UserManagementComponent implements OnInit {
     if(this.paginator){
       this.paginator.length = this.filteredData.length;
     }
-
   }
 
     // Ensure pagination is triggered on page change
     onPageChange(event: PageEvent) {
-      this.paginator.pageIndex = event.pageIndex;
+      this.pageNumber = event.pageIndex
       this.paginator.pageSize = event.pageSize;
+      this.pageSize = event.pageSize
       this.setPaginatedData();  // Update paginated data on page change
     }
+
+
+
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
   }
@@ -438,6 +443,7 @@ export class UserManagementComponent implements OnInit {
         detail: 'Should have atleast one admin',
         life: 5000,
       });
+      this.setPaginatedData();
       return;
     }
 
@@ -478,6 +484,8 @@ export class UserManagementComponent implements OnInit {
 
     this.deleteUserName = '';
     this.deleteUserPopUp();
+    this.setPaginatedData()
+    // window.location.reload()
   }
 
   getDeleteUser(userName: any, userRole: any) {
@@ -698,7 +706,7 @@ export class UserManagementComponent implements OnInit {
         view: this.userPermissionState[5][4],
       },
     };
-    
+
     // Send the PUT request to update the user permissions
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/auth/edit-permissions`,
