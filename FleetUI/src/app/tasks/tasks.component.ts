@@ -63,6 +63,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     private messageService: MessageService
   ) {}
 
+
   async ngOnInit() {
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
@@ -97,6 +98,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
       };
     });
     this.filteredTaskData = this.tasks;
+    console.log(this.tasks);
     this.setPaginatedData();
 
     // Simulate some delay, such as an API call
@@ -105,7 +107,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   // Ensure the paginator is initialized before setting paginated data
   ngAfterViewInit() {
-    //   this.setPaginatedData(); // Set initial paginated data after view is initialized
+      this.setPaginatedData(); // Set initial paginated data after view is initialized
   }
 
   setPaginatedData() {
@@ -117,6 +119,19 @@ export class TasksComponent implements OnInit, AfterViewInit {
       );
     }
   }
+
+  shouldShowPaginator(): boolean {
+    return this.filteredTaskData.length > 5;
+  }
+
+  updateData() {
+    // This should be called after data change (e.g., after filtering or sorting)
+    if (this.paginator) {
+      this.paginator.pageIndex = 0; // Reset to the first page
+    }
+    this.setPaginatedData(); // Update paginated data
+  }
+
 
   onPageChange(event: PageEvent) {
     this.setPaginatedData();

@@ -137,7 +137,7 @@
 
 
         <!-- Paginator -->
-    <div class="paginator-container" *ngIf="paginatedData.length > 5">
+    <div  *ngIf="shouldShowPaginator()" class="paginator-container" >
       <mat-paginator
         [length]="filteredTaskData.length"
         [pageSize]="10"
