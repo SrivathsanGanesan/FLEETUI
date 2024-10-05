@@ -21,6 +21,11 @@
   /* margin-bottom: 0px; */
 }
 
+.validate{
+  display: flex;
+  flex-direction: column;
+}
+
 /* Button styling */
 .button {
   /* width: 70%; */
