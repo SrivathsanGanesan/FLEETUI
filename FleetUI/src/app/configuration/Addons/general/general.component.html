@@ -1,7 +1,7 @@
 <div class="container1">
   <div class="content-fluid1">
     <div class="general">
-      <form #generalForm="ngForm">
+      <form #generalForm="ngForm" novalidate>
         <div class="container">
           <!-- Fleet Server Mode -->
           <div class="form-control">
@@ -20,7 +20,7 @@
                   required
                 />
               </div>
-              <div *ngIf="generalForm.controls['fleetServerMode'].invalid && generalForm.controls['fleetServerMode'].touched">
+              <div *ngIf="generalForm.submitted && generalForm.controls['fleetServerMode'].invalid && generalForm.controls['fleetServerMode'].touched">
                 <small class="text-danger"> *Fleet Server Mode is required</small>
               </div>
             </div>
@@ -71,7 +71,7 @@
           <div class="form2">
             <div class="validate">
               <div class="field">
-                <label for="databaseIp" style="margin-right: 2rem;">Database IP : </label>
+                <label for="databaseIp" style="margin-right: 2rem;" >Database IP : </label>
                 <input
                   type="text"
                   placeholder="Enter IP"
@@ -79,6 +79,7 @@
                   maxlength="15"
                   size="15"
                   style="width: 10rem;"
+                  #databaseIp="ngModel"
                   [(ngModel)]="formData.databaseIp"
                   name="databaseIp"
                   pInputText
