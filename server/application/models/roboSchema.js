@@ -12,6 +12,9 @@ const zoneSchema = new Schema(
 const roboSchema = new Schema(
   {
     roboName: { type: String, required: true, unique: true },
+    amrId: { type: Number, default: 0 }, //..
+    uuid: { type: String, default: "" }, //..
+    // isSimMode: { type: Boolean, default: false },
     type: { type: String, default: "AGV" },
     ipAdd: { type: String, default: "" },
     imgUrl: { type: String, default: "" },
