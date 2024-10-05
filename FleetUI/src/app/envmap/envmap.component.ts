@@ -1102,6 +1102,15 @@ export class EnvmapComponent implements AfterViewInit {
     return q;
   };
   saveOpt() {
+    if (!this.nodes || this.nodes.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No Nodes are plotted',
+        life: 4000,
+      });
+      return;
+    }
     if (this.currEditMap) {
       this.updateEditedMap();
       return;
