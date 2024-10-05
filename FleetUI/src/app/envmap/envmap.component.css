@@ -668,6 +668,18 @@ h2{
 .dropdown:hover .dropdown-content {
   display: flex;
 }
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  /* Use standard 'appearance' property along with vendor-specific ones */
+  appearance: none;         /* Standard */
+  -moz-appearance: textfield;  /* Firefox */
+  -webkit-appearance: none; /* Chrome, Safari */
+}
 
 .dropdown-content button {
   background-color:transparent;

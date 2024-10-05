@@ -48,6 +48,7 @@
               type="number"
               id="resolution"
               #resolutionInput
+              min="0"
               placeholder="Resolution"
               (keyup.enter)="open()"
               (input)="onInputResolution($event)"
@@ -64,7 +65,7 @@
           style="display: flex; align-items: center; gap: 10px"
         >
         <input pInputText type="number" id="X" placeholder="X" min="0" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
-        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.x" (keyup.enter)="open()" />
+        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.y" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
@@ -746,7 +747,7 @@
 <div *ngIf="isRoboConfirmationVisible" class="popup-overlay1">
   <div class="popup-content1">
     <!-- Show these buttons initially -->
-    <div *ngIf="!isConfirmingDelete">
+    <!-- <div *ngIf="!isConfirmingDelete"> -->
       <!-- <div>
         <h5>Set Robot Position at Node</h5>
         <div>
@@ -765,15 +766,15 @@
 
     </div></div> -->
       <!-- <button type="button" >Set Orientation</button> -->
-      <button type="button" (click)="initializeRobot()">Initialize Robot</button>
+      <!-- <button type="button" (click)="initializeRobot()">Initialize Robot</button>
 
       <button type="button" (click)="showDeleteConfirmation()">Remove Robot</button>
 
       <button type="button" (click)="cancelDelete()">Cancel</button>
-    </div>
+    </div> -->
 
     <!-- Show confirmation message and buttons when 'Remove Robot' is clicked -->
-    <div *ngIf="isConfirmingDelete">
+    <div *ngIf="!isConfirmingDelete">
       <p>Are you sure you want to Remove?</p>
       <div>
         <button type="button" (click)="confirmRoboDelete()">Confirm</button>
