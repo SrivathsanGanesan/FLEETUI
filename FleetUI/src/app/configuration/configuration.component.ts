@@ -295,24 +295,33 @@ export class ConfigurationComponent implements AfterViewInit {
 
   // Simulation
   async startSimulation() {
-    if (!this.selectedMap) return;
-    this.selectedRobots = this.paginatedData1.filter((item) => item.selected);
+    try {
+      if (!this.selectedMap) return;
+      this.selectedRobots = this.paginatedData1.filter((item) => item.isSim);
 
-    // customize your filter here..
-    let simRobots = this.selectedRobots.map((robo) => {
-      return {
-        ipAdd: robo.ipAdd,
-        amrId: robo.amrId,
-        uuid: robo.uuid,
-        roboName: robo.roboName,
-      };
-    });
-    await this.updateSimInMap(simRobots);
-    simRobots.forEach(async (robo) => {
-      await this.updateSimInRobo(robo.roboName);
-    });
+      // customize your filter here..
+      let simRobots = this.selectedRobots.map((robo) => {
+        return {
+          ipAdd: robo.ipAdd,
+          amrId: robo.amrId,
+          uuid: robo.uuid,
+          roboName: robo.roboName,
+        };
+      });
+      await this.updateSimInMap(simRobots);
 
-    this.isSimulating = true;
+      this.paginatedData1.forEach(async (robo: any) => {
+        let isSim = simRobots.some(
+          (simRobo: any) => simRobo.roboName === robo.roboName
+        );
+        await this.updateSimInRobo(robo.roboName, isSim);
+      });
+
+      this.isSimulating = true;
+      alert('Robos in sim mode!');
+    } catch (error) {
+      console.log('Error while simulating : ', error);
+    }
   }
 
   async updateSimInMap(simRobots: any) {
@@ -332,7 +341,7 @@ export class ConfigurationComponent implements AfterViewInit {
     // console.log(data);
   }
 
-  async updateSimInRobo(roboName: any) {
+  async updateSimInRobo(roboName: any, isSim: boolean) {
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/robo-configuration/${roboName}`,
       {
@@ -340,13 +349,13 @@ export class ConfigurationComponent implements AfterViewInit {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          isSim: true, // here it is..
+          isSim: isSim, // here it is..
         }),
       }
     );
 
     let data = await response.json();
-    console.log(data);
+    // console.log(data);
   }
 
   async fetchRobos() {
@@ -1129,8 +1138,8 @@ export class ConfigurationComponent implements AfterViewInit {
           withinDateRange
         );
       });
-      console.log(this.startDate);
-      console.log(this.endDate);
+      // console.log(this.startDate);
+      // console.log(this.endDate);
 
       // Reset paginator to the first page and update paginated data
       if (this.paginator) {
