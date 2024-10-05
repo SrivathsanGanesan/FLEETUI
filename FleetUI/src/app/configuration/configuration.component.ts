@@ -798,7 +798,11 @@ export class ConfigurationComponent implements AfterViewInit {
   eventSource!: EventSource;
   startIP: string = '';
   EndIP: string = '';
-
+  toggleSelectAll(event: any): void {
+    const isChecked = event.target.checked;
+    this.paginatedData1.forEach(item => item.selected = isChecked);
+  }
+  
   async startScanning() {
     this.ipScanData = [];
 
