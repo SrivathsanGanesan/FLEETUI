@@ -161,7 +161,7 @@ export class GeneralComponent {
       if (data.isSet) {
         alert('Fleet configured!');
         // Manually reset the formData object
-        this.reset();
+        // this.reset();
         return;
       }
       alert('Fleet not configured!');
