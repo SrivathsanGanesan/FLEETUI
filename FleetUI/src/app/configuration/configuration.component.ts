@@ -186,10 +186,16 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
 // Simulation
-  startSimulation() {
-    this.isSimulating = true;
-    console.log("Simulation started...");
-  }
+startSimulation() {
+  // Filter the selected robots
+  this.selectedRobots = this.paginatedData1.filter(item => item.selected);
+
+  // Log or handle the selected robots as needed
+  console.log("Selected Robots for Simulation:", this.selectedRobots);
+
+  this.isSimulating = true;
+  console.log("Simulation started...");
+}
 
   ngOnInit() {
     this.loadData();
