@@ -75,7 +75,7 @@
         }
 
       </span>
-      <div class="paginator-container" *ngIf="filteredData.length > 5"  >
+      <div class="paginator-container" *ngIf="filteredData.length > 0"  >
         <mat-paginator
            [length]="filteredData.length"
            [pageSize]="5"

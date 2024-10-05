@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProjectService } from '../../../services/project.service';
 import { environment } from '../../../../environments/environment.development';
+import { FormBuilder } from '@angular/forms';
 
 interface DB {
   name: string;
@@ -19,17 +20,7 @@ export class GeneralComponent {
 
   selectedProject: any | null = null;
 
-  formData: any = {
-    selectedDb: '',
-    selectedIp: '',
-    selectedRoboManagerType: '',
-    selectedTaskManagerType: '',
-    fleetServerMode: 0,
-    serverIP: '0.0.0.0',
-    serverPort: '8080',
-    databaseIp: '0.0.0.0',
-    databaseName: '',
-  };
+  formData: any ;
 
   selectedDb: any = { name: '', code: '' };
   selectedIp: any = { name: '', code: '' };
@@ -63,8 +54,35 @@ export class GeneralComponent {
 
   constructor(
     private projectService: ProjectService,
-    private cdRef: ChangeDetectorRef
-  ) {}
+    private cdRef: ChangeDetectorRef,
+    private fb: FormBuilder,
+  ) {
+    this.formData = {
+      selectedDb: '',
+      selectedIp: '',
+      selectedRoboManagerType: '',
+      selectedTaskManagerType: '',
+      fleetServerMode: '',
+      serverIP: '',
+      serverPort: '',
+      databaseIp: '',
+      databaseName: '',
+    }
+  }
+
+  reset(){
+    this.formData = {
+      selectedDb: '',
+      selectedIp: '',
+      selectedRoboManagerType: '',
+      selectedTaskManagerType: '',
+      fleetServerMode: '',
+      serverIP: '',
+      serverPort: '',
+      databaseIp: '',
+      databaseName: '',
+    }
+  }
 
   async ngOnInit() {
     this.selectedProject = this.projectService.getSelectedProject();
@@ -112,11 +130,14 @@ export class GeneralComponent {
       console.log('no map selected');
       return;
     }
-    this.formData.selectedDb = this.selectedDb.name;
-    this.formData.selectedIp = this.selectedIp.name;
-    this.formData.selectedRoboManagerType = this.selectedRoboManagerType.name;
-    this.formData.selectedTaskManagerType = this.selectedTaskManagerType.name;
-    console.log(this.formData); // handle the form here..
+
+    // Ensure only the relevant values are passed to formData
+    this.formData.selectedDb = this.selectedDb?.name || '';
+    this.formData.selectedIp = this.selectedIp?.name || '';
+    this.formData.selectedRoboManagerType = this.selectedRoboManagerType?.name || '';
+    this.formData.selectedTaskManagerType = this.selectedTaskManagerType?.name || '';
+
+    console.log(this.formData); // Now formData should be safe for handling
 
     try {
       let response = await fetch(
@@ -127,22 +148,27 @@ export class GeneralComponent {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             projectId: this.selectedProject._id,
-            generalParams: this.formData,
+            generalParams: this.formData,  // Send the plain object without circular references
           }),
         }
       );
+
       if (!response.ok)
-        throw new Error(`err while saving db, ${response.status}`);
+        throw new Error(`Error while saving db, status: ${response.status}`);
 
       let data = await response.json();
-      // console.log(data);
+
       if (data.isSet) {
         alert('Fleet configured!');
+        // Manually reset the formData object
+        this.reset();
         return;
       }
       alert('Fleet not configured!');
     } catch (error) {
-      console.log('Err occured :', error);
+      console.log('Error occurred:', error);
     }
   }
+
+
 }

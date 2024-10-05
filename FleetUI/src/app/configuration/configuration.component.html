@@ -181,7 +181,7 @@
             <div *ngIf="currentTable === 'Environment' && filteredEnvData.length == EnvData.length"  >
             <div
               class="paginator-container"
-              *ngIf="filteredEnvData.length > 5 "
+              *ngIf="filteredEnvData.length > 0 "
             >
               <mat-paginator
                 [length]="filteredEnvData.length"
@@ -239,7 +239,7 @@
             <div *ngIf="currentTable === 'robot' && filteredRobotData.length == robotData.length">
                 <div
                   class="paginator-container"
-                  *ngIf="filteredRobotData.length > 5"
+                  *ngIf="filteredRobotData.length > 0"
                 >
                     <mat-paginator
                     [length]="filteredRobotData.length"
@@ -376,10 +376,10 @@
                   General
                 </li>
                 <li
-                  [class.active]="fleetTab === 'plannar'"
-                  (click)="setFleetTab('plannar')"
+                  [class.active]="fleetTab === 'planner'"
+                  (click)="setFleetTab('planner')"
                 >
-                  Plannar
+                  Planner
                 </li>
                 <li
                   [class.active]="fleetTab === 'task'"
@@ -406,9 +406,9 @@
                 <!-- Add content for the General tab -->
                 <app-general></app-general>
               </div>
-              <div *ngIf="fleetTab === 'plannar'">
-                <!-- <h2>Plannar Settings</h2> -->
-                <!-- Add content for the Plannar tab -->
+              <div *ngIf="fleetTab === 'planner'">
+                <!-- <h2>Planner Settings</h2> -->
+                <!-- Add content for the Planner tab -->
                 <app-planner></app-planner>
               </div>
               <div *ngIf="fleetTab === 'task'">

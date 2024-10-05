@@ -1051,7 +1051,7 @@ export class ConfigurationComponent implements AfterViewInit {
     if (this.currentTable === 'environment') {
       this.filteredEnvData = [...this.EnvData]; // Reset to the original data
     } else if (this.currentTable === 'robot') {
-      // this.filteredRobotData = [...this.robotData]; // Reset to the original data
+      this.filteredRobotData = [...this.robotData]; // Reset to the original data
       this.fetchRobos();
     }
     // this.filterData();
