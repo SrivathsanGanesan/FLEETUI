@@ -1,11 +1,12 @@
 <div class="container1">
   <div class="content-fluid1">
     <div class="general">
-      <!-- <form> -->
+      <form #generalForm="ngForm">
         <div class="container">
+          <!-- Fleet Server Mode -->
           <div class="form-control">
             <div class="field">
-              <label for="fleetServerMode">Fleet Server Mode: </label>
+              <label for="fleetServerMode">Fleet Server Mode :  </label>
               <input
                 class="input"
                 type="number"
@@ -16,14 +17,15 @@
                 name="fleetServerMode"
                 pInputText
                 required
-                #fleetServerMode="ngModel"
               />
-              <div *ngIf="fleetServerMode.invalid && fleetServerMode.touched" class="error">
-                *Fleet Server Mode is required.
+              <div *ngIf="generalForm.controls['fleetServerMode'].invalid && generalForm.controls['fleetServerMode'].touched">
+                <small class="text-danger">Fleet Server Mode is required</small>
               </div>
             </div>
+
+            <!-- Server IP -->
             <div class="field">
-              <label for="serverIP" style="margin-right: 5rem;">Server IP: </label>
+              <label for="serverIP" style="margin-right: 5rem;">Server IP : </label>
               <input
                 type="text"
                 placeholder="Enter IP"
@@ -34,63 +36,108 @@
                 name="serverIP"
                 pInputText
                 required
-                pattern="^(\d{1,3}\.){3}\d{1,3}$"
-                #serverIP="ngModel"
               />
-              <div *ngIf="serverIP.invalid && serverIP.touched" class="error">
-                Enter a valid Server IP (e.g., 192.168.0.1).
+              <div *ngIf="generalForm.controls['serverIP'].invalid && generalForm.controls['serverIP'].touched">
+                <small class="text-danger">Valid Server IP is required.</small>
               </div>
             </div>
+
+            <!-- Server Port -->
             <div class="field">
-              <label for="serverPort" style="margin-right: 4rem">Server Port: </label>
+              <label for="serverPort" style="margin-right: 4rem">Server Port :  </label>
               <input
                 class="input"
                 placeholder="Enter Port"
                 type="number"
                 min="1000"
                 max="9999"
-                oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"
-                style="width: 10rem;"
                 [(ngModel)]="formData.serverPort"
                 name="serverPort"
                 pInputText
                 required
-                #serverPort="ngModel"
               />
-              <div *ngIf="serverPort.invalid && serverPort.touched" class="error">
-                Server Port is required (1000-9999).
+              <div *ngIf="generalForm.controls['serverPort'].invalid && generalForm.controls['serverPort'].touched">
+                <small class="text-danger">Server Port is required and must be between 1000 and 9999.</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Database IP and Type -->
+          <div class="form2">
+            <div class="field">
+              <label for="databaseIp" style="margin-right: 2rem;">Database IP : </label>
+              <input
+                type="text"
+                placeholder="Enter IP"
+                minlength="7"
+                maxlength="15"
+                size="15"
+                style="width: 10rem;"
+                [(ngModel)]="formData.databaseIp"
+                name="databaseIp"
+                pInputText
+                required
+              />
+              <div *ngIf="generalForm.controls['databaseIp'].invalid && generalForm.controls['databaseIp'].touched">
+                <small class="text-danger">Database IP is required.</small>
               </div>
             </div>
 
-          <div class="form2">
+            <!-- Dropdown for Database Type -->
             <div class="field">
-              <label for="ip" style="margin-right: 2rem;">Database IP : </label>
-              <input type="text" Enter IP placeholder="Enter IP" minlength="7" maxlength="15" size="15" style="width: 10rem;" [(ngModel)]="formData.databaseIp" pInputText/>
-            </div>
-            <div class="field">
-              <label for="type">Database Type : </label><br>
-              <p-dropdown appendTo="body"  [options]="dtype" [(ngModel)]="selectedDb" optionLabel="name" placeholder="Select"></p-dropdown>
-            </div>
-            <div class="field">
-              <label for="type" style="margin-right: .9rem;">Server IP Type : </label><br>
-              <p-dropdown appendTo="body" [options]="iptype" [(ngModel)]="selectedIp" optionLabel="name" placeholder="Select"></p-dropdown>
+              <label for="selectedDb">Database Type : </label><br />
+              <p-dropdown
+                appendTo="body"
+                [options]="dtype"
+                [(ngModel)]="selectedDb"
+                name="selectedDb"
+                optionLabel="name"
+                placeholder="Select"
+                required
+              ></p-dropdown>
+              <div *ngIf="generalForm.submitted && !selectedDb && generalForm.touched">
+                <small class="text-danger">Database Type is required.</small>
+              </div>
             </div>
           </div>
 
+          <!-- Database Name and Robot Manager -->
           <div class="form3">
             <div class="field">
-              <label for="type" style="margin-right: 3rem;">Database Name : </label>
-              <input type="text" placeholder="Enter DB name" style="width: 10rem;" [(ngModel)]="formData.databaseName" pInputText/>
+              <label for="databaseName" style="margin-right: 3rem;">Database Name : </label>
+              <input
+                type="text"
+                placeholder="Enter DB name"
+                style="width: 10rem;"
+                [(ngModel)]="formData.databaseName"
+                name="databaseName"
+                pInputText
+                required
+              />
+              <div *ngIf="generalForm.controls['databaseName'].invalid && generalForm.controls['databaseName'].touched">
+                <small class="text-danger">Database Name is required.</small>
+              </div>
             </div>
+
+            <!-- Dropdown for Robot Manager -->
             <div class="field">
-              <label for="type">Robot Manager Type : </label><br>
-              <p-dropdown appendTo="body"  [options]="robotManagerType" [(ngModel)]="selectedRoboManagerType" optionLabel="name" placeholder="Select"></p-dropdown>
-            </div>
-            <div class="field">
-              <label for="type" style="margin-right: 1.2rem;">Task Manager Type  : </label><br>
-              <p-dropdown appendTo="body"  [options]="taskManagerType" [(ngModel)]="selectedTaskManagerType" optionLabel="name" placeholder="Select"></p-dropdown>
+              <label for="selectedRoboManagerType">Robot Manager Type : </label><br />
+              <p-dropdown
+                appendTo="body"
+                [options]="robotManagerType"
+                [(ngModel)]="selectedRoboManagerType"
+                name="selectedRoboManagerType"
+                optionLabel="name"
+                placeholder="Select"
+                required
+              ></p-dropdown>
+              <div *ngIf="generalForm.submitted && !selectedRoboManagerType && generalForm.touched">
+                <small class="text-danger">Robot Manager Type is required.</small>
+              </div>
             </div>
           </div>
+
+          <!-- Submit Button -->
           <div class="field mt-1">
             <p-button
               label="Submit"
@@ -98,11 +145,12 @@
               class="block mt-1 pt-2"
               icon="pi pi-check-circle"
               styleClass="p-button-danger p-button1"
+              [disabled]="generalForm.invalid"
               (onClick)="saveParams()"
             ></p-button>
           </div>
         </div>
-      <!-- </form> -->
+      </form>
     </div>
   </div>
 </div>

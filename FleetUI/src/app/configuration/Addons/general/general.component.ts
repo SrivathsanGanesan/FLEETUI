@@ -57,7 +57,7 @@ export class GeneralComponent {
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
   ) {
-    this.formData = this.fb.group({
+    this.formData = {
       selectedDb: '',
       selectedIp: '',
       selectedRoboManagerType: '',
@@ -67,7 +67,21 @@ export class GeneralComponent {
       serverPort: '',
       databaseIp: '',
       databaseName: '',
-    })
+    }
+  }
+
+  reset(){
+    this.formData = {
+      selectedDb: '',
+      selectedIp: '',
+      selectedRoboManagerType: '',
+      selectedTaskManagerType: '',
+      fleetServerMode: '',
+      serverIP: '',
+      serverPort: '',
+      databaseIp: '',
+      databaseName: '',
+    }
   }
 
   async ngOnInit() {
@@ -116,11 +130,14 @@ export class GeneralComponent {
       console.log('no map selected');
       return;
     }
-    this.formData.selectedDb = this.selectedDb.name;
-    this.formData.selectedIp = this.selectedIp.name;
-    this.formData.selectedRoboManagerType = this.selectedRoboManagerType.name;
-    this.formData.selectedTaskManagerType = this.selectedTaskManagerType.name;
-    console.log(this.formData); // handle the form here..
+
+    // Ensure only the relevant values are passed to formData
+    this.formData.selectedDb = this.selectedDb?.name || '';
+    this.formData.selectedIp = this.selectedIp?.name || '';
+    this.formData.selectedRoboManagerType = this.selectedRoboManagerType?.name || '';
+    this.formData.selectedTaskManagerType = this.selectedTaskManagerType?.name || '';
+
+    console.log(this.formData); // Now formData should be safe for handling
 
     try {
       let response = await fetch(
@@ -131,22 +148,27 @@ export class GeneralComponent {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             projectId: this.selectedProject._id,
-            generalParams: this.formData,
+            generalParams: this.formData,  // Send the plain object without circular references
           }),
         }
       );
+
       if (!response.ok)
-        throw new Error(`err while saving db, ${response.status}`);
+        throw new Error(`Error while saving db, status: ${response.status}`);
 
       let data = await response.json();
-      // console.log(data);
+
       if (data.isSet) {
         alert('Fleet configured!');
+        // Manually reset the formData object
+        this.reset();
         return;
       }
       alert('Fleet not configured!');
     } catch (error) {
-      console.log('Err occured :', error);
+      console.log('Error occurred:', error);
     }
   }
+
+
 }
