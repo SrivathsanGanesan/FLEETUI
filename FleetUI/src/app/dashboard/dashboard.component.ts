@@ -100,6 +100,8 @@ export class DashboardComponent implements AfterViewInit {
   mapImageX: number = 0; // To store the X position of the map image
   mapImageY: number = 0; // To store the Y position of the map image
   draggingRobo: any = null; // Holds the robot being dragged
+  isMoveModeActive: boolean = false; // Track if move mode is enabled
+  moveEnabled: boolean = false;
 
   constructor(
     private projectService: ProjectService,
@@ -180,15 +182,60 @@ export class DashboardComponent implements AfterViewInit {
   }
   
   initializeRobo() {
+    this.moveEnabled = false;
     console.log('Initializing Robo...');
     this.hidePopup();
   }
   
+// Method to initialize the selected robot and log its details
+// async initializeRobot(): Promise<void> {
+//   let ratio = this.ratio ? this.ratio : 1;
+//   let quaternion = { x:0, y:0, z:0, w:1 };
+//   const transformedY = this.overlayCanvas.nativeElement.height - this.robotToDelete.pos.y;
+//   this.robotToDelete.pos.x = this.robotToDelete.pos.x * ratio;
+//   this.robotToDelete.pos.y = transformedY * ratio;
+  
+//   // quaternion = this.positionToQuaternion(this.robotToDelete.pos);
+//   let initializeRobo = {
+//     id : this.robotToDelete.roboDet.id,
+//     pose:{
+//       position: {
+//         x: this.robotToDelete.pos.x,
+//         y: this.robotToDelete.pos.y,
+//         z: this.robotToDelete.pos.orientation
+//         },
+//       orientation: quaternion
+//     }
+//   }
+
+//   let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/initialize-robot`,{
+//     method: 'POST',
+//     credentials: 'include',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({
+//       mapId : this.selectedMap.id,
+//       initializeRobo : initializeRobo
+//     }),
+//   })
+//   let data = await response.json();
+//   console.log(data);
+//   // this.cancelDelete();
+//   if(data.isInitialized){ 
+//     alert('robo Initialized!');
+//     return;
+//   }
+//   if(data.msg) alert(data.msg)
+// }
   cancelAction() {
     this.hidePopup();
   }
+  enableMove() {
+    this.moveEnabled = true; // Enable move mode
+    this.hidePopup(); // Hide the popup after enabling move mode
+  }
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
+      if (!this.moveEnabled) return; // Only allow dragging if move mode is active
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -287,9 +334,15 @@ export class DashboardComponent implements AfterViewInit {
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
       if (this.draggingRobo) {
+        let newX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
+        let newY = (mouseY - this.mapImageY - this.offsetY) / this.zoomLevel;
         // Update the position of the robot being dragged
-        this.draggingRobo.pos.x = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
-        this.draggingRobo.pos.y = (mouseY - this.mapImageY - this.offsetY) / this.zoomLevel;
+        newX = Math.max(0, Math.min(newX, this.mapImageWidth / this.zoomLevel));
+        newY = Math.max(0, Math.min(newY, this.mapImageHeight / this.zoomLevel));
+  
+        // Update the robot's position
+        this.draggingRobo.pos.x = newX;
+        this.draggingRobo.pos.y = newY;
   
         // Redraw the canvas with the updated robot position
         this.redrawCanvas();
