@@ -124,7 +124,7 @@
   padding: 20px;
   max-width: 90%;
   max-height: 90%;
-  
+
 }
 
 .popup-content.fixed-size {
@@ -313,7 +313,7 @@ canvas {
   border: 1px solid #ccc;
   max-height: 75vh; /* Ensure content doesn't exceed viewport height */
   max-width: 1420px;
-  
+
   /* width: 1400px;
   height: 580px; */
 }
@@ -730,10 +730,10 @@ button {
 .save-btn {
   right: 10px; /* Position it to the right */
 }
-
+/* 
 .clear-btn {
-  right: 80px; /* Position it to the left of the Save button */
-}
+  right: 80px; Position it to the left of the Save button
+} */
 .OpenandLocate{
   padding: 10px;
   background-color: #ff3333;

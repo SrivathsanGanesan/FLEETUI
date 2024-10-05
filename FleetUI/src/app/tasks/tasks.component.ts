@@ -101,7 +101,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     this.filteredTaskData = this.tasks;
     console.log(this.tasks);
     this.setPaginatedData();
-    
+
 
     // Simulate some delay, such as an API call
   }
@@ -135,7 +135,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
   }
 
   shouldShowPaginator(): boolean {
-    return this.filteredTaskData.length > 5;
+    return this.filteredTaskData.length > 0;
   }
 
   updateData() {
