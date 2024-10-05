@@ -48,7 +48,6 @@
               type="number"
               id="resolution"
               #resolutionInput
-              min="0"
               placeholder="Resolution"
               (keyup.enter)="open()"
               (input)="onInputResolution($event)"
@@ -65,7 +64,7 @@
           style="display: flex; align-items: center; gap: 10px"
         >
         <input pInputText type="number" id="X" placeholder="X" min="0" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
-        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.y" (keyup.enter)="open()" />
+        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.x" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
