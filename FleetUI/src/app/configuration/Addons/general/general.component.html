@@ -20,7 +20,7 @@
                   required
                 />
               </div>
-              <div *ngIf="generalForm.submitted && generalForm.controls['fleetServerMode'].invalid && generalForm.controls['fleetServerMode'].touched">
+              <div *ngIf=" generalForm.controls['fleetServerMode'].invalid && generalForm.controls['fleetServerMode'].touched">
                 <small class="text-danger"> *Fleet Server Mode is required</small>
               </div>
             </div>

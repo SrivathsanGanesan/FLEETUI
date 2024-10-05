@@ -28,7 +28,9 @@ export class CommunicationComponent {
     selectedCategory: '',
   };
 
-  constructor(private projectService: ProjectService) {}
+  constructor(private projectService: ProjectService ) {
+
+  }
 
   async ngOnInit() {
     this.selectedProj = this.projectService.getSelectedProject();
