@@ -11021,6 +11021,7 @@
 </div>
 
 <div id="robo-popup" style="position: absolute; display: none;  padding: 10px;">
+  <button *ngIf="!moveEnabled" (click)="enableMove()">Move</button>
   <button (click)="initializeRobo()">Initialize Robo</button><br>
   <button (click)="cancelAction()">Cancel</button>
 </div>
