@@ -41,6 +41,9 @@
             </button>
           </div>
         </div>
+        <div class="simulation-container" *ngIf="currentTable === 'robot'">
+          <button class="simulation-button" (click)="startSimulation()">Simulation</button>
+        </div>
 
         <!-- Date Filter and Date Inputs -->
         <div class="date-filters" *ngIf="currentTable === 'Environment'">
@@ -67,7 +70,9 @@
                 style="height: 35px; width: 150px"
               />
           </div>
+          
         </div>
+
       </div>
 
       <!-- Buttons -->
@@ -301,9 +306,7 @@
               </button>
               <div *ngIf="isScanning" class="loading-spinner"></div>
 
-              <div class="simulation-container">
-                <button class="simulation-button" (click)="startSimulation()">Simulation</button>
-              </div>
+
 
             </div>
 
