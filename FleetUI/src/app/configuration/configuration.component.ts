@@ -295,9 +295,13 @@ export class ConfigurationComponent implements AfterViewInit {
 
   // Simulation
   async startSimulation() {
+    if (!this.selectedMap) return;
     try {
-      if (!this.selectedMap) return;
       this.selectedRobots = this.paginatedData1.filter((item) => item.isSim);
+      if (!this.selectedRobots.length) {
+        alert('no robos to sim');
+        return;
+      }
 
       // customize your filter here..
       let simRobots = this.selectedRobots.map((robo) => {
