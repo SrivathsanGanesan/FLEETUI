@@ -905,7 +905,7 @@ startSimulation() {
     this.messageService.add({
       severity: 'error',
       summary: 'Info',
-      detail: 'Sacnning Stopped',
+      detail: 'Scanning Stopped',
     });
     return;
   }

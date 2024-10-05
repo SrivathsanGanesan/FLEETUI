@@ -29,7 +29,7 @@ export class ChartComponent {
   @Input() ONBtn!: boolean;
 
   selectedProj :any | null = null;
-  activeRobots: number = 1;
+  activeRobots: number = 2;
   totalRobots: number = 0;
 
   constructor(private projectService: ProjectService,private cdRef:ChangeDetectorRef) {
