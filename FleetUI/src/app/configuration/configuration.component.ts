@@ -297,7 +297,10 @@ export class ConfigurationComponent implements AfterViewInit {
   async startSimulation() {
     if (!this.selectedMap) return;
     try {
-      this.selectedRobots = this.paginatedData1.filter((item) => item.isSim);
+      this.selectedRobots = this.paginatedData1.filter(
+        (item) => item.isSimMode
+      );
+
       if (!this.selectedRobots.length) {
         alert('no robos to sim');
         return;
@@ -353,7 +356,8 @@ export class ConfigurationComponent implements AfterViewInit {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          isSim: isSim, // here it is..
+          roboName: null,
+          isSimMode: isSim, // here it is..
         }),
       }
     );
