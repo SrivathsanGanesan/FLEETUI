@@ -102,7 +102,7 @@ export class DashboardComponent implements AfterViewInit {
   mapImageY: number = 0; // To store the Y position of the map image
   draggingRobo: any = null; // Holds the robot being dragged
   isMoveModeActive: boolean = false; // Track if move mode is enabled
-  moveEnabled: boolean = false;
+  moveEnabled: boolean = true;
 
   constructor(
     private projectService: ProjectService,
@@ -183,7 +183,7 @@ export class DashboardComponent implements AfterViewInit {
   }
   
   initializeRobo() {
-    this.moveEnabled = false;
+    this.moveEnabled = !this.moveEnabled;
     console.log('Initializing Robo...');
     this.hidePopup();
   }
@@ -236,7 +236,7 @@ export class DashboardComponent implements AfterViewInit {
   }
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
-      if (!this.moveEnabled) return; // Only allow dragging if move mode is active
+      if (!this.moveEnabled || !this.showModelCanvas) return; // Only allow dragging if move mode is active
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -269,13 +269,16 @@ export class DashboardComponent implements AfterViewInit {
   
   addMouseUpListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mouseup', () => {
+      if (!this.showModelCanvas) return;
       if (this.draggingRobo) {
         this.draggingRobo = null; // Reset dragging state
+        this.redrawCanvas();
       }
     });
   }
   addMouseClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('click', (event) => {
+      if (!this.showModelCanvas) return;
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -383,21 +386,7 @@ export class DashboardComponent implements AfterViewInit {
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
-  redrawCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-  
-    if (ctx) {
-      // Load the background image
-      const img = new Image();
-      img.src = `http://${this.projectService.getMapData().imgUrl}`;
-  
-      img.onload = () => {
-        // Clear and redraw the canvas with the background image and elements
-        this.draw(ctx, img);
-      };
-    }
-  }
+
   async enable_robot(robot: any) {
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/enable-robot`,
@@ -495,6 +484,21 @@ export class DashboardComponent implements AfterViewInit {
     // this.fetchRoboPos();
     
   }
+  redrawCanvas() {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+  
+    if (ctx) {
+      // Load the background image
+      const img = new Image();
+      img.src = `http://${this.projectService.getMapData().imgUrl}`;
+  
+      img.onload = () => {
+        // Draw the image and other elements
+        this.draw(ctx, img);      
+      };
+    }
+  }
   loadCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -505,6 +509,7 @@ export class DashboardComponent implements AfterViewInit {
       img.src = `http://${imgName.imgUrl}`;
 
       img.onload = () => {
+        // this.mapImage = img;
         // Set canvas dimensions based on its container
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
         canvas.height =
@@ -527,10 +532,10 @@ export class DashboardComponent implements AfterViewInit {
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Calculate the position to center the image
     const imgWidth = img.width * this.zoomLevel;
+    // Calculate the position to center the image
     const imgHeight = img.height * this.zoomLevel;
-
+    
     const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
     const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
     // Apply transformation for panning and zooming
@@ -551,7 +556,7 @@ export class DashboardComponent implements AfterViewInit {
       const transformedY = img.height - node.nodePosition.y;
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
-
+    
     // Draw edges between nodes
     this.edges.forEach((edge) => {
       const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
@@ -587,17 +592,17 @@ export class DashboardComponent implements AfterViewInit {
       this.drawLayer(ctx);
       this.plottedPoints = [];
     });
-
+    
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
-    );
-
+  );
+    
     // yet to uncomment
-
+    
     
     ctx.restore(); // Reset transformation after drawing
   }
-
+  
   async fetchRoboPos(x: number, y: number, yaw: number) {
     // console.log(amrPos);
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
