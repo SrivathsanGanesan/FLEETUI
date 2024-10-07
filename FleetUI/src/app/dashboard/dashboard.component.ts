@@ -60,6 +60,7 @@ export class DashboardComponent implements AfterViewInit {
   edges: any[] = [];
   zones: any[] = [];
   assets: any[] = [];
+  simMode: any[]=[];
   robos: any[] = [];
   ratio: number = 1;
   plottedPoints: { id: number; x: number; y: number }[] = [];
@@ -101,6 +102,7 @@ export class DashboardComponent implements AfterViewInit {
   mapImageX: number = 0; // To store the X position of the map image
   mapImageY: number = 0; // To store the Y position of the map image
   draggingRobo: any = null; // Holds the robot being dragged
+  selectedRobo: any = null;
   isMoveModeActive: boolean = false; // Track if move mode is enabled
   moveEnabled: boolean = true;
 
@@ -188,45 +190,6 @@ export class DashboardComponent implements AfterViewInit {
     this.hidePopup();
   }
   
-// Method to initialize the selected robot and log its details
-// async initializeRobot(): Promise<void> {
-//   let ratio = this.ratio ? this.ratio : 1;
-//   let quaternion = { x:0, y:0, z:0, w:1 };
-//   const transformedY = this.overlayCanvas.nativeElement.height - this.robotToDelete.pos.y;
-//   this.robotToDelete.pos.x = this.robotToDelete.pos.x * ratio;
-//   this.robotToDelete.pos.y = transformedY * ratio;
-  
-//   // quaternion = this.positionToQuaternion(this.robotToDelete.pos);
-//   let initializeRobo = {
-//     id : this.robotToDelete.roboDet.id,
-//     pose:{
-//       position: {
-//         x: this.robotToDelete.pos.x,
-//         y: this.robotToDelete.pos.y,
-//         z: this.robotToDelete.pos.orientation
-//         },
-//       orientation: quaternion
-//     }
-//   }
-
-//   let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/initialize-robot`,{
-//     method: 'POST',
-//     credentials: 'include',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({
-//       mapId : this.selectedMap.id,
-//       initializeRobo : initializeRobo
-//     }),
-//   })
-//   let data = await response.json();
-//   console.log(data);
-//   // this.cancelDelete();
-//   if(data.isInitialized){ 
-//     alert('robo Initialized!');
-//     return;
-//   }
-//   if(data.msg) alert(data.msg)
-// }
   cancelAction() {
     this.hidePopup();
   }
@@ -311,10 +274,10 @@ export class DashboardComponent implements AfterViewInit {
         const imageSize = 25; // Adjust this to the size of the robot image
   
         if (          
-          imgX >= roboX - imageSize  &&
+          imgX >= roboX - imageSize &&
           imgX <= roboX + imageSize &&
-          imgY >= roboY - imageSize  &&
-          imgY <= roboY + imageSize 
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
         ) {
           console.log(`Robot clicked: ${robo.roboDet.id}`);
           break;
@@ -329,6 +292,7 @@ export class DashboardComponent implements AfterViewInit {
   
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     const tooltip = document.getElementById('Pos_tooltip')!;
+    
     canvas.addEventListener('mousemove', (event) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
@@ -337,6 +301,7 @@ export class DashboardComponent implements AfterViewInit {
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
+      
       if (this.draggingRobo) {
         let newX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
         let newY = (mouseY - this.mapImageY - this.offsetY) / this.zoomLevel;
@@ -423,6 +388,7 @@ export class DashboardComponent implements AfterViewInit {
     let data = await response.json();
     if (!data.map) return;
     mapData = data.map;
+    this.simMode = mapData.simMode;
     this.ratio = data.map.mpp;
 
     this.nodes = mapData.nodes.map((node: any) => {
@@ -546,10 +512,8 @@ export class DashboardComponent implements AfterViewInit {
     // Draw the image
     ctx.drawImage(img, 0, 0);
     // yet to uncomment
-    this.robos.forEach((robo) =>      
-      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
-    );
-    
+
+
     if (!this.showModelCanvas) return;
     // Draw nodes on the image
     this.nodes.forEach((node) => {
@@ -595,14 +559,16 @@ export class DashboardComponent implements AfterViewInit {
     
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
-  );
-    
+    );
     // yet to uncomment
+    this.robos.forEach((robo) =>      
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
+    );
     
     
     ctx.restore(); // Reset transformation after drawing
   }
-  
+  drawElements(ctx: CanvasRenderingContext2D) {}
   async fetchRoboPos(x: number, y: number, yaw: number) {
     // console.log(amrPos);
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
