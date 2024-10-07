@@ -47,6 +47,7 @@
             <input pInputText
               type="number"
               id="resolution"
+              min="0"
               #resolutionInput
               placeholder="Resolution"
               (keyup.enter)="open()"
@@ -471,6 +472,7 @@
 
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
+    
     <h2>Edge Details</h2>
     <div class="flex-items">
       <div class="first">
