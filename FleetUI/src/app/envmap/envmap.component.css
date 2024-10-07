@@ -733,7 +733,7 @@ button {
 }
 
 .clear-btn {
-  right: 80px; /* Position it to the left of the Save button */
+  right: 100px; /* Position it to the left of the Save button */
 }
 .OpenandLocate{
   padding: 10px;
