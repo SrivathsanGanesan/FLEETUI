@@ -245,10 +245,157 @@ export class DashboardComponent implements AfterViewInit {
     this.moveEnabled = true; // Enable move mode
     this.hidePopup(); // Hide the popup after enabling move mode
   }
+  
+  async ngOnInit() {
+    this.selectedMap = this.projectService.getMapData();
+    if (!this.projectService.getMapData()) {
+      await this.onInitMapImg();
+      return;
+    }
+    this.getMapDetails();
+    this.loadCanvas();
+
+    this.toggleModelCanvas();
+    // await this.fetchRoboPos();
+  }
+  async toggleModelCanvas() {
+    // this.fetchRoboPos ();
+    this.showModelCanvas = !this.showModelCanvas;
+    if (!this.showModelCanvas) {
+      this.nodes = [];
+    } else {
+      await this.getMapDetails();
+      // await this.fetchRoboPos(); // Call fetchRoboPos when showing model canvas
+    }
+    this.loadCanvas(); // Redraw the canvas based on the updated state
+    // this.fetchRoboPos();
+  }
+  redrawCanvas() {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+      // Load the background image
+      const img = new Image();
+      img.src = `http://${this.projectService.getMapData().imgUrl}`;
+
+      img.onload = () => {
+        // Draw the image and other elements
+        this.draw(ctx, img);
+      };
+    }
+  }
+  loadCanvas() {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+      const img = new Image();
+      let imgName = this.projectService.getMapData();
+      img.src = `http://${imgName.imgUrl}`;
+
+      img.onload = () => {
+        // this.mapImage = img;
+        // Set canvas dimensions based on its container
+        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+        canvas.height =
+          canvas.parentElement?.clientHeight || window.innerHeight;
+
+        // Calculate the scaled image dimensions
+        this.mapImageWidth = img.width * this.zoomLevel;
+        this.mapImageHeight = img.height * this.zoomLevel;
+
+        // Center the image on the canvas
+        this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
+        this.mapImageY =
+          (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+
+        // Draw the image and other elements
+        this.draw(ctx, img);
+      };
+    }
+  }
+
+  draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const imgWidth = img.width * this.zoomLevel;
+    // Calculate the position to center the image
+    const imgHeight = img.height * this.zoomLevel;
+
+    const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+    const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
+    // Apply transformation for panning and zooming
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.scale(this.zoomLevel, this.zoomLevel);
+
+    // Draw the image
+    ctx.drawImage(img, 0, 0);
+    // yet to uncomment
+    this.robos.forEach(
+      (robo) =>
+        this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
+    );
+    if (!this.showModelCanvas) return;
+    // Draw nodes on the image
+    this.nodes.forEach((node) => {
+      const transformedY = img.height - node.nodePosition.y;
+      this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+    });
+
+    // Draw edges between nodes
+    this.edges.forEach((edge) => {
+      const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
+      const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
+      if (startNode && endNode) {
+        const startPos = {
+          x: startNode.nodePosition.x,
+          y: startNode.nodePosition.y,
+        };
+        const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+        const transformedStartY = img.height - startPos.y;
+        const transformedEndY = img.height - endPos.y;
+        this.drawEdge(
+          ctx,
+          { x: startPos.x, y: transformedStartY },
+          { x: endPos.x, y: transformedEndY },
+          edge.direction,
+          edge.startNodeId,
+          edge.endNodeId
+        );
+      }
+    });
+
+    this.zones.forEach((zone) => {
+      // Re-plot the points of the zone
+      // zone.pos.forEach((point, index) => {
+      //   // Plot the first point in violet and others in red
+      //   const isFirstPoint = index === 0;
+      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
+      // });
+      this.plottedPoints = zone.pos;
+      this.zoneType = zone.type;
+      this.drawLayer(ctx);
+      this.plottedPoints = [];
+    });
+
+    this.assets.forEach((asset) =>
+      this.plotAsset(ctx, asset.x, asset.y, asset.type)
+    );
+    // yet to uncomment
+    this.robos.forEach(
+      (robo) =>
+        this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
+    );
+
+    ctx.restore(); // Reset transformation after drawing
+  }
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
+      if (!this.showModelCanvas) return;
       if (event.button) return;
-      // if (!this.moveEnabled) return; // Only allow dragging if move mode is active
+      
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -483,148 +630,6 @@ export class DashboardComponent implements AfterViewInit {
 
       return robo;
     });
-  }
-  async ngOnInit() {
-    this.selectedMap = this.projectService.getMapData();
-    if (!this.projectService.getMapData()) {
-      await this.onInitMapImg();
-      return;
-    }
-    this.getMapDetails();
-    this.loadCanvas();
-
-    this.toggleModelCanvas();
-    // await this.fetchRoboPos();
-  }
-  async toggleModelCanvas() {
-    // this.fetchRoboPos ();
-    this.showModelCanvas = !this.showModelCanvas;
-    if (!this.showModelCanvas) {
-      this.nodes = [];
-    } else {
-      await this.getMapDetails();
-      // await this.fetchRoboPos(); // Call fetchRoboPos when showing model canvas
-    }
-    this.loadCanvas(); // Redraw the canvas based on the updated state
-    // this.fetchRoboPos();
-  }
-  redrawCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx) {
-      // Load the background image
-      const img = new Image();
-      img.src = `http://${this.projectService.getMapData().imgUrl}`;
-
-      img.onload = () => {
-        // Draw the image and other elements
-        this.draw(ctx, img);
-      };
-    }
-  }
-  loadCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx) {
-      const img = new Image();
-      let imgName = this.projectService.getMapData();
-      img.src = `http://${imgName.imgUrl}`;
-
-      img.onload = () => {
-        // this.mapImage = img;
-        // Set canvas dimensions based on its container
-        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height =
-          canvas.parentElement?.clientHeight || window.innerHeight;
-
-        // Calculate the scaled image dimensions
-        this.mapImageWidth = img.width * this.zoomLevel;
-        this.mapImageHeight = img.height * this.zoomLevel;
-
-        // Center the image on the canvas
-        this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-        this.mapImageY =
-          (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
-
-        // Draw the image and other elements
-        this.draw(ctx, img);
-      };
-    }
-  }
-
-  draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const imgWidth = img.width * this.zoomLevel;
-    // Calculate the position to center the image
-    const imgHeight = img.height * this.zoomLevel;
-
-    const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
-    const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
-    // Apply transformation for panning and zooming
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.scale(this.zoomLevel, this.zoomLevel);
-
-    // Draw the image
-    ctx.drawImage(img, 0, 0);
-    // yet to uncomment
-
-    if (!this.showModelCanvas) return;
-    // Draw nodes on the image
-    this.nodes.forEach((node) => {
-      const transformedY = img.height - node.nodePosition.y;
-      this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
-    });
-
-    // Draw edges between nodes
-    this.edges.forEach((edge) => {
-      const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
-      const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
-      if (startNode && endNode) {
-        const startPos = {
-          x: startNode.nodePosition.x,
-          y: startNode.nodePosition.y,
-        };
-        const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
-        const transformedStartY = img.height - startPos.y;
-        const transformedEndY = img.height - endPos.y;
-        this.drawEdge(
-          ctx,
-          { x: startPos.x, y: transformedStartY },
-          { x: endPos.x, y: transformedEndY },
-          edge.direction,
-          edge.startNodeId,
-          edge.endNodeId
-        );
-      }
-    });
-
-    this.zones.forEach((zone) => {
-      // Re-plot the points of the zone
-      // zone.pos.forEach((point, index) => {
-      //   // Plot the first point in violet and others in red
-      //   const isFirstPoint = index === 0;
-      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
-      // });
-      this.plottedPoints = zone.pos;
-      this.zoneType = zone.type;
-      this.drawLayer(ctx);
-      this.plottedPoints = [];
-    });
-
-    this.assets.forEach((asset) =>
-      this.plotAsset(ctx, asset.x, asset.y, asset.type)
-    );
-    // yet to uncomment
-    this.robos.forEach(
-      (robo) =>
-        this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
-    );
-
-    ctx.restore(); // Reset transformation after drawing
   }
   drawElements(ctx: CanvasRenderingContext2D) {}
   async fetchRoboPos(x: number, y: number, yaw: number) {
