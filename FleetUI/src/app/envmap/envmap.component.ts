@@ -2529,29 +2529,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     ctx.fill();
   }
   showEdgeError = false;
-  updateEdge() {
-    if (!this.currentEdge.edgeId || !this.currentEdge.sequenceId || !this.currentEdge.minHeight || !this.currentEdge.orientation || !this.currentEdge.orientationType || !this.currentEdge.maxRotationSpeed) {
-      this.showEdgeError = true; // Show error message
-      return; // Stop saving if validation fails
-    }
 
-    // If validation passes, hide the error message
-    this.showEdgeError = false;
-
-    if (this.currentEdge) {
-      this.edges = this.edges.map((edge) => {
-        if (this.currentEdge.edgeId === edge.edgeId) {
-          // Preserve color and direction
-          edge = this.currentEdge;
-          // return { ...edge, ...this.currentEdge };
-        }
-        return edge;
-      });
-      this.redrawCanvas();
-    }
-    console.log(this.edges);
-    this.showPopup = false;
-  }
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
@@ -3552,6 +3530,29 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   hidePopup(): void {
     this.showPopup = false;
     this.showEdgeError = false;
+  }
+  updateEdge() {
+    if (!this.currentEdge.edgeId || !this.currentEdge.sequenceId || !this.currentEdge.minHeight || !this.currentEdge.orientation || !this.currentEdge.orientationType || !this.currentEdge.maxRotationSpeed) {
+      this.showEdgeError = true; // Show error message
+      return; // Stop saving if validation fails
+    }
+
+    // If validation passes, hide the error message
+    this.showEdgeError = false;
+
+    if (this.currentEdge) {
+      this.edges = this.edges.map((edge) => {
+        if (this.currentEdge.edgeId === edge.edgeId) {
+          // Preserve color and direction
+          edge = this.currentEdge;
+          // return { ...edge, ...this.currentEdge };
+        }
+        return edge;
+      });
+      this.redrawCanvas();
+    }
+    console.log(this.edges);
+    this.showPopup = false;
   }
   // Method to delete the edge
   deleteEdge(): void {
