@@ -41,6 +41,9 @@
             </button>
           </div>
         </div>
+        <div class="simulation-container" *ngIf="currentTable === 'robot'">
+          <button class="simulation-button" (click)="startSimulation()">Simulation</button>
+        </div>
 
         <!-- Date Filter and Date Inputs -->
         <div class="date-filters" *ngIf="currentTable === 'Environment'">
@@ -67,7 +70,9 @@
                 style="height: 35px; width: 150px"
               />
           </div>
+          
         </div>
+
       </div>
 
       <!-- Buttons -->
@@ -192,7 +197,7 @@
             <div *ngIf="currentTable === 'Environment' && filteredEnvData.length == EnvData.length"  >
             <div
               class="paginator-container"
-              *ngIf="filteredEnvData.length > 5 "
+              *ngIf="filteredEnvData.length > 0 "
             >
               <mat-paginator
                 [length]="filteredEnvData.length"
@@ -208,6 +213,7 @@
             <table *ngIf="currentTable === 'robot' && !imageUploaded">
               <thead>
                 <tr>
+                  <th><input type="checkbox" (change)="toggleSelectAll($event)" /></th>
                   <th>S.no</th>
                   <th>IP Address</th>
                   <th>AMR ID</th>
@@ -233,10 +239,11 @@
                   <td colspan="4" class="iconTable">No data found</td>
                 </tr> -->
                 <tr *ngFor="let item of paginatedData1; index as i;">
+                  <td><input type="checkbox" [(ngModel)]="item.isSimMode" /></td>
                   <td>{{ (paginator ? paginator.pageIndex * paginator.pageSize : 0) + i + 1 }}</td>
                   <td>{{ item.ipAdd }}</td>
-                  <td>{{ item.ipAdd }}</td>
-                  <td>{{ item.ipAdd }}</td>
+                  <td>{{ item.amrId }}</td>
+                  <td>{{ item.uuid.slice(0, 8)+'...' }}</td>
                   <td>{{ item.roboName }}</td>
                   <td class="iconTable">
                     <div class="edit">
@@ -262,7 +269,7 @@
             <div *ngIf="currentTable === 'robot' && filteredRobotData.length == robotData.length">
                 <div
                   class="paginator-container"
-                  *ngIf="filteredRobotData.length > 5"
+                  *ngIf="filteredRobotData.length > 0"
                 >
                     <mat-paginator
                     [length]="filteredRobotData.length"
@@ -322,9 +329,7 @@
               </button>
               <div *ngIf="isScanning" class="loading-spinner"></div>
 
-              <div class="simulation-container">
-                <button class="simulation-button" (click)="startSimulation()">Simulation</button>
-              </div>
+
 
             </div>
 
@@ -411,10 +416,10 @@
                   General
                 </li>
                 <li
-                  [class.active]="fleetTab === 'plannar'"
-                  (click)="setFleetTab('plannar')"
+                  [class.active]="fleetTab === 'planner'"
+                  (click)="setFleetTab('planner')"
                 >
-                  Plannar
+                  Planner
                 </li>
                 <li
                   [class.active]="fleetTab === 'task'"
@@ -441,9 +446,9 @@
                 <!-- Add content for the General tab -->
                 <app-general></app-general>
               </div>
-              <div *ngIf="fleetTab === 'plannar'">
-                <!-- <h2>Plannar Settings</h2> -->
-                <!-- Add content for the Plannar tab -->
+              <div *ngIf="fleetTab === 'planner'">
+                <!-- <h2>Planner Settings</h2> -->
+                <!-- Add content for the Planner tab -->
                 <app-planner></app-planner>
               </div>
               <div *ngIf="fleetTab === 'task'">

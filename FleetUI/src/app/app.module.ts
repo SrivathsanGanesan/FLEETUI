@@ -56,6 +56,7 @@ import { ContactusComponent } from './support/Addons/contactus/contactus.compone
 import { DialogModule } from 'primeng/dialog';
 import { LoaderComponent } from './loader/loader.component';
 import { TimerComponent } from './timer/timer.component';
+// import { ReactiveFormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 
 

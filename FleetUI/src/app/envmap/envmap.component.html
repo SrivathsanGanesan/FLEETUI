@@ -47,6 +47,7 @@
             <input pInputText
               type="number"
               id="resolution"
+              min="0"
               #resolutionInput
               placeholder="Resolution"
               (keyup.enter)="open()"
@@ -471,6 +472,7 @@
 
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
+    
     <h2>Edge Details</h2>
     <div class="flex-items">
       <div class="first">
@@ -746,7 +748,7 @@
 <div *ngIf="isRoboConfirmationVisible" class="popup-overlay1">
   <div class="popup-content1">
     <!-- Show these buttons initially -->
-    <div *ngIf="!isConfirmingDelete">
+    <!-- <div *ngIf="!isConfirmingDelete"> -->
       <!-- <div>
         <h5>Set Robot Position at Node</h5>
         <div>
@@ -765,15 +767,15 @@
 
     </div></div> -->
       <!-- <button type="button" >Set Orientation</button> -->
-      <button type="button" (click)="initializeRobot()">Initialize Robot</button>
+      <!-- <button type="button" (click)="initializeRobot()">Initialize Robot</button>
 
       <button type="button" (click)="showDeleteConfirmation()">Remove Robot</button>
 
       <button type="button" (click)="cancelDelete()">Cancel</button>
-    </div>
+    </div> -->
 
     <!-- Show confirmation message and buttons when 'Remove Robot' is clicked -->
-    <div *ngIf="isConfirmingDelete">
+    <div *ngIf="!isConfirmingDelete">
       <p>Are you sure you want to Remove?</p>
       <div>
         <button type="button" (click)="confirmRoboDelete()">Confirm</button>

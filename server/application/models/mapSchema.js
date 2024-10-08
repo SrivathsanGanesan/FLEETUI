@@ -123,6 +123,7 @@ const mapSchema = new Schema(
     zones: { type: Schema.Types.Mixed, default: [] }, // type: [zoneSchema]
     roboPos: { type: Schema.Types.Mixed, default: [] },
     robots: { type: [roboProjSchema], default: [] },
+    simMode: { type: Schema.Types.Mixed, default: [] }, // yet to look..
     logTime: { type: [logTimeSchema], default: [] },
     throughPut: {
       type: throughPutSchema,

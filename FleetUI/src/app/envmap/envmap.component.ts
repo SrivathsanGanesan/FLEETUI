@@ -313,54 +313,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isFullScreen = false; // Reset fullscreen when closing
   }
 
-  setRobotAtNode(): void {
-    const canvas = this.overlayCanvas.nativeElement;
 
-    if (!this.selectedNodeId) {
-      this.messageService.add({ severity: 'warn', summary: 'No Node Selected', detail: 'Please select a node to set the robot position.' });
-      return;
-    }
-
-    // Find the selected node based on the selectedNodeId
-    const selectedNode = this.nodes.find(node => node.nodeId === this.selectedNodeId);
-
-    if (!selectedNode) {
-      this.messageService.add({ severity: 'error', summary: 'Invalid Node', detail: 'Selected node not found.' });
-      return;
-    }
-
-    // Now, plot the robot at the selected node's position
-    const robot = {
-      roboDet: {
-        id: this.generateRobotId(), // Method to generate robot IDs
-      },
-      pos: {
-        x: selectedNode.nodePosition.x,
-        y: canvas.height - selectedNode.nodePosition.y, // Transform Y coordinate
-        orientation: 0 // Set the orientation value if needed
-      }
-    };
-
-    // Add the robot to the robos array
-    this.robos.push(robot);
-
-    // this.robos = this.robos.map(robo => {
-    //   robo.id === robo.id
-    //     robo.pos = {
-    //       x, y,orientation
-    //     }
-    //     return robo
-    // })
-    // Redraw the canvas to reflect the new robot
-    this.redrawCanvas();
-
-    this.isRoboConfirmationVisible = false; // Optionally, hide the popup
-  }
-
-
-  generateRobotId(): string {
-    return 'robot_' + (this.robos.length + 1);
-  }
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
     this.deselectNode();
@@ -1149,6 +1102,15 @@ export class EnvmapComponent implements AfterViewInit {
     return q;
   };
   saveOpt() {
+    if (!this.nodes || this.nodes.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No Nodes are plotted',
+        life: 4000,
+      });
+      return;
+    }
     if (this.currEditMap) {
       this.updateEditedMap();
       return;
@@ -1801,7 +1763,9 @@ export class EnvmapComponent implements AfterViewInit {
 
     return quaternion;
 }
-
+generateRobotId(): string {
+  return 'robot_' + (this.robos.length + 1);
+}
 // Method to initialize the selected robot and log its details
 async initializeRobot(): Promise<void> {
   let ratio = this.ratio ? this.ratio : 1;
@@ -1882,9 +1846,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
   if (image && ctx) {
     const imageSize = 20;
-
     ctx.save(); // Save the current state of the canvas before applying transformations
-
     // Translate to the robot's position and rotate by the orientation
     ctx.translate(x, y);
     ctx.rotate(orientation); // Rotate by the specified orientation (90 degrees)
@@ -1896,7 +1858,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       ctx.fill();
       ctx.closePath();
     }
-
     // Draw the robot image, which is now rotated
     ctx.drawImage(
       image,
@@ -1905,7 +1866,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       imageSize * 1.3,
       imageSize
     );
-
     ctx.restore(); // Restore the original canvas state
   }
 }
@@ -2569,29 +2529,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     ctx.fill();
   }
   showEdgeError = false;
-  updateEdge() {
-    if (!this.currentEdge.edgeId || !this.currentEdge.sequenceId || !this.currentEdge.minHeight || !this.currentEdge.orientation || !this.currentEdge.orientationType || !this.currentEdge.maxRotationSpeed) {
-      this.showEdgeError = true; // Show error message
-      return; // Stop saving if validation fails
-    }
 
-    // If validation passes, hide the error message
-    this.showEdgeError = false;
-
-    if (this.currentEdge) {
-      this.edges = this.edges.map((edge) => {
-        if (this.currentEdge.edgeId === edge.edgeId) {
-          // Preserve color and direction
-          edge = this.currentEdge;
-          // return { ...edge, ...this.currentEdge };
-        }
-        return edge;
-      });
-      this.redrawCanvas();
-    }
-    console.log(this.edges);
-    this.showPopup = false;
-  }
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
@@ -2960,7 +2898,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       if (this.isZonePlottingEnabled) {
         // Plot the point
         if (this.firstPlottedPoint) {
-          let radius = 6;
+          let radius = 9;
           if (
             Math.abs(x - this.firstPlottedPoint.x) <= radius &&
             Math.abs(y - this.firstPlottedPoint.y) <= radius
@@ -3592,6 +3530,29 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   hidePopup(): void {
     this.showPopup = false;
     this.showEdgeError = false;
+  }
+  updateEdge() {
+    if (!this.currentEdge.edgeId || !this.currentEdge.sequenceId || !this.currentEdge.minHeight || !this.currentEdge.orientation || !this.currentEdge.orientationType || !this.currentEdge.maxRotationSpeed) {
+      this.showEdgeError = true; // Show error message
+      return; // Stop saving if validation fails
+    }
+
+    // If validation passes, hide the error message
+    this.showEdgeError = false;
+
+    if (this.currentEdge) {
+      this.edges = this.edges.map((edge) => {
+        if (this.currentEdge.edgeId === edge.edgeId) {
+          // Preserve color and direction
+          edge = this.currentEdge;
+          // return { ...edge, ...this.currentEdge };
+        }
+        return edge;
+      });
+      this.redrawCanvas();
+    }
+    console.log(this.edges);
+    this.showPopup = false;
   }
   // Method to delete the edge
   deleteEdge(): void {

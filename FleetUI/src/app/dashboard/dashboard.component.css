@@ -23,7 +23,24 @@ app-sidenavbar{
 
   /* border: 10px solid black  ;     Matches the height of the topbar */
 }
-
+#robo-popup {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1000;
+  background-color: rgba(150, 128, 128, 0.241);
+  backdrop-filter: blur(2px); 
+}
+#robo-popup button{
+  height: 100%;
+  width: 100%;
+  color: white;
+  background-color: #ff3333;
+  border: 1px solid white;
+  margin-bottom: 5px;
+  font-size: 15px;
+  padding: 5px;
+  border-radius: 10px;
+}
 canvas {
   display: block;
   position: absolute;
@@ -297,10 +314,13 @@ canvas {
   width: 170px;
   margin: 20px;
 }
-
+.dropdown-button:hover{
+  background-color: #ff3333;
+  color: white;
+}
 .dropdown-button {
   width: 100%;
-  background-color: #ff3333;
+  background-color: #ff333358;
   color: white;
   padding: 10px 20px;
   font-size: 16px;

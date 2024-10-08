@@ -32,8 +32,17 @@ const insertRoboIdInMap = async ({ roboId, roboName, mapId, mapName }) => {
 //..
 
 const createRobo = async (req, res, next) => {
-  const { projectName, mapId, mapName, roboName, ipAdd, macAdd, grossInfo } =
-    req.body;
+  const {
+    projectName,
+    mapId,
+    mapName,
+    roboName,
+    amrId,
+    uuid,
+    ipAdd,
+    macAdd,
+    grossInfo,
+  } = req.body;
   try {
     const doc = await Robo.exists({ roboName: roboName });
     const doc1 = await Map.exists({ _id: mapId });
@@ -54,6 +63,8 @@ const createRobo = async (req, res, next) => {
         .json({ isIpMacExists: true, msg: "Ip | Mac seems already exists" });
     const robo = await new Robo({
       roboName,
+      amrId,
+      uuid,
       ipAdd,
       macAdd,
       grossInfo,

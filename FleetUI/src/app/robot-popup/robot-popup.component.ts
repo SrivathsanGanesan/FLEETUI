@@ -72,9 +72,9 @@ export class RobotPopupComponent {
     // let id = 0;
     this.availableRobots = data.populatedRobos.map((robo: any) => {
       // id++;
-      roboCounter += 1;
+      // roboCounter += 1;
       return {
-        id: 0, //roboCounter
+        id: robo.amrId,
         roboName: robo.roboName,
         ipAdd: robo.ipAdd,
         selected: false,

@@ -2,15 +2,20 @@
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
 /* Main Content Styling */
+.container{
+  overflow: hidden;
+}
 .mainContent {
   position: absolute;
-  top: 30px;
-  left: 70px;
-  width: calc(100% - 70px);
+  margin-top: 30px;
+  // top: 30px;
+  margin-left: 70px;
+  // width: calc(100% - 70px);
   padding: 16px;
   overflow: hidden;
   box-sizing: border-box;
   background-color: white;
+  overflow: none;
 }
 
 /* Header section styles */
@@ -436,7 +441,7 @@ tr:nth-child(even) {
     // flex-direction: column;
     align-items: center;
     justify-content: flex-end; /* This will move the button to the end */
-  width: 70vh;
+  // width: 10px;
     gap: 10px;
   }
   

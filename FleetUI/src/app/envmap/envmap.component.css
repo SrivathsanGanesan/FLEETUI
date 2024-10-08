@@ -12,6 +12,7 @@
   justify-content: center;
   backdrop-filter: blur(5px);
   pointer-events: none;
+
 }
 
 ::ng-deep .p-dropdown{
@@ -189,7 +190,7 @@ h2 {
 }
 .OpenandLocate{
   margin-left: 15px;
-
+  margin-top: 5px;
 }
 #X,#Y,#θ{
   width: 50px;
@@ -615,8 +616,12 @@ canvas {
   gap: 10px;
   border-radius: 8px;
   z-index: 10;
+  pointer-events: none;
 }
+.calibration-layer button{
+  pointer-events: auto;
 
+}
 h2{
   font-family: Arial, Helvetica, sans-serif;
   font-size: 25px;
@@ -663,6 +668,18 @@ h2{
 
 .dropdown:hover .dropdown-content {
   display: flex;
+}
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  /* Use standard 'appearance' property along with vendor-specific ones */
+  appearance: none;         /* Standard */
+  -moz-appearance: textfield;  /* Firefox */
+  -webkit-appearance: none; /* Chrome, Safari */
 }
 
 .dropdown-content button {
@@ -716,7 +733,7 @@ button {
 }
 
 .clear-btn {
-  right: 80px; /* Position it to the left of the Save button */
+  right: 100px; /* Position it to the left of the Save button */
 }
 .OpenandLocate{
   padding: 10px;
