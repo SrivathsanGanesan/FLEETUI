@@ -130,20 +130,9 @@
                 </tr>
               </thead>
               <tbody>
-
-                 <!-- Show No Data Row with image and message -->
-                 <tr *ngIf="paginatedData.length === 0">
-            <td colspan="8" class="no-data">
-              <div class="no-data-container">
-                <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
-                <p class="no-data-text">No data found</p>
-              </div>
-            </td>
-          </tr>
-
-                <!-- <tr *ngIf="paginatedData.length === 0">
+                <tr *ngIf="paginatedData.length === 0">
                   <td colspan="5" class="iconTable">No data found</td>
-                </tr> -->
+                </tr>
                 <tr
                   *ngFor="
                     let item of paginatedData;
@@ -184,11 +173,7 @@
                     <button class="sel-btn" (click)="selectMap(item)">
                       <!-- [disabled]="isButtonDisabled(item)" -->
                       <!-- SELECT -->
-                      {{
-                        item.mapName === this.selectedMap?.mapName
-                          ? "Deselect"
-                          : "Select"
-                      }}
+                      {{ item.mapName === this.selectedMap?.mapName ? "Deselect" : "Select" }}
                     </button>
                   </td>
                 </tr>
