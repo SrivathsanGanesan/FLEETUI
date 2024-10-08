@@ -106,7 +106,7 @@ export class DashboardComponent implements AfterViewInit {
   robotToInitialize: any = null;
   isMoveModeActive: boolean = false; // Track if move mode is enabled
   moveEnabled: boolean = true;
-
+  isDragging:boolean=false;
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -244,8 +244,7 @@ export class DashboardComponent implements AfterViewInit {
   enableMove() {
     this.moveEnabled = true; // Enable move mode
     this.hidePopup(); // Hide the popup after enabling move mode
-  }
-  
+  }  
   async ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
@@ -315,7 +314,6 @@ export class DashboardComponent implements AfterViewInit {
       };
     }
   }
-
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -389,12 +387,14 @@ export class DashboardComponent implements AfterViewInit {
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
     );
-    
+    // yet to uncomment
+    this.robos.forEach(
+      (robo) =>
+        this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
+    );
 
     ctx.restore(); // Reset transformation after drawing
   }
-  isDragging:boolean=false;
-
   isRobotClicked(robo: any, x: number, y: number): boolean {
     const imageSize = 25;
     const roboX = robo.pos.x;
@@ -406,7 +406,6 @@ export class DashboardComponent implements AfterViewInit {
     // console.log(distance, imageSize*1.5);
     return distance <= imageSize * 1.5; // Adjust this based on the robot's size
   }
-
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
       if (!this.showModelCanvas) return;
@@ -430,8 +429,8 @@ export class DashboardComponent implements AfterViewInit {
         // if (this.isRobotClicked(robo, imgX, imgY)) {
           this.hidePopup();
           this.draggingRobo = robo; // Store the robot being dragged
-          this.offsetX = imgX - roboX; // Store offset to maintain relative position during drag
-          this.offsetY = imgY - roboY;
+          // this.offsetX = imgX - roboX; // Store offset to maintain relative position during drag
+          // this.offsetY = imgY - roboY;
           this.isDragging = true;
           // console.log(this.isDragging,this.draggingRobo);
           break;
@@ -439,7 +438,6 @@ export class DashboardComponent implements AfterViewInit {
       }
     });
   }
-
   addMouseUpListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mouseup', (event) => {
       if (this.isDragging && this.draggingRobo) {
@@ -449,7 +447,6 @@ export class DashboardComponent implements AfterViewInit {
       }
   });
   }
-
   addMouseClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('click', (event) => {
       if (!this.showModelCanvas) return;
@@ -495,7 +492,6 @@ export class DashboardComponent implements AfterViewInit {
       }
     });
   }
-
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     const tooltip = document.getElementById('Pos_tooltip')!;
 
