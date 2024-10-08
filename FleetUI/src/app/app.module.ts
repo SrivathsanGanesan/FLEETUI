@@ -56,7 +56,7 @@ import { ContactusComponent } from './support/Addons/contactus/contactus.compone
 import { DialogModule } from 'primeng/dialog';
 import { LoaderComponent } from './loader/loader.component';
 import { TimerComponent } from './timer/timer.component';
-
+import { TableModule } from 'primeng/table';
 
 
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -135,6 +135,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
     InputTextareaModule,
     InputMaskModule,
     InputGroupAddonModule,
+    TableModule 
+
   ],
   providers: [
     // provideClientHydration()

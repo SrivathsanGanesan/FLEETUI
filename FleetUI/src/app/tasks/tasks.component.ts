@@ -88,14 +88,15 @@ export class TasksComponent implements OnInit, AfterViewInit {
       this.tasks = tasks.map((task: any) => {
         return {
           taskId: task.task_id,
-          taskName: task.sub_task[0]?.task_type
+          taskType: task.sub_task[0]?.task_type
             ? task.sub_task[0]?.task_type
             : 'N/A',
           status: task.task_status.status,
           roboName: task.agent_ID,
-          sourceDestination: task.sub_task[0]?.source_location
+          sourceLocation: task.sub_task[0]?.source_location
             ? task.sub_task[0]?.source_location
             : 'N/A',
+            destinationLocation:''
         };
       });
     this.filteredTaskData = this.tasks;

@@ -47,6 +47,8 @@ export interface Robot {
   styleUrls: ['./robot-detail-popup.component.scss'],
 })
 export class RobotDetailPopupComponent {
+
+  
   metrics: { title: string; value: string; icon: string }[] = [];
   // batteryData: any[] = [];
 
@@ -74,6 +76,8 @@ export class RobotDetailPopupComponent {
     return percentage >= threshold ? 'filled' : '';
   }
 
+
+  
   // Function to get battery color
 
   // get batteryPercentage(): number {
