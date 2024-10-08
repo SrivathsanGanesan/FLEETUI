@@ -107,7 +107,8 @@ export class DashboardComponent implements AfterViewInit {
   isMoveModeActive: boolean = false; // Track if move mode is enabled
   isDragging:boolean=false;
   isInitializeMode: boolean = false;  // Track if initialization mode is active
-
+  isMapLoaded = false;
+  
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -249,6 +250,7 @@ export class DashboardComponent implements AfterViewInit {
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
       await this.onInitMapImg();
+      this.isMapLoaded = false;
       return;
     }
     this.getMapDetails();
