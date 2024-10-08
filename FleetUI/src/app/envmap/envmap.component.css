@@ -125,7 +125,7 @@
   padding: 20px;
   max-width: 90%;
   max-height: 90%;
-  
+
 }
 
 .popup-content.fixed-size {
@@ -189,7 +189,7 @@ h2 {
   margin-right: 5px;
 }
 .OpenandLocate{
-  margin-left: 15px;
+  margin-left: 5px;
   margin-top: 5px;
 }
 #X,#Y,#θ{
@@ -254,6 +254,7 @@ h2 {
   display: block;
   margin: 10px 0 5px;
   font-weight: bold;
+  font-size: 14px;
 }
 
 .form-container input {
@@ -314,7 +315,7 @@ canvas {
   border: 1px solid #ccc;
   max-height: 75vh; /* Ensure content doesn't exceed viewport height */
   max-width: 1420px;
-  
+
   /* width: 1400px;
   height: 580px; */
 }
@@ -731,12 +732,12 @@ button {
 .save-btn {
   right: 10px; /* Position it to the right */
 }
-
+/*
 .clear-btn {
-  right: 100px; /* Position it to the left of the Save button */
-}
+  right: 100px; Position it to the left of the Save button
+} */
 .OpenandLocate{
-  padding: 10px;
+  padding: 11px;
   background-color: #ff3333;
   color: #fff;
   font-size: 13px;

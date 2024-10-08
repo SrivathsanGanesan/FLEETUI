@@ -88,20 +88,21 @@ export class TasksComponent implements OnInit, AfterViewInit {
       this.tasks = tasks.map((task: any) => {
         return {
           taskId: task.task_id,
-          taskName: task.sub_task[0]?.task_type
+          taskType: task.sub_task[0]?.task_type
             ? task.sub_task[0]?.task_type
             : 'N/A',
           status: task.task_status.status,
           roboName: task.agent_ID,
-          sourceDestination: task.sub_task[0]?.source_location
+          sourceLocation: task.sub_task[0]?.source_location
             ? task.sub_task[0]?.source_location
             : 'N/A',
+            destinationLocation:''
         };
       });
     this.filteredTaskData = this.tasks;
     console.log(this.tasks);
     this.setPaginatedData();
-    
+
 
     // Simulate some delay, such as an API call
   }
@@ -135,7 +136,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
   }
 
   shouldShowPaginator(): boolean {
-    return this.filteredTaskData.length > 5;
+    return this.filteredTaskData.length > 0;
   }
 
   updateData() {
