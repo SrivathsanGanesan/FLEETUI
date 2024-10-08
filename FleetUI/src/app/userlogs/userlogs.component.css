@@ -428,9 +428,12 @@ tr:nth-child(even) {
 
 /* Container for paginator */
 .paginator-container {
+  margin-left: 32rem;
   display: flex;
   justify-content: center;
   margin-top: 10px;
+  top: 40rem;
+  position: absolute;
 }
 
 /* Paginator wrapper */

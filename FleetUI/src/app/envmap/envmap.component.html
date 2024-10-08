@@ -65,7 +65,7 @@
           style="display: flex; align-items: center; gap: 10px"
         >
         <input pInputText type="number" id="X" placeholder="X" min="0" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
-        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.x" (keyup.enter)="open()" />
+        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.y" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
@@ -182,7 +182,7 @@
           <div class="action-container">
             <div class="action" class="display:flex; text-wrap:nowrap; align-items:center ">
               <label for="nodeAction" class="label" style="margin-right: 8rem;">Add Action:</label>
-              <p-dropdown
+              <p-dropdown appendTo="body"
                 id="nodeAction"
                 [options]="actionOptions"
                 [(ngModel)]="selectedAction"
@@ -705,9 +705,8 @@
       <div
         *ngIf="validationMessage"
         class="validation-message"
-        style="color: red; font: 10px sans-serif"
       >
-        {{ validationMessage }}
+        *{{ validationMessage }}
       </div>
       <div class="">
         <button type="button" (click)="deleteSelectedAsset()">Delete</button>
