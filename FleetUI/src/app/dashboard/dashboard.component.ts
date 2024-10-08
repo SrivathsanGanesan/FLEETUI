@@ -105,8 +105,9 @@ export class DashboardComponent implements AfterViewInit {
   selectedRobo: any = null;
   robotToInitialize: any = null;
   isMoveModeActive: boolean = false; // Track if move mode is enabled
-  moveEnabled: boolean = true;
   isDragging:boolean=false;
+  isInitializeMode: boolean = false;  // Track if initialization mode is active
+
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -188,8 +189,8 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async initializeRobo() {
-    this.moveEnabled = !this.moveEnabled;
     // console.log('Initializing Robo...');
+    this.isInitializeMode = !this.isInitializeMode;
     this.hidePopup();
     await this.initializeRobot();
   }
@@ -242,7 +243,6 @@ export class DashboardComponent implements AfterViewInit {
     this.hidePopup();
   }
   enableMove() {
-    this.moveEnabled = true; // Enable move mode
     this.hidePopup(); // Hide the popup after enabling move mode
   }  
   async ngOnInit() {
@@ -408,6 +408,7 @@ export class DashboardComponent implements AfterViewInit {
   }
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
+      if (this.isInitializeMode) return;
       if (!this.showModelCanvas) return;
       // if (event.button) return;
       
@@ -442,6 +443,7 @@ export class DashboardComponent implements AfterViewInit {
     canvas.addEventListener('mouseup', (event) => {
       if (this.isDragging && this.draggingRobo) {
          this.isDragging = false;
+         
          this.draggingRobo = null;
         this.redrawCanvas();
       }
@@ -496,6 +498,7 @@ export class DashboardComponent implements AfterViewInit {
     const tooltip = document.getElementById('Pos_tooltip')!;
 
     canvas.addEventListener('mousemove', (event) => {
+      if (this.isInitializeMode) return;
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
