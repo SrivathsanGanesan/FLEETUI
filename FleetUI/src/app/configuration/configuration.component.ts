@@ -543,7 +543,7 @@ export class ConfigurationComponent implements AfterViewInit {
         this.paginator.length = this.filteredRobotData.length;
       }
   
-      this.fetchRobos(); // Optionally fetch updated robot data
+      // this.fetchRobos(); // Optionally fetch updated robot data
     }
   }
   

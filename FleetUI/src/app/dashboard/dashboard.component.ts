@@ -190,6 +190,9 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async initializeRobo() {
+    this.robotToInitialize = this.draggingRobo;
+    console.log(this.selectedRobo);
+    
     // console.log('Initializing Robo...');
     this.isInitializeMode = !this.isInitializeMode;
     this.hidePopup();
