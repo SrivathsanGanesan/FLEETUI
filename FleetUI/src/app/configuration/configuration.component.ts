@@ -494,67 +494,59 @@ export class ConfigurationComponent implements AfterViewInit {
     return item.ipAdd;
   }
 
-  // setPaginatedData() {
-  //   if (this.currentTable === 'Environment') {
-  //     // Step 1: Ensure that data is loaded and available
-  //     if (!this.EnvData || this.EnvData.length === 0) {
-  //       return; // Prevent setting paginated data if no data is available
-  //     }
-
-  //     // Step 2: Handle small datasets (<= 5 items)
-  //     if (this.filteredEnvData.length <= 5) {
-  //       this.paginatedData = [...this.filteredEnvData]; // Show all data without pagination
-  //     } else if (this.paginator?.pageIndex !== undefined && this.paginator?.pageSize !== undefined) {
-  //       // Step 3: Handle larger datasets (use pagination)
-  //       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-  //       this.paginatedData = this.filteredEnvData.slice(startIndex, startIndex + this.paginator.pageSize);
-  //     }
-  //   } else if (this.currentTable === 'robot') {
-  //     // Same logic for the robot table
-  //     if (!this.filteredRobotData || this.filteredRobotData.length === 0) {
-  //       return;
-  //     }
-
-  //     if (this.filteredRobotData.length <= 5) {
-  //       this.paginatedData1 = this.filteredRobotData;
-  //     } else if (this.paginator?.pageIndex !== undefined && this.paginator?.pageSize !== undefined) {
-  //       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-  //       this.paginatedData1 = this.filteredRobotData.slice(startIndex, startIndex + this.paginator.pageSize);
-  //     }
-  //   }
-  // }
-
   setPaginatedData() {
+    const pageSize = this.paginator?.pageSize || 5;
+    const pageIndex = this.paginator?.pageIndex || 0;
+  
     if (this.currentTable === 'Environment') {
-      const pageSize = this.paginator?.pageSize || 5; // Default pageSize to 5 if paginator is not yet available
-      const pageIndex = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
-
-      // Paginate the data based on current page and page size
-      const startIndex = pageIndex * pageSize;
-      const endIndex = startIndex + pageSize;
-
-      this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
+      // Step 1: Ensure data is available
+      if (!this.EnvData || this.EnvData.length === 0) {
+        return; // No data, exit the function
+      }
+  
+      // Step 2: Handle small datasets (<= 5 items)
+      if (this.filteredEnvData.length <= 5) {
+        this.paginatedData = [...this.filteredEnvData]; // Show all data without pagination
+      } else {
+        // Step 3: Handle larger datasets with pagination
+        const startIndex = pageIndex * pageSize;
+        this.paginatedData = this.filteredEnvData.slice(startIndex, startIndex + pageSize);
+      }
+  
+      // Update paginator length for environment data
       if (this.paginator) {
         this.paginator.length = this.filteredEnvData.length;
       }
     } else if (this.currentTable === 'robot') {
-      const pageSize = this.paginator?.pageSize || 5; // Default pageSize to 5 if paginator is not yet available
-      const pageIndex = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
-
-      // Paginate the data based on current page and page size
-      const startIndex = pageIndex * pageSize;
-      const endIndex = startIndex + pageSize;
-
-      this.paginatedData1 = this.filteredRobotData.slice(startIndex, endIndex);
-
-      // Optionally, ensure that the paginator reflects the right page size and length
+      // Step 1: Ensure data is available
+      if (!this.filteredRobotData || this.filteredRobotData.length === 0) {
+        return; // No data, exit the function
+      }
+  
+      // Step 2: Handle small datasets (<= 5 items)
+      if (this.filteredRobotData.length <= 5) {
+        this.paginatedData1 = [...this.filteredRobotData]; // Show all data without pagination
+      } else {
+        // Step 3: Handle larger datasets with pagination
+        const startIndex = pageIndex * pageSize;
+        this.paginatedData1 = this.filteredRobotData.slice(startIndex, startIndex + pageSize);
+      }
+  
+      // Adjust page index if out of bounds after deletion
+      if (this.paginatedData1.length === 0 && pageIndex > 0) {
+        this.paginator.pageIndex = pageIndex - 1;
+        this.setPaginatedData(); // Recalculate the paginated data after adjusting the page index
+      }
+  
+      // Update paginator length for robot data
       if (this.paginator) {
-
         this.paginator.length = this.filteredRobotData.length;
       }
-      this.fetchRobos();
+  
+      this.fetchRobos(); // Optionally fetch updated robot data
     }
   }
+  
 
   // Ensure pagination is triggered on page change
   onPageChange(event: PageEvent) {

@@ -705,9 +705,8 @@
       <div
         *ngIf="validationMessage"
         class="validation-message"
-        style="color: red; font: 10px sans-serif"
       >
-        {{ validationMessage }}
+        *{{ validationMessage }}
       </div>
       <div class="">
         <button type="button" (click)="deleteSelectedAsset()">Delete</button>

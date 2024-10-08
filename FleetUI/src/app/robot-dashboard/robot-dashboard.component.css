@@ -406,6 +406,7 @@ h2 {
   font-weight: medium;
   color: #222222;
   padding-left: 1rem; /* Ensure the first cell has enough padding on the left */
+  
 }
 
 .activity-table tr:nth-child(odd),

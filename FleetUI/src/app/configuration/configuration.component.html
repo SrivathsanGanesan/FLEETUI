@@ -117,8 +117,8 @@
 
       <!-- Table -->
       <div class="table-container">
-        <div>
-          <div>
+       
+          
             <table *ngIf="currentTable === 'Environment' && !imageUploaded">
               <thead>
                 <tr>
@@ -131,7 +131,12 @@
               </thead>
               <tbody>
                 <tr *ngIf="paginatedData.length === 0">
-                  <td colspan="5" class="iconTable">No data found</td>
+                  <td colspan="5" class="no-data">
+                    <div class="no-data-container">
+                      <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
+                      <p class="no-data-text">No data found</p>
+                    </div>
+                  </td>
                 </tr>
                 <tr
                   *ngFor="
@@ -210,19 +215,25 @@
               <tbody>
 
                 <!-- Show No Data Row with image and message -->
-                <tr *ngIf="paginatedData1.length === 0">
+                <!-- <tr *ngIf="paginatedData1.length === 0">
                   <td colspan="8" class="no-data">
                     <div class="no-data-container">
                       <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
                       <p class="no-data-text">No data found</p>
                     </div>
                   </td>
-                </tr>
-
-
-                <!-- <tr *ngIf="paginatedData1.length === 0">
-                  <td colspan="4" class="iconTable">No data found</td>
                 </tr> -->
+
+
+                <tr *ngIf="paginatedData1.length === 0">
+                  <td colspan="7" class="no-data">
+                    <div class="no-data-container">
+                      <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
+                      <p class="no-data-text">No data found</p>
+                    </div>
+                  </td>
+                  <!-- <td colspan="4" class="iconTable">No data found</td> -->
+                </tr>
                 <tr *ngFor="let item of paginatedData1; index as i;trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td><input type="checkbox" [(ngModel)]="item.isSimMode" /></td>
                   <td>{{ (paginator ? paginator.pageIndex * paginator.pageSize : 0) + i + 1 }}</td>
@@ -339,21 +350,15 @@
                 </tr>
               </thead>
               <tbody>
-
-                <!-- Show No Data Row with image and message -->
                 <tr *ngIf="ipScanData.length === 0">
-                  <td colspan="8" class="no-data">
+                  <!-- <td colspan="6" class="iconTable">No data found</td> -->
+                  <td colspan="6" class="no-data">
                     <div class="no-data-container">
                       <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
                       <p class="no-data-text">No data found</p>
                     </div>
                   </td>
                 </tr>
-
-
-                <!-- <tr *ngIf="ipScanData.length === 0">
-                  <td colspan="6" class="iconTable">No data found</td>
-                </tr> -->
                 <tr
                   *ngFor="
                     let item of ipScanData;
@@ -472,8 +477,8 @@
               (refreshTable)="reloadTable()"
             >
             </app-envmap>
-          </div>
-        </div>
+          
+        
       </div>
     </div>
 </div>

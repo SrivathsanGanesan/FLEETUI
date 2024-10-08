@@ -30,7 +30,7 @@
   /* Style the label inside the active tab */
   .active .label {
     color: white;
-    padding: 10px 15px 0px 15px; /* Keep your desired padding */
+    padding: 0px 15px 0px 18px; /* Keep your desired padding */
     display: block;
     width: 130%; /* Increase the width as needed */
     margin-left: -10%; /* Center it by shifting left if necessary */
@@ -229,7 +229,7 @@
 
   .icons {
     margin: 25px 0 0 10px;
-    width: 180px;
+    width: 190px;
     /* filter: drop-shadow(10px 10px 5px rgba(52, 49, 49, 0.308)); */
   }
 

@@ -99,6 +99,26 @@
     height: 13px;
   }
 
+  .no-data-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 150px; /* Adjust height as needed */
+  }
+  
+  .no-data-image {
+    width: 100px;
+    height: auto;
+    margin-bottom: 0rem;
+  }
+  
+  .no-data-text {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.7);
+    text-align: center;
+  }
+
 .bg-blur
 {
   background: rgba(0, 0, 0,0.7);

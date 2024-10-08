@@ -362,11 +362,10 @@ body, .card, .popup-menu {
 .card .bottom-section .card-id-status {
   display: flex;
   flex-direction: column;
-  align-items: left;
+  align-items: center;
   font-weight: 600;
   font-size: 16px;
   color: rgba(255, 255, 255, 0.721);
-  padding-left: 1rem;
 }
 
 .card .bottom-section .card-id-status p {
