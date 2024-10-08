@@ -487,7 +487,7 @@ export class UserManagementComponent implements OnInit {
     this.deleteUserName = '';
     this.deleteUserPopUp();
     this.setPaginatedData()
-    // window.location.reload()
+    window.location.reload()
   }
 
   getDeleteUser(userName: any, userRole: any) {
