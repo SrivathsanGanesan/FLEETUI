@@ -1215,6 +1215,28 @@ export class EnvmapComponent implements AfterViewInit {
             minute: 'numeric',
             second: 'numeric',
           });
+          
+
+          if(!this.EnvData.length){
+            this.projectService.setMapData({
+              id: data.map._id,
+              mapName: data.map.mapName,
+              siteName: this.siteName,
+              date: createdAt,
+              createdAt: data.map.createdAt,
+              imgUrl: data.map.imgUrl,
+            });
+            this.projectService.setIsMapSet(true);
+            this.selectedMap = {
+              id: data.map._id,
+              mapName: data.map.mapName,
+              siteName: this.siteName,
+              date: createdAt,
+              createdAt: data.map.createdAt,
+              imgUrl: data.map.imgUrl,
+            };
+            // return;
+          }
 
           this.EnvData.push({
             id: data.map._id,
@@ -1748,7 +1770,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   positionToQuaternion(position : any) {
     const angle = position.orientation;  // z contains the rotation angle (in radians)
-    
+
     // Calculate quaternion for rotation around z-axis
     const quaternion = {
         x: 0,  // No rotation around x-axis
@@ -1769,7 +1791,7 @@ async initializeRobot(): Promise<void> {
   const transformedY = this.overlayCanvas.nativeElement.height - this.robotToDelete.pos.y;
   this.robotToDelete.pos.x = this.robotToDelete.pos.x * ratio;
   this.robotToDelete.pos.y = transformedY * ratio;
-  
+
   // quaternion = this.positionToQuaternion(this.robotToDelete.pos);
   let initializeRobo = {
     id : this.robotToDelete.roboDet.id,
@@ -1795,7 +1817,7 @@ async initializeRobot(): Promise<void> {
   let data = await response.json();
   console.log(data);
   // this.cancelDelete();
-  if(data.isInitialized){ 
+  if(data.isInitialized){
     alert('robo Initialized!');
     return;
   }

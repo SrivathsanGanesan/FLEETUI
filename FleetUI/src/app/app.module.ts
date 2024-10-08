@@ -57,8 +57,9 @@ import { DialogModule } from 'primeng/dialog';
 import { LoaderComponent } from './loader/loader.component';
 import { TimerComponent } from './timer/timer.component';
 // import { ReactiveFormsModule } from '@angular/forms';
-
-
+// import { TableModule } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { TableModule } from 'primeng/table';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -135,6 +136,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
     InputTextareaModule,
     InputMaskModule,
     InputGroupAddonModule,
+    TableModule,
+
+    PaginatorModule,
+    // TableModule
   ],
   providers: [
     // provideClientHydration()

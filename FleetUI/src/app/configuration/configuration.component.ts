@@ -165,112 +165,87 @@ export class ConfigurationComponent implements AfterViewInit {
     });
   }
 
-  ngOnInit() {
-    this.loadData();
-    this.setPaginatedData();
-    this.selectFirstMapIfNoneSelected();
-    this.filteredEnvData = [...this.EnvData];
-    this.filteredRobotData = [...this.robotData];
-    this.cdRef.detectChanges();
-    const today = new Date();
-    const pastFiveYears = new Date();
-    pastFiveYears.setFullYear(today.getFullYear() - 5);
-
-    this.minDate = this.formatDate(pastFiveYears);
-    this.maxDate = this.formatDate(today);
-    let currMapData = this.projectService.getMapData();
-    if (currMapData) {
-      this.selectedMap = currMapData;
+  async ngOnInit() {
+    try {
+      this.loadData();
       this.setPaginatedData();
-    }
+      this.selectFirstMapIfNoneSelected();
+      this.filteredEnvData = [...this.EnvData];
+      this.filteredRobotData = [...this.robotData];
+      this.cdRef.detectChanges();
+      const today = new Date();
+      const pastFiveYears = new Date();
+      pastFiveYears.setFullYear(today.getFullYear() - 5);
 
-    this.mapData = this.projectService.getSelectedProject(); // _id
-    if (!this.mapData) return;
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
-      { credentials: 'include' }
-    )
-      .then((response) => {
-        if (!response.ok) throw new Error(`Error code of ${response.status}`);
-        return response.json();
-      })
-      .then(async (data) => {
-        const { sites } = data.project;
-        this.EnvData = sites
-          .flatMap((sites: any) => {
-            return sites.maps.map((map: any) => {
-              let date = new Date(map?.createdAt);
-              let createdAt = date.toLocaleString('en-IN', {
-                month: 'short',
-                year: 'numeric',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-              });
-
-              return {
-                id: map.mapId,
-                mapName: map.mapName,
-                siteName: sites.siteName,
-                date: createdAt,
-                createdAt: map.createdAt, // for sorting..
-              };
-            });
-          })
-          .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
-
-        this.EnvData.sort(
-          (a: any, b: any) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        this.filteredEnvData = [...this.EnvData];
-        // this.EnvData = this.filteredEnvData;
+      this.minDate = this.formatDate(pastFiveYears);
+      this.maxDate = this.formatDate(today);
+      let currMapData = this.projectService.getMapData();
+      if (currMapData) {
+        this.selectedMap = currMapData;
         this.setPaginatedData();
-        this.cdRef.detectChanges();
-        if (!this.projectService.getIsMapSet()) {
-          this.selectedMap = this.EnvData[0];
-          let imgUrl = '';
-          if (this.EnvData[0]) {
-            imgUrl = await this.getMapImgUrl(this.selectedMap);
-            this.projectService.setMapData({
-              ...this.EnvData[0],
-              imgUrl: imgUrl,
+      }
+
+      this.mapData = this.projectService.getSelectedProject(); // _id
+      if (!this.mapData) return;
+      let response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
+        { credentials: 'include' }
+      );
+      if (!response.ok) throw new Error(`Error code of ${response.status}`);
+      let data = await response.json();
+      const { sites } = data.project;
+      this.EnvData = sites
+        .flatMap((sites: any) => {
+          return sites.maps.map((map: any) => {
+            let date = new Date(map?.createdAt);
+            let createdAt = date.toLocaleString('en-IN', {
+              month: 'short',
+              year: 'numeric',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
             });
-            this.projectService.setIsMapSet(true);
-          }
+
+            return {
+              id: map.mapId,
+              mapName: map.mapName,
+              siteName: sites.siteName,
+              date: createdAt,
+              createdAt: map.createdAt, // for sorting..
+            };
+          });
+        })
+        .filter((item: any) => item !== null); // just to filter out the null from the EnvData array!..
+
+      this.EnvData.sort(
+        (a: any, b: any) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      this.filteredEnvData = [...this.EnvData];
+      this.setPaginatedData();
+      this.cdRef.detectChanges();
+      // console.log(this.projectService.getIsMapSet(), this.projectService.getMapData(), this.EnvData[0]);
+      if (!this.projectService.getIsMapSet()) {
+        this.selectedMap = this.EnvData[0];
+        let imgUrl = '';
+        if (this.EnvData[0]) {
+          imgUrl = await this.getMapImgUrl(this.selectedMap);
+          this.projectService.setMapData({
+            ...this.EnvData[0],
+            imgUrl: imgUrl,
+          });
+          this.projectService.setIsMapSet(true);
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      }
+      // })
+    } catch (error) {
+      console.log(error);
+    }
 
     this.fetchRobos(); // fetch all robots..
 
     if (!this.EnvData.length) return;
 
-    // fetch(
-    //   `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.EnvData[0]?.mapName}`
-    // )
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       console.error('Error while fetching map data : ', response.status);
-    //       throw new Error('Error while fetching map data');
-    //     }
-    //     return response.json();
-    //   })
-    //   .then((data) => {
-    //     if (!this.projectService.getMapData())
-    //       // yet to remove..
-    //       this.projectService.setMapData({
-    //         ...this.EnvData[0],
-    //         imgUrl: data.map.imgUrl,
-    //       });
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-    // this.filteredEnvData = this.EnvData;
-    // this.setPaginatedData();
     this.searchTerm = '';
     this.searchTermChanged();
   }
@@ -404,6 +379,7 @@ export class ConfigurationComponent implements AfterViewInit {
       if (data.populatedRobos) this.robotData = data.populatedRobos;
       this.filteredRobotData = this.robotData;
       this.setPaginatedData();
+      this.reloadTable();
       // console.log(this.filteredRobotData)
       // this.filteredRobotData = data.populatedRobos;
     } catch (error) {
@@ -463,6 +439,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   deleteRobo(robo: any) {
+
     let project = this.projectService.getSelectedProject();
     let map = this.projectService.getMapData();
     let roboInfo = {
@@ -483,15 +460,13 @@ export class ConfigurationComponent implements AfterViewInit {
       .then((response) => response.json())
       .then((data) => {
         if (data.isRoboExists) {
-          this.fetchRobos();
-          // this.loadData();
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Robot deleted successfully!',
           });
-          this.loadData();
-          this.reloadTable();
+          this.cdRef.detectChanges();
+          this.fetchRobos();
           this.setPaginatedData();
         } else {
           this.messageService.add({
@@ -509,13 +484,14 @@ export class ConfigurationComponent implements AfterViewInit {
           detail: 'An error occurred while deleting the robot.',
         });
       });
-    this.loadData();
-    this.reloadTable();
-    this.setPaginatedData();
   }
 
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
+  }
+
+  trackByTaskName(index:number, item:any): number{
+    return item.ipAdd;
   }
 
   // setPaginatedData() {
@@ -558,16 +534,8 @@ export class ConfigurationComponent implements AfterViewInit {
       const endIndex = startIndex + pageSize;
 
       this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
-      // this.paginatedData1 = this.filteredRobotData.slice(startIndex,endIndex);
-      // console.log(this.filteredEnvData);
-      // console.log(this.filteredRobotData);
-
-      // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         this.paginator.length = this.filteredEnvData.length;
-        // this.paginator.length  = this.filteredRobotData.length;
-        // console.log(this.filteredEnvData);
-        // console.log(this.filteredRobotData);
       }
     } else if (this.currentTable === 'robot') {
       const pageSize = this.paginator?.pageSize || 5; // Default pageSize to 5 if paginator is not yet available
@@ -577,19 +545,14 @@ export class ConfigurationComponent implements AfterViewInit {
       const startIndex = pageIndex * pageSize;
       const endIndex = startIndex + pageSize;
 
-      // this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
       this.paginatedData1 = this.filteredRobotData.slice(startIndex, endIndex);
-      // console.log(this.filteredEnvData);
-      // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
-        // this.paginator.length = this.filteredEnvData.length;
 
         this.paginator.length = this.filteredRobotData.length;
-        // console.log(this.filteredEnvData);
-        // console.log(this.filteredRobotData);
       }
+      this.fetchRobos();
     }
   }
 
@@ -630,8 +593,8 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   async selectMap(map: any) {
+    // Deselect if the same map is clicked again
     if (this.selectedMap?.id === map.id) {
-      // Deselect if the same map is clicked again
       this.projectService.clearMapData();
       this.projectService.setIsMapSet(false);
       if (!this.EnvData.length) return;
@@ -642,11 +605,11 @@ export class ConfigurationComponent implements AfterViewInit {
       if (!response.ok)
         console.error('Error while fetching map data : ', response.status);
       let data = await response.json();
-      let { map } = data;
-      this.ngOnInit();
+      // let { map } = data;
+      await this.ngOnInit();
 
-      if (this.projectService.getIsMapSet()) return;
-      this.projectService.setIsMapSet(true);
+      // if (this.projectService.getIsMapSet()) return; // yet to uncomment..
+      // this.projectService.setIsMapSet(true);
       return;
     }
     // Select a new map
@@ -1368,6 +1331,7 @@ export class ConfigurationComponent implements AfterViewInit {
           this.cdRef.detectChanges();
         } else if (this.currentTable === 'robot') {
           this.filteredRobotData = this.robotData.filter((i) => i !== item);
+          this.cdRef.detectChanges();
           this.reloadTable();
           this.setPaginatedData();
         }

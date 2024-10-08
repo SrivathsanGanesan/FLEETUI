@@ -114,7 +114,7 @@
         >
           Save
         </button>
-        <button class="clear-btn" (click)="clearCanvas()">Clear</button>
+        <button class="clear-btn" (click)="clearCanvas()" style="margin-right: 2.5rem;">Clear</button>
 
         <!-- Distance Input Dialog -->
         <div *ngIf="showDistanceDialog" class="distance-dialog-overlay">
@@ -214,12 +214,12 @@
               type="text"
               id="nodeDescription"
               [(ngModel)]="nodeDetails.description"
-              [style]="{'height':'30px','width':'16rem'}"
+              [style]="{'height':'30px','width':'14.5rem'}"
             /><br />
           </div>
             <div class="input-group">
               <div class="node1">
-                <label for="Intermediate_Stn" class="label">Intermediate Node</label>
+                <label for="Intermediate_Stn" class="label">Intermediate Node: </label>
                 <p-checkbox
                   id="Intermediate_Stn"
                   [binary]="true"
@@ -228,7 +228,7 @@
                 /><br />
               </div>
               <div style="margin-right: 2.5rem;">
-                <label for="Waiting_Stn" class="label" style="margin-left:10rem">Waiting Node</label>
+                <label for="Waiting_Stn" class="label" style="margin-left:10rem">Waiting Node: </label>
                 <p-checkbox
                   id="Waiting_Stn"
                   [binary]="true"
@@ -273,7 +273,7 @@
             </div>
             <div class="input-groupg">
               <label>Auto Robot Operation Mode:</label>
-              <select [(ngModel)]="moveParameters.autoRobotMode" style="margin-right: 20.1rem; padding: 6px;">
+              <select [(ngModel)]="moveParameters.autoRobotMode" style="margin-right: 20.1rem; padding: 6px; border: 1px solid #ccc;">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
               </select><br/>
@@ -327,7 +327,7 @@
             </div> -->
             <div class="input-groupg">
               <label>Docking Type:</label>
-              <select [(ngModel)]="dockParameters.dockingType" style="margin-right: 20.2rem;" placeholder="Select Docking Type">
+              <select [(ngModel)]="dockParameters.dockingType" style="margin-right: 20.2rem; border: 1px solid #ccc;" placeholder="Select Docking Type">
                 <option value="mode1">Mode 1</option>
                 <option value="mode2">Mode 2</option>
               </select><br/>
@@ -472,7 +472,7 @@
 
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
-    
+
     <h2>Edge Details</h2>
     <div class="flex-items">
       <div class="first">

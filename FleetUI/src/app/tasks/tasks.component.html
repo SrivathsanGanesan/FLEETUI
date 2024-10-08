@@ -92,22 +92,32 @@
                   <th>Robot Name</th>
                   <th>Source</th>
                   <th>Destination</th>
-
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
+
+                <!-- Show No Data Row with image and message -->
+          <tr *ngIf="filteredTaskData.length === 0">
+            <td colspan="8" class="no-data">
+              <div class="no-data-container">
+                <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
+                <p class="no-data-text">No data found</p>
+              </div>
+            </td>
+          </tr>
+               <!-- Display table rows when data exists -->
                 <tr *ngIf="filteredTaskData.length === 0">
-                  <td colspan="6" class="iconTable">No data found</td>
+                  <!-- <td colspan="6" class="iconTable">No data found</td> -->
                 </tr>
                 <tr *ngFor="let item of filteredTaskData; index as i; trackBy: trackByTaskId" [class.paused]="item.paused">
                   <td>{{ i + 1 + (paginator?.pageIndex ?? 0) * (paginator?.pageSize ?? 10) }}</td>
                   <td>{{ item.taskId }}</td>
-                  <td>{{ item.tasktype }}</td>
+                  <td>{{ item.taskType }}</td>
                   <td>{{ item.status }}</td>
                   <td>{{ item.roboName }}</td>
-                  <td>{{ item.source }}</td>
-                  <td>{{ item.Destination }}</td>
+                  <td>{{ item.destinationLocation }}</td>
+                  <td>{{ item.sourceLocation }}</td>
                   <td>
                     <!-- Switch Container -->
                     <div class="switch-container">
