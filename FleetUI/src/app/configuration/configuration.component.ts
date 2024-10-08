@@ -386,6 +386,7 @@ export class ConfigurationComponent implements AfterViewInit {
       if (data.populatedRobos) this.robotData = data.populatedRobos;
       this.filteredRobotData = this.robotData;
       this.setPaginatedData();
+      this.reloadTable();
       // console.log(this.filteredRobotData)
       // this.filteredRobotData = data.populatedRobos;
     } catch (error) {
@@ -445,6 +446,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   deleteRobo(robo: any) {
+
     let project = this.projectService.getSelectedProject();
     let map = this.projectService.getMapData();
     let roboInfo = {
@@ -465,15 +467,13 @@ export class ConfigurationComponent implements AfterViewInit {
       .then((response) => response.json())
       .then((data) => {
         if (data.isRoboExists) {
-          this.fetchRobos();
-          // this.loadData();
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Robot deleted successfully!',
           });
-          this.loadData();
-          this.reloadTable();
+          this.cdRef.detectChanges();
+          this.fetchRobos();
           this.setPaginatedData();
         } else {
           this.messageService.add({
@@ -491,13 +491,14 @@ export class ConfigurationComponent implements AfterViewInit {
           detail: 'An error occurred while deleting the robot.',
         });
       });
-    this.loadData();
-    this.reloadTable();
-    this.setPaginatedData();
   }
 
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
+  }
+
+  trackByTaskName(index:number, item:any): number{
+    return item.ipAdd;
   }
 
   // setPaginatedData() {
@@ -540,16 +541,8 @@ export class ConfigurationComponent implements AfterViewInit {
       const endIndex = startIndex + pageSize;
 
       this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
-      // this.paginatedData1 = this.filteredRobotData.slice(startIndex,endIndex);
-      // console.log(this.filteredEnvData);
-      // console.log(this.filteredRobotData);
-
-      // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
         this.paginator.length = this.filteredEnvData.length;
-        // this.paginator.length  = this.filteredRobotData.length;
-        // console.log(this.filteredEnvData);
-        // console.log(this.filteredRobotData);
       }
     } else if (this.currentTable === 'robot') {
       const pageSize = this.paginator?.pageSize || 5; // Default pageSize to 5 if paginator is not yet available
@@ -559,19 +552,14 @@ export class ConfigurationComponent implements AfterViewInit {
       const startIndex = pageIndex * pageSize;
       const endIndex = startIndex + pageSize;
 
-      // this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
       this.paginatedData1 = this.filteredRobotData.slice(startIndex, endIndex);
-      // console.log(this.filteredEnvData);
-      // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
-        // this.paginator.length = this.filteredEnvData.length;
 
         this.paginator.length = this.filteredRobotData.length;
-        // console.log(this.filteredEnvData);
-        // console.log(this.filteredRobotData);
       }
+      this.fetchRobos();
     }
   }
 
@@ -1350,6 +1338,7 @@ export class ConfigurationComponent implements AfterViewInit {
           this.cdRef.detectChanges();
         } else if (this.currentTable === 'robot') {
           this.filteredRobotData = this.robotData.filter((i) => i !== item);
+          this.cdRef.detectChanges();
           this.reloadTable();
           this.setPaginatedData();
         }

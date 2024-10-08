@@ -163,7 +163,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   isNodeDetailsPopupVisible = false; // Control popup visibility
   public ratio: number | null = null; // Store the resolution ratio (meters per pixel)
-  origin : any;
+  origin : {x : number, y : number, w : number} = { x : 0, y : 0, w : 0 };
   plottingMode: 'single' | 'multi' | null = null;
   isPlottingEnabled: boolean = false;
   isDrawing: boolean = false;
@@ -1743,7 +1743,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   positionToQuaternion(position : any) {
     const angle = position.orientation;  // z contains the rotation angle (in radians)
-    
+
     // Calculate quaternion for rotation around z-axis
     const quaternion = {
         x: 0,  // No rotation around x-axis
@@ -1764,7 +1764,7 @@ async initializeRobot(): Promise<void> {
   const transformedY = this.overlayCanvas.nativeElement.height - this.robotToDelete.pos.y;
   this.robotToDelete.pos.x = this.robotToDelete.pos.x * ratio;
   this.robotToDelete.pos.y = transformedY * ratio;
-  
+
   // quaternion = this.positionToQuaternion(this.robotToDelete.pos);
   let initializeRobo = {
     id : this.robotToDelete.roboDet.id,
@@ -1790,7 +1790,7 @@ async initializeRobot(): Promise<void> {
   let data = await response.json();
   console.log(data);
   // this.cancelDelete();
-  if(data.isInitialized){ 
+  if(data.isInitialized){
     alert('robo Initialized!');
     return;
   }
