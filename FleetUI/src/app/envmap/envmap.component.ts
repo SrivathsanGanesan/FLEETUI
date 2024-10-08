@@ -1215,6 +1215,28 @@ export class EnvmapComponent implements AfterViewInit {
             minute: 'numeric',
             second: 'numeric',
           });
+          
+
+          if(!this.EnvData.length){
+            this.projectService.setMapData({
+              id: data.map._id,
+              mapName: data.map.mapName,
+              siteName: this.siteName,
+              date: createdAt,
+              createdAt: data.map.createdAt,
+              imgUrl: data.map.imgUrl,
+            });
+            this.projectService.setIsMapSet(true);
+            this.selectedMap = {
+              id: data.map._id,
+              mapName: data.map.mapName,
+              siteName: this.siteName,
+              date: createdAt,
+              createdAt: data.map.createdAt,
+              imgUrl: data.map.imgUrl,
+            };
+            // return;
+          }
 
           this.EnvData.push({
             id: data.map._id,

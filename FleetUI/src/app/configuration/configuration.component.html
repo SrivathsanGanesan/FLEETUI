@@ -133,23 +133,10 @@
                 <tr *ngIf="paginatedData.length === 0">
                   <td colspan="5" class="iconTable">No data found</td>
                 </tr>
-                <tr
-                  *ngFor="
-                    let item of paginatedData;
-                    index as i;
-                    trackBy: trackByTaskId
-                  "
-                  [class.paused]="item.paused"
-                >
-                  <td>
-                    {{ item.mapName }}
-                  </td>
-                  <td>
-                    {{ item.siteName }}
-                  </td>
-                  <td>
-                    {{ item.date }}
-                  </td>
+                <tr *ngFor=" let item of paginatedData; index as i; trackBy: trackByTaskId " [class.paused]="item.paused" >
+                  <td> {{ item.mapName }} </td>
+                  <td> {{ item.siteName }} </td>
+                  <td> {{ item.date }} </td>
                   <td class="iconTable">
                     <div class="edit">
                       <button class="edit-button" (click)="editItem(item)">
@@ -173,11 +160,7 @@
                     <button class="sel-btn" (click)="selectMap(item)">
                       <!-- [disabled]="isButtonDisabled(item)" -->
                       <!-- SELECT -->
-                      {{
-                        item.mapName === this.selectedMap?.mapName
-                          ? "Deselect"
-                          : "Select"
-                      }}
+                      {{ item.mapName === this.selectedMap?.mapName ? "Deselect" : "Select" }}
                     </button>
                   </td>
                 </tr>
