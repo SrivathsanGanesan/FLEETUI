@@ -104,6 +104,7 @@ export class DashboardComponent implements AfterViewInit {
   draggingRobo: any = null; // Holds the robot being dragged
   selectedRobo: any = null;
   robotToInitialize: any = null;
+  isEnableMode: boolean = false;
   isMoveModeActive: boolean = false; // Track if move mode is enabled
   isDragging:boolean=false;
   isInitializeMode: boolean = false;  // Track if initialization mode is active
@@ -501,9 +502,9 @@ export class DashboardComponent implements AfterViewInit {
   }
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     const tooltip = document.getElementById('Pos_tooltip')!;
-
+    
     canvas.addEventListener('mousemove', (event) => {
-      if (this.isInitializeMode) return;
+      if (this.isInitializeMode && this.isEnableMode) return;
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -928,6 +929,7 @@ export class DashboardComponent implements AfterViewInit {
 
     this.posEventSource = new EventSource(URL);
     this.posEventSource.onmessage = (event) => {
+      if( this.isEnableMode ) this.isEnableMode = true;
       const robotsData: any = {};
 
       try {
@@ -970,6 +972,7 @@ export class DashboardComponent implements AfterViewInit {
     };
 
     this.posEventSource.onerror = (error) => {
+      this.isEnableMode = false;
       console.error('SSE error:', error);
       this.posEventSource.close();
     };
