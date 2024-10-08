@@ -205,7 +205,7 @@ body, .card, .popup-menu {
     display: flex;
     gap: 2rem;
     overflow-x: auto;
-    padding: 1rem;
+    padding: 2rem;
     flex-wrap: wrap; /* Wrap content for smaller screens */
     justify-content: center; /* Center cards horizontally */
 }
@@ -231,16 +231,39 @@ body, .card, .popup-menu {
     }
 }
 
+/* Entire scrollbar */
+::-webkit-scrollbar {
+  width: 12px;               /* Width of the scrollbar */
+}
 
-    .card-container {
-      display: inline-flex; /* Align cards horizontally */
-      gap: 45px; /* Add space between cards */
-    }
+/* Track (background of the scrollbar) */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;  /* Color of the scrollbar track */
+  border-radius: 10px;        /* Round the corners */
+}
 
-    .card {
-      display: inline-block;
-      /* Other styles remain the same */
-    }
+/* Handle (the draggable part) */
+::-webkit-scrollbar-thumb {
+  background-color: #f92222;     /* Color of the scrollbar handle */
+  border-radius: 10px;        /* Round the corners */
+  border: 3px solid #f1f1f1;  /* Optional: to give space around the handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #fe6161;     /* Darken the handle when hovering */
+}
+
+
+.card-container {
+  display: inline-flex; /* Align cards horizontally */
+  gap: 45px; /* Add space between cards */
+  }
+
+.card {
+  display: inline-block;
+  /* Other styles remain the same */
+  }
   /* Styles for the card */
   .card {
     width: 300px;
@@ -249,9 +272,11 @@ body, .card, .popup-menu {
     padding: 5px;
     overflow: hidden;
     //  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 20px 0px;
-     box-shadow: 10px 4px 10px 10px rgba(0, 0, 0, 0.2);
+     box-shadow: 5px 4px 5px 5px rgba(91, 91, 91, 0.2);
+     
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative; /* Important for positioning the icon */
+    
   }
 
 
@@ -325,6 +350,7 @@ body, .card, .popup-menu {
 
 .card .bottom-section .title {
   font-size: 30px;
+  margin: -2px !important; 
   font-weight: bolder;
   color: rgb(255, 31, 31);
   text-align: center;
@@ -332,13 +358,15 @@ body, .card, .popup-menu {
 
 }
 
+
 .card .bottom-section .card-id-status {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   font-weight: 600;
-  font-size: 22px;
+  font-size: 16px;
   color: rgba(255, 255, 255, 0.721);
+  padding-left: 1rem;
 }
 
 .card .bottom-section .card-id-status p {
@@ -358,20 +386,24 @@ body, .card, .popup-menu {
   align-items: center;
   background-color: #ff3333; /* Example button background color */
   color: white;
-  padding: 10px 20px;
-  border-radius: 10px;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 8px;
   text-align: center;
   margin: 0 auto; /* Center the button horizontally */
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
   
   /* Add a border */
-  border: 2px solid #a5a5a5; /* White border */
+  // border: 2px solid #a5a5a5; 
 }
 
 .details-button:hover {
   background-color: #e64e4e;
   transform: scale(1.05); /* Add a hover effect */
+}
+.details-button-wrapper{
+  margin-top: 1rem;
 }
 
    /* Popup Overlay */
