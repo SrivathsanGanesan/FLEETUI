@@ -1504,12 +1504,8 @@ export class EnvmapComponent implements AfterViewInit {
   onRightClick(event: MouseEvent): void {
     event.preventDefault();
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-    const x =
-      (event.clientX - rect.left) *
-      (this.overlayCanvas.nativeElement.width / rect.width);
-    const y =
-      (event.clientY - rect.top) *
-      (this.overlayCanvas.nativeElement.height / rect.height);
+    const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+    const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
   for (const zone of this.zones) {
 

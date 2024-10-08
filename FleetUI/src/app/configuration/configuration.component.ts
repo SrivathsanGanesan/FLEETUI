@@ -256,6 +256,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.filterData(); // Optional if you are applying filters
     // this.resetFilters();
   }
+
   onChanges() {
     this.loadData();
     this.reloadTable();
