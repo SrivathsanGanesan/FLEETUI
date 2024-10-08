@@ -341,19 +341,20 @@
               <tbody>
 
                 <!-- Show No Data Row with image and message -->
-                <tr *ngIf="ipScanData.length === 0">
+                <!-- <tr *ngIf="ipScanData.length === 0">
                   <td colspan="8" class="no-data">
                     <div class="no-data-container">
                       <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
                       <p class="no-data-text">No data found</p>
                     </div>
                   </td>
-                </tr>
-
-
-                <!-- <tr *ngIf="ipScanData.length === 0">
-                  <td colspan="6" class="iconTable">No data found</td>
                 </tr> -->
+
+
+                <tr *ngIf="ipScanData.length === 0">
+                  <td style="text-align: center;"><img src="../../assets/no-data.png" alt="No Data" class="no-data-image"></td>
+                  <!-- <td colspan="6" class="iconTable">No data found</td> -->
+                </tr>
                 <tr
                   *ngFor="
                     let item of ipScanData;
