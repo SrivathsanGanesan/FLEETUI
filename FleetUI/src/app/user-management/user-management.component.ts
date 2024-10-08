@@ -236,7 +236,7 @@ export class UserManagementComponent implements OnInit {
             createdOn: formattedDate,
           };
         });
-        console.log(this.userCredentials);  //prints the user credentials
+        // console.log(this.userCredentials);  //prints the user credentials
         this.filteredData = this.userCredentials;
         this.setPaginatedData();
       })
@@ -274,7 +274,7 @@ export class UserManagementComponent implements OnInit {
     const endIndex = startIndex + pageSize;
 
     this.paginatedData = this.filteredData.slice(startIndex, endIndex);
-    console.log(this.paginatedData);
+    // console.log(this.paginatedData);
 
     if(this.paginator){
       this.paginator.length = this.filteredData.length;

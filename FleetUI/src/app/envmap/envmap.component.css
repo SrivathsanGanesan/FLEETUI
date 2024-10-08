@@ -469,6 +469,14 @@ canvas {
   /* margin-top: 0.5rem; */
   animation: bounce 1s;
 }
+.validation-message {
+  color: red;
+  font-size: 13px;
+  margin-left: 7rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  animation: bounce 1s;
+}
 
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {
