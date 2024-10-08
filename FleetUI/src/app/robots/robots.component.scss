@@ -27,11 +27,29 @@
   }
 
 
-.card {
-  background-color: var(--card-background);
-  color: var(--card-text-color);
-  border: 1px solid var(--border-color);
+
+
+  .pre-btn, .nxt-btn{
+    border: none;
+    width: 10vw;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #fff 100%);
+    cursor: pointer;
+    z-index: 8;
 }
+.pre-btn {
+  left: 10px;
+}
+
+.nxt-btn {
+  right: 10px;
+}
+
 
 .card .popup-menu {
   background-color: var(--menu-background);
@@ -176,12 +194,43 @@ body, .card, .popup-menu {
   }
 
 
+  .parent-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full viewport height */
+}
+
+.card-container-wrapper {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    padding: 1rem;
+    flex-wrap: wrap; /* Wrap content for smaller screens */
+    justify-content: center; /* Center cards horizontally */
+}
+
+/* Adjust layout for smaller screens */
+@media (max-width: 1200px) {
     .card-container-wrapper {
-      display: flex;
-    gap: 4rem;
-    overflow-x: scroll;
-    padding: 4rem;
+        gap: 1.5rem;
     }
+}
+
+@media (max-width: 768px) {
+    .card-container-wrapper {
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-container-wrapper {
+        gap: 0.5rem;
+        padding: 0.25rem;
+    }
+}
+
 
     .card-container {
       display: inline-flex; /* Align cards horizontally */
@@ -194,12 +243,13 @@ body, .card, .popup-menu {
     }
   /* Styles for the card */
   .card {
-    width: 230px;
+    width: 300px;
     border-radius: 20px;
-    background: linear-gradient(135deg, #f44646, #ff7979);
+    background: linear-gradient(135deg, #ffffff, #ffffff);
     padding: 5px;
     overflow: hidden;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 20px 0px;
+    //  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 20px 0px;
+     box-shadow: 10px 4px 10px 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative; /* Important for positioning the icon */
   }
@@ -211,21 +261,25 @@ body, .card, .popup-menu {
 
 /* Top section styling */
 .card .top-section {
-  height: 180px;
+  height: 200px;
   border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(45deg, rgb(249, 234, 234) 0%, rgb(234, 234, 234) 100%);
+  // background: linear-gradient(45deg, rgb(243, 17, 17) 0%, rgb(234, 234, 234) 100%);
+  background-color: #FF7373;
   position: relative;
   overflow: hidden;
+ 
+
 }
 
 .card .top-section .robot-image {
   width: 80%;
-  height: 80%;
-  margin-top: 30px;
+  height: 95%;
+  margin-top: 0px;
   object-fit: contain; /* Adjust to make sure the image fits well */
+  filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, 0.7)); /* Stronger shadow with reduced blur */
 
 
 }
@@ -266,30 +320,30 @@ body, .card, .popup-menu {
 
 /* Bottom section styling */
 .card .bottom-section {
-  margin-top: 15px;
   padding: 10px 5px;
 }
 
 .card .bottom-section .title {
-  font-size: 20px;
+  font-size: 30px;
   font-weight: bolder;
-  color: white;
+  color: rgb(255, 31, 31);
   text-align: center;
   letter-spacing: 2px;
-  margin-bottom: 5px;
+
 }
 
 .card .bottom-section .card-id-status {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 22px;
   color: rgba(255, 255, 255, 0.721);
 }
 
 .card .bottom-section .card-id-status p {
   margin: 3px 0;
-  color: rgba(255, 255, 255, 0.721);
+  color: rgba(70, 70, 70, 0.721);
 
 }
 
@@ -302,10 +356,10 @@ body, .card, .popup-menu {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #eb1515; /* Example button background color */
+  background-color: #ff3333; /* Example button background color */
   color: white;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 10px;
   text-align: center;
   margin: 0 auto; /* Center the button horizontally */
   cursor: pointer;

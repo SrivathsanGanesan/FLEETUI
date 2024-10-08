@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { RobotDetailPopupComponent } from '../robot-detail-popup/robot-detail-popup.component';
 import { environment } from '../../environments/environment.development';
@@ -53,6 +53,7 @@ export class RobotsComponent implements OnInit {
   showPopup = false;
   isEditPopupOpen = false;
   menuOpenIndex: number | null = null;
+
 
   constructor(
     public dialog: MatDialog,
@@ -137,6 +138,33 @@ export class RobotsComponent implements OnInit {
     this.menuOpenIndex = null;
   }
 
+
+  @ViewChild('cardContainer') cardContainer!: ElementRef;  // Assure TypeScript this will be assigned.
+
+  ngAfterViewInit() {
+    const cardContainers = document.querySelectorAll('.card-container');  // Update to 'card-container' class
+    const nextBtns = document.querySelectorAll('.nxt-btn');
+    const prevBtns = document.querySelectorAll('.pre-btn');
+    console.log("clicked");
+
+    cardContainers.forEach((cardContainer, i) => {
+      const containerWidth = cardContainer.getBoundingClientRect().width;
+
+      // Add event listener for next button if it exists
+      if (nextBtns[i]) {
+        nextBtns[i].addEventListener('click', () => {
+          cardContainer.scrollLeft += containerWidth;
+        });
+      }
+
+      // Add event listener for previous button if it exists
+      if (prevBtns[i]) {
+        prevBtns[i].addEventListener('click', () => {
+          cardContainer.scrollLeft -= containerWidth;
+        });
+      }
+    });
+  }
   // addRobot() {
   //   if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.serialNumber && this.newRobot.status && this.newRobot.battery) {
   //     this.newRobot.id = this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
@@ -239,7 +267,7 @@ export class RobotsComponent implements OnInit {
   }
 
   getBatteryColor(batteryPercentage: number): string {
-    if (batteryPercentage >= 75) {
+    if (batteryPercentage >= 20) {
       return 'high'; // Green for high battery
     } else if (batteryPercentage >= 40) {
       return 'medium';
@@ -247,4 +275,6 @@ export class RobotsComponent implements OnInit {
       return 'low'; // Red for low battery
     }
   }
+
+  
 }

@@ -10,6 +10,10 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./statistics.component.css'],
 })
 export class StatisticsComponent {
+products: any;
+getSeverity(arg0: any) {
+throw new Error('Method not implemented.');
+}
   currentView: string = 'operation'; // Default to 'operation'
   operationPie: number[] = [0, 0, 0, 0, 0];
   selectedMap: any | null = null;
@@ -174,6 +178,7 @@ export class StatisticsComponent {
       (activity) =>
         activity.taskName.toLowerCase().includes(query) ||
         activity.taskId.toString().toLowerCase().includes(query) ||
+        activity.robotName.toString().toLowerCase().includes(query) ||
         activity.status.toLowerCase().includes(query)
     );
   }
