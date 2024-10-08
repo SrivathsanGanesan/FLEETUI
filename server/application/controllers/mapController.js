@@ -73,7 +73,10 @@ const saveNodeGraph = async (mapData) => {
   // if (sentNodeGraphRes.errorCode !== 100)
   //   return res.status(500).json({ msg: "not attained" });
 
-  if ( sentNodeGraphRes?.errorCode !== 100 || sentNodeGraphRes?.error === "UND_ERR_CONNECT_TIMEOUT" )
+  if (
+    sentNodeGraphRes?.errorCode !== 100 ||
+    sentNodeGraphRes?.error === "UND_ERR_CONNECT_TIMEOUT"
+  )
     return false;
   return true;
 };
@@ -184,12 +187,12 @@ const postFleetData = async ({ endpoint, bodyData }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  let isGraphSent = await saveNodeGraph(mapData);
+  /* let isGraphSent = await saveNodeGraph(mapData);
   if (!isGraphSent)
     return res.status(500).json({
       map: null,
       msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
-    });
+    }); */
 
   // return res.end(); // yet to remove..
   try {

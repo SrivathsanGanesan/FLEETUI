@@ -240,7 +240,7 @@ export class UserManagementComponent implements OnInit {
         this.filteredData = this.userCredentials;
         this.setPaginatedData();
       })
-      
+
       .catch((error) => {
         console.error('Error fetching users:', error);
       });
@@ -279,6 +279,7 @@ export class UserManagementComponent implements OnInit {
     if(this.paginator){
       this.paginator.length = this.filteredData.length;
     }
+    this.fetchUsers();
   }
 
     // Ensure pagination is triggered on page change
@@ -291,8 +292,8 @@ export class UserManagementComponent implements OnInit {
 
 
 
-  trackByTaskId(index: number, item: any): number {
-    return item.taskId; // or any unique identifier like taskId
+  trackByTaskId(index: number, user: any): number {
+    return user.userId; // or any unique identifier like taskId
   }
   // create user..
   createUser() {
@@ -444,6 +445,7 @@ export class UserManagementComponent implements OnInit {
         life: 5000,
       });
       this.setPaginatedData();
+      this.fetchUsers();
       return;
     }
 
@@ -474,9 +476,9 @@ export class UserManagementComponent implements OnInit {
         this.setPaginatedData();
         this.fetchUsers();
         // Remove the user from the local list
-        // this.userCredentials = this.userCredentials.filter(
-        //   (user) => user.userName !== username
-        // );
+        this.userCredentials = this.userCredentials.filter(
+          (user) => user.userName !== username
+        );
       })
       .catch((error) => {
         console.error('Error deleting user:', error);
@@ -485,7 +487,7 @@ export class UserManagementComponent implements OnInit {
     this.deleteUserName = '';
     this.deleteUserPopUp();
     this.setPaginatedData()
-    // window.location.reload()
+    window.location.reload()
   }
 
   getDeleteUser(userName: any, userRole: any) {
