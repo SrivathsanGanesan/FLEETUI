@@ -47,8 +47,8 @@
             <input pInputText
               type="number"
               id="resolution"
-              #resolutionInput
               min="0"
+              #resolutionInput
               placeholder="Resolution"
               (keyup.enter)="open()"
               (input)="onInputResolution($event)"
@@ -65,7 +65,7 @@
           style="display: flex; align-items: center; gap: 10px"
         >
         <input pInputText type="number" id="X" placeholder="X" min="0" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
-        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.y" (keyup.enter)="open()" />
+        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.x" (keyup.enter)="open()" />
           <!-- <input
         type="number"
         id="θ"
@@ -472,6 +472,7 @@
 
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
+    
     <h2>Edge Details</h2>
     <div class="flex-items">
       <div class="first">

@@ -12,6 +12,7 @@
   justify-content: center;
   backdrop-filter: blur(5px);
   pointer-events: none;
+
 }
 
 ::ng-deep .p-dropdown{
@@ -733,7 +734,7 @@ button {
 }
 /*
 .clear-btn {
-  right: 80px; Position it to the left of the Save button
+  right: 100px; Position it to the left of the Save button
 } */
 .OpenandLocate{
   padding: 11px;

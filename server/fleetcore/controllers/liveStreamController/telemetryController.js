@@ -101,11 +101,12 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData, method = "GET" }) => {
 };
 
 // initMqttConnection();
-// initRabbitMQConnection();
+initRabbitMQConnection();
 
 const initializeRobo = async (req, res) => {
   const { mapId, initializeRobo } = req.body;
   // console.log(initializeRobo);
+
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
@@ -116,15 +117,16 @@ const initializeRobo = async (req, res) => {
       method: "POST",
     });
 
-    let showsplinePos = null;
+    /* let showsplinePos = null;
     if (initRoboPos.errorCode === 1000)
       showsplinePos = await fetchGetAmrLoc({
         endpoint: "showSpline",
         bodyData: { robotId: initializeRobo.id, enable: true },
         method: "POST",
-      });
+      }); */
 
-    if (initRoboPos.errorCode === 1000 && showsplinePos.errorCode === 1000)
+    if (initRoboPos.errorCode === 1000)
+      //&& showsplinePos.errorCode === 1000
       return res.status(200).json({
         isInitialized: true,
         fleet_response: initRoboPos,

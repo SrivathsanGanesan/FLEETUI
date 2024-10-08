@@ -2,15 +2,20 @@
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
 /* Main Content Styling */
+.container{
+  overflow: hidden;
+}
 .mainContent {
   position: absolute;
-  top: 30px;
-  left: 70px;
-  width: calc(100% - 70px);
+  margin-top: 30px;
+  // top: 30px;
+  margin-left: 70px;
+  // width: calc(100% - 70px);
   padding: 16px;
   overflow: hidden;
   box-sizing: border-box;
   background-color: white;
+  overflow: none;
 }
 
 /* Header section styles */
