@@ -108,7 +108,9 @@ export class DashboardComponent implements AfterViewInit {
   isMoveModeActive: boolean = false; // Track if move mode is enabled
   isDragging:boolean=false;
   isMapLoaded = false;
-  updatedrobo: any = null;
+  isImage: boolean = false
+updatedrobo: any;
+  
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -284,6 +286,7 @@ export class DashboardComponent implements AfterViewInit {
 
     if (ctx) {
       // Load the background image
+      this.isImage = true
       const img = new Image();
       img.src = `http://${this.projectService.getMapData().imgUrl}`;
 
