@@ -435,6 +435,7 @@ export class ConfigurationComponent implements AfterViewInit {
       });
       // return;
     }
+    this.setPaginatedData1();
     this.closeroboPopup();
     this.ngOnInit();
   }
