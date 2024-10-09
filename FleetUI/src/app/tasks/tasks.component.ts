@@ -62,8 +62,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   async ngOnInit() {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
-    timeStamp1 = 1728410917;
-    timeStamp2 = 1728412500;
+    // timeStamp1 = 1728410917;
+    // timeStamp2 = 1728412500;
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
     const response = await fetch(
