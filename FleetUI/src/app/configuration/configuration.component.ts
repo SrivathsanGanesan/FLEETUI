@@ -1801,6 +1801,7 @@ setPaginatedData1(){
       simRobo.push({
         amrId : i,
         roboName:`MR${i}00`,
+        pos :{ x: 0, y: 0, orientation: 0 },
         enable : false
       })
     }
