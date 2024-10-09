@@ -187,12 +187,12 @@ const postFleetData = async ({ endpoint, bodyData }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  /* let isGraphSent = await saveNodeGraph(mapData);
+  let isGraphSent = await saveNodeGraph(mapData);
   if (!isGraphSent)
     return res.status(500).json({
       map: null,
       msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
-    }); */
+    });
 
   // return res.end(); // yet to remove..
   try {
@@ -291,18 +291,18 @@ const mapGet = async (req, res) => {
   }
 };
 
-const mapUpdate = async (req, res) => {7
+const mapUpdate = async (req, res) => {
   const queMapName = req.params.mapName;
   const mapData = req.body;
 
-  /* if (mapData.nodes && mapData.edges) {
+  if (mapData.nodes && mapData.edges) {
     let isGraphSent = await saveNodeGraph(mapData); // uncomment to work without fleet..
     if (!isGraphSent)
       return res.status(500).json({
         map: null,
         msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
       });
-  } */
+  }
 
   try {
     const map = await Map.exists({ mapName: queMapName });

@@ -17,8 +17,15 @@
   flex-wrap: wrap;
   justify-content: space-between;
   margin: 2%;
-  margin-top: 3%;
+  padding-top: 2%;
+  margin-top: 1%;
   /* margin-bottom: 0px; */
+}
+
+.centers{
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
 }
 
 .validate{
