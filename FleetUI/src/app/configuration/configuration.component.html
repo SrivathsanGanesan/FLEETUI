@@ -116,9 +116,10 @@
       </div>
 
       <!-- Table -->
-      <div class="table-container">
-       
-          
+      <div class="table-containers">
+        
+        <div class="table-container">
+          <div class="env-table">
             <table *ngIf="currentTable === 'Environment' && !imageUploaded">
               <thead>
                 <tr>
@@ -184,7 +185,9 @@
                 </tr>
               </tbody>
             </table>
-            <div *ngIf="currentTable === 'Environment' && filteredEnvData.length == EnvData.length"  >
+            
+          </div>  
+          <div *ngIf="currentTable === 'Environment' && filteredEnvData.length == EnvData.length"  >
             <div
               class="paginator-container"
               *ngIf="filteredEnvData.length > 0 "
@@ -198,7 +201,7 @@
               >
               </mat-paginator>
             </div>
-          </div>
+            </div>
 
             <table *ngIf="currentTable === 'robot' && !imageUploaded">
               <thead>
@@ -499,8 +502,8 @@
           
         
       </div>
-    </div>
-</div>
+    
+  </div>
 
 <!-- Popup form -->
 <div *ngIf="isPopupOpen" class="popup-overlay" formGroup="formData">
