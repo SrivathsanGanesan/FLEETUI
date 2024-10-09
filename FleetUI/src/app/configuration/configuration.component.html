@@ -41,10 +41,34 @@
             </button>
           </div>
         </div>
-        <div class="simulation-container" *ngIf="currentTable === 'robot'">
-          <button class="simulation-button" (click)="startSimulation()">Simulation</button>
-        </div>
+        <!-- simulation -->
+        <!-- robots.component.html -->
 
+          <div class="simulation-container" *ngIf="currentTable === 'robot'">
+            <button class="simulation-button" (click)="togglePopup()">Simulation</button>
+          </div>
+
+          <!-- Popup for selecting robots -->
+          <div *ngIf="isPopupVisible" class="popup-modal">
+            <div class="popup-content">
+              <h3>Enter the Number of Robots</h3>
+          
+              <label for="robots">Number of Robots:</label>
+              <input type="number" [(ngModel)]="robotCount" id="robots" placeholder="Enter number of robots">
+            
+              <div class="button-container">
+                <button (click)="addRobot()">Add</button>
+                <button (click)="closePopup()">Cancel</button>
+              </div>
+          
+              <div *ngIf="totalRobots > 0">
+                <p>Total Robots: {{ totalRobots }}</p>
+              </div>
+            </div>
+          </div>
+            
+        
+          
         <!-- Date Filter and Date Inputs -->
         <div class="date-filters" *ngIf="currentTable === 'Environment'">
           <div class="date-inputs">

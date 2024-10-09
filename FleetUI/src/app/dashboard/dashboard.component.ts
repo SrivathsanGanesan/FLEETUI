@@ -108,6 +108,7 @@ export class DashboardComponent implements AfterViewInit {
   isDragging:boolean=false;
   isInitializeMode: boolean = false;  // Track if initialization mode is active
   isMapLoaded = false;
+  isImage: boolean = false
   
   constructor(
     private projectService: ProjectService,
@@ -277,6 +278,7 @@ export class DashboardComponent implements AfterViewInit {
 
     if (ctx) {
       // Load the background image
+      this.isImage = true
       const img = new Image();
       img.src = `http://${this.projectService.getMapData().imgUrl}`;
 
