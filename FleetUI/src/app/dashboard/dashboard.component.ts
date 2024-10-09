@@ -97,20 +97,22 @@ export class DashboardComponent implements AfterViewInit {
   private stream: MediaStream | null = null; // Store the MediaStream here
   showModelCanvas: boolean = false; // Initially hide the modelCanvas
   selectedMap: any | null = null;
+  mapImg: any | null = null;
   mapImageWidth: number = 0; // To store the width of the map image
   mapImageHeight: number = 0; // To store the height of the map image
   mapImageX: number = 0; // To store the X position of the map image
   mapImageY: number = 0; // To store the Y position of the map image
   draggingRobo: any = null; // Holds the robot being dragged
   selectedRobo: any = null;
+  placeOffset: number = 50;
   robotToInitialize: any = null;
   isEnableMode: boolean = false;
   isMoveModeActive: boolean = false; // Track if move mode is enabled
-  isDragging:boolean=false;
+  isDragging: boolean = false;
   isMapLoaded = false;
-  isImage: boolean = false
-updatedrobo: any;
-  
+  isImage: boolean = false;
+  updatedrobo: any;
+
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -118,6 +120,22 @@ updatedrobo: any;
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
   }
+
+  async ngOnInit() {
+    this.selectedMap = this.projectService.getMapData();
+    if (!this.projectService.getMapData()) {
+      await this.onInitMapImg();
+      this.isMapLoaded = false;
+      return;
+    }
+    await this.getMapDetails();
+    await this.initSimRoboPos();
+    this.loadCanvas();
+
+    // this.toggleModelCanvas();
+    // await this.fetchRoboPos();
+  }
+
   ngAfterViewInit(): void {
     console.log('myCanvas:', this.myCanvas);
     if (this.myCanvas) {
@@ -144,6 +162,23 @@ updatedrobo: any;
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
 
+  // yet to update pos and save it in map..
+  async initSimRoboPos() {
+    const imgWidth = this.mapImg.width * this.zoomLevel;
+    const imgHeight = this.mapImg.height * this.zoomLevel;
+
+    // Calculate the bottom-right corner position of the image
+    let roboX = imgWidth - this.placeOffset;
+    let roboY = imgHeight - 100;
+    let i = 1;
+    this.simMode = this.simMode.map((robo) => {
+      roboX = imgWidth - this.placeOffset * i;
+      robo.pos = { x: roboX, y: roboY, orientation: 90 };
+      i++;
+      return robo;
+    });
+  }
+
   addRightClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('contextmenu', (event) => {
       event.preventDefault(); // Prevent the default context menu
@@ -152,20 +187,45 @@ updatedrobo: any;
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
-      const imgY = (canvas.height - mouseY - this.mapImageY - this.offsetY) / this.zoomLevel;
+      const imgY =
+        (canvas.height - mouseY - this.mapImageY - this.offsetY) /
+        this.zoomLevel;
 
-      for (let robo of this.robos) {
+      for (let robo of this.simMode) {
         const roboX = robo.pos.x;
         const roboY = this.mapImageHeight - robo.pos.y;
         const imageSize = 25; // Adjust size based on robot image dimensions
-      if ( imgX >= roboX - imageSize && imgX <= roboX + imageSize && imgY >= roboY - imageSize && imgY <= roboY + imageSize ) {
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
           // Show the popup at the clicked position
           this.showPopup(event.clientX, event.clientY);
           this.updatedrobo = robo;
-          console.log(this.updatedrobo);          
+          console.log(this.updatedrobo);
           return;
         }
       }
+
+      /* for (let robo of this.robos) {
+        const roboX = robo.pos.x;
+        const roboY = this.mapImageHeight - robo.pos.y;
+        const imageSize = 25; // Adjust size based on robot image dimensions
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
+          // Show the popup at the clicked position
+          this.showPopup(event.clientX, event.clientY);
+          this.updatedrobo = robo;
+          console.log(this.updatedrobo);
+          return;
+        }
+      } */
     });
   }
 
@@ -186,6 +246,7 @@ updatedrobo: any;
   }
 
   async initializeRobo() {
+    this.hidePopup();
     if (this.updatedrobo) {
       // Toggle between initializing and releasing the robot
       if (this.updatedrobo.isInitialized) {
@@ -200,7 +261,7 @@ updatedrobo: any;
     }
     // console.log('Initializing Robo...');
     // this.isInitializeMode = !this.isInitializeMode;
-    this.hidePopup();
+
     // await this.initializeRobot();
   }
 
@@ -251,27 +312,16 @@ updatedrobo: any;
   cancelAction() {
     this.hidePopup();
   }
+
   enableMove() {
     this.hidePopup(); // Hide the popup after enabling move mode
-  }  
-  async ngOnInit() {
-    this.selectedMap = this.projectService.getMapData();
-    if (!this.projectService.getMapData()) {
-      await this.onInitMapImg();
-      this.isMapLoaded = false;
-      return;
-    }
-    this.getMapDetails();
-    this.loadCanvas();
-
-    // this.toggleModelCanvas();
-    // await this.fetchRoboPos();
   }
+
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
     if (!this.showModelCanvas) {
-      console.log("hey")
+      console.log('hey');
       this.nodes = [];
     } else {
       await this.getMapDetails();
@@ -280,13 +330,14 @@ updatedrobo: any;
     this.loadCanvas(); // Redraw the canvas based on the updated state
     // this.fetchRoboPos();
   }
+
   redrawCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
       // Load the background image
-      this.isImage = true
+      this.isImage = true;
       const img = new Image();
       img.src = `http://${this.projectService.getMapData().imgUrl}`;
 
@@ -296,7 +347,7 @@ updatedrobo: any;
       };
     }
   }
-  
+
   loadCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -319,20 +370,22 @@ updatedrobo: any;
 
         // Center the image on the canvas
         this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-        this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+        this.mapImageY =
+          (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
 
         // Draw the image and other elements
         this.draw(ctx, img);
       };
     }
   }
+
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const imgWidth = img.width * this.zoomLevel;
     const imgHeight = img.height * this.zoomLevel;
-    
+
     // Calculate the position to center the image
     const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
     const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
@@ -345,15 +398,22 @@ updatedrobo: any;
     // Draw the image
     ctx.drawImage(img, 0, 0);
     // yet to uncomment
+
+    this.simMode.forEach((robo) => {
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
+    });
+
     this.robos.forEach(
       (robo) =>
         this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
     );
+
     // if (!this.showModelCanvas) return;
     if (!this.showModelCanvas) {
       ctx.restore(); // Reset transformation after drawing the background and robots
       return; // Exit early if the model canvas is not shown
     }
+
     // Draw nodes on the image
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
@@ -407,6 +467,7 @@ updatedrobo: any;
 
     ctx.restore(); // Reset transformation after drawing
   }
+
   isRobotClicked(robo: any, x: number, y: number): boolean {
     const imageSize = 25;
     const roboX = robo.pos.x;
@@ -418,12 +479,12 @@ updatedrobo: any;
     // console.log(distance, imageSize*1.5);
     return distance <= imageSize * 1.5; // Adjust this based on the robot's size
   }
+
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
-
       // if (!this.showModelCanvas) return;
       // if (event.button) return;
-      
+
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -433,15 +494,22 @@ updatedrobo: any;
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
 
-      for (let robo of this.robos) {
+      for (let robo of this.simMode) {
         const roboX = robo.pos.x;
-        const roboY = this.mapImageHeight - robo.pos.y
+        const roboY = this.mapImageHeight - robo.pos.y;
         const imageSize = 25; // Adjust to the size of the robot image
 
-        if ( imgX >= roboX - imageSize && imgX <= roboX + imageSize && imgY >= roboY - imageSize && imgY <= roboY + imageSize ) {
-        // if (this.isRobotClicked(robo, imgX, imgY)) {
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
+          // if (this.isRobotClicked(robo, imgX, imgY)) {
           if (robo.isInitialized) {
-            console.log(`Robot ${robo.roboDet.id} is initialized and cannot move.`);
+            console.log(
+              `Robot ${robo.roboDet.id} is initialized and cannot move.`
+            );
             return; // Do not allow dragging if the robot is initialized
           }
           this.hidePopup();
@@ -453,18 +521,48 @@ updatedrobo: any;
           break;
         }
       }
+
+      /* for (let robo of this.robos) {
+        const roboX = robo.pos.x;
+        const roboY = this.mapImageHeight - robo.pos.y;
+        const imageSize = 25; // Adjust to the size of the robot image
+
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
+          // if (this.isRobotClicked(robo, imgX, imgY)) {
+          if (robo.isInitialized) {
+            console.log(
+              `Robot ${robo.roboDet.id} is initialized and cannot move.`
+            );
+            return; // Do not allow dragging if the robot is initialized
+          }
+          this.hidePopup();
+          this.draggingRobo = robo; // Store the robot being dragged
+          // this.offsetX = imgX - roboX; // Store offset to maintain relative position during drag
+          // this.offsetY = imgY - roboY;
+          this.isDragging = true;
+          // console.log(this.isDragging,this.draggingRobo);
+          break;
+        }
+      } */
     });
   }
+
   addMouseUpListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mouseup', (event) => {
       if (this.isDragging && this.draggingRobo) {
-         this.isDragging = false;
-         this.draggingRobo=this.selectedRobo;
-         this.draggingRobo = null;
+        this.isDragging = false;
+        this.draggingRobo = this.selectedRobo;
+        this.draggingRobo = null;
         this.redrawCanvas();
       }
-  });
+    });
   }
+
   addMouseClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('click', (event) => {
       // if (!this.showModelCanvas) return;
@@ -477,8 +575,12 @@ updatedrobo: any;
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
 
-      console.log( 'mouse is clicked in:', Math.round(imgX) * this.ratio, Math.round(imgY) * this.ratio );
-      console.log(this.isDragging,this.draggingRobo);
+      console.log(
+        'mouse is clicked in:',
+        Math.round(imgX) * this.ratio,
+        Math.round(imgY) * this.ratio
+      );
+      console.log(this.isDragging, this.draggingRobo);
 
       // Check if the click is within the bounds of the map image
       const isInsideMap =
@@ -497,11 +599,16 @@ updatedrobo: any;
         const roboX = robo.pos.x;
         const roboY = this.mapImageHeight - robo.pos.y;
         console.log('robo pos:', roboX * this.ratio, roboY * this.ratio);
-        
+
         // Assuming the robot image is a square, check if the click is within the image bounds
         const imageSize = 25; // Adjust this to the size of the robot image
 
-        if ( imgX >= roboX - imageSize && imgX <= roboX + imageSize && imgY >= roboY - imageSize && imgY <= roboY + imageSize ) {
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
           console.log(`Robot clicked: ${robo.roboDet.id}`);
           break;
         } else {
@@ -510,11 +617,11 @@ updatedrobo: any;
       }
     });
   }
+
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     const tooltip = document.getElementById('Pos_tooltip')!;
-    
-    canvas.addEventListener('mousemove', (event) => {
 
+    canvas.addEventListener('mousemove', (event) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -528,13 +635,16 @@ updatedrobo: any;
         let newY = (mouseY - this.mapImageY - this.offsetY) / this.zoomLevel;
         // Update the position of the robot being dragged
         newX = Math.max(0, Math.min(newX, this.mapImageWidth / this.zoomLevel));
-        newY = Math.max( 0, Math.min(newY, this.mapImageHeight / this.zoomLevel) );
+        newY = Math.max(
+          0,
+          Math.min(newY, this.mapImageHeight / this.zoomLevel)
+        );
 
         // Update the robot's position
         this.draggingRobo.pos.x = newX;
         this.draggingRobo.pos.y = newY;
-        console.log(newX,newY);
-        
+        console.log(newX, newY);
+
         // Redraw the canvas with the updated robot position
       }
       this.redrawCanvas();
@@ -562,6 +672,7 @@ updatedrobo: any;
       tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
     });
   }
+
   // List of robots
   robots = [
     { name: 'Robot 1', enabled: false },
@@ -650,8 +761,14 @@ updatedrobo: any;
 
       return robo;
     });
+
+    this.mapImg = new Image();
+    let imgName = this.projectService.getMapData();
+    this.mapImg.src = `http://${imgName.imgUrl}`;
   }
+
   drawElements(ctx: CanvasRenderingContext2D) {}
+
   async fetchRoboPos(x: number, y: number, yaw: number) {
     // console.log(amrPos);
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -703,6 +820,7 @@ updatedrobo: any;
       this.plotRobo(ctx, x, transformedY, yaw);
     }
   }
+
   // async fetchRoboPos() {
   //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
   //   const ctx = canvas.getContext('2d');
@@ -941,7 +1059,7 @@ updatedrobo: any;
 
     this.posEventSource = new EventSource(URL);
     this.posEventSource.onmessage = (event) => {
-      if( this.isEnableMode ) this.isEnableMode = true;
+      if (this.isEnableMode) this.isEnableMode = true;
       const robotsData: any = {};
 
       try {
@@ -1137,6 +1255,7 @@ updatedrobo: any;
       console.error('Insufficient points or zone type not selected');
     }
   }
+
   private drawEdge(
     ctx: CanvasRenderingContext2D,
     startPos: { x: number; y: number },
@@ -1182,6 +1301,7 @@ updatedrobo: any;
       );
     }
   }
+
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
@@ -1252,10 +1372,12 @@ updatedrobo: any;
     this.zoomLevel /= 1.2;
     this.loadCanvas();
   }
+
   onMouseLeave() {
     this.isPanning = false;
     document.body.style.cursor = 'default'; // Ensure the cursor resets when mouse leaves the canvas
   }
+
   panStart(event: MouseEvent) {
     if (this.isPanning) {
       this.lastX = event.clientX;
@@ -1265,11 +1387,13 @@ updatedrobo: any;
       document.body.style.cursor = 'grabbing';
     }
   }
+
   // Rest of your existing component methods like panStart(), toggleONBtn(), etc.
   panStartModelCanvas(event: MouseEvent) {
     // Handle pan start for modelCanvas
     console.log('Panning on Model Canvas', event);
   }
+
   panMove = (event: MouseEvent) => {
     if (this.isPanning) {
       const deltaX = event.clientX - this.lastX;
@@ -1293,6 +1417,7 @@ updatedrobo: any;
       document.body.style.cursor = 'default';
     }
   };
+
   handleZoom(event: WheelEvent) {
     event.preventDefault();
     const zoomIntensity = 0.1;
@@ -1309,6 +1434,7 @@ updatedrobo: any;
 
     if (ctx) this.draw(ctx, new Image());
   }
+
   togglePan() {
     this.isPanning = !this.isPanning;
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';

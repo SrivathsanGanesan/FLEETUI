@@ -73,7 +73,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
-  
+
   addForm: any;
   isPopupOpen: boolean = false;
   isScanning = false;
@@ -308,7 +308,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
 
-  async updateSimInMap(simRobots: any) : Promise<boolean> {
+  async updateSimInMap(simRobots: any) {
     let editedMap = {
       simMode: simRobots,
     };
@@ -392,13 +392,25 @@ export class ConfigurationComponent implements AfterViewInit {
   // edit robo..
   editRobo(robo: any) {
     // console.log(robo);
+      // Reset all form section visibility flags
+  this.isTypeSpecificationFormVisible = false;
+  this.isProtocolLimitsFormVisible = false;
+  this.isProtocolFeaturesFormVisible = false;
+  this.isAGVGeometryFormVisible = false;
+  this.isLoadSpecificationFormVisible = false;
+  this.isLocalizationParametersFormVisible = false;
     this.formData = robo.grossInfo;
     this.isPopupOpen = !this.isPopupOpen;
+  
+    // Track if we're in edit mode
     this.isRoboInEdit = !this.isRoboInEdit;
+  
+    // Store the currently edited robot for reference
     this.currEditRobo = robo;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
   }
+  
 
   async updateRobo() {
     if (!this.currEditRobo.roboName) {
@@ -1394,14 +1406,12 @@ setPaginatedData1(){
         if (this.currentTable === 'Environment') {
           this.EnvData = this.EnvData.filter((i) => i !== item);
           this.filteredEnvData = this.EnvData;
-          // this.paginatedData = this.filteredEnvData;
           this.cdRef.detectChanges();
         } else if (this.currentTable === 'robot') {
           this.filteredRobotData = this.robotData.filter((i) => i !== item);
           this.cdRef.detectChanges();
           this.reloadTable();
           this.setPaginatedData();
-          this.setPaginatedData1();
         }
         this.ngOnInit();
         this.reloadTable();
@@ -1689,9 +1699,9 @@ setPaginatedData1(){
       // isSimMode : false,
       ipAdd: this.currentRoboDet.ip,
       macAdd: this.currentRoboDet.mac,
-      grossInfo: this.formData,
+      grossInfo: this.addForm,
     };
-    if (roboDetails.roboName === '' || this.formData.manufacturer === '') {
+    if (roboDetails.roboName === '' || this.addForm.manufacturer === '') {
       alert('Manufacturer or roboname should be there');
       return;
     }
@@ -1751,7 +1761,7 @@ setPaginatedData1(){
   openPopup(item: any) {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
-    this.addForm.reset();
+    // this.addForm.reset();
     this.reset();
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
@@ -1801,6 +1811,7 @@ setPaginatedData1(){
       simRobo.push({
         amrId : i,
         roboName:`MR${i}00`,
+        pos :{ x: 0, y: 0, orientation: 0 },
         enable : false
       })
     }
