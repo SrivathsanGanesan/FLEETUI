@@ -3,8 +3,16 @@
   border: 1px solid #000;
   border-radius: 15px;
   padding: 20px;
+  /* padding-top: 2%; */
   /* background-color: #f9f9f9; */
 }
+.centers{
+  margin-top: 2rem;
+  width: 30%;
+  display: flex;
+  justify-content: center;
+}
+
 
 /* Main content area */
 .content-fluid1 {

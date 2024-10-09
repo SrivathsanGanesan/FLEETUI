@@ -80,22 +80,23 @@
             </div>
           </div>
 
-          <!-- Submit Button -->
-          <div class="form-control">
-            <div class="field mt-1">
-              <p-button
-                label="Submit"
-                type="submit"
-                class="block mt-1 pt-2"
-                icon="pi pi-check-circle"
-                styleClass="p-button-danger p-button1"
-                [disabled]="!batteryForm.minBattery || !batteryForm.warningBattery"
-                (onClick)="saveBatteryParams()"
-              ></p-button>
-            </div>
-          </div>
+
 
         </div>
+                  <!-- Submit Button -->
+                  <!-- <div class="form-control"> -->
+                    <div class="field mt-1 centers">
+                      <p-button
+                        label="Submit"
+                        type="submit"
+                        class="block mt-1 pt-2"
+                        icon="pi pi-check-circle"
+                        styleClass="p-button-danger p-button1"
+                        [disabled]="!batteryForm.minBattery || !batteryForm.warningBattery"
+                        (onClick)="saveBatteryParams()"
+                      ></p-button>
+                    </div>
+                  <!-- </div> -->
 
       <!-- </form> -->
     </div>

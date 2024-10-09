@@ -10,10 +10,10 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./statistics.component.css'],
 })
 export class StatisticsComponent {
-products: any;
-getSeverity(arg0: any) {
-throw new Error('Method not implemented.');
-}
+  products: any;
+  getSeverity(arg0: any) {
+    throw new Error('Method not implemented.');
+  }
   currentView: string = 'operation'; // Default to 'operation'
   operationPie: number[] = [0, 0, 0, 0, 0];
   selectedMap: any | null = null;
@@ -24,12 +24,36 @@ throw new Error('Method not implemented.');
   // ];
 
   notifications = [
-    { message: 'Low Battery', taskId: 'AMR-001', timestamp: '2024-08-16 14:32' },
-    { message: 'Task Assigned ', taskId: ' AMR-002', timestamp: '2024-08-16 14:32' },
-    { message: 'Obstacle Detected ', taskId: ' AMR-003', timestamp: '2024-08-16' },
-    { message: 'Obstacle Detected ', taskId: ' AMR-003', timestamp: '2024-08-16' },
-    { message: 'Obstacle Detected ', taskId: ' AMR-003', timestamp: '2024-08-16' },
-    { message: 'Obstacle Detected ', taskId: ' AMR-003', timestamp: '2024-08-16' },
+    {
+      message: 'Low Battery',
+      taskId: 'AMR-001',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Task Assigned ',
+      taskId: ' AMR-002',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Obstacle Detected ',
+      taskId: ' AMR-003',
+      timestamp: '2024-08-16',
+    },
+    {
+      message: 'Obstacle Detected ',
+      taskId: ' AMR-003',
+      timestamp: '2024-08-16',
+    },
+    {
+      message: 'Obstacle Detected ',
+      taskId: ' AMR-003',
+      timestamp: '2024-08-16',
+    },
+    {
+      message: 'Obstacle Detected ',
+      taskId: ' AMR-003',
+      timestamp: '2024-08-16',
+    },
     // { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   ];
 
@@ -76,7 +100,7 @@ throw new Error('Method not implemented.');
     this.operationPie = await this.fetchTasksStatus();
     setInterval(async () => {
       this.operationPie = await this.fetchTasksStatus();
-    }, 1000 * 2);
+    }, 1000 * 10);
     this.operationActivities = await this.fetchCurrTasksStatus();
     this.filteredOperationActivities = this.operationActivities;
     setInterval(async () => {
@@ -119,8 +143,9 @@ throw new Error('Method not implemented.');
     let successRate = await this.fetchFleetStatus('success-rate', {
       mapId: mapId,
     });
-    if (successRate.successRate)
-      this.statisticsData.successRate = successRate.successRate;
+    // yet to uncomment..
+    // if (successRate.successRate)
+    //   this.statisticsData.successRate = successRate.successRate;
     let responsiveness = await this.fetchFleetStatus('system-responsiveness', {
       mapId: mapId,
     });
@@ -149,16 +174,26 @@ throw new Error('Method not implemented.');
   }
 
   async fetchTasksStatus(): Promise<number[]> {
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(); // yet to take, in seri..
+    // timeStamp1 = 1728410917;
+    // timeStamp2 = 1728412500;
+
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-tasks-status/${this.selectedMap.id}`,
       {
         method: 'POST',
         credentials: 'include',
-        body: JSON.stringify({}),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
+        }),
       }
     );
     // if(!response.ok) throw new Error(`Error occured with status code of : ${response.status}`)
     let data = await response.json();
+
     if (data.error) {
       console.log('Err occured while getting tasks status : ', data.error);
       return [0, 0, 0, 0, 0];
@@ -167,7 +202,39 @@ throw new Error('Method not implemented.');
       alert(data.msg);
       return [0, 0, 0, 0, 0];
     }
-    if (data.tasksStatus) return data.tasksStatus;
+    // if (data.tasksStatus) return data.tasksStatus;
+    // ["completed", "In-progress", "todo", "err", "cancelled"];
+    let tasksStatus = [0, 0, 0, 0, 0];
+    let tot_tasks = 0;
+    if (data.tasks) {
+      let tasksStatusArr = data.tasks.map((task: any) => {
+        return task.task_status.status;
+      });
+      for (let task of tasksStatusArr) {
+        if (task === 'PICKED' || task === 'DROPPED' || task === 'COMPLETED')
+          tasksStatus[0] += 1;
+        else if (
+          task === 'INPROGRESS' ||
+          task === 'ONHOLD' ||
+          task === 'ACCEPTED'
+        )
+          tasksStatus[1] += 1;
+        else if (task === 'NOTASSIGNED') tasksStatus[2] += 1;
+        else if (task === 'FAILED' || task === 'REJECTED') tasksStatus[3] += 1;
+        else if (task === 'CANCELLED') tasksStatus[4] += 1;
+      }
+      for (let taskStatus of tasksStatus) {
+        tot_tasks += taskStatus;
+      }
+      let completedTasks = tasksStatus[0];
+      let errorTasks = tasksStatus[3];
+      let cancelledTasks = tasksStatus[4];
+      this.statisticsData.successRate = (
+        ((completedTasks + errorTasks + cancelledTasks) / tot_tasks) *
+        100
+      ).toFixed(2);
+      return tasksStatus;
+    }
     return [0, 0, 0, 0, 0];
   }
 
@@ -189,5 +256,18 @@ throw new Error('Method not implemented.');
     this.filteredNotifications = this.notifications.filter((notification) =>
       notification.message.toLowerCase().includes(query)
     );
+  }
+
+  getTimeStampsOfDay() {
+    let currentTime = Math.floor(new Date().getTime() / 1000);
+    let startTimeOfDay = this.getStartOfDay();
+    return {
+      timeStamp1: startTimeOfDay,
+      timeStamp2: currentTime,
+    };
+  }
+
+  getStartOfDay() {
+    return Math.floor(new Date().setHours(0, 0, 0) / 1000);
   }
 }

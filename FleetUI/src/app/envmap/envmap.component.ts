@@ -846,13 +846,19 @@ export class EnvmapComponent implements AfterViewInit {
   }
   addAction(): void {
     if (this.selectedAction && this.selectedNode) {
-
       let action: any;
-
+  
       if (this.selectedAction === 'Move') {
-        if(!this.moveParameters.maxLinearVelocity && !this.moveParameters.maxAngularVelocity && !this.moveParameters.maxToleranceAtGoalX && !this.moveParameters.maxToleranceAtGoalY && !this.moveParameters.maxToleranceAtGoalOrientation){
-          this.validationError = 'Move parameters are required else set to 0 in default.';
-          return
+        // Validate Move parameters
+        if (
+          this.moveParameters.maxLinearVelocity === undefined &&
+          this.moveParameters.maxAngularVelocity === undefined &&
+          this.moveParameters.maxToleranceAtGoalX === undefined &&
+          this.moveParameters.maxToleranceAtGoalY === undefined &&
+          this.moveParameters.maxToleranceAtGoalOrientation === undefined
+        ) {
+          this.validationError = 'Move parameters are required, else set to 0 as default.';
+          return;
         }
         action = {
           actionType: this.selectedAction,
@@ -861,10 +867,20 @@ export class EnvmapComponent implements AfterViewInit {
           parameters: { ...this.moveParameters },
         };
         this.actionCounter++;
+  
       } else if (this.selectedAction === 'Dock') {
-        if(!this.dockParameters.maxLinearVelocity && !this.dockParameters.maxAngularVelocity && !this.dockParameters.maxToleranceAtGoalX && !this.dockParameters.maxToleranceAtGoalY && !this.dockParameters.goalOffsetX && !this.dockParameters.goalOffsetY && !this.dockParameters.goalOffsetOrientation){
-          this.validationError = 'Dock parameters are required else set to 0 in default.';
-          return
+        // Validate Dock parameters
+        if (
+          this.dockParameters.maxLinearVelocity === undefined &&
+          this.dockParameters.maxAngularVelocity === undefined &&
+          this.dockParameters.maxToleranceAtGoalX === undefined &&
+          this.dockParameters.maxToleranceAtGoalY === undefined &&
+          this.dockParameters.goalOffsetX === undefined &&
+          this.dockParameters.goalOffsetY === undefined &&
+          this.dockParameters.goalOffsetOrientation === undefined
+        ) {
+          this.validationError = 'Dock parameters are required, else set to 0 as default.';
+          return;
         }
         action = {
           actionType: this.selectedAction,
@@ -873,36 +889,46 @@ export class EnvmapComponent implements AfterViewInit {
           parameters: { ...this.dockParameters },
         };
         this.actionCounter++;
+  
       } else if (this.selectedAction === 'Undock') {
-        if(!this.undockParameters.maxAngularVelocity && !this.undockParameters.maxAngularVelocity && !this.undockParameters.maxToleranceAtGoalX && !this.undockParameters.maxToleranceAtGoalY && !this.undockParameters.maxToleranceAtGoalOrientation){
-          this.validationError = 'Undock parameters are required else set to 0 in default.';
-          return
+        // Validate Undock parameters
+        if (
+          this.undockParameters.maxLinearVelocity === undefined &&
+          this.undockParameters.maxAngularVelocity === undefined &&
+          this.undockParameters.maxToleranceAtGoalX === undefined &&
+          this.undockParameters.maxToleranceAtGoalY === undefined &&
+          this.undockParameters.maxToleranceAtGoalOrientation === undefined
+        ) {
+          this.validationError = 'Undock parameters are required, else set to 0 as default.';
+          return;
         }
         action = {
           actionType: this.selectedAction,
           actionId: `action_${this.actionCounter}`,
-          actionDescription: 'undock from the charging station',
+          actionDescription: 'Undock from the charging station',
           parameters: { ...this.undockParameters },
         };
         this.actionCounter++;
       }
-
-
-
+  
       // Remove selected action from the dropdown options
       this.actionOptions = this.actionOptions.filter(option => option.value !== this.selectedAction);
-      // this.actions.push(action);
+  
+      // Map actions to selected node
       this.nodes = this.nodes.map((node) => {
-        console.log(this.selectedNode?.nodeId, node.nodeId);
-        if (this.selectedNode?.nodeId === node.nodeId) node.actions.push(action);
+        if (this.selectedNode?.nodeId === node.nodeId) {
+          node.actions.push(action);
+        }
         return node;
       });
+  
       this.cdRef.detectChanges();
-
+  
       // Hide the form after adding
       this.hideActionForms();
     }
   }
+  
   openMoveActionForm(): void {
     this.isMoveActionFormVisible = true;
     this.isDockActionFormVisible = true;

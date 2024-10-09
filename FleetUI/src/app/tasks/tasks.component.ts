@@ -62,6 +62,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   async ngOnInit() {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    // timeStamp1 = 1728410917;
+    // timeStamp2 = 1728412500;
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
     const response = await fetch(
@@ -96,13 +98,12 @@ export class TasksComponent implements OnInit, AfterViewInit {
           sourceLocation: task.sub_task[0]?.source_location
             ? task.sub_task[0]?.source_location
             : 'N/A',
-            destinationLocation:''
+          destinationLocation: '',
         };
       });
     this.filteredTaskData = this.tasks;
     console.log(this.tasks);
     this.setPaginatedData();
-
 
     // Simulate some delay, such as an API call
   }

@@ -75,7 +75,7 @@ const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
   }
 };
 
-const fetchGetAmrLoc = async ({ endpoint, bodyData, method = "GET" }) => {
+const fetchFleetInfo = async ({ endpoint, bodyData, method = "GET" }) => {
   try {
     let response = await fetch(
       `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
@@ -89,10 +89,10 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData, method = "GET" }) => {
         body: JSON.stringify(bodyData),
       }
     );
-    if (!response.ok) {
-      console.log("failed while sending node graph");
+    /* if (!response.ok) {
+      console.log("failed while fetching fleet data.. might tasks!");
       return null;
-    }
+    } */
     return await response.json();
   } catch (error) {
     if (error.cause) return error.cause?.code;
@@ -101,7 +101,7 @@ const fetchGetAmrLoc = async ({ endpoint, bodyData, method = "GET" }) => {
 };
 
 // initMqttConnection();
-initRabbitMQConnection();
+// initRabbitMQConnection();
 
 const initializeRobo = async (req, res) => {
   const { mapId, initializeRobo } = req.body;
@@ -111,7 +111,7 @@ const initializeRobo = async (req, res) => {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
-    let initRoboPos = await fetchGetAmrLoc({
+    let initRoboPos = await fetchFleetInfo({
       endpoint: "initialise",
       bodyData: initializeRobo,
       method: "POST",
@@ -119,7 +119,7 @@ const initializeRobo = async (req, res) => {
 
     /* let showsplinePos = null;
     if (initRoboPos.errorCode === 1000)
-      showsplinePos = await fetchGetAmrLoc({
+      showsplinePos = await fetchFleetInfo({
         endpoint: "showSpline",
         bodyData: { robotId: initializeRobo.id, enable: true },
         method: "POST",
@@ -170,7 +170,7 @@ const showSpline = async (req, res) => {
     robotId: 0,
     enable: true,
   };
-  let splineRes = await fetchGetAmrLoc("showSpline", splineData);
+  let splineRes = await fetchFleetInfo("showSpline", splineData);
   if (splineRes.errorCode !== 1000) {
     res.status(500).json({ isShowSplined: false, msg: "not attained" });
   }
@@ -197,7 +197,7 @@ const enableRobo = async (req, res) => {
         .status(400)
         .json({ isShowSplined: false, msg: "Map not found!", map: null });
 
-    let enableRoboRes = await fetchGetAmrLoc({
+    let enableRoboRes = await fetchFleetInfo({
       endpoint: "enableRobot",
       bodyData: roboToEnable,
       method: "POST",
@@ -219,21 +219,39 @@ const enableRobo = async (req, res) => {
 
 const getGrossTaskStatus = async (req, res) => {
   const mapId = req.params.mapId;
+  const mapData = req.body;
+  let { timeStamp1, timeStamp2 } = mapData;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
     const map = await Map.findOne({ _id: mapId });
-    let tasksStatus = [];
+    let timeStamp = {
+      timeStamp1: timeStamp1,
+      timeStamp2: timeStamp2,
+    };
+    /* let tasks = await fetchFleetInfo({
+      endpoint: "get_tasks_list",
+      bodyData: timeStamp,
+      method: "POST",
+    }); */
+
+     let tasksStatus = [];
     for (let i of [1, 2, 3, 4, 5]) {
       tasksStatus.push(Math.floor(Math.random() * 10));
     }
-    return res
-      .status(200)
-      .json({ tasksStatus: tasksStatus, map: map, msg: "data sent!" });
+
+    return res.status(200).json({
+      tasksStatus: tasksStatus,
+      // tasks: tasks.tasks,
+      map: map,
+      msg: "data sent!",
+    });
   } catch (error) {
-    console.error("Error in getting tasks status :", err);
-    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+    console.error("Error in getting tasks status :", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
 

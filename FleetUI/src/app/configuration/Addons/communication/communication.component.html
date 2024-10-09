@@ -10,18 +10,33 @@
               <h4><b>WES Communications:</b></h4>
               <div class="field">
                 <!-- External Interface IP -->
-                <label for="externalInterfaceIp">External Interface IP :  </label>
-                <input
-                  class="input"
-                  type="text"
-                  minlength="7"
-                  maxlength="15"
-                  size="15"
-                  placeholder="Enter"
-                  [(ngModel)]="formData.externalInterfaceIp"
-                  pInputText
-                  required
-                />
+                <div class="field">
+                  <label for="externalInterfaceIp">External Interface IP: </label>
+                  <input
+                    class="input"
+                    type="text"
+                    minlength="7"
+                    maxlength="15"
+                    size="15"
+                    placeholder="Enter"
+                    [(ngModel)]="formData.externalInterfaceIp"
+                    name="externalInterfaceIp"
+                    pInputText
+                    required
+                    pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" 
+                    #externalInterfaceIpInput="ngModel"
+                  />
+                </div>
+                
+                <div *ngIf="externalInterfaceIpInput.errors && externalInterfaceIpInput.touched">
+                  <small class="text-danger" *ngIf="externalInterfaceIpInput.errors['required']">
+                    *External Interface IP is required.
+                  </small>
+                  <small class="text-danger" *ngIf="externalInterfaceIpInput.errors['pattern']">
+                    *Please enter a valid IP address.
+                  </small>
+                </div>
+                
 
                 <!-- External Interface Type -->
                 <label for="externalInterfaceType" style="margin-left: 8rem;">External Interface Type : </label>
@@ -39,18 +54,33 @@
               <h4><b>Communication:</b> </h4>
               <div class="field2">
                 <!-- Robot Interface IP -->
-                <label for="roboInterfaceIp" style="margin-right: 1.5rem;">Robot Interface IP :  </label>
-                <input
-                  class="input"
-                  type="text"
-                  minlength="7"
-                  maxlength="15"
-                  size="15"
-                  placeholder="Enter"
-                  [(ngModel)]="formData.roboInterfaceIp"
-                  pInputText
-                  required
-                />
+                <div class="field">
+                  <label for="roboInterfaceIp" style="margin-right: 1.5rem;">Robot Interface IP: </label>
+                  <input
+                    class="input"
+                    type="text"
+                    minlength="7"
+                    maxlength="15"
+                    size="15"
+                    placeholder="Enter"
+                    [(ngModel)]="formData.roboInterfaceIp"
+                    name="roboInterfaceIp"
+                    pInputText
+                    required
+                    pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" 
+                    #roboInterfaceIpInput="ngModel"
+                  />
+                </div>
+                
+                <div *ngIf="roboInterfaceIpInput.errors && roboInterfaceIpInput.touched">
+                  <small class="text-danger" *ngIf="roboInterfaceIpInput.errors['required']">
+                    *Robot Interface IP is required.
+                  </small>
+                  <small class="text-danger" *ngIf="roboInterfaceIpInput.errors['pattern']">
+                    *Please enter a valid IP address.
+                  </small>
+                </div>
+                
 
                 <!-- Robot Interface Type -->
                 <label for="roboInterfaceType" style="margin-left: 8rem;margin-right: 2rem;">Robot Interface Type : </label>
@@ -80,12 +110,13 @@
                   <label [for]="category.key" class="category-label">{{ category.name }}</label>
                 </div>
               </div>
-
-              <!-- Validation for Category Selection -->
+            
+              <!-- Validation for Category Selection
               <div *ngIf="!selectedCategory" class="validation-error">
-                <small>Select a communication type.</small>
-              </div>
+                <small class="text-danger">*Select a communication type.</small>
+              </div> -->
             </div>
+            
 
             <!-- Submit Button -->
             <div class="head1">

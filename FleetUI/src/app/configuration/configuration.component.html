@@ -258,7 +258,7 @@
                   </td>
                   <!-- <td colspan="4" class="iconTable">No data found</td> -->
                 </tr>
-                <tr *ngFor="let item of paginatedData1; index as i;trackBy: trackByTaskId" [class.paused]="item.paused">
+                <tr *ngFor="let item of paginatedData1; index as i;trackBy: trackByTaskName" [class.paused]="item.paused">
                   <td><input type="checkbox" [(ngModel)]="item.isSimMode" /></td>
                   <td>{{ (paginator ? paginator.pageIndex * paginator.pageSize : 0) + i + 1 }}</td>
                   <td>{{ item.ipAdd }}</td>
@@ -295,7 +295,7 @@
                     [length]="filteredRobotData.length"
                     [pageSize]="5"
                     [pageSizeOptions]="[5, 10]"
-                    (page)="onPageChange($event)"
+                    (page)="onPageChanges($event)"
                     showFirstLastButtons
                   >
                   </mat-paginator>
@@ -317,21 +317,40 @@
             <!-- Add this in your main component HTML -->
             <div class="form-group" *ngIf="currentTable === 'robot'">
               <label for="ipRangeFrom">IP Range:</label>
-              <input
-                pInputText
-                id="ipRangeFrom"
-                type="text"
-                placeholder="255.255.0.0"
-                [(ngModel)]="startIP"
-              />
+              <div class="uservalid">
+                <input
+                  pInputText
+                  id="ipRangeFrom"
+                  type="text"
+                  placeholder="255.255.0.0"
+                  [(ngModel)]="startIP"
+                  name="startIP"
+                  pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$"
+                  #startIPInput="ngModel"
+                  required
+                />
+                <span *ngIf="startIPInput.invalid && startIPInput.touched" class="error">
+                  <!-- Invalid IP Address -->
+                </span>
+              </div>
+              
               <span>to: </span>
-              <input
-                pInputText
-                id="ipRangeTo"
-                type="text"
-                placeholder="255.255.0.0"
-                [(ngModel)]="EndIP"
-              />
+              <div class="uservalid">
+                <input
+                  pInputText
+                  id="ipRangeTo"
+                  type="text"
+                  placeholder="255.255.0.0"
+                  [(ngModel)]="EndIP"
+                  name="endIP"
+                  pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$"
+                  #endIPInput="ngModel"
+                  required
+                />
+                <span *ngIf="endIPInput.invalid && endIPInput.touched" class="error">
+                  <!-- Invalid IP Address -->
+                </span>
+            </div>
 
               <button
                 type="button"
