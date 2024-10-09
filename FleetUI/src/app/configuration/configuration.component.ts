@@ -1412,7 +1412,6 @@ setPaginatedData1(){
           this.cdRef.detectChanges();
           this.reloadTable();
           this.setPaginatedData();
-          this.setPaginatedData1();
         }
         this.ngOnInit();
         this.reloadTable();
