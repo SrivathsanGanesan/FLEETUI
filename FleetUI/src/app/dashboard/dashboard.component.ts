@@ -156,13 +156,7 @@ export class DashboardComponent implements AfterViewInit {
         const roboX = robo.pos.x;
         const roboY = this.mapImageHeight - robo.pos.y;
         const imageSize = 25; // Adjust size based on robot image dimensions
-
-        if (
-          imgX >= roboX - imageSize &&
-          imgX <= roboX + imageSize &&
-          imgY >= roboY - imageSize &&
-          imgY <= roboY + imageSize
-        ) {
+      if ( imgX >= roboX - imageSize && imgX <= roboX + imageSize && imgY >= roboY - imageSize && imgY <= roboY + imageSize ) {
           // Show the popup at the clicked position
           this.showPopup(event.clientX, event.clientY);
           this.updatedrobo = robo;
@@ -275,6 +269,7 @@ export class DashboardComponent implements AfterViewInit {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
     if (!this.showModelCanvas) {
+      console.log("hey")
       this.nodes = [];
     } else {
       await this.getMapDetails();
@@ -298,6 +293,7 @@ export class DashboardComponent implements AfterViewInit {
       };
     }
   }
+  
   loadCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -320,8 +316,7 @@ export class DashboardComponent implements AfterViewInit {
 
         // Center the image on the canvas
         this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-        this.mapImageY =
-          (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+        this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
 
         // Draw the image and other elements
         this.draw(ctx, img);
@@ -423,7 +418,7 @@ export class DashboardComponent implements AfterViewInit {
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
 
-      if (!this.showModelCanvas) return;
+      // if (!this.showModelCanvas) return;
       // if (event.button) return;
       
       const rect = canvas.getBoundingClientRect();
@@ -469,7 +464,7 @@ export class DashboardComponent implements AfterViewInit {
   }
   addMouseClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('click', (event) => {
-      if (!this.showModelCanvas) return;
+      // if (!this.showModelCanvas) return;
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -535,6 +530,8 @@ export class DashboardComponent implements AfterViewInit {
         // Update the robot's position
         this.draggingRobo.pos.x = newX;
         this.draggingRobo.pos.y = newY;
+        console.log(newX,newY);
+        
         // Redraw the canvas with the updated robot position
       }
       this.redrawCanvas();
