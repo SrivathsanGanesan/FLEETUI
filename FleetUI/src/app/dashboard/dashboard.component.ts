@@ -109,7 +109,7 @@ export class DashboardComponent implements AfterViewInit {
   isDragging:boolean=false;
   isMapLoaded = false;
   isImage: boolean = false
-updatedrobo: any;
+  updatedrobo: any;
   
   constructor(
     private projectService: ProjectService,
@@ -118,6 +118,22 @@ updatedrobo: any;
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
   }
+
+  async ngOnInit() {
+    this.selectedMap = this.projectService.getMapData();
+    if (!this.projectService.getMapData()) {
+      await this.onInitMapImg();
+      this.isMapLoaded = false;
+      return;
+    }
+    await this.getMapDetails();
+    this.loadCanvas();
+    this.initSimRoboPos()
+
+    // this.toggleModelCanvas();
+    // await this.fetchRoboPos();
+  }
+
   ngAfterViewInit(): void {
     console.log('myCanvas:', this.myCanvas);
     if (this.myCanvas) {
@@ -142,6 +158,10 @@ updatedrobo: any;
 
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
+  }
+
+  async initSimRoboPos(){
+    console.log(this.simMode);
   }
 
   addRightClickListener(canvas: HTMLCanvasElement) {
@@ -251,22 +271,11 @@ updatedrobo: any;
   cancelAction() {
     this.hidePopup();
   }
+
   enableMove() {
     this.hidePopup(); // Hide the popup after enabling move mode
   }  
-  async ngOnInit() {
-    this.selectedMap = this.projectService.getMapData();
-    if (!this.projectService.getMapData()) {
-      await this.onInitMapImg();
-      this.isMapLoaded = false;
-      return;
-    }
-    this.getMapDetails();
-    this.loadCanvas();
-
-    // this.toggleModelCanvas();
-    // await this.fetchRoboPos();
-  }
+  
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
@@ -280,6 +289,7 @@ updatedrobo: any;
     this.loadCanvas(); // Redraw the canvas based on the updated state
     // this.fetchRoboPos();
   }
+
   redrawCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -326,6 +336,7 @@ updatedrobo: any;
       };
     }
   }
+
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -345,6 +356,8 @@ updatedrobo: any;
     // Draw the image
     ctx.drawImage(img, 0, 0);
     // yet to uncomment
+    console.log(this.robos);
+    
     this.robos.forEach(
       (robo) =>
         this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
@@ -407,6 +420,7 @@ updatedrobo: any;
 
     ctx.restore(); // Reset transformation after drawing
   }
+
   isRobotClicked(robo: any, x: number, y: number): boolean {
     const imageSize = 25;
     const roboX = robo.pos.x;
@@ -418,6 +432,7 @@ updatedrobo: any;
     // console.log(distance, imageSize*1.5);
     return distance <= imageSize * 1.5; // Adjust this based on the robot's size
   }
+
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
 
@@ -455,6 +470,7 @@ updatedrobo: any;
       }
     });
   }
+
   addMouseUpListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mouseup', (event) => {
       if (this.isDragging && this.draggingRobo) {
@@ -465,6 +481,7 @@ updatedrobo: any;
       }
   });
   }
+
   addMouseClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('click', (event) => {
       // if (!this.showModelCanvas) return;
@@ -510,6 +527,7 @@ updatedrobo: any;
       }
     });
   }
+
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     const tooltip = document.getElementById('Pos_tooltip')!;
     
@@ -562,6 +580,7 @@ updatedrobo: any;
       tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
     });
   }
+
   // List of robots
   robots = [
     { name: 'Robot 1', enabled: false },
@@ -651,7 +670,9 @@ updatedrobo: any;
       return robo;
     });
   }
+
   drawElements(ctx: CanvasRenderingContext2D) {}
+
   async fetchRoboPos(x: number, y: number, yaw: number) {
     // console.log(amrPos);
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -703,6 +724,7 @@ updatedrobo: any;
       this.plotRobo(ctx, x, transformedY, yaw);
     }
   }
+
   // async fetchRoboPos() {
   //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
   //   const ctx = canvas.getContext('2d');
@@ -1137,6 +1159,7 @@ updatedrobo: any;
       console.error('Insufficient points or zone type not selected');
     }
   }
+
   private drawEdge(
     ctx: CanvasRenderingContext2D,
     startPos: { x: number; y: number },
@@ -1182,6 +1205,7 @@ updatedrobo: any;
       );
     }
   }
+
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
@@ -1252,10 +1276,12 @@ updatedrobo: any;
     this.zoomLevel /= 1.2;
     this.loadCanvas();
   }
+
   onMouseLeave() {
     this.isPanning = false;
     document.body.style.cursor = 'default'; // Ensure the cursor resets when mouse leaves the canvas
   }
+
   panStart(event: MouseEvent) {
     if (this.isPanning) {
       this.lastX = event.clientX;
@@ -1265,11 +1291,13 @@ updatedrobo: any;
       document.body.style.cursor = 'grabbing';
     }
   }
+
   // Rest of your existing component methods like panStart(), toggleONBtn(), etc.
   panStartModelCanvas(event: MouseEvent) {
     // Handle pan start for modelCanvas
     console.log('Panning on Model Canvas', event);
   }
+
   panMove = (event: MouseEvent) => {
     if (this.isPanning) {
       const deltaX = event.clientX - this.lastX;
@@ -1293,6 +1321,7 @@ updatedrobo: any;
       document.body.style.cursor = 'default';
     }
   };
+
   handleZoom(event: WheelEvent) {
     event.preventDefault();
     const zoomIntensity = 0.1;
@@ -1309,6 +1338,7 @@ updatedrobo: any;
 
     if (ctx) this.draw(ctx, new Image());
   }
+
   togglePan() {
     this.isPanning = !this.isPanning;
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
