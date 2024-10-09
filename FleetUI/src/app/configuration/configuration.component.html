@@ -49,14 +49,14 @@
           </div>
 
           <!-- Popup for selecting robots -->
-          <div *ngIf="isPopupVisible" class="popup-modal">
-            <div class="popup-content">
+          <div *ngIf="isPopupVisible" class="sim-popup-modal">
+            <div class="sim-popup-content">
               <h3>Enter the Number of Robots</h3>
           
               <label for="robots">Number of Robots:</label>
               <input type="number" [(ngModel)]="robotCount" id="robots" placeholder="Enter number of robots">
             
-              <div class="button-container">
+              <div class="sim-button-container">
                 <button (click)="addRobot()">Add</button>
                 <button (click)="closePopup()">Cancel</button>
               </div>

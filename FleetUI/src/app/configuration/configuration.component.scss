@@ -1148,7 +1148,7 @@ edit button */
 //  simulation
 /* robots.component.css */
 /* Modal background overlay */
-.popup-modal {
+.sim-popup-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -1162,7 +1162,7 @@ edit button */
 }
 
 /* Modal content */
-.popup-content {
+.sim-popup-content {
   background-color: #fff; /* White background */
   padding: 20px 30px; /* Space around the content */
   border-radius: 8px; /* Rounded corners */
@@ -1174,7 +1174,7 @@ edit button */
 }
 
 /* Title */
-.popup-content h3 {
+.sim-popup-content h3 {
   margin-bottom: 20px;
   font-size: 1.5rem;
   color: #333; /* Dark text color */
@@ -1182,7 +1182,7 @@ edit button */
 }
 
 /* Input field */
-.popup-content input[type="number"] {
+.sim-popup-content input[type="number"] {
   width: 100%; /* Full width input */
   padding: 10px; /* Internal padding */
   margin-top: 10px;
@@ -1194,14 +1194,14 @@ edit button */
 }
 
 /* Button container to manage the layout */
-.button-container {
+.sim-button-container {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
 }
 
 /* Buttons styling */
-.popup-content button {
+.sim-popup-content button {
   width: 48%; /* Each button takes up half the width */
   padding: 10px; /* Internal padding */
   border: none; /* Remove default border */
@@ -1212,24 +1212,24 @@ edit button */
   transition: background-color 0.3s ease; /* Smooth color change */
 }
 
-.popup-content button:first-child {
+.sim-popup-content button:first-child {
   background-color: #28a745; /* Green background for "Add" */
 }
 
-.popup-content button:first-child:hover {
+.sim-popup-content button:first-child:hover {
   background-color: #218838; /* Darker green on hover */
 }
 
-.popup-content button:last-child {
+.sim-popup-content button:last-child {
   background-color: #FF3733; /* Red background for "Cancel" */
 }
 
-.popup-content button:last-child:hover {
+.sim-popup-content button:last-child:hover {
   background-color: #FF3733; /* Darker red on hover */
 }
 
 /* Styling for total robots display */
-.popup-content p {
+.sim-popup-content p {
   margin-top: 15px;
   font-size: 1.2rem;
   font-weight: bold;
@@ -1240,86 +1240,7 @@ edit button */
 
 //  simulation
 /* robots.component.css */
-/* Modal background overlay */
-.popup-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Ensures it is on top */
-}
 
-/* Modal content */
-.popup-content {
-  background-color: #fff; /* White background */
-  padding: 20px 30px; /* Space around the content */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Drop shadow */
-  width: 320px; /* Fixed width for consistency */
-  text-align: center;
-  position: relative; /* Positioned relative to the modal */
-  z-index: 1001; /* Ensures the content is above the background */
-}
-
-/* Title */
-.popup-content h3 {
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  color: #333; /* Dark text color */
-  font-weight: bold;
-}
-
-/* Input field */
-.popup-content input[type="number"] {
-  width: 100%; /* Full width input */
-  padding: 10px; /* Internal padding */
-  margin-top: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc; /* Border around the input */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 1rem; /* Readable font size */
-  box-sizing: border-box; /* Prevents padding from affecting width */
-}
-
-/* Button container to manage the layout */
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-/* Buttons styling */
-.popup-content button {
-  width: 48%; /* Each button takes up half the width */
-  padding: 10px; /* Internal padding */
-  border: none; /* Remove default border */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 1rem; /* Font size for the buttons */
-  cursor: pointer; /* Pointer cursor */
-  color: #fff; /* White text */
-  transition: background-color 0.3s ease; /* Smooth color change */
-}
-
-.popup-content button:first-child {
-  background-color: #28a745; /* Green background for "Add" */
-}
-
-.popup-content button:first-child:hover {
-  background-color: #218838; /* Darker green on hover */
-}
-
-.popup-content button:last-child {
-  background-color: #FF3733; /* Red background for "Cancel" */
-}
-
-.popup-content button:last-child:hover {
-  background-color: #FF3733; /* Darker red on hover */
-}
 
 /* Styling for total robots display */
 .popup-content p {
