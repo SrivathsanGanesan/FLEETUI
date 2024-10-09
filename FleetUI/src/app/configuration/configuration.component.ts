@@ -169,6 +169,7 @@ export class ConfigurationComponent implements AfterViewInit {
     try {
       this.loadData();
       this.setPaginatedData();
+      this.setPaginatedData1();
       this.selectFirstMapIfNoneSelected();
       this.filteredEnvData = [...this.EnvData];
       this.filteredRobotData = [...this.robotData];
@@ -378,7 +379,7 @@ export class ConfigurationComponent implements AfterViewInit {
       if (data.error) return;
       if (data.populatedRobos) this.robotData = data.populatedRobos;
       this.filteredRobotData = this.robotData;
-      this.setPaginatedData();
+      this.setPaginatedData1();
       this.reloadTable();
       // console.log(this.filteredRobotData)
       // this.filteredRobotData = data.populatedRobos;
@@ -395,7 +396,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isRoboInEdit = !this.isRoboInEdit;
     this.currEditRobo = robo;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
-    // this.cdRef.detectChanges();
+    this.cdRef.detectChanges();
   }
 
   async updateRobo() {
@@ -439,7 +440,22 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   deleteRobo(robo: any) {
+    // const dialogRef = this.dialog.open(ConfirmationDialogComponent);
+    // let isDeleted = false;
 
+    // dialogRef.afterClosed().subscribe(async (result) => {
+    //   if (result) isDeleted = await this.deleteMap(item);
+    //   if (isDeleted) {
+    //     if (item.id === this.projectService.getMapData().id) {
+    //       this.projectService.setIsMapSet(false);
+    //       this.projectService.clearMapData();
+    //       // this.ngOnInit();
+    //     }
+    // const dialogbox = this.dialog.open(ConfirmationDialogComponent);
+    // let isDeleted = false;
+    // dialogbox.afterClosed().subscribe(async (result) =>{
+    //   if(result) isDeleted = await this.deleteRobo(item);
+    // })
     let project = this.projectService.getSelectedProject();
     let map = this.projectService.getMapData();
     let roboInfo = {
@@ -465,9 +481,10 @@ export class ConfigurationComponent implements AfterViewInit {
             summary: 'Success',
             detail: 'Robot deleted successfully!',
           });
-          this.cdRef.detectChanges();
           this.fetchRobos();
-          this.setPaginatedData();
+          this.setPaginatedData1();
+          this.cdRef.detectChanges();
+          this.ngOnInit();
         } else {
           this.messageService.add({
             severity: 'error',
@@ -491,68 +508,78 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   trackByTaskName(index:number, item:any): number{
-    return item.ipAdd;
+    return item._id;
   }
 
-  setPaginatedData() {
-    const pageSize = this.paginator?.pageSize || 5;
-    const pageIndex = this.paginator?.pageIndex || 0;
-  
-    if (this.currentTable === 'Environment') {
-      // Step 1: Ensure data is available
-      if (!this.EnvData || this.EnvData.length === 0) {
-        return; // No data, exit the function
-      }
-  
-      // Step 2: Handle small datasets (<= 5 items)
-      if (this.filteredEnvData.length <= 5) {
-        this.paginatedData = [...this.filteredEnvData]; // Show all data without pagination
-      } else {
-        // Step 3: Handle larger datasets with pagination
-        const startIndex = pageIndex * pageSize;
-        this.paginatedData = this.filteredEnvData.slice(startIndex, startIndex + pageSize);
-      }
-  
-      // Update paginator length for environment data
-      if (this.paginator) {
-        this.paginator.length = this.filteredEnvData.length;
-      }
-    } else if (this.currentTable === 'robot') {
-      // Step 1: Ensure data is available
-      if (!this.filteredRobotData || this.filteredRobotData.length === 0) {
-        return; // No data, exit the function
-      }
-  
-      // Step 2: Handle small datasets (<= 5 items)
-      if (this.filteredRobotData.length <= 5) {
-        this.paginatedData1 = [...this.filteredRobotData]; // Show all data without pagination
-      } else {
-        // Step 3: Handle larger datasets with pagination
-        const startIndex = pageIndex * pageSize;
-        this.paginatedData1 = this.filteredRobotData.slice(startIndex, startIndex + pageSize);
-      }
-  
-      // Adjust page index if out of bounds after deletion
-      if (this.paginatedData1.length === 0 && pageIndex > 0) {
-        this.paginator.pageIndex = pageIndex - 1;
-        this.setPaginatedData(); // Recalculate the paginated data after adjusting the page index
-      }
-  
-      // Update paginator length for robot data
-      if (this.paginator) {
-        this.paginator.length = this.filteredRobotData.length;
-      }
-  
-      this.fetchRobos(); // Optionally fetch updated robot data
-    }
+  validateIP(ip: string): boolean {
+    const ipPattern = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
+    return ipPattern.test(ip);
   }
   
+
+  setPaginatedData() {
+    if (this.currentTable === 'Environment') {
+      const pageSize = this.paginator?.pageSize || 5;  // Default pageSize to 5 if paginator is not yet available
+      const pageIndex = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
+
+      // Paginate the data based on current page and page size
+      const startIndex = pageIndex * pageSize;
+      const endIndex = startIndex + pageSize;
+
+      this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
+      // console.log(this.filteredRobotData);
+
+      // Optionally, ensure that the paginator reflects the right page size and length
+      if (this.paginator) {
+        
+        this.paginator.length = this.filteredEnvData.length;
+        // console.log(this.filteredRobotData);
+      }
+    }
+}
+
+setPaginatedData1(){
+  if (this.currentTable === 'robot') {
+    const pageSize1 = this.paginator?.pageSize || 5;  // Default pageSize to 5 if paginator is not yet available
+    let pageIndex1 = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
+  
+    // Ensure that we reset to the first page if the page becomes empty after deletion
+    const totalItems = this.filteredRobotData.length;
+    const totalPages = Math.ceil(totalItems / pageSize1);
+  
+    // If the current page index exceeds the total number of pages after deletion, reset to page 1
+    if (pageIndex1 >= totalPages) {
+      pageIndex1 = 0;
+      this.paginator.pageIndex = pageIndex1;
+    }
+  
+    // Paginate the data based on the current page and page size
+    const startIndex = pageIndex1 * pageSize1;
+    const endIndex = startIndex + pageSize1;
+  
+    // Update the paginated data with the sliced portion of the data array
+    this.paginatedData1 = this.filteredRobotData.slice(startIndex, endIndex);
+    // console.log(this.filteredRobotData);
+  
+    // Ensure the paginator reflects the correct page size and total data length
+    if (this.paginator) {
+      this.paginator.length = this.filteredRobotData.length;
+      // console.log(this.filteredRobotData);
+    }
+  }
+}
 
   // Ensure pagination is triggered on page change
   onPageChange(event: PageEvent) {
     this.paginator.pageIndex = event.pageIndex;
     this.paginator.pageSize = event.pageSize;
     this.setPaginatedData(); // Update paginated data on page change
+  }
+  onPageChanges(event: PageEvent){
+    this.paginator.pageIndex = event.pageIndex;
+    this.paginator.pageSize = event.pageSize;
+    this.setPaginatedData1();
+    this.fetchRobos();
   }
 
   //Commit Changed
@@ -789,6 +816,7 @@ export class ConfigurationComponent implements AfterViewInit {
   ngAfterViewInit() {
     if (this.paginator) {
       this.setPaginatedData(); // Safe to access paginator here
+      this.setPaginatedData1(); 
     }
   }
 
@@ -825,6 +853,11 @@ export class ConfigurationComponent implements AfterViewInit {
 
   async startScanning() {
     this.ipScanData = [];
+    if (this.validateIP(this.startIP) && this.validateIP(this.EndIP)) {
+      console.log('IP range is valid');
+    } else {
+      console.log('Invalid IP addresses');
+    }
 
     if (this.startIP === '' || this.EndIP === '') {
       this.messageService.add({
@@ -1326,6 +1359,7 @@ export class ConfigurationComponent implements AfterViewInit {
           this.cdRef.detectChanges();
           this.reloadTable();
           this.setPaginatedData();
+          this.setPaginatedData1();
         }
         this.ngOnInit();
         this.reloadTable();

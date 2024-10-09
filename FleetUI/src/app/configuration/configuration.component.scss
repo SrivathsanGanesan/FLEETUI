@@ -902,6 +902,10 @@ border: none;
   }
 }
 
+.uservalid{
+  display: flex;
+  flex-direction: column;
+}
 
 /* Container for paginator */
 .paginator-container {
