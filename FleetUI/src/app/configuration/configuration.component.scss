@@ -1147,3 +1147,39 @@ edit button */
   transform: translateY(0px);
   transition-duration: 0.3s;
  }
+
+ .custom-dialog-container {
+  background-color: #fff; /* Set a background color */
+  border-radius: 8px; /* Add rounded corners */
+  padding: 20px; /* Add some padding inside the dialog */
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2); /* Add a subtle shadow for depth */
+}
+
+/* Style for the dialog title */
+.mat-dialog-title {
+  font-size: 18px; /* Customize font size */
+  font-weight: bold;
+  color: #333;
+  padding-bottom: 10px;
+}
+
+/* Style for dialog content */
+.mat-dialog-content {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Style for dialog buttons */
+.mat-dialog-actions {
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+.mat-button {
+  background-color: #1976d2; /* Button background color */
+  color: white; /* Button text color */
+  margin-right: 10px; /* Space between buttons */
+}
+
+.mat-button:hover {
+  background-color: #1565c0; /* Darken button color on hover */
+}
