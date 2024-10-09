@@ -1137,6 +1137,19 @@ export class EnvmapComponent implements AfterViewInit {
       });
       return;
     }
+      // Check for nodes not connected as startNodeId or endNodeId of any edges
+    const connectedNodeIds = new Set(this.edges.flatMap(edge => [edge.startNodeId, edge.endNodeId]));
+    const unconnectedNodes = this.nodes.filter(node => !connectedNodeIds.has(node.nodeId));
+
+    if (unconnectedNodes.length > 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Some nodes are not connected to any edges. Please connect all nodes before saving.',
+        life: 4000,
+      });
+      return;
+    }
     if (this.currEditMap) {
       this.updateEditedMap();
       return;
@@ -1448,22 +1461,6 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
       }
-
-    if (this.resolutionInput && this.resolutionInput.nativeElement) {
-      const resolutionInputValue = this.resolutionInput.nativeElement.value;
-
-      if (!this.ratio) {
-        this.ratio = Number(resolutionInputValue);
-        if (!this.ratio || isNaN(this.ratio)) {
-          this.validationError = 'Please provide a valid resolution or click Locate.';
-          return;
-        }
-      }
-    } else {
-      console.error('Resolution input element not found via ViewChild.');
-    }
-
-
     if (this.mapName && this.siteName && this.imageSrc ) {
       this.fileName = null;
       this.showImage = true;
@@ -1495,6 +1492,19 @@ export class EnvmapComponent implements AfterViewInit {
     }
     else{
       this.validationError="Please enter Map name and Site name"
+    }
+        if (this.resolutionInput && this.resolutionInput.nativeElement) {
+      const resolutionInputValue = this.resolutionInput.nativeElement.value;
+
+      if (!this.ratio) {
+        this.ratio = Number(resolutionInputValue);
+        if (!this.ratio || isNaN(this.ratio)) {
+          this.validationError = 'Please provide a valid resolution or click Locate.';
+          return;
+        }
+      }
+    } else {
+      console.error('Resolution input element not found via ViewChild.');
     }
   }
   close(): void {
@@ -1855,12 +1865,12 @@ placeRobots(selectedRobots: any[]): void {
   const canvas = this.overlayCanvas.nativeElement;
 
   selectedRobots.forEach((robot) => {
-    const x = 0 + this.roboInitOffset;
-    const y = canvas.height - 100;
-    const orientation = (90) ;
+    let x = 0 + this.roboInitOffset;
+    let y = canvas.height - 100;
+    const orientation = 90; // Initial orientation
 
+    // Check if the robot is already in the map
     if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
-      // alert('Robot already in map!');
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
@@ -1869,7 +1879,23 @@ placeRobots(selectedRobots: any[]): void {
       return;
     }
 
-    // Setting the orientation to 90 degrees (converted to radians)
+    // Check if the initial position is occupied
+    if (this.isPositionOccupied(x, y, 'robot')) {
+      // Find a nearby available position
+      const spacing = 50; // Spacing distance to move the robot if position is occupied
+      let attempts = 0;
+
+      while (this.isPositionOccupied(x, y, 'robot') && attempts < 10) {
+        // Try moving the robot to the right by a certain spacing distance
+        x += spacing;
+        // If x exceeds canvas width, reset x and move y upwards
+        if (x > canvas.width) {
+          x = 0 + this.roboInitOffset;
+          y -= spacing; // Move upwards
+        }
+        attempts++;
+      }
+    }
 
     // Create and store robot details with the new orientation
     const robo: Robo = {
@@ -1878,7 +1904,7 @@ placeRobots(selectedRobots: any[]): void {
     };
     this.robos.push(robo);
 
-    this.roboInitOffset += 60;
+    this.roboInitOffset += 60; // Update offset for next robot placement
     this.plotRobo(x, y, false, orientation); // Pass the orientation to plotRobo
   });
 }
@@ -1926,28 +1952,34 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     ctx.textBaseline = 'top'; // Align text from the top
     ctx.fillText(text, x, y); // Draw text at (x, y)
   }
-  private isPositionOccupied(x: number, y: number, type : string ): boolean {
+  private isPositionOccupied(x: number, y: number, type: string): boolean {
     let nodeOccupied = false;
     let assetOccupied = false;
-
-        // Single node or asset placement logic
-        if (type !== 'node') {
-            nodeOccupied = this.nodes.some(node => {
-                const distance = Math.sqrt(Math.pow(node.nodePosition.x - x, 2) + Math.pow(node.nodePosition.y - y, 2));
-                return distance < 25; // Threshold for proximity
-            });
-        }
-
-        if (type !== 'asset') {
-            assetOccupied = this.assets.some(asset => {
-                const distance = Math.sqrt(Math.pow(asset.x - x, 2) + Math.pow(asset.y - y, 2));
-                return distance < 20; // Threshold for proximity
-            });
-        }
-
-
-    return nodeOccupied || assetOccupied;
+  
+    // Single node or asset placement logic
+    if (type !== 'node') {
+      nodeOccupied = this.nodes.some((node) => {
+        const distance = Math.sqrt(Math.pow(node.nodePosition.x - x, 2) + Math.pow(node.nodePosition.y - y, 2));
+        return distance < 25; // Threshold for proximity
+      });
+    }
+  
+    if (type !== 'asset') {
+      assetOccupied = this.assets.some((asset) => {
+        const distance = Math.sqrt(Math.pow(asset.x - x, 2) + Math.pow(asset.y - y, 2));
+        return distance < 20; // Threshold for proximity
+      });
+    }
+  
+    // Check if any robot is already occupying the position
+    const roboOccupied = this.robos.some((robo) => {
+      const distance = Math.sqrt(Math.pow(robo.pos.x - x, 2) + Math.pow(robo.pos.y - y, 2));
+      return distance < 30; // Threshold for robots proximity
+    });
+  
+    return nodeOccupied || assetOccupied || roboOccupied;
   }
+  
 
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
