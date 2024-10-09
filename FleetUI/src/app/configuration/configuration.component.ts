@@ -73,7 +73,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
-
+  
   addForm: any;
   isPopupOpen: boolean = false;
   isScanning = false;
@@ -1763,4 +1763,36 @@ setPaginatedData1(){
     this.isPhysicalParametersFormVisible =
       !this.isPhysicalParametersFormVisible;
   }
+
+  
+
+
+  togglePopup() {
+    this.isPopupVisible = !this.isPopupVisible;
+  }
+
+
+
+
+  robotCount: number = 0;
+  totalRobots: number = 0;
+
+
+  // Function to handle the addition of robots
+  addRobot() {
+    if (this.robotCount > 10) {
+      alert('You cannot enter more than 10 robots.');
+      return;
+    }
+  
+    if (this.robotCount + this.totalRobots <= 10) {
+      this.totalRobots += this.robotCount;
+    } else {
+      alert('Total robots cannot exceed 10.');
+    }
+    this.robotCount = 0; // Reset the input field after adding
+  }
+
 }
+  
+
