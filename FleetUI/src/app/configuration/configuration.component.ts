@@ -1393,6 +1393,7 @@ setPaginatedData1(){
         if (this.currentTable === 'Environment') {
           this.EnvData = this.EnvData.filter((i) => i !== item);
           this.filteredEnvData = this.EnvData;
+          // this.paginatedData = this.filteredEnvData;
           this.cdRef.detectChanges();
         } else if (this.currentTable === 'robot') {
           this.filteredRobotData = this.robotData.filter((i) => i !== item);

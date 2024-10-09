@@ -100,7 +100,7 @@ export class StatisticsComponent {
     this.operationPie = await this.fetchTasksStatus();
     setInterval(async () => {
       this.operationPie = await this.fetchTasksStatus();
-    }, 1000 * 2);
+    }, 1000 * 10);
     this.operationActivities = await this.fetchCurrTasksStatus();
     this.filteredOperationActivities = this.operationActivities;
     setInterval(async () => {
@@ -175,8 +175,8 @@ export class StatisticsComponent {
 
   async fetchTasksStatus(): Promise<number[]> {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(); // yet to take, in seri..
-    timeStamp1 = 1728410917;
-    timeStamp2 = 1728412500;
+    // timeStamp1 = 1728410917;
+    // timeStamp2 = 1728412500;
 
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-tasks-status/${this.selectedMap.id}`,
@@ -213,7 +213,11 @@ export class StatisticsComponent {
       for (let task of tasksStatusArr) {
         if (task === 'PICKED' || task === 'DROPPED' || task === 'COMPLETED')
           tasksStatus[0] += 1;
-        else if (task === 'INPROGRESS' || task === 'ONHOLD')
+        else if (
+          task === 'INPROGRESS' ||
+          task === 'ONHOLD' ||
+          task === 'ACCEPTED'
+        )
           tasksStatus[1] += 1;
         else if (task === 'NOTASSIGNED') tasksStatus[2] += 1;
         else if (task === 'FAILED' || task === 'REJECTED') tasksStatus[3] += 1;
@@ -223,7 +227,12 @@ export class StatisticsComponent {
         tot_tasks += taskStatus;
       }
       let completedTasks = tasksStatus[0];
-      this.statisticsData.successRate = (completedTasks / tot_tasks) * 100;
+      let errorTasks = tasksStatus[3];
+      let cancelledTasks = tasksStatus[4];
+      this.statisticsData.successRate = (
+        ((completedTasks + errorTasks + cancelledTasks) / tot_tasks) *
+        100
+      ).toFixed(2);
       return tasksStatus;
     }
     return [0, 0, 0, 0, 0];
