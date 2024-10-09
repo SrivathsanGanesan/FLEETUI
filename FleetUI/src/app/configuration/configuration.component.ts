@@ -1450,7 +1450,7 @@ setPaginatedData1(){
       seriesName: '',
       seriesDescription: '',
       agvKinematic: '',
-      agvClass: undefined as any | undefined,
+      agvClass: '',
       maxLoadMass: 0,
       localizationTypes: '',
       navigationTypes: '',
@@ -1520,6 +1520,7 @@ setPaginatedData1(){
       },
     };
   }
+
   // cities: any[] | undefined;
 
   // selectedCity: DB | undefined;

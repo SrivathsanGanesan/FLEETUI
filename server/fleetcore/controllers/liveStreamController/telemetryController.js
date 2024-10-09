@@ -236,14 +236,14 @@ const getGrossTaskStatus = async (req, res) => {
       method: "POST",
     }); */
 
-     let tasksStatus = [];
+    let tasksStatus = [];
     for (let i of [1, 2, 3, 4, 5]) {
       tasksStatus.push(Math.floor(Math.random() * 10));
     }
 
     return res.status(200).json({
       tasksStatus: tasksStatus,
-      // tasks: tasks.tasks,
+      // tasks: tasks.tasks ? tasks.tasks : tasks.default_columns,
       map: map,
       msg: "data sent!",
     });
