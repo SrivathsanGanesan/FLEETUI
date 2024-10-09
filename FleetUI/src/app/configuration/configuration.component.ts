@@ -308,7 +308,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
 
-  async updateSimInMap(simRobots: any) {
+  async updateSimInMap(simRobots: any) : Promise<boolean> {
     let editedMap = {
       simMode: simRobots,
     };
@@ -322,7 +322,8 @@ export class ConfigurationComponent implements AfterViewInit {
       }
     );
     let data = await response.json();
-    // console.log(data);
+    if(data.updatedData) return true;
+    return false;
   }
 
   async updateSimInRobo(roboName: any, isSim: boolean) {
@@ -1764,32 +1765,48 @@ setPaginatedData1(){
       !this.isPhysicalParametersFormVisible;
   }
 
-  
-
-
-  togglePopup() {
+  async togglePopup() {
+    let simRobos = await this.getSimRobos(this.selectedMap);
+    this.totalRobots = simRobos.length;
     this.isPopupVisible = !this.isPopupVisible;
   }
-
-
-
 
   robotCount: number = 0;
   totalRobots: number = 0;
 
+  async getSimRobos(map: any): Promise<any> {
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+    );
+    if (!response.ok)
+      console.error('Error while fetching map data : ', response.status);
+    let data = await response.json();
+    if (!data.error) return data.map.simMode;
+  }
 
   // Function to handle the addition of robots
-  addRobot() {
+  async addRobot() {
+    
     if (this.robotCount > 10) {
       alert('You cannot enter more than 10 robots.');
       return;
     }
-  
-    if (this.robotCount + this.totalRobots <= 10) {
-      this.totalRobots += this.robotCount;
-    } else {
+    if(this.robotCount + this.totalRobots > 10){
       alert('Total robots cannot exceed 10.');
+      return;
     }
+    this.totalRobots += this.robotCount;
+    let simRobo = [];
+    for(let i = 0; i < this.totalRobots; i++){
+      simRobo.push({
+        amrId : i,
+        roboName:`MR${i}00`,
+        enable : false
+      })
+    }
+    let sims = await this.updateSimInMap(simRobo);
+    if(sims) alert('Sim Robos added!');
+    
     this.robotCount = 0; // Reset the input field after adding
   }
 
