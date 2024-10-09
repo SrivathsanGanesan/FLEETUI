@@ -1809,10 +1809,11 @@ setPaginatedData1(){
     let simRobo = [];
     for(let i = 0; i < this.totalRobots; i++){
       simRobo.push({
-        amrId : i,
-        roboName:`MR${i}00`,
-        pos :{ x: 0, y: 0, orientation: 0 },
-        enable : false
+        amrId: i,
+        roboName: `MR${i}00`,
+        enable: false,
+        isInitialized : false,
+        pos: { x: 0, y: 0, orientation: 0 },
       })
     }
     let sims = await this.updateSimInMap(simRobo);

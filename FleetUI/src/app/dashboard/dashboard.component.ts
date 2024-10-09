@@ -247,6 +247,7 @@ export class DashboardComponent implements AfterViewInit {
 
   async initializeRobo() {
     this.hidePopup();
+    
     if (this.updatedrobo) {
       // Toggle between initializing and releasing the robot
       if (this.updatedrobo.isInitialized) {
@@ -259,6 +260,7 @@ export class DashboardComponent implements AfterViewInit {
         console.log(`Robot ${this.updatedrobo.roboDet.id} initialized`);
       }
     }
+
     // console.log('Initializing Robo...');
     // this.isInitializeMode = !this.isInitializeMode;
 
