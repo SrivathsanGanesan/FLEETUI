@@ -439,69 +439,108 @@ export class ConfigurationComponent implements AfterViewInit {
     this.ngOnInit();
   }
 
+  // deleteRobo(robo: any) {
+  //   let project = this.projectService.getSelectedProject();
+  //   let map = this.projectService.getMapData();
+  //   let roboInfo = {
+  //     roboId: robo._id,
+  //     projectName: project.projectName,
+  //     mapName: map.mapName,
+  //   };
+
+  //   fetch(
+  //     `http://${environment.API_URL}:${environment.PORT}/robo-configuration`,
+  //     {
+  //       method: 'DELETE',
+  //       credentials: 'include',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(roboInfo),
+  //     }
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       if (data.isRoboExists) {
+  //         this.messageService.add({
+  //           severity: 'success',
+  //           summary: 'Success',
+  //           detail: 'Robot deleted successfully!',
+  //         });
+  //         this.fetchRobos();
+  //         this.setPaginatedData1();
+  //         this.cdRef.detectChanges();
+  //         this.ngOnInit();
+  //       } else {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Error',
+  //           detail: 'Failed to delete the robot.',
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       this.messageService.add({
+  //         severity: 'error',
+  //         summary: 'Error',
+  //         detail: 'An error occurred while deleting the robot.',
+  //       });
+  //     });
+  // }
   deleteRobo(robo: any) {
-    // const dialogRef = this.dialog.open(ConfirmationDialogComponent);
-    // let isDeleted = false;
-
-    // dialogRef.afterClosed().subscribe(async (result) => {
-    //   if (result) isDeleted = await this.deleteMap(item);
-    //   if (isDeleted) {
-    //     if (item.id === this.projectService.getMapData().id) {
-    //       this.projectService.setIsMapSet(false);
-    //       this.projectService.clearMapData();
-    //       // this.ngOnInit();
-    //     }
-    // const dialogbox = this.dialog.open(ConfirmationDialogComponent);
-    // let isDeleted = false;
-    // dialogbox.afterClosed().subscribe(async (result) =>{
-    //   if(result) isDeleted = await this.deleteRobo(item);
-    // })
-    let project = this.projectService.getSelectedProject();
-    let map = this.projectService.getMapData();
-    let roboInfo = {
-      roboId: robo._id,
-      projectName: project.projectName,
-      mapName: map.mapName,
-    };
-
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/robo-configuration`,
-      {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(roboInfo),
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent);  // Open confirmation dialog
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {  // If the user confirmed deletion
+        let project = this.projectService.getSelectedProject();
+        let map = this.projectService.getMapData();
+        let roboInfo = {
+          roboId: robo._id,
+          projectName: project.projectName,
+          mapName: map.mapName,
+        };
+  
+        // Perform the delete operation
+        fetch(
+          `http://${environment.API_URL}:${environment.PORT}/robo-configuration`,
+          {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(roboInfo),
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.isRoboExists) {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Robot deleted successfully!',
+              });
+              this.fetchRobos();  // Refresh the list of robots
+              this.setPaginatedData1();  // Update the paginator data
+              this.cdRef.detectChanges();  // Trigger change detection
+              this.ngOnInit();  // Re-initialize the component if needed
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to delete the robot.',
+              });
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'An error occurred while deleting the robot.',
+            });
+          });
       }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.isRoboExists) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Robot deleted successfully!',
-          });
-          this.fetchRobos();
-          this.setPaginatedData1();
-          this.cdRef.detectChanges();
-          this.ngOnInit();
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to delete the robot.',
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'An error occurred while deleting the robot.',
-        });
-      });
+    });
   }
+  
 
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
