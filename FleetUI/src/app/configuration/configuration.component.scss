@@ -280,7 +280,21 @@ th, td {
 td{
   text-align: left;
   padding-left: 20px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+  white-space: normal;
 }
+// .table-container td:hover {
+//   overflow: visible;
+//   white-space: normal;
+//   word-wrap: break-word;
+//   max-width: none;
+//   background-color: #f9f9f96c; /* Optional, to highlight the hovered cell */
+//   z-index: 1; /* Make sure it appears on top if overlapping other elements */
+//   position: relative;
+// }
 .sel-btn{
   border: 1px solid rgba(96, 90, 90, 0.451);
   padding: 5px;
