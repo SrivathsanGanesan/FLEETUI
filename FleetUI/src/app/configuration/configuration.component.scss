@@ -288,6 +288,36 @@ td{
   cursor: default;
   white-space: normal;
 }
+.tooltip-text {
+  position: absolute; /* Position for the tooltip */
+  cursor: default; /* Pointer cursor for hover effect */
+  // word-wrap: break-word;
+  text-align: center;
+}
+
+.tooltip-text::after {
+  content: attr(data-tooltip); /* Content of the tooltip */
+  position: absolute;
+  bottom: -180%;
+  transform: translateX(-10%);
+  background-color: rgb(255, 255, 255); /* Background color */
+  color: #0e0e0e; /* Text color */
+  padding: 5px; /* Padding */
+  border-radius: 4px; /* Rounded corners */
+  white-space: nowrap; /* Prevent line breaks */
+  opacity: 0; /* Initially hidden */
+  visibility: hidden; /* Prevent mouse events */
+  transition: opacity 0.2s ease-in-out; /* Smooth transition */
+  word-wrap: break-word;
+}
+
+.tooltip-text:hover::after {
+  opacity: 2; /* Show on hover */
+  visibility: visible; /* Make it visible */
+  word-wrap: break-word;
+}
+
+
 // .table-container td:hover {
 //   overflow: visible;
 //   white-space: normal;
@@ -1335,7 +1365,7 @@ edit button */
 thead th {
   position: sticky;
   top: 0;
-  z-index: 1;
+  // z-index: 1;
   padding: 12px 15px;
   // background-color: #f2f2f2; /* Fixed header background */
   border-bottom: 1px solid #ddd;

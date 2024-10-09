@@ -172,12 +172,13 @@
                   "
                   [class.paused]="item.paused"
                 >
-                  <td title="{{ item.mapName }}">
-                    {{ item.mapName }}
-                  </td>
-                  <td title="{{ item.siteName }}">
-                    {{ item.siteName }}
-                  </td>
+                <td title="{{ item.mapName }}">
+                  {{ item.mapName.length > 10 ? (item.mapName | slice:0:10) + '...' : item.mapName }}
+                </td>
+                <td title="{{ item.siteName }}">
+                  {{ item.siteName.length > 10 ? (item.siteName | slice:0:10) + '...' : item.siteName }}
+                </td>
+                
                   <td>
                     {{ item.date }}
                   </td>
