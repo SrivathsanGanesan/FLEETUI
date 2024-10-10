@@ -266,21 +266,36 @@ export class UserManagementComponent implements OnInit {
   }
 
   setPaginatedData(){
-    const pageSize = this.paginator?.pageSize || 5;
-    const pageIndex = this.paginator?.pageIndex || 0;
-
-    // Paginate the data based on current page and page size
-    const startIndex = pageIndex * pageSize;
-    const endIndex = startIndex + pageSize;
-
-    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
-    // console.log(this.paginatedData);
-
-    if(this.paginator){
-      this.paginator.length = this.filteredData.length;
+    const pageSize1 = this.paginator?.pageSize || 5;  // Default pageSize to 5 if paginator is not yet available
+    let pageIndex1 = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
+  
+    // Ensure that we reset to the first page if the page becomes empty after deletion
+    const totalItems = this.filteredData.length;
+    const totalPages = Math.ceil(totalItems / pageSize1);
+  
+    // If the current page index exceeds the total number of pages after deletion, reset to page 1
+    if (pageIndex1 >= totalPages) {
+      pageIndex1 = 0;
+      this.paginator.pageIndex = pageIndex1;
     }
-    this.fetchUsers();
+  
+    // Paginate the data based on the current page and page size
+    const startIndex = pageIndex1 * pageSize1;
+    const endIndex = startIndex + pageSize1;
+  
+    // Update the paginated data with the sliced portion of the data array
+    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
+    // console.log(this.filteredRobotData);
+  
+    // Ensure the paginator reflects the correct page size and total data length
+    if (this.paginator) {
+      this.paginator.length = this.filteredData.length;
+      // console.log(this.filteredRobotData);
+    }
+     this.fetchUsers();
   }
+   
+
 
     // Ensure pagination is triggered on page change
     onPageChange(event: PageEvent) {
@@ -486,8 +501,7 @@ export class UserManagementComponent implements OnInit {
 
     this.deleteUserName = '';
     this.deleteUserPopUp();
-    this.setPaginatedData()
-    window.location.reload()
+    this.setPaginatedData();
   }
 
   getDeleteUser(userName: any, userRole: any) {
