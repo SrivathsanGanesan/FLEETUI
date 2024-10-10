@@ -74,7 +74,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
 
-  addForm: any;
+  // formData: any;
   isPopupOpen: boolean = false;
   isScanning = false;
   EnvData: any[] = []; // map details..
@@ -120,49 +120,12 @@ export class ConfigurationComponent implements AfterViewInit {
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
     private messageService: MessageService,
-    private fb: FormBuilder
+
   ) {
     this.filteredEnvData = [...this.EnvData];
     // this.filteredRobotData = [...this.robotData];
     // this.filteredRobotData = this.robotData;
-    this.addForm = this.fb.group({
-      robotName: '',
-      manufacturer: '',
-      serialNumber: '',
-      typeSpecification: {
-        seriesName: '',
-        seriesDescription: '',
-        agvKinematic: '',
-        agvClass: undefined as any | undefined,
-        maxLoadMass: 0,
-        localizationTypes: '',
-        navigationTypes: '',
-      },
-      protocolLimits: {
-        maxStringLens: '',
-        maxArrayLens: '',
-        timing: '',
-      },
-      protocolFeatures: {
-        optionalParameters: '',
-        actionScopes: '',
-        actionParameters: '',
-        resultDescription: '',
-      },
-      agvGeometry: {
-        wheelDefinitions: '',
-        envelopes2d: '',
-        envelopes3d: '',
-      },
-      loadSpecification: {
-        loadPositions: '',
-        loadSets: '',
-      },
-      localizationParameters: {
-        type: '',
-        description: '',
-      },
-    });
+
   }
 
   async ngOnInit() {
@@ -308,7 +271,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
 
-  async updateSimInMap(simRobots: any) {
+  async updateSimInMap(simRobots: any): Promise<boolean>  {
     let editedMap = {
       simMode: simRobots,
     };
@@ -1453,7 +1416,7 @@ setPaginatedData1(){
   // isLoadSpecificationFormVisible = false;
   // isLocalizationParametersFormVisible = false;
 
-  formData = {
+  formData =  {
     robotName: '',
     manufacturer: '',
     serialNumber: '',
@@ -1669,7 +1632,7 @@ setPaginatedData1(){
 
   saveItem(): void {
     this.isPopupOpen = false;
-    this.addForm.reset();
+    
     this.cdRef.detectChanges();
   }
 
@@ -1699,9 +1662,9 @@ setPaginatedData1(){
       // isSimMode : false,
       ipAdd: this.currentRoboDet.ip,
       macAdd: this.currentRoboDet.mac,
-      grossInfo: this.addForm,
+      grossInfo: this.formData,
     };
-    if (roboDetails.roboName === '' || this.addForm.manufacturer === '') {
+    if (roboDetails.roboName === '' || this.formData.manufacturer === '') {
       alert('Manufacturer or roboname should be there');
       return;
     }
@@ -1761,7 +1724,6 @@ setPaginatedData1(){
   openPopup(item: any) {
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
-    // this.addForm.reset();
     this.reset();
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
