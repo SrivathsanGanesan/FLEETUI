@@ -1722,6 +1722,13 @@ setPaginatedData1(){
   }
 
   openPopup(item: any) {
+          // Reset all form section visibility flags
+  this.isTypeSpecificationFormVisible = false;
+  this.isProtocolLimitsFormVisible = false;
+  this.isProtocolFeaturesFormVisible = false;
+  this.isAGVGeometryFormVisible = false;
+  this.isLoadSpecificationFormVisible = false;
+  this.isLocalizationParametersFormVisible = false;
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
     this.reset();
