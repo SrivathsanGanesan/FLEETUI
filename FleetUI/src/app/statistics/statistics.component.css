@@ -245,7 +245,7 @@
   text-align: center; /* Center content in each cell */
   font-size: 0.9rem;
   color: #555;
-  width: 50%; /* Ensures each column takes up equal space */
+  width: 30%; /* Ensures each column takes up equal space */
 }
 
 .activity-table td:first-child,
