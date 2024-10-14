@@ -366,7 +366,8 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isPopupOpen = !this.isPopupOpen;
   
     // Track if we're in edit mode
-    this.isRoboInEdit = !this.isRoboInEdit;
+    // this.isRoboInEdit = !this.isRoboInEdit;
+    this.isRoboInEdit = true;
   
     // Store the currently edited robot for reference
     this.currEditRobo = robo;
@@ -1722,13 +1723,14 @@ setPaginatedData1(){
   }
 
   openPopup(item: any) {
-          // Reset all form section visibility flags
-  this.isTypeSpecificationFormVisible = false;
-  this.isProtocolLimitsFormVisible = false;
-  this.isProtocolFeaturesFormVisible = false;
-  this.isAGVGeometryFormVisible = false;
-  this.isLoadSpecificationFormVisible = false;
-  this.isLocalizationParametersFormVisible = false;
+    // Reset all form section visibility flags
+    this.isRoboInEdit = false
+    this.isTypeSpecificationFormVisible = false;
+    this.isProtocolLimitsFormVisible = false;
+    this.isProtocolFeaturesFormVisible = false;
+    this.isAGVGeometryFormVisible = false;
+    this.isLoadSpecificationFormVisible = false;
+    this.isLocalizationParametersFormVisible = false;
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
     this.reset();
