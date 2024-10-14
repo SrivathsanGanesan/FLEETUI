@@ -64,14 +64,12 @@ const saveNodeGraph = async (mapData) => {
   );
 
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
+  return true;
 
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",
     bodyData: nodeGraph,
   });
-
-  // if (sentNodeGraphRes.errorCode !== 100)
-  //   return res.status(500).json({ msg: "not attained" });
 
   if (
     sentNodeGraphRes?.errorCode !== 100 ||
@@ -187,12 +185,12 @@ const postFleetData = async ({ endpoint, bodyData }) => {
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
-  /* let isGraphSent = await saveNodeGraph(mapData);
+  let isGraphSent = await saveNodeGraph(mapData);
   if (!isGraphSent)
     return res.status(500).json({
       map: null,
       msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
-    }); */
+    });
 
   // return res.end(); // yet to remove..
   try {
@@ -295,14 +293,14 @@ const mapUpdate = async (req, res) => {
   const queMapName = req.params.mapName;
   const mapData = req.body;
 
-  /* if (mapData.nodes && mapData.edges) {
+  if (mapData.nodes && mapData.edges) {
     let isGraphSent = await saveNodeGraph(mapData); // uncomment to work without fleet..
     if (!isGraphSent)
       return res.status(500).json({
         map: null,
         msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
       });
-  } */
+  }
 
   try {
     const map = await Map.exists({ mapName: queMapName });
