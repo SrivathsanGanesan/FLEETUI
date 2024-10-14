@@ -8,7 +8,7 @@
 .mainContent {
   position: absolute;
   margin-top: 30px;
-  top: 30px;
+  // top: 30px;
   margin-left: 70px;
   width: calc(100% - 70px);
   padding: 16px;
@@ -35,13 +35,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  margin: 30px 30px 30px 30px;
+  margin: 50px 30px 30px 30px;
   background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   overflow: auto; /* Enables vertical scrolling */
   justify-content: center;
   backdrop-filter: blur(5px);
+  z-index: 5;
 }
 .popup-overlay button {
   padding: 10px;
@@ -248,6 +249,8 @@
   /* table-layout: fixed; */
 }
 
+
+
 .p-inputtext{
   padding: 0 !important;
   width: 240px;
@@ -280,7 +283,51 @@ th, td {
 td{
   text-align: left;
   padding-left: 20px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+  white-space: normal;
 }
+.tooltip-text {
+  position: absolute; /* Position for the tooltip */
+  cursor: default; /* Pointer cursor for hover effect */
+  // word-wrap: break-word;
+  text-align: center;
+}
+
+.tooltip-text::after {
+  content: attr(data-tooltip); /* Content of the tooltip */
+  position: absolute;
+  bottom: -180%;
+  transform: translateX(-10%);
+  background-color: rgb(255, 255, 255); /* Background color */
+  color: #0e0e0e; /* Text color */
+  padding: 5px; /* Padding */
+  border-radius: 4px; /* Rounded corners */
+  white-space: nowrap; /* Prevent line breaks */
+  opacity: 0; /* Initially hidden */
+  visibility: hidden; /* Prevent mouse events */
+  transition: opacity 0.2s ease-in-out; /* Smooth transition */
+  word-wrap: break-word;
+}
+
+.tooltip-text:hover::after {
+  opacity: 2; /* Show on hover */
+  visibility: visible; /* Make it visible */
+  word-wrap: break-word;
+}
+
+
+// .table-container td:hover {
+//   overflow: visible;
+//   white-space: normal;
+//   word-wrap: break-word;
+//   max-width: none;
+//   background-color: #f9f9f96c; /* Optional, to highlight the hovered cell */
+//   z-index: 1; /* Make sure it appears on top if overlapping other elements */
+//   position: relative;
+// }
 .sel-btn{
   border: 1px solid rgba(96, 90, 90, 0.451);
   padding: 5px;
@@ -1285,3 +1332,49 @@ edit button */
 .mat-button:hover {
   background-color: #1565c0; /* Darken button color on hover */
 }
+
+/* Table Container */
+.env-table {
+  position: relative;
+  max-height: 345px;
+  overflow-y: auto;
+  // margin: 20px 0;
+}
+
+/* Scrollable Body */
+.env-table tbody {
+  display: block;
+  // max-height: 350px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.env-table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  background-color: #f2f2f2; /* Optional: background color to make it stand out */
+}
+
+.env-table tbody tr {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Table Header Fix */
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 12px 15px;
+  // background-color: #f2f2f2; /* Fixed header background */
+  border-bottom: 1px solid #ddd;
+}
+
+/* Table Body Cells */
+tbody td {
+  padding: 12px 15px;
+  // border-bottom: 1px solid #ddd;
+}
+

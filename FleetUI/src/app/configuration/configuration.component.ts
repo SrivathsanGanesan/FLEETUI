@@ -73,8 +73,8 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
-  
-  addForm: any;
+
+  // formData: any;
   isPopupOpen: boolean = false;
   isScanning = false;
   EnvData: any[] = []; // map details..
@@ -120,49 +120,12 @@ export class ConfigurationComponent implements AfterViewInit {
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
     private messageService: MessageService,
-    private fb: FormBuilder
+
   ) {
     this.filteredEnvData = [...this.EnvData];
     // this.filteredRobotData = [...this.robotData];
     // this.filteredRobotData = this.robotData;
-    this.addForm = this.fb.group({
-      robotName: '',
-      manufacturer: '',
-      serialNumber: '',
-      typeSpecification: {
-        seriesName: '',
-        seriesDescription: '',
-        agvKinematic: '',
-        agvClass: undefined as any | undefined,
-        maxLoadMass: 0,
-        localizationTypes: '',
-        navigationTypes: '',
-      },
-      protocolLimits: {
-        maxStringLens: '',
-        maxArrayLens: '',
-        timing: '',
-      },
-      protocolFeatures: {
-        optionalParameters: '',
-        actionScopes: '',
-        actionParameters: '',
-        resultDescription: '',
-      },
-      agvGeometry: {
-        wheelDefinitions: '',
-        envelopes2d: '',
-        envelopes3d: '',
-      },
-      loadSpecification: {
-        loadPositions: '',
-        loadSets: '',
-      },
-      localizationParameters: {
-        type: '',
-        description: '',
-      },
-    });
+
   }
 
   async ngOnInit() {
@@ -308,7 +271,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
   }
 
-  async updateSimInMap(simRobots: any) {
+  async updateSimInMap(simRobots: any): Promise<boolean>  {
     let editedMap = {
       simMode: simRobots,
     };
@@ -322,7 +285,8 @@ export class ConfigurationComponent implements AfterViewInit {
       }
     );
     let data = await response.json();
-    // console.log(data);
+    if(data.updatedData) return true;
+    return false;
   }
 
   async updateSimInRobo(roboName: any, isSim: boolean) {
@@ -391,13 +355,25 @@ export class ConfigurationComponent implements AfterViewInit {
   // edit robo..
   editRobo(robo: any) {
     // console.log(robo);
+      // Reset all form section visibility flags
+  this.isTypeSpecificationFormVisible = false;
+  this.isProtocolLimitsFormVisible = false;
+  this.isProtocolFeaturesFormVisible = false;
+  this.isAGVGeometryFormVisible = false;
+  this.isLoadSpecificationFormVisible = false;
+  this.isLocalizationParametersFormVisible = false;
     this.formData = robo.grossInfo;
     this.isPopupOpen = !this.isPopupOpen;
+  
+    // Track if we're in edit mode
     this.isRoboInEdit = !this.isRoboInEdit;
+  
+    // Store the currently edited robot for reference
     this.currEditRobo = robo;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
   }
+  
 
   async updateRobo() {
     if (!this.currEditRobo.roboName) {
@@ -1393,14 +1369,12 @@ setPaginatedData1(){
         if (this.currentTable === 'Environment') {
           this.EnvData = this.EnvData.filter((i) => i !== item);
           this.filteredEnvData = this.EnvData;
-          // this.paginatedData = this.filteredEnvData;
           this.cdRef.detectChanges();
         } else if (this.currentTable === 'robot') {
           this.filteredRobotData = this.robotData.filter((i) => i !== item);
           this.cdRef.detectChanges();
           this.reloadTable();
           this.setPaginatedData();
-          this.setPaginatedData1();
         }
         this.ngOnInit();
         this.reloadTable();
@@ -1442,7 +1416,7 @@ setPaginatedData1(){
   // isLoadSpecificationFormVisible = false;
   // isLocalizationParametersFormVisible = false;
 
-  formData = {
+  formData =  {
     robotName: '',
     manufacturer: '',
     serialNumber: '',
@@ -1658,7 +1632,7 @@ setPaginatedData1(){
 
   saveItem(): void {
     this.isPopupOpen = false;
-    this.addForm.reset();
+    
     this.cdRef.detectChanges();
   }
 
@@ -1748,9 +1722,15 @@ setPaginatedData1(){
   }
 
   openPopup(item: any) {
+          // Reset all form section visibility flags
+  this.isTypeSpecificationFormVisible = false;
+  this.isProtocolLimitsFormVisible = false;
+  this.isProtocolFeaturesFormVisible = false;
+  this.isAGVGeometryFormVisible = false;
+  this.isLoadSpecificationFormVisible = false;
+  this.isLocalizationParametersFormVisible = false;
     this.currentRoboDet = item;
     this.isPopupOpen = !this.isPopupOpen;
-    this.addForm.reset();
     this.reset();
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
@@ -1764,32 +1744,50 @@ setPaginatedData1(){
       !this.isPhysicalParametersFormVisible;
   }
 
-  
-
-
-  togglePopup() {
+  async togglePopup() {
+    let simRobos = await this.getSimRobos(this.selectedMap);
+    this.totalRobots = simRobos.length;
     this.isPopupVisible = !this.isPopupVisible;
   }
-
-
-
 
   robotCount: number = 0;
   totalRobots: number = 0;
 
+  async getSimRobos(map: any): Promise<any> {
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
+    );
+    if (!response.ok)
+      console.error('Error while fetching map data : ', response.status);
+    let data = await response.json();
+    if (!data.error) return data.map.simMode;
+  }
 
   // Function to handle the addition of robots
-  addRobot() {
+  async addRobot() {
+    
     if (this.robotCount > 10) {
       alert('You cannot enter more than 10 robots.');
       return;
     }
-  
-    if (this.robotCount + this.totalRobots <= 10) {
-      this.totalRobots += this.robotCount;
-    } else {
+    if(this.robotCount + this.totalRobots > 10){
       alert('Total robots cannot exceed 10.');
+      return;
     }
+    this.totalRobots += this.robotCount;
+    let simRobo = [];
+    for(let i = 0; i < this.totalRobots; i++){
+      simRobo.push({
+        amrId: i,
+        roboName: `MR${i}00`,
+        enable: false,
+        isInitialized : false,
+        pos: { x: 0, y: 0, orientation: 0 },
+      })
+    }
+    let sims = await this.updateSimInMap(simRobo);
+    if(sims) alert('Sim Robos added!');
+    
     this.robotCount = 0; // Reset the input field after adding
   }
 

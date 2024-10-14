@@ -59,7 +59,7 @@
             </button>
           </div>
         </div>
-        <p>Origin</p>
+        <label for="origin">Origin</label>
         <div
           class="origin-coor"
           style="display: flex; align-items: center; gap: 10px"
@@ -433,6 +433,7 @@
         />
       </svg>
     </button> -->
+    
     <div  *ngIf="!showImage">
       <div *ngIf="validationError" class="validation-error">
         {{ validationError }}

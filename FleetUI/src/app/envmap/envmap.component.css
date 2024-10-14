@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  margin: 30px 30px 30px 30px;
+  margin: 50px 30px 30px 30px;
   background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
@@ -12,6 +12,7 @@
   justify-content: center;
   backdrop-filter: blur(5px);
   pointer-events: none;
+  z-index: 5;
 
 }
 
@@ -64,6 +65,7 @@
   overflow: auto; /* Enables vertical scrolling */
   justify-content: center;
   backdrop-filter: blur(5px);
+  z-index: 10;
 }
 .popup-content {
   background: white;
@@ -700,9 +702,9 @@ input[type='number']::-webkit-inner-spin-button {
 
 input[type='number'] {
   /* Use standard 'appearance' property along with vendor-specific ones */
-  appearance: none;         /* Standard */
+  appearance: none;             /* Standard */
   -moz-appearance: textfield;  /* Firefox */
-  -webkit-appearance: none; /* Chrome, Safari */
+  -webkit-appearance: none;   /* Chrome, Safari */
 }
 
 .dropdown-content button {
