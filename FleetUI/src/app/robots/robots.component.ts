@@ -51,13 +51,18 @@ export class RobotsComponent implements OnInit {
 
   mapDetails: any | null = null;
   showPopup = false;
-  isEditPopupOpen = false;
+  
   menuOpenIndex: number | null = null;
+  editIndex: number | null = null;
+  centerIndex: any;
+
+  
 
 
   constructor(
     public dialog: MatDialog,
     private projectService: ProjectService
+    
   ) {
     // this.mapDetails = this.projectService.getMapData();
   }
@@ -118,12 +123,12 @@ export class RobotsComponent implements OnInit {
     return `../../assets/robots/${imageName}`;
   }
 
-  editIndex: number | null = null;
-  centerIndex: any;
+ 
 
   togglePopup() {
     this.showPopup = !this.showPopup;
   }
+  
 
   toggleMenu(index: number) {
     console.log('Toggling menu for index:', index); // Debugging log
