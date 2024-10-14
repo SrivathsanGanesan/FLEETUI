@@ -174,18 +174,28 @@
             />
           </div>
           <button class="view-all-btn" (click)="onViewAllClick()">View All</button>
-
         </div>
+      
         <table class="activity-table">
-          <tr *ngFor="let activity of this.filteredOperationActivities">
-            <td>{{ activity.taskId }}</td>
-            <td>{{ activity.taskName }}</td>
-            <td>{{ activity.robotName }}</td>
-            <td>{{ activity.status }}</td>
-            
-          </tr>
+          <thead>
+            <tr>
+              <th>Task ID</th>
+              <th>Task Name</th>
+              <th>Robot Name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let activity of this.filteredOperationActivities">
+              <td>{{ activity.taskId }}</td>
+              <td>{{ activity.taskName }}</td>
+              <td>{{ activity.robotName }}</td>
+              <td>{{ activity.status }}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
+      
 
       <!-- Notifications Section -->
       <div class="notifications-container">
@@ -201,6 +211,15 @@
           <!-- <button class="view-all-btn">View All</button> -->
         </div>
         <table class="notifications-table">
+
+          <thead>
+            <tr>
+              <th>Task ID</th>
+              <th>Task Name</th>
+              <th>Robot Name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
           <tr *ngFor="let notification of filteredNotifications">
             <td>{{ notification.message }}</td>
             <td>{{notification.taskId}}</td>

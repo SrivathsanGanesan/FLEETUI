@@ -142,72 +142,62 @@
 /* Table stylings */
 /* Table stylings */
 
+/* Main dashboard container */
+/* Main dashboard container */
 .dashboard-container {
   display: flex;
   justify-content: space-between;
   gap: 2%;
   margin-top: 2%;
-  padding: 0;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Styling for the robot activity table */
-.robot-activity-container {
-  flex: 0.5; /* Set to 50% of the width */
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0.5%; /* Minimal padding */
-  overflow: hidden; /* Ensure the table doesn't overflow */
-}
-
-/* Styling for the notifications table */
+/* Common container styling for both tables */
+.robot-activity-container,
 .notifications-container {
-  flex: 0.5; /* Set to 50% of the width */
+  flex: 0.5; /* Each takes up 50% width */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0.5%; /* Minimal padding */
-  overflow: hidden; /* Ensure the table doesn't overflow */
+  padding: 1%; /* More balanced padding */
+  overflow: hidden;
 }
 
-/* Styling for the section headers */
+/* Section header styling */
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #FFCDCD;
-  margin-bottom: 1%;
+  background-color: #ffcdcd;
+  margin-bottom: 1rem;
   border-radius: 5px;
-  padding: 0.3rem; /* Reduced padding */
+  padding: 0.5rem; /* Adequate padding for clarity */
 }
 
-/* Header text */
+/* Section header text styling */
 .section-header h3 {
   margin: 0;
-  font-size: 1vw;
+  font-size: 1rem;
   font-weight: 500;
   color: #333;
 }
 
-/* Styling the search box */
+/* Search box styling */
 .search-box {
   display: flex;
   align-items: center;
-  border-radius: 5px;
-  overflow: hidden;
   background-color: #ffffff;
-  width: 60%; /* Adjust width as needed */
-  margin-right: 1rem; /* Space between search box and view all button */
+  border-radius: 5px;
+  width: 60%;
 }
 
 .search-box input {
   border: none;
-  padding: 0.5rem;
-  outline: none;
+  padding: 0.4rem;
+  font-size: 0.9rem;
   width: 100%;
-  font-size: 0.8vw;
+  outline: none;
   border-radius: 5px;
 }
 
@@ -215,45 +205,52 @@
   color: #aaa;
 }
 
-/* View All button */
+/* View All button styling */
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 0.4rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 5px;
   border: none;
   cursor: pointer;
-  font-size: 0.8vw;
+  font-size: 0.9rem;
   margin-left: 1rem;
 }
 
-/* Table scrollable after 4 rows */
+/* Table container for activities and notifications */
 .activity-table,
 .notifications-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0;
-  max-height: 10rem; /* Adjust height as needed */
-  overflow-y: auto;
   display: block;
+  overflow-y: auto;
+  table-layout: fixed; /* Ensures columns take equal space */
 }
 
-.activity-table tr,
-.notifications-table tr {
-  border-bottom: 1px solid #eee;
+.activity-table thead th,
+.notifications-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 1;
+  padding: 0.5rem;
+  text-align: center; /* Center header text */
+  font-weight: bold;
+  width: 25%; /* Ensures each column is evenly spaced */
 }
 
 .activity-table td,
 .notifications-table td {
-  font-size: 0.8vw;
+  padding: 0.5rem;
+  text-align: center; /* Center content in each cell */
+  font-size: 0.9rem;
   color: #555;
+  width: 50%; /* Ensures each column takes up equal space */
 }
 
 .activity-table td:first-child,
 .notifications-table td:first-child {
-  font-weight: medium;
-  color: #222222;
-  padding-left: 1rem; /* Ensure the first cell has enough padding on the left */
+  font-weight: 600;
 }
 
 .activity-table tr:nth-child(odd),
@@ -266,30 +263,12 @@
   background-color: #f1f1f1;
 }
 
-/* Align text in the first column */
-.activity-table td:first-child,
-.notifications-table td:first-child {
-  text-align: left;
+/* Alignment utility class */
+.align {
+  padding-left: 22rem;
 }
 
-/* Align text in the rest of the columns */
-.activity-table td:not(:first-child),
-.notifications-table td:not(:first-child) {
-  text-align: left;
-}
 
-/* Make sure the table header stays in place */
-.activity-table thead th,
-.notifications-table thead th {
-  position: sticky;
-  top: 0;
-  background: #fff;
-  z-index: 2;
-}
-
-.align{
-  padding-left:22rem;
-}
 
 
 /* Statistics container */
