@@ -267,7 +267,7 @@ export class AreaChartComponent implements OnInit {
       }
       
       this.plotChart( 'Throughput', this.throughputArr, this.throughputXaxisSeries );
-    }, 1000 * 60 * 60); // 20
+    }, 1000 * 20); // 60 * 60
   }
 
   async updateStarvationRate() {
