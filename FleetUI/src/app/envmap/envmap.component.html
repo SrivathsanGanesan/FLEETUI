@@ -717,26 +717,26 @@
 
 <div class="popup-overlay1" *ngIf="showIntermediateNodesDialog">
   <div class="popup-content1">
-    <div class="flex">
+    <div class="flex h-40px">
     <div>
     <p>Enter Number of Nodes</p>
     <input pInputText
       type="number"
-      min="0"
       [(ngModel)]="numberOfIntermediateNodes"
       placeholder="Number of nodes"
+      min="0"
       (ngModelChange)="onInputChanged()"
     />
   </div>
   <div class="node-separator"></div>
   <div>
     <p>Select Direction</p>
-    <select [(ngModel)]="direction">
-      <option value="uni">Uni-direction</option>
-      <option value="bi">Bi-direction</option>
+    <select class="direction" [(ngModel)]="direction">
+      <option value="uni">Uni-Direction</option>
+      <option value="bi">Bi-Direction</option>
     </select>
   </div>
-</div>
+  </div>
     <button *ngIf="isEnterButtonVisible" (click)="plotIntermediateNodes()">
       Enter
     </button>

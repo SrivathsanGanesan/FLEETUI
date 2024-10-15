@@ -171,7 +171,7 @@ export class EnvmapComponent implements AfterViewInit {
   isOptionsMenuVisible = false;
   isCalibrationLayerVisible = false;
   showIntermediateNodesDialog: boolean = false;
-  numberOfIntermediateNodes: number = 0;
+  numberOfIntermediateNodes: any ;
   firstNode: Node | null = null;
   secondNode: Node | null = null;
   robotImages: { [key: string]: HTMLImageElement } = {};
@@ -221,7 +221,7 @@ export class EnvmapComponent implements AfterViewInit {
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
   showError: boolean = false; // Flag to show error message
-  direction: 'uni' | 'bi' | null = null;
+  direction: 'uni' | 'bi' | null = 'uni';
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
@@ -2268,7 +2268,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         minHeight: 0,
         orientation: 0,
         orientationType: '',
-        direction: this.direction == 'uni' ? 'UN_DIRECTIONAL' : 'BI_DIRECTIONAL',
+        direction: this.direction == 'bi' ? 'BI_DIRECTIONAL' : 'UN_DIRECTIONAL',
         rotationAllowed: false,
         maxRotationSpeed: 0,
         length: 0,
@@ -3608,7 +3608,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.currentEdge.edgeId = '';
       // this.currentEdge.sequenceId= 0;
       this.currentEdge.edgeDescription= '';
-      this.currentEdge.released= false;
+      this.currentEdge.released= true;
       // this.currentEdge.startNodeId= '';
       // this.currentEdge.endNodeId= '';
       this.currentEdge.maxSpeed= 0;
@@ -3617,7 +3617,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.currentEdge.orientation= 0;
       this.currentEdge.orientationType= '';
       // this.currentEdge.direction= 'UN_DIRECTIONAL';
-      this.currentEdge.rotationAllowed= false;
+      this.currentEdge.rotationAllowed= true;
       this.currentEdge.maxRotationSpeed= 0;
       this.currentEdge.length= 0;
       this.currentEdge.action= [];
