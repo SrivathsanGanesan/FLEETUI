@@ -208,7 +208,7 @@ const mapInsert = async (req, res) => {
     } = mapData;
 
     const map = await Map.exists({ mapName: mapName });
-    if (map) return res.json({ exits: true, msg: "Map name already exits" });
+    if (map) return res.json({ exists: true, msg: "Map name already exits" });
     const projDoc = await projectModel.exists({
       projectName: projectName,
       // "sites.siteName": siteName,
