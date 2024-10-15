@@ -1,6 +1,4 @@
 <div class="container" #screen>
-  <!-- <app-sidenavbar></app-sidenavbar> -->
-  <app-fullscreen-button></app-fullscreen-button>
   <app-loader></app-loader>
   <div class="mainContent">
     <!-- Router outlet for displaying the appropriate view -->
@@ -175,26 +173,27 @@
           </div>
           <button class="view-all-btn" (click)="onViewAllClick()">View All</button>
         </div>
-      
-        <table class="robot-activity-table">
-          
-          <thead>
-            <tr>
-              <th>Task ID</th>
-              <th>Task Name</th>
-              <th>Robot Name</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let activity of filteredOperationActivities">
-              <td>{{ activity.taskId }}</td>
-              <td>{{ activity.taskName }}</td>
-              <td>{{ activity.robotName }}</td>
-              <td>{{ activity.status }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="robot-activity-table-container">
+          <table class="robot-activity-table">
+            <thead>
+              <tr>
+                <th>Task ID</th>
+                <th>Task Name</th>
+                <th>Robot Name</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let activity of filteredOperationActivities">
+                <td>{{ activity.taskId }}</td>
+                <td>{{ activity.taskName }}</td>
+                <td>{{ activity.robotName }}</td>
+                <td>{{ activity.status }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
       </div>
       
 
@@ -211,22 +210,24 @@
           </div>
           <!-- <button class="view-all-btn">View All</button> -->
         </div>
-        <table class="notifications-table">
-          <thead>
-            <tr>
-              <th>Message</th>
-              <th>Task ID</th>
-              <th>Timestamp</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let notification of filteredNotifications">
-              <td>{{ notification.message }}</td>
-              <td>{{ notification.taskId }}</td>
-              <td class="notifications-align">{{ notification.timestamp }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="robot-activity-table-container">
+          <table class="notifications-table">
+            <thead>
+              <tr>
+                <th>Message</th>
+                <th>Task ID</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let notification of filteredNotifications">
+                <td>{{ notification.message }}</td>
+                <td>{{ notification.taskId }}</td>
+                <td class="notifications-align">{{ notification.timestamp }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <!-- Router outlet for displaying the appropriate view -->
