@@ -197,9 +197,9 @@
 
 .robot-activity-table th,
 .robot-activity-table td {
-  padding: 12px 15px;
+  padding: 8px 15px;
   border-bottom: 1px solid #ddd;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 
 .robot-activity-table tbody tr:nth-child(even) {
@@ -222,7 +222,7 @@
 .notifications-table td {
   padding: 12px 15px;
   border-bottom: 1px solid #ddd;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 
 .notifications-table tbody tr:nth-child(even) {
@@ -317,7 +317,7 @@
   .robot-activity-table td,
   .notifications-table th,
   .notifications-table td {
-    font-size: 0.9rem;
+    font-size: 0.5rem;
   }
 }
 
