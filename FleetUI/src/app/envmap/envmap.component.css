@@ -339,6 +339,10 @@ canvas {
 .maplayer{
   z-index: 1;
 }
+.direction{
+  height: 40px;
+  color: #000000;
+}
 .close-btn {
   position: absolute;
   top: -12px;
