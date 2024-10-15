@@ -2278,7 +2278,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.edgeCounter++;
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
-    this.direction= null;
+    this.direction= "uni";
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
