@@ -38,21 +38,6 @@ export class StatisticsComponent {
       taskId: ' AMR-003',
       timestamp: '2024-08-16',
     },
-    {
-      message: 'Obstacle Detected ',
-      taskId: ' AMR-003',
-      timestamp: '2024-08-16',
-    },
-    {
-      message: 'Obstacle Detected ',
-      taskId: ' AMR-003',
-      timestamp: '2024-08-16',
-    },
-    {
-      message: 'Obstacle Detected ',
-      taskId: ' AMR-003',
-      timestamp: '2024-08-16',
-    },
     // { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   ];
 
@@ -69,6 +54,9 @@ export class StatisticsComponent {
 
   filteredOperationActivities = this.operationActivities;
   filteredNotifications = this.notifications;
+
+  taskStatus_interval: any | null = null;
+  currTaskStatus_interval: any | null = null;
 
   constructor(
     private router: Router,
@@ -97,14 +85,15 @@ export class StatisticsComponent {
     if (!this.selectedMap) return;
     this.getGrossStatus();
     this.operationPie = await this.fetchTasksStatus();
-    setInterval(async () => {
+    this.taskStatus_interval = setInterval(async () => {
       this.operationPie = await this.fetchTasksStatus();
     }, 1000 * 10);
     this.operationActivities = await this.fetchCurrTasksStatus();
     this.filteredOperationActivities = this.operationActivities;
-    setInterval(async () => {
+    this.currTaskStatus_interval = setInterval(async () => {
       let currTasks = await this.fetchCurrTasksStatus();
-      this.filteredOperationActivities.push(currTasks[0]);
+      // this.filteredOperationActivities.push(currTasks[0]);
+      this.filteredOperationActivities = currTasks;
       // console.log(this.operationActivities);
       // this.filteredOperationActivities = [
       //   ...this.filteredNotifications,
@@ -152,14 +141,19 @@ export class StatisticsComponent {
       this.statisticsData.responsiveness = responsiveness.systemResponsiveness;
   }
 
-  async fetchCurrTasksStatus(): Promise<number[]> {
+  async fetchCurrTasksStatus(): Promise<any[]> {
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/curr-task-activities`,
       {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mapId: this.selectedMap.id }),
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
+        }),
       }
     );
     // if(!response.ok) throw new Error(`Error occured with status code of : ${response.status}`)
@@ -168,7 +162,27 @@ export class StatisticsComponent {
       console.log('Err occured while getting tasks status : ', data.error);
       return [];
     }
-    if (data.tasks) return data.tasks;
+
+    if (data.tasks) {
+      if (!('tasks' in data.tasks))
+        return [
+          { taskId: 'n/a', taskName: 'n/a', robotName: 'n/a', status: 'n/a' },
+        ];
+      let { tasks } = data.tasks;
+
+      let fleet_tasks = tasks.map((task: any) => {
+        return {
+          taskId: task.task_id,
+          taskName: task.sub_task[0]?.task_type
+            ? task.sub_task[0]?.task_type
+            : 'N/A',
+          robotName: task.agent_ID, // agent_name
+          status: task.task_status.status,
+        };
+      });
+
+      return fleet_tasks;
+    }
     return [];
   }
 
@@ -268,4 +282,10 @@ export class StatisticsComponent {
   getStartOfDay() {
     return Math.floor(new Date().setHours(0, 0, 0) / 1000);
   }
+
+  /* ngOnDestroy() {
+    if (this.taskStatus_interval) clearInterval(this.taskStatus_interval);
+    if (this.currTaskStatus_interval)
+      clearInterval(this.currTaskStatus_interval);
+  } */
 }
