@@ -354,3 +354,13 @@ border-radius: 20px;
 .twoColors:nth-child(odd) {
   background-color: white;
 }
+
+.create-user{
+
+  padding: 10px 20px;
+    background-color: #ff3333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
