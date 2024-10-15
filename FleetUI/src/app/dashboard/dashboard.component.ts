@@ -438,6 +438,7 @@ export class DashboardComponent implements AfterViewInit {
     this.simMode.forEach((robo) => {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
     });
+    
 
     this.robos.forEach(
       (robo) =>

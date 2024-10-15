@@ -742,6 +742,18 @@
     </button>
   </div>
 </div>
+
+
+<div *ngIf="isConfirmationVisible" class="popup-overlay1">
+  <div class="popup-content1">
+    <p>Are you sure you want to Remove?</p>
+    <div>
+      <button type="button" (click)="confirmDelete()">Confirm</button>
+      <button type="button" (click)="cancelDelete()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div *ngIf="isRoboConfirmationVisible" class="popup-overlay1">
   <div class="popup-content1">
     <!-- Show these buttons initially -->
@@ -778,17 +790,6 @@
         <button type="button" (click)="confirmRoboDelete()">Confirm</button>
         <button type="button" (click)="cancelDelete()">Cancel</button>
       </div>
-    </div>
-  </div>
-</div>
-
-
-<div *ngIf="isConfirmationVisible" class="popup-overlay1">
-  <div class="popup-content1">
-    <p>Are you sure you want to Remove?</p>
-    <div>
-      <button type="button" (click)="confirmDelete()">Confirm</button>
-      <button type="button" (click)="cancelDelete()">Cancel</button>
     </div>
   </div>
 </div>

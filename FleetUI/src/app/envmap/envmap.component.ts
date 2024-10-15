@@ -553,10 +553,22 @@ export class EnvmapComponent implements AfterViewInit {
       // Clear the selected nodes
       this.nodesToDelete = [];
 
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Nodes Deleted Successfully',
+        life: 4000,
+      });
+
       // Redraw the canvas
       this.redrawCanvas();
     } else {
       console.log('No nodes selected for deletion.');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'No items selected for deletion.'
+      });
     }
 
     if (this.selectedAsset) {
@@ -579,7 +591,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodes = this.nodes.filter(
         (node) => node.nodeId !== this.selectedNode?.nodeId
       );
-
       // Remove from nodes array
       this.nodes = this.nodes.filter((node) => {
         return (
@@ -595,24 +606,13 @@ export class EnvmapComponent implements AfterViewInit {
           edge.endNodeId !== this.selectedNode?.nodeId
         );
       });
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Deleted',
-        detail: 'Nodes Deleted Successfully',
-        life: 4000,
-      });
+     
       // Clear the selected node
       this.selectedNode = null;
       // Redraw the canvas
       this.redrawCanvas();
     } else {
       console.log('No node selected to delete.');
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'No items selected for deletion.'
-      });
-
     }
     // if (this.robotToDelete) {
     //   // Remove the robot from the robos array
@@ -729,6 +729,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   cancelDelete(): void {
     this.isConfirmingDelete
+    this.isConfirmationVisible=false;
     this.isRoboConfirmationVisible = false;
     // Hide confirmation dialog without deleting
     // this.isDeleteModeEnabled = false;
