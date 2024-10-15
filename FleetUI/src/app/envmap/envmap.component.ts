@@ -266,7 +266,7 @@ export class EnvmapComponent implements AfterViewInit {
     edgeId: '',
     sequenceId: 0,
     edgeDescription: '',
-    released: true,
+    released: false,
     startNodeId: '',
     endNodeId: '',
     maxSpeed: 0,
@@ -275,7 +275,7 @@ export class EnvmapComponent implements AfterViewInit {
     orientation: 0,
     orientationType: '',
     direction: 'UN_DIRECTIONAL',
-    rotationAllowed: true,
+    rotationAllowed: false,
     maxRotationSpeed: 0,
     length: 0,
     action: [],
@@ -2260,7 +2260,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         edgeId: this.edgeCounter.toString(),
         sequenceId: this.edgeCounter,
         edgeDescription: '',
-        released: true,
+        released: false,
         startNodeId: arr[i].nodeId,
         endNodeId: arr[i+1].nodeId,
         maxSpeed: 0,
@@ -2269,7 +2269,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         orientation: 0,
         orientationType: '',
         direction: this.direction == 'uni' ? 'UN_DIRECTIONAL' : 'BI_DIRECTIONAL',
-        rotationAllowed: true,
+        rotationAllowed: false,
         maxRotationSpeed: 0,
         length: 0,
         action: [],
@@ -2415,7 +2415,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
               edgeId: this.edgeCounter.toString(),
               sequenceId: this.edgeCounter,
               edgeDescription: '',
-              released: true,
+              released: false,
               startNodeId: this.firstNode.nodeId,
               endNodeId: this.secondNode.nodeId,
               maxSpeed: 0,
@@ -2424,7 +2424,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
               orientation: 0,
               orientationType: '',
               direction: 'UN_DIRECTIONAL',
-              rotationAllowed: true,
+              rotationAllowed: false,
               maxRotationSpeed: 0,
               length: 0,
               action: [],
@@ -2443,7 +2443,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
               edgeId: this.edgeCounter.toString(),
               sequenceId: this.edgeCounter,
               edgeDescription: '',
-              released: true,
+              released: false,
               startNodeId: this.firstNode.nodeId,
               endNodeId: this.secondNode.nodeId,
               maxSpeed: 0,
@@ -2452,7 +2452,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
               orientation: 0,
               orientationType: '',
               direction: 'BI_DIRECTIONAL',
-              rotationAllowed: true,
+              rotationAllowed: false,
               maxRotationSpeed: 0,
               length: 0,
               action: [],
@@ -3608,7 +3608,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.currentEdge.edgeId = '';
       // this.currentEdge.sequenceId= 0;
       this.currentEdge.edgeDescription= '';
-      this.currentEdge.released= true;
+      this.currentEdge.released= false;
       // this.currentEdge.startNodeId= '';
       // this.currentEdge.endNodeId= '';
       this.currentEdge.maxSpeed= 0;
@@ -3617,7 +3617,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.currentEdge.orientation= 0;
       this.currentEdge.orientationType= '';
       // this.currentEdge.direction= 'UN_DIRECTIONAL';
-      this.currentEdge.rotationAllowed= true;
+      this.currentEdge.rotationAllowed= false;
       this.currentEdge.maxRotationSpeed= 0;
       this.currentEdge.length= 0;
       this.currentEdge.action= [];
