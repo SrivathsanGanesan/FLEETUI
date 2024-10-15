@@ -7,3 +7,4 @@ server/proj_assets/dashboardMap/*.png
 server/proj_assets/projectFile/*.txt
 # **/**/*.png
 # **/**/*.jpg
+**/*/*.png 
