@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
-import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-statistics',
@@ -179,7 +178,7 @@ export class StatisticsComponent {
     // timeStamp2 = 1728412500;
 
     let response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-tasks-status/${this.selectedMap.id}`,
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks`,
       {
         method: 'POST',
         credentials: 'include',
@@ -198,16 +197,15 @@ export class StatisticsComponent {
       console.log('Err occured while getting tasks status : ', data.error);
       return [0, 0, 0, 0, 0];
     }
-    if (!data.map) {
-      alert(data.msg);
-      return [0, 0, 0, 0, 0];
-    }
+    if (!data.tasks?.tasks) return [0, 0, 0, 0, 0];
+    const { tasks } = data.tasks;
+
     // if (data.tasksStatus) return data.tasksStatus;
     // ["completed", "In-progress", "todo", "err", "cancelled"];
     let tasksStatus = [0, 0, 0, 0, 0];
     let tot_tasks = 0;
-    if (data.tasks) {
-      let tasksStatusArr = data.tasks.map((task: any) => {
+    if (tasks) {
+      let tasksStatusArr = tasks.map((task: any) => {
         return task.task_status.status;
       });
       for (let task of tasksStatusArr) {

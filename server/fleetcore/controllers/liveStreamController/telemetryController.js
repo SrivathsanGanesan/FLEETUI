@@ -217,44 +217,6 @@ const enableRobo = async (req, res) => {
   }
 };
 
-const getGrossTaskStatus = async (req, res) => {
-  const mapId = req.params.mapId;
-  const mapData = req.body;
-  let { timeStamp1, timeStamp2 } = mapData;
-  try {
-    let isMapExists = await Map.exists({ _id: mapId });
-    if (!isMapExists)
-      return res.status(400).json({ msg: "Map not found!", map: null });
-    const map = await Map.findOne({ _id: mapId });
-    let timeStamp = {
-      timeStamp1: timeStamp1,
-      timeStamp2: timeStamp2,
-    };
-    /* let tasks = await fetchFleetInfo({
-      endpoint: "get_tasks_list",
-      bodyData: timeStamp,
-      method: "POST",
-    }); */
-
-    let tasksStatus = [];
-    for (let i of [1, 2, 3, 4, 5]) {
-      tasksStatus.push(Math.floor(Math.random() * 10));
-    }
-
-    return res.status(200).json({
-      tasksStatus: tasksStatus,
-      // tasks: tasks.tasks ? tasks.tasks : tasks.default_columns,
-      map: map,
-      msg: "data sent!",
-    });
-  } catch (error) {
-    console.error("Error in getting tasks status :", error);
-    res
-      .status(500)
-      .json({ error: error.message, msg: "Internal Server Error" });
-  }
-};
-
 const getRoboStateCount = async (req, res) => {
   const mapId = req.params.mapId;
   try {
@@ -365,7 +327,6 @@ const getRoboDetails = async (req, res) => {
 
 module.exports = {
   initializeRobo,
-  getGrossTaskStatus,
   getRoboStateCount,
   getRoboActivities,
   getRoboDetails,
