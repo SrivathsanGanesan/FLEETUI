@@ -473,7 +473,6 @@
 
 <div *ngIf="showPopup" class="popup-overlay1">
   <div class="popup-content1">
-
     <h2>Edge Details</h2>
     <div class="flex-items">
       <div class="first">
@@ -487,7 +486,6 @@
             required
           />
         </div>
-
         <div class="form-row">
           <label for="sequenceId" style="padding-right: .7rem;">Sequence ID:</label>
           <input pInputText
@@ -658,9 +656,8 @@
       </div>
       <button type="submit" id="formBTN" (click)="updateEdge()">Save</button>
       <button type="button" id="formBTN" (click)="deleteEdge()">Delete</button>
-      <button type="button" id="formBTN" (click)="hidePopup()">Cancel</button>
-    </div>
-    <!-- </form> -->
+      <button type="button" id="formBTN" (click)="cancelEdge()">Cancel</button>
+    </div>  
   </div>
 </div>
 

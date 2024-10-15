@@ -21,8 +21,6 @@ import { CookieService } from 'ngx-cookie-service';
 import { MapService } from '../map.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
-
-
 interface Node {
   nodeId: string;
   sequenceId: number;
@@ -138,6 +136,7 @@ export class EnvmapComponent implements AfterViewInit {
   robos: Robo[] = []; // Org_robos
   selectedAction: string| null = null;
   validationError: string | null = null;
+  savedEdge: Edge | null = null; // This will hold the saved edge details
 
   Nodes: {
     id: number;
@@ -280,7 +279,7 @@ export class EnvmapComponent implements AfterViewInit {
     maxRotationSpeed: 0,
     length: 0,
     action: [],
-  };
+  };  
   selectedMap : any | null = null;
   showPopup = false;
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
@@ -3602,33 +3601,58 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     // Handle form submission, e.g., save edge details
     this.showPopup = false;
   }
-  hidePopup(): void {
+  cancelEdge(): void {
     this.showPopup = false;
     this.showEdgeError = false;
+    if(!this.savedEdge){ 
+      // this.currentEdge.edgeId = '';
+      // this.currentEdge.sequenceId= 0;
+      this.currentEdge.edgeDescription= '';
+      this.currentEdge.released= true;
+      // this.currentEdge.startNodeId= '';
+      // this.currentEdge.endNodeId= '';
+      this.currentEdge.maxSpeed= 0;
+      this.currentEdge.maxHeight= 0;
+      this.currentEdge.minHeight= 0;
+      this.currentEdge.orientation= 0;
+      this.currentEdge.orientationType= '';
+      // this.currentEdge.direction= 'UN_DIRECTIONAL';
+      this.currentEdge.rotationAllowed= true;
+      this.currentEdge.maxRotationSpeed= 0;
+      this.currentEdge.length= 0;
+      this.currentEdge.action= [];
+    }else {
+      // Prepopulate with saved edge details
+      this.currentEdge = { ...this.savedEdge };
+    }
   }
   updateEdge() {
     if (!this.currentEdge.edgeId || !this.currentEdge.sequenceId || !this.currentEdge.minHeight || !this.currentEdge.orientation || !this.currentEdge.orientationType || !this.currentEdge.maxRotationSpeed) {
-      this.showEdgeError = true; // Show error message
-      return; // Stop saving if validation fails
+        this.showEdgeError = true; // Show error message
+        return; // Stop saving if validation fails
     }
 
     // If validation passes, hide the error message
     this.showEdgeError = false;
 
     if (this.currentEdge) {
-      this.edges = this.edges.map((edge) => {
-        if (this.currentEdge.edgeId === edge.edgeId) {
-          // Preserve color and direction
-          edge = this.currentEdge;
-          // return { ...edge, ...this.currentEdge };
-        }
-        return edge;
-      });
-      this.redrawCanvas();
+        // Update or save the edge
+        this.edges = this.edges.map((edge) => {
+            if (this.currentEdge.edgeId === edge.edgeId) {
+                // Preserve color and direction
+                edge = { ...this.currentEdge }; // Update with new values
+            }
+            return edge;
+        });
+        
+        // Save the current edge details
+        this.savedEdge = { ...this.currentEdge };
+        this.redrawCanvas();
     }
     console.log(this.edges);
     this.showPopup = false;
-  }
+}
+
   // Method to delete the edge
   deleteEdge(): void {
     if (this.currentEdge) {
@@ -3641,7 +3665,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.redrawCanvas();
 
       // Hide the popup
-      this.hidePopup();
+      this.cancelEdge();
     }
   }
 }
