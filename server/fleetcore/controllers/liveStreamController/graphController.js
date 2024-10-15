@@ -63,11 +63,11 @@ const throughput = async (req, res, next) => {
       return res.status(500).json({ msg: "map not found!", map: null });
 
     const mapData = await Map.findOne({ _id: mapId });
-    // let fleetThroughput = await getFleetSeriesData(
-    //   timeStamp1,
-    //   timeStamp2,
-    //   "get_throughput_stats"
-    // );
+    let fleetThroughput = await getFleetSeriesData(
+      timeStamp1,
+      timeStamp2,
+      "get_throughput_stats"
+    );
 
     if (timeSpan === "week")
       return res.status(200).json({
@@ -99,17 +99,17 @@ const throughput = async (req, res, next) => {
           };
         }),
       });
-    throughPutArr.push({
+    /* throughPutArr.push({
       rate: Math.floor(Math.random() * 100),
       time: new Date().toLocaleString("en-IN", {
         hour: "numeric",
         minute: "numeric",
       }),
-    });
+    }); */
     return res.status(200).json({
       msg: "data sent",
-      throughput: throughPutArr,
-      // throughput: fleetThroughput,
+      // throughput: throughPutArr,
+      throughput: fleetThroughput,
     });
   } catch (err) {
     console.log("error occured : ", err);
