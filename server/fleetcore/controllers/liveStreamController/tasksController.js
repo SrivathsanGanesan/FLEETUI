@@ -133,42 +133,27 @@ const getTasks = async (req, res) => {
 };
 
 const getCurrTasksActivities = async (req, res) => {
-  //yet to remove..
-  const currFleetTasks = {
-    taskDet: [
-      {
-        taskId: Math.floor(Math.random() * 10),
-        taskName: "PICK SCREWS",
-        status: "TaskInProgress",
-      },
-      {
-        taskId: Math.floor(Math.random() * 10),
-        taskName: "DROP SCREWS",
-        status: "ToDo",
-      },
-    ],
-  };
-  const { mapId } = req.body;
+  const { mapId, timeStamp1, timeStamp2 } = req.body;
   try {
-    //..
-    // let taskData = req.fleetData;
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(500).json({ msg: "map not exists", map: null });
-    // Needed one!
-    /* const mapData = await Map.findOneAndUpdate(
-      { _id: mapId },
-      {
-        $push: {
-          tasks: { $each: fleetTasks.tasks }, // can push multiple entries to the array using $each
-        },
-      }
-      // { new: true } // which returns the updated document of the Map..
-    ); */
+
+    let bodyData = {
+      timeStamp1: timeStamp1,
+      timeStamp2: timeStamp2,
+    };
+
+    let tasks = await getFleetTask("get_tasks_list", bodyData);
+
+    if (!("tasks" in tasks))
+      return res
+        .status(200)
+        .json({ msg: "data sent, only with default columns", tasks: null });
 
     return res.status(200).json({
       msg: "data sent",
-      tasks: currFleetTasks.taskDet,
+      tasks: tasks,
     });
   } catch (err) {
     console.log("error occured : ", err);
@@ -179,3 +164,24 @@ const getCurrTasksActivities = async (req, res) => {
 };
 
 module.exports = { getFleetTask, getTasks, getCurrTasksActivities };
+
+// Needed one!
+/* const mapData = await Map.findOneAndUpdate(
+      { _id: mapId },
+      {
+        $push: {
+          tasks: { $each: fleetTasks.tasks }, // can push multiple entries to the array using $each
+        },
+      }
+      // { new: true } // which returns the updated document of the Map..
+    ); 
+
+    let fleet_tasks = tasks.tasks.map((task) => {
+      return {
+        task_id: task.task_id,
+        agent_ID: task.agent_ID,
+        agent_name: task.agent_name,
+        task_status: task.task_status.status,
+      };
+    });
+*/
