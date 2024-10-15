@@ -82,7 +82,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     // if (!response.ok)
     //   throw new Error(`Error with status code of : ${response.status}`);
     let data = await response.json();
-    // console.log(data);
+
     if (!data.tasks) return;
     const { tasks } = data.tasks;
 
@@ -98,11 +98,11 @@ export class TasksComponent implements OnInit, AfterViewInit {
           sourceLocation: task.sub_task[0]?.source_location
             ? task.sub_task[0]?.source_location
             : 'N/A',
-          destinationLocation: '',
+          destinationLocation: 'N/A',
         };
       });
     this.filteredTaskData = this.tasks;
-    console.log(this.tasks);
+    // console.log(this.tasks);
     this.setPaginatedData();
 
     // Simulate some delay, such as an API call

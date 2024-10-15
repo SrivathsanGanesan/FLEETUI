@@ -161,6 +161,12 @@
   flex-direction: column; /* Allow table to fill container */
 }
 
+.robot-activity-table-container {
+  max-height: 300px; /* Set the desired height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Hide horizontal scrolling if necessary */
+}
+
 /* Styling for the notifications container */
 .notifications-container {
   flex: 0.5; /* Set to 50% of the width */
@@ -197,7 +203,7 @@
 
 .robot-activity-table th,
 .robot-activity-table td {
-  padding: 8px 15px;
+  padding: 12px 15px;
   border-bottom: 1px solid #ddd;
   font-size: 0.8rem;
 }
