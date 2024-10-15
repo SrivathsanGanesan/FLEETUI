@@ -345,20 +345,20 @@ export class EnvmapComponent implements AfterViewInit {
       this.imageSrc = this.currEditMapDet.imgUrl;
       this.origin = {x : this.currEditMapDet.origin.x, y : this.currEditMapDet.origin.y, w : this.currEditMapDet.origin.w};
       this.nodes = this.currEditMapDet.nodes.map((node : Node)=>{
-        node.nodePosition.x = (node.nodePosition.x / (this.ratio || 1));
-        node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
+        node.nodePosition.x = ((node.nodePosition.x - (this.origin.x || 0)) / (this.ratio || 1));
+        node.nodePosition.y = ((node.nodePosition.y - (this.origin.y || 0)) / (this.ratio || 1));
         return node;
       });
       this.edges = this.currEditMapDet.edges;
       this.assets = this.currEditMapDet.assets.map((asset : asset)=>{
-        asset.x = asset.x / (this.ratio || 1);
-        asset.y = asset.y / (this.ratio || 1);
+        asset.x = ((asset.x - (this.origin.x || 0)) / (this.ratio || 1));
+        asset.y = ((asset.y - (this.origin.y || 0)) / (this.ratio || 1));
         return asset;
       });
       this.zones = this.currEditMapDet.zones.map((zone : Zone)=>{
         zone.pos = zone.pos.map((pos)=>{
-          pos.x = pos.x / (this.ratio || 1);
-          pos.y = pos.y / (this.ratio || 1);
+          pos.x = ((pos.x - (this.origin.x || 0)) / (this.ratio || 1));
+          pos.y = ((pos.y - (this.origin.y || 0)) / (this.ratio || 1));
           return pos;
         })
         return zone;
@@ -1034,21 +1034,23 @@ export class EnvmapComponent implements AfterViewInit {
   }
   updateEditedMap() {
     this.nodes = this.nodes.map((node)=>{
-      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)));
-      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)));
+      // node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)));
+      // node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)));
+      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) + (this.origin.x || 0));
+      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) + (this.origin.y || 0));
       return node;
     })
 
     this.assets = this.assets.map((asset) => {
-      asset.x = ((asset.x * (this.ratio || 1)));
-      asset.y = ((asset.y * (this.ratio || 1)));
+      asset.x = ((asset.x * (this.ratio || 1)) + (this.origin.x || 0));
+      asset.y = ((asset.y * (this.ratio || 1)) + (this.origin.y || 0));
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = ((pos.x * (this.ratio || 1)));
-        pos.y = ((pos.y * (this.ratio || 1)));
+        pos.x = ((pos.x * (this.ratio || 1)) + (this.origin.x || 0));
+        pos.y = ((pos.y * (this.ratio || 1)) + (this.origin.y || 0));
         return pos;
       });
       return zone;
@@ -3044,10 +3046,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       for (const zone of this.zones) {
         for (const point of zone.pos) {
           const radius = 6; // Same as the point's radius
-          if (
-            Math.abs(x - point.x) <= radius &&
-            Math.abs(y - point.y) <= radius
-          ) {
+          if ( Math.abs(x - point.x) <= radius && Math.abs(y - point.y) <= radius ) {
             this.selectedZone = zone;
             this.selectedZonePoint = point;
             this.originalZonePointPosition = { x: point.x, y: point.y };

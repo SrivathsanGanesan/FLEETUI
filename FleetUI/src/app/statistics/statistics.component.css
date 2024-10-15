@@ -247,6 +247,7 @@
 .notifications-table td {
   font-size: 0.8vw;
   color: #555;
+  width: 30%; /* Ensures each column takes up equal space */
 }
 
 .activity-table td:first-child,

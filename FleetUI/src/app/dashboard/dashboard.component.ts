@@ -63,6 +63,7 @@ export class DashboardComponent implements AfterViewInit {
   simMode: any[] = [];
   robos: any[] = [];
   ratio: number = 1;
+  origin : {x : number, y : number, w : number} = { x : 0, y : 0, w : 0 };
   plottedPoints: { id: number; x: number; y: number }[] = [];
   zoneType: ZoneType | null = null; // Selected zone type
   startX = 0;
@@ -129,8 +130,9 @@ export class DashboardComponent implements AfterViewInit {
       return;
     }
     await this.getMapDetails();
-    await this.initSimRoboPos();
     this.loadCanvas();
+    await this.initSimRoboPos();
+    console.log(this.simMode);
 
     // this.toggleModelCanvas();
     // await this.fetchRoboPos();
@@ -171,10 +173,13 @@ export class DashboardComponent implements AfterViewInit {
     let roboX = imgWidth - this.placeOffset;
     let roboY = imgHeight - 100;
     let i = 1;
+
     this.simMode = this.simMode.map((robo) => {
-      roboX = imgWidth - this.placeOffset * i;
-      robo.pos = { x: roboX, y: roboY, orientation: 90 };
-      i++;
+      if (!robo.pos.x && !robo.pos.y) {
+        roboX = imgWidth - this.placeOffset * i;
+        robo.pos = { x: roboX, y: roboY, orientation: 90 };
+        i++;
+      }
       return robo;
     });
   }
@@ -204,7 +209,7 @@ export class DashboardComponent implements AfterViewInit {
           // Show the popup at the clicked position
           this.showPopup(event.clientX, event.clientY);
           this.updatedrobo = robo;
-          console.log(this.updatedrobo);
+          // console.log(this.updatedrobo);
           return;
         }
       }
@@ -246,70 +251,73 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async initializeRobo() {
-    this.hidePopup();
-    
     if (this.updatedrobo) {
       // Toggle between initializing and releasing the robot
       if (this.updatedrobo.isInitialized) {
         // If the robot is already initialized, release it
+        // await this.updateEditedMap();
         this.updatedrobo.isInitialized = false;
-        console.log(`Robot ${this.updatedrobo.roboDet.id} released`);
+        console.log(`Robot ${this.updatedrobo.amrId} released`);
       } else {
         // Otherwise, initialize the robot
         this.updatedrobo.isInitialized = true;
-        console.log(`Robot ${this.updatedrobo.roboDet.id} initialized`);
+        console.log(`Robot ${this.updatedrobo.amrId} initialized`);
       }
     }
+    // await this.updateEditedMap();
+    this.hidePopup();
+    this.robotToInitialize = this.draggingRobo;
 
     // console.log('Initializing Robo...');
     // this.isInitializeMode = !this.isInitializeMode;
 
-    // await this.initializeRobot();
+    await this.initializeRobot();
   }
 
-  // async initializeRobot(): Promise<void> {
-  //   let ratio = this.ratio ? this.ratio : 1;
-  //   let quaternion = { x: 0, y: 0, z: 0, w: 1 };
-  //   const transformedY =
-  //     this.myCanvas.nativeElement.height - this.robotToInitialize.pos.y;
-  //   this.robotToInitialize.pos.x = this.robotToInitialize.pos.x * ratio;
-  //   this.robotToInitialize.pos.y = transformedY * ratio;
+  async initializeRobot(): Promise<void> {
+    // console.log(this.robotToInitialize, this.ratio);
 
-  //   // quaternion = this.positionToQuaternion(this.robotToInitialize.pos);
-  //   let initializeRobo = {
-  //     id: this.robotToInitialize.roboDet.id,
-  //     pose: {
-  //       position: {
-  //         x: this.robotToInitialize.pos.x,
-  //         y: this.robotToInitialize.pos.y,
-  //         z: this.robotToInitialize.pos.orientation,
-  //       },
-  //       orientation: quaternion,
-  //     },
-  //   };
-  //   // console.log(initializeRobo);
+    let ratio = this.ratio ? this.ratio : 1;
+    let quaternion = { x: 0, y: 0, z: 0, w: 1 };
+    const transformedY =
+      this.myCanvas.nativeElement.height - this.robotToInitialize.pos.y;
+    this.robotToInitialize.pos.x = this.robotToInitialize.pos.x * ratio;
+    this.robotToInitialize.pos.y = transformedY * ratio;
 
-  //   let response = await fetch(
-  //     `http://${environment.API_URL}:${environment.PORT}/stream-data/initialize-robot`,
-  //     {
-  //       method: 'POST',
-  //       credentials: 'include',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         mapId: this.selectedMap.id,
-  //         initializeRobo: initializeRobo,
-  //       }),
-  //     }
-  //   );
-  //   let data = await response.json();
-  //   console.log(data);
-  //   // this.cancelDelete();
-  //   if (data.isInitialized) {
-  //     alert('robo Initialized!');
-  //     return;
-  //   }
-  //   if (data.msg) alert(data.msg);
-  // }
+    // quaternion = this.positionToQuaternion(this.robotToInitialize.pos);
+    let initializeRobo = {
+      id: this.robotToInitialize.amrId,
+      pose: {
+        position: {
+          x: this.robotToInitialize.pos.x,
+          y: this.robotToInitialize.pos.y,
+          z: this.robotToInitialize.pos.orientation,
+        },
+        orientation: quaternion,
+      },
+    };
+
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/initialize-robot`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          initializeRobo: initializeRobo,
+        }),
+      }
+    );
+    let data = await response.json();
+    console.log(data);
+    // this.cancelDelete();
+    if (data.isInitialized) {
+      alert('robo Initialized!');
+      return;
+    }
+    if (data.msg) alert(data.msg);
+  }
 
   cancelAction() {
     this.hidePopup();
@@ -319,11 +327,37 @@ export class DashboardComponent implements AfterViewInit {
     this.hidePopup(); // Hide the popup after enabling move mode
   }
 
+  async updateEditedMap() {
+    if (!this.selectedMap) return;
+
+    let editedMap = {
+      simMode: this.simMode,
+    };
+    try {
+      let response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/update-map/${this.selectedMap.mapName}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(editedMap),
+        }
+      );
+      let data = await response.json();
+      const { updatedData } = data;
+      this.simMode = updatedData.simMode;
+      // console.log('updated sim robos position : ', this.simMode);
+
+      // this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];
+    } catch (error) {
+      console.error('Error updating map:', error);
+    }
+  }
+
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
     if (!this.showModelCanvas) {
-      console.log('hey');
       this.nodes = [];
     } else {
       await this.getMapDetails();
@@ -399,8 +433,8 @@ export class DashboardComponent implements AfterViewInit {
 
     // Draw the image
     ctx.drawImage(img, 0, 0);
-    // yet to uncomment
 
+    // yet to uncomment
     this.simMode.forEach((robo) => {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
     });
@@ -509,17 +543,14 @@ export class DashboardComponent implements AfterViewInit {
         ) {
           // if (this.isRobotClicked(robo, imgX, imgY)) {
           if (robo.isInitialized) {
-            console.log(
-              `Robot ${robo.roboDet.id} is initialized and cannot move.`
-            );
+            console.log(`Robot ${robo.amrId} is initialized and cannot move.`);
             return; // Do not allow dragging if the robot is initialized
           }
-          this.hidePopup();
-          this.draggingRobo = robo; // Store the robot being dragged
           // this.offsetX = imgX - roboX; // Store offset to maintain relative position during drag
           // this.offsetY = imgY - roboY;
+          this.draggingRobo = robo; // Store the robot being dragged
           this.isDragging = true;
-          // console.log(this.isDragging,this.draggingRobo);
+          this.hidePopup();
           break;
         }
       }
@@ -555,10 +586,9 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   addMouseUpListener(canvas: HTMLCanvasElement) {
-    canvas.addEventListener('mouseup', (event) => {
-      if (this.isDragging && this.draggingRobo) {
+    canvas.addEventListener('mouseup', async (event) => {
+      if (this.isDragging) {
         this.isDragging = false;
-        this.draggingRobo = this.selectedRobo;
         this.draggingRobo = null;
         this.redrawCanvas();
       }
@@ -582,7 +612,6 @@ export class DashboardComponent implements AfterViewInit {
         Math.round(imgX) * this.ratio,
         Math.round(imgY) * this.ratio
       );
-      console.log(this.isDragging, this.draggingRobo);
 
       // Check if the click is within the bounds of the map image
       const isInsideMap =
@@ -632,7 +661,7 @@ export class DashboardComponent implements AfterViewInit {
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
 
-      if (this.draggingRobo) {
+      if (this.draggingRobo && this.isDragging) {
         let newX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
         let newY = (mouseY - this.mapImageY - this.offsetY) / this.zoomLevel;
         // Update the position of the robot being dragged
@@ -645,7 +674,6 @@ export class DashboardComponent implements AfterViewInit {
         // Update the robot's position
         this.draggingRobo.pos.x = newX;
         this.draggingRobo.pos.y = newY;
-        console.log(newX, newY);
 
         // Redraw the canvas with the updated robot position
       }
@@ -725,28 +753,26 @@ export class DashboardComponent implements AfterViewInit {
     mapData = data.map;
     this.simMode = mapData.simMode;
     this.ratio = data.map.mpp;
-
+    this.origin = {x : mapData.origin.x, y : mapData.origin.y, w : mapData.origin.w};
     this.nodes = mapData.nodes.map((node: any) => {
       // yet to interface in this component..
-      node.nodePosition.x = node.nodePosition.x / (this.ratio || 1);
-      node.nodePosition.y = node.nodePosition.y / (this.ratio || 1);
+      node.nodePosition.x = (node.nodePosition.x - (this.origin.x || 0)) / (this.ratio || 1);
+      node.nodePosition.y = (node.nodePosition.y - (this.origin.y || 0)) / (this.ratio || 1);
       return node;
     });
 
     this.edges = mapData.edges;
 
     this.assets = mapData.stations.map((asset: any) => {
-      // yet to interface in this component..
-      asset.x = asset.x / (this.ratio || 1);
-      asset.y = asset.y / (this.ratio || 1);
+      asset.x = ((asset.x - (this.origin.x || 0)) / (this.ratio || 1));
+      asset.y = ((asset.y - (this.origin.y || 0)) / (this.ratio || 1));
       return asset;
     });
 
     this.zones = mapData.zones.map((zone: any) => {
-      // yet to interface in this component..
       zone.pos = zone.pos.map((pos: any) => {
-        pos.x = pos.x / (this.ratio || 1);
-        pos.y = pos.y / (this.ratio || 1);
+        pos.x = ((pos.x - (this.origin.x || 0)) / (this.ratio || 1));
+        pos.y = ((pos.y - (this.origin.x || 0)) / (this.ratio || 1));
         return pos;
       });
       return zone;
@@ -760,6 +786,14 @@ export class DashboardComponent implements AfterViewInit {
       //   robo.pos.x * this.ratio,
       //   (this.mapImageHeight- robo.pos.y) * this.ratio
       // );
+
+      return robo;
+    });
+
+    // yet to check..
+    this.simMode = mapData.simMode.map((robo: any) => {
+      robo.pos.x = robo.pos.x / (this.ratio || 1);
+      robo.pos.y = robo.pos.y / (this.ratio || 1);
 
       return robo;
     });
@@ -1109,6 +1143,7 @@ export class DashboardComponent implements AfterViewInit {
       this.posEventSource.close();
     };
   }
+
   async plotAllRobots(robotsData: any) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');

@@ -461,12 +461,12 @@ h2 {
 }
 
 .radial{
-  flex: 2 1 35%; /* Flex-grow 2, flex-shrink 1, takes 60% of available space */
+  flex: 1 1 35%; /* Flex-grow 1, flex-shrink 1, takes 35% of available space */
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   padding: 1%;
-  width: 35%;
+  height: auto; /* Height will adjust based on content */
   min-height: 270px; /* Ensures a minimum height for smaller screens */
 
 }

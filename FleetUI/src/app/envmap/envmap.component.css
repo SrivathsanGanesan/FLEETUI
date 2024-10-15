@@ -702,9 +702,9 @@ input[type='number']::-webkit-inner-spin-button {
 
 input[type='number'] {
   /* Use standard 'appearance' property along with vendor-specific ones */
-  appearance: none;         /* Standard */
+  appearance: none;             /* Standard */
   -moz-appearance: textfield;  /* Firefox */
-  -webkit-appearance: none; /* Chrome, Safari */
+  -webkit-appearance: none;   /* Chrome, Safari */
 }
 
 .dropdown-content button {

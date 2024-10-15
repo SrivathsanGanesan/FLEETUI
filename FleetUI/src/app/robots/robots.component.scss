@@ -207,7 +207,8 @@ body, .card, .popup-menu {
     overflow-x: auto;
     padding: 2rem;
     flex-wrap: wrap; /* Wrap content for smaller screens */
-    justify-content: center; /* Center cards horizontally */
+    justify-content: flex-start; /* Align cards from the start */
+    align-items: flex-start; /* Align cards from the top */
 }
 
 /* Adjust layout for smaller screens */
@@ -230,6 +231,7 @@ body, .card, .popup-menu {
         padding: 0.25rem;
     }
 }
+
 
 /* Entire scrollbar */
 ::-webkit-scrollbar {
@@ -262,7 +264,7 @@ body, .card, .popup-menu {
 
 .card {
   display: inline-block;
-  /* Other styles remain the same */
+  
   }
   /* Styles for the card */
   .card {
