@@ -54,7 +54,7 @@ const routes: Routes = [
   {
     path: 'configuration',
     component: ConfigurationComponent,
-    canActivate: [AuthGuard, ProjectGuard],
+    canActivate: [AuthGuard, ProjectGuard, AdminGuard],
   },
 
   {
@@ -65,7 +65,7 @@ const routes: Routes = [
   {
     path: 'usermanagement',
     component: UserManagementComponent,
-    canActivate: [AdminGuard], // Ensure both guards are here
+    canActivate: [AdminGuard, AuthGuard, ProjectGuard], // Ensure both guards are here
   },
   {
     path: 'support',

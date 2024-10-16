@@ -192,7 +192,7 @@
         <!-- Robot Activity Section -->
         <div class="robot-activity-container">
           <div class="section-header">
-            <h3>Robot Activities</h3>
+            <h3>Operation Activities</h3>
             <div class="search-box">
               <input
                 type="text"
@@ -201,17 +201,29 @@
               />
             </div>
             <button class="view-all-btn" (click)="onViewAllClick()">View All</button>
-
           </div>
-          <table class="activity-table">
-            <tr *ngFor="let activity of filteredRobotActivities">
-              <td>{{ activity.roboId }}</td>
-              <td>{{ activity.roboName }}</td>
-              <td>{{ activity.task }}</td>
-              <td>{{ activity.taskStatus }}</td>
-              <td>{{ activity.desc }}</td>
-            </tr>
-          </table>
+          <div class="robot-activity-table-container">
+            <table class="robot-activity-table">
+              <thead>
+                <tr>
+                  <th>Task ID</th>
+                  <th>Task Name</th>
+                  <th>Robot Name</th>
+                  <th>Status</th>
+                  <th>Time </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let activity of filteredRobotActivities">
+                  <td>{{ activity.roboId }}</td>
+                  <td>{{ activity.roboName }}</td>
+                  <td>{{ activity.task }}</td>
+                  <td>{{ activity.taskStatus }}</td>
+                  <td>{{ activity.desc }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <!-- Notifications Section -->

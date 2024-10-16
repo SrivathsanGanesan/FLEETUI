@@ -13,6 +13,8 @@
   flex-grow: 1;
 }
 
+
+
 /* Specific chart adjustments if needed */
 .area-chart-container .apexcharts-canvas {
   padding-top: 0; /* Remove or reduce padding at the top */
@@ -199,8 +201,8 @@
 }
 
 
-.button-container {
-  z-index: 10; /* Ensure the button is above other elements */
+.time-button-container {
+  z-index: 0; /* Ensure the button is above other elements */
   position: relative; /* Ensure it stays in place */
   display: flex;
   justify-content: center;
@@ -244,18 +246,3 @@
 
 
 
-
-/* toggle */
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  margin-bottom: 20px;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
