@@ -5,7 +5,7 @@
 
 
 .sidebar {
-  position: fixed; /* or relative based on your layout */
+    position: fixed; /* or relative based on your layout */
     height: 100%;
     width: 65px;
     background-color: #FF7373;
@@ -16,7 +16,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
     z-index: 10000;
   }
 /* CSS for the active tab */
@@ -138,11 +137,6 @@
     font-size: 14px;
     color: #888;
   }
-
-
-
-
-
   .topbar {
     width: 100%;
     height: 50px;
@@ -294,10 +288,6 @@ app-fullscreen-button{
     background-color: #9115154e;
     border-radius: 30px;
   }
-
-
-
-
   .follow {
       border-radius: 15px;
       padding: 0 20px; /* Simplified padding */
@@ -429,9 +419,9 @@ app-fullscreen-button{
   gap: 20px;
 }
 
-.language-toggle:hover {
-  /* box-shadow: 0 35px 35px rgba(0, 0, 0, 0.25);  */
-}
+/* .language-toggle:hover {
+  box-shadow: 0 35px 35px rgba(0, 0, 0, 0.25); 
+} */
 
 .language-info {
   display: flex;

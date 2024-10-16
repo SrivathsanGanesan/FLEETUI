@@ -137,6 +137,7 @@ export class EnvmapComponent implements AfterViewInit {
   selectedAction: string| null = null;
   validationError: string | null = null;
   savedEdge: Edge | null = null; // This will hold the saved edge details
+  rightClickEnabled: boolean = false; // Control right-click functionality
 
   Nodes: {
     id: number;
@@ -542,14 +543,12 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodes = this.nodes.filter(
         (node) => !this.nodesToDelete.includes(node)
       );
-
       // Remove edges related to deleted nodes
       this.edges = this.edges.filter((edge) => {
         return !this.nodesToDelete.some(
           (node) => edge.startNodeId === node.nodeId || edge.endNodeId === node.nodeId
         );
       });
-
       // Clear the selected nodes
       this.nodesToDelete = [];
 
@@ -1540,7 +1539,16 @@ export class EnvmapComponent implements AfterViewInit {
 
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
-    event.preventDefault();
+    if (!this.rightClickEnabled) {
+      event.preventDefault(); // Block right-click interaction
+
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Action Restricted',
+        detail: 'Please plot both nodes before interacting.'
+      });
+      return;
+    }
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
     const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
@@ -2066,6 +2074,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.nodes = [];
       this.firstNode = null;
       this.secondNode = null;
+      this.rightClickEnabled = false;
     }
   }
   plotMultiNode(x: number, y: number): void {
@@ -2112,6 +2121,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         };
         this.firstNode = firstnode;
         this.nodes.push(firstnode);
+        // this.rightClickEnabled = false;
     } else if (this.secondNode === null) {
         // Plotting the second node
         let secondnode = {
@@ -2143,6 +2153,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             this.onMouseUp.bind(this)
         );
 
+        this.rightClickEnabled = true;
         this.isPlottingEnabled = false; // Disable further plotting after two nodes
     }
     //yet to uncomment..
@@ -2611,7 +2622,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
-    this.direction = null;
+    // this.direction = null;
     this.selectedNodeId = '';  // Reset the selected node ID
   }
   private deselectNode(): void {
