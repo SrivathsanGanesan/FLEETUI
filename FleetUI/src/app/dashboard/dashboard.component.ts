@@ -176,11 +176,11 @@ export class DashboardComponent implements AfterViewInit {
     let i = 1;
 
     this.simMode = this.simMode.map((robo) => {
-      if (!robo.pos.x && !robo.pos.y) {
+      // if (!robo.pos.x && !robo.pos.y) {
         roboX = imgWidth - this.placeOffset * i;
         robo.pos = { x: roboX, y: roboY, orientation: 90 };
         i++;
-      }
+      // }
       return robo;
     });
   }
@@ -194,12 +194,12 @@ export class DashboardComponent implements AfterViewInit {
       const mouseY = event.clientY - rect.top;
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY =
-        ((canvas.height - mouseY) - this.mapImageY - this.offsetY) /
+        (canvas.height - mouseY - this.mapImageY - this.offsetY) /
         this.zoomLevel;
 
       for (let robo of this.simMode) {
         const roboX = robo.pos.x;
-        const roboY = ((this.mapImageHeight/this.zoomLevel) - robo.pos.y);
+        const roboY = this.mapImageHeight - robo.pos.y;
         const imageSize = 25; // Adjust size based on robot image dimensions
         if (
           imgX >= roboX - imageSize &&
@@ -259,19 +259,18 @@ export class DashboardComponent implements AfterViewInit {
         // await this.updateEditedMap();
         this.updatedrobo.isInitialized = false;
         console.log(`Robot ${this.updatedrobo.amrId} released`);
+        return;
         // Otherwise, initialize the robot
       } else {
         this.updatedrobo.isInitialized = true;
         console.log(`Robot ${this.updatedrobo.amrId} initialized`);
       }
     }
+
     // await this.updateEditedMap();
     // this.robotToInitialize = this.draggingRobo;
-    this.robotToInitialize = this.updatedrobo; // yet to replace with above line!
+    this.robotToInitialize = this.updatedrobo; // yet to use instead of above line..
     this.hidePopup();
-
-    // console.log('Initializing Robo...');
-    // this.isInitializeMode = !this.isInitializeMode;
 
     await this.initializeRobot();
   }
@@ -396,13 +395,6 @@ export class DashboardComponent implements AfterViewInit {
       img.src = `http://${imgName.imgUrl}`;
   
       img.onload = () => {
-        // Check if the image dimensions exceed the specified limits
-        if (img.height > 664 && img.width > 1355) {
-          this.zoomLevel = 0.8; // Set zoom level to 0.9
-        } else {
-          this.zoomLevel = 1; // Default zoom level
-        }
-  
         // Set canvas dimensions based on its container
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
         canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
@@ -451,8 +443,7 @@ export class DashboardComponent implements AfterViewInit {
         this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected)
     );
   
-    if (!this.showModelCanvas) {
-      console.log("hey");      
+    if (!this.showModelCanvas) {   
       ctx.restore();
       return;
     }
@@ -519,7 +510,7 @@ export class DashboardComponent implements AfterViewInit {
         // console.log(this.zoomLevel);
         
         const roboX = robo.pos.x ;
-        const roboY = ((this.mapImageHeight/this.zoomLevel) - robo.pos.y);
+        const roboY = this.mapImageHeight - robo.pos.y;
         const imageSize = 25; // Adjust to the sie of the robot image
         // console.log("robotXY"+roboX, roboY);
         // console.log("imgXY"+imgX, imgY);
@@ -1101,8 +1092,8 @@ export class DashboardComponent implements AfterViewInit {
               z: robot.pose.orientation.z,
             };
 
-            let posX = robot.pose.position.x / 0.05;
-            let posY = robot.pose.position.y / 0.05;
+            let posX = robot.pose.position.x / this.ratio; // 0.05
+            let posY = robot.pose.position.y / this.ratio; // 0.05
 
             let yaw = this.quaternionToYaw(
               complexVal.w,
@@ -1161,13 +1152,54 @@ export class DashboardComponent implements AfterViewInit {
       // Plot each robot on the map
       Object.keys(robotsData).forEach((robotId) => {
         const { posX, posY, yaw } = robotsData[robotId];
-
-        // Transform the Y-axis and plot the robot
         const transformedY = canvas.height - posY;
-        this.plotRobo(ctx, posX, transformedY, -yaw);
+        // this.plotRobo(ctx, posX, transformedY, -yaw);
+
+        const robotPosX = centerX + (posX * this.zoomLevel); // implemented when developed, need to ensure with the above line.
+        const robotPosY = centerY + ((imgHeight - posY) * this.zoomLevel);
+        this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
+        // const robotPosX = centerX + this.offsetX + (posX * this.zoomLevel);
+        // const robotPosY = centerY + this.offsetY + ((canvas.height - posY) * this.zoomLevel);
       });
+
+      // if (this.showModelCanvas) {
+      //   this.drawNodesAndEdges(ctx, mapImage); // Draw nodes and edges if enabled
+      // }
     }
   }
+
+  drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
+    // Plot nodes
+    this.nodes.forEach((node) => {
+        const transformedY = img.height - node.nodePosition.y;
+        this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+    });
+
+    // Plot edges
+    this.edges.forEach((edge) => {
+        const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
+        const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
+
+        if (startNode && endNode) {
+            const startPos = {
+                x: startNode.nodePosition.x,
+                y: startNode.nodePosition.y,
+            };
+            const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+            const transformedStartY = img.height - startPos.y;
+            const transformedEndY = img.height - endPos.y;
+
+            this.drawEdge(
+                ctx,
+                { x: startPos.x, y: transformedStartY },
+                { x: endPos.x, y: transformedEndY },
+                edge.direction,
+                edge.startNodeId,
+                edge.endNodeId
+            );
+        }
+    });
+}
 
   async showSpline() {
     if (!this.selectedMap.id) return;
