@@ -251,22 +251,22 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async initializeRobo() {
+    // Toggle between initializing and releasing the robot
     if (this.updatedrobo) {
-      // Toggle between initializing and releasing the robot
+      // If the robot is already initialized, release it
       if (this.updatedrobo.isInitialized) {
-        // If the robot is already initialized, release it
         // await this.updateEditedMap();
         this.updatedrobo.isInitialized = false;
         console.log(`Robot ${this.updatedrobo.amrId} released`);
-      } else {
         // Otherwise, initialize the robot
+      } else {
         this.updatedrobo.isInitialized = true;
         console.log(`Robot ${this.updatedrobo.amrId} initialized`);
       }
     }
     // await this.updateEditedMap();
-    this.hidePopup();
     this.robotToInitialize = this.draggingRobo;
+    this.hidePopup();
 
     // console.log('Initializing Robo...');
     // this.isInitializeMode = !this.isInitializeMode;

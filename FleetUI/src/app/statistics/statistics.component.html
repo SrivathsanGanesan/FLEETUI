@@ -141,7 +141,9 @@
 
     <div class="charts-container">
       <div class="area-chart-container">
-        <app-area-chart></app-area-chart>
+        <app-area-chart
+        [systemThroughput]="this.systemThroughput"
+        ></app-area-chart>
       </div>
       <div class="donut-chart-container">
         <app-gradient-donut

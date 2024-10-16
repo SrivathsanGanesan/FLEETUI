@@ -52,6 +52,8 @@ export class StatisticsComponent {
     responsivenessChange: 5.2,
   }; // Initialize the array with mock data
 
+  systemThroughput : number[] = [1,2,3,4,5];
+
   filteredOperationActivities = this.operationActivities;
   filteredNotifications = this.notifications;
 
@@ -128,7 +130,7 @@ export class StatisticsComponent {
     let uptime = await this.fetchFleetStatus('system-uptime', { mapId: mapId });
     if (uptime.systemUptime)
       this.statisticsData.systemUptime = uptime.systemUptime;
-    let successRate = await this.fetchFleetStatus('success-rate', {
+    await this.fetchFleetStatus('success-rate', { // let successRate = 
       mapId: mapId,
     });
     // yet to uncomment..
@@ -143,6 +145,8 @@ export class StatisticsComponent {
 
   async fetchCurrTasksStatus(): Promise<any[]> {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    // timeStamp1 = 1728930600;
+    // timeStamp2 = 1729050704;
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/curr-task-activities`,
       {
@@ -188,8 +192,8 @@ export class StatisticsComponent {
 
   async fetchTasksStatus(): Promise<number[]> {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(); // yet to take, in seri..
-    // timeStamp1 = 1728410917;
-    // timeStamp2 = 1728412500;
+    // timeStamp1 = 1728930600;
+    // timeStamp2 = 1729050704;
 
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/fleet-tasks`,
