@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -13,7 +13,6 @@ import {
 } from 'ng-apexcharts';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
-import { timeStamp } from 'console';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -35,6 +34,7 @@ export type ChartOptions = {
 export class AreaChartComponent implements OnInit {
   currentFilter: string = 'today'; // To track the selected filter
 
+  @Output() systemThroughputEvent = new EventEmitter<any>();
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
@@ -246,12 +246,12 @@ export class AreaChartComponent implements OnInit {
     if (data.throughput) {
       // this.throughputArr = data.throughput.map((stat: any) => stat.rate);
       this.throughputArr = Stat.map((stat: any) => stat.TotalThroughPutPerHour);
-
       this.throughputXaxisSeries = Stat.map(
         // (stat: any) => stat.time
         (stat: any) =>
           new Date().toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', })
       );
+      this.systemThroughputEvent.emit(this.throughputArr);
     }
     this.plotChart( 'Throughput', this.throughputArr, this.throughputXaxisSeries ); // this.selectedMetric..
 
@@ -264,10 +264,11 @@ export class AreaChartComponent implements OnInit {
         this.throughputXaxisSeries = Stat.map(
           (stat: any) => new Date().toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', })
         );
+        this.systemThroughputEvent.emit(this.throughputArr);
       }
       
       this.plotChart( 'Throughput', this.throughputArr, this.throughputXaxisSeries );
-    }, 1000 * 20); // 60 * 60
+    }, 1000 * 60); // 60 * 60
   }
 
   async updateStarvationRate() {

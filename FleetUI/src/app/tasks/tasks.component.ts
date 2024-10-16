@@ -62,8 +62,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   async ngOnInit() {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
-    // timeStamp1 = 1728410917;
-    // timeStamp2 = 1728412500;
+    // timeStamp1 = 1728930600;
+    // timeStamp2 = 1729050704;
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) return;
     const response = await fetch(
@@ -85,6 +85,13 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
     if (!data.tasks) return;
     const { tasks } = data.tasks;
+    if (!('tasks' in data.tasks)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Task lists are empty.',
+      });
+    }
 
     if (tasks)
       this.tasks = tasks.map((task: any) => {

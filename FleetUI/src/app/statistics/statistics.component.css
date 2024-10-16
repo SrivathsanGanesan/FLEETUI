@@ -149,7 +149,7 @@
 }
 
 /* Styling for the robot activity container */
-.robot-activity-container {
+.operation-activity-container {
   flex: 0.5; /* Set to 50% of the width */
   max-height: 30rem; /* Adjust height as needed */
   background-color: #fff;
@@ -161,7 +161,7 @@
   flex-direction: column; /* Allow table to fill container */
 }
 
-.robot-activity-table-container {
+.operation-activity-table-container {
   max-height: 300px; /* Set the desired height */
   overflow-y: auto; /* Enable vertical scrolling */
   overflow-x: hidden; /* Hide horizontal scrolling if necessary */
@@ -181,7 +181,7 @@
 }
 
 /* Extend table to fill the container */
-.robot-activity-table,
+.operation-activity-table,
 .notifications-table {
   width: 100%;
   height: 100%;
@@ -195,32 +195,32 @@
 
 
 /* Styling for the robot activity table */
-.robot-activity-table thead {
-  background-color: #007bff;
-  color: white;
+.operation-activity-table thead {
+  background-color: #FFCDCD;
+  color: rgb(0, 0, 0);
   text-align: left;
 }
 
-.robot-activity-table th,
-.robot-activity-table td {
+.operation-activity-table th,
+.operation-activity-table td {
   padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
+  border-top-left-radius: 1px solid #b5b5b5;
   font-size: 0.8rem;
 }
 
-.robot-activity-table tbody tr:nth-child(even) {
+.operation-activity-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.robot-activity-table tbody tr:hover {
+.operation-activity-table tbody tr:hover {
   background-color: #f1f1f1;
   cursor: pointer;
 }
 
 /* Styling for the notifications table */
 .notifications-table thead {
-  background-color: #ff9800;
-  color: white;
+  background-color: #FFCDCD;
+  color: rgb(0, 0, 0);
   text-align: left;
 }
 
@@ -291,11 +291,11 @@
 .view-all-btn {
   background-color: #7854f7;
   color: white;
-  padding: 0.4rem;
+  padding: 5px 10px;
   border-radius: 5px;
   border: none;
   cursor: pointer;
-  font-size: 0.8vw;
+  font-size: 0.9vw;
   margin-left: 1rem;
 }
 
@@ -319,8 +319,8 @@
     width: 100%;
   }
 
-  .robot-activity-table th,
-  .robot-activity-table td,
+  .operation-activity-table th,
+  .operation-activity-table td,
   .notifications-table th,
   .notifications-table td {
     font-size: 0.5rem;

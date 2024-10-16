@@ -33,7 +33,7 @@
         <!-- Stat card 1 -->
         <div class="stat-card stat-card-1">
           <div class="stat-value">System throughput</div>
-          <h2>{{ statisticsData.systemThroughput || 'Loading...' }}</h2>
+          <h2>{{ statisticsData.systemThroughput }}</h2>
           <div class="stat-change positive">
             +{{ statisticsData.systemThroughputChange }}% <span>&uarr;</span>
           </div>
@@ -141,7 +141,9 @@
 
     <div class="charts-container">
       <div class="area-chart-container">
-        <app-area-chart></app-area-chart>
+        <app-area-chart
+        (systemThroughputEvent)="updateSysThroughput($event)"
+        ></app-area-chart>
       </div>
       <div class="donut-chart-container">
         <app-gradient-donut
@@ -161,7 +163,7 @@
 
     <div class="dashboard-container">
       <!-- Robot Activity Section -->
-      <div class="robot-activity-container">
+      <div class="operation-activity-container">
         <div class="section-header">
           <h3>Operation Activities</h3>
           <div class="search-box">
@@ -173,8 +175,8 @@
           </div>
           <button class="view-all-btn" (click)="onViewAllClick()">View All</button>
         </div>
-        <div class="robot-activity-table-container">
-          <table class="robot-activity-table">
+        <div class="operation-activity-table-container">
+          <table class="operation-activity-table">
             <thead>
               <tr>
                 <th>Task ID</th>
@@ -193,7 +195,6 @@
             </tbody>
           </table>
         </div>
-        
       </div>
       
 
