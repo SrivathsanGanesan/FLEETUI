@@ -717,31 +717,43 @@
 
 <div class="popup-overlay1" *ngIf="showIntermediateNodesDialog">
   <div class="popup-content1">
-    <div class="flex">
+    <div class="flex h-40px">
     <div>
     <p>Enter Number of Nodes</p>
     <input pInputText
       type="number"
-      min="0"
       [(ngModel)]="numberOfIntermediateNodes"
       placeholder="Number of nodes"
+      min="0"
       (ngModelChange)="onInputChanged()"
     />
   </div>
   <div class="node-separator"></div>
   <div>
     <p>Select Direction</p>
-    <select [(ngModel)]="direction">
-      <option value="uni">Uni-direction</option>
-      <option value="bi">Bi-direction</option>
+    <select class="direction" [(ngModel)]="direction">
+      <option value="uni">Uni-Direction</option>
+      <option value="bi">Bi-Direction</option>
     </select>
   </div>
-</div>
+  </div>
     <button *ngIf="isEnterButtonVisible" (click)="plotIntermediateNodes()">
       Enter
     </button>
   </div>
 </div>
+
+
+<div *ngIf="isConfirmationVisible" class="popup-overlay1">
+  <div class="popup-content1">
+    <p>Are you sure you want to Remove?</p>
+    <div>
+      <button type="button" (click)="confirmDelete()">Confirm</button>
+      <button type="button" (click)="cancelDelete()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div *ngIf="isRoboConfirmationVisible" class="popup-overlay1">
   <div class="popup-content1">
     <!-- Show these buttons initially -->
@@ -778,17 +790,6 @@
         <button type="button" (click)="confirmRoboDelete()">Confirm</button>
         <button type="button" (click)="cancelDelete()">Cancel</button>
       </div>
-    </div>
-  </div>
-</div>
-
-
-<div *ngIf="isConfirmationVisible" class="popup-overlay1">
-  <div class="popup-content1">
-    <p>Are you sure you want to Remove?</p>
-    <div>
-      <button type="button" (click)="confirmDelete()">Confirm</button>
-      <button type="button" (click)="cancelDelete()">Cancel</button>
     </div>
   </div>
 </div>

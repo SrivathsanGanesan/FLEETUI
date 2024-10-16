@@ -137,6 +137,7 @@ export class EnvmapComponent implements AfterViewInit {
   selectedAction: string| null = null;
   validationError: string | null = null;
   savedEdge: Edge | null = null; // This will hold the saved edge details
+  rightClickEnabled: boolean = false; // Control right-click functionality
 
   Nodes: {
     id: number;
@@ -171,7 +172,7 @@ export class EnvmapComponent implements AfterViewInit {
   isOptionsMenuVisible = false;
   isCalibrationLayerVisible = false;
   showIntermediateNodesDialog: boolean = false;
-  numberOfIntermediateNodes: number = 0;
+  numberOfIntermediateNodes: any ;
   firstNode: Node | null = null;
   secondNode: Node | null = null;
   robotImages: { [key: string]: HTMLImageElement } = {};
@@ -221,7 +222,7 @@ export class EnvmapComponent implements AfterViewInit {
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
   showError: boolean = false; // Flag to show error message
-  direction: 'uni' | 'bi' | null = null;
+  direction: 'uni' | 'bi' | null = 'uni';
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
@@ -542,21 +543,31 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodes = this.nodes.filter(
         (node) => !this.nodesToDelete.includes(node)
       );
-
       // Remove edges related to deleted nodes
       this.edges = this.edges.filter((edge) => {
         return !this.nodesToDelete.some(
           (node) => edge.startNodeId === node.nodeId || edge.endNodeId === node.nodeId
         );
       });
-
       // Clear the selected nodes
       this.nodesToDelete = [];
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Nodes Deleted Successfully',
+        life: 4000,
+      });
 
       // Redraw the canvas
       this.redrawCanvas();
     } else {
       console.log('No nodes selected for deletion.');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'No items selected for deletion.'
+      });
     }
 
     if (this.selectedAsset) {
@@ -579,7 +590,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodes = this.nodes.filter(
         (node) => node.nodeId !== this.selectedNode?.nodeId
       );
-
       // Remove from nodes array
       this.nodes = this.nodes.filter((node) => {
         return (
@@ -595,24 +605,13 @@ export class EnvmapComponent implements AfterViewInit {
           edge.endNodeId !== this.selectedNode?.nodeId
         );
       });
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Deleted',
-        detail: 'Nodes Deleted Successfully',
-        life: 4000,
-      });
+     
       // Clear the selected node
       this.selectedNode = null;
       // Redraw the canvas
       this.redrawCanvas();
     } else {
       console.log('No node selected to delete.');
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'No items selected for deletion.'
-      });
-
     }
     // if (this.robotToDelete) {
     //   // Remove the robot from the robos array
@@ -729,6 +728,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   cancelDelete(): void {
     this.isConfirmingDelete
+    this.isConfirmationVisible=false;
     this.isRoboConfirmationVisible = false;
     // Hide confirmation dialog without deleting
     // this.isDeleteModeEnabled = false;
@@ -1539,7 +1539,16 @@ export class EnvmapComponent implements AfterViewInit {
 
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
-    event.preventDefault();
+    if (!this.rightClickEnabled) {
+      event.preventDefault(); // Block right-click interaction
+
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Action Restricted',
+        detail: 'Please plot both nodes before interacting.'
+      });
+      return;
+    }
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
     const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
@@ -2065,6 +2074,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.nodes = [];
       this.firstNode = null;
       this.secondNode = null;
+      this.rightClickEnabled = false;
     }
   }
   plotMultiNode(x: number, y: number): void {
@@ -2111,6 +2121,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         };
         this.firstNode = firstnode;
         this.nodes.push(firstnode);
+        // this.rightClickEnabled = false;
     } else if (this.secondNode === null) {
         // Plotting the second node
         let secondnode = {
@@ -2142,6 +2153,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             this.onMouseUp.bind(this)
         );
 
+        this.rightClickEnabled = true;
         this.isPlottingEnabled = false; // Disable further plotting after two nodes
     }
     //yet to uncomment..
@@ -2268,7 +2280,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         minHeight: 0,
         orientation: 0,
         orientationType: '',
-        direction: this.direction == 'uni' ? 'UN_DIRECTIONAL' : 'BI_DIRECTIONAL',
+        direction: this.direction == 'bi' ? 'BI_DIRECTIONAL' : 'UN_DIRECTIONAL',
         rotationAllowed: false,
         maxRotationSpeed: 0,
         length: 0,
@@ -2278,7 +2290,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.edgeCounter++;
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
-    this.direction= null;
+    this.direction= "uni";
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
@@ -2610,7 +2622,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
-    this.direction = null;
+    // this.direction = null;
     this.selectedNodeId = '';  // Reset the selected node ID
   }
   private deselectNode(): void {
@@ -3608,7 +3620,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.currentEdge.edgeId = '';
       // this.currentEdge.sequenceId= 0;
       this.currentEdge.edgeDescription= '';
-      this.currentEdge.released= false;
+      this.currentEdge.released= true;
       // this.currentEdge.startNodeId= '';
       // this.currentEdge.endNodeId= '';
       this.currentEdge.maxSpeed= 0;
@@ -3617,7 +3629,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.currentEdge.orientation= 0;
       this.currentEdge.orientationType= '';
       // this.currentEdge.direction= 'UN_DIRECTIONAL';
-      this.currentEdge.rotationAllowed= false;
+      this.currentEdge.rotationAllowed= true;
       this.currentEdge.maxRotationSpeed= 0;
       this.currentEdge.length= 0;
       this.currentEdge.action= [];

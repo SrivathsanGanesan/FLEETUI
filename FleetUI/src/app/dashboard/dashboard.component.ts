@@ -394,6 +394,11 @@ export class DashboardComponent implements AfterViewInit {
       img.src = `http://${imgName.imgUrl}`;
 
       img.onload = () => {
+        if (img.height > 664 && img.width > 1355) {
+          this.zoomLevel = 0.8; // Set zoom level to 0.9
+        } else {
+          this.zoomLevel = 1; // Default zoom level
+        }
         // this.mapImage = img;
         // Set canvas dimensions based on its container
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
@@ -406,8 +411,7 @@ export class DashboardComponent implements AfterViewInit {
 
         // Center the image on the canvas
         this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-        this.mapImageY =
-          (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+        this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
 
         // Draw the image and other elements
         this.draw(ctx, img);
@@ -438,6 +442,7 @@ export class DashboardComponent implements AfterViewInit {
     this.simMode.forEach((robo) => {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
     });
+    
 
     this.robos.forEach(
       (robo) =>
