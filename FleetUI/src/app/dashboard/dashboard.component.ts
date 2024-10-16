@@ -358,12 +358,12 @@ export class DashboardComponent implements AfterViewInit {
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
-    if (!this.showModelCanvas) {      
-      this.nodes = [];
-    } else {
-      await this.getMapDetails();
-      // await this.fetchRoboPos(); // Call fetchRoboPos when showing model canvas
-    }
+    // if (!this.showModelCanvas) {      
+    //   this.nodes = [];
+    // } else {
+    //   await this.getMapDetails();
+    //   // await this.fetchRoboPos(); // Call fetchRoboPos when showing model canvas
+    // }
     this.loadCanvas(); // Redraw the canvas based on the updated state
     // this.fetchRoboPos();
   }
