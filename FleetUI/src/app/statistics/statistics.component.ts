@@ -125,8 +125,8 @@ export class StatisticsComponent {
     let throughputData = await this.fetchFleetStatus('system-throughput', {
       mapId: mapId,
     });
-    if (throughputData.systemThroughput)
-      this.statisticsData.systemThroughput = throughputData.systemThroughput;
+    // if (throughputData.systemThroughput)
+    //   this.statisticsData.systemThroughput = throughputData.systemThroughput;
     let uptime = await this.fetchFleetStatus('system-uptime', { mapId: mapId });
     if (uptime.systemUptime)
       this.statisticsData.systemUptime = uptime.systemUptime;

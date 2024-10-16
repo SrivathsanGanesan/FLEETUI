@@ -266,7 +266,8 @@ export class DashboardComponent implements AfterViewInit {
       }
     }
     // await this.updateEditedMap();
-    this.robotToInitialize = this.draggingRobo;
+    // this.robotToInitialize = this.draggingRobo;
+    this.robotToInitialize = this.updatedrobo; // yet to replace with above line!
     this.hidePopup();
 
     // console.log('Initializing Robo...');
