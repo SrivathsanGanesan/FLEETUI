@@ -2171,7 +2171,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     //     };
     //     this.nodes.push(node);
     // }
-
+    
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
   }
@@ -2286,7 +2286,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.edgeCounter++;
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
-    // this.direction= "uni";
+    this.resetSelection();
+    // this.direction = null; // yet to take..
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
@@ -2618,7 +2619,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
-    // this.direction = null;
+    this.direction = null;
     this.selectedNodeId = '';  // Reset the selected node ID
   }
   private deselectNode(): void {
