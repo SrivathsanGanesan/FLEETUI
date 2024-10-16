@@ -1539,16 +1539,17 @@ export class EnvmapComponent implements AfterViewInit {
 
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
-    if (!this.rightClickEnabled) {
-      event.preventDefault(); // Block right-click interaction
+    event.preventDefault();
+    // if (!this.rightClickEnabled) {
+    //   event.preventDefault(); // Block right-click interaction
 
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Action Restricted',
-        detail: 'Please plot both nodes before interacting.'
-      });
-      return;
-    }
+    //   this.messageService.add({
+    //     severity: 'info',
+    //     summary: 'Action Restricted',
+    //     detail: 'Please plot both nodes before interacting.'
+    //   });
+    //   return;
+    // }
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
     const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);

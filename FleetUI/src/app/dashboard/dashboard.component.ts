@@ -166,12 +166,13 @@ export class DashboardComponent implements AfterViewInit {
 
   // yet to update pos and save it in map..
   async initSimRoboPos() {
+    
     const imgWidth = this.mapImg.width * this.zoomLevel;
     const imgHeight = this.mapImg.height * this.zoomLevel;
 
     // Calculate the bottom-right corner position of the image
     let roboX = imgWidth - this.placeOffset;
-    let roboY = imgHeight - 100;
+    let roboY = imgHeight - 500;
     let i = 1;
 
     this.simMode = this.simMode.map((robo) => {
@@ -193,12 +194,12 @@ export class DashboardComponent implements AfterViewInit {
       const mouseY = event.clientY - rect.top;
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY =
-        (canvas.height - mouseY - this.mapImageY - this.offsetY) /
+        ((canvas.height - mouseY) - this.mapImageY - this.offsetY) /
         this.zoomLevel;
 
       for (let robo of this.simMode) {
         const roboX = robo.pos.x;
-        const roboY = this.mapImageHeight - robo.pos.y;
+        const roboY = ((this.mapImageHeight/this.zoomLevel) - robo.pos.y);
         const imageSize = 25; // Adjust size based on robot image dimensions
         if (
           imgX >= roboX - imageSize &&
@@ -387,32 +388,32 @@ export class DashboardComponent implements AfterViewInit {
   loadCanvas() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-
+  
     if (ctx) {
       const img = new Image();
       let imgName = this.projectService.getMapData();
       img.src = `http://${imgName.imgUrl}`;
-
+  
       img.onload = () => {
+        // Check if the image dimensions exceed the specified limits
         if (img.height > 664 && img.width > 1355) {
           this.zoomLevel = 0.8; // Set zoom level to 0.9
         } else {
           this.zoomLevel = 1; // Default zoom level
         }
-        // this.mapImage = img;
+  
         // Set canvas dimensions based on its container
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height =
-          canvas.parentElement?.clientHeight || window.innerHeight;
-
+        canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+  
         // Calculate the scaled image dimensions
         this.mapImageWidth = img.width * this.zoomLevel;
         this.mapImageHeight = img.height * this.zoomLevel;
-
+  
         // Center the image on the canvas
         this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
         this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
-
+  
         // Draw the image and other elements
         this.draw(ctx, img);
       };
@@ -422,46 +423,42 @@ export class DashboardComponent implements AfterViewInit {
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
     const imgWidth = img.width * this.zoomLevel;
     const imgHeight = img.height * this.zoomLevel;
-
+  
     // Calculate the position to center the image
     const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
     const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
-
+   
+    
     // Apply transformation for panning and zooming
     ctx.save();
     ctx.translate(centerX, centerY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
-
+  
     // Draw the image
     ctx.drawImage(img, 0, 0);
-
-    // yet to uncomment
+  
     this.simMode.forEach((robo) => {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
     });
-    
-
+  
     this.robos.forEach(
       (robo) =>
-        this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
+        this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected)
     );
-
-    // if (!this.showModelCanvas) return;
+  
     if (!this.showModelCanvas) {
-      ctx.restore(); // Reset transformation after drawing the background and robots
-      return; // Exit early if the model canvas is not shown
+      ctx.restore();
+      return;
     }
-
-    // Draw nodes on the image
+  
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
-
-    // Draw edges between nodes
+  
     this.edges.forEach((edge) => {
       const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
       const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
@@ -483,29 +480,7 @@ export class DashboardComponent implements AfterViewInit {
         );
       }
     });
-
-    this.zones.forEach((zone) => {
-      // Re-plot the points of the zone
-      // zone.pos.forEach((point, index) => {
-      //   // Plot the first point in violet and others in red
-      //   const isFirstPoint = index === 0;
-      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
-      // });
-      this.plottedPoints = zone.pos;
-      this.zoneType = zone.type;
-      this.drawLayer(ctx);
-      this.plottedPoints = [];
-    });
-
-    this.assets.forEach((asset) =>
-      this.plotAsset(ctx, asset.x, asset.y, asset.type)
-    );
-    // yet to uncomment
-    this.robos.forEach(
-      (robo) =>
-        this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
-    );
-
+  
     ctx.restore(); // Reset transformation after drawing
   }
 
@@ -513,6 +488,7 @@ export class DashboardComponent implements AfterViewInit {
     const imageSize = 25;
     const roboX = robo.pos.x;
     const roboY = this.mapImageHeight - robo.pos.y;
+
     console.log(roboX, roboY);
 
     // Check if the click is within the robot's bounds (circle radius check)
@@ -530,16 +506,20 @@ export class DashboardComponent implements AfterViewInit {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
-
+      // console.log(this.zoomLevel);
+      
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
 
       for (let robo of this.simMode) {
-        const roboX = robo.pos.x;
-        const roboY = this.mapImageHeight - robo.pos.y;
-        const imageSize = 25; // Adjust to the size of the robot image
-
+        // console.log(this.zoomLevel);
+        
+        const roboX = robo.pos.x ;
+        const roboY = ((this.mapImageHeight/this.zoomLevel) - robo.pos.y);
+        const imageSize = 25; // Adjust to the sie of the robot image
+        console.log("robotXY"+roboX, roboY);
+        console.log("imgXY"+imgX, imgY);
         if (
           imgX >= roboX - imageSize &&
           imgX <= roboX + imageSize &&
@@ -606,8 +586,10 @@ export class DashboardComponent implements AfterViewInit {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
-
+      
       const transY = canvas.height - mouseY;
+      // console.log(this.zoomLevel);
+      
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
       const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
@@ -842,7 +824,6 @@ export class DashboardComponent implements AfterViewInit {
       // Center the image on the canvas
       const centerX = (canvas.width - imgWidth) / 2;
       const centerY = (canvas.height - imgHeight) / 2;
-
       // Apply transformation for panning and zooming
       ctx.save();
       ctx.translate(centerX, centerY);
