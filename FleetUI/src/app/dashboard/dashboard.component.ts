@@ -172,7 +172,7 @@ export class DashboardComponent implements AfterViewInit {
 
     // Calculate the bottom-right corner position of the image
     let roboX = imgWidth - this.placeOffset;
-    let roboY = imgHeight - 500;
+    let roboY = imgHeight - 100;
     let i = 1;
 
     this.simMode = this.simMode.map((robo) => {
@@ -358,7 +358,7 @@ export class DashboardComponent implements AfterViewInit {
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
-    if (!this.showModelCanvas) {
+    if (!this.showModelCanvas) {      
       this.nodes = [];
     } else {
       await this.getMapDetails();
@@ -436,6 +436,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.save();
     ctx.translate(centerX, centerY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
+    
   
     // Draw the image
     ctx.drawImage(img, 0, 0);
@@ -450,6 +451,7 @@ export class DashboardComponent implements AfterViewInit {
     );
   
     if (!this.showModelCanvas) {
+      console.log("hey");      
       ctx.restore();
       return;
     }
@@ -518,8 +520,8 @@ export class DashboardComponent implements AfterViewInit {
         const roboX = robo.pos.x ;
         const roboY = ((this.mapImageHeight/this.zoomLevel) - robo.pos.y);
         const imageSize = 25; // Adjust to the sie of the robot image
-        console.log("robotXY"+roboX, roboY);
-        console.log("imgXY"+imgX, imgY);
+        // console.log("robotXY"+roboX, roboY);
+        // console.log("imgXY"+imgX, imgY);
         if (
           imgX >= roboX - imageSize &&
           imgX <= roboX + imageSize &&
@@ -663,8 +665,8 @@ export class DashboardComponent implements AfterViewInit {
         this.draggingRobo.pos.y = newY;
 
         // Redraw the canvas with the updated robot position
+        this.redrawCanvas();
       }
-      this.redrawCanvas();
       // Check if the mouse is within the bounds of the map image
       const isInsideMap =
         imgX >= 0 &&
