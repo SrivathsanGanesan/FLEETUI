@@ -178,8 +178,8 @@
 }
 
 
-.button-container {
-  z-index: 10; /* Ensure the button is above other elements */
+.time-button-container {
+  z-index: 0; /* Ensure the button is above other elements */
   position: relative; /* Ensure it stays in place */
   display: flex;
   justify-content: center;
