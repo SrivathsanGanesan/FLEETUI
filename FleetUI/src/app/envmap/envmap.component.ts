@@ -2005,8 +2005,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       });
       return;
     }
-
-
     const color = 'blue'; // Color for single nodes
     this.drawNode(
       {
@@ -2075,7 +2073,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.nodes = [];
       this.firstNode = null;
       this.secondNode = null;
-      this.rightClickEnabled = false;
     }
   }
   plotMultiNode(x: number, y: number): void {
@@ -2122,7 +2119,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         };
         this.firstNode = firstnode;
         this.nodes.push(firstnode);
-        // this.rightClickEnabled = false;
     } else if (this.secondNode === null) {
         // Plotting the second node
         let secondnode = {
@@ -2154,7 +2150,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             this.onMouseUp.bind(this)
         );
 
-        this.rightClickEnabled = true;
         this.isPlottingEnabled = false; // Disable further plotting after two nodes
     }
     //yet to uncomment..
@@ -2291,7 +2286,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.edgeCounter++;
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
-    this.direction= "uni";
+    // this.direction= "uni";
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
@@ -3621,7 +3616,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.currentEdge.edgeId = '';
       // this.currentEdge.sequenceId= 0;
       this.currentEdge.edgeDescription= '';
-      this.currentEdge.released= true;
+      this.currentEdge.released= false;
       // this.currentEdge.startNodeId= '';
       // this.currentEdge.endNodeId= '';
       this.currentEdge.maxSpeed= 0;
@@ -3630,7 +3625,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.currentEdge.orientation= 0;
       this.currentEdge.orientationType= '';
       // this.currentEdge.direction= 'UN_DIRECTIONAL';
-      this.currentEdge.rotationAllowed= true;
+      this.currentEdge.rotationAllowed= false;
       this.currentEdge.maxRotationSpeed= 0;
       this.currentEdge.length= 0;
       this.currentEdge.action= [];
