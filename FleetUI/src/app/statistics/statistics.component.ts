@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
@@ -52,7 +52,7 @@ export class StatisticsComponent {
     responsivenessChange: 5.2,
   }; // Initialize the array with mock data
 
-  systemThroughput : number[] = [1,2,3,4,5];
+  systemThroughput: number[] = [1, 2, 3, 4, 5];
 
   filteredOperationActivities = this.operationActivities;
   filteredNotifications = this.notifications;
@@ -130,7 +130,8 @@ export class StatisticsComponent {
     let uptime = await this.fetchFleetStatus('system-uptime', { mapId: mapId });
     if (uptime.systemUptime)
       this.statisticsData.systemUptime = uptime.systemUptime;
-    await this.fetchFleetStatus('success-rate', { // let successRate = 
+    await this.fetchFleetStatus('success-rate', {
+      // let successRate =
       mapId: mapId,
     });
     // yet to uncomment..
@@ -285,6 +286,12 @@ export class StatisticsComponent {
 
   getStartOfDay() {
     return Math.floor(new Date().setHours(0, 0, 0) / 1000);
+  }
+
+  updateSysThroughput(data: any) {
+    if (data.length)
+      this.statisticsData.systemThroughput = data[data.length - 1];
+    else this.statisticsData.systemThroughput = 0;
   }
 
   /* ngOnDestroy() {

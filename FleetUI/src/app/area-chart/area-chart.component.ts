@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -34,7 +34,7 @@ export type ChartOptions = {
 export class AreaChartComponent implements OnInit {
   currentFilter: string = 'today'; // To track the selected filter
 
-  @Input() systemThroughput : number[] = [0]
+  @Output() systemThroughputEvent = new EventEmitter<any>();
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
   selectedMetric: string = 'Throughput'; // Default value
@@ -251,7 +251,7 @@ export class AreaChartComponent implements OnInit {
         (stat: any) =>
           new Date().toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', })
       );
-      this.systemThroughput = this.throughputArr
+      this.systemThroughputEvent.emit(this.throughputArr);
     }
     this.plotChart( 'Throughput', this.throughputArr, this.throughputXaxisSeries ); // this.selectedMetric..
 
@@ -264,6 +264,7 @@ export class AreaChartComponent implements OnInit {
         this.throughputXaxisSeries = Stat.map(
           (stat: any) => new Date().toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', })
         );
+        this.systemThroughputEvent.emit(this.throughputArr);
       }
       
       this.plotChart( 'Throughput', this.throughputArr, this.throughputXaxisSeries );
