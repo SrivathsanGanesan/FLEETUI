@@ -1540,7 +1540,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   public showZoneText: boolean = false;
   robotToDelete: any; // Store the robot to be deleted
-
+  originalEdgeDetails: any = null;  // Can initialize it as null or {}
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     if (this.isMultiNodePlotting) {
@@ -1650,9 +1650,11 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
     if (clickedEdge) {
-      this.currentEdge = clickedEdge; // Set the current edge details
-      this.showPopup = true; // Show the popup
-      return
+      this.currentEdge = { ...clickedEdge };  // Set the current edge details for editing
+      this.originalEdgeDetails = { ...clickedEdge };  // Store the original unmodified edge details
+
+      this.showPopup = true;  // Show the popup with form fields
+      return;
     }
   }
   onDeleteZone(): void {
@@ -3714,8 +3716,14 @@ cancelEdge(): void {
     this.currentEdge.length= 0;
     this.currentEdge.action= [];
   }
+  // if (this.savedEdge) {
+  //   // Revert the current edge to the last saved values
+  //   this.currentEdge = { ...this.savedEdge };  // Restore saved edge details
+  // }
   this.showPopup = false;
   this.showEdgeError = false;
+  console.log(this.currentEdge);
+  console.log(this.originalEdgeDetails );  
 }
   // Method to delete the edge
   deleteEdge(): void {
