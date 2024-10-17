@@ -60,26 +60,28 @@ canvas {
   cursor: pointer;
   z-index: 13;
 }
+
 .CanvasOptions {
   position: absolute;
   bottom: 5%;
-  left: 5%; /* Position the CanvasOptions */
+  left: 1%; /* Position the CanvasOptions */
   display: flex;
-  background-color: rgba(255, 255, 255, 0.442);
-  border-radius: 10px;
+  background-color: #ff7373;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  box-shadow: 0 3px 6px #ff7373;
+  box-shadow: 0 3px 6px #dfdada;
   z-index: 11; /* Ensure it stays above other elements */
-  width: 30px; /* Initially, only show the empty span */
-  overflow: hidden; /* Hide the other options */
+  width: 15px; /* Initially, only show the empty span */
+  overflow: visible; /* Hide the other options */
   transition: width 0.5s ease-in-out; /* Animation for width */
 }
 
 .empty {
   background-color: #ff7373;
-  width: 15px;
+  width: 20px;
   height: 50px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -90,8 +92,7 @@ canvas {
   display: flex;
   align-items: center;
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth animation */
-  opacity: 0; /* Initially hide the icons */
-  
+  opacity: 0; /* Initially hide the icons */  
   transform: translateX(-20px); /* Start slightly left for animation */
 }
 
@@ -118,7 +119,7 @@ canvas {
   padding: 5px;
   position: absolute;
   z-index:100;
-  top: -5px; /* Position the tooltip above the image */
+  bottom: 135%; /* Position the tooltip above the image */
   left: 50%;
   transform: translateX(-50%);
   opacity: 0; /* Initially hidden */
