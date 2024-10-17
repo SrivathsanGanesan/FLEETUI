@@ -1,27 +1,45 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { RobotDetailPopupComponent } from '../robot-detail-popup/robot-detail-popup.component';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 
 export interface Robot {
+  isCharging: boolean;
+  networksrength: any;
+  currentMap: any;
+  currentTask: any;
+  batteryDistance: any;
+  currentSpeed: any;
+  averageSpeed: any;
+  distanceLeft: string;
+  isConnected: boolean;
+
   id: number;
   name: string;
   imageUrl: string;
+  capacity: string;
+  speed: string;
+  accuracy: string;
   status: string;
   battery: string;
   serialNumber: string;
-  temperature: string; // Battery temperature field
+  temperature: string;
   networkstrength: string;
   robotutilization: string;
   cpuutilization: string;
   memory: string;
-  error: string;
-  batteryPercentage: number;
   totalPicks: string;
   totalDrops: string;
   SignalStrength: string;
-  isCharging: boolean; // This will control whether the icon is shown
+  error: number;
+  batteryPercentage: number;
   averagedischarge: number;
   averageChargingTime: string;
   currentspeed: string;
@@ -29,7 +47,6 @@ export interface Robot {
   maximumspeed: string;
   averagetransfertime: string;
   averagedockingtime: string;
-  // Add other fields as needed
 }
 
 @Component({
@@ -44,30 +61,29 @@ export class RobotsComponent implements OnInit {
     'agv3.png',
     // Add more images from assets/robots
   ];
+
   currentSignalClass: string = 'none'; // Default class
   robots: Robot[] = [];
+  // robots: any[] = [];
+  liveRobos: any[] = [];
   searchQuery: string = ''; // To hold the search input
   filteredRobots: Robot[] = []; // To store filtered robots
+  initialRoboInfos: Robot[] = []; // to store data of initial robo details..
 
   mapDetails: any | null = null;
   showPopup = false;
-  
+
   menuOpenIndex: number | null = null;
   editIndex: number | null = null;
   centerIndex: any;
 
-  
-
-
   constructor(
     public dialog: MatDialog,
     private projectService: ProjectService
-    
   ) {
     // this.mapDetails = this.projectService.getMapData();
   }
 
-  
   async ngOnInit() {
     // this.setSignalStrength('Weak'); // Change this value to test different signals
     this.mapDetails = this.projectService.getMapData();
@@ -83,20 +99,14 @@ export class RobotsComponent implements OnInit {
       return robo;
     });
     this.filteredRobots = this.robots;
+    this.initialRoboInfos = this.robots;
+    this.liveRobos = await this.getLiveRoboInfo();
+    this.updateLiveRoboInfo();
+    setInterval(async () => {
+      this.liveRobos = await this.getLiveRoboInfo();
+      this.updateLiveRoboInfo();
+    }, 1000 * 5);
     // this.robots = grossFactSheet;
-  }
-  filterRobots(): void {
-    const query = this.searchQuery.toLowerCase();
-
-    this.filteredRobots = this.robots.filter((robot) => {
-      const idMatch = robot.id.toString().includes(query);
-      const serialNumberMatch = robot.serialNumber
-        .toLowerCase()
-        .includes(query);
-      const nameMatch = robot.name.toLowerCase().includes(query);
-
-      return idMatch || serialNumberMatch || nameMatch;
-    });
   }
 
   async fetchAllRobos(): Promise<any[]> {
@@ -119,16 +129,66 @@ export class RobotsComponent implements OnInit {
     return [];
   }
 
+  async getLiveRoboInfo(): Promise<any[]> {
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.mapDetails.id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+
+    const data = await response.json();
+    console.log(data);
+    if (!data.map || data.error) return [];
+    return data.robos;
+  }
+
+  updateLiveRoboInfo() {
+    if (!('robots' in this.liveRobos)) return;
+    let { robots }: any = this.liveRobos;
+    if (!robots.length) this.robots = this.initialRoboInfos;
+    this.robots = this.robots.map((robo) => {
+      robots.forEach((liveRobo: any) => {
+        if (robo.id == liveRobo.id) {
+          robo.error = 0;
+          robo.battery = liveRobo.battery.toFixed(2);
+          robo.batteryPercentage = liveRobo.battery.toFixed(2);
+          robo.currentTask = liveRobo.current_task;
+          robo.status = liveRobo.isConnected ? 'Active' : 'In_Active';
+          robo.isConnected = liveRobo.isConnected;
+          if ('EMERGENCY STOP' in liveRobo.robot_errors)
+            robo.error += liveRobo.robot_errors['EMERGENCY STOP'].length;
+          if ('LIDAR_ERROR' in liveRobo.robot_errors)
+            robo.error += liveRobo.robot_errors['LIDAR_ERROR'].length;
+        }
+      });
+      return robo;
+    });
+    this.filteredRobots = this.robots;
+  }
+
+  filterRobots(): void {
+    const query = this.searchQuery.toLowerCase();
+
+    this.filteredRobots = this.robots.filter((robot) => {
+      const idMatch = robot.id.toString().includes(query);
+      const serialNumberMatch = robot.serialNumber
+        .toLowerCase()
+        .includes(query);
+      const nameMatch = robot.name.toLowerCase().includes(query);
+
+      return idMatch || serialNumberMatch || nameMatch;
+    });
+  }
+
   getImagePath(imageName: string): string {
     return `../../assets/robots/${imageName}`;
   }
 
- 
-
   togglePopup() {
     this.showPopup = !this.showPopup;
   }
-  
 
   toggleMenu(index: number) {
     console.log('Toggling menu for index:', index); // Debugging log
@@ -143,14 +203,13 @@ export class RobotsComponent implements OnInit {
     this.menuOpenIndex = null;
   }
 
-
-  @ViewChild('cardContainer') cardContainer!: ElementRef;  // Assure TypeScript this will be assigned.
+  @ViewChild('cardContainer') cardContainer!: ElementRef; // Assure TypeScript this will be assigned.
 
   ngAfterViewInit() {
-    const cardContainers = document.querySelectorAll('.card-container');  // Update to 'card-container' class
+    const cardContainers = document.querySelectorAll('.card-container'); // Update to 'card-container' class
     const nextBtns = document.querySelectorAll('.nxt-btn');
     const prevBtns = document.querySelectorAll('.pre-btn');
-    console.log("clicked");
+    console.log('clicked');
 
     cardContainers.forEach((cardContainer, i) => {
       const containerWidth = cardContainer.getBoundingClientRect().width;
@@ -170,6 +229,7 @@ export class RobotsComponent implements OnInit {
       }
     });
   }
+
   // addRobot() {
   //   if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.serialNumber && this.newRobot.status && this.newRobot.battery) {
   //     this.newRobot.id = this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
@@ -241,6 +301,7 @@ export class RobotsComponent implements OnInit {
       data: robot,
     });
   }
+
   // fetchSignalStrength(): void {
   //   // Replace with your API endpoint
   //   const apiUrl = 'https://api.example.com/signal-strength';
@@ -249,6 +310,7 @@ export class RobotsComponent implements OnInit {
   //     this.currentSignalClass = this.mapSignalToClass(response.signal);
   //   });
   // }
+
   setSignalStrength(signal: string): void {
     this.currentSignalClass = this.mapSignalToClass(signal);
     console.log('Current Signal Class: ', this.currentSignalClass); // Debug log
@@ -280,6 +342,4 @@ export class RobotsComponent implements OnInit {
       return 'low'; // Red for low battery
     }
   }
-
-  
 }
