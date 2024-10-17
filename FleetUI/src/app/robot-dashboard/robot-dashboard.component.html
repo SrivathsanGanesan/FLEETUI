@@ -214,6 +214,17 @@
                 </tr>
               </thead>
               <tbody>
+
+                <!-- Show No Data Row with image and message -->
+                <tr *ngIf="filteredRobotActivities.length === 0">
+                  <td colspan="4" class="no-data">
+                    <div class="no-data-container">
+                      <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
+                      <p class="no-data-text">No data found</p>
+                    </div>
+                  </td>
+                </tr>
+
                 <tr *ngFor="let activity of filteredRobotActivities">
                   <td>{{ activity.roboId }}</td>
                   <td>{{ activity.roboName }}</td>
@@ -239,7 +250,16 @@
             </div>
             <!-- <button class="view-all-btn">View All</button> -->
           </div>
+        
           <table class="notifications-table">
+          <thead>
+            <tr>
+              <th>Message</th>
+              <th>Task ID</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+
             <tr *ngFor="let notification of filteredNotifications">
               <td>{{ notification.message }}</td>
               <td class="align">{{ notification.timestamp }}</td>

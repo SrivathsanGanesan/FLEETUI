@@ -78,26 +78,30 @@
       <img src="../../assets/Motherson_full_logo.jpeg" alt="" class="Logo" />
       <img src="../../assets/shared image.jpeg" alt="" class="logo2">
     </div>
+    
     <div class="icons">
       <div class="icon1" routerLink="/dashboard" routerLinkActive="active">
         <img src="../../assets/icons/dashboard_icon copy.svg" alt="" class="Dlogo" />
         <span class="label">Dashboard</span>
       </div>
+
       <div class="icon2" routerLink="/statistics" routerLinkActive="active">
         <img src="../../assets/icons/Statistics.svg" alt="" class="Slogo" />
         <span class="label">Statistics</span>
       </div>
+
       <div class="icon3" routerLink="/robots" routerLinkActive="active">
         <img src="../../assets/icons/Statistics_icon.svg" alt="" class="Slogo" />
         <span class="label">Robots</span>
       </div>
 
-      @if (cookieValue.role === "Administrator" || cookieValue.role === "Maintainer") {
-        <div class="icon4" routerLink="/configuration" routerLinkActive="active">
-          <img src="../../assets/icons/Configuration_icons.svg" alt="" class="Clogo" />
-          <span class="label">Configuration</span>
-        </div>
-      }
+      <div *ngIf="cookieValue.role === 'Administrator' || cookieValue.role === 'Maintainer'" 
+       class="icon4" 
+       routerLink="/configuration" 
+       routerLinkActive="active">
+       <img src="../../assets/icons/Configuration_icons.svg" alt="" class="Clogo" />
+       <span class="label">Configuration</span>
+      </div>
       
       <div class="icon5" routerLink="/Reports" routerLinkActive="active">
         <img src="../../assets/icons/Logs_icons.svg" alt="" class="Llogo" />

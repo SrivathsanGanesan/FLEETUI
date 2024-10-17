@@ -186,6 +186,17 @@
               </tr>
             </thead>
             <tbody>
+
+             <!-- Show No Data Row with image and message -->
+             <tr *ngIf="filteredOperationActivities.length === 0">
+              <td colspan="4" class="no-data">
+                <div class="no-data-container">
+                  <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
+                  <p class="no-data-text">No data found</p>
+                </div>
+              </td>
+            </tr>
+
               <tr *ngFor="let activity of filteredOperationActivities">
                 <td>{{ activity.taskId }}</td>
                 <td>{{ activity.taskName }}</td>
@@ -221,6 +232,17 @@
               </tr>
             </thead>
             <tbody>
+
+              <!-- Show No Data Row with image and message -->
+              <tr *ngIf="filteredNotifications.length === 0">
+                <td colspan="4" class="no-data">
+                  <div class="no-data-container">
+                    <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
+                    <p class="no-data-text">No data found</p>
+                  </div>
+                </td>
+              </tr>
+
               <tr *ngFor="let notification of filteredNotifications">
                 <td>{{ notification.message }}</td>
                 <td>{{ notification.taskId }}</td>
