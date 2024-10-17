@@ -1539,16 +1539,17 @@ export class EnvmapComponent implements AfterViewInit {
 
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
-    if (!this.rightClickEnabled) {
-      event.preventDefault(); // Block right-click interaction
+    event.preventDefault();
+    // if (!this.rightClickEnabled) {
+    //   event.preventDefault(); // Block right-click interaction
 
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Action Restricted',
-        detail: 'Please plot both nodes before interacting.'
-      });
-      return;
-    }
+    //   this.messageService.add({
+    //     severity: 'info',
+    //     summary: 'Action Restricted',
+    //     detail: 'Please plot both nodes before interacting.'
+    //   });
+    //   return;
+    // }
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
     const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
@@ -2004,8 +2005,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       });
       return;
     }
-
-
     const color = 'blue'; // Color for single nodes
     this.drawNode(
       {
@@ -2074,7 +2073,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.nodes = [];
       this.firstNode = null;
       this.secondNode = null;
-      this.rightClickEnabled = false;
     }
   }
   plotMultiNode(x: number, y: number): void {
@@ -2121,7 +2119,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         };
         this.firstNode = firstnode;
         this.nodes.push(firstnode);
-        // this.rightClickEnabled = false;
     } else if (this.secondNode === null) {
         // Plotting the second node
         let secondnode = {
@@ -2153,7 +2150,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             this.onMouseUp.bind(this)
         );
 
-        this.rightClickEnabled = true;
         this.isPlottingEnabled = false; // Disable further plotting after two nodes
     }
     //yet to uncomment..
@@ -2175,7 +2171,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     //     };
     //     this.nodes.push(node);
     // }
-
+    
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
   }
@@ -2290,7 +2286,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.edgeCounter++;
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
-    this.direction= "uni";
+    this.resetSelection();
+    // this.direction = null; // yet to take..
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
@@ -2622,7 +2619,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
-    // this.direction = null;
+    this.direction = null;
     this.selectedNodeId = '';  // Reset the selected node ID
   }
   private deselectNode(): void {
@@ -3620,7 +3617,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.currentEdge.edgeId = '';
       // this.currentEdge.sequenceId= 0;
       this.currentEdge.edgeDescription= '';
-      this.currentEdge.released= true;
+      this.currentEdge.released= false;
       // this.currentEdge.startNodeId= '';
       // this.currentEdge.endNodeId= '';
       this.currentEdge.maxSpeed= 0;
@@ -3629,7 +3626,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.currentEdge.orientation= 0;
       this.currentEdge.orientationType= '';
       // this.currentEdge.direction= 'UN_DIRECTIONAL';
-      this.currentEdge.rotationAllowed= true;
+      this.currentEdge.rotationAllowed= false;
       this.currentEdge.maxRotationSpeed= 0;
       this.currentEdge.length= 0;
       this.currentEdge.action= [];
