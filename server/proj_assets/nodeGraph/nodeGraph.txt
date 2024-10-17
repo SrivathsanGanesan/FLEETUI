@@ -212,7 +212,7 @@
     },
     {
       "from": "4",
-      "isUniDirectional": true,
+      "isUniDirectional": false,
       "name": "4|3",
       "to": "3"
     }

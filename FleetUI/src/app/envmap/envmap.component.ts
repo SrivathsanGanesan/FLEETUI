@@ -3001,6 +3001,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
       const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
       const transformedY = this.overlayCanvas.nativeElement.height - y;
+
       if (this.isDeleteModeEnabled) {
         // Start drawing the selection box
         this.selectionStart = { x, y };
@@ -3093,6 +3094,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       let robotClicked = false; // Track if the robot was clicked
       // Check if a robot is clicked
       for (const robo of this.robos) {
+        
         if (this.isRobotClicked(robo, x, y)) {
           this.selectedRobo = robo;
           this.draggingRobo = true;
@@ -3111,10 +3113,39 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
       // Handle other types of clicks like zone plotting, asset dragging, etc.
 
+    // Check if the first node is clicked
+    if (this.firstNode && this.isNodeClicked(this.firstNode, x, y)) {
+      // Remove the first node and reset plotting state
+      const index = this.nodes.indexOf(this.firstNode);
+      if (index > -1) {
+        this.nodes.splice(index, 1); // Remove the first node from the nodes array
+      }
+      this.firstNode = null; // Reset first node
+      this.redrawCanvas();
+      this.isPlottingEnabled = true; // Re-enable plotting
+      this.isMultiNodePlotting = true; // Keep multi-node plotting enabled
+      this.messageService.add({
+        severity: 'info',
+        summary: 'First Node Removed',
+        detail: 'The first node has been removed. You can plot again.'
+      });
+      return; // Exit the method to prevent further processing
+    }
       let nodeClicked = false;
       for (const node of this.nodes) {
+
         if (this.isNodeClicked(node, x, y)) {
           // console.log(node)
+          
+          if (this.isMultiNodePlotting) {
+          this.isPlottingEnabled = false; // Disable further plotting
+          this.isMultiNodePlotting = false; // Disable multi-node plotting mode
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Multi-Node Plotting Disabled',
+            detail: 'You cannot plot more nodes while another node is selected.'
+          });
+        }
           this.onNodeClick(node.nodePosition.x, node.nodePosition.y);
           this.selectedNode = node;
           this.originalNodePosition = { x : node.nodePosition.x, y : node.nodePosition.y };
@@ -3637,31 +3668,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     // Handle form submission, e.g., save edge details
     this.showPopup = false;
   }
-  cancelEdge(): void {
-    this.showPopup = false;
-    this.showEdgeError = false;
-    if(!this.savedEdge){ 
-      // this.currentEdge.edgeId = '';
-      // this.currentEdge.sequenceId= 0;
-      this.currentEdge.edgeDescription= '';
-      this.currentEdge.released= false;
-      // this.currentEdge.startNodeId= '';
-      // this.currentEdge.endNodeId= '';
-      this.currentEdge.maxSpeed= 0;
-      this.currentEdge.maxHeight= 0;
-      this.currentEdge.minHeight= 0;
-      this.currentEdge.orientation= 0;
-      this.currentEdge.orientationType= '';
-      // this.currentEdge.direction= 'UN_DIRECTIONAL';
-      this.currentEdge.rotationAllowed= false;
-      this.currentEdge.maxRotationSpeed= 0;
-      this.currentEdge.length= 0;
-      this.currentEdge.action= [];
-    }else {
-      // Prepopulate with saved edge details
-      this.currentEdge = { ...this.savedEdge };
-    }
-  }
+
   updateEdge() {
     if (!this.currentEdge.edgeId || !this.currentEdge.sequenceId || !this.currentEdge.minHeight || !this.currentEdge.orientation || !this.currentEdge.orientationType || !this.currentEdge.maxRotationSpeed) {
         this.showEdgeError = true; // Show error message
@@ -3688,7 +3695,28 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     console.log(this.edges);
     this.showPopup = false;
 }
-
+cancelEdge(): void {
+  if(!this.savedEdge){ 
+    // this.currentEdge.edgeId = '';
+    // this.currentEdge.sequenceId= 0;
+    this.currentEdge.edgeDescription= '';
+    this.currentEdge.released= false;
+    // this.currentEdge.startNodeId= '';
+    // this.currentEdge.endNodeId= '';
+    this.currentEdge.maxSpeed= 0;
+    this.currentEdge.maxHeight= 0;
+    this.currentEdge.minHeight= 0;
+    this.currentEdge.orientation= 0;
+    this.currentEdge.orientationType= '';
+    // this.currentEdge.direction= 'UN_DIRECTIONAL';
+    this.currentEdge.rotationAllowed= false;
+    this.currentEdge.maxRotationSpeed= 0;
+    this.currentEdge.length= 0;
+    this.currentEdge.action= [];
+  }
+  this.showPopup = false;
+  this.showEdgeError = false;
+}
   // Method to delete the edge
   deleteEdge(): void {
     if (this.currentEdge) {
