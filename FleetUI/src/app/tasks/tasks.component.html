@@ -98,14 +98,14 @@
               <tbody>
 
                 <!-- Show No Data Row with image and message -->
-          <tr *ngIf="filteredTaskData.length === 0">
-            <td colspan="8" class="no-data">
-              <div class="no-data-container">
-                <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
-                <p class="no-data-text">No data found</p>
-              </div>
-            </td>
-          </tr>
+              <tr *ngIf="filteredTaskData.length === 0">
+                <td colspan="8" class="no-data">
+                  <div class="no-data-container">
+                    <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
+                    <p class="no-data-text">No data found</p>
+                  </div>
+                </td>
+              </tr>
                <!-- Display table rows when data exists -->
                 <tr *ngIf="filteredTaskData.length === 0">
                   <!-- <td colspan="6" class="iconTable">No data found</td> -->

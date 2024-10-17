@@ -151,7 +151,7 @@
 /* Styling for the robot activity container */
 .operation-activity-container {
   flex: 0.5; /* Set to 50% of the width */
-  max-height: 30rem; /* Adjust height as needed */
+  height: 25rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -162,7 +162,7 @@
 }
 
 .operation-activity-table-container {
-  max-height: 300px; /* Set the desired height */
+  /* max-height: 300px; */
   overflow-y: auto; /* Enable vertical scrolling */
   overflow-x: hidden; /* Hide horizontal scrolling if necessary */
 }
@@ -170,7 +170,7 @@
 /* Styling for the notifications container */
 .notifications-container {
   flex: 0.5; /* Set to 50% of the width */
-  max-height: 30rem; /* Adjust height as needed */
+  height: 25rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -233,6 +233,7 @@
 
 .notifications-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
+  
 }
 
 .notifications-table tbody tr:hover {
@@ -324,6 +325,7 @@
   .notifications-table th,
   .notifications-table td {
     font-size: 0.5rem;
+    position: sticky;
   }
 }
 
@@ -333,7 +335,7 @@
 
 .statistics-container {
   position: absolute;
-  top: 7%;
+  top: 6%;
   right: 1%;
   display: flex;
   justify-content: space-between;
@@ -550,9 +552,10 @@ h2 {
   gap: 2%; /* Space between the area chart and the donut chart */
 }
 
+
 /* Area chart container */
 .area-chart-container {
-  flex: 2 1 60%; /* Flex-grow 2, flex-shrink 1, takes 60% of available space */
+  flex: 2 1 55%; /* Flex-grow 2, flex-shrink 1, takes 60% of available space */
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
@@ -737,4 +740,26 @@ new slider button */
   justify-content: space-between;
   padding-right: 1rem;
   padding-left: 1rem;
+}
+
+/* no data for tables */
+
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px; /* Adjust height as needed */
+}
+
+.no-data-image {
+  width: 100px; /* Adjust image size */
+  height: auto;
+  margin-bottom: 0rem;
+}
+
+.no-data-text {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.7); /* Customize text color */
+  text-align: center;
 }
