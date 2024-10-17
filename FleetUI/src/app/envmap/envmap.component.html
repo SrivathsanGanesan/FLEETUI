@@ -149,7 +149,7 @@
       <button
         class="close-btn"
         (click)="close()"
-        *ngIf="!isPlottingEnabled && !isZonePlottingEnabled"
+        *ngIf="!isPlottingEnabled && !isZonePlottingEnabled && !isDeleteModeEnabled && !isPlottingAsset"
       >
           <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -383,7 +383,7 @@
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div> -->
-      <div class="calibration-layer" >
+      <div class="calibration-layer" *ngIf="!isPlottingEnabled && !isZonePlottingEnabled && !isDeleteModeEnabled && !isPlottingAsset">
         <div class="dropdown">
           <button class="c-button">Add Node</button>
           <div class="dropdown-content">
@@ -435,7 +435,7 @@
     </button> -->
     
     <div  *ngIf="!showImage">
-      <div *ngIf="validationError" class="validation-error">
+      <div *ngIf="validationError" class="newvalidation-message">
         {{ validationError }}
       </div>
       <div class="button-container">
@@ -736,6 +736,9 @@
       <option value="bi">Bi-Direction</option>
     </select>
   </div>
+  </div>
+  <div *ngIf="!isDirectionSelected" class="newvalidation-message">
+    <p style="color: red;">Please select a direction.</p>
   </div>
     <button *ngIf="isEnterButtonVisible" (click)="plotIntermediateNodes()">
       Enter

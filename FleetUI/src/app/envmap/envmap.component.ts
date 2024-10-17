@@ -146,7 +146,7 @@ export class EnvmapComponent implements AfterViewInit {
     orientationAngle?: number;
     type: string;
   }[] = [];
-  private isDeleteModeEnabled: boolean = false;
+  isDeleteModeEnabled: boolean = false;
   NodeDetails: {
     nodeID: string;
     sequenceId: number;
@@ -222,7 +222,7 @@ export class EnvmapComponent implements AfterViewInit {
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
   showError: boolean = false; // Flag to show error message
-  direction: 'uni' | 'bi' | null = 'uni';
+  direction: 'uni' | 'bi' | null = null;
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
@@ -321,9 +321,13 @@ export class EnvmapComponent implements AfterViewInit {
     this.firstNode = null;
     this.secondNode = null;
   }
+  isPlottingAsset: boolean = false;
   selectAssetType(assetType: string) {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
+    this.isPlottingAsset = true;
+    // console.log("hey");
+    
   }
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -1539,6 +1543,15 @@ export class EnvmapComponent implements AfterViewInit {
 
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
+    if (this.isMultiNodePlotting) {
+      event.preventDefault(); // Block right-click interaction
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Action Restricted',
+        detail: 'Right-click is disabled while plotting multiple nodes.',
+      });
+      return;
+    }
     event.preventDefault();
     // if (!this.rightClickEnabled) {
     //   event.preventDefault(); // Block right-click interaction
@@ -1567,11 +1580,9 @@ export class EnvmapComponent implements AfterViewInit {
     }
   }
     for (const robo of this.robos) {
-
       if (this.isRobotClicked(robo, x, y)) {
         this.robotToDelete = robo;  // Store the robot that was right-clicked
         this.isRoboConfirmationVisible = true;
-
         // const confirmDelete = confirm('Do you want to delete this robot?');
         // if (confirmDelete) {
         //   // Remove the robot from the robos array
@@ -1584,10 +1595,11 @@ export class EnvmapComponent implements AfterViewInit {
     }
     // Check if a node is clicked
     for (const node of this.nodes) {
-      if (this.isNodeClicked(node, x, y) && this.selectedNode) {
+      
+      if (this.isNodeClicked(node, x, y) ) {
+        this.selectedNode=node;
         this.nodeDetails.description = this.selectedNode.nodeDescription;
-        this.nodeDetails.intermediate_node =
-          this.selectedNode.intermediate_node;
+        this.nodeDetails.intermediate_node = this.selectedNode.intermediate_node;
         this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
         this.actions = this.selectedNode.actions;
         for (let action of this.actions) {
@@ -2067,6 +2079,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   setPlottingMode(mode: 'single' | 'multi'): void {
     this.plottingMode = mode;
     this.isPlottingEnabled = true;
+    this.isMultiNodePlotting = mode === 'multi';
     // this.toggleOptionsMenu();
 
     if (mode === 'multi') {
@@ -2075,6 +2088,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.secondNode = null;
     }
   }
+  private isMultiNodePlotting: boolean = false;
+  isDirectionSelected: boolean = true; // To track if direction is selected
+
   plotMultiNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const transformedY = canvas.height - y; // Flip the Y-axis
@@ -2151,6 +2167,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         );
 
         this.isPlottingEnabled = false; // Disable further plotting after two nodes
+        this.isMultiNodePlotting = false;
     }
     //yet to uncomment..
     // else {
@@ -2181,6 +2198,12 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.numberOfIntermediateNodes >0;
   }
   plotIntermediateNodes(): void {
+    if (!this.direction) {
+      this.isDirectionSelected = false; // Show validation message
+      return; // Do not proceed if direction is not selected
+    } else {
+        this.isDirectionSelected = true; // Reset validation flag
+    }
     if (this.numberOfIntermediateNodes && this.numberOfIntermediateNodes > 0) {
       if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
         const dx = (this.secondNode.nodePosition.x - this.firstNode.nodePosition.x) / (this.numberOfIntermediateNodes + 1);
@@ -2287,7 +2310,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
     this.resetSelection();
-    // this.direction = null; // yet to take..
+    this.direction = null; // yet to take..
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
@@ -2639,6 +2662,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     return dx * dx + dy * dy <= radius * radius;
   }
   private plotAsset(x: number, y: number, assetType: string): void {
+
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
@@ -2660,7 +2684,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         asset.orientation = this.orientationAngle;
       return asset;
     });
-
     this.overlayCanvas.nativeElement.addEventListener(
       'mousemove',
       this.onMouseMove.bind(this)
@@ -2669,6 +2692,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       'mouseup',
       this.onMouseUp.bind(this)
     );
+    this.isPlottingAsset = false;
   }
   isDeleteVisible = true;
   startZonePlotting(): void {
@@ -2969,6 +2993,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   originalNodePosition: { x : number; y: number } | null = null;
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
+    if (event.button !== 0) {
+      return; // Do nothing if it's not a left mouse button click
+    }
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
       const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);

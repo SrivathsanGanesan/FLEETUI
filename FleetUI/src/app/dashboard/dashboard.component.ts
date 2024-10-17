@@ -474,7 +474,22 @@ export class DashboardComponent implements AfterViewInit {
         );
       }
     });
-  
+    this.zones.forEach((zone) => {
+      // Re-plot the points of the zone
+      // zone.pos.forEach((point, index) => {
+      //   // Plot the first point in violet and others in red
+      //   const isFirstPoint = index === 0;
+      //   this.plotZonePoint(point.x, point.y, isFirstPoint);
+      // });
+      this.plottedPoints = zone.pos;
+      this.zoneType = zone.type;
+      this.drawLayer(ctx);
+      this.plottedPoints = [];
+    });
+
+    this.assets.forEach((asset) =>
+      this.plotAsset(ctx, asset.x, asset.y, asset.type)
+    );
     ctx.restore(); // Reset transformation after drawing
   }
 
