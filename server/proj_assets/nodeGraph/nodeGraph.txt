@@ -146,6 +146,55 @@
           "w": -0.249882740687593
         }
       }
+    },
+    {
+      "name": "4",
+      "locationDescription": "",
+      "type": 2,
+      "preDockPose": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
+        }
+      },
+      "dockPose": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
+        },
+        "dockParams": {
+          "xOffset": 0,
+          "yOffset": 0,
+          "dockingType": 1
+        }
+      },
+      "unDockPose": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
+        }
+      }
     }
   ],
   "edges": [
@@ -159,6 +208,12 @@
       "from": "1",
       "isUniDirectional": false,
       "name": "1|3",
+      "to": "3"
+    },
+    {
+      "from": "4",
+      "isUniDirectional": true,
+      "name": "4|3",
       "to": "3"
     }
   ]

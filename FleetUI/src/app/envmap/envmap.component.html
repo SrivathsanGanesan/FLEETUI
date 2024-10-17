@@ -383,7 +383,7 @@
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div> -->
-      <div class="calibration-layer" >
+      <div class="calibration-layer" *ngIf="!isPlottingEnabled && !isZonePlottingEnabled && !isDeleteModeEnabled && !isPlottingAsset">
         <div class="dropdown">
           <button class="c-button">Add Node</button>
           <div class="dropdown-content">

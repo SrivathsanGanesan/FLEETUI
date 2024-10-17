@@ -146,7 +146,7 @@ export class EnvmapComponent implements AfterViewInit {
     orientationAngle?: number;
     type: string;
   }[] = [];
-  private isDeleteModeEnabled: boolean = false;
+  isDeleteModeEnabled: boolean = false;
   NodeDetails: {
     nodeID: string;
     sequenceId: number;
@@ -321,9 +321,13 @@ export class EnvmapComponent implements AfterViewInit {
     this.firstNode = null;
     this.secondNode = null;
   }
+  isPlottingAsset: boolean = false;
   selectAssetType(assetType: string) {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
+    this.isPlottingAsset = true;
+    // console.log("hey");
+    
   }
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -2658,6 +2662,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     return dx * dx + dy * dy <= radius * radius;
   }
   private plotAsset(x: number, y: number, assetType: string): void {
+
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
@@ -2679,7 +2684,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         asset.orientation = this.orientationAngle;
       return asset;
     });
-
     this.overlayCanvas.nativeElement.addEventListener(
       'mousemove',
       this.onMouseMove.bind(this)
@@ -2688,6 +2692,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       'mouseup',
       this.onMouseUp.bind(this)
     );
+    this.isPlottingAsset = false;
   }
   isDeleteVisible = true;
   startZonePlotting(): void {
