@@ -435,7 +435,7 @@
     </button> -->
     
     <div  *ngIf="!showImage">
-      <div *ngIf="validationError" class="validation-error">
+      <div *ngIf="validationError" class="newvalidation-message">
         {{ validationError }}
       </div>
       <div class="button-container">
@@ -736,6 +736,9 @@
       <option value="bi">Bi-Direction</option>
     </select>
   </div>
+  </div>
+  <div *ngIf="!isDirectionSelected" class="newvalidation-message">
+    <p style="color: red;">Please select a direction.</p>
   </div>
     <button *ngIf="isEnterButtonVisible" (click)="plotIntermediateNodes()">
       Enter
