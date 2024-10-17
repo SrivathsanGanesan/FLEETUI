@@ -1246,17 +1246,17 @@ export class DashboardComponent implements AfterViewInit {
     startPos: { x: number; y: number },
     endPos: { x: number; y: number },
     direction: string,
-    nodeRadius: number = 10,
-    threshold: number = 5
+    nodeRadius: number = 1,
+    threshold: number = 1
   ): void {
     const dx = endPos.x - startPos.x;
     const dy = endPos.y - startPos.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    const startX = startPos.x + (dx * threshold) / distance;
-    const startY = startPos.y + (dy * threshold) / distance;
-    const endX = endPos.x - (dx * threshold) / distance;
-    const endY = endPos.y - (dy * threshold) / distance;
+    const startX = startPos.x + (dx * nodeRadius) / distance;
+    const startY = startPos.y + (dy * nodeRadius) / distance;
+    const endX = endPos.x - (dx * nodeRadius) / distance;
+    const endY = endPos.y - (dy * nodeRadius) / distance;
 
     ctx.beginPath();
     ctx.moveTo(startX, startY);
@@ -1349,12 +1349,12 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   zoomIn() {
-    this.zoomLevel *= 1.2;
+    this.zoomLevel *= 1.1;
     this.loadCanvas();
   }
 
   zoomOut() {
-    this.zoomLevel /= 1.2;
+    this.zoomLevel /= 1.1;
     this.loadCanvas();
   }
 
