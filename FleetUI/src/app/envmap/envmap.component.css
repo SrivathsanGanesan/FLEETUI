@@ -135,7 +135,7 @@
 
 .popup-content.fixed-size {
   /* width: 1440px; */
-  height: 88%;
+  height: 85%;
 }
 #Edgepopupcontent{
   max-width: 1000px;
@@ -476,14 +476,6 @@ canvas {
   font-size: 13px;
   margin-left: 7rem;
   /* margin-top: 0.5rem; */
-  animation: bounce 1s;
-}
-.newvalidation-message {
-  color: red;
-  font-size: 13px;
-  /* margin-left: 7rem; */
-  /* margin-top: 0.5rem; */
-  /* margin-bottom: 0.5rem; */
   animation: bounce 1s;
 }
 .validation-message {
