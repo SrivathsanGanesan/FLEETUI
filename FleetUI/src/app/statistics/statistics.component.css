@@ -233,6 +233,7 @@
 
 .notifications-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
+  
 }
 
 .notifications-table tbody tr:hover {
@@ -324,6 +325,7 @@
   .notifications-table th,
   .notifications-table td {
     font-size: 0.5rem;
+    position: sticky;
   }
 }
 
@@ -333,7 +335,7 @@
 
 .statistics-container {
   position: absolute;
-  top: 7%;
+  top: 6%;
   right: 1%;
   display: flex;
   justify-content: space-between;

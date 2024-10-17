@@ -92,12 +92,13 @@
         <span class="label">Robots</span>
       </div>
 
-      @if (cookieValue.role === "Administrator") {
-      <div class="icon4" routerLink="/configuration" routerLinkActive="active">
-        <img src="../../assets/icons/Configuration_icons.svg" alt="" class="Clogo" />
-        <span class="label">Configuration</span>
-      </div>
-    }
+      @if (cookieValue.role === "Administrator" || cookieValue.role === "Maintainer") {
+        <div class="icon4" routerLink="/configuration" routerLinkActive="active">
+          <img src="../../assets/icons/Configuration_icons.svg" alt="" class="Clogo" />
+          <span class="label">Configuration</span>
+        </div>
+      }
+      
       <div class="icon5" routerLink="/Reports" routerLinkActive="active">
         <img src="../../assets/icons/Logs_icons.svg" alt="" class="Llogo" />
         <span class="label">Error logs</span>

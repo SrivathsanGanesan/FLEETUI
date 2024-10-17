@@ -84,7 +84,7 @@
 .statistics-container {
   
   position: absolute;
-  top: 7%;
+  top: 6%;
   right: 1%;
   display: flex;
   justify-content: space-between;
@@ -358,7 +358,7 @@ h2 {
 .robot-activity-table td {
   padding: 12px 15px;
   border-top-left-radius: 1px solid #b5b5b5;
-  font-size: 0.8rem;
+  font-size: 0.8rem;  
 }
 
 .robot-activity-table tbody tr:nth-child(even) {
