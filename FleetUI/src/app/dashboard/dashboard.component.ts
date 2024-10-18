@@ -737,8 +737,10 @@ export class DashboardComponent implements AfterViewInit {
   async activateRobot(robot: any) {
     robot.enabled = true;
     let data = await this.enable_robot(robot);
+    console.log(`${robot.roboName} has been enabled.`);
     // console.log(data);
     // console.log(`${robot.name} has been enabled.`);
+    
   }
 
   async getMapDetails() {
