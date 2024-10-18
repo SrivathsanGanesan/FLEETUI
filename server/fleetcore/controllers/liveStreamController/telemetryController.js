@@ -2,11 +2,10 @@ const amqp = require("amqplib");
 const { Map, Robo } = require("../../../application/models/mapSchema");
 require("dotenv").config();
 
-// let mqttClient = null;
-// let endResponse = null;
-
 let rabbitMqClient = null;
 let rabbitMQChannel = null;
+
+let currentRobos = [];
 
 const eventStreamHeader = {
   "Content-Type": "text/event-stream",
@@ -29,9 +28,6 @@ const initRabbitMQConnection = async () => {
 const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
   if (!rabbitMQChannel) return;
   // remove previous or existing event listenr to prevent memory leaks.. which overwhelmed bcz of listeners..
-  /* req.removeListener("close", () => {
-    return res.end();
-  }); */
   req.on("close", () => {
     return res.end();
   });
@@ -45,19 +41,14 @@ const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
       durable: true, // queue remains even rabbitmq server restarts..
     });
     await rabbitMQChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
-    // if (!queueInfo.messageCount) {
-    //   let resInfo = {
-    //     messageCount: queueInfo.messageCount,
-    //     msg: "queue is empty!",
-    //   };
-    //   res.write(`data: ${JSON.stringify(resInfo)}\n\n`);
-    //   return res.end();
-    // } else
+
     rabbitMQChannel.consume(queueName, (msg) => {
+      currentRobos = []; // take a look..
       if (msg) {
         const messageContent = msg.content.toString();
         let robos = JSON.parse(messageContent);
         res.write(`data: ${JSON.stringify(robos)}\n\n`);
+        currentRobos = robos;
 
         rabbitMQChannel.ack(msg);
       }
@@ -164,29 +155,6 @@ const getRoboPos = async (req, res) => {
   }
 };
 
-const showSpline = async (req, res) => {
-  const { mapId } = req.body;
-  let splineData = {
-    robotId: 0,
-    enable: true,
-  };
-  let splineRes = await fetchFleetInfo("showSpline", splineData);
-  if (splineRes.errorCode !== 1000) {
-    res.status(500).json({ isShowSplined: false, msg: "not attained" });
-  }
-  try {
-    let isMapExists = await Map.exists({ _id: mapId });
-    if (!isMapExists)
-      return res
-        .status(400)
-        .json({ isShowSplined: false, msg: "Map not found!", map: null });
-    return res.status(200).json({ isShowSplined: true, msg: "path set!" });
-  } catch (error) {
-    console.error("Error in show_spline  :", err);
-    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
-  }
-};
-
 const enableRobo = async (req, res) => {
   const { mapId, roboToEnable } = req.body;
 
@@ -214,6 +182,52 @@ const enableRobo = async (req, res) => {
     res
       .status(500)
       .json({ error: error.message, msg: "Internal Server Error" });
+  }
+};
+
+const getLiveRobos = async (req, res) => {
+  // neet to purge all previous robo dets in rabbitmq topic..
+  const mapId = req.params.mapId;
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(400).json({ msg: "Map not found!", map: null });
+    res.json({
+      msg: "live robos has been sent",
+      map: true,
+      robos: currentRobos,
+    });
+    res.on("finish", () => {
+      currentRobos = []; // just reset the robos after sent to the client!
+    });
+  } catch (error) {
+    console.error("Error in getting live robos  :", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
+  }
+};
+
+const showSpline = async (req, res) => {
+  const { mapId } = req.body;
+  let splineData = {
+    robotId: 0,
+    enable: true,
+  };
+  let splineRes = await fetchFleetInfo("showSpline", splineData);
+  if (splineRes.errorCode !== 1000) {
+    res.status(500).json({ isShowSplined: false, msg: "not attained" });
+  }
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res
+        .status(400)
+        .json({ isShowSplined: false, msg: "Map not found!", map: null });
+    return res.status(200).json({ isShowSplined: true, msg: "path set!" });
+  } catch (error) {
+    console.error("Error in show_spline  :", err);
+    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
   }
 };
 
@@ -287,19 +301,19 @@ const getRoboDetails = async (req, res) => {
       let robot = robo.roboId;
 
       return {
-        id: robot._id.toString().slice(20),
-        serialNumber: robot._id.toString().slice(18),
+        id: robot.amrId,
+        serialNumber: robot.grossInfo.serialNumber,
         name: robot.roboName,
         imageUrl: "",
-        status: "Active",
-        battery: Math.floor(Math.random() * 80).toString() + "",
+        status: "INACTIVE",
+        battery: 0,
         temperature: Math.floor(Math.random() * 40).toString() + "",
         networkstrength: Math.floor(Math.random() * 80),
         robotutilization: Math.floor(Math.random() * 80).toString() + "",
         cpuutilization: Math.floor(Math.random() * 80).toString() + "",
         memory: Math.floor(Math.random() * 70).toString() + "",
-        error: Math.floor(Math.random() * 50).toString(),
-        batteryPercentage: Math.floor(Math.random() * 100),
+        error: 0,
+        batteryPercentage: 0,
         isCharging: Math.floor(Math.random() * 40) > 20 ? true : false,
         totalPicks: Math.floor(Math.random() * 40).toString(),
         totalDrops: Math.floor(Math.random() * 40).toString(),
@@ -333,6 +347,16 @@ module.exports = {
   getRoboPos,
   showSpline,
   enableRobo,
-  rabbitMqClient,
-  rabbitMQChannel,
+  getLiveRobos,
+  // rabbitMqClient, // might to uncomment..
+  // rabbitMQChannel,
 };
+
+// if (!queueInfo.messageCount) {
+//   let resInfo = {
+//     messageCount: queueInfo.messageCount,
+//     msg: "queue is empty!",
+//   };
+//   res.write(`data: ${JSON.stringify(resInfo)}\n\n`);
+//   return res.end();
+// } else
