@@ -50,6 +50,7 @@ export class DashboardComponent implements AfterViewInit {
   selectedFloor = 'Floor 1';
   floors = ['Floor 1'];
   zoomLevel = 1.0;
+  originalRoboPositions = [];
   isPanning = false;
   lastX = 0;
   lastY = 0;
@@ -131,7 +132,7 @@ export class DashboardComponent implements AfterViewInit {
     }
     await this.getMapDetails();
     this.loadCanvas();
-    await this.initSimRoboPos();
+    this.initSimRoboPos();
     console.log(this.simMode);
 
     // this.toggleModelCanvas();
@@ -165,7 +166,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   // yet to update pos and save it in map..
-  async initSimRoboPos() {
+  initSimRoboPos() {
     
     const imgWidth = this.mapImg.width * this.zoomLevel;
     const imgHeight = this.mapImg.height * this.zoomLevel;
@@ -182,56 +183,6 @@ export class DashboardComponent implements AfterViewInit {
         i++;
       // }
       return robo;
-    });
-  }
-
-  addRightClickListener(canvas: HTMLCanvasElement) {
-    canvas.addEventListener('contextmenu', (event) => {
-      event.preventDefault(); // Prevent the default context menu
-
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-      const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
-      const imgY =
-        (canvas.height - mouseY - this.mapImageY - this.offsetY) /
-        this.zoomLevel;
-
-      for (let robo of this.simMode) {
-        const roboX = robo.pos.x;
-        const roboY = this.mapImageHeight - robo.pos.y;
-        const imageSize = 25; // Adjust size based on robot image dimensions
-        if (
-          imgX >= roboX - imageSize &&
-          imgX <= roboX + imageSize &&
-          imgY >= roboY - imageSize &&
-          imgY <= roboY + imageSize
-        ) {
-          // Show the popup at the clicked position
-          this.showPopup(event.clientX, event.clientY);
-          this.updatedrobo = robo;
-          // console.log(this.updatedrobo);
-          return;
-        }
-      }
-
-      /* for (let robo of this.robos) {
-        const roboX = robo.pos.x;
-        const roboY = this.mapImageHeight - robo.pos.y;
-        const imageSize = 25; // Adjust size based on robot image dimensions
-        if (
-          imgX >= roboX - imageSize &&
-          imgX <= roboX + imageSize &&
-          imgY >= roboY - imageSize &&
-          imgY <= roboY + imageSize
-        ) {
-          // Show the popup at the clicked position
-          this.showPopup(event.clientX, event.clientY);
-          this.updatedrobo = robo;
-          console.log(this.updatedrobo);
-          return;
-        }
-      } */
     });
   }
 
@@ -505,7 +456,60 @@ export class DashboardComponent implements AfterViewInit {
     // console.log(distance, imageSize*1.5);
     return distance <= imageSize * 1.5; // Adjust this based on the robot's size
   }
+  addRightClickListener(canvas: HTMLCanvasElement) {
+    canvas.addEventListener('contextmenu', (event) => {
+      event.preventDefault(); // Prevent the default context menu
 
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;     
+      const transY = canvas.height - mouseY;
+      const imgX = ((mouseX - this.mapImageX + this.offsetX) / this.zoomLevel)- this.offsetX;
+      const imgY = ((transY - this.mapImageY + this.offsetY) / this.zoomLevel)+ this.offsetY;
+
+      for (let robo of this.simMode) {
+        const roboX = robo.pos.x ;
+        const roboY = (this.mapImageHeight/ this.zoomLevel ) - robo.pos.y;
+        const imageSize = 25; // Adjust size based on robot image dimensions
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
+          console.log("verify",mouseX, this.mapImageX,this.offsetX,this.zoomLevel,this.offsetX);
+          console.log("mouseXY",imgX, imgY);
+          console.log("robotXY",roboX, roboY);
+          console.log("panoffset",this.offsetX,this.offsetY);
+          console.log("zoom",this.zoomLevel)
+          console.clear;
+          // Show the popup at the clicked position
+          this.showPopup(event.clientX, event.clientY);
+          this.updatedrobo = robo;
+          // console.log(this.updatedrobo);
+          return;
+        }
+      }
+
+      /* for (let robo of this.robos) {
+        const roboX = robo.pos.x;
+        const roboY = this.mapImageHeight - robo.pos.y;
+        const imageSize = 25; // Adjust size based on robot image dimensions
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
+          // Show the popup at the clicked position
+          this.showPopup(event.clientX, event.clientY);
+          this.updatedrobo = robo;
+          console.log(this.updatedrobo);
+          return;
+        }
+      } */
+    });
+  }
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
       // if (!this.showModelCanvas) return;
@@ -515,20 +519,20 @@ export class DashboardComponent implements AfterViewInit {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
-      // console.log(this.zoomLevel);
-      
+      console.log(this.zoomLevel);
+ 
       // Adjust for zoom and pan
-      const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
-      const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
-
+      const imgX = (((mouseX - this.mapImageX + this.offsetX) / this.zoomLevel)- this.offsetX);
+      const imgY = (((transY - this.mapImageY + this.offsetY) / this.zoomLevel)+ this.offsetY);
+      // console.log("mouse", imgX,imgY);
+      
       for (let robo of this.simMode) {
-        // console.log(this.zoomLevel);
-        
+        // console.log(this.zoomLevel);        
         const roboX = robo.pos.x ;
-        const roboY = this.mapImageHeight - robo.pos.y;
+        const roboY = (this.mapImageHeight / this.zoomLevel) - robo.pos.y;
         const imageSize = 25; // Adjust to the sie of the robot image
-        // console.log("robotXY"+roboX, roboY);
-        // console.log("imgXY"+imgX, imgY);
+
+        
         if (
           imgX >= roboX - imageSize &&
           imgX <= roboX + imageSize &&
@@ -600,14 +604,14 @@ export class DashboardComponent implements AfterViewInit {
       // console.log(this.zoomLevel);
       
       // Adjust for zoom and pan
-      const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
-      const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
+      const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel;
+      const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel;
 
-      console.log(
-        'mouse is clicked in:',
-        Math.round(imgX) * this.ratio,
-        Math.round(imgY) * this.ratio
-      );
+      // console.log(
+      //   'mouse is clicked in:',
+      //   Math.round(imgX) * this.ratio,
+      //   Math.round(imgY) * this.ratio
+      // );
 
       // Check if the click is within the bounds of the map image
       const isInsideMap =
@@ -654,19 +658,19 @@ export class DashboardComponent implements AfterViewInit {
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
       // Adjust for zoom and pan
-      const imgX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
-      const imgY = (transY - this.mapImageY - this.offsetY) / this.zoomLevel;
+      const imgX = (((mouseX - this.mapImageX + this.offsetX) / this.zoomLevel) - this.offsetX);
+      const imgY = (((transY - this.mapImageY + this.offsetY) / this.zoomLevel) + this.offsetY);
 
       if (this.draggingRobo && this.isDragging) {
-        let newX = (mouseX - this.mapImageX - this.offsetX) / this.zoomLevel;
-        let newY = (mouseY - this.mapImageY - this.offsetY) / this.zoomLevel;
+        // this.draggingRobo.pos.x = this.draggingRobo.pos.x;
+        // this.draggingRobo.pos.y = (this.mapImageHeight/ this.zoomLevel ) - this.draggingRobo.pos.y;
+        let newX = (mouseX - this.mapImageX ) / this.zoomLevel;
+        let newY = (mouseY - this.mapImageY ) / this.zoomLevel;
         // Update the position of the robot being dragged
         newX = Math.max(0, Math.min(newX, this.mapImageWidth / this.zoomLevel));
-        newY = Math.max(
-          0,
-          Math.min(newY, this.mapImageHeight / this.zoomLevel)
-        );
+        newY = Math.max( 0, Math.min(newY, this.mapImageHeight / this.zoomLevel) );
 
+        // console.log("mouseXY",newX, newY);
         // Update the robot's position
         this.draggingRobo.pos.x = newX;
         this.draggingRobo.pos.y = newY;
@@ -1367,6 +1371,7 @@ export class DashboardComponent implements AfterViewInit {
     if (this.isPanning) {
       this.lastX = event.clientX;
       this.lastY = event.clientY;
+      
       document.addEventListener('mousemove', this.panMove);
       document.addEventListener('mouseup', this.panEnd);
       document.body.style.cursor = 'grabbing';
@@ -1385,7 +1390,7 @@ export class DashboardComponent implements AfterViewInit {
       const deltaY = event.clientY - this.lastY;
       this.lastX = event.clientX;
       this.lastY = event.clientY;
-
+      
       this.offsetX += deltaX / this.zoomLevel;
       this.offsetY += deltaY / this.zoomLevel;
 
