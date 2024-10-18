@@ -113,6 +113,7 @@ export class DashboardComponent implements AfterViewInit {
   isDragging: boolean = false;
   isMapLoaded = false;
   isImage: boolean = false;
+  // genMapImg: any | null = null;
   updatedrobo: any;
 
   constructor(
@@ -131,13 +132,10 @@ export class DashboardComponent implements AfterViewInit {
       return;
     }
     await this.getMapDetails();
-    await this.initSimRoboPos();
+    this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
+    this.initSimRoboPos();
     this.loadCanvas();
     console.log(this.simMode);
-    
-
-    // this.toggleModelCanvas();
-    // await this.fetchRoboPos();
   }
 
   ngAfterViewInit(): void {
