@@ -145,7 +145,8 @@ export class StatisticsComponent {
   }
 
   async fetchCurrTasksStatus(): Promise<any[]> {
-    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    let establishedTime = new Date(this.selectedMap.createdAt);
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
     // timeStamp1 = 1728930600;
     // timeStamp2 = 1729050704;
     let response = await fetch(
@@ -192,7 +193,8 @@ export class StatisticsComponent {
   }
 
   async fetchTasksStatus(): Promise<number[]> {
-    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(); // yet to take, in seri..
+    let establishedTime = new Date(this.selectedMap.createdAt);
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime); // yet to take, in seri..
     // timeStamp1 = 1728930600;
     // timeStamp2 = 1729050704;
 
@@ -275,17 +277,17 @@ export class StatisticsComponent {
     );
   }
 
-  getTimeStampsOfDay() {
+  getTimeStampsOfDay(establishedTime: Date) {
     let currentTime = Math.floor(new Date().getTime() / 1000);
-    let startTimeOfDay = this.getStartOfDay();
+    let startTimeOfDay = this.getStartOfDay(establishedTime);
     return {
       timeStamp1: startTimeOfDay,
       timeStamp2: currentTime,
     };
   }
 
-  getStartOfDay() {
-    return Math.floor(new Date().setHours(0, 0, 0) / 1000);
+  getStartOfDay(establishedTime: Date) {
+    return Math.floor(establishedTime.setHours(0, 0, 0) / 1000);
   }
 
   updateSysThroughput(data: any) {

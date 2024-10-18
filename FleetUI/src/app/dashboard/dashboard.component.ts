@@ -131,8 +131,8 @@ export class DashboardComponent implements AfterViewInit {
       return;
     }
     await this.getMapDetails();
+    await this.initSimRoboPos();
     this.loadCanvas();
-    this.initSimRoboPos();
     console.log(this.simMode);
 
     // this.toggleModelCanvas();

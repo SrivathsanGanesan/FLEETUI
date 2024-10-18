@@ -51,7 +51,7 @@
       </div>
 
       <!-- Profile Popup -->
-      <div class="profile-popup" *ngIf="showProfilePopup">
+      <!-- <div class="profile-popup" *ngIf="showProfilePopup">
         <div class="profile-header">
           <img src="../../assets/icons/profile.png" alt="profile pic" class="popup-profile-pic" />
           <div class="popup-info">
@@ -61,10 +61,10 @@
         </div>
         <hr />
         <div class="popup-actions">
-          <!-- <button routerLink="/profile" class="profile-btn">View Profile</button> -->
+          <button routerLink="/profile" class="profile-btn">View Profile</button>
           <button (click)="logout()" class="logout-btn">Logout</button>
         </div>
-      </div>
+      </div> -->
     </div>
 
 
@@ -95,13 +95,13 @@
         <span class="label">Robots</span>
       </div>
 
-      <div *ngIf="cookieValue.role === 'Administrator' || cookieValue.role === 'Maintainer'" 
-       class="icon4" 
-       routerLink="/configuration" 
-       routerLinkActive="active">
-       <img src="../../assets/icons/Configuration_icons.svg" alt="" class="Clogo" />
-       <span class="label">Configuration</span>
+      @if (cookieValue.role !== "User" ) {
+      <div class="icon4" routerLink="/configuration" routerLinkActive="active">
+        <img src="../../assets/icons/Configuration_icons.svg" alt="" class="Clogo" />
+        <span class="label">Configuration</span>
       </div>
+    }
+
       
       <div class="icon5" routerLink="/Reports" routerLinkActive="active">
         <img src="../../assets/icons/Logs_icons.svg" alt="" class="Llogo" />
@@ -145,11 +145,18 @@
 <div class="notification-popup" [ngClass]="{ 'show': isNotificationVisible }" (mouseenter)="cancelAutoClose()" (mouseleave)="startAutoClose()">
   <div class="close-btn" (click)="closeNotification()">✖</div>
 
-  <h3>Notifications</h3>
+  <!-- Clear All Button -->
+  <div class="notification-header">
+    <h3>Notifications</h3>
+    <button class="clear-all-btn" (click)="clearAllNotifications()">Clear All</button>
+  </div>
 
   <ng-container *ngIf="notifications && notifications.length > 0; else noNotifications">
     <ul>
-      <li *ngFor="let notification of notifications">{{ notification }}</li>
+      <li *ngFor="let notification of notifications" [ngClass]="getNotificationClass(notification.type)">
+        <span class="label">{{ notification.label }}</span>
+        <span>{{ notification.message }}</span>
+      </li>
     </ul>
   </ng-container>
 
@@ -209,7 +216,7 @@
 			C1047.71,321.35,1100,328.62,1100,328.62z"/>
 	</g>
 </g>
-</svg>
+  </svg>
 
       <span>No notifications to show</span>
     </div>

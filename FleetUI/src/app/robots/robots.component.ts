@@ -145,7 +145,10 @@ export class RobotsComponent implements OnInit {
   }
 
   updateLiveRoboInfo() {
-    if (!('robots' in this.liveRobos)) return;
+    if (!('robots' in this.liveRobos)) {
+      this.robots = this.initialRoboInfos;
+      return;
+    }
     let { robots }: any = this.liveRobos;
     if (!robots.length) this.robots = this.initialRoboInfos;
     this.robots = this.robots.map((robo) => {
@@ -155,7 +158,7 @@ export class RobotsComponent implements OnInit {
           robo.battery = liveRobo.battery.toFixed(2);
           robo.batteryPercentage = liveRobo.battery.toFixed(2);
           robo.currentTask = liveRobo.current_task;
-          robo.status = liveRobo.isConnected ? 'Active' : 'In_Active';
+          robo.status = liveRobo.isConnected ? 'ACTIVE' : 'INACTIVE';
           robo.isConnected = liveRobo.isConnected;
           if ('EMERGENCY STOP' in liveRobo.robot_errors)
             robo.error += liveRobo.robot_errors['EMERGENCY STOP'].length;

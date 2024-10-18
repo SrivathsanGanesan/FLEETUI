@@ -31,22 +31,54 @@
     <img src="assets/icons/folder.png" alt="Documentation">
     <h3>Documentation</h3>
     <p>Find technical docs and guides.</p>
+    <button class="download-btn pixel-corners" (click)="downloadDocument()" >
+      <div class="button-content">
+        
+        <div class="svg-container">
+          <svg
+            class="download-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479 6.908l-4-4h3v-4h2v4h3l-4 4z"
+            ></path>
+          </svg>
+        </div>
+        <div class="text-container">
+          <div class="text">Download</div>
+        </div>
+      </div>
+    </button>
   </div>
 
   <div class="support-section">
     <img src="assets/icons/training.png" alt="Training Resource">
     <h3>Training Resource</h3>
     <p>Explore training materials.</p>
-    <div class="button" (click)="downloadDocument()" data-tooltip="Size: 20Mb">
-      <div class="button-wrapper">
-        <div class="text">Download</div>
-        <span class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"></path>
+    <button class="download-btn pixel-corners" (click)="downloadDocument()" >
+      <div class="button-content">
+        
+        <div class="svg-container">
+          <svg
+            class="download-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479 6.908l-4-4h3v-4h2v4h3l-4 4z"
+            ></path>
           </svg>
-        </span>
+        </div>
+        <div class="text-container">
+          <div class="text">Download</div>
+        </div>
       </div>
-    </div>
+    </button>
   </div>
 
 
@@ -57,12 +89,16 @@
     <p>Frequently asked questions.</p>
 
     <div class="faq-section" (click)="goToFaq()">
-        <!-- <img src="assets/icons/faq.svg" alt="FAQ Icon" /> -->
-        <h3>Frequently Asked Questions (FAQ)</h3>
-        <p>Find answers to commonly asked questions</p>
-      </div>
+        <!-- Add the "Learn More" button -->
+        <button class="custom-learn-more">
+            <span class="custom-circle" aria-hidden="true">
+                <span class="custom-icon custom-arrow"></span>
+            </span>
+            <span class="custom-button-text">Learn More</span>
+        </button>
+    </div>
+</div>
 
-  </div>
 
   <div class="support-section">
     <app-contactus></app-contactus>
