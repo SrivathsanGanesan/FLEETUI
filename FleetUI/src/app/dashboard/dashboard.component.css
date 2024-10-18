@@ -64,26 +64,52 @@ canvas {
 .CanvasOptions {
   position: absolute;
   bottom: 5%;
-  left: 17%; /* Center horizontally */
-  transform: translateX(-50%);
+  left: 1%; /* Position the CanvasOptions */
   display: flex;
-  background-color: rgba(255, 255, 255, 0.442);
-  border-radius: 10px;
+  background-color: #ff7373;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
   justify-content: center;
   cursor: pointer;
-  padding: 0 0px;
-  box-shadow: 0 3px 6px #ff7373;
-  z-index:11; /* Ensure it stays above other elements */
+  padding: 0;
+  box-shadow: 0 3px 6px #dfdada;
+  z-index: 11; /* Ensure it stays above other elements */
+  width: 15px; /* Initially, only show the empty span */
+  overflow: visible; /* Hide the other options */
+  transition: width 0.5s ease-in-out; /* Animation for width */
+}
+
+.empty {
+  background-color: #ff7373;
+  width: 20px;
+  height: 50px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 .tooltip {
   position: relative;
   display: flex;
   align-items: center;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth animation */
+  opacity: 0; /* Initially hide the icons */  
+  transform: translateX(-20px); /* Start slightly left for animation */
 }
 
+.CanvasOptions:hover .tooltip {
+  opacity: 1; /* Show the icons on hover */
+  transform: translateX(0); /* Slide in smoothly */
+}
+
+.CanvasOptions:hover {
+  width: 400px; /* Expand the canvas options on hover */
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 3px 6px #ff7373;
+}
+
+/* Tooltip text styles */
 .tooltip .tooltiptext {
-  visibility: hidden;
+  visibility: hidden; /* Initially hidden */
   width: 120px;
   background-color: rgba(136, 132, 132, 0.601);
   color: #ffffff;
@@ -92,36 +118,31 @@ canvas {
   border-radius: 6px;
   padding: 5px;
   position: absolute;
-  z-index: 1;
-  bottom: 125%; /* Position the tooltip above the image */
+  z-index:100;
+  bottom: 135%; /* Position the tooltip above the image */
   left: 50%;
   transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s, visibility 0.3s; /* Smooth transition for visibility */
 }
 
+/* Arrow for the tooltip */
 .tooltip .tooltiptext::after {
   content: '';
   position: absolute;
   top: 100%; /* Arrow below the tooltip */
   left: 50%;
+  z-index: 12;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
   border-color: rgba(136, 132, 132, 0.601) transparent transparent transparent;
 }
 
+/* Show tooltip text on hover of the tooltip item */
 .tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-
-.CanvasOptions:hover{
-  background-color: rgb(255, 255, 255);
-  box-shadow: 0 3px 6px #ff7373;
-}
-#element-id-to-capture {
-  box-shadow: 0 3px 6px #ff7373;
+  visibility: visible; /* Make tooltip visible */
+  opacity: 1; /* Set opacity to 1 */
 }
 
 .Expand, .Layout, .Save, .Pointer, .Zoom, .ZoomOut, .Capture,.ModelCanvas {
@@ -129,16 +150,8 @@ canvas {
   cursor: pointer;
 }
 
-.Expand:hover, .Layout:hover, .Save:hover, .Pointer:hover, .Zoom:hover, .ZoomOut:hover, .Capture:hover,.ModelCanvas:hover {
+.Expand:hover, .Layout:hover, .Save:hover, .Pointer:hover, .Zoom:hover, .ZoomOut:hover, .Capture:hover, .ModelCanvas:hover {
   filter: drop-shadow(0 2px 2px #ff0d0d3c);
-}
-
-.empty {
-  background-color: #ff7373;
-  width: 15px;
-  height: 50px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
 }
 
 .FloorSelector select {
