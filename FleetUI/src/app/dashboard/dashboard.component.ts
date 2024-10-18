@@ -134,6 +134,7 @@ export class DashboardComponent implements AfterViewInit {
     await this.initSimRoboPos();
     this.loadCanvas();
     console.log(this.simMode);
+    
 
     // this.toggleModelCanvas();
     // await this.fetchRoboPos();
@@ -1025,8 +1026,10 @@ export class DashboardComponent implements AfterViewInit {
               z: robot.pose.orientation.z,
             };
 
-            let posX = robot.pose.position.x / this.ratio; // 0.05
-            let posY = robot.pose.position.y / this.ratio; // 0.05
+            // let posX = robot.pose.position.x / this.ratio; // 0.05
+            // let posY = robot.pose.position.y / this.ratio; // 0.05
+            let posX = (robot.pose.position.x - (this.origin.x || 0)) / (this.ratio || 1);
+            let posY = (robot.pose.position.y - (this.origin.y || 0)) / (this.ratio || 1)
 
             let yaw = this.quaternionToYaw(
               complexVal.w,
