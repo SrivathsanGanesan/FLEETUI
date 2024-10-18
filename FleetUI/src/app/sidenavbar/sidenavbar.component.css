@@ -97,6 +97,12 @@
     }
 }
 
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 
   .notification-popup.show {
     display: block;
@@ -154,6 +160,20 @@
 
   .notification-popup li:last-child {
     margin-bottom: 0;
+  }
+
+  .clear-all-btn {
+    background-color: #ff3333;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .clear-all-btn:hover {
+    background-color: #d92626;
   }
 
   /* Close Button */

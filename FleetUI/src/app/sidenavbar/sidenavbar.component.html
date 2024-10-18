@@ -95,13 +95,12 @@
         <span class="label">Robots</span>
       </div>
 
-      <div 
-       class="icon4" 
-       routerLink="/configuration" 
-       routerLinkActive="active">
-       <img src="../../assets/icons/Configuration_icons.svg" alt="" class="Clogo" />
-       <span class="label">Configuration</span>
+      @if (cookieValue.role !== "User" ) {
+      <div class="icon4" routerLink="/configuration" routerLinkActive="active">
+        <img src="../../assets/icons/Configuration_icons.svg" alt="" class="Clogo" />
+        <span class="label">Configuration</span>
       </div>
+    }
 
       
       <div class="icon5" routerLink="/Reports" routerLinkActive="active">
@@ -146,7 +145,11 @@
 <div class="notification-popup" [ngClass]="{ 'show': isNotificationVisible }" (mouseenter)="cancelAutoClose()" (mouseleave)="startAutoClose()">
   <div class="close-btn" (click)="closeNotification()">✖</div>
 
-  <h3>Notifications</h3>
+  <!-- Clear All Button -->
+  <div class="notification-header">
+    <h3>Notifications</h3>
+    <button class="clear-all-btn" (click)="clearAllNotifications()">Clear All</button>
+  </div>
 
   <ng-container *ngIf="notifications && notifications.length > 0; else noNotifications">
     <ul>
@@ -213,7 +216,7 @@
 			C1047.71,321.35,1100,328.62,1100,328.62z"/>
 	</g>
 </g>
-</svg>
+  </svg>
 
       <span>No notifications to show</span>
     </div>

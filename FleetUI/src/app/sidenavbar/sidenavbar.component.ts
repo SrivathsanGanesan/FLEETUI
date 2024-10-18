@@ -37,6 +37,12 @@ export class SidenavbarComponent implements OnInit {
       { label: 'Critical', message: 'Robot J requires immediate attention', type: 'red' }
     ];
 
+     // Clear all notifications when the button is clicked
+  clearAllNotifications() {
+    this.notifications = [];
+  }
+
+
     getNotificationClass(type: string): string {
       switch (type) {
         case 'red':
