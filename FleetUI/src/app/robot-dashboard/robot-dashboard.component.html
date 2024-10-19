@@ -225,7 +225,7 @@
                   </td>
                 </tr>
 
-                <tr *ngFor="let activity of filteredRobotActivities">
+                <tr *ngFor="let activity of filteredRobotActivities | slice:0:5">
                   <td>{{ activity.roboId }}</td>
                   <td>{{ activity.roboName }}</td>
                   <td>{{ activity.task }}</td>
@@ -260,7 +260,7 @@
             </tr>
           </thead>
 
-            <tr *ngFor="let notification of filteredNotifications">
+            <tr *ngFor="let notification of filteredNotifications | slice:0:10">
               <td>{{ notification.message }}</td>
               <td class="align">{{ notification.timestamp }}</td>
             </tr>
