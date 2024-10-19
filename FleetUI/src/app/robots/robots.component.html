@@ -1873,7 +1873,11 @@
                   <div class="card-id-status">
                     <p>ID: {{ robot.id }}</p> <!-- Display ID -->
                     <p>S.no: {{ robot.serialNumber }}</p> <!-- Display Serial Number -->
-                    <p>Status: <span class="robot-status">{{ robot.status }}</span></p> <!-- Display Status -->
+                    <p>Status: 
+						<span [ngStyle]="{'color': robot.status === 'active' ? 'green' : 'red'}">
+						  {{ robot.status }}
+						</span>
+					  </p>
                   </div>
 
                   <!-- Add a dedicated button or area to trigger the popup -->

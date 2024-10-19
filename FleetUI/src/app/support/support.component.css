@@ -5,29 +5,6 @@
 
 /* under development */
 
-.under-development-overlay {
-  position: fixed; /* Fixed positioning to cover the entire viewport */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: white; /* Full-screen white background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Ensure it appears above other content */
-}
-
-.overlay-content {
-  text-align: center; /* Center the content */
-}
-
-.overlay-content p {
-  margin-top: -30px; /* Space between SVG and text */
-  font-size: 40px; /* Adjust font size as needed */
-  color: rgb(86, 85, 85); /* Text color */
-  font-weight: 700;
-}
 
 
 /* .support-page-container{
@@ -36,14 +13,49 @@
    margin-left: 5%;
 } */
 
-.support-page-container {
-  position: relative;
-  margin-top: 4%;
-   margin-left: 5%;
-   
-  
+
+.mainContent {
+  position: absolute;
+  top: 50px;
+  left: 70px;
+  width: calc(100% - 70px);
+  padding: 5px 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+  background-color: white;
 }
 
+  /* Header section styles */
+  .header-section {
+    margin-bottom: 0px;
+  }
+
+  p {
+    margin: 0px;
+  }
+
+  .header-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #DA2127;
+    margin: 0;
+  }
+
+  .subheader-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .subheader-text {
+    font-size: 16px;
+    color: #333;
+  }
+
+  .subheader-icon {
+    width: 23px;
+    height: 13px;
+  }
 
 
 .header-title {

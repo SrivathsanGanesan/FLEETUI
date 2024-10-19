@@ -304,7 +304,7 @@ h2 {
 /* Styling for the robot activity container */
 .robot-activity-container {
   flex: 0.5; /* Set to 50% of the width */
-  max-height: 20rem; /* Adjust height as needed */
+  height: 25rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -323,7 +323,7 @@ h2 {
 /* Styling for the notifications container */
 .notifications-container {
   flex: 0.5; /* Set to 50% of the width */
-  max-height: 20rem; /* Adjust height as needed */
+  height: 25rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
