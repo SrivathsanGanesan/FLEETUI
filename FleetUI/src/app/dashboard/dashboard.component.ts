@@ -439,6 +439,13 @@ export class DashboardComponent implements AfterViewInit {
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
     );
+    this.simMode.forEach((robo) => {
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
+    });
+
+    this.robos.forEach((robo) =>
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected)
+    );
     ctx.restore(); // Reset transformation after drawing
   }
 
