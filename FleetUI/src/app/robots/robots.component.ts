@@ -139,7 +139,7 @@ export class RobotsComponent implements OnInit {
     );
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (!data.map || data.error) return [];
     return data.robos;
   }

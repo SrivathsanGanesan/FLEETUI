@@ -3116,7 +3116,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // Handle other types of clicks like zone plotting, asset dragging, etc.
 
     // Check if the first node is clicked
-    if (this.firstNode && this.isNodeClicked(this.firstNode, x, y)) {
+    if (this.firstNode && this.isNodeClicked(this.firstNode, x, y) && this.isMultiNodePlotting) {
       // Remove the first node and reset plotting state
       const index = this.nodes.indexOf(this.firstNode);
       if (index > -1) {
@@ -3124,8 +3124,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       }
       this.firstNode = null; // Reset first node
       this.redrawCanvas();
-      this.isPlottingEnabled = true; // Re-enable plotting
-      this.isMultiNodePlotting = true; // Keep multi-node plotting enabled
+      this.isPlottingEnabled = false; // Re-enable plotting
+      this.isMultiNodePlotting = false; // Keep multi-node plotting enabled
       this.messageService.add({
         severity: 'info',
         summary: 'First Node Removed',
