@@ -232,8 +232,8 @@ export class DashboardComponent implements AfterViewInit {
     let ratio = this.ratio ? this.ratio : 1;
     let quaternion = { x: 0, y: 0, z: 0, w: 1 };
     const transformedY = mapImg.height - this.robotToInitialize.pos.y;
-    this.robotToInitialize.pos.x = this.robotToInitialize.pos.x * ratio;
-    this.robotToInitialize.pos.y = transformedY * ratio;
+    this.robotToInitialize.pos.x = (this.robotToInitialize.pos.x * ratio) + this.origin.x;
+    this.robotToInitialize.pos.y = (transformedY * ratio) + this.origin.y;
 
     // quaternion = this.positionToQuaternion(this.robotToInitialize.pos);
     let initializeRobo = {
