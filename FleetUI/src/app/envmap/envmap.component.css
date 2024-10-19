@@ -32,9 +32,12 @@
   font-size: 0.9em;
   margin-top: 5px;
 }
-.Orientation_input{
-  padding: 10px;
-  border-radius: 5px;
+.XY-coor{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
 }
 .p-inputtext{
   padding: 0 !important;
@@ -47,12 +50,14 @@
   align-content: center !important;
   padding: 0rem 0.75rem !important;
 }
-
 .UDform{
   padding: 10px;
   display: flex;
 }
+.Nodevalues{
 
+  margin: 10px;
+}
 .popup-overlay1 {
   position: fixed;
   top: 0;
