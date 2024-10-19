@@ -104,12 +104,10 @@ export class EnvmapComponent implements AfterViewInit {
   @Output() closePopup = new EventEmitter<void>();
   @Output() newEnvEvent = new EventEmitter<any>();
   @Output() save = new EventEmitter<void>();//emit the save function
-  @ViewChild('imageCanvas', { static: false })
-  imageCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('overlayCanvas', { static: false })
-  overlayCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('imagePopupCanvas', { static: false })
-  imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imageCanvas', { static: false }) imageCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('pixTooltip') pixTooltip!: ElementRef;
+  @ViewChild('overlayCanvas', { static: false }) overlayCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imagePopupCanvas', { static: false }) imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
   @ViewChild('xInput') xInput!: ElementRef<HTMLInputElement>;
   @ViewChild('yInput') yInput!: ElementRef<HTMLInputElement>;
@@ -3171,11 +3169,25 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
+    const tooltip = this.pixTooltip.nativeElement;
+    if (!tooltip) {
+      console.warn('Tooltip element not found');
+      return;
+    }
     const canvas = this.overlayCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y; // yet to remove..
+
+    const tooltipX =(x * this.ratio!) + this.origin.x;
+    const tooltipY = (transformedY * this.ratio!) + this.origin.y;  
+  
+    tooltip.innerHTML = `X: ${tooltipX},    Y: ${tooltipY}`;
+    tooltip.style.display = 'block';
+    tooltip.style.left = `${event.clientX}`; // Position with padding
+    tooltip.style.top = `${event.clientY}`; // Adjust to position above cursor
+
     console.log(`X = ${(Math.round(x) * this.ratio! ) + this.origin.x}, Y = ${ (Math.round(transformedY) * this.ratio!) + this.origin.y }`);
     if (this.isDeleteModeEnabled && this.selectionStart) {
       this.selectionEnd = { x, y };
@@ -3258,6 +3270,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         this.robos[roboIndex].pos.y = y;
       }
     }
+    canvas.addEventListener('mouseleave', () => {
+      tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
+    });
   }
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
