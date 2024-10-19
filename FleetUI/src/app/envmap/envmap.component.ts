@@ -3176,7 +3176,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y; // yet to remove..
-
+    console.log(`X = ${(Math.round(x) * this.ratio! ) + this.origin.x}, Y = ${ (Math.round(transformedY) * this.ratio!) + this.origin.y }`);
     if (this.isDeleteModeEnabled && this.selectionStart) {
       this.selectionEnd = { x, y };
 
