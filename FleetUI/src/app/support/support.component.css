@@ -57,20 +57,6 @@
     height: 13px;
   }
 
-.support-page-container {
-  position: absolute;
-  top: 4%;
-  left: 5%;
-
-  /* width: calc(100% - 70px); */
-  width: 95%; /* Relative to the parent or viewport */
-  padding: 1%;
-  /* overflow: hidden; */
-  box-sizing: border-box;
-  background-color: white;
-}
-
-
 
 .header-title {
     font-size: 36px;

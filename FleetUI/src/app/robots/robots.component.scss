@@ -9,7 +9,6 @@
   margin-left: 2rem; /* Equivalent to ml-64 (256px) */
   padding: 3rem; /* Equivalent to p-8 */
   height: 100vh;
- 
   overflow: hidden;
 }
 
@@ -20,6 +19,47 @@
   align-items: center;
   height: 100%;
   }
+
+  
+  .parent-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full viewport height */
+}
+
+.card-container-wrapper {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 2rem;
+  flex-wrap: wrap; /* Wrap content for smaller screens */
+
+  align-items: center; /* Center vertically */
+  min-height: 70vh; /* Ensure it takes full viewport height */
+  
+}
+
+/* Adjust layout for smaller screens */
+@media (max-width: 1200px) {
+    .card-container-wrapper {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-container-wrapper {
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-container-wrapper {
+        gap: 0.5rem;
+        padding: 0.25rem;
+    }
+}
 
   body {
     background-color: var(--background-color);
@@ -199,43 +239,6 @@ body, .card, .popup-menu {
   }
 
 
-  .parent-container {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    height: 100vh; /* Full viewport height */
-}
-
-.card-container-wrapper {
-    display: flex;
-    gap: 2rem;
-    overflow-x: auto;
-    padding: 2rem;
-    flex-wrap: wrap; /* Wrap content for smaller screens */
-    justify-content: flex-start; /* Align cards from the start */
-    align-items: flex-start; /* Align cards from the top */
-}
-
-/* Adjust layout for smaller screens */
-@media (max-width: 1200px) {
-    .card-container-wrapper {
-        gap: 1.5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .card-container-wrapper {
-        gap: 1rem;
-        padding: 0.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .card-container-wrapper {
-        gap: 0.5rem;
-        padding: 0.25rem;
-    }
-}
 
 
 /* Entire scrollbar */
