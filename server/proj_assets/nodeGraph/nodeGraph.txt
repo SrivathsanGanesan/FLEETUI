@@ -2,12 +2,12 @@
   "nodes": [
     {
       "name": "1",
-      "locationDescription": "move_desc",
+      "locationDescription": "",
       "type": 2,
       "preDockPose": {
         "position": {
-          "x": 15.926474926253688,
-          "y": 20.68228703703704,
+          "x": 0,
+          "y": 0,
           "z": 0
         },
         "orientation": {
@@ -51,19 +51,19 @@
     },
     {
       "name": "2",
-      "locationDescription": "move_desc",
+      "locationDescription": "",
       "type": 2,
       "preDockPose": {
         "position": {
-          "x": 26.560766961651918,
-          "y": 20.632435185185187,
-          "z": -74.38282581672198
+          "x": 0,
+          "y": 0,
+          "z": 0
         },
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.4861677141426326,
-          "w": 0.8738655238223599
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       },
       "dockPose": {
@@ -75,8 +75,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.4861677141426326,
-          "w": 0.8738655238223599
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         },
         "dockParams": {
           "xOffset": 0,
@@ -93,26 +93,26 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.4861677141426326,
-          "w": 0.8738655238223599
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       }
     },
     {
       "name": "3",
-      "locationDescription": "move_desc",
+      "locationDescription": "Intermediate Node",
       "type": 2,
       "preDockPose": {
         "position": {
-          "x": 40.24056047197641,
-          "y": 20.632435185185187,
-          "z": 1.1423688862847525
+          "x": 0,
+          "y": 0,
+          "z": 0
         },
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.5406288538110451,
-          "w": 0.8412612212784776
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       },
       "dockPose": {
@@ -124,8 +124,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.5406288538110451,
-          "w": 0.8412612212784776
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         },
         "dockParams": {
           "xOffset": 0,
@@ -142,26 +142,26 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.5406288538110451,
-          "w": 0.8412612212784776
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       }
     },
     {
       "name": "4",
-      "locationDescription": "dock_pose",
+      "locationDescription": "Intermediate Node",
       "type": 2,
       "preDockPose": {
         "position": {
-          "x": 48.57824483775812,
-          "y": 20.632435185185187,
+          "x": 0,
+          "y": 0,
           "z": 0
         },
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0,
-          "w": 1
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       },
       "dockPose": {
@@ -173,8 +173,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0,
-          "w": 1
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         },
         "dockParams": {
           "xOffset": 0,
@@ -191,62 +191,13 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0,
-          "w": 1
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       }
     },
     {
       "name": "5",
-      "locationDescription": "dock_pose",
-      "type": 2,
-      "preDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        }
-      },
-      "dockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        },
-        "dockParams": {
-          "xOffset": 0,
-          "yOffset": 0,
-          "dockingType": 1
-        }
-      },
-      "unDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        }
-      }
-    },
-    {
-      "name": "7",
       "locationDescription": "Intermediate Node",
       "type": 2,
       "preDockPose": {
@@ -258,8 +209,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       },
       "dockPose": {
@@ -271,8 +222,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         },
         "dockParams": {
           "xOffset": 0,
@@ -289,13 +240,13 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       }
     },
     {
-      "name": "8",
+      "name": "6",
       "locationDescription": "Intermediate Node",
       "type": 2,
       "preDockPose": {
@@ -307,8 +258,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       },
       "dockPose": {
@@ -320,8 +271,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         },
         "dockParams": {
           "xOffset": 0,
@@ -338,155 +289,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        }
-      }
-    },
-    {
-      "name": "9",
-      "locationDescription": "Intermediate Node",
-      "type": 2,
-      "preDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        }
-      },
-      "dockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        },
-        "dockParams": {
-          "xOffset": 0,
-          "yOffset": 0,
-          "dockingType": 1
-        }
-      },
-      "unDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        }
-      }
-    },
-    {
-      "name": "10",
-      "locationDescription": "Intermediate Node",
-      "type": 2,
-      "preDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        }
-      },
-      "dockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        },
-        "dockParams": {
-          "xOffset": 0,
-          "yOffset": 0,
-          "dockingType": 1
-        }
-      },
-      "unDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        }
-      }
-    },
-    {
-      "name": "11",
-      "locationDescription": "Intermediate Node",
-      "type": 2,
-      "preDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        }
-      },
-      "dockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
-        },
-        "dockParams": {
-          "xOffset": 0,
-          "yOffset": 0,
-          "dockingType": 1
-        }
-      },
-      "unDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9685071892226369,
-          "w": -0.24898559079606888
+          "z": -0.4871745124605095,
+          "w": -0.8733046400935156
         }
       }
     }
@@ -494,81 +298,33 @@
   "edges": [
     {
       "from": "1",
-      "isUniDirectional": false,
-      "name": "1|2",
-      "to": "2"
-    },
-    {
-      "from": "2",
-      "isUniDirectional": false,
-      "name": "2|3",
+      "isUniDirectional": true,
+      "name": "1|3",
       "to": "3"
     },
     {
       "from": "3",
-      "isUniDirectional": false,
+      "isUniDirectional": true,
       "name": "3|4",
       "to": "4"
     },
     {
       "from": "4",
-      "isUniDirectional": false,
+      "isUniDirectional": true,
       "name": "4|5",
       "to": "5"
     },
     {
-      "from": "6",
-      "isUniDirectional": false,
-      "name": "6|7",
-      "to": "7"
-    },
-    {
-      "from": "7",
-      "isUniDirectional": false,
-      "name": "7|8",
-      "to": "8"
-    },
-    {
-      "from": "8",
+      "from": "5",
       "isUniDirectional": true,
-      "name": "8|9",
-      "to": "9"
-    },
-    {
-      "from": "9",
-      "isUniDirectional": true,
-      "name": "9|10",
-      "to": "10"
-    },
-    {
-      "from": "10",
-      "isUniDirectional": true,
-      "name": "10|11",
-      "to": "11"
-    },
-    {
-      "from": "11",
-      "isUniDirectional": true,
-      "name": "11|6",
+      "name": "5|6",
       "to": "6"
     },
     {
-      "from": "12",
+      "from": "6",
       "isUniDirectional": true,
-      "name": "12|14",
-      "to": "14"
-    },
-    {
-      "from": "14",
-      "isUniDirectional": true,
-      "name": "14|15",
-      "to": "15"
-    },
-    {
-      "from": "15",
-      "isUniDirectional": true,
-      "name": "15|13",
-      "to": "13"
+      "name": "6|2",
+      "to": "2"
     }
   ]
 }

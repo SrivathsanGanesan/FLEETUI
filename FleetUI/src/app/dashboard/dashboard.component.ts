@@ -664,9 +664,9 @@ export class DashboardComponent implements AfterViewInit {
       }
       // Check if the mouse is within the bounds of the map image
       const isInsideMap = imgX >= 0 && imgX <= this.mapImageWidth / this.zoomLevel && imgY >= 0 && imgY <= this.mapImageHeight / this.zoomLevel;
-      if (isInsideMap) {
+      if (isInsideMap ) {
         // Set tooltip content and position
-        tooltip.textContent = `X = ${Math.round(imgX) * this.ratio}, Y = ${ Math.round(imgY) * this.ratio }`;
+        tooltip.textContent = `X = ${(Math.round(imgX) * this.ratio ) + this.origin.x}, Y = ${ (Math.round(imgY) * this.ratio) + this.origin.y }`;
         tooltip.style.display = 'block';
         tooltip.style.left = `${event.clientX}`;
         tooltip.style.top = `${event.clientY}`; // Adjust 10px below the cursor
