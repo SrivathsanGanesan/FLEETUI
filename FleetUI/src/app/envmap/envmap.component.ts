@@ -1716,6 +1716,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   showNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = true;
+    
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
   private drawNode(node: Node, color: string, selected: boolean): void {
