@@ -69,13 +69,34 @@ canvas {
   background-color: #fffcfc6c;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  border: 1px solid #ff7373;
-  justify-content: center;
+  border-radius: 10px;
+  /* border: 1px solid #ff7373; */
+  /* justify-content: center; */
   cursor: pointer;
   padding: 0;
   box-shadow: 0 3px 6px #ff7373;
   z-index: 11;
-  width: 20px; /* Show the icon width initially */
+  width: 50px; /* Show the icon width initially */
+  overflow: visible; /* Hide the other options */
+  transition: width 0.5s ease-in-out;
+}
+.options{
+  position: absolute;
+  bottom:10%;
+  left: 1%;
+  display: flex;
+  /* background-color: #fffcfc6c; */
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  /* border: 1px solid #ff7373; */
+  /* justify-content: center; */
+  cursor: pointer;
+  padding: 0;
+  /* box-shadow: 0 3px 6px #ff7373; */
+  z-index: 11;
+  width: 400px;
+  margin-left: 40px;
+  /* width: 20px; Show the icon width initially */
   overflow: visible; /* Hide the other options */
   transition: width 0.5s ease-in-out;
 }
@@ -84,8 +105,9 @@ canvas {
   background-color: #ff7373;
   width: 50px;
   height: 50px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-radius: 10px;
+  /* border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,6 +124,7 @@ canvas {
 }
 
 .CanvasOptions:hover .tooltip {
+  
   opacity: 1;
   transform: translateX(0);
 }

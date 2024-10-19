@@ -60,9 +60,10 @@
 
     <!-- Canvas Options (Zoom, Pan, Capture, etc.) -->
     <div class="CanvasOptions">
-      <span class="empty">        
+      <span class="empty">     
+        <img src="../../assets/CanvasOptions/setting.svg" >   
       </span>
-
+      <div class="options">
       <!-- Zoom In -->
       <div class="tooltip">
         <img src="../../assets/CanvasOptions/Zoom.svg" class="Zoom" (click)="zoomIn()" />
@@ -108,6 +109,7 @@
         <img src="../../assets/CanvasOptions/Model.svg" class="ModelCanvas" (click)="toggleModelCanvas()" />
         <span class="tooltiptext">Map Option</span>
       </div>
+    </div>
       <!-- <div class="tooltip">
         <img src="../../assets/CanvasOptions/live.svg" class="ModelCanvas" (click)="fetchlive()" />
         <span class="tooltiptext">Go Live</span>
