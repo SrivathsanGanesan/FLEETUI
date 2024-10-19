@@ -69,12 +69,13 @@ canvas {
   background-color: #fffcfc6c;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
+  border: 1px solid #ff7373;
   justify-content: center;
   cursor: pointer;
   padding: 0;
   box-shadow: 0 3px 6px #ff7373;
   z-index: 11;
-  width: 50px; /* Show the icon width initially */
+  width: 20px; /* Show the icon width initially */
   overflow: visible; /* Hide the other options */
   transition: width 0.5s ease-in-out;
 }

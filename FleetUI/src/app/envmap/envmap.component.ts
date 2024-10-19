@@ -2720,6 +2720,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       ctx.arc(x, y, 4, 0, 2 * Math.PI);
       ctx.fillStyle = isFirstPoint ? 'blue' : 'red'; // Violet for the first point, red for others
       ctx.fill();
+      
     } else {
       console.error('Failed to get canvas context');
     }
@@ -2739,25 +2740,32 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx && this.plottedPoints.length >= 3 && this.zoneType) {
-      ctx.beginPath();
-      ctx.moveTo(this.plottedPoints[0].x, this.plottedPoints[0].y);
+        ctx.beginPath();
+        ctx.moveTo(this.plottedPoints[0].x, this.plottedPoints[0].y);
 
-      // Draw lines between points to form a polygon
-      for (let i = 1; i < this.plottedPoints.length; i++) {
-        ctx.lineTo(this.plottedPoints[i].x, this.plottedPoints[i].y);
-      }
+        // Draw lines between points to form a polygon
+        for (let i = 1; i < this.plottedPoints.length; i++) {
+            ctx.lineTo(this.plottedPoints[i].x, this.plottedPoints[i].y);
+        }
 
-      ctx.closePath();
+        ctx.closePath();
 
-      // Set the fill color based on the selected zone type
-      const zoneColor = this.zoneColors[this.zoneType];
-      ctx.fillStyle = zoneColor;
-      ctx.fill();
-      this.plottedPoints = [];
+        // Set the fill color based on the selected zone type
+        const zoneColor = this.zoneColors[this.zoneType];
+        ctx.fillStyle = zoneColor;
+        ctx.fill();
+
+        // Log a message or display a message in the UI
+        console.log(`${this.zoneType} zone has been drawn.`);
+
+        // Optionally, if you want to reset or do further actions after drawing
+        this.plottedPoints = [];
+        
     } else {
-      console.error('Insufficient points or zone type not selected');
+        console.error('Insufficient points or zone type not selected');
     }
-  }
+}
+
   private isZoneOverlapping(newZonePoints: any[]): boolean {
     for (const existingZone of this.zones) {
       if (
@@ -3116,6 +3124,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // Handle other types of clicks like zone plotting, asset dragging, etc.
 
     // Check if the first node is clicked
+    if(this.isMultiNodePlotting){
     if (this.firstNode && this.isNodeClicked(this.firstNode, x, y)) {
       // Remove the first node and reset plotting state
       const index = this.nodes.indexOf(this.firstNode);
@@ -3123,16 +3132,16 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         this.nodes.splice(index, 1); // Remove the first node from the nodes array
       }
       this.firstNode = null; // Reset first node
+      this.isPlottingEnabled = false; // Re-enable plotting
+      this.isMultiNodePlotting = false; // Keep multi-node plotting enabled
       this.redrawCanvas();
-      this.isPlottingEnabled = true; // Re-enable plotting
-      this.isMultiNodePlotting = true; // Keep multi-node plotting enabled
       this.messageService.add({
         severity: 'info',
         summary: 'First Node Removed',
         detail: 'The first node has been removed. You can plot again.'
       });
       return; // Exit the method to prevent further processing
-    }
+    }}
       let nodeClicked = false;
       for (const node of this.nodes) {
 
