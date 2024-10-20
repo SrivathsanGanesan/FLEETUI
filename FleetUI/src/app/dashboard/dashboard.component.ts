@@ -131,6 +131,18 @@ export class DashboardComponent implements AfterViewInit {
       this.isMapLoaded = false;
       return;
     }
+    const img = new Image();
+    img.src = `http://${this.selectedMap.imgUrl}`;
+    
+    img.onload = () => {
+      // Initialize zoom level based on image dimensions
+      if (img.width > 1355 || img.height > 664) {
+        this.zoomLevel = 0.8;
+      } else {
+        this.zoomLevel = 1.0;
+      }
+
+    };
     await this.getMapDetails();
     this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
     this.initSimRoboPos();

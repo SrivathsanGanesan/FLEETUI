@@ -54,10 +54,7 @@
   padding: 10px;
   display: flex;
 }
-.Nodevalues{
 
-  margin: 10px;
-}
 .popup-overlay1 {
   position: fixed;
   top: 0;
@@ -202,6 +199,10 @@ h2 {
 #X,#Y,#θ{
   width: 50px;
   margin-top: 10px;
+}
+#X_Co,#Y_Co,#Orientation{
+  width: 100px;
+  text-align: center;
 }
 .image-popup-overlay {
   position: fixed;
