@@ -81,18 +81,22 @@ const saveNodeGraph = async (mapData) => {
 
 // roll (X), pitch (Y), yaw (Z)
 const ToQuaternion_ = (roll, pitch, yaw) => {
+  yaw = (yaw * 3.14) / 180;
+  pitch = (pitch * 3.14) / 180;
+  roll = (roll * 3.14) / 180;
+
   const cy = Math.cos(yaw * 0.5);
   const sy = Math.sin(yaw * 0.5);
-  const cp = Math.cos(pitch * 0.5);
-  const sp = Math.sin(pitch * 0.5);
   const cr = Math.cos(roll * 0.5);
   const sr = Math.sin(roll * 0.5);
+  const cp = Math.cos(pitch * 0.5);
+  const sp = Math.sin(pitch * 0.5);
 
   const q = {
-    x: sr * cp * cy - cr * sp * sy,
-    y: cr * sp * cy + sr * cp * sy,
-    z: cr * cp * sy - sr * sp * cy,
-    w: cr * cp * cy + sr * sp * sy,
+    x: cy * sr * cp - sy * cr * sp,
+    y: cy * cr * sp + sy * sr * cp,
+    z: sy * cr * cp - cy * sr * sp,
+    w: cy * cr * cp + sy * sr * sp,
   };
 
   return q;
