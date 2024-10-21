@@ -815,12 +815,13 @@
       placeholder="Number of nodes"
       min="0"
       (ngModelChange)="onInputChanged()"
+      class="InNode"
     />
   </div>
   <div class="node-separator"></div>
   <div>
     <p>Select Direction</p>
-    <select class="direction" [(ngModel)]="direction">
+    <select class="direction" [(ngModel)]="direction" >
       <option value="uni">Uni-Direction</option>
       <option value="bi">Bi-Direction</option>
     </select>

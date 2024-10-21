@@ -118,7 +118,7 @@
 .popup-content1 select{
   text-align: center;
   border-radius: 5px;
-  font-size: 15px;
+  font-size: 12px;
   padding: 10px;
   /* border-bottom: 1px solid black; */
 }
@@ -355,7 +355,7 @@ canvas {
   z-index: 1;
 }
 .direction{
-  height: 40px;
+  height: 35px;
   color: #000000;
 }
 .close-btn {
