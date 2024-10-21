@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-sidenavbar',
@@ -146,16 +147,16 @@ export class SidenavbarComponent implements OnInit {
     this.isSidebarEnlarged = isEnlarged;
   }
   logout() {
-    fetch('http://localhost:3000/auth/logout', {
+    fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`, {
       credentials: 'include',
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.isCookieDeleted) {
-          this.authService.logout();
           this.projectService.clearProjectData();
           this.projectService.clearMapData();
           this.projectService.clearIsMapSet();
+          this.authService.logout();
           this.router.navigate(['/']);
         }
       })
