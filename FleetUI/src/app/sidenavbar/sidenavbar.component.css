@@ -43,6 +43,28 @@
 
   /* notification */
 
+  .fleet-status {
+    display: inline-block; /* Make it a block-level element */
+    padding: 10px 15px; /* Add padding for a button-like appearance */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 1rem; /* Font size */
+    font-weight: bold; /* Bold text for visibility */
+    margin-right: 1rem; /* Space between status and other elements */
+    cursor: default; /* Change cursor to indicate non-clickable */
+    text-align: center; /* Center align the text */
+  }
+  
+  .fleet-up {
+    background-color: rgba(0, 255, 0, 0.2); /* Light green background for Fleet Up */
+    color: green; /* Green text color */
+  }
+  
+  .fleet-down {
+    background-color: rgba(169, 169, 169, 0.2); /* Light gray background for Fleet Down */
+    color: gray; /* Gray text color */
+  }
+  
+
   .notification-popup {
     position: absolute;
     top: 52px;

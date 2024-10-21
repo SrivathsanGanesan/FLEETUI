@@ -12,6 +12,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class SidenavbarComponent implements OnInit {
   username: string | null = null;
   userrole: string | null = null;
+  
   showNotificationPopup = false; // Property to track popup visibility
   showProfilePopup = false;
   isSidebarEnlarged = false; // Property to track sidebar enlargement
@@ -20,6 +21,8 @@ export class SidenavbarComponent implements OnInit {
   isNotificationVisible = false;
 
   languageArrowState = false;
+
+  isFleetUp: boolean = true; // Set this based on your application's logic
 
 
   private autoCloseTimeout: any;
