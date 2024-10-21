@@ -1075,7 +1075,7 @@ export class DashboardComponent implements AfterViewInit {
   async plotAllRobots(robotsData: any) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    
+  
     const mapImage = new Image();
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
@@ -1084,25 +1084,13 @@ export class DashboardComponent implements AfterViewInit {
     if (ctx) {
       // Clear the whole canvas before redrawing the map and all robots
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+  
       // Calculate the scaled image dimensions and center the image on the canvas
       const imgWidth = mapImage.width * this.zoomLevel;
       const imgHeight = mapImage.height * this.zoomLevel;
       const centerX = (canvas.width - imgWidth) / 2;
       const centerY = (canvas.height - imgHeight) / 2;
-      
-      if (this.showModelCanvas) {
-        // Save the current canvas context state
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.scale(this.zoomLevel, this.zoomLevel);
   
-        // Draw nodes and edges directly onto the map
-        this.drawNodesAndEdges(ctx, mapImage);
-  
-        // Restore the context to the previous state
-        ctx.restore();
-      }
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.scale(this.zoomLevel, this.zoomLevel);
@@ -1120,6 +1108,18 @@ export class DashboardComponent implements AfterViewInit {
       });
   
       // If showModelCanvas is true, plot nodes, edges, and assets on the map image
+      if (this.showModelCanvas) {
+        // Save the current canvas context state
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.scale(this.zoomLevel, this.zoomLevel);
+  
+        // Draw nodes and edges directly onto the map
+        this.drawNodesAndEdges(ctx, mapImage);
+  
+        // Restore the context to the previous state
+        ctx.restore();
+      }
     }
   }
   

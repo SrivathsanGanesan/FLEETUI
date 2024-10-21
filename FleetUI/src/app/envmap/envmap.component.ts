@@ -785,12 +785,12 @@ export class EnvmapComponent implements AfterViewInit {
     endPointOrientation: false,
     undockingDistance: 0,
   };
-  onActionChange(): void {
-
+  onActionChange(selectedValue: string): void {
+    this.selectedAction = selectedValue;
     this.resetParameters();
     this.showActionForm();
-    this.validateForm();
   }
+  
   resetParameters(): void {
     this.moveParameters = {
       maxLinearVelocity: 0,
@@ -946,7 +946,19 @@ export class EnvmapComponent implements AfterViewInit {
   }
   closeNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = false;
+    this.isMoveActionFormVisible = false;
+    this.isDockActionFormVisible = false;
+    this.isUndockActionFormVisible = false;
+  
+    // Deselect and remove all added actions
+    this.actions = [];
+  
+    // Restore all actions back to the dropdown options
+    this.actionOptions = [...this.allActions]; // Reset the dropdown options to all available actions
+    this.selectedAction = null; // Clear the selected action
+    this.resetParameters(); // Reset the parameter values
   }
+  
   allActions = [
     { label: 'Move', value: 'Move' },
     { label: 'Dock', value: 'Dock' },
