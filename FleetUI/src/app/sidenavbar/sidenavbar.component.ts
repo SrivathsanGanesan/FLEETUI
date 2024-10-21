@@ -22,7 +22,13 @@ export class SidenavbarComponent implements OnInit {
 
   languageArrowState = false;
 
-  isFleetUp: boolean = true; // Set this based on your application's logic
+  isFleetUp: boolean = false; // Set to true or false based on your logic
+
+  // Method to toggle fleet status for demonstration purposes
+  toggleFleetStatus() {
+    this.isFleetUp = !this.isFleetUp; // Toggles between true and false
+  }
+
 
 
   private autoCloseTimeout: any;
