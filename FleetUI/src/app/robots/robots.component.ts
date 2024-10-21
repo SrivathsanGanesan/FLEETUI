@@ -206,32 +206,7 @@ export class RobotsComponent implements OnInit {
     this.menuOpenIndex = null;
   }
 
-  @ViewChild('cardContainer') cardContainer!: ElementRef; // Assure TypeScript this will be assigned.
-
-  ngAfterViewInit() {
-    const cardContainers = document.querySelectorAll('.card-container'); // Update to 'card-container' class
-    const nextBtns = document.querySelectorAll('.nxt-btn');
-    const prevBtns = document.querySelectorAll('.pre-btn');
-    console.log('clicked');
-
-    cardContainers.forEach((cardContainer, i) => {
-      const containerWidth = cardContainer.getBoundingClientRect().width;
-
-      // Add event listener for next button if it exists
-      if (nextBtns[i]) {
-        nextBtns[i].addEventListener('click', () => {
-          cardContainer.scrollLeft += containerWidth;
-        });
-      }
-
-      // Add event listener for previous button if it exists
-      if (prevBtns[i]) {
-        prevBtns[i].addEventListener('click', () => {
-          cardContainer.scrollLeft -= containerWidth;
-        });
-      }
-    });
-  }
+ 
 
   // addRobot() {
   //   if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.serialNumber && this.newRobot.status && this.newRobot.battery) {
