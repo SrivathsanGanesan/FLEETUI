@@ -246,7 +246,7 @@
               <tr *ngFor="let notification of filteredNotifications | slice:0:10">
                 <td>{{ notification.message }}</td>
                 <td>{{ notification.taskId }}</td>
-                <td class="notifications-align">{{ notification.timestamp }}</td>
+                <td>{{ notification.timestamp }}</td>
               </tr>
             </tbody>
           </table>

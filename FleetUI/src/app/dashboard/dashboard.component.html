@@ -22,15 +22,15 @@
     <!-- <canvas *ngIf="showModelCanvas" #modelCanvas id="modelCanvas" ></canvas> -->
     <div class="dropdown">
       <!-- Dropdown Button with Arrow -->
-      <button class="dropdown-button" (click)="toggleDropdown()">
+      <button class="dropdown-button" (click)="toggleDropdown()" [disabled]="!simMode.length">
         Enable Robot
         <svg [ngClass]="{'rotate': isDropdownOpen}" class="duration-300" width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M7.00007 12.3125L0 5.42194L2.33335 3.125L7.00007 7.71879L11.6667 3.125L14 5.42194L7.00007 12.3125Z" fill="white"/>
-          </svg>
+        </svg>
       </button>
-      
-      <!-- Dropdown content -->
-      <div class="dropdown-content" *ngIf="isDropdownOpen">
+    
+      <!-- Dropdown content, will only display if robots are present -->
+      <div class="dropdown-content" *ngIf="isDropdownOpen && simMode.length">
         <div *ngFor="let robot of simMode" class="dropdown-item">
           <span>{{ robot.amrId }}</span><span>{{ robot.roboName }}</span>
           <label class="switch">
@@ -44,6 +44,7 @@
         </div>
       </div>
     </div>
+      
 
     <!-- ON Button -->
     <div class="ONBtn" (click)="startStopOpt()">

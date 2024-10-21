@@ -30,18 +30,68 @@ export class RobotDashboardComponent implements OnInit {
   // ];
 
   notifications = [
-    { message: 'Low Battery - AMR-001', timestamp: '2024-08-16 14:32' },
-    { message: 'Task Assigned - AMR-002', timestamp: '2024-08-16 14:32' },
-    { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
-    { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
-    { message: 'Low Battery - AMR-001', timestamp: '2024-08-16 14:32' },
-    { message: 'Task Assigned - AMR-002', timestamp: '2024-08-16 14:32' },
-    { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
-    { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
-    { message: 'Low Battery - AMR-001', timestamp: '2024-08-16 14:32' },
-    { message: 'Task Assigned - AMR-002', timestamp: '2024-08-16 14:32' },
-    { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
-    { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
+    {
+      message: 'Low Battery',
+      taskId: 'AMR-001',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Task Assigned ',
+      taskId: ' AMR-002',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Obstacle Detected ',
+      taskId: ' AMR-003',
+      timestamp: '2024-08-16',
+    },
+    {
+      message: 'Low Battery',
+      taskId: 'AMR-001',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Task Assigned ',
+      taskId: ' AMR-002',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Obstacle Detected ',
+      taskId: ' AMR-003',
+      timestamp: '2024-08-16',
+    },
+    {
+      message: 'Low Battery',
+      taskId: 'AMR-001',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Task Assigned ',
+      taskId: ' AMR-002',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Obstacle Detected ',
+      taskId: ' AMR-003',
+      timestamp: '2024-08-16',
+    },
+    {
+      message: 'Low Battery',
+      taskId: 'AMR-001',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Task Assigned ',
+      taskId: ' AMR-002',
+      timestamp: '2024-08-16 14:32',
+    },
+    {
+      message: 'Obstacle Detected ',
+      taskId: ' AMR-003',
+      timestamp: '2024-08-16',
+    },
+    
+    // { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   ];
 
   filteredRobotActivities = this.robotActivities;
