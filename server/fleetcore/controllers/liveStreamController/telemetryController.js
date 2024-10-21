@@ -92,7 +92,7 @@ const fetchFleetInfo = async ({ endpoint, bodyData, method = "GET" }) => {
 };
 
 // initMqttConnection();
-initRabbitMQConnection();
+// initRabbitMQConnection();
 
 const initializeRobo = async (req, res) => {
   const { mapId, initializeRobo } = req.body;
@@ -307,6 +307,16 @@ const getRoboDetails = async (req, res) => {
   }
 };
 
+const getFleetStatus = async (req, res) => {
+  try {
+  } catch (error) {
+    console.error("Error in getting tasks status :", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   initializeRobo,
   getRoboStateCount,
@@ -315,6 +325,7 @@ module.exports = {
   showSpline,
   enableRobo,
   getLiveRobos,
+  getFleetStatus,
   // rabbitMqClient, // might to uncomment..
   // rabbitMQChannel,
 };

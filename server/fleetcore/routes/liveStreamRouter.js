@@ -7,6 +7,7 @@ const {
   showSpline,
   enableRobo,
   getLiveRobos,
+  getFleetStatus,
 } = require("../controllers/liveStreamController/telemetryController");
 
 const liveStreamRouter = express.Router();
@@ -18,5 +19,6 @@ liveStreamRouter.get("/get-live-robos/:mapId", getLiveRobos);
 liveStreamRouter.get("/live-AMR-pos/:mapId", getRoboPos);
 liveStreamRouter.post("/get-robos-state/:mapId", getRoboStateCount);
 liveStreamRouter.post("/show-spline", showSpline);
+liveStreamRouter.get("/get-fleet-status", getFleetStatus);
 
 module.exports = liveStreamRouter;

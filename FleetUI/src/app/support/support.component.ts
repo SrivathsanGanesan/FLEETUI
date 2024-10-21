@@ -63,8 +63,15 @@ export class SupportComponent {
     },
   ];
 
+  selectedProject: any | null = null;
   leftQuestions = this.questions.slice(0, 4);
   rightQuestions = this.questions.slice(4);
+
+  constructor(private projectService: ProjectService) {}
+
+  ngOnInit() {
+    this.selectedProject = this.projectService.getSelectedProject();
+  }
 
   toggleAnswer(selectedQuestion: any) {
     // Close all questions first
@@ -91,7 +98,28 @@ export class SupportComponent {
     this.showPopup = false; // Hide the popup
   }
 
-  exportProject() {}
+  async exportProject() {
+    if (!this.selectedProject) return;
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project-file/download-project/${this.selectedProject.projectName}`,
+      {
+        credentials: 'include',
+      }
+    );
+    if (!response.ok) alert('try once again');
+    else {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `${this.selectedProject.projectName}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  }
 
   goToDocumentation(): void {
     window.open('/documentation', '_blank');
