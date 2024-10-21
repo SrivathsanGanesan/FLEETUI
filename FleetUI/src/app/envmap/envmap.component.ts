@@ -104,12 +104,11 @@ export class EnvmapComponent implements AfterViewInit {
   @Output() closePopup = new EventEmitter<void>();
   @Output() newEnvEvent = new EventEmitter<any>();
   @Output() save = new EventEmitter<void>();//emit the save function
-  @ViewChild('imageCanvas', { static: false })
-  imageCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('overlayCanvas', { static: false })
-  overlayCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('imagePopupCanvas', { static: false })
-  imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imageCanvas', { static: false }) imageCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('pixTooltip') pixTooltip!: ElementRef;
+  @ViewChild('overlayCanvas', { static: false }) overlayCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imagePopupCanvas', { static: false }) imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('OriginPopupCanvas', { static: false }) OriginPopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
   @ViewChild('xInput') xInput!: ElementRef<HTMLInputElement>;
   @ViewChild('yInput') yInput!: ElementRef<HTMLInputElement>;
@@ -178,8 +177,11 @@ export class EnvmapComponent implements AfterViewInit {
   robotImages: { [key: string]: HTMLImageElement } = {};
   isRobotPopupVisible: boolean = false;
   tableData: { mapName: string; siteName: string }[] = []; // Holds table data
-  private points: { x: number; y: number }[] = [];
+  points: { x: number; y: number }[] = [];
+  Originpoints: { x: number; y: number }[] = [];
+
   showImagePopup: boolean = false;
+  showOriginPopup: boolean = false;
   showDistanceDialog: boolean = false;
   distanceBetweenPoints: number | null = null;
   nodeCounter: number = 1; // Counter to assign node numbers
@@ -232,7 +234,7 @@ export class EnvmapComponent implements AfterViewInit {
   draggingAsset: boolean = false;
   draggingRobo: boolean = false;
   private draggingZonePoint: boolean = false;
-  private selectedZone: Zone | null = null;
+  private selectedZone: Zone | null = null;   
   private selectedZonePoint: { x: number; y: number } | null = null;
   isZonePlottingEnabled = false;
   plottedPoints: { id: number; x: number; y: number }[] = [];
@@ -737,7 +739,11 @@ export class EnvmapComponent implements AfterViewInit {
     // Hide confirmation dialog without deleting
     // this.isDeleteModeEnabled = false;
   }
+
   closeImagePopup(): void {
+    if(this.showOriginPopup=true){
+      this.showOriginPopup=false;
+    }
     this.showImagePopup = false;
       this.points = [];
       this.showDistanceDialog = false;
@@ -991,6 +997,175 @@ export class EnvmapComponent implements AfterViewInit {
   saveToCookie(imageBase64: string) {
     document.cookie = `image=${imageBase64}; path=/;`;
   }
+  private startPoint: { x: number; y: number } | null = null; // Store the initial point
+
+  openOriginPopup(): void {
+    if(!this.ratio){
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Warning',
+        detail: 'Please Enter Resolution before Locating Origin',
+      });
+      return
+    }
+    if (this.imageSrc) {
+      this.showOriginPopup = true;
+      this.cdRef.detectChanges();
+  
+      const canvas = this.OriginPopupCanvas?.nativeElement;
+      if (!canvas) {
+        console.error('Canvas element not found');
+        return;
+      }
+  
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = this.imageSrc;
+  
+      img.onload = () => {
+        this.Originpoints = []; // Clear previous points
+  
+        // Clear the canvas and draw the image
+        ctx!.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
+  
+        // Add event listeners for click, mousemove, and mouseup
+        canvas.addEventListener('mousedown', (event) => this.onCanvasMouseDown(event));
+        canvas.addEventListener('mousemove', (event) => this.onCanvasMouseMove(event));
+        canvas.addEventListener('mouseup', (event) => this.onCanvasMouseUp(event));
+      };
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Warning',
+        detail: 'No image uploaded!',
+      });
+    }
+  }
+  
+  private onCanvasMouseDown(event: MouseEvent): void {
+    const canvas = this.OriginPopupCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+  
+    // Calculate the click coordinates relative to the canvas
+    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+    const transy =canvas.height -y;
+    // Store the initial point
+    this.startPoint = { x, y };
+    this.isDrawing = true;
+  
+    // Draw the initial point
+    const ctx = canvas.getContext('2d');
+    ctx!.beginPath();
+    ctx!.arc(x, y, 5, 0, 2 * Math.PI); // Circle of radius 5
+    ctx!.fillStyle = 'red';
+    ctx!.fill();
+  }
+  
+  private onCanvasMouseMove(event: MouseEvent): void {
+    if (!this.isDrawing || !this.startPoint) return;
+  
+    const canvas = this.OriginPopupCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+  
+    // Calculate current mouse coordinates relative to the canvas
+    const currentX = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const currentY = (event.clientY - rect.top) * (canvas.height / rect.height);
+  
+    // Redraw the image and point to clear previous lines
+    const img = new Image();
+    img.src = this.imageSrc!;
+  
+    img.onload = () => {
+      ctx!.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+      ctx!.drawImage(img, 0, 0, canvas.width, canvas.height); // Redraw image
+  
+      // Redraw the initial point
+      ctx!.beginPath();
+      ctx!.arc(this.startPoint!.x, this.startPoint!.y, 6, 0, 2 * Math.PI);
+      ctx!.fillStyle = 'red';
+      ctx!.fill();
+  
+      // Draw the line with an arrow
+      this.drawArrow(ctx!, this.startPoint!.x, this.startPoint!.y, currentX, currentY);
+    };
+  }
+  
+  private onCanvasMouseUp(event: MouseEvent): void {
+    if (!this.isDrawing || !this.startPoint) return;
+
+    const canvas = this.OriginPopupCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+
+    // Get the final mouse position
+    const finalX = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const finalY = (event.clientY - rect.top) * (canvas.height / rect.height);
+    const toX =(finalX * this.ratio!)
+    const toY =(canvas.height-finalY)*this.ratio!||1
+    // Calculate the angle relative to the canvas X-axis
+    const dx = this.startPoint.x - finalX; // X difference
+    const dy = this.startPoint.y - finalY; // Y difference (inverted)
+    const transY = canvas.height - dy;
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI); // Angle in degrees
+
+    console.log("hey", 'X:', finalX, 'Y:', transY, 'W (Angle):', angle);
+ 
+    // Update the origin object with the calculated values
+    this.origin = { x: toX, y: toY, w: angle };
+
+    // Reset the drawing state
+    this.isDrawing = false;
+    this.startPoint = null;
+    this.showOriginPopup = false;
+}
+  
+  // Helper function to draw a line with an arrow
+  private drawArrow(ctx: CanvasRenderingContext2D, fromX: number, fromY: number, toX: number, toY: number): void {
+    const headLength = 10; // Length of the arrowhead
+    const maxLength = 50; // Maximum length of the arrow
+    const dx = toX - fromX;
+    const dy = toY - fromY;
+    const distance = Math.sqrt(dx * dx + dy * dy); // Calculate the distance from start to end
+
+    // Normalize dx and dy to get the direction
+    let directionX = dx / distance;
+    let directionY = dy / distance;
+
+    // Limit the distance if it exceeds maxLength
+    if (distance > maxLength) {
+        toX = fromX + directionX * maxLength;
+        toY = fromY + directionY * maxLength;
+    }
+
+    // Draw the line
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Draw the arrowhead
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(
+        toX - headLength * Math.cos(Math.atan2(dy, dx) - Math.PI / 6),
+        toY - headLength * Math.sin(Math.atan2(dy, dx) - Math.PI / 6)
+    );
+    ctx.lineTo(
+        toX - headLength * Math.cos(Math.atan2(dy, dx) + Math.PI / 6),
+        toY - headLength * Math.sin(Math.atan2(dy, dx) + Math.PI / 6)
+    );
+    ctx.lineTo(toX, toY);
+    ctx.closePath();
+    ctx.fillStyle = 'red';
+    ctx.fill();
+  }
+  
   openImagePopup(): void {
     if (this.imageSrc) {
       this.showImagePopup = true;
@@ -1389,6 +1564,7 @@ export class EnvmapComponent implements AfterViewInit {
     }
     console.clear();
   }
+
   @HostListener('click', ['$event'])
   onImagePopupCanvasClick(event: MouseEvent): void {
     if (!this.showImagePopup || !this.imagePopupCanvas) return;
@@ -1718,6 +1894,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
   showNodeDetailsPopup(): void {
     this.isNodeDetailsPopupVisible = true;
+    
     this.cdRef.detectChanges(); // Ensure the popup updates
   }
   private drawNode(node: Node, color: string, selected: boolean): void {
@@ -1980,12 +2157,12 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   private isPositionOccupied(x: number, y: number, type: string): boolean {
     let nodeOccupied = false;
     let assetOccupied = false;
-  
+
     // Single node or asset placement logic
-    if (type !== 'node') {
-      nodeOccupied = this.nodes.some((node) => {
-        const distance = Math.sqrt(Math.pow(node.nodePosition.x - x, 2) + Math.pow(node.nodePosition.y - y, 2));
-        return distance < 25; // Threshold for proximity
+    if (type !== 'node') {    
+      nodeOccupied = this.nodes.some((node) => {          
+          const distance = Math.sqrt(Math.pow(node.nodePosition.x - x, 2) + Math.pow(node.nodePosition.y - y, 2));
+          return distance < 25; // Threshold for proximity 
       });
     }
   
@@ -2342,13 +2519,11 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     }
   }
   // validationError: string = '';
-  saveNodeDetails(): void {
+  saveNodeDetails(x: string, y: string, orientation: string): void {
     this.validationError = '';
 
     // Example validation: Check if all required fields are filled
-    if (!this.nodeDetails.description) {
-      this.validationError = 'Node Description is required.';
-    } else if (this.selectedAction === 'Move') {
+    if (this.selectedAction === 'Move') {
       if (
         !this.moveParameters.maxLinearVelocity ||
         !this.moveParameters.maxAngularVelocity
@@ -2370,11 +2545,15 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         // this.validationError = 'All Undock Action fields are required.';
       }
     }
-
+    
+    if (!this.nodeDetails.description) {
+      this.validationError = 'Node Description is required.';
+    } 
     // If there is a validation error, don't save the details
     if (this.validationError) {
       return;
     }
+    
     // this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
     // const updatedNodeDetails = {
@@ -2382,17 +2561,35 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     //   intermediate_node: this.nodeDetails.intermediate_node,
     //   waiting_node: this.nodeDetails.waiting_node,
     // };
+    if (!x || !y || !orientation) {
+      this.validationError = 'All fields are required.';
+      return;
+    }
+  
+    // Convert values to numbers
+    const parsedX = parseFloat(x);
+    const parsedY = parseFloat(y);
+    const parsedOrientation = parseFloat(orientation);
+  
+    if (isNaN(parsedX) || isNaN(parsedY) || isNaN(parsedOrientation)) {
+      this.validationError = 'Invalid input: Please enter valid numbers.';
+      return;
+    }
+  
     if (this.selectedNode) {
       const nodeIndex = this.nodes.findIndex(
         (node) => node.nodeId === this.selectedNode!.nodeId
       );
-
-      if (nodeIndex !== -1) {
+      this.selectedNode.nodePosition.x = (parsedX-this.origin.x||0)/this.ratio!||1;
+      this.selectedNode.nodePosition.y = (parsedY-this.origin.y||0)/this.ratio!||1;
+      this.selectedNode.nodePosition.orientation = parsedOrientation;
+      console.log(this.selectedNode.nodePosition.x,this.selectedNode.nodePosition.y)
+      if (nodeIndex !== -1) {        
         this.nodes[nodeIndex].nodeDescription = this.nodeDetails.description;
-        this.nodes[nodeIndex].intermediate_node =
-          this.nodeDetails.intermediate_node;
+        this.nodes[nodeIndex].intermediate_node = this.nodeDetails.intermediate_node;
         this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
       }
+      this.redrawCanvas();
     }
 
     if(this.selectedNode){
@@ -2406,6 +2603,53 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     this.selectedAction = ''; // Reset the selected action
     this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
   }
+  get nodePositionX(): number {
+    if (this.selectedNode?.nodePosition && this.ratio) {
+      const calculatedX = this.selectedNode.nodePosition.x * this.ratio + this.origin.x;
+      return parseFloat(calculatedX.toFixed(3));
+    }
+    return this.selectedNode?.nodePosition?.x ?? 0;
+  }
+  
+  set nodePositionX(value: number) {
+    // console.log(this.ratio);
+    
+    if (this.selectedNode?.nodePosition && this.ratio) {
+      console.log(this.ratio,value,this.origin.x);
+      
+      // Reverse the transformation and update the node position
+      this.selectedNode.nodePosition.x = (value / this.ratio) - this.origin.x;
+      console.log("hey",this.selectedNode.nodePosition.x);
+      
+    }
+  
+  }
+  
+  get nodePositionY(): number {
+    if (this.selectedNode?.nodePosition && this.ratio) {
+      const calculatedY = this.selectedNode.nodePosition.y * this.ratio + this.origin.y;
+      return parseFloat(calculatedY.toFixed(3));
+    }
+    return this.selectedNode?.nodePosition?.y ?? 0;
+  }
+  
+  set nodePositionY(value: number) {
+    if (this.selectedNode?.nodePosition ) {
+      // Reverse the transformation and update the node position
+      this.selectedNode.nodePosition.y = (value / this.ratio!) - this.origin.y;
+    }
+  }
+  
+  get orientation(): number {
+    return parseFloat((this.selectedNode?.nodePosition?.orientation ?? 0).toFixed(3));
+  }
+  
+  set orientation(value: number) {
+    if (this.selectedNode?.nodePosition) {
+      this.selectedNode.nodePosition.orientation = value;
+    }
+  }
+  
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
     this.firstNode = null;
@@ -2663,12 +2907,15 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const dy = mouseY - transformedY; // Use transformed Y-coordinate
     return dx * dx + dy * dy <= radius * radius;
   }
+
   private plotAsset(x: number, y: number, assetType: string): void {
 
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
     const transformedY = canvas.height - y; // Flip the Y-axis
+    
+
     if (image && ctx) {
       const imageSize = 50; // Set image size
       ctx.drawImage(
@@ -2720,6 +2967,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       ctx.arc(x, y, 4, 0, 2 * Math.PI);
       ctx.fillStyle = isFirstPoint ? 'blue' : 'red'; // Violet for the first point, red for others
       ctx.fill();
+      
     } else {
       console.error('Failed to get canvas context');
     }
@@ -2735,6 +2983,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       return distance < threshold;
     });
   }
+  private lastDrawnZone: { type: string; points: any[] } | null = null;
   drawLayer(): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
@@ -2853,6 +3102,13 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         detail: 'Zone overlaps with an existing zone!.'
       });
       return; // Do not allow drawing
+    }
+    else{
+      this.messageService.add({
+        severity: 'info',
+        summary: 'information on zone',
+        detail: `${this.zoneType} is plotted`
+      });
     }
 
     if (this.selectedZone) {
@@ -3047,6 +3303,16 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       }
 
       if (this.selectedAssetType) {
+              // Prevent plotting if the position is occupied
+      if (this.isPositionOccupied(x, y, 'asset')) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Position Occupied',
+          detail: 'Cannot place an asset at an occupied position.'
+        });
+        return; // Exit early if position is occupied
+      }
+
         let asset: asset;
         asset = {
           id: this.assetCounter,
@@ -3057,6 +3323,25 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
           undockingDistance: 0,
           desc: '',
         };
+        let removeAsset = false;
+      for (const node of this.nodes) {
+        // Check if the asset is too close to the node
+        if (Math.abs(node.nodePosition.x - x) <= 10) {
+          console.log("hey"); // Log for debugging
+          removeAsset = true; // Mark the asset for removal
+          break; // Exit the loop early if a node is found too close
+        }
+      }
+
+      // If the asset is marked for removal, do not plot it and clear selected asset
+      if (removeAsset) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Asset Not Plotted',
+          detail: 'The asset cannot be plotted too close to a node, place it on any other place.'
+        });
+        return; // Exit early to prevent further processing
+      }
         this.selectedAsset = asset;
         this.assets.push(asset);
 
@@ -3171,12 +3456,26 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
+    const tooltip = this.pixTooltip.nativeElement;
+    if (!tooltip) {
+      console.warn('Tooltip element not found');
+      return;
+    }
     const canvas = this.overlayCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y; // yet to remove..
 
+    const tooltipX =(x * this.ratio!) + this.origin.x;
+    const tooltipY = (transformedY * this.ratio!) + this.origin.y;  
+  
+    tooltip.innerHTML = `X: ${tooltipX},    Y: ${tooltipY}`;
+    tooltip.style.display = 'block';
+    tooltip.style.left = `${event.clientX}`; // Position with padding
+    tooltip.style.top = `${event.clientY}`; // Adjust to position above cursor
+
+    // console.log(`X = ${(Math.round(x) * this.ratio! ) + this.origin.x}, Y = ${ (Math.round(transformedY) * this.ratio!) + this.origin.y }`);
     if (this.isDeleteModeEnabled && this.selectionStart) {
       this.selectionEnd = { x, y };
 
@@ -3258,6 +3557,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         this.robos[roboIndex].pos.y = y;
       }
     }
+    canvas.addEventListener('mouseleave', () => {
+      tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
+    });
   }
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {

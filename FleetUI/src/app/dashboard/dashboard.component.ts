@@ -131,6 +131,18 @@ export class DashboardComponent implements AfterViewInit {
       this.isMapLoaded = false;
       return;
     }
+    const img = new Image();
+    img.src = `http://${this.selectedMap.imgUrl}`;
+    
+    img.onload = () => {
+      // Initialize zoom level based on image dimensions
+      if (img.width > 1355 || img.height > 664) {
+        this.zoomLevel = 0.8;
+      } else {
+        this.zoomLevel = 1.0;
+      }
+
+    };
     await this.getMapDetails();
     this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
     this.initSimRoboPos();
@@ -213,7 +225,7 @@ export class DashboardComponent implements AfterViewInit {
       } else {
         // Otherwise, initialize the robot
         this.updatedrobo.isInitialized = true;
-        console.log(`Robot ${this.updatedrobo.amrId} initialized`);
+        console.log(`Robot ${this.updatedrobo.amrId} initialized`,this.updatedrobo);
       }
     }
 
@@ -232,8 +244,8 @@ export class DashboardComponent implements AfterViewInit {
     let ratio = this.ratio ? this.ratio : 1;
     let quaternion = { x: 0, y: 0, z: 0, w: 1 };
     const transformedY = mapImg.height - this.robotToInitialize.pos.y;
-    this.robotToInitialize.pos.x = this.robotToInitialize.pos.x * ratio;
-    this.robotToInitialize.pos.y = transformedY * ratio;
+    this.robotToInitialize.pos.x = (this.robotToInitialize.pos.x * ratio) + this.origin.x;
+    this.robotToInitialize.pos.y = (transformedY * ratio) + this.origin.y;
 
     // quaternion = this.positionToQuaternion(this.robotToInitialize.pos);
     let initializeRobo = {

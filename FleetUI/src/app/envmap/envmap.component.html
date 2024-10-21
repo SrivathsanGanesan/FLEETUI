@@ -4,6 +4,7 @@
     [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }"
     [ngStyle]="{ 'pointer-events': showImage ? 'none' : 'auto' }"
   >
+
     <h3 *ngIf="!showImage">Select and insert Map file</h3>
     <!-- Image for file upload -->
     <label for="fileInput" class="upload-image" *ngIf="!showImage">
@@ -66,6 +67,11 @@
         >
         <input pInputText type="number" id="X" placeholder="X" min="0" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
         <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.y" (keyup.enter)="open()" />
+        <input pInputText type="number" id="θ" placeholder="θ" min="0" #originθ [(ngModel)]="origin.w" (keyup.enter)="open()" />
+        <p id="or">or</p>
+            <button class="OpenandLocate" (click)="openOriginPopup()">
+              Locate
+            </button>
           <!-- <input
         type="number"
         id="θ"
@@ -75,6 +81,8 @@
         </div>
       </div>
     </div>
+    <div id="pix_tooltip" #pixTooltip style="position: absolute; top: 1px; left:30px;  color: black;  border: 0px solid #ccc; border-radius: 4px;  z-index: 2;font-size: 10px;"></div>
+
     <!-- <label for="height">Enter Height (m)</label>
       <input
         type="number"
@@ -137,6 +145,50 @@
         </div>
       </div>
     </div>
+    <div *ngIf="showOriginPopup && this.ratio" class="image-popup-overlay">
+      <div class="image-popup-content">
+        <canvas class="OriginPopupCanvas" #OriginPopupCanvas></canvas>
+        <button class="close-btn" (click)="closeImagePopup()"> <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+        >
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"
+          />
+        </svg></button>
+        <!-- <button
+          *ngIf="isDistanceConfirmed"
+          class="save-btn"
+          (click)="saveCanvas()"
+        >
+          Save
+        </button>
+        <button class="clear-btn" (click)="clearCanvas()" style="margin-right: 2.5rem;">Clear</button> -->
+
+        <!-- Distance Input Dialog -->
+        <!-- <div *ngIf="showDistanceDialog" class="distance-dialog-overlay">
+          <div class="distance-dialog">
+            <h3>Enter Distance Between Points</h3>
+            <input pInputText
+              type="number"
+                min="0"
+
+              [(ngModel)]="distanceBetweenPoints"
+              placeholder="Distance in meters"
+            />
+            <br>
+            <!-- Display error message conditionally -->
+            <!-- <div *ngIf="showError" class="distance-error-message">
+              Please enter distance between two points in meters.
+            </div>
+            <button (click)="confirmDistance()">Enter</button>
+          </div>
+        </div> --> 
+      </div>
+    </div>
     <div
       class="image-container"
       *ngIf="showImage"
@@ -178,6 +230,41 @@
       <div class="sampleCSS">
         <div class="node_details">
           <h2>Node Details</h2>
+          <div class="Nodevalues">
+          <div class="XY-coor">
+          <div >
+            <label for="X_Co">X</label>
+            <input 
+                pInputText 
+                id="X_Co"
+                #xInput
+                [value]="nodePositionX"
+                aria-describedby="X-Coordinate" 
+                />
+          </div>
+          <div >
+            <label for="Y_Co">Y</label>
+            <input 
+                pInputText 
+                id="Y_Co"
+                #yInput
+                [value]="nodePositionY"
+                aria-describedby="Y-Coordinate" 
+                />
+          </div>  
+          <div>
+            <label for="Orientation">Orientation</label>
+            <input 
+                pInputText
+                id="Orientation" 
+                [value]="orientation"
+                #orientationInput
+                aria-describedby="Orientation" 
+                />
+          </div>     
+        </div> 
+
+        </div>
 
           <div class="action-container">
             <div class="action" class="display:flex; text-wrap:nowrap; align-items:center ">
@@ -242,7 +329,7 @@
           </div>
           <div class="Node-btn">
             <button class="Delnode-btn" (click)="deleteSelectedNode()">Delete Node</button>
-            <button class="savenode-btn" (click)="saveNodeDetails()">Save</button>
+            <button class="savenode-btn" (click)="saveNodeDetails(xInput.value, yInput.value, orientationInput.value)">Save</button>
             <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
           </div>
         </div>
@@ -370,6 +457,7 @@
 
 
       </div>
+
       </div>
     </div>
       <!-- Transparent canvas/ for plotting points -->
