@@ -2575,6 +2575,21 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.validationError = 'Invalid input: Please enter valid numbers.';
       return;
     }
+    
+    const canvas = this.overlayCanvas.nativeElement;
+    // console.log("Hey",canvas.width,canvas.height);
+    // Validation: Check if coordinates are within map boundaries
+    const mapWidth = canvas.width*this.ratio!+this.origin.x;  // Assuming the map image width
+    const mapHeight = canvas.height*this.ratio!+this.origin.y; // Assuming the map image height
+    // console.log("map",mapWidth,mapHeight);
+    if (parsedX > mapWidth || parsedY > mapHeight || parsedX < 0 || parsedY < 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: `Coordinates out of bounds: X should be between 0 and ${mapWidth.toFixed(3)}, Y should be between 0 and ${mapHeight.toFixed(3)}.`
+      });
+      return;
+    }
   
     if (this.selectedNode) {
       const nodeIndex = this.nodes.findIndex(
