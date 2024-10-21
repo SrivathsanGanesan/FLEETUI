@@ -1097,7 +1097,7 @@ export class DashboardComponent implements AfterViewInit {
       });
 
       if (this.showModelCanvas) {
-        this.redrawOtherElements(ctx, mapImage); // Draw nodes and edges if enabled
+        this.drawNodesAndEdges(ctx, mapImage); // Draw nodes and edges if enabled
       }
     }
   }
