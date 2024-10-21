@@ -1772,11 +1772,15 @@ setPaginatedData1(){
       alert('You cannot enter more than 10 robots.');
       return;
     }
-    if(this.robotCount + this.totalRobots > 10){
-      alert('Total robots cannot exceed 10.');
+    else if(this.robotCount < 0){
+      alert('Enter valid number of robots.');
       return;
     }
-    this.totalRobots += this.robotCount;
+    /* if(this.robotCount + this.totalRobots > 10){
+      alert('Total robots cannot exceed 10.');
+      return;
+    } */
+    this.totalRobots = this.robotCount;
     let simRobo = [];
     for(let i = 0; i < this.totalRobots; i++){
       simRobo.push({

@@ -151,7 +151,7 @@
 /* Styling for the robot activity container */
 .operation-activity-container {
   flex: 0.5; /* Set to 50% of the width */
-  height: 25rem; /* Adjust height as needed */
+  height: 23rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -170,13 +170,13 @@
 /* Styling for the notifications container */
 .notifications-container {
   flex: 0.5; /* Set to 50% of the width */
-  height: 25rem; /* Adjust height as needed */
+  height: 23rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 0.5%; /* Minimal padding */
-  overflow: hidden; /* Ensure the table doesn't overflow */
-  display: flex;
+  table-layout: fixed;
+  overflow-y: hidden; /* Intended to allow vertical scrolling */
   flex-direction: column; /* Allow table to fill container */
 }
 
@@ -354,8 +354,8 @@
   margin-bottom: 1%;
   flex: 1 1 18vw; /* Allow the items to resize with a flexible basis */
   flex-grow: 1;
-    flex-basis: 0;
-    overflow: hidden;
+  flex-basis: 0;
+  overflow: hidden;
 }
 
 @media (min-width: 1200px) {

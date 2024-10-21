@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-sidenavbar',
@@ -12,6 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class SidenavbarComponent implements OnInit {
   username: string | null = null;
   userrole: string | null = null;
+  
   showNotificationPopup = false; // Property to track popup visibility
   showProfilePopup = false;
   isSidebarEnlarged = false; // Property to track sidebar enlargement
@@ -20,6 +22,8 @@ export class SidenavbarComponent implements OnInit {
   isNotificationVisible = false;
 
   languageArrowState = false;
+
+  isFleetUp: boolean = true; // Set this based on your application's logic
 
 
   private autoCloseTimeout: any;
@@ -143,16 +147,16 @@ export class SidenavbarComponent implements OnInit {
     this.isSidebarEnlarged = isEnlarged;
   }
   logout() {
-    fetch('http://localhost:3000/auth/logout', {
+    fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`, {
       credentials: 'include',
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.isCookieDeleted) {
-          this.authService.logout();
           this.projectService.clearProjectData();
           this.projectService.clearMapData();
           this.projectService.clearIsMapSet();
+          this.authService.logout();
           this.router.navigate(['/']);
         }
       })
