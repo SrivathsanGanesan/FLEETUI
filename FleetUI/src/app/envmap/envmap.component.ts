@@ -114,6 +114,7 @@ export class EnvmapComponent implements AfterViewInit {
   @ViewChild('yInput') yInput!: ElementRef<HTMLInputElement>;
   @ViewChild('nodeDetailsPopup', { static: false })
   nodeDetailsPopup!: ElementRef<HTMLDivElement>;
+  @ViewChild('tooltip') tooltip!: ElementRef<HTMLDivElement>;
 
 
   projData: any;
@@ -351,20 +352,20 @@ export class EnvmapComponent implements AfterViewInit {
       this.imageSrc = this.currEditMapDet.imgUrl;
       this.origin = {x : this.currEditMapDet.origin.x, y : this.currEditMapDet.origin.y, w : this.currEditMapDet.origin.w};
       this.nodes = this.currEditMapDet.nodes.map((node : Node)=>{
-        node.nodePosition.x = ((node.nodePosition.x - (this.origin.x || 0)) / (this.ratio || 1));
-        node.nodePosition.y = ((node.nodePosition.y - (this.origin.y || 0)) / (this.ratio || 1));
+        node.nodePosition.x = ((node.nodePosition.x + (this.origin.x || 0)) / (this.ratio || 1));
+        node.nodePosition.y = ((node.nodePosition.y + (this.origin.y || 0)) / (this.ratio || 1));
         return node;
       });
       this.edges = this.currEditMapDet.edges;
       this.assets = this.currEditMapDet.assets.map((asset : asset)=>{
-        asset.x = ((asset.x - (this.origin.x || 0)) / (this.ratio || 1));
-        asset.y = ((asset.y - (this.origin.y || 0)) / (this.ratio || 1));
+        asset.x = ((asset.x + (this.origin.x || 0)) / (this.ratio || 1));
+        asset.y = ((asset.y + (this.origin.y || 0)) / (this.ratio || 1));
         return asset;
       });
       this.zones = this.currEditMapDet.zones.map((zone : Zone)=>{
         zone.pos = zone.pos.map((pos)=>{
-          pos.x = ((pos.x - (this.origin.x || 0)) / (this.ratio || 1));
-          pos.y = ((pos.y - (this.origin.y || 0)) / (this.ratio || 1));
+          pos.x = ((pos.x + (this.origin.x || 0)) / (this.ratio || 1));
+          pos.y = ((pos.y + (this.origin.y || 0)) / (this.ratio || 1));
           return pos;
         })
         return zone;
@@ -1066,11 +1067,21 @@ export class EnvmapComponent implements AfterViewInit {
   }
   
   private onCanvasMouseMove(event: MouseEvent): void {
+    const canvas = this.OriginPopupCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    
+    // Calculate mouse coordinates relative to the canvas
+    const mouseX = Math.round((event.clientX - rect.left) * (canvas.width / rect.width));
+    const mouseY = Math.round((event.clientY - rect.top) * (canvas.height / rect.height));
+    const TransY = canvas.height -mouseY;
+    // Update tooltip content and position (if needed)
+    const tooltip = this.tooltip.nativeElement;
+    tooltip.textContent = `(x: ${mouseX*this.ratio!}, y: ${TransY*this.ratio!})`;
     if (!this.isDrawing || !this.startPoint) return;
   
-    const canvas = this.OriginPopupCanvas.nativeElement;
+    // const canvas = this.OriginPopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-    const rect = canvas.getBoundingClientRect();
+    // const rect = canvas.getBoundingClientRect();
   
     // Calculate current mouse coordinates relative to the canvas
     const currentX = (event.clientX - rect.left) * (canvas.width / rect.width);
@@ -1214,21 +1225,21 @@ export class EnvmapComponent implements AfterViewInit {
     this.nodes = this.nodes.map((node)=>{
       // node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)));
       // node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)));
-      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) + (this.origin.x || 0));
-      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) + (this.origin.y || 0));
+      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) - (this.origin.x || 0));
+      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) - (this.origin.y || 0));
       return node;
     })
 
     this.assets = this.assets.map((asset) => {
-      asset.x = ((asset.x * (this.ratio || 1)) + (this.origin.x || 0));
-      asset.y = ((asset.y * (this.ratio || 1)) + (this.origin.y || 0));
+      asset.x = ((asset.x * (this.ratio || 1)) - (this.origin.x || 0));
+      asset.y = ((asset.y * (this.ratio || 1)) - (this.origin.y || 0));
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = ((pos.x * (this.ratio || 1)) + (this.origin.x || 0));
-        pos.y = ((pos.y * (this.ratio || 1)) + (this.origin.y || 0));
+        pos.x = ((pos.x * (this.ratio || 1)) - (this.origin.x || 0));
+        pos.y = ((pos.y * (this.ratio || 1)) - (this.origin.y || 0));
         return pos;
       });
       return zone;
@@ -1346,29 +1357,29 @@ export class EnvmapComponent implements AfterViewInit {
     }
 
     this.nodes = this.nodes.map((node) => {
-      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) + (this.origin.x || 0));
-      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) + (this.origin.y || 0));
+      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) - (this.origin.x || 0));
+      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) - (this.origin.y || 0));
       return node;
     });
 
     this.assets = this.assets.map((asset) => {
-      asset.x = ((asset.x * (this.ratio || 1))+ (this.origin.x || 0));
-      asset.y = ((asset.y * (this.ratio || 1))+ (this.origin.y || 0));
+      asset.x = ((asset.x * (this.ratio || 1))- (this.origin.x || 0));
+      asset.y = ((asset.y * (this.ratio || 1))- (this.origin.y || 0));
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = ((pos.x * (this.ratio || 1))+ (this.origin.x || 0));
-        pos.y = ((pos.y * (this.ratio || 1))+ (this.origin.y || 0));
+        pos.x = ((pos.x * (this.ratio || 1))- (this.origin.x || 0));
+        pos.y = ((pos.y * (this.ratio || 1))- (this.origin.y || 0));
         return pos;
       });
       return zone;
     });
 
     this.robos = this.robos.map((robo) => {
-      robo.pos.x = ((robo.pos.x * (this.ratio || 1))+ (this.origin.x || 0));
-      robo.pos.y = ((robo.pos.y * (this.ratio || 1))+ (this.origin.y || 0));
+      robo.pos.x = ((robo.pos.x * (this.ratio || 1))- (this.origin.x || 0));
+      robo.pos.y = ((robo.pos.y * (this.ratio || 1))- (this.origin.y || 0));
       return robo;
     });
 
@@ -2579,10 +2590,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const canvas = this.overlayCanvas.nativeElement;
     // console.log("Hey",canvas.width,canvas.height);
     // Validation: Check if coordinates are within map boundaries
-    const mapWidth = canvas.width*this.ratio!+this.origin.x;  // Assuming the map image width
-    const mapHeight = canvas.height*this.ratio!+this.origin.y; // Assuming the map image height
+    const mapWidth = canvas.width*this.ratio!-this.origin.x;  // Assuming the map image width
+    const mapHeight = canvas.height*this.ratio!-this.origin.y; // Assuming the map image height
     // console.log("map",mapWidth,mapHeight);
-    if (parsedX > mapWidth || parsedY > mapHeight || parsedX < 0 || parsedY < 0) {
+    if (parsedX > mapWidth || parsedY > mapHeight) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
@@ -2590,13 +2601,12 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       });
       return;
     }
-  
     if (this.selectedNode) {
       const nodeIndex = this.nodes.findIndex(
         (node) => node.nodeId === this.selectedNode!.nodeId
       );
-      this.selectedNode.nodePosition.x = (parsedX-this.origin.x||0)/this.ratio!||1;
-      this.selectedNode.nodePosition.y = (parsedY-this.origin.y||0)/this.ratio!||1;
+      this.selectedNode.nodePosition.x = (parsedX+this.origin.x||0)/this.ratio!||1;
+      this.selectedNode.nodePosition.y = (parsedY+this.origin.y||0)/this.ratio!||1;
       this.selectedNode.nodePosition.orientation = parsedOrientation;
       console.log(this.selectedNode.nodePosition.x,this.selectedNode.nodePosition.y)
       if (nodeIndex !== -1) {        
@@ -2620,7 +2630,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
   get nodePositionX(): number {
     if (this.selectedNode?.nodePosition && this.ratio) {
-      const calculatedX = this.selectedNode.nodePosition.x * this.ratio + this.origin.x;
+      const calculatedX = this.selectedNode.nodePosition.x * this.ratio - this.origin.x;
       return parseFloat(calculatedX.toFixed(3));
     }
     return this.selectedNode?.nodePosition?.x ?? 0;
@@ -2642,7 +2652,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   
   get nodePositionY(): number {
     if (this.selectedNode?.nodePosition && this.ratio) {
-      const calculatedY = this.selectedNode.nodePosition.y * this.ratio + this.origin.y;
+      const calculatedY = this.selectedNode.nodePosition.y * this.ratio - this.origin.y;
       return parseFloat(calculatedY.toFixed(3));
     }
     return this.selectedNode?.nodePosition?.y ?? 0;
@@ -3482,8 +3492,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y; // yet to remove..
 
-    const tooltipX =(x * this.ratio!) + this.origin.x;
-    const tooltipY = (transformedY * this.ratio!) + this.origin.y;  
+    const tooltipX =(x * this.ratio!) - this.origin.x;
+    const tooltipY = (transformedY * this.ratio!) - this.origin.y;  
   
     tooltip.innerHTML = `X: ${tooltipX},    Y: ${tooltipY}`;
     tooltip.style.display = 'block';

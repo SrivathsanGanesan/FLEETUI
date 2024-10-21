@@ -65,9 +65,9 @@
           class="origin-coor"
           style="display: flex; align-items: center; gap: 10px"
         >
-        <input pInputText type="number" id="X" placeholder="X" min="0" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
-        <input pInputText type="number" id="Y" placeholder="Y" min="0" #originY [(ngModel)]="origin.y" (keyup.enter)="open()" />
-        <input pInputText type="number" id="θ" placeholder="θ" min="0" #originθ [(ngModel)]="origin.w" (keyup.enter)="open()" />
+        <input pInputText type="number" id="X" placeholder="X" #originX [(ngModel)]="origin.x" (keyup.enter)="open()" />
+        <input pInputText type="number" id="Y" placeholder="Y" #originY [(ngModel)]="origin.y" (keyup.enter)="open()" />
+        <input pInputText type="number" id="θ" placeholder="θ" #originθ [(ngModel)]="origin.w" (keyup.enter)="open()" />
         <p id="or">or</p>
             <button class="OpenandLocate" (click)="openOriginPopup()">
               Locate
@@ -147,6 +147,7 @@
     </div>
     <div *ngIf="showOriginPopup && this.ratio" class="image-popup-overlay">
       <div class="image-popup-content">
+        <div class="tooltip" #tooltip>(x: 0, y: 0)</div>
         <canvas class="OriginPopupCanvas" #OriginPopupCanvas></canvas>
         <button class="close-btn" (click)="closeImagePopup()"> <svg
           xmlns="http://www.w3.org/2000/svg"
