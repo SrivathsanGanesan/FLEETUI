@@ -225,7 +225,7 @@ export class DashboardComponent implements AfterViewInit {
       } else {
         // Otherwise, initialize the robot
         this.updatedrobo.isInitialized = true;
-        console.log(`Robot ${this.updatedrobo.amrId} initialized`);
+        console.log(`Robot ${this.updatedrobo.amrId} initialized`,this.updatedrobo);
       }
     }
 
