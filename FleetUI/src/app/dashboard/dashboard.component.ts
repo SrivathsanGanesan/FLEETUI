@@ -850,7 +850,10 @@ export class DashboardComponent implements AfterViewInit {
       }
       // Draw the map image
       ctx.drawImage(mapImage, 0, 0);
-
+      // If showModelCanvas is true, draw additional elements
+      if (this.showModelCanvas) {
+        this.redrawOtherElements(ctx, mapImage);
+      }
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
       const transformedY = canvas.height - y;
       // console.log(amrPos[i].x, amrPos[i].y);
@@ -1093,9 +1096,9 @@ export class DashboardComponent implements AfterViewInit {
         // const robotPosY = centerY + this.offsetY + ((canvas.height - posY) * this.zoomLevel);
       });
 
-      // if (this.showModelCanvas) {
-      //   this.drawNodesAndEdges(ctx, mapImage); // Draw nodes and edges if enabled
-      // }
+      if (this.showModelCanvas) {
+        this.drawNodesAndEdges(ctx, mapImage); // Draw nodes and edges if enabled
+      }
     }
   }
 
