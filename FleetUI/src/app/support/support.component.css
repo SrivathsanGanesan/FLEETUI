@@ -437,7 +437,7 @@ button {
   padding: 0;
   font-size: inherit; /* Inherits the font size from its parent */
   font-family: inherit; /* Inherits the font family from its parent */
-  margin-top: 15px; /* Reduced top margin */
+  margin-top: 15px; 
 }
 
 button.custom-learn-more {
@@ -638,9 +638,6 @@ input[type="checkbox"] {
   margin-right: 10px; /* Space between checkbox and label */
 }
 
-
-
-
 /* Submit Button */
 .submit-button {
   background-color: #ff3333; /* Button color */
@@ -659,21 +656,118 @@ input[type="checkbox"] {
   background-color: #ff0000; /* Darker shade on hover */
 }
 
-/* address */
 
-.address {
-  font-size: 2rem; /* Font size for address */
-  line-height: 1.5; /* Line height for better readability */
-  color: #555; /* Slightly darker color for address */
+
+/* General popup styling */
+.faq-popup {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
 }
 
-.address h6 {
-  margin: 0; /* Remove default margins */
-  font-weight: normal; /* Normal font weight */
+.faq-popup-content {
+  background-color: white;
+  border-radius: 10px; /* Reduced */
+  padding: 20px; /* Reduced */
+  width: 900px; /* Reduced */
+  width: 80%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Reduced shadow */
 }
 
-/* Optional: Adding a little spacing between address lines */
-.address h6:not(:first-child) {
-  margin-top: 5px; /* Space between each line except the first one */
+/* FAQ Header */
+.faq-header {
+  font-size: 30px; /* Reduced */
+  color: black;
+}
+.faq-header span {
+  color: red;
 }
 
+/* FAQ Item */
+.faq-item h4 {
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #f3f4f6;
+  padding: 15px; /* Reduced */
+  border-radius: 8px; /* Reduced */
+  transition: background-color 0.3s ease;
+}
+
+.faq-item h4:hover {
+  background-color: #e5e7eb;
+}
+
+/* Dropdown rotation */
+.dropdown-icon {
+  transition: transform 0.3s ease;
+}
+
+.dropdown-icon.rotate {
+  transform: rotate(180deg);
+}
+
+/* FAQ answer */
+.faq-answer {
+  padding-left: 10px; /* Reduced */
+  margin-top: 5px; /* Reduced */
+  color: gray;
+  font-size: 14px; /* Reduced */
+}
+/* Contact section */
+.contact-section {
+  margin-top: 30px; /* Reduced */
+  text-align: center;
+}
+
+/* Close button */
+.close-popup {
+  display: inline-block;
+  margin-top: 15px; /* Reduced */
+  color: red;
+  font-weight: bold;
+  font-size: 14px; /* Reduced */
+}
+
+
+
+.faq-header-container {
+  display: flex;
+  justify-content: space-between; /* Ensures header text and button are on opposite ends */
+  align-items: center; /* Vertically centers the close button */
+ 
+}
+
+/* Close Button Styles */
+.close-button {
+  background-color: white;
+  border: 2px solid red;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -40px;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+  .close-button svg {
+    width: 20px;
+    height: 20px;
+    fill: red; /* Color for the close icon */
+  }
+
+  .close-button:hover {
+    background-color: #da2127;
+  }
+
+  .close-button:hover svg {
+    fill: white; /* Change color on hover */
+  }
