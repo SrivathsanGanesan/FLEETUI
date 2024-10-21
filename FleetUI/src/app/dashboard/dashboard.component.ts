@@ -1097,42 +1097,66 @@ export class DashboardComponent implements AfterViewInit {
       });
 
       if (this.showModelCanvas) {
-        this.drawNodesAndEdges(ctx, mapImage); // Draw nodes and edges if enabled
+        // Create a temporary canvas to draw nodes and edges
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        if (tempCtx) {
+          tempCanvas.width = mapImage.width * this.zoomLevel;
+          tempCanvas.height = mapImage.height * this.zoomLevel;
+  
+          // Draw nodes and edges on the temporary canvas
+          this.drawNodesAndEdges(tempCtx, mapImage);
+  
+          // Draw the temporary canvas onto the main canvas
+          ctx.drawImage(tempCanvas, centerX, centerY);
+        }
       }
     }
   }
 
   drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
-    // Plot nodes
-    this.nodes.forEach((node) => {
-      const transformedY = img.height - node.nodePosition.y;
-      this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
-    });
+  // Plot nodes
+  this.nodes.forEach((node) => {
+    const transformedY = img.height - node.nodePosition.y;
+    this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+  });
 
-    // Plot edges
-    this.edges.forEach((edge) => {
-      const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
-      const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
+  // Plot edges
+  this.edges.forEach((edge) => {
+    const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
+    const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
 
-      if (startNode && endNode) {
-        const startPos = {
-          x: startNode.nodePosition.x,
-          y: startNode.nodePosition.y,
-        };
-        const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
-        const transformedStartY = img.height - startPos.y;
-        const transformedEndY = img.height - endPos.y;
+    if (startNode && endNode) {
+      const startPos = {
+        x: startNode.nodePosition.x,
+        y: startNode.nodePosition.y,
+      };
+      const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+      const transformedStartY = img.height - startPos.y;
+      const transformedEndY = img.height - endPos.y;
 
-        this.drawEdge(
-          ctx,
-          { x: startPos.x, y: transformedStartY },
-          { x: endPos.x, y: transformedEndY },
-          edge.direction,
-          edge.startNodeId,
-          edge.endNodeId
-        );
-      }
-    });
+      this.drawEdge(
+        ctx,
+        { x: startPos.x, y: transformedStartY },
+        { x: endPos.x, y: transformedEndY },
+        edge.direction,
+        edge.startNodeId,
+        edge.endNodeId
+      );
+    }
+  });
+
+  // Plot zones and assets if needed
+  this.zones.forEach((zone) => {
+    this.plottedPoints = zone.pos;
+    this.zoneType = zone.type;
+    this.drawLayer(ctx); // Assuming drawLayer plots zone points
+    this.plottedPoints = [];
+  });
+
+  this.assets.forEach((asset) =>
+    this.plotAsset(ctx, asset.x, asset.y, asset.type)
+  );
   }
 
   async showSpline() {
@@ -1433,27 +1457,45 @@ export class DashboardComponent implements AfterViewInit {
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
 
-  captureCanvas() {
-    const element = document.getElementById('container');
-    console.log('Container element:', element); // Log the container to check if it exists
-    if (element) {
-      domtoimage
-        .toPng(element)
-        .then((dataUrl: string) => {
+  async captureCanvas() {
+    try {
+      const displayMediaStream = await navigator.mediaDevices.getDisplayMedia({
+        video: {
+
+        },
+        audio: false
+      });
+  
+      const video = document.createElement('video');
+      video.srcObject = displayMediaStream;
+      video.play();
+  
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+  
+      video.addEventListener('loadedmetadata', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context!.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Creating a PNG image from the canvas
+        canvas.toBlob((blob) => {
           const link = document.createElement('a');
-          link.href = dataUrl;
-          link.download = 'page_capture.png';
+          link.href = URL.createObjectURL(blob!);
+          link.download = 'screen_capture.png';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-        })
-        .catch((error: Error) => {
-          console.error('Error capturing page:', error);
-        });
-    } else {
-      console.error('Container element not found.');
+        }, 'image/png');
+  
+        // Stop the stream after capture
+        displayMediaStream.getTracks().forEach(track => track.stop());
+      });
+    } catch (err) {
+      console.error('Error capturing screen:', err);
     }
   }
+  
 
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;
