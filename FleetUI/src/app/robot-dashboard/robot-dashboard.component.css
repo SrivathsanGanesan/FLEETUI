@@ -289,8 +289,6 @@ h2 {
     stroke-dashoffset: 0;
   }
 }
-
-/* Table stylings */
 .dashboard-container {
   display: flex;
   justify-content: space-between;
@@ -304,7 +302,7 @@ h2 {
 /* Styling for the robot activity container */
 .robot-activity-container {
   flex: 0.5; /* Set to 50% of the width */
-  height: 25rem; /* Adjust height as needed */
+  height: 23rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -315,7 +313,6 @@ h2 {
 }
 
 .robot-activity-table-container {
-  max-height: 300px; /* Set the desired height */
   overflow-y: auto; /* Enable vertical scrolling */
   overflow-x: hidden; /* Hide horizontal scrolling if necessary */
 }
@@ -323,7 +320,7 @@ h2 {
 /* Styling for the notifications container */
 .notifications-container {
   flex: 0.5; /* Set to 50% of the width */
-  height: 25rem; /* Adjust height as needed */
+  height: 23rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -334,8 +331,8 @@ h2 {
 }
 
 /* Extend table to fill the container */
-.robot-activity-table,
-.notifications-table {
+.robot-activity-table
+ {
   width: 100%;
   height: 100%;
   border-collapse: collapse;
@@ -346,6 +343,11 @@ h2 {
   overflow-y: auto; /* Scrollable when content exceeds height */
 }
 
+.notifications-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* Ensure fixed layout for consistent row heights */
+}
 
 /* Styling for the robot activity table */
 .robot-activity-table thead {
@@ -358,7 +360,7 @@ h2 {
 .robot-activity-table td {
   padding: 12px 15px;
   border-top-left-radius: 1px solid #b5b5b5;
-  font-size: 0.8rem;  
+  font-size: 0.8rem;
 }
 
 .robot-activity-table tbody tr:nth-child(even) {
@@ -379,9 +381,11 @@ h2 {
 
 .notifications-table th,
 .notifications-table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
-  font-size: 0.8rem;
+  padding: 12px 15px; /* Existing padding */
+  border-bottom: 1px solid #ddd; /* Border style */
+  font-size: 0.8rem; /* Font size */
+  height: 40px; /* Set a fixed height for table rows */
+  overflow: hidden; /* Prevent overflow */
 }
 
 .notifications-table tbody tr:nth-child(even) {
@@ -477,8 +481,10 @@ h2 {
   .notifications-table th,
   .notifications-table td {
     font-size: 0.5rem;
+    position: sticky;
   }
 }
+
 
 
 
