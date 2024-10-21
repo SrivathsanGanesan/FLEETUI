@@ -755,6 +755,26 @@ export class EnvmapComponent implements AfterViewInit {
       }
       this.validationError=null;
   }
+  openActionForm(action: any): void {
+    // Hide all other forms
+    this.hideActionForms();
+  
+    // Show the relevant form based on the action type
+    if (action.actionType === 'Move') {
+      this.isMoveActionFormVisible = true;
+    } else if (action.actionType === 'Dock') {
+      this.isDockActionFormVisible = true;
+    } else if (action.actionType === 'Undock') {
+      this.isUndockActionFormVisible = true;
+    }
+  
+    // Set the selected action
+    this.selectedAction = action.actionType;
+  
+    // Remove the action from the list
+    this.actions = this.actions.filter(a => a.actionType !== action.actionType);
+  }
+  
   moveParameters = {
     maxLinearVelocity: 0,
     maxAngularVelocity: 0,
@@ -789,8 +809,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.selectedAction = selectedValue;
     this.resetParameters();
     this.showActionForm();
-  }
-  
+  }  
   resetParameters(): void {
     this.moveParameters = {
       maxLinearVelocity: 0,
@@ -838,106 +857,49 @@ export class EnvmapComponent implements AfterViewInit {
     this.isDockActionFormVisible = false;
     this.isUndockActionFormVisible = false;
   }
-  editAction(index: number): void {
-    const action = this.actions[index];
-    this.selectedAction = action.actionType; // Ensure this matches the actionType
-
-    // Load the corresponding parameters into the form
-    if (this.selectedAction === 'Move') {
-      this.moveParameters = { ...action.parameters };
-    } else if (this.selectedAction === 'Dock') {
-      this.dockParameters = { ...action.parameters };
-    } else if (this.selectedAction === 'Undock') {
-      this.undockParameters = { ...action.parameters };
-    }
-
-    this.showActionForm();
-    this.actions.splice(index, 1); // Remove the action from the list
-  }
   addAction(): void {
-    if (this.selectedAction && this.selectedNode) {
+    if (this.selectedAction) {
       let action: any;
   
+      // Handling different action types
       if (this.selectedAction === 'Move') {
-        // Validate Move parameters
-        if (
-          this.moveParameters.maxLinearVelocity === undefined &&
-          this.moveParameters.maxAngularVelocity === undefined &&
-          this.moveParameters.maxToleranceAtGoalX === undefined &&
-          this.moveParameters.maxToleranceAtGoalY === undefined &&
-          this.moveParameters.maxToleranceAtGoalOrientation === undefined
-        ) {
-          this.validationError = 'Move parameters are required, else set to 0 as default.';
-          return;
-        }
         action = {
           actionType: this.selectedAction,
-          actionId: `action_${this.actionCounter}`,
-          actionDescription: 'Move to the next Point',
-          parameters: { ...this.moveParameters },
+          parameters: { ...this.moveParameters }
         };
-        this.actionCounter++;
-  
       } else if (this.selectedAction === 'Dock') {
-        // Validate Dock parameters
-        if (
-          this.dockParameters.maxLinearVelocity === undefined &&
-          this.dockParameters.maxAngularVelocity === undefined &&
-          this.dockParameters.maxToleranceAtGoalX === undefined &&
-          this.dockParameters.maxToleranceAtGoalY === undefined &&
-          this.dockParameters.goalOffsetX === undefined &&
-          this.dockParameters.goalOffsetY === undefined &&
-          this.dockParameters.goalOffsetOrientation === undefined
-        ) {
-          this.validationError = 'Dock parameters are required, else set to 0 as default.';
-          return;
-        }
         action = {
           actionType: this.selectedAction,
-          actionId: `action_${this.actionCounter}`,
-          actionDescription: 'Dock at the Charging Station',
-          parameters: { ...this.dockParameters },
+          parameters: { ...this.dockParameters }
         };
-        this.actionCounter++;
-  
       } else if (this.selectedAction === 'Undock') {
-        // Validate Undock parameters
-        if (
-          this.undockParameters.maxLinearVelocity === undefined &&
-          this.undockParameters.maxAngularVelocity === undefined &&
-          this.undockParameters.maxToleranceAtGoalX === undefined &&
-          this.undockParameters.maxToleranceAtGoalY === undefined &&
-          this.undockParameters.maxToleranceAtGoalOrientation === undefined
-        ) {
-          this.validationError = 'Undock parameters are required, else set to 0 as default.';
-          return;
-        }
         action = {
           actionType: this.selectedAction,
-          actionId: `action_${this.actionCounter}`,
-          actionDescription: 'Undock from the charging station',
-          parameters: { ...this.undockParameters },
+          parameters: { ...this.undockParameters }
         };
-        this.actionCounter++;
       }
   
-      // Remove selected action from the dropdown options
+      // Add action to the list
+      this.actions.push(action);
+  
+      // Remove the selected action from dropdown options
       this.actionOptions = this.actionOptions.filter(option => option.value !== this.selectedAction);
   
-      // Map actions to selected node
-      this.nodes = this.nodes.map((node) => {
-        if (this.selectedNode?.nodeId === node.nodeId) {
-          node.actions.push(action);
-        }
-        return node;
-      });
-  
-      this.cdRef.detectChanges();
-  
-      // Hide the form after adding
+      // Hide the action forms
       this.hideActionForms();
+      // Clear the selected action
+      this.selectedAction = null;
     }
   }
+  lastSelectedAction: string | null = null;
+
+  cancelAction(): void {
+    // Hide all action forms
+    this.hideActionForms();  
+    // Reset the selected action
+    this.selectedAction = null;       
+    this.actionOptions = this.allActions.filter(option => !this.actions.some(a => a.actionType === option.value)); 
+  }  
   
   openMoveActionForm(): void {
     this.isMoveActionFormVisible = true;
@@ -949,14 +911,12 @@ export class EnvmapComponent implements AfterViewInit {
     this.isMoveActionFormVisible = false;
     this.isDockActionFormVisible = false;
     this.isUndockActionFormVisible = false;
-  
-    // Deselect and remove all added actions
+    
+    // Clear the selected actions
     this.actions = [];
-  
-    // Restore all actions back to the dropdown options
-    this.actionOptions = [...this.allActions]; // Reset the dropdown options to all available actions
-    this.selectedAction = null; // Clear the selected action
-    this.resetParameters(); // Reset the parameter values
+    this.selectedAction = null;
+    // Reset the action dropdown options
+    this.actionOptions = [...this.allActions];
   }
   
   allActions = [
@@ -964,21 +924,6 @@ export class EnvmapComponent implements AfterViewInit {
     { label: 'Dock', value: 'Dock' },
     { label: 'Undock', value: 'Undock' }
   ];
-
-  removeAction(index: number): void {
-    const removedAction = this.actions[index];
-    this.actions.splice(index, 1); // Remove action from the list
-
-    // Add the removed action back to the dropdown options
-    const actionToAddBack = this.allActions.find(option => option.value === removedAction.actionType);
-    if (actionToAddBack) {
-      this.actionOptions.push(actionToAddBack);
-    }
-
-    // Sort the dropdown options again to maintain the original order
-    this.actionOptions.sort((a, b) => this.allActions.findIndex(opt => opt.value === a.value) - this.allActions.findIndex(opt => opt.value === b.value));
-  }
-
   isOptionDisabled(option: string): boolean {
     return this.actions.some((action) => action.actionType === option);
   }

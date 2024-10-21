@@ -270,16 +270,16 @@
           <div class="action-container">
             <div class="action" class="display:flex; text-wrap:nowrap; align-items:center ">
               <label for="nodeAction" class="label" style="margin-right: 8rem;">Add Action:</label>
-              <p-dropdown appendTo="body"
-                id="nodeAction"
-                [options]="actionOptions"
-                [value]="selectedAction"
-                (onChange)="onActionChange($event.value)"
-                placeholder="Select Action"
-                [autoDisplayFirst]="false"
-                styleClass="small-dropdown"
-                [style]="{'width':'143px !important'}"
-              ></p-dropdown>
+              <p-dropdown 
+              appendTo="body"
+              [options]="actionOptions"
+              [(ngModel)]="selectedAction"  
+              (onChange)="onActionChange($event.value)"
+              placeholder="Select Action" 
+              [autoDisplayFirst]="false"
+              styleClass="small-dropdown"
+              [style]="{'width':'143px !important'}"
+          ></p-dropdown>            
             </div>
             <!-- <div *ngIf="validationError" class="validation-error">{{ validationError }}</div> -->
           </div>
@@ -288,9 +288,9 @@
             <p style="font-size: 15px;">Actions:</p>
             <div class="action-buttons">
               <div *ngFor="let action of actions; let i = index" class="action-item">
-                <button class="action-button" (click)="editAction(i)">
+                <button class="action-button" (click)="openActionForm(action)" >
                   {{ action.actionType }}
-                  <span class="delete-icon" (click)="removeAction(i)">X</span>
+                  <!-- <span class="delete-icon" >X</span> -->
                 </button>
               </div>
             </div>
@@ -367,7 +367,7 @@
               </select><br/>
             </div>
               <button (click)="addAction()">Add</button>
-
+              <button (click)="cancelAction()">Cancel</button>
           </div>
 
 
@@ -421,7 +421,7 @@
               </select><br/>
             </div>
               <button (click)="addAction()">Add</button>
-
+              <button (click)="cancelAction()">Cancel</button>
           </div>
 
           <div *ngIf="selectedAction === 'Undock' && isUndockActionFormVisible" class="move-action-form">
@@ -452,6 +452,7 @@
               <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.undockingDistance" style="margin-right: 20rem;"/><br />
             </div>
               <button (click)="addAction()">Add</button>
+              <button (click)="cancelAction()">Cancel</button>
           </div>
 
         </div>
