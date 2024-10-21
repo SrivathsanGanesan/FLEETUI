@@ -218,7 +218,16 @@ h2 {
   pointer-events: none;
   overflow:auto;
 }
+.tooltip {
+  position: absolute;
 
+  color: black;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 10px;
+  pointer-events: none;
+  z-index: 1000; /* Make sure it's above everything else */
+}
 .image-popup-content {
   background-color: #fff;
   border-radius: 8px;

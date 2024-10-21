@@ -244,7 +244,7 @@ export class DashboardComponent implements AfterViewInit {
     let ratio = this.ratio ? this.ratio : 1;
     let quaternion = { x: 0, y: 0, z: 0, w: 1 };
     const transformedY = mapImg.height - this.robotToInitialize.pos.y;
-    this.robotToInitialize.pos.x = (this.robotToInitialize.pos.x * ratio) + this.origin.x;
+    this.robotToInitialize.pos.x = (this.robotToInitialize.pos.x * ratio) - this.origin.x;
     this.robotToInitialize.pos.y = (transformedY * ratio) + this.origin.y;
 
     // quaternion = this.positionToQuaternion(this.robotToInitialize.pos);
@@ -685,7 +685,7 @@ export class DashboardComponent implements AfterViewInit {
       const isInsideMap = imgX >= 0 && imgX <= this.mapImageWidth / this.zoomLevel && imgY >= 0 && imgY <= this.mapImageHeight / this.zoomLevel;
       if (isInsideMap ) {
         // Set tooltip content and position
-        tooltip.textContent = `X = ${(Math.round(imgX) * this.ratio ) + this.origin.x}, Y = ${ (Math.round(imgY) * this.ratio) + this.origin.y }`;
+        tooltip.textContent = `X = ${(Math.round(imgX) * this.ratio ) - this.origin.x}, Y = ${ (Math.round(imgY) * this.ratio) - this.origin.y }`;
         tooltip.style.display = 'block';
         tooltip.style.left = `${event.clientX}`;
         tooltip.style.top = `${event.clientY}`; // Adjust 10px below the cursor
@@ -758,24 +758,24 @@ export class DashboardComponent implements AfterViewInit {
     this.nodes = mapData.nodes.map((node: any) => {
       // yet to interface in this component..
       node.nodePosition.x =
-        (node.nodePosition.x - (this.origin.x || 0)) / (this.ratio || 1);
+        (node.nodePosition.x + (this.origin.x || 0)) / (this.ratio || 1);
       node.nodePosition.y =
-        (node.nodePosition.y - (this.origin.y || 0)) / (this.ratio || 1);
+        (node.nodePosition.y + (this.origin.y || 0)) / (this.ratio || 1);
       return node;
     });
 
     this.edges = mapData.edges;
 
     this.assets = mapData.stations.map((asset: any) => {
-      asset.x = (asset.x - (this.origin.x || 0)) / (this.ratio || 1);
-      asset.y = (asset.y - (this.origin.y || 0)) / (this.ratio || 1);
+      asset.x = (asset.x + (this.origin.x || 0)) / (this.ratio || 1);
+      asset.y = (asset.y + (this.origin.y || 0)) / (this.ratio || 1);
       return asset;
     });
 
     this.zones = mapData.zones.map((zone: any) => {
       zone.pos = zone.pos.map((pos: any) => {
-        pos.x = (pos.x - (this.origin.x || 0)) / (this.ratio || 1);
-        pos.y = (pos.y - (this.origin.x || 0)) / (this.ratio || 1);
+        pos.x = (pos.x + (this.origin.x || 0)) / (this.ratio || 1);
+        pos.y = (pos.y + (this.origin.x || 0)) / (this.ratio || 1);
         return pos;
       });
       return zone;
@@ -1028,8 +1028,8 @@ export class DashboardComponent implements AfterViewInit {
 
             // let posX = robot.pose.position.x / this.ratio; // 0.05
             // let posY = robot.pose.position.y / this.ratio; // 0.05
-            let posX = (robot.pose.position.x - (this.origin.x || 0)) / (this.ratio || 1);
-            let posY = (robot.pose.position.y - (this.origin.y || 0)) / (this.ratio || 1);
+            let posX = (robot.pose.position.x + (this.origin.x || 0)) / (this.ratio || 1);
+            let posY = (robot.pose.position.y + (this.origin.y || 0)) / (this.ratio || 1);
 
             let yaw = this.quaternionToYaw(
               complexVal.w,
