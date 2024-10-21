@@ -12,6 +12,7 @@ export class RobotDashboardComponent implements OnInit {
   currentView: string = 'robot';
   selectedMap: any | null = null;
   robotActivities: any[] = [];
+  liveRobos: any[] = [];
   statisticsData: any = {
     averageSpeed: 75,
     averageSpeedchange: 8.5,
@@ -53,18 +54,15 @@ export class RobotDashboardComponent implements OnInit {
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) return;
     this.getFleetGrossStatus();
-    this.robotActivities = await this.fetchCurrRoboActivites();
+    this.robotActivities = await this.getLiveRoboInfo();
+    this.updateLiveRoboInfo();
     this.filteredRobotActivities = this.robotActivities;
     setInterval(async () => {
-      let currActivities = await this.fetchCurrRoboActivites();
-      this.robotActivities.push(currActivities);
-      this.filteredRobotActivities = this.robotActivities.flat(); // flat() to convert nested of nested array to single array..
-
-      // this.filteredRobotActivities = [
-      //   ...this.filteredRobotActivities,
-      //   currActivities[0],
-      // ];
-    }, 1000 * 10);
+      this.robotActivities = await this.getLiveRoboInfo();
+      this.updateLiveRoboInfo();
+      this.filteredRobotActivities = this.robotActivities;
+      // this.filteredRobotActivities = this.robotActivities.flat(); // flat() to convert nested of nested array to single array..
+    }, 1000 * 5);
   }
 
   async fetchFleetStatus(endpoint: string, bodyData = {}): Promise<any> {
@@ -107,25 +105,43 @@ export class RobotDashboardComponent implements OnInit {
       this.statisticsData.networkConnection = networkConn.networkConnection;
   }
 
-  async fetchCurrRoboActivites(): Promise<number[]> {
-    let response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-robo-activities`,
+  async getLiveRoboInfo(): Promise<any[]> {
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.selectedMap.id}`,
       {
-        method: 'POST',
+        method: 'GET',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mapId: this.selectedMap.id }),
       }
     );
-    // if(!response.ok) throw new Error(`Error occured with status code of : ${response.status}`)
-    let data = await response.json();
-    if (data.error) {
-      console.log('Err occured while getting tasks status : ', data.error);
-      return [];
-    }
-    if (data.roboActivities) return data.roboActivities;
-    return [];
+
+    const data = await response.json();
+    // console.log(data);
+    if (!data.map || data.error) return [];
+    return data.robos;
   }
+
+  updateLiveRoboInfo() {
+    if (!('robots' in this.robotActivities)) {
+      // this.robots = this.initialRoboInfos;
+      return;
+    }
+    let { robots }: any = this.robotActivities;
+    if (!robots.length) {
+      // this.robots = this.initialRoboInfos;
+      return;
+    }
+    this.robotActivities = robots.map((robo: any) => {
+      return {
+        roboId: robo.id,
+        task: robo.current_task,
+        status: robo.isConnected ? 'ACTIVE' : 'INACTIVE',
+        state: robo.robot_state,
+      };
+    });
+    this.filteredRobotActivities = this.robotActivities;
+  }
+
+  updateRoboActivities() {} // yet to use.. in case of dynamic update
 
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -133,7 +149,7 @@ export class RobotDashboardComponent implements OnInit {
     this.filteredRobotActivities = this.robotActivities.filter(
       (activity) =>
         activity.roboId.toString().toLowerCase().includes(query) ||
-        activity.roboName.toLowerCase().includes(query) ||
+        activity.state.toLowerCase().includes(query) ||
         activity.task.toLowerCase().includes(query)
     );
   }

@@ -1874,7 +1874,7 @@
                     <p>ID: {{ robot.id }}</p> <!-- Display ID -->
                     <p>S.no: {{ robot.serialNumber }}</p> <!-- Display Serial Number -->
                     <p>Status: 
-						<span [ngStyle]="{'color': robot.status === 'active' ? 'green' : 'red'}">
+						<span [ngStyle]="{'color': robot.status === 'ACTIVE' ? 'green' : 'red'}">
 						  {{ robot.status }}
 						</span>
 					  </p>

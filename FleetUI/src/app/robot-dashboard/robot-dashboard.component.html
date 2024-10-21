@@ -206,11 +206,10 @@
             <table class="robot-activity-table">
               <thead>
                 <tr>
-                  <th>Task ID</th>
+                  <th>Robot Id</th>
+                  <th>Robot State</th>
                   <th>Task Name</th>
-                  <th>Robot Name</th>
                   <th>Status</th>
-                  <th>Time </th>
                 </tr>
               </thead>
               <tbody>
@@ -227,10 +226,10 @@
 
                 <tr *ngFor="let activity of filteredRobotActivities | slice:0:5">
                   <td>{{ activity.roboId }}</td>
-                  <td>{{ activity.roboName }}</td>
+                  <!-- <td>{{ activity.roboName }}</td> -->
+                  <td>{{ activity.state }}</td>
                   <td>{{ activity.task }}</td>
-                  <td>{{ activity.taskStatus }}</td>
-                  <td>{{ activity.desc }}</td>
+                  <td>{{ activity.status }}</td>
                 </tr>
               </tbody>
             </table>
