@@ -546,7 +546,7 @@ button:hover .custom-button-text {
 .contact-container textarea {
   width: 100%; /* Full width */
   margin-bottom: 8px; /* Reduced space below each field */
-  padding: 8px; /* Inner padding */
+  padding: 8px; 
   border: 1px solid #ccc; /* Border for input fields */
   border-radius: 4px; /* Rounded corners */
   box-sizing: border-box; /* Include padding and border in width/height */
@@ -618,6 +618,33 @@ label {
   margin-right: 3px; /* Further reduced space between label and input */
   flex: 0 0 30%; /* Allow label to take 30% of space */
   font-size: 1.0rem; /* Smaller font size */
+}
+
+/* Horizontal alignment for checkbox and label */
+.horizontal-row {
+  display: flex;
+  align-items: center; /* Align vertically center */
+  margin-bottom: 10px; /* Space below the row */
+}
+
+input[type="checkbox"] {
+  margin-right: 8px; /* Space between checkbox and label */
+  transform: scale(1); /* Optional: Adjust size of checkbox */
+}
+
+label {
+  font-size: 0.875rem; /* Adjust font size */
+  color: #333; /* Text color */
+  line-height: 1.2; /* Ensures label and checkbox are aligned */
+}
+
+a {
+  color: #007BFF; /* Link color */
+  text-decoration: none; /* No underline for links */
+}
+
+a:hover {
+  text-decoration: underline; /* Underline on hover */
 }
 
 select,
