@@ -328,6 +328,7 @@ export class DashboardComponent implements AfterViewInit {
     // }
     this.loadCanvas(); // Redraw the canvas based on the updated state
     // this.fetchRoboPos();
+    
   }
 
   redrawCanvas() {
@@ -775,7 +776,7 @@ export class DashboardComponent implements AfterViewInit {
     this.zones = mapData.zones.map((zone: any) => {
       zone.pos = zone.pos.map((pos: any) => {
         pos.x = (pos.x + (this.origin.x || 0)) / (this.ratio || 1);
-        pos.y = (pos.y + (this.origin.x || 0)) / (this.ratio || 1);
+        pos.y = (pos.y + (this.origin.y || 0)) / (this.ratio || 1);
         return pos;
       });
       return zone;
@@ -805,8 +806,6 @@ export class DashboardComponent implements AfterViewInit {
     let imgName = this.projectService.getMapData();
     this.mapImg.src = `http://${imgName.imgUrl}`;
   }
-
-  drawElements(ctx: CanvasRenderingContext2D) {}
 
   async fetchRoboPos(x: number, y: number, yaw: number) {
     // console.log(amrPos);
@@ -928,10 +927,6 @@ export class DashboardComponent implements AfterViewInit {
 
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
-    );
-    this.robos.forEach(
-      (robo) =>
-        this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected) // this.selectedRobo === robo - replace..
     );
   }
 

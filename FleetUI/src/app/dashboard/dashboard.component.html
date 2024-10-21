@@ -18,9 +18,8 @@
     </div>
     <div id="Pos_tooltip" style="position: absolute; bottom: 5px; right:5px;  background: transparent; border: 0px solid #ccc; border-radius: 4px; padding: 5px; z-index: 2;font-size: 10px;"></div>    <!-- Canvases -->
     <!-- <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas> -->
-
     <canvas #myCanvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
-
+    <!-- <canvas *ngIf="showModelCanvas" #modelCanvas id="modelCanvas" ></canvas> -->
     <div class="dropdown">
       <!-- Dropdown Button with Arrow -->
       <button class="dropdown-button" (click)="toggleDropdown()">
