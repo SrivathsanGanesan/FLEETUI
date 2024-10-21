@@ -9,6 +9,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { RobotDetailPopupComponent } from '../robot-detail-popup/robot-detail-popup.component';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
+import { Router, NavigationStart } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 
 export interface Robot {
   isCharging: boolean;
@@ -69,35 +72,35 @@ export class RobotsComponent implements OnInit {
   searchQuery: string = ''; // To hold the search input
   filteredRobots: Robot[] = []; // To store filtered robots
   initialRoboInfos: Robot[] = []; // to store data of initial robo details..
-
   mapDetails: any | null = null;
   showPopup = false;
-
   menuOpenIndex: number | null = null;
   editIndex: number | null = null;
   centerIndex: any;
 
+
+  private routerSubscription: Subscription | undefined; // Subscription to track navigation changes
+
   constructor(
     public dialog: MatDialog,
-    private projectService: ProjectService
-  ) {
-    // this.mapDetails = this.projectService.getMapData();
-  }
+    private projectService: ProjectService,
+    private router: Router // Inject Router
+  ) {}
 
   async ngOnInit() {
-    // this.setSignalStrength('Weak'); // Change this value to test different signals
     this.mapDetails = this.projectService.getMapData();
     if (!this.mapDetails) return;
+    
     let grossFactSheet = await this.fetchAllRobos();
     this.robots = grossFactSheet.map((robo) => {
       robo.imageUrl = '../../assets/robots/agv1.png';
-      // robo.networkstrength = `${robo.networkstrength}`;
       if (robo.networkstrength < 20) robo.SignalStrength = 'Weak';
       else if (robo.networkstrength < 40) robo.SignalStrength = 'Medium';
       else if (robo.networkstrength < 80) robo.SignalStrength = 'Full';
       robo.networkstrength = robo.networkstrength.toString() + ' dBm';
       return robo;
     });
+
     this.filteredRobots = this.robots;
     this.initialRoboInfos = this.robots;
     this.liveRobos = await this.getLiveRoboInfo();
@@ -106,40 +109,42 @@ export class RobotsComponent implements OnInit {
       this.liveRobos = await this.getLiveRoboInfo();
       this.updateLiveRoboInfo();
     }, 1000 * 5);
-    // this.robots = grossFactSheet;
+
+    // Subscribe to route changes to close popup on navigation
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.dialog.closeAll(); // Close all open dialogs when navigation starts
+      }
+    });
   }
 
+  ngOnDestroy(): void {
+    // Unsubscribe from router events to prevent memory leaks
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
+  // Fetch robots from the API
   async fetchAllRobos(): Promise<any[]> {
-    const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fms-amrs`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mapId: this.mapDetails.id,
-        }),
-      }
-    );
-    // if (!response.ok)
-    //   throw new Error(`Err with status code of ${response.status}`);
+    const response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/get-fms-amrs`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mapId: this.mapDetails.id })
+    });
+
     const data = await response.json();
-    console.log(data);
-    if (data.robots) return data.robots;
-    return [];
+    return data.robots || [];
   }
 
   async getLiveRoboInfo(): Promise<any[]> {
-    const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.mapDetails.id}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      }
-    );
+    const response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.mapDetails.id}`, {
+      method: 'GET',
+      credentials: 'include'
+    });
 
     const data = await response.json();
-    // console.log(data);
     if (!data.map || data.error) return [];
     return data.robos;
   }
@@ -149,6 +154,7 @@ export class RobotsComponent implements OnInit {
       this.robots = this.initialRoboInfos;
       return;
     }
+
     let { robots }: any = this.liveRobos;
     if (!robots.length) this.robots = this.initialRoboInfos;
     this.robots = this.robots.map((robo) => {
@@ -160,6 +166,7 @@ export class RobotsComponent implements OnInit {
           robo.currentTask = liveRobo.current_task;
           robo.status = liveRobo.isConnected ? 'ACTIVE' : 'INACTIVE';
           robo.isConnected = liveRobo.isConnected;
+
           if ('EMERGENCY STOP' in liveRobo.robot_errors)
             robo.error += liveRobo.robot_errors['EMERGENCY STOP'].length;
           if ('LIDAR_ERROR' in liveRobo.robot_errors)
@@ -168,7 +175,15 @@ export class RobotsComponent implements OnInit {
       });
       return robo;
     });
+
     this.filteredRobots = this.robots;
+  }
+
+  openRobotDetail(robot: Robot): void {
+    this.dialog.open(RobotDetailPopupComponent, {
+      width: '50%',
+      data: robot,
+    });
   }
 
   filterRobots(): void {
@@ -176,9 +191,7 @@ export class RobotsComponent implements OnInit {
 
     this.filteredRobots = this.robots.filter((robot) => {
       const idMatch = robot.id.toString().includes(query);
-      const serialNumberMatch = robot.serialNumber
-        .toLowerCase()
-        .includes(query);
+      const serialNumberMatch = robot.serialNumber.toLowerCase().includes(query);
       const nameMatch = robot.name.toLowerCase().includes(query);
 
       return idMatch || serialNumberMatch || nameMatch;
@@ -193,68 +206,9 @@ export class RobotsComponent implements OnInit {
     this.showPopup = !this.showPopup;
   }
 
-  toggleMenu(index: number) {
-    console.log('Toggling menu for index:', index); // Debugging log
-    if (this.menuOpenIndex === index) {
-      this.menuOpenIndex = null;
-    } else {
-      this.menuOpenIndex = index;
-    }
-  }
-
-  closeMenu() {
-    this.menuOpenIndex = null;
-  }
-
  
 
-  // addRobot() {
-  //   if (this.newRobot.name && this.newRobot.imageUrl && this.newRobot.serialNumber && this.newRobot.status && this.newRobot.battery) {
-  //     this.newRobot.id = this.robots.length > 0 ? this.robots[this.robots.length - 1].id + 1 : 1;
-  //     this.robots.push({ ...this.newRobot });
-  //     this.newRobot = { id: 0, name: '', imageUrl: '',  serialNumber: '',  status: 'Active', battery: '100%' };
-  //     this.togglePopup();
-  //   } else {
-  //     alert('Please fill out all fields.');
-  //   }
-  // }
 
-  // editRobot(index: number) {
-  //   this.isEditPopupOpen = true;
-  //   this.editIndex = index;
-  //   this.editRobotData = { ...this.robots[index] };
-  //   this.menuOpenIndex = null;
-  // }
-
-  // saveRobot() {
-  //   if (this.editIndex !== null) {
-  //     this.robots[this.editIndex] = {
-  //       id: this.editRobotData.id,
-  //       name: this.editRobotData.name,
-  //       imageUrl: this.editRobotData.imageUrl,
-  //       serialNumber: this.editRobotData.serialNumber || 'DefaultSerialNumber',
-
-  //       status: this.editRobotData.status,
-  //       battery: this.editRobotData.battery,
-
-  //     };
-  //     this.closeEditPopup();
-  //   }
-  // }
-
-  // closeEditPopup() {
-  //   this.isEditPopupOpen = false;
-  //   this.editIndex = null;
-  //   this.editRobotData = {
-  //     id: 0,
-  //     name: '',
-  //     imageUrl: '',
-  //     serialNumber: '' ,
-  //     status: 'Active',
-  //     battery: '100%',
-
-  //   };
-  // }
 
   deleteRobot(index: number) {
     // yet to do..
@@ -273,12 +227,7 @@ export class RobotsComponent implements OnInit {
     return index;
   }
 
-  openRobotDetail(robot: Robot): void {
-    this.dialog.open(RobotDetailPopupComponent, {
-      width: '50%',
-      data: robot,
-    });
-  }
+
 
   // fetchSignalStrength(): void {
   //   // Replace with your API endpoint
