@@ -259,10 +259,22 @@
             </tr>
           </thead>
 
+          <tbody>          
+            <!-- Show No Data Row with image and message -->
+            <tr *ngIf="filteredNotifications.length === 0">
+              <td colspan="3" class="no-data">
+                <div class="no-data-container">
+                  <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
+                  <p class="no-data-text">No data found</p>
+                </div>
+              </td>
+            </tr>
+
             <tr *ngFor="let notification of filteredNotifications | slice:0:10">
               <td>{{ notification.message }}</td>
               <td class="align">{{ notification.timestamp }}</td>
             </tr>
+          </tbody>
           </table>
         </div>
       </div>
