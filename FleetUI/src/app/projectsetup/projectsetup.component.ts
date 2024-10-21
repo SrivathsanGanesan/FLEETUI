@@ -162,8 +162,8 @@ export class ProjectsetupComponent {
       .then((data) => {
         console.log(data.isCookieDeleted);
         if (data.isCookieDeleted) {
-          this.authService.logout();
           this.projectService.clearProjectData();
+          this.authService.logout();
           this.router.navigate(['/']);
         }
       })

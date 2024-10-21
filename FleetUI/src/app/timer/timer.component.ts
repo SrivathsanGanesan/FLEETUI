@@ -56,10 +56,10 @@ export class TimerComponent {
 
   logout() {
     clearInterval(this.logoutTimeout);
-    this.authService.logout(); // Use the logout method from AuthService
     this.projectService.clearProjectData();
     this.projectService.clearMapData();
     this.projectService.clearIsMapSet();
+    this.authService.logout(); // Use the logout method from AuthService
     this.router.navigate(['/']);
   }
 

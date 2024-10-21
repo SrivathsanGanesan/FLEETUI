@@ -32,8 +32,8 @@ export class LoginComponent {
       .then((res) => res.json())
       .then((data) => {
         if (data.isCookieDeleted) {
-          this.authService.logout();
           this.projectService.clearProjectData();
+          this.authService.logout();
           // this.router.navigate(['/']);
         }
       })
