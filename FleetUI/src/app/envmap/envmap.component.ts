@@ -2580,8 +2580,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       const nodeIndex = this.nodes.findIndex(
         (node) => node.nodeId === this.selectedNode!.nodeId
       );
-      this.selectedNode.nodePosition.x = parsedX/this.ratio!+this.origin.x;
-      this.selectedNode.nodePosition.y = parsedY/this.ratio!+this.origin.y;
+      this.selectedNode.nodePosition.x = parsedX/this.ratio!+this.origin.x||0;
+      this.selectedNode.nodePosition.y = parsedY/this.ratio!+this.origin.y||0;
       this.selectedNode.nodePosition.orientation = parsedOrientation;
       console.log(this.selectedNode.nodePosition.x,this.selectedNode.nodePosition.y)
       if (nodeIndex !== -1) {        
