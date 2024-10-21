@@ -755,6 +755,105 @@ export class EnvmapComponent implements AfterViewInit {
       }
       this.validationError=null;
   }
+  
+  saveNodeDetails(x: string, y: string, orientation: string): void {
+    this.validationError = '';
+
+    // Example validation: Check if all required fields are filled
+    if (this.selectedAction === 'Move') {
+      if (
+        !this.moveParameters.maxLinearVelocity ||
+        !this.moveParameters.maxAngularVelocity
+      ) {
+        // this.validationError = 'All Move Action fields are required.'; // yet to uncomment..
+      }
+    } else if (this.selectedAction === 'Dock') {
+      if (
+        !this.dockParameters.maxAngularVelocity ||
+        !this.dockParameters.goalOffsetX
+      ) {
+        // this.validationError = 'All Dock Action fields are required.';
+      }
+    } else if (this.selectedAction === 'Undock') {
+      if (
+        !this.undockParameters.maxLinearVelocity ||
+        !this.undockParameters.maxToleranceAtGoalX
+      ) {
+        // this.validationError = 'All Undock Action fields are required.';
+      }
+    }
+    
+    if (!this.nodeDetails.description) {
+      this.validationError = 'Node Description is required.';
+    } 
+    // If there is a validation error, don't save the details
+    if (this.validationError) {
+      return;
+    }
+    
+    // this.projectService.setNode();
+    // Ensure the nodeDetails object includes the checkbox values
+    // const updatedNodeDetails = {
+    //   ...this.nodeDetails,  // Spread the existing details
+    //   intermediate_node: this.nodeDetails.intermediate_node,
+    //   waiting_node: this.nodeDetails.waiting_node,
+    // };
+    if (!x || !y || !orientation) {
+      this.validationError = 'All fields are required.';
+      return;
+    }
+  
+    // Convert values to numbers
+    const parsedX = parseFloat(x);
+    const parsedY = parseFloat(y);
+    const parsedOrientation = parseFloat(orientation);
+  
+    if (isNaN(parsedX) || isNaN(parsedY) || isNaN(parsedOrientation)) {
+      this.validationError = 'Invalid input: Please enter valid numbers.';
+      return;
+    }
+    
+    const canvas = this.overlayCanvas.nativeElement;
+    // console.log("Hey",canvas.width,canvas.height);
+    // Validation: Check if coordinates are within map boundaries
+    const mapWidth = canvas.width*this.ratio!-this.origin.x;  // Assuming the map image width
+    const mapHeight = canvas.height*this.ratio!-this.origin.y; // Assuming the map image height
+    // console.log("map",mapWidth,mapHeight);
+    if (parsedX > mapWidth || parsedY > mapHeight) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: `Coordinates out of bounds: X should be between 0 and ${mapWidth.toFixed(3)}, Y should be between 0 and ${mapHeight.toFixed(3)}.`
+      });
+      return;
+    }
+    if (this.selectedNode) {
+      const nodeIndex = this.nodes.findIndex(
+        (node) => node.nodeId === this.selectedNode!.nodeId
+      );
+      this.selectedNode.nodePosition.x = (parsedX+this.origin.x||0)/this.ratio!||1;
+      this.selectedNode.nodePosition.y = (parsedY+this.origin.y||0)/this.ratio!||1;
+      this.selectedNode.nodePosition.orientation = parsedOrientation;
+      console.log(this.selectedNode.nodePosition.x,this.selectedNode.nodePosition.y)
+      if (nodeIndex !== -1) {        
+        this.nodes[nodeIndex].nodeDescription = this.nodeDetails.description;
+        this.nodes[nodeIndex].intermediate_node = this.nodeDetails.intermediate_node;
+        this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
+      }
+      this.redrawCanvas();
+    }
+
+    if(this.selectedNode){
+      console.log(this.moveParameters, this.dockParameters, this.undockParameters);
+    }
+
+    // Clear all the details for the previous node
+    this.Nodes = []; // Clear the Nodes array
+    this.resetParameters(); // Reset the parameters
+    this.actions = []; // Clear the actions array
+    this.selectedAction = ''; // Reset the selected action
+    this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
+  }
   openActionForm(action: any): void {
     // Hide all other forms
     this.hideActionForms();
@@ -915,8 +1014,6 @@ export class EnvmapComponent implements AfterViewInit {
     // Clear the selected actions
     this.actions = [];
     this.selectedAction = null;
-    // Reset the action dropdown options
-    this.actionOptions = [...this.allActions];
   }
   
   allActions = [
@@ -1083,7 +1180,7 @@ export class EnvmapComponent implements AfterViewInit {
     console.log("hey", 'X:', finalX, 'Y:', transY, 'W (Angle):', angle);
  
     // Update the origin object with the calculated values
-    this.origin = { x: toX, y: toY, w: angle };
+    this.origin = { x: this.startPoint.x*this.ratio!, y: this.startPoint.y*this.ratio!, w: angle };
 
     // Reset the drawing state
     this.isDrawing = false;
@@ -2487,104 +2584,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     }
   }
   // validationError: string = '';
-  saveNodeDetails(x: string, y: string, orientation: string): void {
-    this.validationError = '';
 
-    // Example validation: Check if all required fields are filled
-    if (this.selectedAction === 'Move') {
-      if (
-        !this.moveParameters.maxLinearVelocity ||
-        !this.moveParameters.maxAngularVelocity
-      ) {
-        // this.validationError = 'All Move Action fields are required.'; // yet to uncomment..
-      }
-    } else if (this.selectedAction === 'Dock') {
-      if (
-        !this.dockParameters.maxAngularVelocity ||
-        !this.dockParameters.goalOffsetX
-      ) {
-        // this.validationError = 'All Dock Action fields are required.';
-      }
-    } else if (this.selectedAction === 'Undock') {
-      if (
-        !this.undockParameters.maxLinearVelocity ||
-        !this.undockParameters.maxToleranceAtGoalX
-      ) {
-        // this.validationError = 'All Undock Action fields are required.';
-      }
-    }
-    
-    if (!this.nodeDetails.description) {
-      this.validationError = 'Node Description is required.';
-    } 
-    // If there is a validation error, don't save the details
-    if (this.validationError) {
-      return;
-    }
-    
-    // this.projectService.setNode();
-    // Ensure the nodeDetails object includes the checkbox values
-    // const updatedNodeDetails = {
-    //   ...this.nodeDetails,  // Spread the existing details
-    //   intermediate_node: this.nodeDetails.intermediate_node,
-    //   waiting_node: this.nodeDetails.waiting_node,
-    // };
-    if (!x || !y || !orientation) {
-      this.validationError = 'All fields are required.';
-      return;
-    }
-  
-    // Convert values to numbers
-    const parsedX = parseFloat(x);
-    const parsedY = parseFloat(y);
-    const parsedOrientation = parseFloat(orientation);
-  
-    if (isNaN(parsedX) || isNaN(parsedY) || isNaN(parsedOrientation)) {
-      this.validationError = 'Invalid input: Please enter valid numbers.';
-      return;
-    }
-    
-    const canvas = this.overlayCanvas.nativeElement;
-    // console.log("Hey",canvas.width,canvas.height);
-    // Validation: Check if coordinates are within map boundaries
-    const mapWidth = canvas.width*this.ratio!-this.origin.x;  // Assuming the map image width
-    const mapHeight = canvas.height*this.ratio!-this.origin.y; // Assuming the map image height
-    // console.log("map",mapWidth,mapHeight);
-    if (parsedX > mapWidth || parsedY > mapHeight) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: `Coordinates out of bounds: X should be between 0 and ${mapWidth.toFixed(3)}, Y should be between 0 and ${mapHeight.toFixed(3)}.`
-      });
-      return;
-    }
-    if (this.selectedNode) {
-      const nodeIndex = this.nodes.findIndex(
-        (node) => node.nodeId === this.selectedNode!.nodeId
-      );
-      this.selectedNode.nodePosition.x = (parsedX+this.origin.x||0)/this.ratio!||1;
-      this.selectedNode.nodePosition.y = (parsedY+this.origin.y||0)/this.ratio!||1;
-      this.selectedNode.nodePosition.orientation = parsedOrientation;
-      console.log(this.selectedNode.nodePosition.x,this.selectedNode.nodePosition.y)
-      if (nodeIndex !== -1) {        
-        this.nodes[nodeIndex].nodeDescription = this.nodeDetails.description;
-        this.nodes[nodeIndex].intermediate_node = this.nodeDetails.intermediate_node;
-        this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
-      }
-      this.redrawCanvas();
-    }
-
-    if(this.selectedNode){
-      console.log(this.moveParameters, this.dockParameters, this.undockParameters);
-    }
-
-    // Clear all the details for the previous node
-    this.Nodes = []; // Clear the Nodes array
-    this.resetParameters(); // Reset the parameters
-    this.actions = []; // Clear the actions array
-    this.selectedAction = ''; // Reset the selected action
-    this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
-  }
   get nodePositionX(): number {
     if (this.selectedNode?.nodePosition && this.ratio) {
       const calculatedX = this.selectedNode.nodePosition.x * this.ratio - this.origin.x;
