@@ -125,6 +125,10 @@ const getFleetNodes = (nodes) => {
     );
     let preDockPos = getPosition(node, moveAction);
 
+    let locationType = 0;
+    if (node.intermediate_node) locationType = 3;
+    else if (node.Waiting_node) locationType = 2;
+
     let dockPos = getPosition(node, dockAction);
     let undockPos = getPosition(node, undockAction);
     let x = 0;
@@ -133,7 +137,7 @@ const getFleetNodes = (nodes) => {
     return {
       name: node.nodeId,
       locationDescription: node.nodeDescription,
-      type: 2,
+      type: locationType,
       preDockPose: {
         position: preDockPos,
         orientation: ToQuaternion_(x, y, z),

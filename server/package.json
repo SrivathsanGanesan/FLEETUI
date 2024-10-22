@@ -20,6 +20,7 @@
     "decompress": "^4.2.1",
     "dns": "^0.2.2",
     "dotenv": "^16.4.5",
+    "events": "^3.3.0",
     "express": "^4.19.2",
     "get-ip-range": "^4.0.1",
     "jsonwebtoken": "^9.0.2",
