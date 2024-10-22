@@ -125,6 +125,34 @@ export class DashboardComponent implements AfterViewInit {
     // this.onInitMapImg(); // yet to remove..
   }
 
+
+  isFleet: boolean = true;
+ 
+
+  // PNG icon URLs
+  fleetIconUrl: string = "../assets/fleet_icon.png";
+  simulationIconUrl: string = "../assets/simulation_icon.png";
+  
+   // Method to toggle the mode and change icon, label, and background
+   toggleMode() {
+    this.isFleet = !this.isFleet;
+  }
+
+  // Get the appropriate icon based on the state
+  get iconUrl(): string {
+    return this.isFleet ? this.fleetIconUrl : this.simulationIconUrl;
+  }
+
+  // Get the appropriate label based on the state
+  get buttonLabel(): string {
+    return this.isFleet ? 'Fleet mode' : 'Sim mode';
+  }
+
+  // Get the appropriate background color class based on the state
+  get buttonClass(): string {
+    return this.isFleet ? 'fleet-background' : 'simulation-background';
+  }
+
   async ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
@@ -1559,4 +1587,8 @@ export class DashboardComponent implements AfterViewInit {
     link.download = fileName;
     link.click();
   }
+
+
+
+  
 }

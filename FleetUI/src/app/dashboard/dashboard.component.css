@@ -503,3 +503,45 @@ input:checked ~ .slider-card {
 input:checked ~ .slider {
   background-color: #9ed99c;
 }
+
+/* fleet and simulation */
+.indication-button {
+
+  position: absolute;
+  top: 18px;
+  right: 170px;
+  
+  filter: drop-shadow(5px 2px 2px rgba(130, 126, 126, 0.404));
+  cursor: pointer;
+  z-index: 13;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.indication-button img {
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+}
+
+.indication-button span {
+  font-size: 17px;
+}
+
+/* Background color for Fleet */
+.fleet-background {
+  background-color: #63b7fc; /* Blue for Fleet */
+}
+
+
+/* Background color for Simulation */
+.simulation-background {
+  background-color: #f0453f; /* Red for Simulation */
+}
+
