@@ -15,7 +15,9 @@
   display: flex;
   justify-content: center;
 }
-
+.clearbtn{
+  margin-left: 5px;
+}
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -43,7 +45,7 @@
 
 ::ng-deep .p-button {
   padding: 0.5rem 1rem !important;
-  font-size: 0.8rem !important;
+  font-size: 0.7rem !important;
 }
 
 .field {

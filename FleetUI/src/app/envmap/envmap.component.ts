@@ -825,8 +825,8 @@ export class EnvmapComponent implements AfterViewInit {
         this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
         this.nodeDetails.charge_node = this.selectedNode.charge_node;
         this.nodeDetails.dock_node = this.selectedNode.dock_node;
-        this.actions = this.selectedNode.actions;
-        // this.actions = this.actions.filter(action => !this.unsavedActions.includes(action.actionType));
+        // this.actions = this.selectedNode.actions;
+        this.actions = this.actions.filter(action => !this.unsavedActions.includes(action.actionType));
         for (let action of this.actions) {
           if (action.actionType === 'Move') {
             this.moveParameters = action.parameters;
