@@ -491,16 +491,9 @@ export class DashboardComponent implements AfterViewInit {
         const roboY = (this.mapImageHeight / this.zoomLevel) - robo.pos.y;
         const imageSize = 25; // Adjust size based on robot image dimensions
         if ( imgX >= roboX - imageSize && imgX <= roboX + imageSize && imgY >= roboY - imageSize && imgY <= roboY + imageSize ) {
-          // console.log("verify",mouseX, this.mapImageX,this.offsetX,this.zoomLevel,this.offsetX);
-          // console.log("mouseXY",imgX, imgY);
-          // console.log("robotXY",roboX, roboY);
-          // console.log("panoffset",this.offsetX,this.offsetY);
-          // console.log("zoom",this.zoomLevel)
-          // console.clear;
           // Show the popup at the clicked position
           this.showPopup(event.clientX, event.clientY);
           this.updatedrobo = robo;
-          // console.log(this.updatedrobo);
           return;
         }
       }
@@ -1037,7 +1030,7 @@ export class DashboardComponent implements AfterViewInit {
             );
 
             // Store each robot's position and orientation using the robot ID
-            robotsData[robot.id] = { posX, posY, yaw: yaw };
+            robotsData[robot.id] = { posX, posY, yaw: yaw }; // here we go...
             console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
 
             // yet to remove if cond..
