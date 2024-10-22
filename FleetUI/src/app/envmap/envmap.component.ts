@@ -202,6 +202,8 @@ export class EnvmapComponent implements AfterViewInit {
     actions: string[]; // Can allow null if needed
     intermediate_node: boolean;
     waiting_node: boolean;
+    charge_node: boolean;
+    dock_node: boolean;
   } = {
     id: 1,
     x: 0,
@@ -210,6 +212,8 @@ export class EnvmapComponent implements AfterViewInit {
     actions: [], // Initialize with a non-null value
     intermediate_node: false,
     waiting_node: false,
+    charge_node: false,
+    dock_node: false
   };
   isMoveActionFormVisible: boolean = true;
   isDockActionFormVisible: boolean = true;
@@ -1180,7 +1184,7 @@ export class EnvmapComponent implements AfterViewInit {
     console.log("hey", 'X:', finalX, 'Y:', transY, 'W (Angle):', angle);
  
     // Update the origin object with the calculated values
-    this.origin = { x: this.startPoint.x*this.ratio!, y: this.startPoint.y*this.ratio!, w: angle };
+    this.origin = { x: this.startPoint.x*this.ratio!, y: (canvas.height-this.startPoint.y)*this.ratio!, w: angle };
 
     // Reset the drawing state
     this.isDrawing = false;
@@ -2285,6 +2289,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       actions: [],
       intermediate_node: false,
       waiting_node: false,
+      dock_node:false,
+      charge_node:false
     };
 
     let node = {

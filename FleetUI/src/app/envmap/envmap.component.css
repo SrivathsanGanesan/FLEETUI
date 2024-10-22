@@ -443,18 +443,17 @@ canvas {
 }
 .input-group {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 1rem;
   /* justify-content: space-between; */
   align-content: center;
-  flex-wrap: wrap;
 }
 .input-group1 {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 1rem;
   /* justify-content: space-between; */
-  align-content: center;
+  align-items: center;
   flex-wrap: wrap;
 }
 
@@ -463,7 +462,7 @@ canvas {
   align-items: center;
   flex-direction: column;
   margin-bottom: 1rem;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .action-buttons {
@@ -477,11 +476,41 @@ canvas {
   justify-content: space-between;
   margin-bottom: 0.5rem;
 }
+.Node-btn1 {
 
+  align-items: center;
+}
 .Node-btn {
-  display: flex;
+  /* display: flex; */
+  flex-direction: row;
+  align-items: center;
   gap: 1rem;
   margin-top: 1rem;
+}
+.node-validation-error {
+  color: red;
+  font-size: 13px;
+  animation: bounce 1s;
+}
+.node-action {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Space between rows */
+}
+
+.node-row {
+  display: flex;
+  justify-content: center; /* Align items evenly between the rows */
+  gap: 2rem; /* Space between columns */
+}
+
+.node1 {
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  margin-right: 0.5rem; /* Space between the label and checkbox */
 }
 
 .validation-error {
@@ -589,7 +618,6 @@ canvas {
   margin-left: 10px;
 }
 .move-action-form select{
-
   /* border-bottom:1px solid black ; */
   /* background-color: transparent; */
   font-size: 10px;
@@ -645,9 +673,9 @@ canvas {
   padding: 15px;
   margin: 5px;
 }
-.Node-btn{
+/* .Node-btn{
   padding: 20px 20px 0px 20px;
-}
+} */
 .calibration-layer {
   position: absolute;
   bottom: -45px;

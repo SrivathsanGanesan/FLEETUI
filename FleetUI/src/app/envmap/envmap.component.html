@@ -297,7 +297,7 @@
           </div>
 
           <div class="input-group1">
-            <label for="nodeDescription" class="label" style="margin-right: 5.2rem;">Node Description:</label>
+            <label for="nodeDescription" class="label" >Node Description:</label>
             <input pInputText
               type="text"
               id="nodeDescription"
@@ -306,27 +306,52 @@
             /><br />
           </div>
             <div class="input-group">
-              <div class="node1">
-                <label for="Intermediate_Stn" class="label">Intermediate Node: </label>
-                <p-checkbox
-                  id="Intermediate_Stn"
-                  [binary]="true"
-                  inputId="binary"
-                  [(ngModel)]="nodeDetails.intermediate_node"
-                /><br />
+              <div class="node-action">
+                <div class="node-row">
+                  <div class="node1">
+                    <label for="Intermediate_Stn" class="label">Intermediate Node:</label>
+                    <p-checkbox
+                      id="Intermediate_Stn"
+                      [binary]="true"
+                      inputId="binary"
+                      [(ngModel)]="nodeDetails.intermediate_node"
+                    ></p-checkbox>
+                  </div>
+                  <div class="node1">
+                    <label for="Waiting_Stn" class="label">Waiting Node:</label>
+                    <p-checkbox
+                      id="Waiting_Stn"
+                      [binary]="true"
+                      inputId="binary"
+                      [(ngModel)]="nodeDetails.waiting_node"
+                    ></p-checkbox>
+                  </div>
+                </div>
+              
+                <div class="node-row">
+                  <div class="node1">
+                    <label for="Charge_Stn" class="label">Charge Node:</label>
+                    <p-checkbox
+                      id="Charge_Stn"
+                      [binary]="true"
+                      inputId="binary"
+                      [(ngModel)]="nodeDetails.charge_node"
+                    ></p-checkbox>
+                  </div>
+                  <div class="node1">
+                    <label for="Dock_Stn" class="label">Dock Node:</label>
+                    <p-checkbox
+                      id="Dock_Stn"
+                      [binary]="true"
+                      inputId="binary"
+                      [(ngModel)]="nodeDetails.dock_node"
+                    ></p-checkbox>
+                  </div>
+                </div>
               </div>
-              <div style="margin-right: 2.5rem;">
-                <label for="Waiting_Stn" class="label" style="margin-left:10rem">Waiting Node: </label>
-                <p-checkbox
-                  id="Waiting_Stn"
-                  [binary]="true"
-                  inputId="binary"
-                  [(ngModel)]="nodeDetails.waiting_node"
-                />
-            </div>
-
-          <div class="Node-btn">
-            <div *ngIf="validationError" class="validation-error">*{{ validationError }}</div>
+              
+          <div class="Node-btn1">
+            <div *ngIf="validationError" class="node-validation-error">*{{ validationError }}</div>
           </div>
           <div class="Node-btn">
             <button class="Delnode-btn" (click)="deleteSelectedNode()">Delete Node</button>
