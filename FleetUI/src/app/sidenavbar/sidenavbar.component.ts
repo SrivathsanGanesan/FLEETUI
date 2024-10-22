@@ -98,7 +98,7 @@ export class SidenavbarComponent implements OnInit {
     await this.getFleetStatus();
     setInterval(async () => {
       await this.getFleetStatus();
-    }, 1000 * 10); // max to 30 or 60 sec
+    }, 1000 * 4); // max to 30 or 60 sec
   }
 
   async getFleetStatus() {
@@ -106,8 +106,8 @@ export class SidenavbarComponent implements OnInit {
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fleet-status`
     );
     let data = await response.json();
-    // console.log(data);
-    this.isFleetUp = data.fleetUp;
+    // console.log(data.fleetUp);
+    this.isFleetUp = data.fleetUp ? true : false;
   }
 
   // Clear all notifications when the button is clicked

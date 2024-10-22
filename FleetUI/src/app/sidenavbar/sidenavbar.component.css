@@ -41,6 +41,13 @@
     width: 220px;
   }
 
+  .wifi-icon {
+    width: 24px; /* Adjust size for your icon */
+    height: 24px;
+    margin-right: 8px;
+  }
+  
+
   /* notification */
 
   .fleet-status {

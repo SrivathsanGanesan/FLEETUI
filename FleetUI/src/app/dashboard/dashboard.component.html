@@ -44,8 +44,12 @@
         </div>
       </div>
     </div>
-      
-
+  <!-- fleet and simulation -->
+  <button class="indication-button" [ngClass]="buttonClass" (click)="toggleMode()">
+    <img [src]="iconUrl" class="icon" alt="Icon">
+    <span>{{ buttonLabel }}</span>
+  </button>
+  
     <!-- ON Button -->
     <div class="ONBtn" (click)="startStopOpt()">
       <img [src]="getOnBtnImage()" (click)="toggleONBtn()" />
