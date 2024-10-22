@@ -308,12 +308,19 @@ const getRoboDetails = async (req, res) => {
 };
 
 const getFleetStatus = async (req, res) => {
+  let endpoint = "getFmsData";
   try {
+    await fetch(
+      `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`
+    );
+    return res
+      .status(200)
+      .json({ fleetUp: true, msg: "fleet in up", error: null });
   } catch (error) {
-    console.error("Error in getting tasks status :", error);
+    console.error("Error in checking status of fleet :", error);
     res
-      .status(500)
-      .json({ error: error.message, msg: "Internal Server Error" });
+      .status(404)
+      .json({ fleetUp: false, msg: "fleet in down", error: error.message });
   }
 };
 

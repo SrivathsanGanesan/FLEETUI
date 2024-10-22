@@ -11,7 +11,7 @@ import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
-import { MessageService } from 'primeng/api';
+
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -118,8 +118,7 @@ export class DashboardComponent implements AfterViewInit {
 
   constructor(
     private projectService: ProjectService,
-    private cdRef: ChangeDetectorRef,
-    private messageService:MessageService,
+    private cdRef: ChangeDetectorRef
   ) {
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
@@ -176,11 +175,6 @@ export class DashboardComponent implements AfterViewInit {
     this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
     this.initSimRoboPos();
     this.loadCanvas();
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-    // setInterval(() => {      
-    //   this.plotRobo(ctx!, Math.floor(Math.random()*700), Math.floor(Math.random()*500), 0);
-    // }, 500);
     console.log(this.simMode);
   }
 
@@ -262,9 +256,11 @@ export class DashboardComponent implements AfterViewInit {
         console.log(`Robot ${this.updatedrobo.amrId} initialized`,this.updatedrobo);
       }
     }
+
     // this.robotToInitialize = this.updatedrobo;
     this.robotToInitialize = JSON.parse(JSON.stringify(this.updatedrobo));
     this.hidePopup();
+
     await this.initializeRobot();
   }
 
@@ -308,20 +304,10 @@ export class DashboardComponent implements AfterViewInit {
     console.log(data);
     // this.cancelDelete();
     if (data.isInitialized) {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Initialisation',
-        detail: 'Robot Initialized!',
-      });
+      alert('robo Initialized!');
       return;
     }
-    if (data.msg){ 
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error on initialising',
-        detail: 'Data not attained by fleet',
-      });
-    }
+    if (data.msg) alert(data.msg);
   }
 
   cancelAction() {
@@ -1103,98 +1089,104 @@ export class DashboardComponent implements AfterViewInit {
   async plotAllRobots(robotsData: any) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    
+
     const mapImage = new Image();
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load
-  
+
     if (ctx) {
       // Clear the whole canvas before redrawing the map and all robots
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // Calculate the scaled image dimensions and center the image on the canvas
       const imgWidth = mapImage.width * this.zoomLevel;
       const imgHeight = mapImage.height * this.zoomLevel;
       const centerX = (canvas.width - imgWidth) / 2;
       const centerY = (canvas.height - imgHeight) / 2;
-      
-      if (this.showModelCanvas) {
-        // Save the current canvas context state
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.scale(this.zoomLevel, this.zoomLevel);
-  
-        // Draw nodes and edges directly onto the map
-        this.drawNodesAndEdges(ctx, mapImage);
-  
-        // Restore the context to the previous state
-        ctx.restore();
-      }
+
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.scale(this.zoomLevel, this.zoomLevel);
       ctx.drawImage(mapImage, 0, 0);
       ctx.restore(); // Reset transformation after drawing the map
-  
+
       // Plot each robot on the map
       Object.keys(robotsData).forEach((robotId) => {
         const { posX, posY, yaw } = robotsData[robotId];
         const transformedY = canvas.height - posY;
-  
-        const robotPosX = centerX + posX * this.zoomLevel;
+        // this.plotRobo(ctx, posX, transformedY, -yaw);
+
+        const robotPosX = centerX + posX * this.zoomLevel; // implemented when developed, need to ensure with the above line.
         const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
         this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
+        // const robotPosX = centerX + this.offsetX + (posX * this.zoomLevel);
+        // const robotPosY = centerY + this.offsetY + ((canvas.height - posY) * this.zoomLevel);
       });
+
+      if (this.showModelCanvas) {
+        // Create a temporary canvas to draw nodes and edges
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        if (tempCtx) {
+          tempCanvas.width = mapImage.width * this.zoomLevel;
+          tempCanvas.height = mapImage.height * this.zoomLevel;
   
-      // If showModelCanvas is true, plot nodes, edges, and assets on the map image
+          // Draw nodes and edges on the temporary canvas
+          this.drawNodesAndEdges(tempCtx, mapImage);
+  
+          // Draw the temporary canvas onto the main canvas
+          ctx.drawImage(tempCanvas, centerX, centerY);
+        }
+      }
     }
   }
-  
+
   drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
-    // Plot nodes
-    this.nodes.forEach((node) => {
-      const transformedY = img.height - node.nodePosition.y;
-      this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
-    });
-  
-    // Plot edges
-    this.edges.forEach((edge) => {
-      const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
-      const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
-  
-      if (startNode && endNode) {
-        const startPos = {
-          x: startNode.nodePosition.x,
-          y: startNode.nodePosition.y,
-        };
-        const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
-        const transformedStartY = img.height - startPos.y;
-        const transformedEndY = img.height - endPos.y;
-  
-        this.drawEdge(
-          ctx,
-          { x: startPos.x, y: transformedStartY },
-          { x: endPos.x, y: transformedEndY },
-          edge.direction,
-          edge.startNodeId,
-          edge.endNodeId
-        );
-      }
-    });
-    this.zones.forEach((zone) => {
-      this.plottedPoints = zone.pos;
-      this.zoneType = zone.type;
-      this.drawLayer(ctx); // Assuming this method draws the zone layer
-      this.plottedPoints = [];
-    });
-  
-    // Draw assets
-    this.assets.forEach((asset) =>
-      this.plotAsset(ctx, asset.x, asset.y, asset.type)
-    );
+  // Plot nodes
+  this.nodes.forEach((node) => {
+    const transformedY = img.height - node.nodePosition.y;
+    this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+  });
+
+  // Plot edges
+  this.edges.forEach((edge) => {
+    const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
+    const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
+
+    if (startNode && endNode) {
+      const startPos = {
+        x: startNode.nodePosition.x,
+        y: startNode.nodePosition.y,
+      };
+      const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+      const transformedStartY = img.height - startPos.y;
+      const transformedEndY = img.height - endPos.y;
+
+      this.drawEdge(
+        ctx,
+        { x: startPos.x, y: transformedStartY },
+        { x: endPos.x, y: transformedEndY },
+        edge.direction,
+        edge.startNodeId,
+        edge.endNodeId
+      );
+    }
+  });
+
+  // Plot zones and assets if needed
+  this.zones.forEach((zone) => {
+    this.plottedPoints = zone.pos;
+    this.zoneType = zone.type;
+    this.drawLayer(ctx); // Assuming drawLayer plots zone points
+    this.plottedPoints = [];
+  });
+
+  this.assets.forEach((asset) =>
+    this.plotAsset(ctx, asset.x, asset.y, asset.type)
+  );
   }
-  
+
   async showSpline() {
     if (!this.selectedMap.id) return;
     let response = await fetch(
@@ -1497,6 +1489,7 @@ export class DashboardComponent implements AfterViewInit {
     try {
       const displayMediaStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
+
         },
         audio: false
       });
