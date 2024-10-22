@@ -98,7 +98,7 @@ export class SidenavbarComponent implements OnInit {
     await this.getFleetStatus();
     setInterval(async () => {
       await this.getFleetStatus();
-    }, 1000 * 10); // max to 30 or 60 sec
+    }, 1000 * 5); // max to 30 or 60 sec
   }
 
   async getFleetStatus() {
