@@ -30,6 +30,8 @@ interface Node {
   actions: any[];
   intermediate_node: boolean;
   Waiting_node: boolean;
+  charge_node: boolean;
+  dock_node: boolean;
 }
 interface Edge {
   edgeId: string; //Unique edge identification
@@ -843,6 +845,8 @@ export class EnvmapComponent implements AfterViewInit {
         this.nodes[nodeIndex].nodeDescription = this.nodeDetails.description;
         this.nodes[nodeIndex].intermediate_node = this.nodeDetails.intermediate_node;
         this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
+        this.nodes[nodeIndex].charge_node = this.nodeDetails.charge_node;
+        this.nodes[nodeIndex].dock_node = this.nodeDetails.dock_node;
       }
       this.redrawCanvas();
     }
@@ -1014,7 +1018,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isMoveActionFormVisible = false;
     this.isDockActionFormVisible = false;
     this.isUndockActionFormVisible = false;
-    
+    this.actions = this.actions.filter(action => action.isSaved);
     // Clear the selected actions
     this.actions = [];
     this.selectedAction = null;
@@ -1843,10 +1847,14 @@ export class EnvmapComponent implements AfterViewInit {
       
       if (this.isNodeClicked(node, x, y) ) {
         this.selectedNode=node;
+        this.actions = this.selectedNode.actions.filter(action => action.isSaved);
         this.nodeDetails.description = this.selectedNode.nodeDescription;
         this.nodeDetails.intermediate_node = this.selectedNode.intermediate_node;
         this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
+        this.nodeDetails.charge_node = this.selectedNode.charge_node;
+        this.nodeDetails.dock_node = this.selectedNode.dock_node;
         this.actions = this.selectedNode.actions;
+        
         for (let action of this.actions) {
           if (action.actionType === 'Move') {
             this.moveParameters = action.parameters;
@@ -2275,6 +2283,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         nodePosition: { x: x, y: transformedY, orientation: 0 },
         intermediate_node: false,
         Waiting_node: false,
+        charge_node: false,
+        dock_node:false,
         actions: [],
       },
       color,
@@ -2302,6 +2312,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       actions: [],
       intermediate_node: false,
       Waiting_node: false,
+      charge_node: false,
+      dock_node: false
     };
 
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
@@ -2366,6 +2378,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
+            charge_node: false,
+            dock_node: false
         },
         color,
         false
@@ -2382,6 +2396,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
+            charge_node: false,
+            dock_node: false
         };
         this.firstNode = firstnode;
         this.nodes.push(firstnode);
@@ -2396,6 +2412,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
+            charge_node: false,
+            dock_node: false
         };
         this.secondNode = secondnode;
         this.currMulNode.push(this.firstNode);
@@ -2502,6 +2520,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             actions: [],
             intermediate_node: true, // Marking it as intermediate
             Waiting_node: false,
+            charge_node: false,
+            dock_node: false
           };
 
           this.nodes.push(node);
