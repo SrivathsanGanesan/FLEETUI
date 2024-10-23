@@ -761,126 +761,128 @@ export class EnvmapComponent implements AfterViewInit {
       }
       this.validationError=null;
   }
+
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
-    if (this.isNodeDetailsPopupVisible) {
-      this.closeNodeDetailsPopup(); // Close and reset the popup, removing unsaved actions
-    }
-    if (this.isMultiNodePlotting) {
-      event.preventDefault(); // Block right-click interaction
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Action Restricted',
-        detail: 'Right-click is disabled while plotting multiple nodes.',
-      });
-      return;
-    }
-    event.preventDefault();
-    // if (!this.rightClickEnabled) {
-    //   event.preventDefault(); // Block right-click interaction
+      if (this.isMultiNodePlotting) {
+        event.preventDefault(); // Block right-click interaction
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Action Restricted',
+          detail: 'Right-click is disabled while plotting multiple nodes.',
+        });
+        return;
+      }
+      event.preventDefault();
+      // if (!this.rightClickEnabled) {
+      //   event.preventDefault(); // Block right-click interaction
 
-    //   this.messageService.add({
-    //     severity: 'info',
-    //     summary: 'Action Restricted',
-    //     detail: 'Please plot both nodes before interacting.'
-    //   });
-    //   return;
-    // }
-    const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-    const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-    const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+      //   this.messageService.add({
+      //     severity: 'info',
+      //     summary: 'Action Restricted',
+      //     detail: 'Please plot both nodes before interacting.'
+      //   });
+      //   return;
+      // }
+      const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
+      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
+      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
 
-  for (const zone of this.zones) {
+    for (const zone of this.zones) {
 
-    const firstPoint = zone.pos[0]; // The first point of the zone
-    if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
-      this.zoneType = zone.type; // Prepopulate the selected zone type
-      this.selectedZone = zone; // Store the selected zone
-      this.isPopupVisible = true;
-      this.isDeleteVisible=true;
-      // this.showZoneTypePopup(); // Display the popup
-      return;
-    }
-  }
-    for (const robo of this.robos) {
-      if (this.isRobotClicked(robo, x, y)) {
-        this.robotToDelete = robo;  // Store the robot that was right-clicked
-        this.isRoboConfirmationVisible = true;
-        // const confirmDelete = confirm('Do you want to delete this robot?');
-        // if (confirmDelete) {
-        //   // Remove the robot from the robos array
-        //   this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
-        //   // Redraw the canvas after deleting the robot
-        //   this.redrawCanvas();
-        // }
+      const firstPoint = zone.pos[0]; // The first point of the zone
+      if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
+        this.zoneType = zone.type; // Prepopulate the selected zone type
+        this.selectedZone = zone; // Store the selected zone
+        this.isPopupVisible = true;
+        this.isDeleteVisible=true;
+        // this.showZoneTypePopup(); // Display the popup
         return;
       }
     }
-    // Check if a node is clicked
-    for (const node of this.nodes) {      
-      if (this.isNodeClicked(node, x, y) ) {
-        this.selectedNode=node;
-        this.nodeDetails.description = this.selectedNode.nodeDescription;
-        this.nodeDetails.intermediate_node = this.selectedNode.intermediate_node;
-        this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
-        this.nodeDetails.charge_node = this.selectedNode.charge_node;
-        this.nodeDetails.dock_node = this.selectedNode.dock_node;
-        // this.actions = this.selectedNode.actions;
-        this.actions = this.actions.filter(action => !this.unsavedActions.includes(action.actionType));
-        for (let action of this.actions) {
-          if (action.actionType === 'Move') {
-            this.moveParameters = action.parameters;
-            continue;
-            // break;
-          }
-          if (action.actionType === 'Dock') {
-            this.dockParameters = action.parameters;
-            continue;
-          }
-          if (action.actionType === 'Undock') {
-            this.undockParameters = action.parameters;
-            continue;
-          }
+      for (const robo of this.robos) {
+        if (this.isRobotClicked(robo, x, y)) {
+          this.robotToDelete = robo;  // Store the robot that was right-clicked
+          this.isRoboConfirmationVisible = true;
+          // const confirmDelete = confirm('Do you want to delete this robot?');
+          // if (confirmDelete) {
+          //   // Remove the robot from the robos array
+          //   this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
+          //   // Redraw the canvas after deleting the robot
+          //   this.redrawCanvas();
+          // }
+          return;
         }
+      }
+      // Check if a node is clicked
+      for (const node of this.nodes) {      
+        if (this.isNodeClicked(node, x, y) ) {
+          this.selectedNode=node;
+          this.nodeDetails.description = this.selectedNode.nodeDescription;
+          this.nodeDetails.intermediate_node = this.selectedNode.intermediate_node;
+          this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
+          this.nodeDetails.charge_node = this.selectedNode.charge_node;
+          this.nodeDetails.dock_node = this.selectedNode.dock_node;
+          this.actions = this.selectedNode.actions;
+          for (let action of this.actions) {
+            if (action.actionType === 'Move') {
+              this.moveParameters = action.parameters;
+              continue;
+              // break;
+            }
+            if (action.actionType === 'Dock') {
+              this.dockParameters = action.parameters;
+              continue;
+            }
+            if (action.actionType === 'Undock') {
+              this.undockParameters = action.parameters;
+              continue;
+            }
+          }
 
-        // this.cdRef.detectChanges();
-        // Remove selected action from the dropdown options
-        let actionOpt = this.selectedNode.actions.map(action => action.actionType);
-        this.actionOptions = []
-        if(!actionOpt.includes('Move')) this.actionOptions.push({label: 'Move', value: 'Move'})
-        if(!actionOpt.includes('Dock')) this.actionOptions.push({label: 'Dock', value: 'Dock'})
-        if(!actionOpt.includes('Undock')) this.actionOptions.push({label: 'Undock', value: 'Undock'})
+          // this.cdRef.detectChanges();
+          // Remove selected action from the dropdown options
+          let actionOpt = this.selectedNode.actions.map(action => action.actionType);
+          this.actionOptions = []
+          if(!actionOpt.includes('Move')) this.actionOptions.push({label: 'Move', value: 'Move'})
+          if(!actionOpt.includes('Dock')) this.actionOptions.push({label: 'Dock', value: 'Dock'})
+          if(!actionOpt.includes('Undock')) this.actionOptions.push({label: 'Undock', value: 'Undock'})
 
-        this.showNodeDetailsPopup();
+          this.showNodeDetailsPopup();
+          return;
+        }
+      }
+      // Check if the click is on an edge
+      const clickedEdge = this.edges.find((edge) =>
+        this.isPointOnEdge(edge, x, y)
+      );
+      for (const asset of this.assets) {
+        if (this.isAssetClicked(asset, x, y) && asset.type === 'docking') {
+          console.log('Docking station clicked');
+
+          this.selectedAsset = asset;
+          this.undockingDistance = asset.undockingDistance.toString();
+          this.description = asset.desc;
+          this.DockPopup = true; // Show the popup for docking stations only
+          return; // Exit early after handling docking station
+        }
+        if (this.isAssetClicked(asset, x, y) && asset.type === 'charging') {
+          this.selectedAsset = asset;
+          this.isConfirmationVisible = true;
+        }
+      }
+      if (clickedEdge) {
+        this.currentEdge = { ...clickedEdge };  // Set the current edge details for editing
+        this.originalEdgeDetails = { ...clickedEdge };  // Store the original unmodified edge details
+
+        this.showPopup = true;  // Show the popup with form fields
         return;
       }
-    }
-    // Check if the click is on an edge
-    const clickedEdge = this.edges.find((edge) =>
-      this.isPointOnEdge(edge, x, y)
-    );
-    for (const asset of this.assets) {
-      if (this.isAssetClicked(asset, x, y) && asset.type === 'docking') {
-        console.log('Docking station clicked');
-
-        this.selectedAsset = asset;
-        this.undockingDistance = asset.undockingDistance.toString();
-        this.description = asset.desc;
-        this.DockPopup = true; // Show the popup for docking stations only
-        return; // Exit early after handling docking station
-      }
-      if (this.isAssetClicked(asset, x, y) && asset.type === 'charging') {
-        this.selectedAsset = asset;
-        this.isConfirmationVisible = true;
-      }
-    }
-    if (clickedEdge) {
-      this.currentEdge = { ...clickedEdge };  // Set the current edge details for editing
-      this.originalEdgeDetails = { ...clickedEdge };  // Store the original unmodified edge details
-
-      this.showPopup = true;  // Show the popup with form fields
-      return;
-    }
+  }
+  showNodeDetailsPopup(): void {
+    this.isNodeDetailsPopupVisible = true;
+    
+    this.cdRef.detectChanges(); // Ensure the popup updates
   }
   saveNodeDetails(x: string, y: string, orientation: string): void {
     this.validationError = '';
@@ -982,13 +984,9 @@ export class EnvmapComponent implements AfterViewInit {
     this.selectedAction = ''; // Reset the selected action
     this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
   }
-  // In the component, track unsaved actions
-  unsavedActions: string[] = [];
-
   openActionForm(action: any): void {
     // Hide all other forms
-    this.hideActionForms();
-  
+    this.hideActionForms();  
     // Show the relevant form based on the action type
     if (action.actionType === 'Move') {
       this.isMoveActionFormVisible = true;
@@ -997,14 +995,9 @@ export class EnvmapComponent implements AfterViewInit {
     } else if (action.actionType === 'Undock') {
       this.isUndockActionFormVisible = true;
     }
-  
-    // Set the selected action
     this.selectedAction = action.actionType;
-  
-    // Remove the action from the list
     this.actions = this.actions.filter(a => a.actionType !== action.actionType);
-  }
-  
+  }  
   moveParameters = {
     maxLinearVelocity: 0,
     maxAngularVelocity: 0,
@@ -1121,27 +1114,20 @@ export class EnvmapComponent implements AfterViewInit {
       this.selectedAction = null;
     }
   }
-  lastSelectedAction: string | null = null;
-
   cancelAction(): void {
     // Hide all action forms
     this.hideActionForms();  
     // Reset the selected action
     this.selectedAction = null;       
     this.actionOptions = this.allActions.filter(option => !this.actions.some(a => a.actionType === option.value)); 
-  }  
-  
+  }    
   openMoveActionForm(): void {
     this.isMoveActionFormVisible = true;
     this.isDockActionFormVisible = true;
     this.isUndockActionFormVisible = true;
   }
   closeNodeDetailsPopup(): void {
-    // Remove unsaved actions from the list
-    this.actions = this.actions.filter(action => !this.unsavedActions.includes(action.actionType));
 
-    // Reset unsavedActions array
-    this.unsavedActions = [];
     this.isNodeDetailsPopupVisible = false;
     this.isMoveActionFormVisible = false;
     this.isDockActionFormVisible = false;
@@ -1150,16 +1136,12 @@ export class EnvmapComponent implements AfterViewInit {
     // Clear the selected actions
     this.actions = [];
     this.selectedAction = null;
-  }
-  
+  }  
   allActions = [
     { label: 'Move', value: 'Move' },
     { label: 'Dock', value: 'Dock' },
     { label: 'Undock', value: 'Undock' }
   ];
-  isOptionDisabled(option: string): boolean {
-    return this.actions.some((action) => action.actionType === option);
-  }
   imageBase64: string | null = null;
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -1978,11 +1960,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.validationMessage=""
     this.selectedAssetId = null;
   }
-  showNodeDetailsPopup(): void {
-    this.isNodeDetailsPopupVisible = true;
-    
-    this.cdRef.detectChanges(); // Ensure the popup updates
-  }
+
   private drawNode(node: Node, color: string, selected: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
