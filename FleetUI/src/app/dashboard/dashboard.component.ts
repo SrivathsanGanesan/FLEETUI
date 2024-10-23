@@ -1103,20 +1103,6 @@ export class DashboardComponent implements AfterViewInit {
       ctx.scale(this.zoomLevel, this.zoomLevel);
       ctx.drawImage(mapImage, 0, 0);
       ctx.restore(); // Reset transformation after drawing the map
-
-      // Plot each robot on the map
-      Object.keys(robotsData).forEach((robotId) => {
-        const { posX, posY, yaw } = robotsData[robotId];
-        const transformedY = canvas.height - posY;
-        // this.plotRobo(ctx, posX, transformedY, -yaw);
-
-        const robotPosX = centerX + posX * this.zoomLevel; // implemented when developed, need to ensure with the above line.
-        const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
-        this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
-        // const robotPosX = centerX + this.offsetX + (posX * this.zoomLevel);
-        // const robotPosY = centerY + this.offsetY + ((canvas.height - posY) * this.zoomLevel);
-      });
-
       if (this.showModelCanvas) {
         // Create a temporary canvas to draw nodes and edges
         const tempCanvas = document.createElement('canvas');
@@ -1132,7 +1118,19 @@ export class DashboardComponent implements AfterViewInit {
           ctx.drawImage(tempCanvas, centerX, centerY);
         }
       }
-    }
+      // Plot each robot on the map
+      Object.keys(robotsData).forEach((robotId) => {
+        const { posX, posY, yaw } = robotsData[robotId];
+        const transformedY = canvas.height - posY;
+        // this.plotRobo(ctx, posX, transformedY, -yaw);
+
+        const robotPosX = centerX + posX * this.zoomLevel; // implemented when developed, need to ensure with the above line.
+        const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
+        this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
+        // const robotPosX = centerX + this.offsetX + (posX * this.zoomLevel);
+        // const robotPosY = centerY + this.offsetY + ((canvas.height - posY) * this.zoomLevel);
+      });
+      }
   }
 
   drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
