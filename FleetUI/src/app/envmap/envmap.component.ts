@@ -1948,6 +1948,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.selectedAssetId = null;
   }
   showNodeDetailsPopup(): void {
+    this.validationError="";
     // Load saved actions for the selected node
     if(this.selectedNode)
       this.actions = [...(this.selectedNode.actions || [])];  // Load node's saved actions or an empty array

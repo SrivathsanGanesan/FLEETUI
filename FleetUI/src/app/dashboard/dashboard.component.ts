@@ -677,6 +677,7 @@ export class DashboardComponent implements AfterViewInit {
 
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     const tooltip = document.getElementById('Pos_tooltip')!;
+    const tooltip1 = document.getElementById('robo_tooltip')!;
 
     canvas.addEventListener('mousemove', (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -686,6 +687,34 @@ export class DashboardComponent implements AfterViewInit {
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
+      let hoveredRobo = null;
+          // Check if the mouse is over any robot
+    for (let robo of this.robos) {
+      const roboX = robo.pos.x;
+      const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
+      const imageSize = 25; // Adjust based on the size of the robot image
+
+      if (
+        imgX >= roboX - imageSize &&
+        imgX <= roboX + imageSize &&
+        imgY >= roboY - imageSize &&
+        imgY <= roboY + imageSize
+      ) {
+        hoveredRobo = robo;
+        break;
+      }
+    }
+    if (hoveredRobo) {
+      // Set the tooltip content with the robot ID
+      tooltip1.textContent = `Robot ID: ${hoveredRobo.roboDet.id}`;
+      tooltip1.style.display = 'block';
+
+      // Position the tooltip slightly above the robot
+      tooltip1.style.left = `${event.clientX}px`;
+      tooltip1.style.top = `${event.clientY - 30}px`; // Adjust to place tooltip above the cursor
+    } else {
+      tooltip1.style.display = 'none'; // Hide tooltip if not hovering over a robot
+    }
 
       if (this.draggingRobo && this.isDragging && !this.draggingRobo.isInitialized) {
         // this.draggingRobo.pos.x = this.draggingRobo.pos.x;
@@ -715,6 +744,7 @@ export class DashboardComponent implements AfterViewInit {
       } else {
         tooltip.style.display = 'none'; // Hide tooltip if outside
       }
+      
     });
 
     canvas.addEventListener('mouseleave', () => {
