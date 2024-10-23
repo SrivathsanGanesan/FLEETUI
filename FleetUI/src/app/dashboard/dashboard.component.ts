@@ -108,7 +108,7 @@ export class DashboardComponent implements AfterViewInit {
   selectedRobo: any = null;
   placeOffset: number = 50;
   robotToInitialize: any = null;
-  isEnableMode: boolean = false;
+  isInLive: boolean = false;
   isMoveModeActive: boolean = false; // Track if move mode is enabled
   isDragging: boolean = false;
   isMapLoaded = false;
@@ -153,6 +153,8 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async ngOnInit() {
+    this.isInLive = this.projectService.getInLive();
+
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
       await this.onInitMapImg();
@@ -1027,7 +1029,8 @@ export class DashboardComponent implements AfterViewInit {
 
     this.posEventSource = new EventSource(URL);
     this.posEventSource.onmessage = (event) => {
-      if (this.isEnableMode) this.isEnableMode = true;
+      this.projectService.setInLive(true);
+      this.isInLive = true;
       const robotsData: any = {};
 
       try {
@@ -1059,7 +1062,7 @@ export class DashboardComponent implements AfterViewInit {
             console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
 
             // yet to remove if cond..
-            if (robot.pose.position.x && robot.pose.position.y)
+            // if (robot.pose.position.x && robot.pose.position.y)
               // Re-plot all robots
               await this.plotAllRobots(robotsData);
           });
@@ -1070,7 +1073,8 @@ export class DashboardComponent implements AfterViewInit {
     };
 
     this.posEventSource.onerror = (error) => {
-      this.isEnableMode = false;
+      this.projectService.setInLive(false);
+      this.isInLive = false;
       console.error('SSE error:', error);
       this.posEventSource.close();
     };
