@@ -1,9 +1,12 @@
 const amqp = require("amqplib");
 const { Map, Robo } = require("../../../application/models/mapSchema");
+const EventEmitter = require("events");
 require("dotenv").config();
 
 let rabbitMqClient = null;
 let rabbitMQChannel = null;
+
+const consumeAMQP = new EventEmitter();
 
 let currentRobos = [];
 
@@ -20,17 +23,17 @@ const initRabbitMQConnection = async () => {
       `amqp://${process.env.RABBITMQ_SERVER}:${process.env.RABBITMQ_PORT}`
     );
     rabbitMQChannel = await rabbitMqClient.createChannel();
+    await consumeMessage();
   } catch (error) {
     console.error("Error while connecting rabbitmq :", error.message);
   }
 };
 
-const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
+const consumeMessage = async () => {
   if (!rabbitMQChannel) return;
-  // remove previous or existing event listenr to prevent memory leaks.. which overwhelmed bcz of listeners..
-  req.on("close", () => {
-    return res.end();
-  });
+  const exchange = "amq.topic";
+  const queueName = "FMS.CONFIRM-TASK"; // queue name...
+  const routingKey = "FMS";
   try {
     // topic or direct or fanout, which describes what type of exchange it is..
     let exchangeInfo = await rabbitMQChannel.assertExchange(exchange, "topic", {
@@ -40,6 +43,7 @@ const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
     let queueInfo = await rabbitMQChannel.assertQueue(queueName, {
       durable: true, // queue remains even rabbitmq server restarts..
     });
+
     await rabbitMQChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
 
     rabbitMQChannel.consume(queueName, (msg) => {
@@ -47,7 +51,8 @@ const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
       if (msg) {
         const messageContent = msg.content.toString();
         let robos = JSON.parse(messageContent);
-        res.write(`data: ${JSON.stringify(robos)}\n\n`);
+        // res.write(`data: ${JSON.stringify(robos)}\n\n`);
+        consumeAMQP.emit("amqp-data", robos);
         currentRobos = robos;
 
         rabbitMQChannel.ack(msg);
@@ -58,11 +63,6 @@ const receiveMessage = async (exchange, queueName, routingKey, req, res) => {
     if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {
       console.error("Queue properties mismatch. Please verify queue settings.");
     }
-    return res.status(500).json({
-      errInReceivingMsg: true,
-      error: error.message,
-      msg: "Error while receiving message",
-    });
   }
 };
 
@@ -135,16 +135,20 @@ const initializeRobo = async (req, res) => {
 };
 
 const getRoboPos = async (req, res) => {
-  const exchange = "amq.topic";
-  const queueName = "FMS.CONFIRM-TASK"; // queue name...
-  const routingKey = "FMS";
   const mapId = req.params.mapId;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
     res.writeHead(200, eventStreamHeader);
-    await receiveMessage(exchange, queueName, routingKey, req, res);
+
+    req.on("close", () => {
+      return res.end();
+    });
+
+    consumeAMQP.on("amqp-data", (robos) => {
+      res.write(`data: ${JSON.stringify(robos)}\n\n`);
+    });
     // const map = await Map.findOne({ _id: mapId });
     // return res.status(200).json({ roboPos: null, data: "msg sent" });
   } catch (error) {
@@ -308,7 +312,7 @@ const getRoboDetails = async (req, res) => {
 };
 
 const getFleetStatus = async (req, res) => {
-  let endpoint = "getFmsData";
+  let endpoint = "notifications";
   try {
     await fetch(
       `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`

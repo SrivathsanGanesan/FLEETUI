@@ -1103,6 +1103,7 @@ export class DashboardComponent implements AfterViewInit {
       ctx.scale(this.zoomLevel, this.zoomLevel);
       ctx.drawImage(mapImage, 0, 0);
       ctx.restore(); // Reset transformation after drawing the map
+
       if (this.showModelCanvas) {
         // Create a temporary canvas to draw nodes and edges
         const tempCanvas = document.createElement('canvas');
@@ -1118,8 +1119,27 @@ export class DashboardComponent implements AfterViewInit {
           ctx.drawImage(tempCanvas, centerX, centerY);
         }
       }
-      // Plot each robot on the map
+      
       Object.keys(robotsData).forEach((robotId) => {
+        const { posX, posY, yaw } = robotsData[robotId];
+
+        const robotPosX = centerX + posX * this.zoomLevel;
+        const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
+
+        this.simMode = this.simMode.map((robo) => {
+          if(robo.amrId === robotId) {
+            robo.pos.x = robotPosX;
+            robo.pos.y = robotPosY;
+            robo.pos.orientation = yaw;
+          }
+          return robo
+        })
+
+        this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
+      });
+
+      // Plot each robot on the map, yet to uncomment..
+     /*  Object.keys(robotsData).forEach((robotId) => {
         const { posX, posY, yaw } = robotsData[robotId];
         const transformedY = canvas.height - posY;
         // this.plotRobo(ctx, posX, transformedY, -yaw);
@@ -1129,8 +1149,8 @@ export class DashboardComponent implements AfterViewInit {
         this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
         // const robotPosX = centerX + this.offsetX + (posX * this.zoomLevel);
         // const robotPosY = centerY + this.offsetY + ((canvas.height - posY) * this.zoomLevel);
-      });
-      }
+      }); */
+    }
   }
 
   drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
