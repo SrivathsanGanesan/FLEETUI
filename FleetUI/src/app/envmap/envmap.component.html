@@ -289,8 +289,8 @@
               <div *ngFor="let action of actions; let i = index" class="action-item">
                 <button class="action-button" (click)="openActionForm(action)" >
                   {{ action.actionType }}
-                  <!-- <span class="delete-icon" (click)="cancelAction()">X</span> -->
                 </button>
+                <span class="delete-icon" (click)="deleteActionFromNode(action)">x</span>
               </div>
             </div>
           </div>

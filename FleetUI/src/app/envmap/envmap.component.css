@@ -469,6 +469,7 @@ canvas {
   display: flex;
   flex-direction: row;
   justify-content: center;
+
 }
 
 .action-item {
@@ -611,7 +612,6 @@ canvas {
 } */
 
 .action-container select{
-
   /* border-bottom:1px solid black ; */
   background-color: transparent;
   font-size: 15px;
@@ -632,7 +632,10 @@ canvas {
   background-color: rgba(255, 0, 0, 0.493);
   font-size: 15px;
   color: #ffffff;
-  border-radius: 5px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px ;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
   padding: 8px;
 }
 
@@ -643,12 +646,15 @@ canvas {
 }
 
 .delete-icon{
-  background-color: rgba(205, 48, 48, 0.493);
-  font-size: 15px;
-  font-weight: bold;
-  border-radius: 90px;
-  padding: 5px;
-  margin-left: 5px;
+  background-color: rgba(255, 0, 0, 0.493);
+  font-size: 14px;
+  color: white;
+  font-weight: light;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 8px;
+  padding-bottom: 9px;
+  margin-left: -3px;
 }
 
 .move-action-form label{
