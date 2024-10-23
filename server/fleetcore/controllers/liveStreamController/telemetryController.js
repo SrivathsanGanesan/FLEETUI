@@ -140,17 +140,20 @@ const getRoboPos = async (req, res) => {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
+    // const map = await Map.findOne({ _id: mapId });
+    // return res.status(200).json({ roboPos: null, data: "msg sent" });
     res.writeHead(200, eventStreamHeader);
 
+    const listenerCallback = (robos) => {
+      res.write(`data: ${JSON.stringify(robos)}\n\n`);
+    };
+
     req.on("close", () => {
+      consumeAMQP.removeListener("amqp-data", listenerCallback); // to prevent the memory leak, which the listeners stacked..
       return res.end();
     });
 
-    consumeAMQP.on("amqp-data", (robos) => {
-      res.write(`data: ${JSON.stringify(robos)}\n\n`);
-    });
-    // const map = await Map.findOne({ _id: mapId });
-    // return res.status(200).json({ roboPos: null, data: "msg sent" });
+    consumeAMQP.on("amqp-data", listenerCallback);
   } catch (error) {
     console.error("Error in getAgvTelemetry:", error);
     res
