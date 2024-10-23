@@ -206,8 +206,8 @@ export class DashboardComponent implements AfterViewInit {
 
   // yet to update pos and save it in map..
   initSimRoboPos() {
-    const imgWidth = this.mapImg.width * this.zoomLevel;
-    const imgHeight = this.mapImg.height * this.zoomLevel;
+    const imgWidth = this.mapImg.width; // * this.zoomLevel
+    const imgHeight = this.mapImg.height; // * this.zoomLevel    
 
     // Calculate the bottom-right corner position of the image
     let roboX = imgWidth - this.placeOffset;
@@ -389,7 +389,7 @@ export class DashboardComponent implements AfterViewInit {
         // Set canvas dimensions based on its container
         canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
         canvas.height =
-          canvas.parentElement?.clientHeight || window.innerHeight;
+        canvas.parentElement?.clientHeight || window.innerHeight;
 
         // Calculate the scaled image dimensions
         this.mapImageWidth = img.width * this.zoomLevel;
@@ -426,6 +426,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.drawImage(img, 0, 0);
 
     this.simMode.forEach((robo) => {
+      // const transformedY = img.height - robo.pos.y;
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
     });
 
@@ -552,12 +553,10 @@ export class DashboardComponent implements AfterViewInit {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
-      console.log(this.zoomLevel);
 
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
-      // console.log("mouse", imgX,imgY);
 
       for (let robo of this.simMode) {
         // console.log(this.zoomLevel);
@@ -1045,8 +1044,6 @@ export class DashboardComponent implements AfterViewInit {
               z: robot.pose.orientation.z,
             };
 
-            // let posX = robot.pose.position.x / this.ratio; // 0.05
-            // let posY = robot.pose.position.y / this.ratio; // 0.05
             let posX = (robot.pose.position.x + (this.origin.x || 0)) / (this.ratio || 1);
             let posY = (robot.pose.position.y + (this.origin.y || 0)) / (this.ratio || 1);
 
@@ -1120,22 +1117,28 @@ export class DashboardComponent implements AfterViewInit {
         }
       }
       
-      Object.keys(robotsData).forEach((robotId) => {
+      for(let robotId of Object.keys(robotsData)){
         const { posX, posY, yaw } = robotsData[robotId];
 
-        const robotPosX = centerX + posX * this.zoomLevel;
-        const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
+        // const robotPosX = centerX + posX * this.zoomLevel;
+        // const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
 
         this.simMode = this.simMode.map((robo) => {
-          if(robo.amrId === robotId) {
-            robo.pos.x = robotPosX;
-            robo.pos.y = robotPosY;
-            robo.pos.orientation = yaw;
+          let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
+          if(robo.amrId === parseInt(robotId) && !(robo.amrId === draggingRoboId)) {
+            robo.pos.x = posX;
+            robo.pos.y = imgHeight - posY;
+            robo.pos.orientation = -yaw;
           }
           return robo
         })
-
-        this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
+      };
+      
+      this.simMode.forEach((robo) => {
+        const robotPosX = centerX + robo.pos.x * this.zoomLevel;
+        const robotPosY  = centerY + robo.pos.y * this.zoomLevel;
+        let yaw = robo.pos.orientation;
+        this.plotRobo(ctx, robotPosX, robotPosY, yaw)
       });
 
       // Plot each robot on the map, yet to uncomment..
