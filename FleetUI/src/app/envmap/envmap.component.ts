@@ -551,6 +551,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isRoboConfirmationVisible=false;
   }
   confirmDelete(): void {
+    if(this.isDeleteModeEnabled){
     if (this.nodesToDelete.length > 0) {
       // Remove selected nodes from the nodes array
       this.nodes = this.nodes.filter(
@@ -581,7 +582,7 @@ export class EnvmapComponent implements AfterViewInit {
         summary: 'Warning',
         detail: 'No items selected for deletion.'
       });
-    }
+    }}
 
     if (this.selectedAsset) {
       this.assets = this.assets.filter(
@@ -603,6 +604,13 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodes = this.nodes.filter(
         (node) => node.nodeId !== this.selectedNode?.nodeId
       );
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Node Deleted Successfully',
+        life: 4000,
+      });
+      if(this.isDeleteModeEnabled){
       // Remove from nodes array
       this.nodes = this.nodes.filter((node) => {
         return (
@@ -617,7 +625,7 @@ export class EnvmapComponent implements AfterViewInit {
           edge.startNodeId !== this.selectedNode?.nodeId &&
           edge.endNodeId !== this.selectedNode?.nodeId
         );
-      });
+      });}
      
       // Clear the selected node
       this.selectedNode = null;
