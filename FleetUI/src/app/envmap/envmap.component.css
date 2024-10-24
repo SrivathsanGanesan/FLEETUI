@@ -54,7 +54,38 @@
   padding: 10px;
   display: flex;
 }
-
+.zonepopup-overlay1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 50px 30px 30px 30px;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  overflow: auto; /* Enables vertical scrolling */
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  z-index: 10;
+  cursor: not-allowed;
+}
+.zonepopup-content1 {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  gap: 8px;
+  width: 500px;
+  max-height: 500px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: none; /* Enables scrolling within the content */
+}
+.zoneTypeList{
+  margin-bottom: 30px;
+}
 .popup-overlay1 {
   position: fixed;
   top: 0;
@@ -136,6 +167,7 @@
 .popup-content.fixed-size {
   /* width: 1440px; */
   height: 88%;
+  overflow: visible;
 }
 #Edgepopupcontent{
   max-width: 1000px;
@@ -159,7 +191,7 @@ h2 {
 }
 .error-message {
   color: red;
-  font-size: 10px;
+  font-size: 15px;
 }
 .upload-image img {
   width: 120px;
@@ -360,8 +392,8 @@ canvas {
 }
 .close-btn {
   position: absolute;
-  top: -12px;
-  right: -15px;
+  top: -35px;
+  right: -40px;
   background-color: white;
   border: 2px solid red;
   border-radius: 50%;
@@ -488,6 +520,12 @@ canvas {
   gap: 1rem;
   margin-top: 1rem;
 }
+.Node-btn button{
+  margin: 2px;
+}
+.actionBTN{
+  margin: 2px;
+}
 .node-validation-error {
   color: red;
   font-size: 13px;
@@ -588,6 +626,9 @@ canvas {
   color: #da2127;
 }
 .action-form{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
   background-color: #f7c3c360;
   box-shadow: 0px 2px 10px rgb(0, 0, 0);
@@ -630,7 +671,9 @@ canvas {
 }
 .action-button{
   background-color: rgba(255, 0, 0, 0.493);
-  font-size: 15px;
+  font-size: 13px;
+  height: 40px;
+  width: 70px;
   color: #ffffff;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px ;
@@ -646,14 +689,17 @@ canvas {
 }
 
 .delete-icon{
-  background-color: rgba(255, 0, 0, 0.493);
-  font-size: 14px;
-  color: white;
+  background-color: transparent;
+  font-size: 13px;
+  color: rgba(255, 0, 0, 0.493);
   font-weight: light;
+  border: 0.5px solid rgba(255, 0, 0, 0.493);
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  padding: 8px;
-  padding-bottom: 9px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 11.5px;
+  padding-bottom: 11.5px;
   margin-left: -3px;
 }
 

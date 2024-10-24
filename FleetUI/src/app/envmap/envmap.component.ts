@@ -322,6 +322,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isFullScreen = false; // Reset fullscreen when closing
   }
 
+  isEdgeDrawingInProgress: boolean = false; // Flag to track if drawing is in progress
 
   setDirection(direction: 'uni' | 'bi'): void {
     this.toggleOptionsMenu();
@@ -329,6 +330,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.direction = direction;
     this.firstNode = null;
     this.secondNode = null;
+    this.isEdgeDrawingInProgress = true;
   }
   isPlottingAsset: boolean = false;
   selectAssetType(assetType: string) {
@@ -410,6 +412,11 @@ export class EnvmapComponent implements AfterViewInit {
       this.descriptionWarning = false;
     }
   }
+  orientationTypes = [
+    { label: 'Global', value: 'GLOBAL' },
+    { label: 'Tangential', value: 'Tangential' }
+  ];
+  
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
 
@@ -1656,6 +1663,19 @@ export class EnvmapComponent implements AfterViewInit {
         console.log('Two points plotted:', this.points);
         const distance = this.calculateDistance(this.points[0], this.points[1]);
         console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
+        if (distance === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Two points are plotted in a same located',
+            detail: 'Both Points are plotted in a same location, so kindly re-point it',
+          });
+          // Clear the points and re-draw the canvas to remove the second point
+          this.points = [];
+          this.clearCanvas();
+          return;
+        }
+  
+        console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
         this.showDistanceDialog = true; // Show the distance input dialog
       }
     }
@@ -1779,6 +1799,24 @@ export class EnvmapComponent implements AfterViewInit {
   public showZoneText: boolean = false;
   robotToDelete: any; // Store the robot to be deleted
   originalEdgeDetails: any = null;  // Can initialize it as null or {}
+  private getNodeById(nodeId: string): Node | undefined {
+    return this.nodes.find((node) => node.nodeId === nodeId);
+  }
+  
+  private calculateDistanceBetweenNodes(startNodeId: string, endNodeId: string): number | null {
+    const startNode = this.getNodeById(startNodeId);
+    const endNode = this.getNodeById(endNodeId);
+  
+    if (startNode && endNode) {
+      const dx = (endNode.nodePosition.x - startNode.nodePosition.x)-this.origin.x;
+      const dy = (endNode.nodePosition.y - startNode.nodePosition.y)-this.origin.y;
+      const dis=Math.sqrt(dx * dx + dy * dy);
+      const dist=(dis*this.ratio!)
+      return parseFloat(dist.toFixed(2));
+    }
+    return null;
+  }
+  
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     if (this.isMultiNodePlotting) {
@@ -1891,7 +1929,17 @@ export class EnvmapComponent implements AfterViewInit {
     if (clickedEdge) {
       this.currentEdge = { ...clickedEdge };  // Set the current edge details for editing
       this.originalEdgeDetails = { ...clickedEdge };  // Store the original unmodified edge details
-
+      const distance = this.calculateDistanceBetweenNodes(
+        this.currentEdge.startNodeId,
+        this.currentEdge.endNodeId
+      );
+  
+      // Assign the distance to the length field if available
+      if (distance !== null) {
+        this.currentEdge.length = distance;
+      } else {
+        this.currentEdge.length = 0; // Default to 0 if nodes are not found
+      }
       this.showPopup = true;  // Show the popup with form fields
       return;
     }
@@ -2652,7 +2700,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     this.showIntermediateNodesDialog = false;
     this.firstNode = null;
     this.secondNode = null;
-    this.numberOfIntermediateNodes = 0;
+    this.numberOfIntermediateNodes = null;
     this.currMulNode = [];
     this.onInputChanged ();
   }
@@ -2744,6 +2792,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
           }
 
           this.edgeCounter++;
+          this.isEdgeDrawingInProgress = false;
         }
 
         // Reset after drawing
@@ -2886,7 +2935,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
-    this.direction = null;
+    this.direction = "";
     this.selectedNodeId = '';  // Reset the selected node ID
   }
   private deselectNode(): void {

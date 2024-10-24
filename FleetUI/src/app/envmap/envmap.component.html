@@ -202,7 +202,7 @@
       <button
         class="close-btn"
         (click)="close()"
-        *ngIf="!isPlottingEnabled && !isZonePlottingEnabled && !isDeleteModeEnabled && !isPlottingAsset"
+
       >
           <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -268,7 +268,7 @@
         </div>
           <div class="action-container">
             <div class="action" class="display:flex; text-wrap:nowrap; align-items:center ">
-              <label for="nodeAction" class="label" style="margin-right: 2rem;">Add Action:</label>
+              <label for="nodeAction" class="label" >Add Action:</label>
               <p-dropdown 
               appendTo="body"
               [options]="actionOptions"
@@ -290,7 +290,7 @@
                 <button class="action-button" (click)="openActionForm(action)" >
                   {{ action.actionType }}
                 </button>
-                <span class="delete-icon" (click)="deleteActionFromNode(action)">x</span>
+                <span class="delete-icon" (click)="deleteActionFromNode(action)">X</span>
               </div>
             </div>
           </div>
@@ -391,8 +391,8 @@
                 <option value="mode2">Mode 2</option>
               </select><br/>
             </div>
-              <button (click)="addAction()">Add</button>
-              <button (click)="cancelAction()">Cancel</button>
+              <button class="actionBTN" (click)="addAction()">Add</button>
+              <button class="actionBTN" (click)="cancelAction()">Cancel</button>
           </div>
 
 
@@ -445,8 +445,8 @@
                 <option value="mode2">Mode 2</option>
               </select><br/>
             </div>
-              <button (click)="addAction()">Add</button>
-              <button (click)="cancelAction()">Cancel</button>
+              <button class="actionBTN" (click)="addAction()">Add</button>
+              <button class="actionBTN" (click)="cancelAction()">Cancel</button>
           </div>
 
           <div *ngIf="selectedAction === 'Undock' && isUndockActionFormVisible" class="move-action-form">
@@ -476,8 +476,8 @@
               <label>Undocking Distance:</label>
               <input pInputText type="number" min="0" max="1000" [(ngModel)]="undockParameters.undockingDistance" style="margin-right: 20rem;"/><br />
             </div>
-              <button (click)="addAction()">Add</button>
-              <button (click)="cancelAction()">Cancel</button>
+              <button class="actionBTN" (click)="addAction()">Add</button>
+              <button class="actionBTN" (click)="cancelAction()">Cancel</button>
           </div>
 
         </div>
@@ -498,7 +498,7 @@
           <img src="../../assets/icons/options-icon.svg" alt="Options" />
         </button>
       </div> -->
-      <div class="calibration-layer" *ngIf="!isPlottingEnabled && !isZonePlottingEnabled && !isDeleteModeEnabled && !isPlottingAsset">
+      <div class="calibration-layer" *ngIf="!isEdgeDrawingInProgress && !isPlottingEnabled && !isZonePlottingEnabled && !isDeleteModeEnabled && !isPlottingAsset">
         <div class="dropdown">
           <button class="c-button">Add Node</button>
           <div class="dropdown-content">
@@ -569,11 +569,12 @@
   (addRobot)="placeRobots($event)"
 ></app-robot-popup>
 
-<div *ngIf="isPopupVisible" class="popup-overlay1">
-  <div class="popup-content1">
+<div *ngIf="isPopupVisible" class="zonepopup-overlay1">
+  <div class="zonepopup-content1">
     <h4>Select Zone Type</h4>
     <p-dropdown 
       [options]="zoneTypeList" 
+      class="zoneTypeList"
       [(ngModel)]="zoneType" 
       placeholder="Select Zone Type">
     </p-dropdown>
@@ -715,12 +716,16 @@
         <div class="second">
           <div class="form-row1">
             <label for="orientationType" style="padding-right: 5rem;">Orientation Type:</label>
-            <input pInputText
-              id="orientationType"
-              [(ngModel)]="currentEdge.orientationType"
-              name="orientationType"
-            />
+            
+            <!-- PrimeNG Dropdown -->
+            <p-dropdown 
+              [options]="orientationTypes" 
+              [(ngModel)]="currentEdge.orientationType" 
+              name="orientationType" 
+              placeholder="Select Orientation Type">
+            </p-dropdown>
           </div>
+          
 
           <div class="form-row1">
             <label for="direction" style="padding-right: 8.5rem;">Direction:</label>
@@ -755,6 +760,7 @@
               max="100"
               [(ngModel)]="currentEdge.length"
               name="length"
+              readonly
             />
           </div>
 
