@@ -151,8 +151,6 @@
 <!-- notification popup -->
 
 <div class="notification-popup" [ngClass]="{ 'show': isNotificationVisible }" (mouseenter)="cancelAutoClose()" (mouseleave)="startAutoClose()">
-  
-
   <!-- Clear All Button -->
   <div class="notification-header">
     <h3>Notifications</h3>
@@ -173,23 +171,31 @@
       </button>
     </div>
   </div>
-  
 
-  <ng-container *ngIf="notifications && notifications.length > 0; else noNotifications">
-    <ul>
-      <li *ngFor="let notification of notifications" [ngClass]="getNotificationClass(notification.type)">
-        <span class="label">{{ notification.label }}</span>
-        <span>{{ notification.message }}</span>
-      </li>
-    </ul>
-  </ng-container>
+  <!-- Scrollable notification container -->
+  <div class="scrollable-container">
+    <ng-container *ngIf="notifications && notifications.length > 0; else noNotifications">
+      <ul>
+        <li *ngFor="let notification of notifications" [ngClass]="getNotificationClass(notification.type)">
+          <span class="notification-label">{{ notification.label }}</span>
+          <span class="notification-message">{{ notification.message }}</span>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
 
   <ng-template #noNotifications>
     <div class="no-notifications">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 2200 2200" style="enable-background:new 0 0 2200 2200;" xml:space="preserve">
+<defs>
+	<linearGradient id="popupGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+		<stop offset="0%" style="stop-color:#d3d3d3;" />
+		<stop offset="100%" style="stop-color:#a9a9a9;" />
+	</linearGradient>
+</defs>
 <g id="background">
-	<rect style="fill:#FFFFFF;" width="2200" height="2200"/>
+	<rect style="fill:url(#popupGradient);" width="2200" height="2200"/>
 </g>
 <g id="Objects">
 	<g>

@@ -48,17 +48,17 @@
   }
   
 
-  /* notification */
 
   .fleet-status {
     display: inline-block; /* Make it a block-level element */
-    padding: 10px 15px; /* Add padding for a button-like appearance */
+    padding: 5px 10px; /* Add padding for a button-like appearance */
     border-radius: 5px; /* Rounded corners */
     font-size: 1rem; /* Font size */
     font-weight: bold; /* Bold text for visibility */
     margin-right: 1rem; /* Space between status and other elements */
     cursor: default; /* Change cursor to indicate non-clickable */
     text-align: center; /* Center align the text */
+    box-shadow: 0 0 5px rgba(255, 35, 35, 0.5); /* Heavy box shadow */
   }
   
   .fleet-up {
@@ -72,22 +72,22 @@
   }
   
 
+  
+  /* notification */
+
   .notification-popup {
     position: absolute;
     top: 52px;
     right: 10px;
-    background-color: white;
+    background: linear-gradient(135deg, #d3d3d3, #a9a9a9); /* Grey gradient */
     border: 1px solid #ffffff;
-    box-shadow: 0px 0.25px 6px #000000;
     padding: 5px;
     border-radius: 10px;
     font-family: Arial, sans-serif;
     z-index: 1000;
-    width: 800px;
+    width: 600px;
     height: 600px;
-   
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); /* Heavy box shadow */
     display: none; /* Hidden by default */
     opacity: 0;
     transform: translateY(-10px);
@@ -127,118 +127,138 @@
 }
 
 .notification-header {
-  display: flex;
-  justify-content: space-between; /* Align items to the start and end */
-  align-items: center; /* Center vertically */
+    display: flex;
+    justify-content: space-between; /* Align items to the start and end */
+    align-items: center; /* Center vertically */
+}
+
+.scrollable-container {
+  max-height: 500px; /* Set a maximum height for the scrollable area */
+  overflow-y: auto;  /* Allows scrolling within this container */
+}
+
+.scrollable-container ul {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.scrollable-container li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
 }
 
 .button-container {
-  display: flex; /* Use flexbox for the button container */
-  gap: 20px; /* Space between the buttons */
+    display: flex; /* Use flexbox for the button container */
+    gap: 20px; /* Space between the buttons */
 }
 
-
 .clear-all-btn {
-  background-color: #ff3333;
-  color: white;
-  border: none;
-  font-size: 14px;
-  padding: 4px 18px;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    background-color: #ff3333;
+    color: white;
+    border: none;
+    font-size: 14px;
+    padding: 4px 18px;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .clear-all-btn:hover {
-  background-color: #d92626;
-}
-/* Close Button Styles */
-.close-button {
-  background-color: white;
-  border: 2px solid red;
-  border-radius: 50%;
-  cursor: pointer;
-  margin-top: 0px;
-  padding: 5px;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background-color: #d92626;
 }
 
-  .close-button svg {
+/* Close Button Styles */
+.close-button {
+    background-color: white;
+    border: 2px solid red;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: 0px;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-button svg {
     width: 20px;
     height: 20px;
     fill: red; /* Color for the close icon */
-  }
+}
 
-  .close-button:hover {
+.close-button:hover {
     background-color: #da2127;
-  }
+}
 
-  .close-button:hover svg {
+.close-button:hover svg {
     fill: white; /* Change color on hover */
-  }
+}
 
-
-  .notification-popup.show {
+.notification-popup.show {
     display: block;
     opacity: 1;
     transform: translateY(0); /* Slide in from above */
-  }
+}
 
-  .notification-popup h3 {
+.notification-popup h3 {
     font-size: 28px;
     font-weight: 600;
     color: #f10909;
-  }
+}
 
 .notification-popup ul {
-  list-style-type: none;
-  padding: 5px;
+    list-style-type: none;
+    padding: 5px;
 }
 
 .notification-popup li {
-  padding: 10px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    background-color: #f8f8f8;
+    border-left: 5px solid #ff3333; /* Light blue border */
+    animation: fadeIn 0.5s ease-in-out; /* Animate list items */
 }
 
-.label {
-  font-weight: bold;
-  margin-right: 10px;
+/* Style for notification labels */
+.notification-label {
+    font-weight: bold;
+    margin-right: 10px;
+    max-width: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Style for notification messages with ellipsis */
+.notification-message {
+  
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .alert-red {
-  background-color: #f8d7da;
-  color: #d41529;
+    background-color: #f8d7da;
+    color: #d41529;
 }
 
 .alert-yellow {
-  background-color: #fff3cd;
-  color: #f4bb10;
+    background-color: #fff3cd;
+    color: #f4bb10;
 }
 
 .alert-green {
-  background-color: #d4edda;
-  color: #14e445;
+    background-color: #d4edda;
+    color: #14e445;
 }
 
-  .notification-popup li {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #f8f8f8;
-    border-left: 5px solid #ff3333; /* Light blue border */
-    border-radius: 5px;
-    animation: fadeIn 0.5s ease-in-out; /* Animate list items */
-  }
-
-  .notification-popup li:last-child {
-    margin-bottom: 0;
-  }
 
 
   /* Close Button */
@@ -273,20 +293,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 450px;
+    height: 350px;
     text-align: center;
     flex-direction: column;
   }
 
   .no-notifications svg {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     margin-bottom: 10px;
   }
 
   .no-notifications span {
     font-size: 20px;
-    color: #888;
+    color: #ffffff;
   }
 
   .topbar {

@@ -138,6 +138,8 @@
   background-color: #e64e4e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 } */
+
+/* General dashboard container layout */
 .dashboard-container {
   display: flex;
   justify-content: space-between;
@@ -148,9 +150,10 @@
   box-sizing: border-box;
 }
 
-/* Styling for the robot activity container */
-.operation-activity-container {
-  flex: 0.5; /* Set to 50% of the width */
+/* Styling for the robot activity and notifications containers */
+.operation-activity-container,
+.notifications-container {
+  flex: 0.5; /* 50% of width */
   height: 23rem; /* Adjust height as needed */
   background-color: #fff;
   border-radius: 8px;
@@ -158,72 +161,51 @@
   padding: 0.5%; /* Minimal padding */
   overflow: hidden; /* Ensure the table doesn't overflow */
   display: flex;
-  flex-direction: column; /* Allow table to fill container */
+  flex-direction: column;
 }
-
-.operation-activity-table-container {
-  /* max-height: 300px; */
-  overflow-y: auto; /* Enable vertical scrolling */
-  overflow-x: hidden; /* Hide horizontal scrolling if necessary */
-}
-
-/* Styling for the notifications container */
-.notifications-container {
-  flex: 0.5; /* Set to 50% of the width */
-  height: 23rem; /* Adjust height as needed */
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0.5%; /* Minimal padding */
-  table-layout: fixed;
-  overflow-y: hidden; /* Intended to allow vertical scrolling */
-  flex-direction: column; /* Allow table to fill container */
-}
-
-/* Extend table to fill the container */
+/* Table styling */
 .operation-activity-table,
 .notifications-table {
   width: 100%;
-  height: 100%;
   border-collapse: collapse;
-  margin: 0;
-  max-height: 4rem; /* Adjust height as needed */
-  display: table; /* Ensure it behaves like a table */
-  table-layout: fixed;
-  overflow-y: auto; /* Scrollable when content exceeds height */
 }
 
-
-/* Styling for the robot activity table */
-.operation-activity-table thead {
+.operation-activity-table thead th,
+.notifications-table thead th {
   background-color: #FFCDCD;
-  color: rgb(0, 0, 0);
-  text-align: left;
-}
-
-.operation-activity-table th,
-.operation-activity-table td {
   padding: 12px 15px;
-  border-top-left-radius: 1px solid #b5b5b5;
-  font-size: 0.8rem;
-}
-
-.operation-activity-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.operation-activity-table tbody tr:hover {
-  background-color: #f1f1f1;
-  cursor: pointer;
-}
-
-/* Styling for the notifications table */
-.notifications-table thead {
-  background-color: #FFCDCD;
-  color: rgb(0, 0, 0);
   text-align: left;
+  font-size: 0.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
+.operation-activity-table tbody,
+.notifications-table tbody {
+  display: block;
+  height: 16rem; /* Adjust this to control the scrollable area */
+  overflow-y: auto; /* Enable vertical scrolling */
+  width: 100%;
+}
+
+.operation-activity-table thead,
+.notifications-table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.operation-activity-table tbody tr,
+.notifications-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Styling for table content */
+.operation-activity-table th,
+.operation-activity-table td,
 .notifications-table th,
 .notifications-table td {
   padding: 12px 15px;
@@ -231,22 +213,19 @@
   font-size: 0.8rem;
 }
 
+/* Alternating row colors */
+.operation-activity-table tbody tr:nth-child(even),
 .notifications-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
-  
 }
 
+.operation-activity-table tbody tr:hover,
 .notifications-table tbody tr:hover {
   background-color: #f1f1f1;
   cursor: pointer;
 }
 
-/* Align content in Notifications Table */
-.notifications-align {
-  text-align: center;
-}
-
-/* Styling for the section headers */
+/* Styling for section headers */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -264,7 +243,7 @@
   color: #333;
 }
 
-/* Styling the search box */
+/* Styling for the search box */
 .search-box {
   display: flex;
   align-items: center;
@@ -272,7 +251,7 @@
   overflow: hidden;
   background-color: #ffffff;
   width: 60%; /* Adjust width as needed */
-  margin-right: 1rem; /* Space between search box and view all button */
+  margin-right: 1rem;
 }
 
 .search-box input {
@@ -288,7 +267,7 @@
   color: #aaa;
 }
 
-/* View All button */
+/* Styling for View All button */
 .view-all-btn {
   background-color: #7854f7;
   color: white;
@@ -298,13 +277,6 @@
   cursor: pointer;
   font-size: 0.9vw;
   margin-left: 1rem;
-}
-
-/* Table scrollable after 4 rows */
-.activity-table,
-.notifications-table {
-  max-height: 100%; /* Allow table to fill container */
-  overflow-y: auto; /* Scrollable when needed */
 }
 
 /* Mobile adjustments */
@@ -325,9 +297,9 @@
   .notifications-table th,
   .notifications-table td {
     font-size: 0.5rem;
-    position: sticky;
   }
 }
+
 
 
 
@@ -763,3 +735,7 @@ new slider button */
   color: rgba(0, 0, 0, 0.7); /* Customize text color */
   text-align: center;
 }
+
+
+
+

@@ -116,6 +116,25 @@ export class DashboardComponent implements AfterViewInit {
   // genMapImg: any | null = null;
   updatedrobo: any;
 
+
+//  new robot
+  isMoving: boolean = true;
+    isDocking: boolean = false;
+    isCharging: boolean = false;
+    shouldAnimate: boolean = true; // Control the animation
+  
+    get statusColor(): string {
+      if (this.isMoving) {
+        return 'green';
+      } else if (this.isDocking) {
+        return 'blue';
+      } else if (this.isCharging) {
+        return 'yellow';
+      } else {
+        return 'grey'; // Default/fallback
+      }
+    }
+    
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -201,9 +220,12 @@ export class DashboardComponent implements AfterViewInit {
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
 
     this.robotImages['robotB'] = new Image();
-    this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
+    this.robotImages['robotB'].src = "../assets/CanvasRobo/robotB.svg";
+      
   }
 
+
+  
   // yet to update pos and save it in map..
   initSimRoboPos() {
     const imgWidth = this.mapImg.width * this.zoomLevel;
