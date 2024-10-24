@@ -1813,7 +1813,7 @@ setPaginatedData1(){
         roboName: `MR${i}00`,
         enable: false,
         isInitialized : false,
-        pos: { x: 0, y: 0, orientation: 0 },
+        pos: { x: i, y: 0, orientation: 0 },
       })
     }
     let sims = await this.updateSimInMap(simRobo);

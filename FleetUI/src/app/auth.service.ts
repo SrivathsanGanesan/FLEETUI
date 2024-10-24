@@ -44,6 +44,7 @@ export class AuthService {
           this.projectService.clearProjectData();
           this.projectService.clearMapData();
           this.projectService.clearIsMapSet();
+          this.projectService.clearAllUserState();
           console.log('Logging out...');
           this.router.navigate(['/']);
         }
