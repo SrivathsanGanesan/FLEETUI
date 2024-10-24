@@ -231,7 +231,7 @@ export class EnvmapComponent implements AfterViewInit {
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
   showError: boolean = false; // Flag to show error message
-  direction: 'uni' | 'bi' | null = null;
+  direction: 'uni' | 'bi' |''| null = '';
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
@@ -2562,7 +2562,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
     this.resetSelection();
-    this.direction = null; // yet to take..
+    this.direction = ''; // yet to take..
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
