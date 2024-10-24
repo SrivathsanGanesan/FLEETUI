@@ -1266,9 +1266,7 @@ setPaginatedData1(){
         credentials: 'include',
       }
     )
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
         if (!data.map) {
           this.messageService.add({
@@ -1278,6 +1276,7 @@ setPaginatedData1(){
           });
           return;
         }
+  
         if (data.error) {
           this.messageService.add({
             severity: 'error',
@@ -1286,28 +1285,43 @@ setPaginatedData1(){
           });
           return;
         }
-
+  
         const { map } = data;
-        this.currEditMapDet = {
-          mapName: map.mapName,
-          siteName: item.siteName,
-          ratio: map.mpp,
-          imgUrl: `http://${map.imgUrl}`,
-          origin: map.origin,
-          nodes: map.nodes,
-          edges: map.edges,
-          assets: map.stations,
-          zones: map.zones,
-          robos: map.roboPos,
-        };
-        this.currEditMap = true;
-        this.showImageUploadPopup = true;
-
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Map data loaded successfully.',
-        });
+        const mapImgUrl = `http://${map.imgUrl}`;
+  
+        // Check if the image URL is accessible
+        this.checkImageLoading(mapImgUrl)
+          .then(() => {
+            // Proceed only if the image loads successfully
+            this.currEditMapDet = {
+              mapName: map.mapName,
+              siteName: item.siteName,
+              ratio: map.mpp,
+              imgUrl: mapImgUrl,
+              origin: map.origin,
+              nodes: map.nodes,
+              edges: map.edges,
+              assets: map.stations,
+              zones: map.zones,
+              robos: map.roboPos,
+            };
+            this.currEditMap = true;
+            this.showImageUploadPopup = true;
+  
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Map data loaded successfully.',
+            });
+          })
+          .catch(() => {
+            // Handle the case where the image fails to load
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to load map image. Please check the image URL or cookies.',
+            });
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -1318,7 +1332,18 @@ setPaginatedData1(){
         });
       });
   }
-
+  
+  // Helper method to check if an image URL loads successfully
+  private checkImageLoading(url: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+  
+      img.onload = () => resolve();  // Image loaded successfully
+      img.onerror = () => reject();  // Error loading the image
+    });
+  }
+  
   async deleteMap(map: any): Promise<boolean> {
     try {
       const response = await fetch(
