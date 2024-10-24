@@ -134,6 +134,10 @@ export class DashboardComponent implements AfterViewInit {
       return 'grey'; // Default/fallback
     }
   }
+
+  deleteRobot(index: number) {
+    this.simMode.splice(index, 1);  // Remove robot from the list
+  }
     
   constructor(
     private projectService: ProjectService,
