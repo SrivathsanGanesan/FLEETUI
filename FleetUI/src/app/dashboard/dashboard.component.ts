@@ -175,8 +175,12 @@ export class DashboardComponent implements AfterViewInit {
     };
     await this.getMapDetails();
     this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
-    this.initSimRoboPos();
+    if(!this.isInLive) this.initSimRoboPos();
     this.loadCanvas();
+    if(this.isInLive){
+      if (this.posEventSource) this.posEventSource.close();
+      await this.getLivePos();
+    }
     console.log(this.simMode);
   }
 
@@ -801,7 +805,6 @@ export class DashboardComponent implements AfterViewInit {
     let data = await response.json();
     if (!data.map) return;
     mapData = data.map;
-    this.simMode = mapData.simMode;
     this.ratio = data.map.mpp;
     this.origin = {
       x: mapData.origin.x,
@@ -847,6 +850,7 @@ export class DashboardComponent implements AfterViewInit {
     });
 
     // yet to check..
+    // if(!this.isInLive)
     this.simMode = mapData.simMode.map((robo: any) => {
       robo.pos.x = robo.pos.x / (this.ratio || 1);
       robo.pos.y = robo.pos.y / (this.ratio || 1);
@@ -1045,7 +1049,7 @@ export class DashboardComponent implements AfterViewInit {
     return yawDegrees;
   }
 
-  async enableRobot() {
+  async getLivePos() {
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
       console.log('no map selected');
@@ -1105,6 +1109,7 @@ export class DashboardComponent implements AfterViewInit {
     this.posEventSource.onerror = (error) => {
       this.projectService.setInLive(false);
       this.isInLive = false;
+      this.getOnBtnImage();
       console.error('SSE error:', error);
       this.posEventSource.close();
     };
@@ -1249,24 +1254,27 @@ export class DashboardComponent implements AfterViewInit {
       }
     );
     let data = await response.json();
-    if (data.isShowSplined) this.enableRobot();
+    if (data.isShowSplined) this.getLivePos();
   }
   // start-stop the operation!
   startStopOpt() {
     // this.showSpline();
-    this.enableRobot();
+    if(this.isInLive) return;
+
+    this.ONBtn = !this.ONBtn;
+    this.getLivePos();
     if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
     if (this.throughputComponent) this.throughputComponent.getThroughPutIfOn();
   }
 
-  toggleONBtn() {
+  /* toggleONBtn() {
     this.ONBtn = !this.ONBtn;
     // if (this.ONBtn) this.getliveAmrPos(); // yet to uncomment!
     if (!this.ONBtn && this.eventSource) this.eventSource.close(); // try take of it..
-  }
+  } */
 
   getOnBtnImage(): string {
-    return this.ONBtn
+    return this.isInLive // this.ONVtm
       ? '../../assets/icons/off.svg'
       : '../../assets/icons/on.svg';
   }
