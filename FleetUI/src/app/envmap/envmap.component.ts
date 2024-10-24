@@ -3126,6 +3126,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
     this.isPopupVisible = false; // Hide the popup
     this.redrawCanvas(); // Redraw the canvas to reflect the updated zone
+    this.selectedZone = null;
   }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 30;
