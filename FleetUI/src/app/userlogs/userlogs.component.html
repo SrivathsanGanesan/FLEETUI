@@ -167,7 +167,8 @@
           [length]="filteredTaskData.length"
           [pageSize]="10"
           [pageSizeOptions]="[5, 10, 50]"
-          (page)="onPageChange($event)"
+          (page)="onPageChange()"
+
           showFirstLastButtons>
         </mat-paginator>
       </div>
@@ -223,7 +224,8 @@
         [length]="robotData.length"
         [pageSize]="10"
         [pageSizeOptions]="[5, 10]"
-        (page)="onPageChange($event)"
+        (page)="onPageChange()"
+
         showFirstLastButtons
       >
       </mat-paginator>
@@ -283,7 +285,8 @@
         [length]="fleetData.length"
         [pageSize]="10"
         [pageSizeOptions]="[5, 10]"
-        (page)="onPageChange($event)"
+        (page)="onPageChange()"
+
         showFirstLastButtons
       >
       </mat-paginator>

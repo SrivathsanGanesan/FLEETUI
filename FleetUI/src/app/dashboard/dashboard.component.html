@@ -22,6 +22,8 @@
     <!-- <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas> -->
     <canvas #myCanvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
     <!-- <canvas *ngIf="showModelCanvas" #modelCanvas id="modelCanvas" ></canvas> -->
+
+    <!-- enable robots dropdown -->
     <div class="dropdown">
       <!-- Dropdown Button with Arrow -->
       <button class="dropdown-button" (click)="toggleDropdown()" [disabled]="!simMode.length">
@@ -33,8 +35,9 @@
     
       <!-- Dropdown content, will only display if robots are present -->
       <div class="dropdown-content" *ngIf="isDropdownOpen && simMode.length">
-        <div *ngFor="let robot of simMode" class="dropdown-item">
-          <span>{{ robot.amrId }}</span><span>{{ robot.roboName }}</span>
+        <div *ngFor="let robot of simMode; let i = index" class="dropdown-item">
+          <span>{{ robot.amrId }}</span>
+          <span>{{ robot.roboName }}</span>
           <label class="switch">
             <input type="checkbox" [(ngModel)]="robot.isActive" (change)="activateRobot(robot)">
             <div class="slider"></div>
@@ -43,11 +46,19 @@
               <div class="slider-card-face slider-card-back"></div>
             </div>
           </label>          
+    
+          <!-- Delete icon with click event -->
+          <button class="enable-delete-button" (click)="deleteRobot(i)">
+            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12.5" cy="12.5" r="12.5" fill="black"/>
+              <path d="M10.8333 5L10 5.75H5V7.25H20V5.75H15L14.1667 5H10.8333ZM6.1377 8.75L7.41048 18.6978C7.52048 19.4403 8.23083 20 9.0625 20H15.9359C16.7675 20 17.4787 19.4411 17.5895 18.6919L18.8623 8.75H6.1377Z" fill="white"/>
+              </svg>             
+          </button>
         </div>
       </div>
     </div>
-
-
+    
+    
       
 
 
@@ -58,10 +69,14 @@
   </button>
   
     <!-- ON Button -->
+     
     <div class="ONBtn" (click)="startStopOpt()">
-      <img [src]="getOnBtnImage()" />
+      <img [src]="getOnBtnImage()" [ngClass]="{'on.svg': ONBtn}" alt="Blinking Button" />
     </div>
+    
+    
 
+   
     <!-- Floor Selector -->
     <div class="FloorSelector" *ngIf="ONBtn"></div>
 

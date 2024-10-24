@@ -231,6 +231,8 @@ border-radius: 20px;
   overflow: hidden;
   position: relative;
  }
+
+ 
  .delete-svgIcon {
   width: 15px;
   transition-duration: 0.3s;
