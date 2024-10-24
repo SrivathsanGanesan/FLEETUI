@@ -39,10 +39,14 @@ export class ThroughputComponent {
   @Input() ONBtn!: boolean;
 
   seriesData: any[] = [];
+  currentFilter: string = 'today';
+  isInLive : boolean = false;
 
   selectedMap: any | null = null;
-  throughputArr: number[] = [];
-  x_axis_timeStamp: string[] = [];
+  throughputArr: number[] = [0];
+  throughputXaxisSeries: string[] = [];
+
+  throuputTimeInterval: any | null = null;
 
   constructor(
     private projectService: ProjectService,
@@ -66,7 +70,7 @@ export class ThroughputComponent {
       series: [
         {
           name: 'Picks',
-          data: this.seriesData,
+          data: this.throughputArr,
           color: '#ff7373', // Using preferred color
         },
       ],
@@ -123,10 +127,11 @@ export class ThroughputComponent {
     };
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
-    if (!this.ONBtn) return;
-    this.getThroughPut();
+    this.isInLive = this.projectService.getInLive();
+    if(!this.isInLive) return;
+    await this.updateThroughput();
   }
 
   getThroughPutIfOn() {
@@ -144,56 +149,151 @@ export class ThroughputComponent {
         ],
         xaxis: {
           // ...this.chartOptions.xaxis, // only if needed..
-          categories: this.x_axis_timeStamp,
+          categories: this.throughputXaxisSeries,
         },
       };
       return;
     }
-    this.getThroughPut();
+    // this.getThroughPut();
   }
 
-  async getThroughPut() {
-    if (!this.selectedMap) return;
-    const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/graph/throughput/${this.selectedMap.id}`,
+  plotChart(seriesName: string, data: any[], time: any[], limit: number = 5) { // limit: number = 12
+    const limitedData = data.length > limit ? data.slice(-limit) : data;
+    const limitedTime = time.length > limit ? time.slice(-limit) : time;
+
+    /* this.chart.updateOptions(
       {
-        method: 'POST',
-        credentials: 'include',
+        series: [{ name: seriesName, data: limitedData }],
+        xaxis: { categories: limitedTime },
+      },
+      false, // Don't replot the entire chart
+      true // Smooth transitions
+    ); */
+
+    this.chart.updateOptions({
+      series: [ { name: 'Throughput', data: limitedData, color: '#ff7373'} ],
+      xaxis: {
+        // ...this.chartOptions.xaxis, // only if needed..
+        categories: limitedTime,
       }
-    );
-    const data = await response.json();
-
-    if (data.throughput && data.throughput.Stat)
-      this.throughputArr = data.throughput.Stat.map((stat: any) => {
-        let time = new Date(stat.TimeStamp).toLocaleString('en-IN', {
-          // month: 'short',
-          // year: 'numeric',
-          // day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-        });
-
-        // x_axis_timeStamp = [...x_axis_timeStamp, time];
-        this.x_axis_timeStamp.push(time);
-        return stat.TotalThroughPutPerHour;
-      });
-    console.log(this.throughputArr, this.x_axis_timeStamp);
-
-    this.chartOptions = {
+    })
+    /* this.chartOptions = {
       ...this.chartOptions,
       series: [
         {
           name: 'Throughput',
-          data: this.throughputArr,
+          data: limitedData,
           color: '#ff7373',
         },
       ],
       xaxis: {
         // ...this.chartOptions.xaxis, // only if needed..
-        categories: this.x_axis_timeStamp,
-      },
-    };
+        categories: limitedTime,
+      }
+    } */
+  }
 
-    this.cdRef.detectChanges();
+  async fetchChartData( endpoint: string, timeSpan: string, startTime: string, endTime: string ) {
+    // alter to date..
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/graph/${endpoint}/${this.selectedMap.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timeSpan: timeSpan, // e.g. 'Daily' or 'Weekly'
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
+        }),
+      }
+    );
+    return await response.json();
+  }
+
+  async updateThroughput() {
+    // this.chartOptions.xaxis.range = 12; // get use of it..
+    this.clearTroughputInterval();
+
+    if (this.throuputTimeInterval) return;
+
+    const data = await this.fetchChartData(
+      'throughput',
+      this.currentFilter,
+      '',
+      ''
+    );
+    
+    let { Stat } = data.throughput;
+    // console.log(Stat);
+
+    if (data.throughput) {
+      // this.throughputArr = data.throughput.map((stat: any) => stat.rate);
+      this.throughputArr = Stat.map((stat: any) => stat.TotalThroughPutPerHour);
+      this.throughputXaxisSeries = Stat.map(
+        // (stat: any) => stat.time
+        (stat: any) =>
+          new Date().toLocaleString('en-IN', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+          })
+      );
+    }
+    this.plotChart(
+      'Throughput',
+      this.throughputArr,
+      this.throughputXaxisSeries
+    ); // this.selectedMetric..
+
+    this.throuputTimeInterval = setInterval(async () => {
+      const data = await this.fetchChartData(
+        'throughput',
+        this.currentFilter,
+        '',
+        ''
+      );
+      let { Stat } = data.throughput;
+
+      if (data.throughput) {
+        this.throughputArr = Stat.map(
+          (stat: any) => stat.TotalThroughPutPerHour
+        );
+        this.throughputXaxisSeries = Stat.map((stat: any) =>
+          new Date().toLocaleString('en-IN', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+          })
+        );
+      }
+
+      this.plotChart(
+        'Throughput',
+        this.throughputArr,
+        this.throughputXaxisSeries
+      );
+    }, 1000 * 60); // 60 * 60
+  }
+
+  getTimeStampsOfDay() {
+    let currentTime = Math.floor(new Date().getTime() / 1000);
+    let startTimeOfDay = this.getStartOfDay();
+    return {
+      timeStamp1: startTimeOfDay,
+      timeStamp2: currentTime,
+    };
+  }
+
+  getStartOfDay() {
+    return Math.floor(new Date().setHours(0, 0, 0) / 1000);
+  }
+
+  clearTroughputInterval() {
+    clearInterval(this.throuputTimeInterval);
+    this.throuputTimeInterval = 0;
   }
 }

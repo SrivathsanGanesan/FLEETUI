@@ -117,23 +117,23 @@ export class DashboardComponent implements AfterViewInit {
   updatedrobo: any;
 
 
-//  new robot
+  //  new robot
   isMoving: boolean = true;
-    isDocking: boolean = false;
-    isCharging: boolean = false;
-    shouldAnimate: boolean = true; // Control the animation
+  isDocking: boolean = false;
+  isCharging: boolean = false;
+  shouldAnimate: boolean = true; // Control the animation
   
-    get statusColor(): string {
-      if (this.isMoving) {
-        return 'green';
-      } else if (this.isDocking) {
-        return 'blue';
-      } else if (this.isCharging) {
-        return 'yellow';
-      } else {
-        return 'grey'; // Default/fallback
-      }
+  get statusColor(): string {
+    if (this.isMoving) {
+      return 'green';
+    } else if (this.isDocking) {
+      return 'blue';
+    } else if (this.isCharging) {
+      return 'yellow';
+    } else {
+      return 'grey'; // Default/fallback
     }
+  }
     
   constructor(
     private projectService: ProjectService,
@@ -143,9 +143,7 @@ export class DashboardComponent implements AfterViewInit {
     // this.onInitMapImg(); // yet to remove..
   }
 
-
-  isFleet: boolean = true;
- 
+  isFleet: boolean = true; 
 
   // PNG icon URLs
   fleetIconUrl: string = "../assets/fleet_icon.png";
@@ -234,8 +232,6 @@ export class DashboardComponent implements AfterViewInit {
     this.robotImages['robotB'].src = "../assets/CanvasRobo/robotB.svg";
       
   }
-
-
   
   // yet to update pos and save it in map..
   initSimRoboPos() {
