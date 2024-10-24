@@ -48,10 +48,13 @@
   height: 31px !important;
   margin-top: 1rem;
 }
-
+.clearbtn{
+  margin-left: 5px;
+  margin-top: 15px;
+}
 ::ng-deep .p-button {
   padding: 0.5rem 1rem !important;
-  font-size: 0.8rem !important;
+  font-size: 0.7rem !important;
 }
 
 .field {

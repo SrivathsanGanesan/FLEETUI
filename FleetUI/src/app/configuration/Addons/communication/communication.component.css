@@ -98,10 +98,12 @@ h4 {
 }
 
 ::ng-deep .p-button {
-  padding: 0.5rem 1rem !important;
-  font-size: 0.8rem !important;
+  padding: 0.5rem 0.5rem !important;
+  font-size: 0.7rem !important;
 }
-
+.clearbtn{
+  margin-left: 5px;
+}
 .category-container {
   display: flex;
   gap: 15px; /* Space between radio buttons */

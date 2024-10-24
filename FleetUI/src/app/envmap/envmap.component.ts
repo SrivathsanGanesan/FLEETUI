@@ -30,6 +30,8 @@ interface Node {
   actions: any[];
   intermediate_node: boolean;
   Waiting_node: boolean;
+  charge_node: boolean;
+  dock_node: boolean;
 }
 interface Edge {
   edgeId: string; //Unique edge identification
@@ -202,6 +204,8 @@ export class EnvmapComponent implements AfterViewInit {
     actions: string[]; // Can allow null if needed
     intermediate_node: boolean;
     waiting_node: boolean;
+    charge_node: boolean;
+    dock_node: boolean;
   } = {
     id: 1,
     x: 0,
@@ -210,6 +214,8 @@ export class EnvmapComponent implements AfterViewInit {
     actions: [], // Initialize with a non-null value
     intermediate_node: false,
     waiting_node: false,
+    charge_node: false,
+    dock_node: false
   };
   isMoveActionFormVisible: boolean = true;
   isDockActionFormVisible: boolean = true;
@@ -225,7 +231,7 @@ export class EnvmapComponent implements AfterViewInit {
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
   showError: boolean = false; // Flag to show error message
-  direction: 'uni' | 'bi' | null = null;
+  direction: 'uni' | 'bi' |''| null = '';
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
@@ -545,6 +551,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isRoboConfirmationVisible=false;
   }
   confirmDelete(): void {
+    if(this.isDeleteModeEnabled){
     if (this.nodesToDelete.length > 0) {
       // Remove selected nodes from the nodes array
       this.nodes = this.nodes.filter(
@@ -575,7 +582,7 @@ export class EnvmapComponent implements AfterViewInit {
         summary: 'Warning',
         detail: 'No items selected for deletion.'
       });
-    }
+    }}
 
     if (this.selectedAsset) {
       this.assets = this.assets.filter(
@@ -597,6 +604,13 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodes = this.nodes.filter(
         (node) => node.nodeId !== this.selectedNode?.nodeId
       );
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Node Deleted Successfully',
+        life: 4000,
+      });
+      if(this.isDeleteModeEnabled){
       // Remove from nodes array
       this.nodes = this.nodes.filter((node) => {
         return (
@@ -611,7 +625,7 @@ export class EnvmapComponent implements AfterViewInit {
           edge.startNodeId !== this.selectedNode?.nodeId &&
           edge.endNodeId !== this.selectedNode?.nodeId
         );
-      });
+      });}
      
       // Clear the selected node
       this.selectedNode = null;
@@ -758,30 +772,6 @@ export class EnvmapComponent implements AfterViewInit {
   
   saveNodeDetails(x: string, y: string, orientation: string): void {
     this.validationError = '';
-
-    // Example validation: Check if all required fields are filled
-    if (this.selectedAction === 'Move') {
-      if (
-        !this.moveParameters.maxLinearVelocity ||
-        !this.moveParameters.maxAngularVelocity
-      ) {
-        // this.validationError = 'All Move Action fields are required.'; // yet to uncomment..
-      }
-    } else if (this.selectedAction === 'Dock') {
-      if (
-        !this.dockParameters.maxAngularVelocity ||
-        !this.dockParameters.goalOffsetX
-      ) {
-        // this.validationError = 'All Dock Action fields are required.';
-      }
-    } else if (this.selectedAction === 'Undock') {
-      if (
-        !this.undockParameters.maxLinearVelocity ||
-        !this.undockParameters.maxToleranceAtGoalX
-      ) {
-        // this.validationError = 'All Undock Action fields are required.';
-      }
-    }
     
     if (!this.nodeDetails.description) {
       this.validationError = 'Node Description is required.';
@@ -790,6 +780,11 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.validationError) {
       return;
     }
+
+    this.nodes = this.nodes.map(node => {
+      if(this.selectedNode?.nodeId === node.nodeId) node.actions = this.actions;
+      return node;
+    })
     
     // this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
@@ -839,16 +834,15 @@ export class EnvmapComponent implements AfterViewInit {
         this.nodes[nodeIndex].nodeDescription = this.nodeDetails.description;
         this.nodes[nodeIndex].intermediate_node = this.nodeDetails.intermediate_node;
         this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
+        this.nodes[nodeIndex].charge_node = this.nodeDetails.charge_node;
+        this.nodes[nodeIndex].dock_node = this.nodeDetails.dock_node;
       }
       this.redrawCanvas();
     }
 
-    if(this.selectedNode){
-      console.log(this.moveParameters, this.dockParameters, this.undockParameters);
-    }
-
     // Clear all the details for the previous node
     this.Nodes = []; // Clear the Nodes array
+    this.selectedNode = null;
     this.resetParameters(); // Reset the parameters
     this.actions = []; // Clear the actions array
     this.selectedAction = ''; // Reset the selected action
@@ -861,17 +855,20 @@ export class EnvmapComponent implements AfterViewInit {
     // Show the relevant form based on the action type
     if (action.actionType === 'Move') {
       this.isMoveActionFormVisible = true;
+      this.moveParameters = action.parameters;
     } else if (action.actionType === 'Dock') {
       this.isDockActionFormVisible = true;
+      this.dockParameters = action.parameters;
     } else if (action.actionType === 'Undock') {
       this.isUndockActionFormVisible = true;
+      this.undockParameters = action.parameters;
     }
   
     // Set the selected action
     this.selectedAction = action.actionType;
   
     // Remove the action from the list
-    this.actions = this.actions.filter(a => a.actionType !== action.actionType);
+    // this.actions = this.actions.filter(a => a.actionType !== action.actionType);
   }
   
   moveParameters = {
@@ -959,27 +956,23 @@ export class EnvmapComponent implements AfterViewInit {
   addAction(): void {
     if (this.selectedAction) {
       let action: any;
-  
-      // Handling different action types
-      if (this.selectedAction === 'Move') {
-        action = {
-          actionType: this.selectedAction,
-          parameters: { ...this.moveParameters }
-        };
-      } else if (this.selectedAction === 'Dock') {
-        action = {
-          actionType: this.selectedAction,
-          parameters: { ...this.dockParameters }
-        };
-      } else if (this.selectedAction === 'Undock') {
-        action = {
-          actionType: this.selectedAction,
-          parameters: { ...this.undockParameters }
-        };
+
+      const parameters = 
+        this.selectedAction === 'Move' ? { ...this.moveParameters } :
+        this.selectedAction === 'Dock' ? { ...this.dockParameters } :
+        this.selectedAction === 'Undock' ? { ...this.undockParameters } :
+        null;
+
+      const existingAction = this.actions.find(action => action.actionType === this.selectedAction);
+
+      if (existingAction) {
+        this.actions = this.actions.map(action => {
+          if(action.actionType === this.selectedAction) action.parameters = parameters;
+          return action;
+        })
+      } else if (parameters) {
+        this.actions.push({ actionType: this.selectedAction, parameters : parameters });
       }
-  
-      // Add action to the list
-      this.actions.push(action);
   
       // Remove the selected action from dropdown options
       this.actionOptions = this.actionOptions.filter(option => option.value !== this.selectedAction);
@@ -998,7 +991,12 @@ export class EnvmapComponent implements AfterViewInit {
     // Reset the selected action
     this.selectedAction = null;       
     this.actionOptions = this.allActions.filter(option => !this.actions.some(a => a.actionType === option.value)); 
-  }  
+  }
+
+  deleteActionFromNode(selectedAction : any){
+    this.actions = this.actions.filter(action => action.actionType !== selectedAction.actionType );
+    this.actionOptions = this.allActions.filter(option => !this.actions.some(a => a.actionType === option.value)); 
+  }
   
   openMoveActionForm(): void {
     this.isMoveActionFormVisible = true;
@@ -1006,14 +1004,13 @@ export class EnvmapComponent implements AfterViewInit {
     this.isUndockActionFormVisible = true;
   }
   closeNodeDetailsPopup(): void {
-    this.isNodeDetailsPopupVisible = false;
-    this.isMoveActionFormVisible = false;
-    this.isDockActionFormVisible = false;
-    this.isUndockActionFormVisible = false;
-    
     // Clear the selected actions
     this.actions = [];
     this.selectedAction = null;
+    this.selectedNode = null;
+
+    this.isNodeDetailsPopupVisible = false;
+    this.hideActionForms();
   }
   
   allActions = [
@@ -1180,7 +1177,7 @@ export class EnvmapComponent implements AfterViewInit {
     console.log("hey", 'X:', finalX, 'Y:', transY, 'W (Angle):', angle);
  
     // Update the origin object with the calculated values
-    this.origin = { x: this.startPoint.x*this.ratio!, y: this.startPoint.y*this.ratio!, w: angle };
+    this.origin = { x: this.startPoint.x*this.ratio!, y: (canvas.height-this.startPoint.y)*this.ratio!, w: angle };
 
     // Reset the drawing state
     this.isDrawing = false;
@@ -1835,13 +1832,14 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
     // Check if a node is clicked
-    for (const node of this.nodes) {
-      
+    for (const node of this.nodes) {      
       if (this.isNodeClicked(node, x, y) ) {
         this.selectedNode=node;
         this.nodeDetails.description = this.selectedNode.nodeDescription;
         this.nodeDetails.intermediate_node = this.selectedNode.intermediate_node;
         this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
+        this.nodeDetails.charge_node = this.selectedNode.charge_node;
+        this.nodeDetails.dock_node = this.selectedNode.dock_node;
         this.actions = this.selectedNode.actions;
         for (let action of this.actions) {
           if (action.actionType === 'Move') {
@@ -1958,9 +1956,13 @@ export class EnvmapComponent implements AfterViewInit {
     this.selectedAssetId = null;
   }
   showNodeDetailsPopup(): void {
+    this.validationError="";
+    // Load saved actions for the selected node
+    if(this.selectedNode)
+      this.actions = [...(this.selectedNode.actions || [])];  // Load node's saved actions or an empty array
     this.isNodeDetailsPopupVisible = true;
     
-    this.cdRef.detectChanges(); // Ensure the popup updates
+    // this.cdRef.detectChanges(); // Ensure the popup updates
   }
   private drawNode(node: Node, color: string, selected: boolean): void {
     const canvas = this.overlayCanvas.nativeElement;
@@ -2271,6 +2273,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         nodePosition: { x: x, y: transformedY, orientation: 0 },
         intermediate_node: false,
         Waiting_node: false,
+        charge_node: false,
+        dock_node:false,
         actions: [],
       },
       color,
@@ -2285,6 +2289,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       actions: [],
       intermediate_node: false,
       waiting_node: false,
+      dock_node:false,
+      charge_node:false
     };
 
     let node = {
@@ -2296,6 +2302,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       actions: [],
       intermediate_node: false,
       Waiting_node: false,
+      charge_node: false,
+      dock_node: false
     };
 
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
@@ -2360,6 +2368,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
+            charge_node: false,
+            dock_node: false
         },
         color,
         false
@@ -2376,6 +2386,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
+            charge_node: false,
+            dock_node: false
         };
         this.firstNode = firstnode;
         this.nodes.push(firstnode);
@@ -2390,6 +2402,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
+            charge_node: false,
+            dock_node: false
         };
         this.secondNode = secondnode;
         this.currMulNode.push(this.firstNode);
@@ -2496,6 +2510,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             actions: [],
             intermediate_node: true, // Marking it as intermediate
             Waiting_node: false,
+            charge_node: false,
+            dock_node: false
           };
 
           this.nodes.push(node);
@@ -2554,7 +2570,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
     this.resetSelection();
-    this.direction = null; // yet to take..
+    this.direction = ''; // yet to take..
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
@@ -3110,6 +3126,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
     this.isPopupVisible = false; // Hide the popup
     this.redrawCanvas(); // Redraw the canvas to reflect the updated zone
+    this.selectedZone = null;
   }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 30;

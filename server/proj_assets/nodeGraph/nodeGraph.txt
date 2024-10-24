@@ -3,7 +3,7 @@
     {
       "name": "1",
       "locationDescription": "",
-      "type": 2,
+      "type": 0,
       "preDockPose": {
         "position": {
           "x": 0,
@@ -13,8 +13,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
+          "z": 0,
+          "w": 1
         }
       },
       "dockPose": {
@@ -26,8 +26,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
+          "z": 0,
+          "w": 1
         },
         "dockParams": {
           "xOffset": 0,
@@ -44,15 +44,15 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
+          "z": 0,
+          "w": 1
         }
       }
     },
     {
       "name": "2",
       "locationDescription": "",
-      "type": 2,
+      "type": 0,
       "preDockPose": {
         "position": {
           "x": 0,

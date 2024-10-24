@@ -98,7 +98,9 @@ h5{
 
 /* Button class specific to p-button-danger */
 
-
+.clearbtn{
+  margin-left: 5px;
+}
 ::ng-deep .p-button {
   padding: 0.5rem 1rem !important;
   font-size: 0.8rem !important;
