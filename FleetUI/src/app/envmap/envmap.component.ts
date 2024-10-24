@@ -1694,14 +1694,7 @@ export class EnvmapComponent implements AfterViewInit {
   // originY:number | null = null;
   open(): void {
     this.validationError = null;
-    if (this.mapName && this.siteName) {
-      for (let map of this.EnvData) {
-        if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
-          this.validationError="Map name seems already exists, try another";
-          return;
-        }
-      }
-    }
+
     if (!this.currEditMap)
       if (this.mapName && this.siteName) {
         for (let map of this.EnvData) {

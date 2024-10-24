@@ -572,11 +572,11 @@
 <div *ngIf="isPopupVisible" class="popup-overlay1">
   <div class="popup-content1">
     <h4>Select Zone Type</h4>
-    <select [(ngModel)]="zoneType">
-      <option *ngFor="let zone of zoneTypeList" [value]="zone">
-        {{ zone }}
-      </option>
-    </select>
+    <p-dropdown 
+      [options]="zoneTypeList" 
+      [(ngModel)]="zoneType" 
+      placeholder="Select Zone Type">
+    </p-dropdown>
     <div>
       <button (click)="zoneType !== null ? onZoneTypeSelected(zoneType) : null">Confirm</button>
       <button *ngIf="isDeleteVisible" (click)="onDeleteZone()">Delete</button>
