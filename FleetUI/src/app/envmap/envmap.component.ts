@@ -231,7 +231,7 @@ export class EnvmapComponent implements AfterViewInit {
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
   showError: boolean = false; // Flag to show error message
-  direction: 'uni' | 'bi' | null = null;
+  direction: 'uni' | 'bi' |''| null = '';
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
@@ -551,6 +551,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isRoboConfirmationVisible=false;
   }
   confirmDelete(): void {
+    if(this.isDeleteModeEnabled){
     if (this.nodesToDelete.length > 0) {
       // Remove selected nodes from the nodes array
       this.nodes = this.nodes.filter(
@@ -581,7 +582,7 @@ export class EnvmapComponent implements AfterViewInit {
         summary: 'Warning',
         detail: 'No items selected for deletion.'
       });
-    }
+    }}
 
     if (this.selectedAsset) {
       this.assets = this.assets.filter(
@@ -603,6 +604,13 @@ export class EnvmapComponent implements AfterViewInit {
       this.nodes = this.nodes.filter(
         (node) => node.nodeId !== this.selectedNode?.nodeId
       );
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Node Deleted Successfully',
+        life: 4000,
+      });
+      if(this.isDeleteModeEnabled){
       // Remove from nodes array
       this.nodes = this.nodes.filter((node) => {
         return (
@@ -617,7 +625,7 @@ export class EnvmapComponent implements AfterViewInit {
           edge.startNodeId !== this.selectedNode?.nodeId &&
           edge.endNodeId !== this.selectedNode?.nodeId
         );
-      });
+      });}
      
       // Clear the selected node
       this.selectedNode = null;
@@ -1686,7 +1694,14 @@ export class EnvmapComponent implements AfterViewInit {
   // originY:number | null = null;
   open(): void {
     this.validationError = null;
-
+    if (this.mapName && this.siteName) {
+      for (let map of this.EnvData) {
+        if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
+          this.validationError="Map name seems already exists, try another";
+          return;
+        }
+      }
+    }
     if (!this.currEditMap)
       if (this.mapName && this.siteName) {
         for (let map of this.EnvData) {
@@ -2562,7 +2577,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       // this.drawEdge( arr[i].nodePosition, arr[i+1].nodePosition, this.direction!, arr[i].nodeId, arr[i+1].nodeId );
     }
     this.resetSelection();
-    this.direction = null; // yet to take..
+    this.direction = ''; // yet to take..
     this.redrawCanvas();
   }
   // Define the available actions for the dropdown
@@ -3118,6 +3133,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
     this.isPopupVisible = false; // Hide the popup
     this.redrawCanvas(); // Redraw the canvas to reflect the updated zone
+    this.selectedZone = null;
   }
   isRobotClicked(robo: Robo, x: number, y: number): boolean {
     const imageSize = 30;

@@ -300,6 +300,7 @@
             <input pInputText
               type="text"
               id="nodeDescription"
+              placeholder="Enter Node Description"
               [(ngModel)]="nodeDetails.description"
               [style]="{'height':'30px','width':'14.5rem'}"
             /><br />
@@ -846,11 +847,13 @@
   <div class="node-separator"></div>
   <div>
     <p>Select Direction</p>
-    <select class="direction" [(ngModel)]="direction" >
+    <select class="direction" [(ngModel)]="direction">
+      <option value="" disabled selected>Select a Direction</option>
       <option value="uni">Uni-Direction</option>
       <option value="bi">Bi-Direction</option>
     </select>
   </div>
+  
   </div>
   <div *ngIf="!isDirectionSelected" class="newvalidation-message">
     <p style="color: red;">Please select a direction.</p>
