@@ -71,8 +71,10 @@
     <!-- ON Button -->
      
     <div class="ONBtn" (click)="startStopOpt()">
-      <img [src]="getOnBtnImage()"  alt="Blinking Button" class="blinking-svg" />
+      <img [src]="getOnBtnImage()" [ngClass]="{'on.svg': ONBtn}" alt="Blinking Button" />
     </div>
+    
+    
 
    
     <!-- Floor Selector -->
