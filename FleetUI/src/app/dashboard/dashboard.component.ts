@@ -116,24 +116,11 @@ export class DashboardComponent implements AfterViewInit {
   // genMapImg: any | null = null;
   updatedrobo: any;
 
-
-//  new robot
-  isMoving: boolean = true;
-    isDocking: boolean = false;
-    isCharging: boolean = false;
-    shouldAnimate: boolean = true; // Control the animation
+  deleteRobot(index: number) {
+    this.simMode.splice(index, 1);  // Remove robot from the list
+  }
   
-    get statusColor(): string {
-      if (this.isMoving) {
-        return 'green';
-      } else if (this.isDocking) {
-        return 'blue';
-      } else if (this.isCharging) {
-        return 'yellow';
-      } else {
-        return 'grey'; // Default/fallback
-      }
-    }
+
     
   constructor(
     private projectService: ProjectService,
