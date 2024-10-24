@@ -87,7 +87,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     res.clearCookie("_token");
-    res.clearCookie("_user");
+    // res.clearCookie("_user"); // yet to uncomment..
     return res
       .status(200)
       .json({ msg: "cookies deleted!", isCookieDeleted: true });

@@ -51,6 +51,10 @@ canvas {
   left: 0;
 }
 
+
+/* live button */
+
+
 .ONBtn {
   position: absolute;
   top: 0;
@@ -359,9 +363,17 @@ canvas {
 .dropdown {
   position: relative;
   display: inline-block;
-  width: 170px;
+  width: 180px;
   margin: 20px;
 }
+
+.dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
 .dropdown-button:hover{
   background-color: #ff3333;
   color: white;
@@ -369,7 +381,7 @@ canvas {
 .dropdown-button {
   width: 100%;
   background-color: #ff333358;
-  color: white;
+  color: rgb(255, 255, 255);
   padding: 10px 20px;
   font-size: 16px;
   border: none;
@@ -387,6 +399,7 @@ canvas {
   position: absolute;
   background-color: transparent; /* Changed to transparent */
   width: 100%;
+  background-color: rgb(242, 242, 242);
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   padding: 10px;
   z-index: 1;
@@ -504,34 +517,56 @@ input:checked ~ .slider {
   background-color: #9ed99c;
 }
 
+.enable-delete-button {
+  background: none;      /* No background */
+  border: none;          /* Remove border */
+  color: rgb(224, 11, 11);          /* Set icon color */
+  cursor: pointer;       /* Pointer on hover */
+  font-size: 18px;       /* Size of the icon */
+  padding: 0;            /* Remove padding */
+  transition: color 0.3s ease; /* Smooth transition on hover */
+}
+
+/* Add hover effect */
+.enable-delete-button:hover {
+  color: #ff6666; /* Light red color on hover */
+}
+
+
+
+
+
 /* fleet and simulation */
 .indication-button {
-
   position: absolute;
-  top: 18px;
-  right: 170px;
-  
+  top: 20px;
+  right: 150px; 
   filter: drop-shadow(5px 2px 2px rgba(130, 126, 126, 0.404));
   cursor: pointer;
   z-index: 13;
   display: inline-flex;
   align-items: center;
-  padding: 10px 20px;
+  justify-content: center; /* Center content horizontally */
+  width: 150px;  /* Fixed width */
+  height: 41px;  /* Fixed height */
   color: white;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
+  padding: 0;  /* Remove padding since we are using fixed size */
   transition: background-color 0.3s ease;
 }
 
+/* Image inside the button */
 .indication-button img {
-  width: 30px;
-  height: 30px;
-  margin-right: 15px;
+  width: 25px;
+  height: 25px;
+  margin-right: 8px; /* Keep margin for spacing */
 }
 
+/* Text inside the button */
 .indication-button span {
   font-size: 17px;
+  white-space: nowrap; /* Prevent text from wrapping */
 }
 
 /* Background color for Fleet */
@@ -539,9 +574,33 @@ input:checked ~ .slider {
   background-color: #63b7fc; /* Blue for Fleet */
 }
 
-
 /* Background color for Simulation */
 .simulation-background {
   background-color: #f0453f; /* Red for Simulation */
+}
+
+
+
+
+.blinking-svg {
+  width: 95px;
+  height: 40px;
+  animation: glow-blink 1.5s infinite ease-in-out;
+}
+
+/* Define the glowing and blinking effect */
+@keyframes glow-blink {
+  0% {
+    opacity: 1;
+    filter: drop-shadow(0 0 0px #fe0000); /* Reduced spread */
+  }
+  50% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 5px #ff0000); /* Reduced glow */
+  }
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 0px #fe0000); /* Same as starting state */
+  }
 }
 

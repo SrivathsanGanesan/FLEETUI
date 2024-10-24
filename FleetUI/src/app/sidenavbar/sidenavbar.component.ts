@@ -43,7 +43,7 @@ export class SidenavbarComponent implements OnInit {
     },
     {
       label: 'Warning',
-      message: 'Connection issue detected on Robot B',
+      message: 'Connection issue detected on Robot B Connection issue detected on Robot B Connection issue detected on Robot B',
       type: 'yellow',
     },
     {
@@ -78,7 +78,29 @@ export class SidenavbarComponent implements OnInit {
       message: 'Robot J requires immediate attention',
       type: 'red',
     },
+    {
+      label: 'Critical',
+      message: 'Temperature sensor malfunction on Robot G',
+      type: 'red',
+    },
+    {
+      label: 'Warning',
+      message: 'Unstable WiFi signal on Robot H',
+      type: 'yellow',
+    },
+    {
+      label: 'Normal',
+      message: 'Robot I is performing tasks efficiently',
+      type: 'green',
+    },
+    {
+      label: 'Critical',
+      message: 'Robot J requires immediate attention',
+      type: 'red',
+    },
   ];
+
+  
 
   constructor(
     private authService: AuthService,

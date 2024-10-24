@@ -116,6 +116,29 @@ export class DashboardComponent implements AfterViewInit {
   // genMapImg: any | null = null;
   updatedrobo: any;
 
+
+  //  new robot
+  isMoving: boolean = true;
+  isDocking: boolean = false;
+  isCharging: boolean = false;
+  shouldAnimate: boolean = true; // Control the animation
+  
+  get statusColor(): string {
+    if (this.isMoving) {
+      return 'green';
+    } else if (this.isDocking) {
+      return 'blue';
+    } else if (this.isCharging) {
+      return 'yellow';
+    } else {
+      return 'grey'; // Default/fallback
+    }
+  }
+
+  deleteRobot(index: number) {
+    this.simMode.splice(index, 1);  // Remove robot from the list
+  }
+    
   constructor(
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef
@@ -124,9 +147,7 @@ export class DashboardComponent implements AfterViewInit {
     // this.onInitMapImg(); // yet to remove..
   }
 
-
-  isFleet: boolean = true;
- 
+  isFleet: boolean = true; 
 
   // PNG icon URLs
   fleetIconUrl: string = "../assets/fleet_icon.png";
@@ -180,6 +201,11 @@ export class DashboardComponent implements AfterViewInit {
     if(this.isInLive){
       if (this.posEventSource) this.posEventSource.close();
       await this.getLivePos();
+    } else if (!this.isInLive){ // yet to look at it..
+      if (this.posEventSource) this.posEventSource.close();
+      await this.getLivePos();
+      this.projectService.setInLive(true);
+      this.isInLive = true;
     }
     console.log(this.simMode);
   }
@@ -207,9 +233,10 @@ export class DashboardComponent implements AfterViewInit {
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
 
     this.robotImages['robotB'] = new Image();
-    this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
+    this.robotImages['robotB'].src = "../assets/CanvasRobo/robotB.svg";
+      
   }
-
+  
   // yet to update pos and save it in map..
   initSimRoboPos() {
     const imgWidth = this.mapImg.width; // * this.zoomLevel
@@ -218,12 +245,12 @@ export class DashboardComponent implements AfterViewInit {
     // Calculate the bottom-right corner position of the image
     let roboX = imgWidth - this.placeOffset;
     let roboY = imgHeight - 100;
-    let i = 1;
+    let i = 0;
 
     this.simMode = this.simMode.map((robo) => {
       // if (!robo.pos.x && !robo.pos.y) {
         roboX = imgWidth - this.placeOffset * i;
-        robo.pos = { x: roboX, y: roboY, orientation: 90 };
+        robo.pos = { x: i / this.ratio, y: 0, orientation: 0 };
         i++;
       // }
       return robo;
@@ -1258,14 +1285,19 @@ export class DashboardComponent implements AfterViewInit {
   }
   // start-stop the operation!
   startStopOpt() {
-    // this.showSpline();
-    if(this.isInLive) return;
-
+    if (this.isInLive) return;
+  
+    // Toggle the ONBtn state
     this.ONBtn = !this.ONBtn;
-    this.getLivePos();
-    if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
-    if (this.throughputComponent) this.throughputComponent.getThroughPutIfOn();
+  
+    // Call the necessary functions when ON
+    if (this.ONBtn) {
+      this.getLivePos();
+      if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
+      if (this.throughputComponent) this.throughputComponent.getThroughPutIfOn();
+    }
   }
+  
 
   /* toggleONBtn() {
     this.ONBtn = !this.ONBtn;

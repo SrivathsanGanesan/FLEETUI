@@ -79,6 +79,9 @@ export class RobotsComponent implements OnInit {
   centerIndex: any;
 
 
+
+
+
   private routerSubscription: Subscription | undefined; // Subscription to track navigation changes
 
   constructor(

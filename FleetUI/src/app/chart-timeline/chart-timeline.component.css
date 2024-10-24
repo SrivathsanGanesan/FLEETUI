@@ -15,6 +15,11 @@
     margin-bottom: 5px;
     position: relative; /* Position relative for the dropdown arrow */
   }
+  #myChart .apexcharts-toolbar {
+    z-index: 0;
+  }
+  
+
   
   .menu {
     font-size: 14px;
