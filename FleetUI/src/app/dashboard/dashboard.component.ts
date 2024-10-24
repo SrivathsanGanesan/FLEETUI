@@ -186,6 +186,11 @@ export class DashboardComponent implements AfterViewInit {
     if(this.isInLive){
       if (this.posEventSource) this.posEventSource.close();
       await this.getLivePos();
+    } else if (!this.isInLive){ // yet to look at it..
+      if (this.posEventSource) this.posEventSource.close();
+      await this.getLivePos();
+      this.projectService.setInLive(true);
+      this.isInLive = true;
     }
     console.log(this.simMode);
   }
@@ -227,12 +232,12 @@ export class DashboardComponent implements AfterViewInit {
     // Calculate the bottom-right corner position of the image
     let roboX = imgWidth - this.placeOffset;
     let roboY = imgHeight - 100;
-    let i = 1;
+    let i = 0;
 
     this.simMode = this.simMode.map((robo) => {
       // if (!robo.pos.x && !robo.pos.y) {
         roboX = imgWidth - this.placeOffset * i;
-        robo.pos = { x: roboX, y: roboY, orientation: 90 };
+        robo.pos = { x: i / this.ratio, y: 0, orientation: 0 };
         i++;
       // }
       return robo;

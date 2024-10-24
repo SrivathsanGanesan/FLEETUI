@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ProjectService {
   private projectCreatedKey = 'is-project-setted';
   private selectedProjectKey = 'project-data';
-  private inLive: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private inLive: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( false );
   inLive$ = this.inLive.asObservable();
 
   constructor(private cookieService: CookieService) {}
@@ -39,6 +39,11 @@ export class ProjectService {
   clearProjectData() {
     this.cookieService.delete('project-data', '/');
     this.cookieService.delete('is-project-setted', '/');
+  }
+
+  clearAllUserState() {
+    this.cookieService.delete('_user', '/');
+    this.cookieService.deleteAll();
   }
 
   setMapData(mapData: any) {
