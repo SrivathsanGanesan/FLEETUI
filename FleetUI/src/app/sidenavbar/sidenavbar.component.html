@@ -1,6 +1,10 @@
 <div class="topbar" >
   <div class="TopbarContents">
 
+    <div class="timer">
+      <app-timer></app-timer>
+    </div>
+
     <!-- Fleet Status Indicator -->
     <div class="fleet-status" [ngClass]="{'fleet-up': isFleetUp, 'fleet-down': !isFleetUp}">
       <i class="wifi-icon" [ngClass]="{'wifi-up': isFleetUp, 'wifi-down': !isFleetUp}"></i>
@@ -9,9 +13,7 @@
     
 
 
-    <div class="timer">
-      <app-timer></app-timer>
-    </div>
+    
     <app-fullscreen-button></app-fullscreen-button>
     <img alt=""
       src="../../assets/icons/Notification_icon.svg"

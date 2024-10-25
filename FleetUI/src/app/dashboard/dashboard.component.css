@@ -378,6 +378,7 @@ canvas {
   background-color: #ff3333;
   color: white;
 }
+
 .dropdown-button {
   width: 100%;
   background-color: #ff333358;
@@ -391,7 +392,6 @@ canvas {
   justify-content: space-between;
   align-items: center;
 }
-
 
 .dropdown-content {
   display: flex;
