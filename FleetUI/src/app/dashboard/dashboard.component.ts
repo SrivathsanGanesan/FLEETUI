@@ -241,9 +241,59 @@ export class DashboardComponent implements AfterViewInit {
 
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = "../assets/CanvasRobo/robotB.svg";
-      
+    this.updateRobotColor();
   }
-  
+  robotState: string = 'moving';
+    updateRobotColor(): void {
+    let color: string;
+
+    switch (this.robotState) {
+      case 'docking':
+        color = '#00FF00'; // Green for docking
+        break;
+      case 'charging':
+        color = '#FFFF00'; // Yellow for charging
+        break;
+      case 'moving':
+        color = '#0000FF'; // Blue for moving
+        break;
+      case 'undocking':
+        color = '#FF0000'; // Red for undocking
+        break;
+      default:
+        color = '#FFA3A3'; // Default color
+    }
+
+    // Once the image is loaded, update the SVG fill color
+    this.robotImages['robotB'].onload = () => {
+      const ctx = (this.myCanvas.nativeElement as HTMLCanvasElement).getContext('2d');
+      ctx!.clearRect(0, 0, this.myCanvas.nativeElement.width, this.myCanvas.nativeElement.height); // Clear previous drawing
+
+      ctx!.drawImage(this.robotImages['robotB'], 0, 0); // Draw the robotB image
+
+      // Get the canvas image data and manipulate the SVG color
+      const imgData = ctx!.getImageData(0, 0, this.myCanvas.nativeElement.width, this.myCanvas.nativeElement.height);
+
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        // Change the pixel colors where the SVG is filled with the original color
+        if (imgData.data[i] === 255 && imgData.data[i + 1] === 163 && imgData.data[i + 2] === 163) {
+          // Replace the original fill color (#FFA3A3) with the new color based on the robot state
+          imgData.data[i] = parseInt(color.slice(1, 3), 16); // Red
+          imgData.data[i + 1] = parseInt(color.slice(3, 5), 16); // Green
+          imgData.data[i + 2] = parseInt(color.slice(5, 7), 16); // Blue
+        }
+      }
+      
+      ctx!.putImageData(imgData, 0, 0); // Apply the updated image data back to the canvas
+    };
+  }
+
+  // Method to change robot state and update the color
+  changeRobotState(newState: string): void {
+    this.robotState = newState;
+    this.updateRobotColor();
+  }
+
   // yet to update pos and save it in map..
   initSimRoboPos() {
     const imgWidth = this.mapImg.width; // * this.zoomLevel
