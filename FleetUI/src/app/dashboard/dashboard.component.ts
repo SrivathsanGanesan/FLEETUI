@@ -679,7 +679,7 @@ export class DashboardComponent implements AfterViewInit {
 
   addMouseUpListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mouseup', async (event) => {
-      if(this.draggingRobo && this.isInLive){
+      if(this.draggingRobo && this.isInLive && !event.button){ // event.button ( look at it..! )
         await this.initializeWhileInLive(canvas, event)
       }
       if (this.isDragging) {
