@@ -996,6 +996,7 @@ setPaginatedData1(){
   }
   showImageUploadPopup = false;
   openImageUploadPopup(): void {
+    this.currEditMap=false;
     // Reset the search filters
     this.startDate = null;
     this.endDate = null;
@@ -1413,7 +1414,6 @@ setPaginatedData1(){
       }
     });
   }
-
   addItem(item: any) {
     console.log('Add item:', item);
     this.messageService.add({
