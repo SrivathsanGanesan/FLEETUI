@@ -117,11 +117,27 @@ export class DashboardComponent implements AfterViewInit {
   updatedrobo: any;
 
 
+  //  new robot
+  isMoving: boolean = true;
+  isDocking: boolean = false;
+  isCharging: boolean = false;
+  shouldAnimate: boolean = true; // Control the animation
+  
+  get statusColor(): string {
+    if (this.isMoving) {
+      return 'green';
+    } else if (this.isDocking) {
+      return 'blue';
+    } else if (this.isCharging) {
+      return 'yellow';
+    } else {
+      return 'grey'; // Default/fallback
+    }
+  }
+
   deleteRobot(index: number) {
     this.simMode.splice(index, 1);  // Remove robot from the list
   }
-  
-
     
   constructor(
     private projectService: ProjectService,
@@ -131,9 +147,7 @@ export class DashboardComponent implements AfterViewInit {
     // this.onInitMapImg(); // yet to remove..
   }
 
- 
-  isFleet: boolean = true;
- 
+  isFleet: boolean = true; 
 
   // PNG icon URLs
   fleetIconUrl: string = "../assets/fleet_icon.png";
@@ -222,8 +236,6 @@ export class DashboardComponent implements AfterViewInit {
     this.robotImages['robotB'].src = "../assets/CanvasRobo/robotB.svg";
       
   }
-
-
   
   // yet to update pos and save it in map..
   initSimRoboPos() {
@@ -261,6 +273,29 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
+  async initializeWhileInLive(canvas: HTMLCanvasElement, event : MouseEvent){
+    const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+      const transY = canvas.height - mouseY;
+      const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
+      const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
+
+      for (let robo of this.simMode) {
+        const roboX = robo.pos.x;
+        const roboY = (this.mapImageHeight / this.zoomLevel) - robo.pos.y;
+        const imageSize = 25; // Adjust size based on robot image dimensions
+        if ( imgX >= roboX - imageSize && imgX <= roboX + imageSize && imgY >= roboY - imageSize && imgY <= roboY + imageSize ) {
+          // // Show the popup at the clicked position
+          // this.showPopup(event.clientX, event.clientY);
+          this.updatedrobo = robo;
+          this.updatedrobo.isInitialized = false;
+          await this.initializeRobo();
+          return;
+        }
+      }
+  }
+
   async initializeRobo() {
     // Toggle between initializing and releasing the robot
     if (this.updatedrobo) {
@@ -294,7 +329,7 @@ export class DashboardComponent implements AfterViewInit {
     let quaternion = { x: 0, y: 0, z: 0, w: 1 };
     const transformedY = mapImg.height - this.robotToInitialize.pos.y;
     this.robotToInitialize.pos.x = (this.robotToInitialize.pos.x * ratio) - this.origin.x;
-    this.robotToInitialize.pos.y = (transformedY * ratio) + this.origin.y;
+    this.robotToInitialize.pos.y = (transformedY * ratio) - this.origin.y;
 
     // quaternion = this.positionToQuaternion(this.robotToInitialize.pos);
     let initializeRobo = {
@@ -630,6 +665,9 @@ export class DashboardComponent implements AfterViewInit {
 
   addMouseUpListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mouseup', async (event) => {
+      if(this.draggingRobo && this.isInLive){
+        await this.initializeWhileInLive(canvas, event)
+      }
       if (this.isDragging) {
         this.isDragging = false;
         this.draggingRobo = null;
