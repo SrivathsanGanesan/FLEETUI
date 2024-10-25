@@ -10,6 +10,11 @@ const consumeAMQP = new EventEmitter();
 
 let currentRobos = [];
 
+const noLiveRoboPos = {
+  count: 0,
+  robots: [],
+};
+
 const eventStreamHeader = {
   "Content-Type": "text/event-stream",
   "Cache-Control": "no-cache",
@@ -147,13 +152,15 @@ const getRoboPos = async (req, res) => {
     const listenerCallback = (robos) => {
       res.write(`data: ${JSON.stringify(robos)}\n\n`);
     };
-
     req.on("close", () => {
       consumeAMQP.removeListener("amqp-data", listenerCallback); // to prevent the memory leak, which the listeners stacked..
       return res.end();
     });
 
     consumeAMQP.on("amqp-data", listenerCallback);
+
+    // take a look.. just to initiate the live on client by sending empty robo pose.
+    res.write(`data: ${JSON.stringify(noLiveRoboPos)}\n\n`); // wanna exucute only once...
   } catch (error) {
     console.error("Error in getAgvTelemetry:", error);
     res
