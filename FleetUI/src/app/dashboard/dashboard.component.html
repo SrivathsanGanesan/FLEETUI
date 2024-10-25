@@ -71,8 +71,13 @@
     <!-- ON Button -->
      
     <div class="ONBtn" (click)="startStopOpt()">
-      <img [src]="getOnBtnImage()" [ngClass]="{'on.svg': ONBtn}" alt="Blinking Button" />
+      <img 
+        [src]="getOnBtnImage()" 
+        alt="Toggle Button" 
+        [ngClass]="{ 'blinking-svg': isInLive }" 
+      />
     </div>
+    
     
     
 

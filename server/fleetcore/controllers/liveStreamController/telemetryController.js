@@ -9,6 +9,12 @@ let rabbitMQChannel = null;
 const consumeAMQP = new EventEmitter();
 
 let currentRobos = [];
+let rabbitmqConsumerTag = null;
+
+const noLiveRoboPos = {
+  count: 0,
+  robots: [],
+};
 
 const eventStreamHeader = {
   "Content-Type": "text/event-stream",
@@ -46,7 +52,7 @@ const consumeMessage = async () => {
 
     await rabbitMQChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
 
-    rabbitMQChannel.consume(queueName, (msg) => {
+    rabbitmqConsumerTag = await rabbitMQChannel.consume(queueName, (msg) => {
       currentRobos = []; // take a look..
       if (msg) {
         const messageContent = msg.content.toString();
@@ -142,18 +148,22 @@ const getRoboPos = async (req, res) => {
       return res.status(400).json({ msg: "Map not found!", map: null });
     // const map = await Map.findOne({ _id: mapId });
     // return res.status(200).json({ roboPos: null, data: "msg sent" });
+    if (!rabbitmqConsumerTag) return res.end();
+    
     res.writeHead(200, eventStreamHeader);
 
     const listenerCallback = (robos) => {
       res.write(`data: ${JSON.stringify(robos)}\n\n`);
     };
-
     req.on("close", () => {
       consumeAMQP.removeListener("amqp-data", listenerCallback); // to prevent the memory leak, which the listeners stacked..
       return res.end();
     });
 
     consumeAMQP.on("amqp-data", listenerCallback);
+
+    // take a look.. just to initiate the live on client by sending empty robo pose.
+    res.write(`data: ${JSON.stringify(noLiveRoboPos)}\n\n`); // wanna exucute only once...
   } catch (error) {
     console.error("Error in getAgvTelemetry:", error);
     res
