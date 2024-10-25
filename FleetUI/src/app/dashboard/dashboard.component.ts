@@ -1311,17 +1311,14 @@ export class DashboardComponent implements AfterViewInit {
   }
   // start-stop the operation!
   startStopOpt() {
-    if (this.isInLive) return;
-  
-    // Toggle the ONBtn state
+    // this.showSpline();
+    if(this.isInLive) return;
+    
+
     this.ONBtn = !this.ONBtn;
-  
-    // Call the necessary functions when ON
-    if (this.ONBtn) {
-      this.getLivePos();
-      if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
-      if (this.throughputComponent) this.throughputComponent.getThroughPutIfOn();
-    }
+    this.getLivePos();
+    if (this.UptimeComponent) this.UptimeComponent.getUptimeIfOn(); // call the uptime comp function
+    if (this.throughputComponent) this.throughputComponent.getThroughPutIfOn();
   }
   
 

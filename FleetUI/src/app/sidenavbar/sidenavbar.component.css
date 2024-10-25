@@ -58,7 +58,7 @@
     margin-right: 1rem; /* Space between status and other elements */
     cursor: default; /* Change cursor to indicate non-clickable */
     text-align: center; /* Center align the text */
-    box-shadow: 0 0 5px rgba(255, 35, 35, 0.5); /* Heavy box shadow */
+    
   }
   
   .fleet-up {
@@ -69,6 +69,7 @@
   .fleet-down {
     background-color: rgba(249, 111, 111, 0.2); /* Light gray background for Fleet Down */
     color: rgb(236, 6, 6); /* Gray text color */
+    box-shadow: 0 0 5px rgba(255, 35, 35, 0.5); /* Heavy box shadow */
   }
   
 
