@@ -352,7 +352,7 @@ export class EnvmapComponent implements AfterViewInit {
   ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
     if(!this.selectedMap) return;
-    if (this.currEditMap) {
+    if (this.currEditMap) {            
       this.showImage = true;
       this.mapName = this.currEditMapDet.mapName;
       this.siteName = this.currEditMapDet.siteName;
@@ -1279,7 +1279,7 @@ export class EnvmapComponent implements AfterViewInit {
       Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
     );
   }
-  updateEditedMap() {
+  updateEditedMap() {    
     this.nodes = this.nodes.map((node)=>{
       // node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)));
       // node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)));
@@ -1345,7 +1345,6 @@ export class EnvmapComponent implements AfterViewInit {
           summary: 'Success',
           detail: 'Map updated successfully!',
         });
-
         this.closePopup.emit(); // Close the popup after update
       })
       .catch((error) => {
@@ -1714,7 +1713,6 @@ export class EnvmapComponent implements AfterViewInit {
   // originY:number | null = null;
   open(): void {
     this.validationError = null;
-
     if (!this.currEditMap)
       if (this.mapName && this.siteName) {
         for (let map of this.EnvData) {
@@ -3192,8 +3190,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     this.isZonePlottingEnabled = false;
     this.isPopupVisible = false;
     this.firstPlottedPoint = null;
-
-
     // Redraw the canvas to remove the temporary zone points
     this.redrawCanvas();
   }
@@ -3833,6 +3829,25 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     // yet to remove..
     this.selectionStart = null;
     this.selectionEnd = null;
+  }
+  @HostListener('document:keydown', ['$event'])
+  onKeydownHandler(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    console.log('ESC pressed, disabling delete mode');
+    this.isDeleteModeEnabled = false; // Disable delete mode
+    // this.isPlottingEnabled =false;
+    if(this.isZonePlottingEnabled){
+      this.plottedPoints = [];
+      this.isZonePlottingEnabled = false;
+      this.isPopupVisible = false;
+      this.firstPlottedPoint = null;
+      // Redraw the canvas to remove the temporary zone points
+      this.redrawCanvas();
+    }
+    // this.isZonePlottingEnabled=false;
+    // this.isPlottingAsset =false;
+    this.isEdgeDrawingInProgress =false;
+  }
   }
   private isAssetClicked(
     asset: { x: number; y: number; type: string },
