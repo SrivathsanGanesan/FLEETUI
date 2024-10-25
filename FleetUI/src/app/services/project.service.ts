@@ -9,7 +9,9 @@ export class ProjectService {
   private projectCreatedKey = 'is-project-setted';
   private selectedProjectKey = 'project-data';
   private inLive: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( false );
+  private isFleetUp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( false );
   inLive$ = this.inLive.asObservable();
+  isFleetUp$ = this.isFleetUp.asObservable();
 
   constructor(private cookieService: CookieService) {}
 
@@ -83,7 +85,11 @@ export class ProjectService {
     return this.inLive.getValue();
   }
 
-  // setNode() {
-  //   this.cookieService.set('nodes', JSON.stringify([{ id: 1, name: 'node1' }]));
-  // }
+  getIsFleetUp(): boolean {
+    return this.isFleetUp.getValue();
+  }
+
+  setIsFleetUp(value: boolean): void {
+    this.isFleetUp.next(value);
+  }
 }

@@ -39,7 +39,7 @@
           <span>{{ robot.amrId }}</span>
           <span>{{ robot.roboName }}</span>
           <label class="switch">
-            <input type="checkbox" [(ngModel)]="robot.isActive" (change)="activateRobot(robot)">
+            <input type="checkbox" [(ngModel)]="robot.isActive" (change)="activateRobot(robot)" [disabled]="!isFleetUp">
             <div class="slider"></div>
             <div class="slider-card">
               <div class="slider-card-face slider-card-front"></div>

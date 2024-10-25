@@ -130,6 +130,7 @@ export class SidenavbarComponent implements OnInit {
     let data = await response.json();
     // console.log(data.fleetUp);
     this.isFleetUp = data.fleetUp ? true : false;
+    this.projectService.setIsFleetUp(this.isFleetUp)
   }
 
   // Clear all notifications when the button is clicked

@@ -149,7 +149,7 @@ const getRoboPos = async (req, res) => {
     // const map = await Map.findOne({ _id: mapId });
     // return res.status(200).json({ roboPos: null, data: "msg sent" });
     if (!rabbitmqConsumerTag) return res.end();
-    
+
     res.writeHead(200, eventStreamHeader);
 
     const listenerCallback = (robos) => {
@@ -190,7 +190,7 @@ const enableRobo = async (req, res) => {
 
     if (enableRoboRes.errorCode !== 1000)
       return res
-        .status(500)
+        .status(400)
         .json({ isRoboEnabled: false, msg: "not attained" });
 
     return res.status(200).json({ isRoboEnabled: true, msg: "path set!" });

@@ -115,6 +115,9 @@ export class DashboardComponent implements AfterViewInit {
   isImage: boolean = false;
   // genMapImg: any | null = null;
   updatedrobo: any;
+  isFleetUp: boolean = false;
+
+  liveRobos : any | null = null;
 
 
   //  new robot
@@ -175,6 +178,9 @@ export class DashboardComponent implements AfterViewInit {
 
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
+    this.projectService.isFleetUp$.subscribe((status) => {
+      this.isFleetUp = status;
+    });
 
     this.selectedMap = this.projectService.getMapData();
     if (!this.projectService.getMapData()) {
@@ -819,6 +825,7 @@ export class DashboardComponent implements AfterViewInit {
   // Toggle the dropdown menu
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
+    // this.liveRobos = // yet to look at it..
   }
 
   async enable_robot(robot: any) {
@@ -841,11 +848,17 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async activateRobot(robot: any) {
+    let fleetUp = this.projectService.getIsFleetUp();
+    if(!fleetUp) return;
     robot.enabled = true;
     let data = await this.enable_robot(robot);
+    // if(data.isRoboEnabled)
+    this.simMode = this.simMode.map((robo) => {
+      if(robo.amrId === robot.amrId && data.isRoboEnabled) robo.isActive = true;
+      else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
+      return robo;
+    })
     console.log(`${robot.roboName} has been enabled.`);
-    // console.log(data);
-    // console.log(`${robot.name} has been enabled.`);
   }
 
   async getMapDetails() {
@@ -1146,6 +1159,7 @@ export class DashboardComponent implements AfterViewInit {
 
             // Store each robot's position and orientation using the robot ID
             robotsData[robot.id] = { posX, posY, yaw: yaw }; // here we go...
+
             console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
 
             // yet to remove if cond..
