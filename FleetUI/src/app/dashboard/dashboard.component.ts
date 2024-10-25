@@ -180,6 +180,7 @@ export class DashboardComponent implements AfterViewInit {
     this.isInLive = this.projectService.getInLive();
     this.projectService.isFleetUp$.subscribe((status) => {
       this.isFleetUp = status;
+      if(!this.isFleetUp) this.disableAllRobos();
     });
 
     this.selectedMap = this.projectService.getMapData();
@@ -277,6 +278,13 @@ export class DashboardComponent implements AfterViewInit {
     if (popup) {
       popup.style.display = 'none';
     }
+  }
+
+  disableAllRobos(){
+    this.simMode = this.simMode.map((robo) => {
+      robo.isActive = false;
+      return robo;
+    })
   }
 
   async initializeWhileInLive(canvas: HTMLCanvasElement, event : MouseEvent){
