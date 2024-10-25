@@ -1330,8 +1330,8 @@ export class DashboardComponent implements AfterViewInit {
 
   getOnBtnImage(): string {
     return this.isInLive // this.ONVtm
-      ? '../../assets/icons/off.svg'
-      : '../../assets/icons/on.svg';
+      ? '../../assets/icons/on.svg'
+      : '../../assets/icons/off.svg';
   }
 
   getliveAmrPos() {
