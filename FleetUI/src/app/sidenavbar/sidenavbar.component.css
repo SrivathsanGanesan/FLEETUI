@@ -55,7 +55,7 @@
     border-radius: 5px; /* Rounded corners */
     font-size: 1rem; /* Font size */
     font-weight: bold; /* Bold text for visibility */
-    margin-right: 1rem; /* Space between status and other elements */
+    margin-right: 2rem; /* Space between status and other elements */
     cursor: default; /* Change cursor to indicate non-clickable */
     text-align: center; /* Center align the text */
     
@@ -487,11 +487,20 @@ app-fullscreen-button{
       font-size: 29px;
   }
 
-  .timer{
-    margin-right:2rem;
-    margin-top: 0.8rem;
-  }
+  .timer {
+    background-color: rgb(160, 160, 160); /* Grey background */
+    color: white; /* White font color */
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 2rem;
+   
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
 
+    text-align: center; /* Center text */
+  }
+  
 /* profile */
 .Profile {
   display: flex;

@@ -1430,17 +1430,17 @@ export class DashboardComponent implements AfterViewInit {
     startPos: { x: number; y: number },
     endPos: { x: number; y: number },
     direction: string,
-    nodeRadius: number = 1,
-    threshold: number = 1
+    nodeRadius: number = 10,
+    threshold: number = 5,
   ): void {
     const dx = endPos.x - startPos.x;
     const dy = endPos.y - startPos.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    const startX = startPos.x + (dx * nodeRadius) / distance;
-    const startY = startPos.y + (dy * nodeRadius) / distance;
-    const endX = endPos.x - (dx * nodeRadius) / distance;
-    const endY = endPos.y - (dy * nodeRadius) / distance;
+    const startX = startPos.x + (dx) / distance;
+    const startY = startPos.y + (dy) / distance;
+    const endX = endPos.x - (dx) / distance;
+    const endY = endPos.y - (dy) / distance;
 
     ctx.beginPath();
     ctx.moveTo(startX, startY);
