@@ -334,7 +334,7 @@ const getFleetStatus = async (req, res) => {
       .status(200)
       .json({ fleetUp: true, msg: "fleet in up", error: null });
   } catch (error) {
-    console.error("Error in checking status of fleet :", error);
+    console.error("Error in checking status of fleet :", error.message);
     res
       .status(404)
       .json({ fleetUp: false, msg: "fleet in down", error: error.message });

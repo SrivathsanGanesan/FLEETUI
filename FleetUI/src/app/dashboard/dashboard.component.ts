@@ -241,10 +241,11 @@ export class DashboardComponent implements AfterViewInit {
 
     this.robotImages['robotB'] = new Image();
     this.robotImages['robotB'].src = "../assets/CanvasRobo/robotB.svg";
-    this.updateRobotColor();
+    // this.updateRobotColor();
   }
   robotState: string = 'moving';
-    updateRobotColor(): void {
+
+  updateRobotColor(): void {
     let color: string;
 
     switch (this.robotState) {
