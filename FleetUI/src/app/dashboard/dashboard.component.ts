@@ -359,8 +359,8 @@ export class DashboardComponent implements AfterViewInit {
       const transY = canvas.height - mouseY;
       // console.log("hey",this.offsetX,this.offsetY);
       
-      const imgX = (mouseX - this.mapImageX ) / this.zoomLevel - this.offsetX;
-      const imgY = (mouseY - this.mapImageY ) / this.zoomLevel - this.offsetY;
+      const imgX = (mouseX - this.mapImageX ) / this.zoomLevel;
+      const imgY = (mouseY - this.mapImageY ) / this.zoomLevel ;
 
       for (let robo of this.simMode) {
         const roboX = robo.pos.x;
@@ -1057,29 +1057,7 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  plotRobo(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    orientation: number
-  ) {
-    const image = this.robotImages['robotB'];
-    const imageSize = 25;
 
-    if (image && ctx) {
-      ctx.save(); // Save the current context before rotation
-      ctx.translate(x, y); // Move the rotation point to the robot's center
-      ctx.rotate((orientation * Math.PI) / 180); // Rotate by the given orientation angle (converted to radians)
-      ctx.drawImage(
-        image,
-        -imageSize / 2,
-        -imageSize / 2,
-        imageSize * 1.3,
-        imageSize
-      );
-      ctx.restore(); // Restore the context after rotation
-    }
-  }
 
   redrawOtherElements(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     // // Redraw nodes, edges, assets, and zones
@@ -1256,7 +1234,29 @@ export class DashboardComponent implements AfterViewInit {
       this.posEventSource.close();
     };
   }
+  plotRobo(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    orientation: number
+  ) {
+    const image = this.robotImages['robotB'];
+    const imageSize = 25* this.zoomLevel;
 
+    if (image && ctx) {
+      ctx.save(); // Save the current context before rotation
+      ctx.translate(x, y); // Move the rotation point to the robot's center
+      ctx.rotate((orientation * Math.PI) / 180); // Rotate by the given orientation angle (converted to radians)
+      ctx.drawImage(
+        image,
+        -imageSize / 2,
+        -imageSize / 2,
+        imageSize * 1.3,
+        imageSize
+      );
+      ctx.restore(); // Restore the context after rotation
+    }
+  }
   async plotAllRobots(robotsData: any) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -1273,6 +1273,8 @@ export class DashboardComponent implements AfterViewInit {
       // Calculate the scaled image dimensions and center the image on the canvas
       const imgWidth = mapImage.width * this.zoomLevel;
       const imgHeight = mapImage.height * this.zoomLevel;
+      console.log("hey",canvas.height,canvas.width,imgHeight,imgWidth);
+      
       const centerX = (canvas.width - imgWidth) / 2;
       const centerY = (canvas.height - imgHeight) / 2;
 
@@ -1283,45 +1285,58 @@ export class DashboardComponent implements AfterViewInit {
       ctx.restore(); // Reset transformation after drawing the map
 
       if (this.showModelCanvas) {
-        // this.drawNodesAndEdges(ctx, mapImage);
+        this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
         // Create a temporary canvas to draw nodes and edges
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
-        if (tempCtx) {
-          tempCanvas.width = mapImage.width * this.zoomLevel;
-          tempCanvas.height =( mapImage.height) * this.zoomLevel;
+        // const tempCanvas = document.createElement('canvas');
+        // const tempCtx = tempCanvas.getContext('2d');
+        // if (tempCtx) {
+        //   tempCanvas.width = mapImage.width * this.zoomLevel;
+        //   tempCanvas.height = mapImage.height * this.zoomLevel;
   
-          // Draw nodes and edges on the temporary canvas
-          this.drawNodesAndEdges(tempCtx, mapImage);
+        //   // Draw nodes and edges on the temporary canvas
+        //   this.drawNodesAndEdges(tempCtx, mapImage);
   
-          // Draw the temporary canvas onto the main canvas
-          ctx.drawImage(tempCanvas, centerX, centerY);
-        }
+        //   // Draw the temporary canvas onto the main canvas
+        //   ctx.drawImage(tempCanvas, centerX, centerY);
+        // }
       }
       
-      for(let robotId of Object.keys(robotsData)){
+      for (let robotId of Object.keys(robotsData)) {
         const { posX, posY, yaw } = robotsData[robotId];
-
-        // const robotPosX = centerX + posX * this.zoomLevel;
-        // const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
-
+        
+        // Scale position based on zoomLevel
+        const scaledPosX = posX ;
+        const scaledPosY = posY ;
+    
+        // Flip Y-axis for canvas and calculate actual canvas positions for centering
+        const transformedPosY = canvas.height - scaledPosY; // Apply flip after scaling
+        const robotCanvasX =  scaledPosX;
+        const robotCanvasY = transformedPosY;
+    
+        // Update `simMode` data with the new scaled positions if the robot is not being dragged
         this.simMode = this.simMode.map((robo) => {
-          let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
-          if(robo.amrId === parseInt(robotId) && !(robo.amrId === draggingRoboId)) {
-            robo.pos.x = posX ;
-            robo.pos.y = (canvas.height - posY);
-            robo.pos.orientation = -yaw;
-          }
-          return robo
-        })
-      };
-      
-      this.simMode.forEach((robo) => {
+            let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
+            
+            if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
+                robo.pos.x = robotCanvasX;
+                robo.pos.y = robotCanvasY;
+                robo.pos.orientation = -yaw;
+            }
+            return robo;
+        });
+    }
+    
+    
+    // After updating positions, use the adjusted positions to draw the robots
+    this.simMode.forEach((robo) => {
         const robotPosX = centerX + (robo.pos.x * this.zoomLevel);
-        const robotPosY  = centerY + (robo.pos.y * this.zoomLevel);
-        let yaw = robo.pos.orientation;
-        this.plotRobo(ctx, robotPosX, robotPosY, yaw)
-      });
+        const robotPosY = centerY + (robo.pos.y * this.zoomLevel);
+        const yaw = robo.pos.orientation;
+    
+        // Draw the robot on the canvas with updated positions and orientation
+        this.plotRobo(ctx, robotPosX, robotPosY, yaw);
+    });
+    
 
       // Plot each robot on the map, yet to uncomment..
      /*  Object.keys(robotsData).forEach((robotId) => {
@@ -1338,50 +1353,55 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
-  // Plot nodes
-  this.nodes.forEach((node) => {
-    const transformedY = img.height - node.nodePosition.y;
-    this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
-  });
+  drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement, centerX: number, centerY: number, zoomLevel: number) {
+    // Plot nodes with scaling and centering
+    this.nodes.forEach((node) => {
+        const scaledX = node.nodePosition.x * zoomLevel;
+        const scaledY = (img.height - node.nodePosition.y) * zoomLevel; // Flip Y-axis and scale
+        this.drawNode(ctx, centerX + scaledX, centerY + scaledY, node.nodeId);
+    });
 
-  // Plot edges
-  this.edges.forEach((edge) => {
-    const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
-    const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
+    // Plot edges with scaling and centering
+    this.edges.forEach((edge) => {
+        const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
+        const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
 
-    if (startNode && endNode) {
-      const startPos = {
-        x: startNode.nodePosition.x,
-        y: startNode.nodePosition.y,
-      };
-      const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
-      const transformedStartY = img.height - startPos.y;
-      const transformedEndY = img.height - endPos.y;
+        if (startNode && endNode) {
+            const startX = startNode.nodePosition.x * zoomLevel;
+            const startY = (img.height - startNode.nodePosition.y) * zoomLevel;
+            const endX = endNode.nodePosition.x * zoomLevel;
+            const endY = (img.height - endNode.nodePosition.y) * zoomLevel;
 
-      this.drawEdge(
-        ctx,
-        { x: startPos.x, y: transformedStartY },
-        { x: endPos.x, y: transformedEndY },
-        edge.direction,
-        edge.startNodeId,
-        edge.endNodeId
-      );
-    }
-  });
+            // Adjust for centering
+            this.drawEdge(
+                ctx,
+                { x: centerX + startX, y: centerY + startY },
+                { x: centerX + endX, y: centerY + endY },
+                edge.direction,
+                edge.startNodeId,
+                edge.endNodeId
+            );
+        }
+    });
 
-  // Plot zones and assets if needed
-  this.zones.forEach((zone) => {
-    this.plottedPoints = zone.pos;
-    this.zoneType = zone.type;
-    this.drawLayer(ctx); // Assuming drawLayer plots zone points
-    this.plottedPoints = [];
-  });
+    // Plot zones with scaling and centering
+    this.zones.forEach((zone) => {
+        // this.plottedPoints = zone.pos.map((point) => ({
+        //     x: centerX + point.x * zoomLevel,
+        //     y: centerY + (img.height - point.y) * zoomLevel, // Flip and scale
+        // }));
+        this.zoneType = zone.type;
+        this.drawLayer(ctx); // Assuming `drawLayer` plots zone points
+        this.plottedPoints = [];
+    });
 
-  this.assets.forEach((asset) =>
-    this.plotAsset(ctx, asset.x, asset.y, asset.type)
-  );
-  }
+    // Plot assets with scaling and centering
+    this.assets.forEach((asset) => {
+        const assetX = asset.x * zoomLevel;
+        const assetY = (img.height - asset.y) * zoomLevel;
+        this.plotAsset(ctx, centerX + assetX, centerY + assetY, asset.type);
+    });
+}
 
   async showSpline() {
     if (!this.selectedMap.id) return;
