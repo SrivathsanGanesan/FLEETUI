@@ -572,6 +572,7 @@ input:checked ~ .slider {
 /* Background color for Fleet */
 .fleet-background {
   background-color: #63b7fc; /* Blue for Fleet */
+  z-index: auto;
 }
 
 /* Background color for Simulation */
