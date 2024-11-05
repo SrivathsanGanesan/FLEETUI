@@ -288,18 +288,34 @@ export class DashboardComponent implements AfterViewInit {
     this.robotState = newState;
     this.updateRobotColor();
   }
+  // initSimRoboPos() {
+  //   const imgWidth = this.mapImg.width; // * this.zoomLevel
+  //   const imgHeight = this.mapImg.height; // * this.zoomLevel    
 
+  //   // Calculate the bottom-right corner position of the image
+  //   let roboX = imgWidth - this.placeOffset;
+  //   let roboY = imgHeight - 100;
+  //   let i = 0;
+
+  //   this.simMode = this.simMode.map((robo) => {
+  //     // if (!robo.pos.x && !robo.pos.y) {
+  //       roboX = imgWidth - this.placeOffset * i;
+  //       robo.pos = { x: i / this.ratio, y: 0, orientation: 0 };
+  //       i++;
+  //     // }
+  //     return robo;
+  //   });
+  // }
   // yet to update pos and save it in map..
   initSimRoboPos() {
-    const imgWidth = this.mapImg.width;  // Image width
-    const imgHeight = this.mapImg.height;  // Image height
- 
-    // Calculate the center position of the image
-    let centerX = (imgWidth / 2)+620;
-    let centerY = (imgHeight / 2)+250;
- 
+    const imgWidth = this.mapImg.width; // * this.zoomLevel
+    const imgHeight = this.mapImg.height; // * this.zoomLevel    
+
+    // Calculate the bottom-right corner position of the image
+    let roboX = imgWidth - this.placeOffset;
+    let roboY = imgHeight - 100;
     let i = 0;
- 
+
     this.simMode = this.simMode.map((robo) => {
       // Position each robot centered horizontally and vertically, with an offset for spacing
       robo.pos = {
