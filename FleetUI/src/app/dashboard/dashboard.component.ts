@@ -1301,31 +1301,42 @@ export class DashboardComponent implements AfterViewInit {
         // }
       }
       
-      for (let robotId of Object.keys(robotsData)) {
-        const { posX, posY, yaw } = robotsData[robotId];
-        
-        // Scale position based on zoomLevel
-        const scaledPosX = posX ;
-        const scaledPosY = posY ;
-    
-        // Flip Y-axis for canvas and calculate actual canvas positions for centering
-        const transformedPosY = canvas.height - scaledPosY; // Apply flip after scaling
-        const robotCanvasX =  scaledPosX;
-        const robotCanvasY = transformedPosY;
-    
-        // Update `simMode` data with the new scaled positions if the robot is not being dragged
-        this.simMode = this.simMode.map((robo) => {
-            let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
-            
-            if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
-                robo.pos.x = robotCanvasX;
-                robo.pos.y = robotCanvasY;
-                robo.pos.orientation = -yaw;
-            }
-            return robo;
-        });
+// Iterate through each robot and compute their initial positions
+    for (let robotId of Object.keys(robotsData)) {
+      const { posX, posY, yaw } = robotsData[robotId];
+
+      // Scale and transform positions based on the canvas setup
+      const robotCanvasX = centerX + posX * this.zoomLevel;
+      const robotCanvasY = centerY + (imgHeight - posY) * this.zoomLevel; // Flip Y-axis
+
+      // Update simMode data with the new scaled positions if the robot is not being dragged
+      this.simMode = this.simMode.map((robo) => {
+        let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
+        if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
+          robo.pos.x = robotCanvasX;
+          robo.pos.y = robotCanvasY;
+          robo.pos.orientation = -yaw;
+        }
+        return robo;
+      });
     }
-    
+    // Draw robots using zoomLevel
+    // Object.keys(robotsData).forEach((robotId) => {
+    //   const { posX, posY, yaw } = robotsData[robotId];
+          
+    //   // Transform robot positions by zoom level
+    //   const scaledPosX = posX * this.zoomLevel;
+    //   const scaledPosY = posY * this.zoomLevel;
+
+    //   const transformedPosY = imgHeight - scaledPosY; // Flip y-axis for canvas
+
+    //    // Translate robot position based on center of image
+    //   const robotPosX = centerX + scaledPosX;
+    //   const robotPosY = centerY + transformedPosY;
+
+    //   // Draw the robot at the scaled position
+    //   this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
+    // });    
     
     // After updating positions, use the adjusted positions to draw the robots
     this.simMode.forEach((robo) => {
