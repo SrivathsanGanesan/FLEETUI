@@ -1260,6 +1260,11 @@ setPaginatedData1(){
     this.currEditMap = currEditMap;
   }
   editItem(item: any) {
+    if(this.currEditMap){
+      console.log("hey");
+      
+      this.currEditMap = true;
+    }
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${item.mapName}`,
       {
@@ -1308,7 +1313,7 @@ setPaginatedData1(){
             };
             this.currEditMap = true;
             this.showImageUploadPopup = true;
-  
+
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
