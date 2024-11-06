@@ -1564,7 +1564,7 @@ export class EnvmapComponent implements AfterViewInit {
         });
       });
 
-    // this.form = null;
+    this.form = null;
     console.log("hey");
     
   }
