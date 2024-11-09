@@ -38,6 +38,7 @@ enum ZoneType {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit {
+  @ViewChild('robotB', { static: false }) robotBPath!: ElementRef;
   @ViewChild('robotTooltip', { static: true }) robotTooltip!: ElementRef;
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
@@ -123,7 +124,7 @@ export class DashboardComponent implements AfterViewInit {
   isDocking: boolean = false;
   isCharging: boolean = false;
   shouldAnimate: boolean = true; // Control the animation
-  
+  svgFillColor: string = '#FFA3A3'; // Default color
   get statusColor(): string {
     if (this.isMoving) {
       return 'green';
@@ -175,9 +176,14 @@ export class DashboardComponent implements AfterViewInit {
   }
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
-    this.projectService.isFleetUp$.subscribe((status) => {
+    this.projectService.isFleetUp$.subscribe((status) => {      
       this.isFleetUp = status;
-      if(!this.isFleetUp) this.disableAllRobos();
+      console.log(this.isFleetUp);
+      if(!this.isFleetUp){ 
+        this.disableAllRobos();
+        this.isInLive = false;  // Ensure we're not in live mode if fleet is down
+        this.projectService.setInLive(false);  // Update the service
+      }
     });
 
     this.selectedMap = this.projectService.getMapData();
@@ -220,6 +226,7 @@ export class DashboardComponent implements AfterViewInit {
       this.addMouseDownListener(canvas);
       this.addMouseUpListener(canvas);
       this.addRightClickListener(canvas);
+
     } else {
       console.error('myCanvas is undefined');
     }
@@ -233,60 +240,25 @@ export class DashboardComponent implements AfterViewInit {
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
 
+    const svgContent = `
+      <svg width="76" height="55" viewBox="0 0 76 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="11.5" y="0.5" width="14" height="7" rx="1.5" fill="#747070" stroke="black"/>
+        <rect x="11.5" y="47.5" width="14" height="7" rx="1.5" fill="#747070" stroke="black"/>
+        <rect x="52.5" y="47.5" width="14" height="7" rx="1.5" fill="#747070" stroke="black"/>
+        <rect x="52.5" y="0.5" width="14" height="7" rx="1.5" fill="#747070" stroke="black"/>
+        <path d="M6 4.5H70C73.0376 4.5 75.5 6.96243 75.5 10V45C75.5 48.0376 73.0376 50.5 70 50.5H6C2.96243 50.5 0.5 48.0376 0.5 45V10C0.5 6.96243 2.96243 4.5 6 4.5Z" fill="#FFA3A3" stroke="black"/>
+        <path d="M54.5 27C54.5 35.546 47.3512 42.5 38.5 42.5C29.6488 42.5 22.5 35.546 22.5 27C22.5 18.454 29.6488 11.5 38.5 11.5C47.3512 11.5 54.5 18.454 54.5 27Z" fill="white" stroke="black"/>
+      </svg>`;
+
+    // Create a data URL for the SVG content
+    const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
     this.robotImages['robotB'] = new Image();
-    this.robotImages['robotB'].src = "../assets/CanvasRobo/robotB.svg";
-    // this.updateRobotColor();
-  }
-  robotState: string = 'moving';
+    this.robotImages['robotB'].src = svgUrl;
 
-  updateRobotColor(): void {
-    let color: string;
-
-    switch (this.robotState) {
-      case 'docking':
-        color = '#00FF00'; // Green for docking
-        break;
-      case 'charging':
-        color = '#FFFF00'; // Yellow for charging
-        break;
-      case 'moving':
-        color = '#0000FF'; // Blue for moving
-        break;
-      case 'undocking':
-        color = '#FF0000'; // Red for undocking
-        break;
-      default:
-        color = '#FFA3A3'; // Default color
-    }
-
-    // Once the image is loaded, update the SVG fill color
-    this.robotImages['robotB'].onload = () => {
-      const ctx = (this.myCanvas.nativeElement as HTMLCanvasElement).getContext('2d');
-      ctx!.clearRect(0, 0, this.myCanvas.nativeElement.width, this.myCanvas.nativeElement.height); // Clear previous drawing
-
-      ctx!.drawImage(this.robotImages['robotB'], 0, 0); // Draw the robotB image
-
-      // Get the canvas image data and manipulate the SVG color
-      const imgData = ctx!.getImageData(0, 0, this.myCanvas.nativeElement.width, this.myCanvas.nativeElement.height);
-
-      for (let i = 0; i < imgData.data.length; i += 4) {
-        // Change the pixel colors where the SVG is filled with the original color
-        if (imgData.data[i] === 255 && imgData.data[i + 1] === 163 && imgData.data[i + 2] === 163) {
-          // Replace the original fill color (#FFA3A3) with the new color based on the robot state
-          imgData.data[i] = parseInt(color.slice(1, 3), 16); // Red
-          imgData.data[i + 1] = parseInt(color.slice(3, 5), 16); // Green
-          imgData.data[i + 2] = parseInt(color.slice(5, 7), 16); // Blue
-        }
-      }
-      
-      ctx!.putImageData(imgData, 0, 0); // Apply the updated image data back to the canvas
-    };
-  }
-
-  // Method to change robot state and update the color
-  changeRobotState(newState: string): void {
-    this.robotState = newState;
-    this.updateRobotColor();
+    // Optional: add event listener to clean up object URL after image loads
+    this.robotImages['robotB'].onload = () => URL.revokeObjectURL(svgUrl);    
   }
   // initSimRoboPos() {
   //   const imgWidth = this.mapImg.width; // * this.zoomLevel
@@ -1178,7 +1150,6 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async getLivePos() {
-    
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
       console.log('no map selected');
@@ -1192,6 +1163,7 @@ export class DashboardComponent implements AfterViewInit {
 
     this.posEventSource = new EventSource(URL);
     this.posEventSource.onmessage = (event) => {
+      if (!this.isFleetUp) return;
       this.projectService.setInLive(true);
       this.isInLive = true;
       const robotsData: any = {};
