@@ -1742,6 +1742,7 @@ setPaginatedData1(){
           return;
         }
       });
+      
     this.isPopupOpen = false;
     this.ngOnInit();
     this.cdRef.detectChanges();

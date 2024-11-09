@@ -328,7 +328,7 @@ export class DashboardComponent implements AfterViewInit {
     const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
-      const transY = canvas.height - mouseY;
+      const transY = this.mapImageHeight - mouseY;
       // console.log("hey",this.offsetX,this.offsetY);
       
       const imgX = (mouseX - this.mapImageX ) / this.zoomLevel;
@@ -342,8 +342,7 @@ export class DashboardComponent implements AfterViewInit {
           // // Show the popup at the clicked position
           // this.showPopup(event.clientX, event.clientY);
           this.updatedrobo = robo;
-          this.updatedrobo.isInitialized = false;
-          
+          this.updatedrobo.isInitialized = false;          
           await this.initializeRobo();
           return;
         }
@@ -1292,8 +1291,8 @@ export class DashboardComponent implements AfterViewInit {
         // const offsetY = Math.floor(index / 3) * spacing;
     
         // Scale position and apply spacing offset
-        const scaledPosX = posX  ;
-        const scaledPosY = posY  ;
+        const scaledPosX = posX;
+        const scaledPosY = posY;
     
         // Flip Y-axis for canvas and calculate actual canvas positions
         const transformedPosY = !this.simMode
