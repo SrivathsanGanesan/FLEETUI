@@ -38,6 +38,7 @@ enum ZoneType {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit {
+  @ViewChild('robotTooltip', { static: true }) robotTooltip!: ElementRef;
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
   @ViewChild('myCanvas', { static: false })
@@ -816,7 +817,7 @@ export class DashboardComponent implements AfterViewInit {
 
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     const tooltip = document.getElementById('Pos_tooltip')!;
-    const robotooltip = document.getElementById('robotTooltip')!;
+    const robottooltip = document.getElementById('roboTooltip')!;
     canvas.addEventListener('mousemove', (event) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
@@ -825,31 +826,7 @@ export class DashboardComponent implements AfterViewInit {
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
-      let hoverRobotId = null;    
-      // Check if the mouse is over any robot
-    for (let robo of this.robos) {
-      const roboX = robo.pos.x;
-      const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
-      const imageSize = 25; // Adjust based on the size of the robot image
 
-      if (
-        imgX >= roboX - imageSize &&
-        imgX <= roboX + imageSize &&
-        imgY >= roboY - imageSize &&
-        imgY <= roboY + imageSize
-      ) {
-        hoverRobotId = robo.amrId;  // Store the robot ID to display
-        break;
-      }
-    }
-    if (hoverRobotId) {
-      tooltip.textContent = `Robot ID: ${hoverRobotId}`;
-      tooltip.style.display = 'block';
-      tooltip.style.left = `${event.clientX + 10}px`; // Adjust for tooltip positioning
-      tooltip.style.top = `${event.clientY - 30}px`;  // Display above the robot
-    } else {
-      tooltip.style.display = 'none'; // Hide tooltip if not hovering over a robot
-    }
       if (this.draggingRobo && this.isDragging && !this.draggingRobo.isInitialized) {
         // this.draggingRobo.pos.x = this.draggingRobo.pos.x;
         // this.draggingRobo.pos.y = (this.mapImageHeight/ this.zoomLevel ) - this.draggingRobo.pos.y;
@@ -867,23 +844,58 @@ export class DashboardComponent implements AfterViewInit {
         // Redraw the canvas with the updated robot position
         this.redrawCanvas();
       }
-      // Check if the mouse is within the bounds of the map image
+      let isOverRobot = false;
+      let robotId = null;
+  
+      for (let robo of this.simMode) {
+        const roboX = robo.pos.x;
+        const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
+        const imageSize = 25; // Adjust to the size of the robot image
+  
+        if (imgX >= roboX - imageSize && imgX <= roboX + imageSize && imgY >= roboY - imageSize && imgY <= roboY + imageSize) {
+          isOverRobot = true;
+          robotId = robo.amrId;
+  
+          // Position the robot tooltip above the robot
+          const robotScreenX = roboX * this.zoomLevel + this.mapImageX;  // X position on the canvas
+          const robotScreenY = (this.mapImageHeight / this.zoomLevel - roboY) * this.zoomLevel + this.mapImageY;  // Y position on the canvas
+  
+          robottooltip.style.left = `${robotScreenX - 30}px`;  // Slightly to the left of the robot's X position
+          robottooltip.style.top = `${robotScreenY - 45}px`;  // Above the robot's Y position
+          robottooltip.innerHTML = `Robot ID: ${robotId}`;
+          robottooltip.style.display = "block";
+          break; // Exit the loop after finding the first robot
+        }
+      }
+  
+      if (!isOverRobot || robotId === null) {
+        robottooltip.style.display = "none";  // Hide tooltip when not over a robot
+      }
       const isInsideMap = imgX >= 0 && imgX <= this.mapImageWidth / this.zoomLevel && imgY >= 0 && imgY <= this.mapImageHeight / this.zoomLevel;
-      if (isInsideMap ) {
-        // Set tooltip content and position
+      if(isInsideMap){
+      //Set tooltip content and position
         tooltip.textContent = `X = ${(Math.round(imgX) * this.ratio ) - this.origin.x}, Y = ${ (Math.round(imgY) * this.ratio) - this.origin.y }`;
         tooltip.style.display = 'block';
         tooltip.style.left = `${event.clientX}`;
         tooltip.style.top = `${event.clientY}`; // Adjust 10px below the cursor
       } else {
-        tooltip.style.display = 'none'; // Hide tooltip if outside
+        tooltip.style.display = "none";  // Hide the tooltip when not over a robot
       }
- 
-    });
+      // Check if the mouse is within the bounds of the map image
+      //  const isInsideMap = imgX >= 0 && imgX <= this.mapImageWidth / this.zoomLevel && imgY >= 0 && imgY <= this.mapImageHeight / this.zoomLevel;
+      // if (isInsideMap ) {
+      //   // Set tooltip content and position
+      //   tooltip.textContent = `X = ${(Math.round(imgX) * this.ratio ) - this.origin.x}, Y = ${ (Math.round(imgY) * this.ratio) - this.origin.y }`;
+      //   tooltip.style.display = 'block';
+      //   tooltip.style.left = `${event.clientX}`;
+      //   tooltip.style.top = `${event.clientY}`; // Adjust 10px below the cursor
+      // } else {
+      //   tooltip.style.display = 'none'; // Hide tooltip if outside
+      // }
+      });
 
     canvas.addEventListener('mouseleave', () => {
       tooltip.style.display = 'none';
-      robotooltip.style.display='none'; // Hide tooltip when mouse leaves canvas
     });
   }
 
