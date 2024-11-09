@@ -160,19 +160,18 @@ export class DashboardComponent implements AfterViewInit {
 
   // Get the appropriate icon based on the state
   get iconUrl(): string {
-    return this.isFleet ? this.fleetIconUrl : this.simulationIconUrl;
+    return this.simMode ? this.simulationIconUrl : this.fleetIconUrl;
   }
 
   // Get the appropriate label based on the state
   get buttonLabel(): string {
-    return this.isFleet ? 'Fleet mode' : 'Sim mode';
+    return this.simMode ? 'Sim mode' : 'Fleet mode';
   }
-
-  // Get the appropriate background color class based on the state
+  
+  // Get the appropriate background color class based on the simmode state
   get buttonClass(): string {
-    return this.isFleet ? 'fleet-background' : 'simulation-background';
+    return this.simMode ? 'simulation-background' : 'fleet-background';
   }
-
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
     this.projectService.isFleetUp$.subscribe((status) => {
@@ -196,7 +195,7 @@ export class DashboardComponent implements AfterViewInit {
     // }
     };
     await this.getMapDetails();
-    this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
+    this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
     this.loadCanvas();
     if(this.isInLive){
@@ -371,6 +370,7 @@ export class DashboardComponent implements AfterViewInit {
           // this.showPopup(event.clientX, event.clientY);
           this.updatedrobo = robo;
           this.updatedrobo.isInitialized = false;
+          
           await this.initializeRobo();
           return;
         }
@@ -755,7 +755,7 @@ export class DashboardComponent implements AfterViewInit {
       }
     });
   }
-
+  applySpacing = true;
   addMouseClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('click', (event) => {
       // if (!this.showModelCanvas) return;
@@ -803,6 +803,8 @@ export class DashboardComponent implements AfterViewInit {
           imgY >= roboY - imageSize &&
           imgY <= roboY + imageSize
         ) {
+          // Set applySpacing to false when a robot is clicked
+          this.applySpacing = false;
           console.log(`Robot clicked: ${robo.roboDet.id}`);
           break;
         } else {
@@ -814,8 +816,7 @@ export class DashboardComponent implements AfterViewInit {
 
   addMouseMoveListener(canvas: HTMLCanvasElement) {
     const tooltip = document.getElementById('Pos_tooltip')!;
-    const tooltip1 = document.getElementById('robo_tooltip')!;
-
+    const robotooltip = document.getElementById('robotTooltip')!;
     canvas.addEventListener('mousemove', (event) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
@@ -824,8 +825,8 @@ export class DashboardComponent implements AfterViewInit {
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
-      let hoveredRobo = null;
-          // Check if the mouse is over any robot
+      let hoverRobotId = null;    
+      // Check if the mouse is over any robot
     for (let robo of this.robos) {
       const roboX = robo.pos.x;
       const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
@@ -837,22 +838,18 @@ export class DashboardComponent implements AfterViewInit {
         imgY >= roboY - imageSize &&
         imgY <= roboY + imageSize
       ) {
-        hoveredRobo = robo;
+        hoverRobotId = robo.amrId;  // Store the robot ID to display
         break;
       }
     }
-    if (hoveredRobo) {
-      // Set the tooltip content with the robot ID
-      tooltip1.textContent = `Robot ID: ${hoveredRobo.roboDet.id}`;
-      tooltip1.style.display = 'block';
-
-      // Position the tooltip slightly above the robot
-      tooltip1.style.left = `${event.clientX}px`;
-      tooltip1.style.top = `${event.clientY - 30}px`; // Adjust to place tooltip above the cursor
+    if (hoverRobotId) {
+      tooltip.textContent = `Robot ID: ${hoverRobotId}`;
+      tooltip.style.display = 'block';
+      tooltip.style.left = `${event.clientX + 10}px`; // Adjust for tooltip positioning
+      tooltip.style.top = `${event.clientY - 30}px`;  // Display above the robot
     } else {
-      tooltip1.style.display = 'none'; // Hide tooltip if not hovering over a robot
+      tooltip.style.display = 'none'; // Hide tooltip if not hovering over a robot
     }
-
       if (this.draggingRobo && this.isDragging && !this.draggingRobo.isInitialized) {
         // this.draggingRobo.pos.x = this.draggingRobo.pos.x;
         // this.draggingRobo.pos.y = (this.mapImageHeight/ this.zoomLevel ) - this.draggingRobo.pos.y;
@@ -881,11 +878,12 @@ export class DashboardComponent implements AfterViewInit {
       } else {
         tooltip.style.display = 'none'; // Hide tooltip if outside
       }
-      
+ 
     });
 
     canvas.addEventListener('mouseleave', () => {
-      tooltip.style.display = 'none'; // Hide tooltip when mouse leaves canvas
+      tooltip.style.display = 'none';
+      robotooltip.style.display='none'; // Hide tooltip when mouse leaves canvas
     });
   }
 
@@ -1301,25 +1299,38 @@ export class DashboardComponent implements AfterViewInit {
         // }
       }
       
-// Iterate through each robot and compute their initial positions
-    for (let robotId of Object.keys(robotsData)) {
-      const { posX, posY, yaw } = robotsData[robotId];
-
-      // Scale and transform positions based on the canvas setup
-      const robotCanvasX = centerX + posX * this.zoomLevel;
-      const robotCanvasY = centerY + (imgHeight - posY) * this.zoomLevel; // Flip Y-axis
-
-      // Update simMode data with the new scaled positions if the robot is not being dragged
-      this.simMode = this.simMode.map((robo) => {
-        let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
-        if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
-          robo.pos.x = robotCanvasX;
-          robo.pos.y = robotCanvasY;
-          robo.pos.orientation = -yaw;
-        }
-        return robo;
-      });
+      for (let [index, robotId] of Object.keys(robotsData).entries()) {
+        const { posX, posY, yaw } = robotsData[robotId];
+        
+        // Define the spacing between each robot
+        // const spacing = 60; // 60px when applySpacing is true, 0px when false
+        // const offsetX = (index % 3) * spacing;
+        // const offsetY = Math.floor(index / 3) * spacing;
+    
+        // Scale position and apply spacing offset
+        const scaledPosX = posX  ;
+        const scaledPosY = posY  ;
+    
+        // Flip Y-axis for canvas and calculate actual canvas positions
+        const transformedPosY = !this.simMode
+        ? this.mapImageHeight - scaledPosY // Non-simulation mode
+        : canvas.height - scaledPosY;            
+        const robotCanvasX = scaledPosX;
+        const robotCanvasY = transformedPosY;
+    
+        // Update `simMode` data with the new scaled positions if the robot is not being dragged
+        this.simMode = this.simMode.map((robo) => {
+            let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
+            
+            if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
+                robo.pos.x = robotCanvasX;
+                robo.pos.y = robotCanvasY;
+                robo.pos.orientation = -yaw;
+            }
+            return robo;
+        });
     }
+    
     // Draw robots using zoomLevel
     // Object.keys(robotsData).forEach((robotId) => {
     //   const { posX, posY, yaw } = robotsData[robotId];
@@ -1350,17 +1361,17 @@ export class DashboardComponent implements AfterViewInit {
     
 
       // Plot each robot on the map, yet to uncomment..
-     /*  Object.keys(robotsData).forEach((robotId) => {
-        const { posX, posY, yaw } = robotsData[robotId];
-        const transformedY = canvas.height - posY;
-        // this.plotRobo(ctx, posX, transformedY, -yaw);
+      // Object.keys(robotsData).forEach((robotId) => {
+      //   const { posX, posY, yaw } = robotsData[robotId];
+      //   const transformedY = canvas.height - posY;
+      //   // this.plotRobo(ctx, posX, transformedY, -yaw);
 
-        const robotPosX = centerX + posX * this.zoomLevel; // implemented when developed, need to ensure with the above line.
-        const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
-        this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
-        // const robotPosX = centerX + this.offsetX + (posX * this.zoomLevel);
-        // const robotPosY = centerY + this.offsetY + ((canvas.height - posY) * this.zoomLevel);
-      }); */
+      //   const robotPosX = centerX + posX * this.zoomLevel; // implemented when developed, need to ensure with the above line.
+      //   const robotPosY = centerY + (imgHeight - posY) * this.zoomLevel;
+      //   this.plotRobo(ctx, robotPosX, robotPosY, -yaw);
+      //   // const robotPosX = centerX + this.offsetX + (posX * this.zoomLevel);
+      //   // const robotPosY = centerY + this.offsetY + ((canvas.height - posY) * this.zoomLevel);
+      // }); 
     }
   }
 
