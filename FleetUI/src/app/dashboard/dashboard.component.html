@@ -35,6 +35,9 @@
     
       <!-- Dropdown content, will only display if robots are present -->
       <div class="dropdown-content" *ngIf="isDropdownOpen && simMode.length">
+        <!-- <div *ngFor="let robot of robos; let i = index" class="dropdown-item">
+          <span>{{ robot.roboDet.id }}</span>
+          <span>{{ robot.roboDet.roboName }}</span> -->
         <div *ngFor="let robot of simMode; let i = index" class="dropdown-item">
           <span>{{ robot.amrId }}</span>
           <span>{{ robot.roboName }}</span>
@@ -63,10 +66,11 @@
 
 
   <!-- fleet and simulation -->
-  <button class="indication-button" [ngClass]="buttonClass">
+  <button class="indication-button" [ngClass]="buttonClass" [disabled]="!isFleet" (click)="toggleMode()">
     <img [src]="iconUrl" class="icon" alt="Icon">
     <span>{{ buttonLabel }}</span>
   </button>
+  
   
   
     <!-- ON Button -->

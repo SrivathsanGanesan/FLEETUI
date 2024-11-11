@@ -1385,19 +1385,35 @@ setPaginatedData1(){
     }
   }
 
-  deleteItem(item: any) {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent);
+  showConfirmationDialog: boolean = false;
+  itemToDelete: any;
+  
+  openDeleteConfirmation(item: any) {
+    this.itemToDelete = item;
+    this.showConfirmationDialog = true;
+  }
+  
+  confirmDelete() {
+    this.showConfirmationDialog = false;
+    this.deleteItemConfirmed(this.itemToDelete);
+  }
+  
+  cancelDelete() {
+    this.showConfirmationDialog = false;
+    this.itemToDelete = null;
+  }
+  
+  deleteItemConfirmed(item: any) {
     let isDeleted = false;
-
-    dialogRef.afterClosed().subscribe(async (result) => {
-      if (result) isDeleted = await this.deleteMap(item);
+  
+    this.deleteMap(item).then((result) => {
+      isDeleted = result;
       if (isDeleted) {
         if (item.id === this.projectService.getMapData().id) {
           this.projectService.setIsMapSet(false);
           this.projectService.clearMapData();
-          // this.ngOnInit();
         }
-        // Assuming currentTable determines which data array to modify
+        
         if (this.currentTable === 'Environment') {
           this.EnvData = this.EnvData.filter((i) => i !== item);
           this.filteredEnvData = this.EnvData;
@@ -1408,8 +1424,10 @@ setPaginatedData1(){
           this.reloadTable();
           this.setPaginatedData();
         }
+  
         this.ngOnInit();
         this.reloadTable();
+  
         console.log('Item deleted:', item);
         this.messageService.add({
           severity: 'success',
@@ -1419,6 +1437,8 @@ setPaginatedData1(){
       }
     });
   }
+  
+  
   addItem(item: any) {
     console.log('Add item:', item);
     this.messageService.add({
