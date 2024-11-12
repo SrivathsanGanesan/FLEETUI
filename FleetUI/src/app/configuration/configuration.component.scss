@@ -496,10 +496,7 @@ tr:nth-child(even) {
     cursor: pointer;
   }
 
-  .simulation-button:hover {
-    background-color: #cc0000;
-  }
-
+  
 
 
 .Open-button {
@@ -1271,19 +1268,19 @@ edit button */
 }
 
 .sim-popup-content button:first-child {
-  background-color: #28a745;
+  background-color: #ff0000;
 }
 
 .sim-popup-content button:first-child:hover {
-  background-color: #218838;
+  background-color: #ff0000;
 }
 
 .sim-popup-content button:last-child {
-  background-color: #ff3333;
+  background-color: #777777;
 }
 
 .sim-popup-content button:last-child:hover {
-  background-color: #d63333;
+  background-color: #565656;
 }
 
 .sim-popup-content p {

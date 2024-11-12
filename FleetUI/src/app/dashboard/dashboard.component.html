@@ -4,6 +4,8 @@
   <!-- Sidebar -->
   <!-- <app-sidenavbar></app-sidenavbar> -->
   <app-loader></app-loader>
+ 
+  
 
   <!-- Main Content -->
   <div class="mainContent">
@@ -142,14 +144,20 @@
 
     <!-- Dashboard Charts and Graphs -->
     <div class="GraphAndCharts" *ngIf="showDashboard">
-
+      <button class="close-button" (click)="onClose()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z" />
+        </svg>
+      </button>
+    
       <!-- Uptime and Robot Charts -->
       <div class="Chart2_Chart3">
         <div class="Chart2-container">
           <div class="Chart2" [ngClass]="{ blurred: ONBtn }">
             <p>Uptime</p>
             <div class="U-Chart">
-              <app-uptime [ONBtn]="this.ONBtn"></app-uptime>
+              <app-uptime [ONBtn]="ONBtn"></app-uptime>
             </div>
           </div>
         </div>
@@ -157,20 +165,20 @@
           <div class="Chart3" [ngClass]="{ blurred: ONBtn }">
             <p>Robot</p>
             <div class="R-Chart">
-              <app-chart [ONBtn]="this.ONBtn"></app-chart>
+              <app-chart1 [ONBtn]="ONBtn"></app-chart1>
             </div>
           </div>
         </div>
       </div>
-
+    
       <!-- Throughput Chart -->
       <div class="Chart1-container">
         <div class="Chart1" [ngClass]="{ blurred: ONBtn }">
-          <app-throughput [ONBtn]="this.ONBtn"></app-throughput>
+          <app-throughput [ONBtn]="ONBtn"></app-throughput>
         </div>
       </div>
-
     </div>
+    
 
   </div>
 

@@ -12,7 +12,6 @@ import { ProjectService } from '../services/project.service';
 import { Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-
 export interface Robot {
   isCharging: boolean;
   networksrength: any;
@@ -23,7 +22,6 @@ export interface Robot {
   averageSpeed: any;
   distanceLeft: string;
   isConnected: boolean;
-
   id: number;
   name: string;
   imageUrl: string;
@@ -78,10 +76,6 @@ export class RobotsComponent implements OnInit {
   editIndex: number | null = null;
   centerIndex: any;
 
-
-
-
-
   private routerSubscription: Subscription | undefined; // Subscription to track navigation changes
 
   constructor(
@@ -135,8 +129,8 @@ export class RobotsComponent implements OnInit {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mapId: this.mapDetails.id })
-    });
-
+    });                          
+           
     const data = await response.json();
     return data.robots || [];
   }
@@ -158,6 +152,8 @@ export class RobotsComponent implements OnInit {
       return;
     }
 
+//Robotstatus
+                  
     let { robots }: any = this.liveRobos;
     if (!robots.length) this.robots = this.initialRoboInfos;
     this.robots = this.robots.map((robo) => {
@@ -179,7 +175,7 @@ export class RobotsComponent implements OnInit {
       return robo;
     });
 
-    this.filteredRobots = this.robots;
+    this.filteredRobots = this.robots;                   
   }
 
   openRobotDetail(robot: Robot): void {
@@ -208,10 +204,6 @@ export class RobotsComponent implements OnInit {
   togglePopup() {
     this.showPopup = !this.showPopup;
   }
-
- 
-
-
 
   deleteRobot(index: number) {
     // yet to do..

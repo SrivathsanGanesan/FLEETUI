@@ -54,7 +54,7 @@ export class ThroughputComponent {
   ) {
     const seriesData = {
       hourlyDataSeries1: {
-        picks: [0], // 110, 91, 55, 101, 129, 122, 69, 91, 148
+        picks: [0 , 110, 91, 55, 101, 129, 122, 69, 91, 148],
         datestime: [],
       },
     };
@@ -71,13 +71,13 @@ export class ThroughputComponent {
         {
           name: 'Picks',
           data: this.throughputArr,
-          color: '#ff7373', // Using preferred color
+          color: '#F71717', // Using preferred color
         },
       ],
       chart: {
         type: 'area',
         height: 225, // Set height
-        width: 440, // Set width
+        width: 520, // Set width
         zoom: {
           enabled: false,
         },
@@ -94,7 +94,7 @@ export class ThroughputComponent {
         style: {
           fontFamily: 'Arial, Helvetica, sans-serif',
           fontWeight: 'bold',
-          fontSize: '18px',
+          fontSize: '20px',
         },
       },
       subtitle: {
@@ -102,9 +102,9 @@ export class ThroughputComponent {
         align: 'left',
         style: {
           fontFamily: 'Arial, Helvetica, sans-serif',
-          fontWeight: 'bold',
-          fontSize: '10px',
-          color: '#FF3333',
+          fontWeight: 'semibold',
+          fontSize: '12px',
+          color: '#959494',
         },
       },
       labels: seriesData.hourlyDataSeries1.datestime,

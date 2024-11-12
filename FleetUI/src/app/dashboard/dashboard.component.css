@@ -209,50 +209,83 @@ canvas {
   cursor: pointer;
 }
 
+/* charts */
 .GraphAndCharts {
   position: absolute;
-  top: 100px; /* Adjust as needed */
+  top: 80px; /* Adjust as needed */
   right: 20px; /* Adjust as needed */
   display: flex;
   flex-direction: column;
   gap: 20px; /* Adds space between the charts */
   z-index: 12; /* Ensure it is above the canvas */
 }
+.GraphAndCharts {
+  background-color: #d7d7d7; /* Light gray background */
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.chart1 p
+{
+  font-size: 20px;
+  font-weight: bold;
+  color: #333333;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 0;
+  text-align: left;
+
+}
+
+
+
+
+.Chart2 p, .Chart3 p {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333333;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 0;
+  text-align: left;
+}
 
 .Chart1, .Chart2, .Chart3 {  
-  background-color: rgba(255, 255, 255, 0.442);
-  height: 240px; /* Adjust height as needed */
-  box-shadow: 0 3px 6px #ff7373;
+  background-color: rgb(255, 255, 255);
+  height: 250px; /* Increased height */
+  width: 400px; /* Increased width */
+  box-shadow: 0 4px 8px rgba(128, 128, 128, 0.6); /* Grey drop shadow */
   border-radius: 20px;
-  /* border: 0.5px solid #ff7373; */
 }
 
 .Chart1:hover, .Chart2:hover, .Chart3:hover {
   background-color: rgb(255, 255, 255);
 }
-.Chart2_Chart3{
+
+.Chart2_Chart3 {
   display: flex;
-  gap: 10px;
+  gap: 20px;
 }
+
 .Chart1 {
-  width: 440px;
+  width: 540px; /* Increased width */
   padding: 10px 0px 0px 0px;
 }
 
-.Chart2 p {
-  padding: 20px 0px 0px 20px;
+.Chart2, .Chart3 {
+  padding: 10px 0px 0px 10px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
 
-.Chart3 p {
-  padding: 20px 0px 0px 20px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
+.Chart2 {
+  width: 270px; /* Increased width */
+  align-items: center;
+  justify-content: center;
 }
 
 .Chart3 {
-  width: 200px;
+  
+  width: 250px; /* Increased width */
 }
 
 .R-Chart {
@@ -260,30 +293,71 @@ canvas {
   align-items: center;
   justify-content: center;
 }
-.Chart2{
-  width: 230px;
+
+.U-chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .T-Chart {
-  width: 600px;
+  width: 650px; /* Increased width */
 }
-.Chart2-container,.Chart3-container,.Chart1-container {
+
+
+
+.Chart2-container, .Chart3-container, .Chart1-container {
   position: relative;
 }
 
-.chart3-blur-layer,.chart2-blur-layer,.chart1-blur-layer {
+.chart3-blur-layer, .chart2-blur-layer, .chart1-blur-layer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.192); /* Semi-transparent white background */
-  /* backdrop-filter: blur(5px);  */
+  background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
   display: flex;
   border-radius: 20px;
   align-items: center;
   justify-content: center;
-  z-index: 10; /* Ensure it is on top of Chart2 */
+  z-index: 10; /* Ensure it is on top of the charts */
 }
+
+
+
+  /* Close Button Styles */
+  .close-button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: white;
+    border: 2px solid red;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; /* Ensure it appears above other elements */
+  }
+
+  .close-button svg {
+    width: 20px;
+    height: 20px;
+    fill: red; /* Color for the close icon */
+  }
+
+  .close-button:hover {
+    background-color: #da2127;
+  }
+
+  .close-button:hover svg {
+    fill: white; /* Change color on hover */
+  }
+
 /* .blurred {
   filter: blur(5px);
 } */
@@ -581,8 +655,8 @@ input:checked ~ .slider {
 
 
 .blinking-svg {
-  width: 95px;
-  height: 40px;
+  /* width: 95px;
+  height: 40px; */
   animation: glow-blink 1.5s infinite ease-in-out;
 }
 

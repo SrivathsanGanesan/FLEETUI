@@ -313,7 +313,7 @@ export class ConfigurationComponent implements AfterViewInit {
     if (!mapData) return;
     try {
       let response = await fetch(
-        `http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.id}`,
+        `http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.id}`, 
         {
           method: 'GET',
           credentials: 'include',
@@ -1770,57 +1770,139 @@ setPaginatedData1(){
     this.isPhysicalParametersFormVisible =
       !this.isPhysicalParametersFormVisible;
   }
-
+ 
+  // simulation robots 
+  
+  
+  isMapAvailable(): boolean {
+    return this.selectedMap != null && this.selectedMap.mapName != null;
+  }
+  
+  
   async togglePopup() {
+    console.log('Selected Map:', this.selectedMap);
+  
+    if (!this.isMapAvailable()) {
+      console.log('Map is not available, showing alert.');
+      alert('Please create or select a map to simulate the robots.');
+      return;
+    }
+  
     let simRobos = await this.getSimRobos(this.selectedMap);
-    this.totalRobots = simRobos.length;
+    this.totalRobots = simRobos ? simRobos.length : 0;
     this.isPopupVisible = !this.isPopupVisible;
   }
-
+  
+  
   robotCount: number = 0;
   totalRobots: number = 0;
-
+  
   async getSimRobos(map: any): Promise<any> {
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
     );
-    if (!response.ok)
+    if (!response.ok) {
       console.error('Error while fetching map data : ', response.status);
+      return;
+    }
     let data = await response.json();
     if (!data.error) return data.map.simMode;
   }
-
-  // Function to handle the addition of robots
+  
   async addRobot() {
-    
-    if (this.robotCount > 10) {
-      alert('You cannot enter more than 10 robots.');
+    // Check for valid robot count
+    if (this.robotCount <= 0) {
+      alert('Enter a valid number of robots greater than 0.');
       return;
     }
-    else if(this.robotCount < 0){
-      alert('Enter valid number of robots.');
-      return;
-    }
-    /* if(this.robotCount + this.totalRobots > 10){
+  
+    // Limit to a maximum of 10 robots in total
+    if (this.robotCount + this.totalRobots > 10) {
       alert('Total robots cannot exceed 10.');
       return;
-    } */
-    this.totalRobots = this.robotCount;
-    let simRobo = [];
-    for(let i = 0; i < this.totalRobots; i++){
-      simRobo.push({
-        amrId: i,
-        roboName: `MR${i}00`,
-        enable: false,
-        isInitialized : false,
-        pos: { x: i, y: 0, orientation: 0 },
-      })
     }
-    let sims = await this.updateSimInMap(simRobo);
-    if(sims) alert('Sim Robos added!');
+  
+    // Fetch the current simRobos data to retain existing robots
+    let existingSimRobos = await this.getSimRobos(this.selectedMap) || [];
     
-    this.robotCount = 0; // Reset the input field after adding
+    // Create new robots based on robotCount
+    let newRobots = [];
+    for (let i = 0; i < this.robotCount; i++) {
+      newRobots.push({
+        amrId: existingSimRobos.length + i,  // ID based on total robots
+        roboName: `MR${existingSimRobos.length + i}00`,  // Unique name
+        enable: false,
+        isInitialized: false,
+        pos: { x: existingSimRobos.length + i, y: 0, orientation: 0 },
+      });
+    }
+  
+    // Combine existing robots with the new robots
+    const updatedSimRobos = [...existingSimRobos, ...newRobots];
+  
+    // Update the map with the new list of robots
+    let sims = await this.updateSimInMap(updatedSimRobos);
+    if (sims) alert('Sim Robos added!');
+  
+    // Update the totalRobots count to reflect all robots now in sim mode
+    this.totalRobots = updatedSimRobos.length;
+  
+    // Reset the robotCount input field
+    this.robotCount = 0;
   }
+
+  async deleteRobot(amrId: number) {
+    try {
+      // Fetch the current list of robots for the selected map
+      let simRobos = await this.getSimRobos(this.selectedMap);
+      if (!simRobos) {
+        alert('No robots to delete.');
+        return;
+      }
+  
+      // Filter out the robot with the specified `amrId`
+      const updatedSimRobos = simRobos.filter((robot: any) => robot.amrId !== amrId);
+  
+      // Update the backend with the modified list of robots
+      let result = await this.updateSimInMap(updatedSimRobos);
+      if (result) {
+        alert(`Robot with ID ${amrId} deleted!`);
+        
+        // Update the local totalRobots count
+        this.totalRobots = updatedSimRobos.length;
+      } else {
+        console.error('Failed to delete robot from the backend.');
+      }
+    } catch (error) {
+      console.error('Error during robot deletion:', error);
+    }
+  }
+  
+  async clearAllRobots() {
+    try {
+      if (this.totalRobots === 0) {
+        alert('No robots to delete.');
+        return;
+      }
+  
+      // Set the robots list to an empty array to clear all robots
+      const updatedSimRobos: any[] = [];
+  
+      // Update the backend with the empty list of robots
+      let result = await this.updateSimInMap(updatedSimRobos);
+      if (result) {
+        alert('All robots deleted!');
+        
+        // Reset the local totalRobots count
+        this.totalRobots = 0;
+      } else {
+        console.error('Failed to clear robots on the backend.');
+      }
+    } catch (error) {
+      console.error('Error during clearing robots:', error);
+    }
+  }
+   
 
 }
   

@@ -1692,7 +1692,11 @@ export class DashboardComponent implements AfterViewInit {
     link.click();
   }
 
-
+  
+  onClose(): void {
+    this.showDashboard = false;
+  }
+  
 
   
 }

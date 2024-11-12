@@ -32,6 +32,8 @@ export class SidenavbarComponent implements OnInit {
 
   isFleetUp: boolean = false; // Set to true or false based on your logic
 
+  
+
   private autoCloseTimeout: any;
 
   // Notifications with 10 sample data

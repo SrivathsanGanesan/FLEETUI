@@ -24,13 +24,16 @@ export type ChartOptions = {
 })
 export class Chart1Component {
   @ViewChild("chart") chart!: ChartComponent;
+  
   public chartOptions: Partial<ChartOptions>;
+  public activeRobots: number = 63; // Example active robots count
+  public totalRobots: number = 100; // Example total robots count
 
   constructor() {
-    const percentage = 74; // Define the percentage to display
+    const activeToTotal = `${this.activeRobots} / ${this.totalRobots}`; // Format as 'activeRobots / totalRobots'
 
     this.chartOptions = {
-      series: [percentage],
+      series: [this.activeRobots], // Display active robots value as the radial bar value
       chart: {
         width: 270,
         height: 270,
@@ -63,18 +66,17 @@ export class Chart1Component {
           dataLabels: {
             show: true,
             name: {
-              offsetY: 85,
+              offsetY: 80,
               show: false,  // Hide the name label
             },
             value: {
               formatter: function(val) {
-                return `${val}%`;  // Display the percentage
+                return activeToTotal;  // Display 'activeRobots/totalRobots'
               },
-              offsetY: 12,
-                // Center the text vertically
-              color: "#000000",
-              fontSize: "35px",
-              fontWeight: "bold",  // Make the text bold
+              offsetY: 10,
+              color: "#F71717",
+              fontSize: "22px",
+              fontWeight: "semibold",  // Make the text bold
               show: true
             }
           }
@@ -108,7 +110,7 @@ export class Chart1Component {
       stroke: {
         lineCap: "round"
       },
-      labels: [""]
+      labels: ["Active Robots"]
     };
   }
 }

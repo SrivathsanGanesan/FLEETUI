@@ -185,9 +185,43 @@ export class StatisticsComponent {
     let responsiveness = await this.fetchFleetStatus('system-responsiveness', {
       mapId: mapId,
     });
-    if (responsiveness.systemResponsiveness)
-      this.statisticsData.responsiveness = responsiveness.systemResponsiveness;
+    // if (responsiveness.systemResponsiveness)
+    //   this.statisticsData.responsiveness = responsiveness.systemResponsiveness;
   }
+
+
+  //  new code to fecth fleet server
+
+
+  // async getGrossStatus() {
+  //   const mapId = this.selectedMap.id;
+  
+  //   // Execute all fetches in parallel
+  //   const [throughputData, uptime, successRate, responsiveness] = await Promise.all([
+  //     this.fetchFleetStatus('system-throughput', { mapId }),
+  //     this.fetchFleetStatus('system-uptime', { mapId }),
+  //     this.fetchFleetStatus('success-rate', { mapId }),
+  //     this.fetchFleetStatus('system-responsiveness', { mapId }),
+  //   ]);
+  
+  //   // Update statisticsData if the data exists
+  //   if (throughputData.systemThroughput) {
+  //     this.statisticsData.systemThroughput = throughputData.systemThroughput;
+  //   }
+    
+  //   if (uptime.systemUptime) {
+  //     this.statisticsData.systemUptime = uptime.systemUptime;
+  //   }
+  
+  //   if (successRate.successRate) {
+  //     this.statisticsData.successRate = successRate.successRate;
+  //   }
+  
+  //   if (responsiveness.systemResponsiveness) {
+  //     this.statisticsData.responsiveness = responsiveness.systemResponsiveness;
+  //   }
+  // }
+  
 
   async fetchCurrTasksStatus(): Promise<any[]> {
     let establishedTime = new Date(this.selectedMap.createdAt);
