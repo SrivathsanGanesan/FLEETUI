@@ -50,11 +50,7 @@ canvas {
   /* background-color: rgba(212, 125, 125, 0.447); */
   left: 0;
 }
-
-
 /* live button */
-
-
 .ONBtn {
   position: absolute;
   top: 0;
@@ -645,7 +641,9 @@ input:checked ~ .slider {
 
 /* Background color for Fleet */
 .fleet-background {
+  z-index: auto;
   background-color: #63b7fc; /* Blue for Fleet */
+  z-index: auto;
 }
 
 /* Background color for Simulation */

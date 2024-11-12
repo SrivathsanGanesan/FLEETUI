@@ -98,7 +98,7 @@ const fetchFleetInfo = async ({ endpoint, bodyData, method = "GET" }) => {
 };
 
 // initMqttConnection();
-// initRabbitMQConnection();
+initRabbitMQConnection();
 
 const initializeRobo = async (req, res) => {
   const { mapId, initializeRobo } = req.body;
@@ -149,7 +149,7 @@ const getRoboPos = async (req, res) => {
     // const map = await Map.findOne({ _id: mapId });
     // return res.status(200).json({ roboPos: null, data: "msg sent" });
     if (!rabbitmqConsumerTag) return res.end();
-    
+
     res.writeHead(200, eventStreamHeader);
 
     const listenerCallback = (robos) => {
@@ -190,7 +190,7 @@ const enableRobo = async (req, res) => {
 
     if (enableRoboRes.errorCode !== 1000)
       return res
-        .status(500)
+        .status(400)
         .json({ isRoboEnabled: false, msg: "not attained" });
 
     return res.status(200).json({ isRoboEnabled: true, msg: "path set!" });
@@ -334,7 +334,7 @@ const getFleetStatus = async (req, res) => {
       .status(200)
       .json({ fleetUp: true, msg: "fleet in up", error: null });
   } catch (error) {
-    console.error("Error in checking status of fleet :", error);
+    console.error("Error, while checking status of fleet :", error.message);
     res
       .status(404)
       .json({ fleetUp: false, msg: "fleet in down", error: error.message });

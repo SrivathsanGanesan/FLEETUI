@@ -18,9 +18,9 @@
       <!-- Text -->
       <p class="py-4 font-bold text-[24px] text-[#00000050] -mt-20"> - No Maps Found -</p>
     </div>
-    <div id="robo_tooltip" style="position: absolute; display: none; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 4px; pointer-events: none; font-size: 12px;"></div>
-
-    <div id="Pos_tooltip" style="position: absolute; bottom: 5px; right:5px;  background: transparent; border: 0px solid #ccc; border-radius: 4px; padding: 5px; z-index: 2;font-size: 10px;"></div>    <!-- Canvases -->
+    <!-- dashboard.component.html -->
+    <div id="Pos_tooltip" style="position: absolute; bottom: 5px; right:5px;color: #000;  background: transparent; border: 0px solid #ccc; border-radius: 4px; padding: 5px; z-index: 2;font-size: 10px;"></div>    <!-- Canvases -->
+    <div id="roboTooltip" style="position: absolute; display: none; pointer-events: none; background: #33333348; color: #000000; padding: 5px; border-radius: 4px; font-size: 12px;z-index: 2;font-weight: bold;"></div>
     <!-- <canvas *ngIf="showModelCanvas" id="modelCanvas" (mousedown)="panStartModelCanvas($event)"></canvas> -->
     <canvas #myCanvas id="myCanvas" (mousedown)="panStart($event)"  (mouseleave)="onMouseLeave()"></canvas>
     <!-- <canvas *ngIf="showModelCanvas" #modelCanvas id="modelCanvas" ></canvas> -->
@@ -37,11 +37,14 @@
     
       <!-- Dropdown content, will only display if robots are present -->
       <div class="dropdown-content" *ngIf="isDropdownOpen && simMode.length">
+        <!-- <div *ngFor="let robot of robos; let i = index" class="dropdown-item">
+          <span>{{ robot.roboDet.id }}</span>
+          <span>{{ robot.roboDet.roboName }}</span> -->
         <div *ngFor="let robot of simMode; let i = index" class="dropdown-item">
           <span>{{ robot.amrId }}</span>
           <span>{{ robot.roboName }}</span>
           <label class="switch">
-            <input type="checkbox" [(ngModel)]="robot.isActive" (change)="activateRobot(robot)">
+            <input type="checkbox" [(ngModel)]="robot.isActive" (change)="activateRobot(robot)" [disabled]="!isFleetUp">
             <div class="slider"></div>
             <div class="slider-card">
               <div class="slider-card-face slider-card-front"></div>
@@ -65,10 +68,12 @@
 
 
   <!-- fleet and simulation -->
-  <button class="indication-button" [ngClass]="buttonClass" (click)="toggleMode()">
+  <button class="indication-button" [ngClass]="buttonClass" [disabled]="!isFleet" (click)="toggleMode()">
     <img [src]="iconUrl" class="icon" alt="Icon">
     <span>{{ buttonLabel }}</span>
   </button>
+  
+  
   
     <!-- ON Button -->
      

@@ -8,7 +8,7 @@
     <!-- Fleet Status Indicator -->
     <div class="fleet-status" [ngClass]="{'fleet-up': isFleetUp, 'fleet-down': !isFleetUp}">
       <i class="wifi-icon" [ngClass]="{'wifi-up': isFleetUp, 'wifi-down': !isFleetUp}"></i>
-      {{ isFleetUp ? 'Fleet Up' : 'Fleet Down' }}
+      {{ isFleetUp ? 'Fleet Engaged' : 'Fleet Halted' }}
     </div>
     
 

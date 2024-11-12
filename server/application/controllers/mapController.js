@@ -64,7 +64,7 @@ const saveNodeGraph = async (mapData) => {
   );
 
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
-  return true;
+  // return true;
 
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",
@@ -188,17 +188,19 @@ const postFleetData = async ({ endpoint, bodyData }) => {
   }
 };
 
-// <<-----------------[Middleware]----------------->>
+// <<-----------------[ Middleware ]----------------->>
 
 const mapInsert = async (req, res) => {
   const mapData = JSON.parse(req.body.mapData);
 
   let isGraphSent = await saveNodeGraph(mapData);
-  if (!isGraphSent)
+  if (!isGraphSent) {
+    // await postFleetData("resetServer", { reset: true });
     return res.status(500).json({
       map: null,
       msg: "Error occured while saving node graph to the fleet!, Fleet server might down",
     });
+  }
 
   // return res.end(); // yet to remove..
   try {

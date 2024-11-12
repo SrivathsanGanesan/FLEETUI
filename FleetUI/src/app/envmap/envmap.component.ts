@@ -558,7 +558,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isRoboConfirmationVisible=false;
   }
   confirmDelete(): void {
-    if(this.isDeleteModeEnabled){
+    // if(this.isDeleteModeEnabled){
     if (this.nodesToDelete.length > 0) {
       // Remove selected nodes from the nodes array
       this.nodes = this.nodes.filter(
@@ -589,7 +589,7 @@ export class EnvmapComponent implements AfterViewInit {
         summary: 'Warning',
         detail: 'No items selected for deletion.'
       });
-    }}
+    }1
 
     if (this.selectedAsset) {
       this.assets = this.assets.filter(
@@ -1565,6 +1565,8 @@ export class EnvmapComponent implements AfterViewInit {
       });
 
     this.form = null;
+    console.log("hey");
+    
   }
   confirmDistance(): void {
     if (

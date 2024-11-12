@@ -170,27 +170,14 @@ export class ThroughputComponent {
       true // Smooth transitions
     ); */
 
-    this.chart.updateOptions({
-      series: [ { name: 'Throughput', data: limitedData, color: '#ff7373'} ],
-      xaxis: {
-        // ...this.chartOptions.xaxis, // only if needed..
-        categories: limitedTime,
-      }
-    })
-    /* this.chartOptions = {
+    this.chartOptions = {
       ...this.chartOptions,
-      series: [
-        {
-          name: 'Throughput',
-          data: limitedData,
-          color: '#ff7373',
-        },
-      ],
+      series: [ { name: 'Throughput', data: limitedData, color: '#ff7373', }, ],
       xaxis: {
         // ...this.chartOptions.xaxis, // only if needed..
         categories: limitedTime,
       }
-    } */
+    }
   }
 
   async fetchChartData( endpoint: string, timeSpan: string, startTime: string, endTime: string ) {
@@ -218,12 +205,7 @@ export class ThroughputComponent {
 
     if (this.throuputTimeInterval) return;
 
-    const data = await this.fetchChartData(
-      'throughput',
-      this.currentFilter,
-      '',
-      ''
-    );
+    const data = await this.fetchChartData( 'throughput', this.currentFilter, '', '' );
     
     let { Stat } = data.throughput;
     // console.log(Stat);
@@ -235,35 +217,24 @@ export class ThroughputComponent {
         // (stat: any) => stat.time
         (stat: any) =>
           new Date().toLocaleString('en-IN', {
-            month: 'short',
+            // month: 'short',
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
           })
       );
     }
-    this.plotChart(
-      'Throughput',
-      this.throughputArr,
-      this.throughputXaxisSeries
-    ); // this.selectedMetric..
+    this.plotChart( 'Throughput', this.throughputArr, this.throughputXaxisSeries ); // this.selectedMetric..
 
     this.throuputTimeInterval = setInterval(async () => {
-      const data = await this.fetchChartData(
-        'throughput',
-        this.currentFilter,
-        '',
-        ''
-      );
+      const data = await this.fetchChartData( 'throughput', this.currentFilter, '', '' );
       let { Stat } = data.throughput;
 
       if (data.throughput) {
-        this.throughputArr = Stat.map(
-          (stat: any) => stat.TotalThroughPutPerHour
-        );
+        this.throughputArr = Stat.map( (stat: any) => stat.TotalThroughPutPerHour );
         this.throughputXaxisSeries = Stat.map((stat: any) =>
           new Date().toLocaleString('en-IN', {
-            month: 'short',
+            // month: 'short',
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
@@ -271,11 +242,7 @@ export class ThroughputComponent {
         );
       }
 
-      this.plotChart(
-        'Throughput',
-        this.throughputArr,
-        this.throughputXaxisSeries
-      );
+      this.plotChart( 'Throughput', this.throughputArr, this.throughputXaxisSeries );
     }, 1000 * 60); // 60 * 60
   }
 

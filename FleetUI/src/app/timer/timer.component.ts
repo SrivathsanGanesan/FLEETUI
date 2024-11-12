@@ -9,7 +9,7 @@ import { ProjectService } from '../services/project.service';
   styleUrl: './timer.component.css'
 })
 export class TimerComponent {
-  totalDuration: number = 10800; // 3 hour in seconds
+  totalDuration: number = 18000; // 3 hour in seconds
   remainingTime: number = 0; // Initialize with 0
   logoutTimeout: any;
 
