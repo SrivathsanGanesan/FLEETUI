@@ -1262,12 +1262,16 @@ edit button */
 }
 
 .sim-popup-content h3 {
-  margin-bottom: 25px;
-  font-size: 30px; /* Increased font size */
-  color: #DA2127; /* Bright red color */
-  font-weight: 600; /* Bold for emphasis */
-  text-align: center; /* Aligns to the start */
+  margin-top: 20px; 
+  margin-bottom: 30px;
+  font-size: 30px;
+  color: #DA2127;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5; /* Increase line height for better spacing between lines */
 }
+
+
 
 .sim-popup-content input[type="number"] {
   width: 100%;
