@@ -284,6 +284,29 @@ canvas {
   width: 250px; /* Increased width */
 }
 
+
+
+.Chart2, .Chart3 {
+  padding-bottom: 15px; /* Ensures container has room for label */
+}
+
+.Chart2, .Chart3 {
+  position: relative; /* Allows absolute positioning of the label within each chart */
+  padding-bottom: 40px; /* Adjust padding as needed to make room for the label */
+}
+
+.chart-label {
+  position: absolute;
+  bottom: 10px; /* Adjust as needed to position the label at the bottom of the chart */
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+
 .R-Chart {
   display: flex;
   align-items: center;

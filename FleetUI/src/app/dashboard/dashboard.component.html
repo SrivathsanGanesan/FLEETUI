@@ -164,17 +164,25 @@
             <div class="U-Chart">
               <app-uptime [ONBtn]="ONBtn"></app-uptime>
             </div>
+            <!-- Label centered inside Chart2 container -->
+            <span class="chart-label">Total Uptime</span>
           </div>
         </div>
+      
         <div class="Chart3-container">
           <div class="Chart3" [ngClass]="{ blurred: ONBtn }">
             <p>Robot</p>
             <div class="R-Chart">
               <app-chart1 [ONBtn]="ONBtn"></app-chart1>
             </div>
+            <!-- Label centered inside Chart3 container -->
+            <span class="chart-label">No of Robots</span>
           </div>
         </div>
       </div>
+      
+      
+      
     
       <!-- Throughput Chart -->
       <div class="Chart1-container">
