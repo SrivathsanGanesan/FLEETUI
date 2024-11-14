@@ -116,7 +116,7 @@ const updateRobo = async (req, res, next) => {
     if (isRoboNameExists)
       return res
         .status(400)
-        .json({ roboExists: true, msg: "Robo with this name already exists" });
+        .json({ roboExists: true, msg: "Robo with this name already exists" });                  
     Object.keys(roboData).forEach((key) => {
       if (roboData[key] === null) delete roboData[key];
     });

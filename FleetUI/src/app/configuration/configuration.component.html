@@ -45,7 +45,7 @@
         <!-- robots.component.html -->
 
           <div class="simulation-container" *ngIf="currentTable === 'robot'">
-            <button class="simulation-button" (click)="togglePopup()">Simulation</button>
+            <button class="simulation-button" (click)="togglePopup()" [disabled]="!isMapAvailable()">Simulation</button>    
           </div>
 
           <!-- Popup for selecting robots -->
