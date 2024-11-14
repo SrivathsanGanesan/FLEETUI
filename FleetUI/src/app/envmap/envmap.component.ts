@@ -21,6 +21,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { MapService } from '../map.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
+
 interface Node {
   nodeId: string;
   sequenceId: number;
@@ -337,6 +338,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
     this.isPlottingAsset = true;
+
     // console.log("hey");
     
   }

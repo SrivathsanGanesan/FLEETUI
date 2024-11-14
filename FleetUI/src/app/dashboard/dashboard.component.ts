@@ -149,7 +149,7 @@ export class DashboardComponent implements AfterViewInit {
     // this.onInitMapImg(); // yet to remove..
   }
 
-  isFleet: boolean = false; 
+  isFleet: boolean = true; 
 
   // PNG icon URLs
   fleetIconUrl: string = "../assets/fleet_icon.png";
@@ -157,25 +157,22 @@ export class DashboardComponent implements AfterViewInit {
   
    // Method to toggle the mode and change icon, label, and background
    toggleMode() {
-    // Only allow toggling if it’s currently in Fleet mode (isFleet = false)
-    if (!this.isFleet) {
-      this.isFleet = true;
-    }
+    this.isFleet = !this.isFleet;
   }
 
   // Get the appropriate icon based on the state
   get iconUrl(): string {
-    return this.isFleet ? this.simulationIconUrl : this.fleetIconUrl;
+    return this.simMode ? this.simulationIconUrl : this.fleetIconUrl;
   }
 
   // Get the appropriate label based on the state
   get buttonLabel(): string {
-    return this.isFleet ? 'Sim mode' : 'Fleet mode';
+    return this.simMode ? 'Sim mode' : 'Fleet mode';
   }
   
   // Get the appropriate background color class based on the simmode state
   get buttonClass(): string {
-    return this.isFleet ? 'simulation-background' : 'fleet-background';
+    return this.simMode ? 'simulation-background' : 'fleet-background';
   }
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
@@ -1241,6 +1238,22 @@ export class DashboardComponent implements AfterViewInit {
       ctx.restore(); // Restore the context after rotation
     }
   }
+  isOptionsExpanded: boolean = false;
+
+  toggleOptions() {
+    this.isOptionsExpanded = !this.isOptionsExpanded;
+    const canvasOptions = document.querySelector('.CanvasOptions') as HTMLElement;
+    
+    if (this.isOptionsExpanded) {
+      canvasOptions.style.width = '450px';
+      canvasOptions.style.backgroundColor = 'rgb(255, 255, 255)';
+      canvasOptions.style.boxShadow = '0 3px 6px #ff7373';
+    } else {
+      canvasOptions.style.width = '50px';
+      canvasOptions.style.backgroundColor = '#fffcfc6c';
+      canvasOptions.style.boxShadow = '0 3px 6px #ff7373';
+    }
+  }
   async plotAllRobots(robotsData: any) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -1289,9 +1302,9 @@ export class DashboardComponent implements AfterViewInit {
         const { posX, posY, yaw } = robotsData[robotId];
         
         // Define the spacing between each robot
-        // const spacing = 60; // 60px when applySpacing is true, 0px when false
-        // const offsetX = (index % 3) * spacing;
-        // const offsetY = Math.floor(index / 3) * spacing;
+        const spacing = 60; // 60px when applySpacing is true, 0px when false
+        const offsetX = (index % 3) * spacing;
+        const offsetY = Math.floor(index / 3) * spacing;
     
         // Scale position and apply spacing offset
         const scaledPosX = posX;

@@ -279,7 +279,7 @@ export class StatisticsComponent {
           tasksStatus[0] += 1;
         else if (
           task === 'INPROGRESS' ||
-          task === 'ONHOLD' ||
+          task === 'COMPLETED' ||
           task === 'ACCEPTED'
         )
           tasksStatus[1] += 1;
