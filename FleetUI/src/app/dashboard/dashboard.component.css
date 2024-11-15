@@ -38,6 +38,7 @@ app-sidenavbar{
   border: 1px solid white;
   margin-bottom: 5px;
   font-size: 15px;
+  font-family: "graphik", Arial,  sans-serif;
   padding: 5px;
   border-radius: 10px;
 }
@@ -148,7 +149,7 @@ canvas {
   background-color: rgba(136, 132, 132, 0.601);
   color: #ffffff;
   text-align: center;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   border-radius: 6px;
   padding: 5px;
   position: absolute;
@@ -200,7 +201,7 @@ canvas {
   border: none;
   border-radius: 10px;
   background-color: rgba(199, 186, 186, 0.303);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: bold;
   cursor: pointer;
 }
@@ -227,7 +228,7 @@ canvas {
   font-size: 20px;
   font-weight: bold;
   color: #333333;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   margin-bottom: 0;
   text-align: left;
 
@@ -240,7 +241,7 @@ canvas {
   font-size: 20px;
   font-weight: bold;
   color: #333333;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   margin-bottom: 0;
   text-align: left;
 }
@@ -248,7 +249,7 @@ canvas {
 .Chart1, .Chart2, .Chart3 {  
   background-color: rgb(255, 255, 255);
   height: 250px; /* Increased height */
-  width: 400px; /* Increased width */
+  width: 430px; /* Increased width */
   box-shadow: 0 4px 8px rgba(128, 128, 128, 0.6); /* Grey drop shadow */
   border-radius: 20px;
 }
@@ -269,7 +270,7 @@ canvas {
 
 .Chart2, .Chart3 {
   padding: 10px 0px 0px 10px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: bold;
 }
 
@@ -286,14 +287,6 @@ canvas {
 
 
 
-.Chart2, .Chart3 {
-  padding-bottom: 15px; /* Ensures container has room for label */
-}
-
-.Chart2, .Chart3 {
-  position: relative; /* Allows absolute positioning of the label within each chart */
-  padding-bottom: 40px; /* Adjust padding as needed to make room for the label */
-}
 
 .chart-label {
   position: absolute;
@@ -302,16 +295,57 @@ canvas {
   transform: translateX(-50%);
   text-align: center;
   font-size: 16px;
+  font-family: "graphik", Arial,  sans-serif;
   color: #333;
   font-weight: 500;
 }
 
 
+/* new for chart */
+
+.Chart3-container {
+  position: relative; /* Allows positioning of the title */
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center chart and label */
+  height: 100%;
+}
+
+.chart-title {
+  position: absolute; /* Position it freely within the container */
+  top: 0; /* Place it at the top */
+  left: 0; /* Align it to the left */
+  margin: 10px; /* Add some spacing */
+  font-size: 20px; /* Adjust font size */
+  font-weight: bold; /* Make it bold for emphasis */
+  color: #333; /* Set the text color */
+}
+
+.Chart3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+
 .R-Chart {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
+
+.chart-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+  font-family: "graphik", Arial,  sans-serif;
+  margin-bottom: 0;
+  text-align: center;
+}
+
 
 .U-chart {
   display: flex;
@@ -448,6 +482,7 @@ canvas {
 .no-map-text {
   margin-top: 20px;
   font-size: 24px;
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: 550;
   color: #7B7B7B;
 }
@@ -478,6 +513,7 @@ canvas {
   color: rgb(255, 255, 255);
   padding: 10px 20px;
   font-size: 16px;
+  font-family: "graphik", Arial,  sans-serif;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -526,6 +562,7 @@ canvas {
 
 .arrow {
   font-size: 12px;
+  font-family: "graphik", Arial,  sans-serif;
   margin-left: 10px;
 }
 
@@ -538,6 +575,7 @@ canvas {
 .switch {
   --circle-dim: 1em; /* Reduced the circle size */
   font-size: 14px;   /* Adjusted font-size */
+  font-family: "graphik", Arial,  sans-serif;
   position: relative;
   display: inline-block;
   width: 3.2em;      /* Reduced the width */
@@ -616,6 +654,7 @@ input:checked ~ .slider {
   color: rgb(224, 11, 11);          /* Set icon color */
   cursor: pointer;       /* Pointer on hover */
   font-size: 18px;       /* Size of the icon */
+  font-family: "graphik", Arial,  sans-serif;
   padding: 0;            /* Remove padding */
   transition: color 0.3s ease; /* Smooth transition on hover */
 }
@@ -659,6 +698,7 @@ input:checked ~ .slider {
 /* Text inside the button */
 .indication-button span {
   font-size: 17px;
+  font-family: "graphik", Arial,  sans-serif;
   white-space: nowrap; /* Prevent text from wrapping */
 }
 

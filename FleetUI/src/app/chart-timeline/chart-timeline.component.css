@@ -23,6 +23,7 @@
   
   .menu {
     font-size: 14px;
+    font-family: "graphik", Arial,  sans-serif;
     line-height: 1.6;
     color: #ffffff; /* Default font color changed to violet */
     width: fit-content;
@@ -33,7 +34,7 @@
   .menu a {
     text-decoration: none;
     color: inherit;
-    font-family: inherit;
+    font-family: "graphik", Arial,  sans-serif;
     font-size: inherit;
     line-height: inherit;
   }

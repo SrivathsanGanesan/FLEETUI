@@ -54,7 +54,7 @@
   border: none;
   border-radius: 10px;
   background-color: #ff7575;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   font-size: 15px;
   font-weight: bold;
   color: white;
@@ -67,6 +67,7 @@
 .header-title {
   font-size: 36px;
   font-weight: bold;
+  font-family: "graphik", Arial,  sans-serif;
   color: #DA2127;
   margin-bottom: 0;
 }
@@ -90,6 +91,7 @@
   /* background-color: #ff3333; */
   /* color: #fff; */
   font-size: 13px;
+  font-family: "graphik", Arial,  sans-serif;
   /* border: none; */
   border-radius: 10px;
   cursor: pointer;
@@ -150,6 +152,7 @@
 .error-msg {
   color: red;
   font-size: 12px;
+  font-family: "graphik", Arial,  sans-serif;
 }
 .robopopup-content button{
  margin: 10px;
@@ -198,6 +201,7 @@
   right: 10px;  /* Move icon to the right */
   top: 10px;    /* Keep icon at the top */
   font-size: 24px;
+  font-family: "graphik", Arial,  sans-serif;
   cursor: pointer;
   /* color: #000;  Adjust color as needed */
 }
@@ -211,10 +215,12 @@
 
   .modal-header {
     font-size: 18px;
+    font-family: "graphik", Arial,  sans-serif;
   }
 
   .close-icon {
     font-size: 20px; /* Adjust size for smaller screens */
+    font-family: "graphik", Arial,  sans-serif;
   }
 }
 
@@ -226,6 +232,7 @@
 
   .modal-header {
     font-size: 24px;
+    font-family: "graphik", Arial,  sans-serif;
   }
 }
 
@@ -272,6 +279,7 @@
 
 .subheader-text {
   font-size: 16px;
+  font-family: "graphik", Arial,  sans-serif;
   color: #333;
 }
 
@@ -297,6 +305,7 @@
   width: 240px;
   height: 35px !important;
   font-size: 12px !important;
+  font-family: "graphik", Arial,  sans-serif;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important ;
@@ -375,13 +384,14 @@ td{
   // width: 80px;
   border-radius: 7px;
   background-color: transparent;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
 }
 th {
   background-color: #FFCDCD;
   padding: 10px 20px;
   color: #000000;
   font-size: 13px;
+  font-family: "graphik", Arial,  sans-serif;
   border-bottom: 1px solid #ddd;
   text-align: left;
 }
@@ -397,6 +407,7 @@ th {
 }
 td {
   font-size: 13px;
+  font-family: "graphik", Arial,  sans-serif;
 }
 
 tr:hover {
@@ -423,6 +434,7 @@ tr:nth-child(even) {
 
 .no-data-text {
   font-size: 16px;
+  font-family: "graphik", Arial,  sans-serif;
   color: rgba(0, 0, 0, 0.7);
   text-align: center;
 }
@@ -441,6 +453,7 @@ tr:nth-child(even) {
   border: 1px solid #ccc;
   padding: 10px 20px;
   font-size: 17px;
+  font-family: "graphik", Arial,  sans-serif;
   cursor: pointer;
   margin-right: 20px;
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
@@ -483,6 +496,7 @@ tr:nth-child(even) {
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  font-family: "graphik", Arial,  sans-serif;
 }
   .close-button {
     position: absolute;
@@ -532,6 +546,7 @@ tr:nth-child(even) {
     color: #ffffff;
     padding: 10px 20px;
     font-size: 16px;
+    font-family: "graphik", Arial,  sans-serif;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -545,6 +560,7 @@ tr:nth-child(even) {
   background-color: #ff3333;
   color: #fff;
   font-size: 15px;
+  font-family: "graphik", Arial,  sans-serif;
   border: none;
   border-radius: 20px;
   margin-top: 10px;
@@ -608,7 +624,7 @@ tr:nth-child(even) {
 }
 .Image{
   font-size: 30px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: bold;
   z-index: 1;
 }
@@ -667,6 +683,7 @@ tr:nth-child(even) {
   outline: none;
   width: 100%; /* Take full width */
   font-size: 14px;
+  font-family: "graphik", Arial,  sans-serif;
   border-radius: 25px 0 0 25px; /* Matching the radius of the search box */
 }
 .search-box input::placeholder {
@@ -792,6 +809,7 @@ tr:nth-child(even) {
   color: white; /* White text */
   padding: 10px; /* Some padding */
   font-size: 14px; /* Font size */
+  font-family: "graphik", Arial,  sans-serif;
   border: none; /* Remove border */
   cursor: pointer; /* Pointer cursor on hover */
 }
@@ -824,7 +842,7 @@ tr:nth-child(even) {
 }
 
 h2 {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   font-size: 36px;
   font-weight: bold;
   color: #da2127;
@@ -864,7 +882,7 @@ h2 {
 
 .form-group button{
   font-size: 15px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
 }
 
 .stop-button {
@@ -875,7 +893,7 @@ h2 {
   padding: 6px 26px;
   cursor: pointer;
   border-radius: 5px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   font-size: 16px;
   // font-weight: bold;
 }
@@ -888,7 +906,7 @@ h2 {
   cursor: pointer;
   border: 1px solid #da2127;
   border-radius: 5px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "graphik", Arial,  sans-serif;
   font-size: 16px;
   // font-weight: bold;
 }
@@ -901,6 +919,7 @@ h2 {
   display: block; /* Block elements */
   width: 100%; /* Full width */
   font-weight: bold;
+  font-family: "graphik", Arial,  sans-serif;
   border: none; /* No border */
   text-align: left; /* Align text to the left */
 }
@@ -1049,6 +1068,7 @@ border: none;
   border-radius: 8px;
   color: #333;
   font-size: 16px;
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: bold;
   display: flex;
   justify-content: center;
@@ -1069,6 +1089,7 @@ border: none;
 /* Ellipsis */
 .mat-paginator .ellipsis {
   font-size: 18px;
+  font-family: "graphik", Arial,  sans-serif;
   color: #999;
   display: flex;
   justify-content: center;
@@ -1117,6 +1138,7 @@ edit button */
   background-color: rgb(20, 20, 20);
   border: none;
   font-weight: 600;
+  font-family: "graphik", Arial,  sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1157,11 +1179,13 @@ edit button */
   color: white;
   transition-duration: 0.3s;
   font-size: 2px;
+  font-family: "graphik", Arial,  sans-serif;
  }
  .edit-button:hover::before {
   display: block;
   padding-right: 10px;
   font-size: 13px;
+  font-family: "graphik", Arial,  sans-serif;
   opacity: 1;
   transform: translateY(0px);
   transition-duration: 0.3s;
@@ -1178,6 +1202,7 @@ edit button */
   background-color: rgb(20, 20, 20);
   border: none;
   font-weight: 600;
+  font-family: "graphik", Arial,  sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1217,11 +1242,13 @@ edit button */
   color: white;
   transition-duration: 0.3s;
   font-size: 2px;
+  font-family: "graphik", Arial,  sans-serif;
  }
  .delete-button:hover::before {
   display: block;
   padding-right: 10px;
   font-size: 13px;
+  font-family: "graphik", Arial,  sans-serif;
   opacity: 1;
   transform: translateY(0px);
   transition-duration: 0.3s;
@@ -1265,6 +1292,7 @@ edit button */
   margin-top: 20px; 
   margin-bottom: 30px;
   font-size: 30px;
+  font-family: "graphik", Arial,  sans-serif;
   color: #DA2127;
   font-weight: 600;
   text-align: center;
@@ -1281,6 +1309,7 @@ edit button */
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 1rem;
+  font-family: "graphik", Arial,  sans-serif;
   transition: border-color 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
@@ -1303,6 +1332,7 @@ edit button */
   border: none;
   border-radius: 6px;
   font-size: 1rem;
+  font-family: "graphik", Arial,  sans-serif;
   cursor: pointer;
   color: #ffffff;
   transition: background-color 0.3s ease, transform 0.1s ease; /* Button animation */
@@ -1331,6 +1361,7 @@ edit button */
 .sim-popup-content p {
   margin-top: 20px;
   font-size: 1.2rem;
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: medium;
   color: #2c3e50;
   background-color: #f0f8ff; /* Light blue background for contrast */
@@ -1351,6 +1382,7 @@ edit button */
 .popup-content p {
   margin-top: 15px;
   font-size: 1.2rem;
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: bold;
   color: #333; /* Dark color for text */
 }
@@ -1365,6 +1397,7 @@ edit button */
 /* Style for the dialog title */
 .mat-dialog-title {
   font-size: 18px; /* Customize font size */
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: bold;
   color: #333;
   padding-bottom: 10px;
@@ -1373,6 +1406,7 @@ edit button */
 /* Style for dialog content */
 .mat-dialog-content {
   font-size: 16px;
+  font-family: "graphik", Arial,  sans-serif;
   color: #666;
 }
 

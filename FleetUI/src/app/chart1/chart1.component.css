@@ -1,49 +1,9 @@
 /* Apply to the host element to remove all padding/margin */
-:host {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+
+.chart-container {
+    text-align: bottom; /* Center align the content */
   }
   
-  /* Chart container without padding/margin */
-  .chart-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    margin: 0;
-    width: 270px; /* Match the width of the chart */
-    height: 270px; /* Match the height of the chart */
-    box-sizing: border-box;
-  }
-  
-  /* Remove padding/margin from ApexCharts generated canvas */
-  .apexcharts-canvas {
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    box-sizing: border-box;
-  }
-  
-  /* Additional ApexChart element styles */
-  .apexcharts-inner {
-    padding: 0 !important;
-    margin: 0 !important;
-    box-sizing: border-box;
-  }
-  
-  .apexcharts-text, .apexcharts-label, .apexcharts-datalabels {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  
-  /* Override any label alignment issues */
   .chart-label {
     font-size: 22px;
     color: #F71717;

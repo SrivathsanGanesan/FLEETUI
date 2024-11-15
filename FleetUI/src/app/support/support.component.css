@@ -45,6 +45,7 @@
 
   .header-title {
     font-size: 36px;
+    font-family: "graphik", Arial,  sans-serif;
     font-weight: bold;
     color: #DA2127;
     margin: 0;
@@ -58,6 +59,7 @@
 
   .subheader-text {
     font-size: 16px;
+    font-family: "graphik", Arial,  sans-serif;
     color: #333;
   }
 
@@ -79,6 +81,7 @@
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   font-size: 16px;
+  font-family: "graphik", Arial,  sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,12 +144,14 @@
 /* Heading inside support section */
 .support-section h3 {
   font-size: 1.3rem; /* Reduced font size */
+  font-family: "graphik", Arial,  sans-serif;
   margin-bottom: 4px; /* Reduced margin */
 }
 
 /* Paragraph inside support section */
 .support-section p {
   font-size: 0.85rem; /* Smaller text */
+  font-family: "graphik", Arial,  sans-serif;
   color: #666;
 }
 
@@ -173,6 +178,7 @@
   
   .social-media-container h3 {
     font-size: 1.8rem;
+    font-family: "graphik", Arial,  sans-serif;
     margin-bottom: 10px;
   }
 
@@ -202,18 +208,22 @@
   @media screen and (max-width: 480px) {
     .support-header h1 {
       font-size: 1.5rem;
+      font-family: "graphik", Arial,  sans-serif;
     }
 
     .support-header p {
       font-size: 1rem;
+      font-family: "graphik", Arial,  sans-serif;
     }
 
     .support-section h3 {
       font-size: 1.2rem;
+      font-family: "graphik", Arial,  sans-serif;
     }
 
     .support-section p {
       font-size: 0.9rem;
+      font-family: "graphik", Arial,  sans-serif;
     }
 
     .social-media-icons img {
@@ -256,6 +266,7 @@
     top: 10px;
     right: 10px;
     font-size: 24px;
+    font-family: "graphik", Arial,  sans-serif;
     cursor: pointer;
   }
 
@@ -273,6 +284,7 @@
     width: 100%;
     padding: 10px;
     font-size: 14px;
+    font-family: "graphik", Arial,  sans-serif;
     border: 1px solid #ccc;
     border-radius: 5px;
   }
@@ -320,6 +332,7 @@
   
   .text-container .text {
     font-size: 12px; /* Reduced font size */
+    font-family: "graphik", Arial,  sans-serif;
     color: #fff;
     font-weight: 500;
     opacity: 1;
@@ -436,7 +449,7 @@ button {
   background: transparent;
   padding: 0;
   font-size: inherit; /* Inherits the font size from its parent */
-  font-family: inherit; /* Inherits the font family from its parent */
+  font-family: "graphik", Arial,  sans-serif;
   margin-top: 15px; 
 }
 
@@ -444,6 +457,7 @@ button.custom-learn-more {
   width: 10rem; /* Reduced width */
   height: auto; /* Auto height */
   font-size: 12px; /* Reduced font size */
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: 500; /* Maintained font weight */
 }
 
@@ -498,6 +512,7 @@ button.custom-learn-more .custom-button-text {
   margin: 0 0 0 1.25rem; /* Adjusted margin */
   color: #282936; /* Text color */
   font-weight: 700; /* Maintained font weight */
+  font-family: "graphik", Arial,  sans-serif;
   line-height: 1.4; /* Adjusted line height */
   text-align: center; /* Center text */
   text-transform: uppercase; /* Uppercase text */
@@ -537,6 +552,7 @@ button:hover .custom-button-text {
 /* Contact Us Header */
 .contact-container h3 {
   font-size: 2.5rem; /* Header font size */
+  font-family: "graphik", Arial,  sans-serif;
   font-weight: 500;
   margin: 0 0 5px 0; /* Removed bottom margin for header */
 }
@@ -615,6 +631,7 @@ button:hover .custom-button-text {
 
 label {
   font-weight: 500; /* Bold labels for better visibility */
+  font-family: "graphik", Arial,  sans-serif;
   margin-right: 3px; /* Further reduced space between label and input */
   flex: 0 0 30%; /* Allow label to take 30% of space */
   font-size: 1.0rem; /* Smaller font size */
@@ -634,6 +651,7 @@ input[type="checkbox"] {
 
 label {
   font-size: 0.875rem; /* Adjust font size */
+  font-family: "graphik", Arial,  sans-serif;
   color: #333; /* Text color */
   line-height: 1.2; /* Ensures label and checkbox are aligned */
 }
@@ -659,6 +677,7 @@ input[type="tel"] {
   width: 100%; /* Full width */
   margin-top: 3px; /* Space above input */
   font-size: 0.8rem; /* Smaller font size */
+  font-family: "graphik", Arial,  sans-serif;
 }
 
 input[type="checkbox"] {
@@ -676,6 +695,7 @@ input[type="checkbox"] {
   transition: background-color 0.3s; /* Smooth transition */
   width: 100%; /* Full width for button */
   font-size: 0.8rem; /* Smaller font size */
+  font-family: "graphik", Arial,  sans-serif;
 }
 
 /* Hover effect for submit button */
@@ -708,6 +728,7 @@ input[type="checkbox"] {
 /* FAQ Header */
 .faq-header {
   font-size: 30px; /* Reduced */
+  font-family: "graphik", Arial,  sans-serif;
   color: black;
 }
 .faq-header span {
@@ -718,6 +739,7 @@ input[type="checkbox"] {
 .faq-item h4 {
   cursor: pointer;
   font-size: 15px;
+  font-family: "graphik", Arial,  sans-serif;
   display: flex;
   justify-content: space-between;
   background-color: #f3f4f6;
@@ -745,6 +767,7 @@ input[type="checkbox"] {
   margin-top: 5px; /* Reduced */
   color: gray;
   font-size: 14px; /* Reduced */
+  font-family: "graphik", Arial,  sans-serif;
 }
 /* Contact section */
 .contact-section {
@@ -759,6 +782,7 @@ input[type="checkbox"] {
   color: red;
   font-weight: bold;
   font-size: 14px; /* Reduced */
+  font-family: "graphik", Arial,  sans-serif;
 }
 
 
