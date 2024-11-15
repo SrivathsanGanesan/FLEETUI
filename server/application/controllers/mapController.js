@@ -41,8 +41,8 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 
 // send node graph..
 const saveNodeGraph = async (mapData) => {
-  const { nodes, edges } = mapData;
-  // console.log(roboInitialise); // yet to uncomment..
+  const { nodes, edges, roboPos } = mapData;
+  // console.log(roboPos); // yet to uncomment..
   let fleetEdges = [];
   edges.forEach((edge) => {
     fleetEdges.push({
@@ -52,24 +52,54 @@ const saveNodeGraph = async (mapData) => {
       to: edge.endNodeId,
     });
   });
-
+  
+  let fleetRobos = roboPos.map((robo) => {
+    return {
+      ip_address: robo.roboDet.ipAdd,
+      amr_id: robo.roboDet.id,
+      robot_model: robo.roboDet.roboName,
+      UUID: robo.roboDet.uuid,
+      robot_id: robo.roboDet.amrid,
+      attachment: "",
+    };
+  });
   let fleetNodes = getFleetNodes(nodes);
   let nodeGraph = {
     nodes: fleetNodes,
     edges: fleetEdges,
   };
+
+  // let robDetails = {
+  //   ip_address: "192.168.1.2",
+  //   amr_id: 2,
+  //   robot_model: "R_AMR",
+  //   UUID: "1234501",
+  //   robot_id: "AMR_100",
+  //   attachment: "Conveyor",
+  // };
+
   const filePath = path.resolve(
     __dirname,
     "../../proj_assets/nodeGraph/nodeGraph.txt"
   );
 
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
-  return true;
+  // console.log(fleetRobos);
+  
+  // return true;
 
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",
     bodyData: nodeGraph,
   });
+
+  for (let i = 0; i < fleetRobos.length; i++) {
+    await postFleetData({
+      endpoint: "Robots",
+      bodyData: fleetRobos[i],
+    });
+    // console.log(fleetRobos[i]);    
+  }
 
   if (
     sentNodeGraphRes?.errorCode !== 100 ||

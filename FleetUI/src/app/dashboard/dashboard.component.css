@@ -299,6 +299,7 @@ canvas {
   bottom: 10px; /* Adjust as needed to position the label at the bottom of the chart */
   left: 50%;
   transform: translateX(-50%);
+  width: 300px;
   text-align: center;
   font-size: 16px;
   color: #333;

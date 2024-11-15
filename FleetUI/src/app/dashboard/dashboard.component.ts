@@ -149,30 +149,34 @@ export class DashboardComponent implements AfterViewInit {
     // this.onInitMapImg(); // yet to remove..
   }
 
-  isFleet: boolean = true; 
+  isFleet: boolean = false; 
 
   // PNG icon URLs
   fleetIconUrl: string = "../assets/fleet_icon.png";
   simulationIconUrl: string = "../assets/simulation_icon.png";
   
    // Method to toggle the mode and change icon, label, and background
-   toggleMode() {
+  toggleMode() {
+    console.log(this.isFleet,"fleet condition")
+    console.log("toggle is clicked")
     this.isFleet = !this.isFleet;
+    this.redrawCanvas();
   }
 
   // Get the appropriate icon based on the state
   get iconUrl(): string {
-    return this.simMode ? this.simulationIconUrl : this.fleetIconUrl;
+    return this.isFleet ? this.fleetIconUrl : this.simulationIconUrl;
   }
 
   // Get the appropriate label based on the state
   get buttonLabel(): string {
-    return this.simMode ? 'Sim mode' : 'Fleet mode';
+    // console.log("button lable")
+    return this.isFleet ? 'Fleet mode' : 'Sim mode';
   }
   
   // Get the appropriate background color class based on the simmode state
   get buttonClass(): string {
-    return this.simMode ? 'simulation-background' : 'fleet-background';
+    return this.isFleet ? 'fleet-background' : 'simulation-background';
   }
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
@@ -288,7 +292,7 @@ export class DashboardComponent implements AfterViewInit {
     let centerY = (imgHeight / 2)+250;
   
     let i = 0;
-
+    if(!this.isFleet)
     this.simMode = this.simMode.map((robo) => {
       // Position each robot centered horizontally and vertically, with an offset for spacing
       robo.pos = {
@@ -533,14 +537,17 @@ export class DashboardComponent implements AfterViewInit {
     // Draw the image
     ctx.drawImage(img, 0, 0);
 
+    if(!this.isFleet){
     this.simMode.forEach((robo) => {
       // const transformedY = img.height - robo.pos.y;
+      console.log(!this.isFleet,"sim mode")
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
-    });
+    });}
 
+    if(this.isFleet){
     this.robos.forEach((robo) =>
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected)
-    );
+    );}
 
     if (!this.showModelCanvas) {
       ctx.restore();
@@ -589,13 +596,17 @@ export class DashboardComponent implements AfterViewInit {
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
     );
+    if(!this.isFleet){
     this.simMode.forEach((robo) => {
+      console.log(!this.isFleet,"sim mode")
+      // const transformedY = img.height - robo.pos.y;
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
-    });
+    });}
 
+    if(this.isFleet){
     this.robos.forEach((robo) =>
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected)
-    );
+    );}
     ctx.restore(); // Reset transformation after drawing
   }
 
@@ -1222,7 +1233,7 @@ export class DashboardComponent implements AfterViewInit {
     orientation: number
   ) {
     const image = this.robotImages['robotB'];
-    const imageSize = 25* this.zoomLevel;
+    const imageSize = (25 * this.zoomLevel);
 
     if (image && ctx) {
       ctx.save(); // Save the current context before rotation
@@ -1297,14 +1308,16 @@ export class DashboardComponent implements AfterViewInit {
         //   ctx.drawImage(tempCanvas, centerX, centerY);
         // }
       }
-      
+
+    
+
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw } = robotsData[robotId];
         
         // Define the spacing between each robot
-        const spacing = 60; // 60px when applySpacing is true, 0px when false
-        const offsetX = (index % 3) * spacing;
-        const offsetY = Math.floor(index / 3) * spacing;
+        // const spacing = 60; // 60px when applySpacing is true, 0px when false
+        // const offsetX = (index % 3) * spacing;
+        // const offsetY = Math.floor(index / 3) * spacing;
     
         // Scale position and apply spacing offset
         const scaledPosX = posX;
@@ -1312,15 +1325,25 @@ export class DashboardComponent implements AfterViewInit {
     
         // Flip Y-axis for canvas and calculate actual canvas positions
         const transformedPosY = !this.simMode
-        ? this.mapImageHeight - scaledPosY // Non-simulation mode
-        : canvas.height - scaledPosY;            
+        ? this.mapImageHeight - (scaledPosY) // Non-simulation mode
+        : imgHeight/this.zoomLevel-scaledPosY;            
         const robotCanvasX = scaledPosX;
         const robotCanvasY = transformedPosY;
     
         // Update `simMode` data with the new scaled positions if the robot is not being dragged
+        if (this.isFleet) {
+          this.robos = this.robos.map((robo) => {
+            if (robo.roboDet.id === parseInt(robotId) ) {
+                robo.pos.x = robotCanvasX;
+                robo.pos.y = robotCanvasY;
+                robo.pos.orientation = -yaw;
+            }
+            return robo;
+        });
+        }
+        
         this.simMode = this.simMode.map((robo) => {
-            let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
-            
+            let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;            
             if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
                 robo.pos.x = robotCanvasX;
                 robo.pos.y = robotCanvasY;
@@ -1349,6 +1372,7 @@ export class DashboardComponent implements AfterViewInit {
     // });    
     
     // After updating positions, use the adjusted positions to draw the robots
+    if(!this.isFleet)
     this.simMode.forEach((robo) => {
         const robotPosX = centerX + (robo.pos.x * this.zoomLevel);
         const robotPosY = centerY + (robo.pos.y * this.zoomLevel);
@@ -1356,9 +1380,16 @@ export class DashboardComponent implements AfterViewInit {
     
         // Draw the robot on the canvas with updated positions and orientation
         this.plotRobo(ctx, robotPosX, robotPosY, yaw);
-    });
-    
-
+    });    
+    if(this.isFleet)
+      this.robos.forEach((robo) => {
+          const robotPosX = centerX + (robo.pos.x * this.zoomLevel);
+          const robotPosY = centerY + (robo.pos.y * this.zoomLevel);
+          const yaw = robo.pos.orientation;
+      
+          // Draw the robot on the canvas with updated positions and orientation
+          this.plotRobo(ctx, robotPosX, robotPosY, yaw);
+      });  
       // Plot each robot on the map, yet to uncomment..
       // Object.keys(robotsData).forEach((robotId) => {
       //   const { posX, posY, yaw } = robotsData[robotId];
