@@ -122,16 +122,16 @@ canvas {
   display: none;
 }
 
-.CanvasOptions:hover .tooltip {
+.CanvasOptions .tooltip {
   opacity: 1;
   transform: translateX(0);
 }
 
-.CanvasOptions:hover {
+/* .CanvasOptions {
   width: 450px;
   background-color: rgb(255, 255, 255);
   box-shadow: 0 3px 6px #ff7373;
-}
+} */
 
 .tooltip {
   position: relative;
@@ -142,7 +142,6 @@ canvas {
   transform: translateX(-20px);
 }
 
-/* Tooltip text styles */
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
@@ -293,6 +292,7 @@ canvas {
   bottom: 10px; /* Adjust as needed to position the label at the bottom of the chart */
   left: 50%;
   transform: translateX(-50%);
+  width: 300px;
   text-align: center;
   font-size: 16px;
   font-family: "graphik", Arial,  sans-serif;

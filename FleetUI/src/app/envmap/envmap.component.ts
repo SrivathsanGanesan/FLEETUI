@@ -21,6 +21,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { MapService } from '../map.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
+
 interface Node {
   nodeId: string;
   sequenceId: number;
@@ -337,6 +338,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
     this.isPlottingAsset = true;
+
     // console.log("hey");
     
   }
@@ -1439,7 +1441,7 @@ export class EnvmapComponent implements AfterViewInit {
       robo.pos.y = ((robo.pos.y * (this.ratio || 1))- (this.origin.y || 0));
       return robo;
     });
-
+    
     let orientation = {x :0, y : 0, z : 0, w : 0};
     if(this.nodes.length)
     orientation = this.ToQuaternion_(0,0,this.nodes[0].nodePosition.orientation);
@@ -1474,6 +1476,8 @@ export class EnvmapComponent implements AfterViewInit {
 
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData));
+
+
 
     fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps`, {
       method: 'POST',
@@ -1549,7 +1553,7 @@ export class EnvmapComponent implements AfterViewInit {
           detail: 'Map saved successfully',
           life: 4000,
         });
-
+        
         this.closePopup.emit();
       })
       .catch((error) => {
@@ -2180,7 +2184,8 @@ async initializeRobot(): Promise<void> {
 placeRobots(selectedRobots: any[]): void {
   if (!this.overlayCanvas) return;
   const canvas = this.overlayCanvas.nativeElement;
-
+  console.log(selectedRobots,"hey");
+  
   selectedRobots.forEach((robot) => {
     let x = 0 + this.roboInitOffset;
     let y = canvas.height - 100;
@@ -2213,14 +2218,15 @@ placeRobots(selectedRobots: any[]): void {
         attempts++;
       }
     }
-
+        
+   
     // Create and store robot details with the new orientation
     const robo: Robo = {
       roboDet: robot, // Add orientation to roboDet
       pos: { x: x, y: y, orientation } // Store orientation in pos as well
     };
     this.robos.push(robo);
-
+    console.log(this.robos,"robot")
     this.roboInitOffset += 60; // Update offset for next robot placement
     this.plotRobo(x, y, false, orientation); // Pass the orientation to plotRobo
   });

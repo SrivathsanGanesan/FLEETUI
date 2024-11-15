@@ -30,10 +30,10 @@ export class Chart1Component {
   public totalRobots: number = 100; // Example total robots count
 
   constructor() {
-    const activeToTotal = `${this.activeRobots} / ${this.totalRobots}`; // Format as 'activeRobots / totalRobots'
+    const activeToTotal = `${this.activeRobots} / ${this.totalRobots}`;
 
     this.chartOptions = {
-      series: [this.activeRobots], // Display active robots value as the radial bar value
+      series: [this.activeRobots],
       chart: {
         width: 270,
         height: 270,
@@ -47,12 +47,12 @@ export class Chart1Component {
           startAngle: 0,
           endAngle: 360,
           hollow: {
-            margin: 0,
+            margin: 0,   // Set hollow margin to 0
             size: "50%",
             background: "#fff",
             dropShadow: {
               enabled: true,
-              top: 2,
+              top: 3,
               left: 0,
               blur: 4,
               opacity: 0.24
@@ -61,22 +61,22 @@ export class Chart1Component {
           track: {
             background: "#FFE5E5",
             strokeWidth: "100%",
-            margin: 0
+            margin: 10  // Set track margin to 0 to reduce padding
           },
           dataLabels: {
             show: true,
             name: {
               offsetY: 80,
-              show: false,  // Hide the name label
+              show: false,
             },
             value: {
               formatter: function(val) {
-                return activeToTotal;  // Display 'activeRobots/totalRobots'
+                return activeToTotal;
               },
               offsetY: 10,
               color: "#F71717",
-              fontSize: "22px",
-              fontWeight: "semibold",  // Make the text bold
+              fontSize: "20px",
+              fontWeight: "semibold",
               show: true
             }
           }
