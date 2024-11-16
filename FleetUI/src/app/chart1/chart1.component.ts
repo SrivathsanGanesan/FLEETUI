@@ -26,17 +26,18 @@ export class Chart1Component {
   @ViewChild("chart") chart!: ChartComponent;
   
   public chartOptions: Partial<ChartOptions>;
-  public activeRobots: number = 63; // Example active robots count
-  public totalRobots: number = 100; // Example total robots count
+  public activeRobots: number = 2; // Example active robots count
+  public totalRobots: number = 2; // Example total robots count
 
   constructor() {
     const activeToTotal = `${this.activeRobots} / ${this.totalRobots}`;
+    const percentage = (this.activeRobots / this.totalRobots) * 100;
 
     this.chartOptions = {
-      series: [this.activeRobots],
+      series: [percentage], // Pass the percentage value
       chart: {
-        width: 270,
-        height: 270,
+        width: 240,
+        height: 250,
         type: "radialBar",
         toolbar: {
           show: false
@@ -47,7 +48,7 @@ export class Chart1Component {
           startAngle: 0,
           endAngle: 360,
           hollow: {
-            margin: 0,   // Set hollow margin to 0
+            margin: 0,
             size: "50%",
             background: "#fff",
             dropShadow: {
@@ -61,17 +62,17 @@ export class Chart1Component {
           track: {
             background: "#FFE5E5",
             strokeWidth: "100%",
-            margin: 10  // Set track margin to 0 to reduce padding
+            margin: 10
           },
           dataLabels: {
             show: true,
             name: {
               offsetY: 80,
-              show: false,
+              show: false
             },
             value: {
-              formatter: function(val) {
-                return activeToTotal;
+              formatter: function () {
+                return activeToTotal; // Display the active/total format
               },
               offsetY: 10,
               color: "#F71717",
@@ -92,7 +93,7 @@ export class Chart1Component {
           inverseColors: true,
           opacityFrom: 1,
           opacityTo: 1,
-          stops: [0, 100],
+          stops: [0, 2],
           colorStops: [
             {
               offset: 0,

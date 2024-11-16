@@ -11,7 +11,7 @@ import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
-
+import { MessageService } from 'primeng/api';
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -143,7 +143,8 @@ export class DashboardComponent implements AfterViewInit {
     
   constructor(
     private projectService: ProjectService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private messageService:MessageService,
   ) {
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
@@ -417,7 +418,13 @@ export class DashboardComponent implements AfterViewInit {
     console.log(data);
     // this.cancelDelete();
     if (data.isInitialized) {
-      alert('robo Initialized!');
+      // alert('robo Initialized!');
+      this.messageService.add({
+        severity: 'info',
+        summary: 'robo Initialized!',
+        detail: 'Robot',
+        life: 4000,
+      });
       return;
     }
     if (data.msg) alert(data.msg);
@@ -461,6 +468,13 @@ export class DashboardComponent implements AfterViewInit {
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
+    if(this.showModelCanvas){
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Map options',
+      detail: 'Map options are now visible',
+      life: 2000,
+    });}
     // if (!this.showModelCanvas) {
     //   this.nodes = [];
     // } else {
@@ -924,6 +938,12 @@ export class DashboardComponent implements AfterViewInit {
       else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
       return robo;
     })
+    this.messageService.add({
+      severity: 'info',
+      summary: `${robot.roboName} has been enabled.`,
+      detail: 'Robot has been Enabled',
+      life: 4000,
+    });
     console.log(`${robot.roboName} has been enabled.`);
   }
 
@@ -1683,11 +1703,23 @@ export class DashboardComponent implements AfterViewInit {
   zoomIn() {
     this.zoomLevel *= 1.1;
     this.loadCanvas();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Zooming in',
+      detail: 'Map is zooming in',
+      life: 2000,
+    });
   }
 
   zoomOut() {
     this.zoomLevel /= 1.1;
     this.loadCanvas();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Zoomed Out',
+      detail: 'Map is zooming out',
+      life: 2000,
+    });
   }
 
   onMouseLeave() {
@@ -1723,6 +1755,7 @@ export class DashboardComponent implements AfterViewInit {
       this.offsetY += deltaY / this.zoomLevel;
 
       this.loadCanvas();
+
     }
   };
 
@@ -1755,11 +1788,33 @@ export class DashboardComponent implements AfterViewInit {
 
   togglePan() {
     this.isPanning = !this.isPanning;
+    if(this.isPanning){
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Panning on',
+      detail: 'Map is now able to pan ',
+      life: 4000,
+    });}
+    else{
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Panning off',
+        detail: 'panning turned off ',
+        life: 4000,
+      });}
+    
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
 
   async captureCanvas() {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Capturing Screen',
+      detail: 'Screen Capturing Turned On ',
+      life: 4000,
+    });
     try {
+      
       const displayMediaStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
 
@@ -1800,14 +1855,34 @@ export class DashboardComponent implements AfterViewInit {
 
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;
+    if(this.showDashboard){
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Dashboard',
+      detail: 'Dashboard is visible',
+      life: 2000,
+    });}
+
   }
 
   toggleRecording() {
     this.recording = !this.recording;
     if (this.recording) {
       this.startRecording();
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Recording on',
+        detail: 'Screen recording Turned On ',
+        life: 4000,
+      });
     } else {
       this.stopRecording();
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Recording off',
+        detail: 'Screen recording Turned Off ',
+        life: 4000,
+      });
     }
   }
 

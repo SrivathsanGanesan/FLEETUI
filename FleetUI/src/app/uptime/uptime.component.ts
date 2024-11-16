@@ -26,7 +26,7 @@ export class UptimeComponent {
   @Input() ONBtn!: boolean;
   public chartOptions: Partial<ChartOptions>;
 
-  uptimePercentage: number = 70;
+  uptimePercentage: number = 96;
   eventSource!: EventSource;
 
   constructor(private cdr: ChangeDetectorRef) {
