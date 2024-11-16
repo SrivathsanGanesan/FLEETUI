@@ -192,9 +192,9 @@ export class DashboardComponent implements AfterViewInit {
     });
 
     this.selectedMap = this.projectService.getMapData();
-    if (!this.projectService.getMapData()) {
+    if (!this.selectedMap) {
       await this.onInitMapImg();
-      this.isMapLoaded = false;
+      this.isMapLoaded = false;      
       return;
     }
     const img = new Image();
@@ -1124,7 +1124,7 @@ export class DashboardComponent implements AfterViewInit {
     );
   }
 
-  async onInitMapImg() {
+async onInitMapImg() {
     let project = this.projectService.getSelectedProject();
     let mapArr = [];
 
@@ -1132,10 +1132,14 @@ export class DashboardComponent implements AfterViewInit {
       `http://${environment.API_URL}:${environment.PORT}/fleet-project/${project._id}`,
       { credentials: 'include' }
     );
-    if (!response.ok)
+    if (!response.ok) {
       console.error('Error while fetching map data : ', response.status);
+      return;
+    }
+
     let data = await response.json();
     let projectSites = data.project.sites;
+
     mapArr = projectSites.flatMap((sites: any) => {
       return sites.maps.map((map: any) => {
         let date = new Date(map?.createdAt);
@@ -1157,22 +1161,37 @@ export class DashboardComponent implements AfterViewInit {
         };
       });
     });
+
     mapArr.sort(
       (a: any, b: any) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
     if (!mapArr.length) return;
+
     const mapResponse = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapArr[0].mapName}`
     );
     let mapData = await mapResponse.json();
+
     this.projectService.setMapData({
       ...mapArr[0],
       imgUrl: mapData.map.imgUrl,
     });
+
+    // Set the zoomLevel after fetching the map data
+    const img = new Image();
+    img.src = `http://${mapData.map.imgUrl}`;
+
+    // Ensure the zoom level is calculated after the image is loaded
+    img.onload = () => {
+        this.zoomLevel = img.width > 1355 || img.height > 664 ? 0.8 : 1.0;
+        console.log(`Zoom level set to: ${this.zoomLevel}`);
+    };
+
     this.loadCanvas();
-  }
+}
+
 
   quaternionToYaw(w: number, x: number, y: number, z: number): number {
     // Calculate the yaw (rotation around the Z-axis)
