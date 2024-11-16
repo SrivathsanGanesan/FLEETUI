@@ -79,8 +79,18 @@ export class Userlogscomponent {
       .then((data) => {
         const { taskLogs } = data;
         this.taskData = taskLogs.notifications.map((taskErr: any) => {
+          const date = new Date();
+          const formattedDateTime = `${date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}, ${date.toLocaleTimeString('en-IN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}`;
           return {
-            dateTime: new Date().toDateString(),
+            dateTime: formattedDateTime,
             taskId: taskErr.taskId,
             taskName: 'Pick Packs',
             errCode: taskErr.name,
@@ -90,7 +100,6 @@ export class Userlogscomponent {
         });
         this.filteredTaskData = this.taskData;
         this.setPaginatedData();
-        // console.log(taskLogs);
       })
       .catch((err) => {
         console.log(err);
@@ -116,10 +125,19 @@ export class Userlogscomponent {
       })
       .then((data) => {
         const { roboLogs } = data;
-
         this.robotData = roboLogs.table[0].values.map((roboErr: any) => {
+          const date = new Date();
+          const formattedDateTime = `${date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}, ${date.toLocaleTimeString('en-IN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}`;
           return {
-            dateTime: new Date().toDateString(),
+            dateTime: formattedDateTime,
             roboId: roboErr.ROBOT_ID,
             roboName: roboErr.ROBOT_NAME,
             errCode: '100',
@@ -154,10 +172,19 @@ export class Userlogscomponent {
       })
       .then((data) => {
         const { fleetLogs } = data;
-
         this.fleetData = fleetLogs.map((fleetErr: any) => {
+          const date = new Date();
+          const formattedDateTime = `${date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}, ${date.toLocaleTimeString('en-IN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}`;
           return {
-            dateTime: new Date().toDateString(),
+            dateTime: formattedDateTime,
             moduleName: fleetErr.moduleName,
             errCode: fleetErr.errCode,
             criticality: fleetErr.criticality,
