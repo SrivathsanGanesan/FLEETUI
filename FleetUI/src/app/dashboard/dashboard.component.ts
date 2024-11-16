@@ -194,6 +194,10 @@ export class DashboardComponent implements AfterViewInit {
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
       await this.onInitMapImg();
+      await this.getMapDetails();
+      this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+      if(!this.isInLive) this.initSimRoboPos();
+      this.loadCanvas();
       this.isMapLoaded = false;      
       return;
     }
@@ -789,7 +793,7 @@ export class DashboardComponent implements AfterViewInit {
         // console.log("hey");
         return; // Exit if the click is outside the map image
       }
-
+      if(!this.isFleet)
       // Check if the click is on any robot within the map image
       for (let robo of this.robos) {
         const roboX = robo.pos.x;
