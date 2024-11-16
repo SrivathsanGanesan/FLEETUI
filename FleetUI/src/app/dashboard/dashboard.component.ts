@@ -427,7 +427,12 @@ export class DashboardComponent implements AfterViewInit {
       });
       return;
     }
-    if (data.msg) alert(data.msg);
+    if (data.msg) {
+      this.messageService.add({
+        severity: 'error',
+        summary: data.msg,
+        life: 2000,
+      });};
   }
 
   cancelAction() {
