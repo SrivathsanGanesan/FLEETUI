@@ -86,7 +86,7 @@ const saveNodeGraph = async (mapData) => {
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
   // console.log(fleetRobos);
   
-  return true;
+  // return true;
 
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",

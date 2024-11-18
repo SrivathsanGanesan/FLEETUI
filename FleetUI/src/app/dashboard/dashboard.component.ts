@@ -1357,15 +1357,13 @@ async onInitMapImg() {
         // }
       }
 
-    
-
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw } = robotsData[robotId];
         
         // Define the spacing between each robot
-        // const spacing = 60; // 60px when applySpacing is true, 0px when false
-        // const offsetX = (index % 3) * spacing;
-        // const offsetY = Math.floor(index / 3) * spacing;
+        const spacing = 60; // 60px when applySpacing is true, 0px when false
+        const offsetX = (index % 6) * spacing;
+        const offsetY = Math.floor(index / 6) * spacing;
     
         // Scale position and apply spacing offset
         const scaledPosX = posX;

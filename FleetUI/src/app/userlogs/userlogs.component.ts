@@ -59,11 +59,14 @@ export class Userlogscomponent {
     
     await this.fetchRobos();
     // data rendering
+    await this.getRoboLogs();
+    setInterval(async() => {
+      await this.getRoboLogs();
+    }, 1000*3);
     this.getTaskLogs();
-    this.getRoboLogs();
     this.getFleetLogs();
   }
-
+  
   getTaskLogs() {
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs/${this.mapData.id}`,
@@ -162,7 +165,8 @@ export class Userlogscomponent {
       });
       return robo;
     });
-    this.filteredRobots = this.robots;     
+    this.filteredRobots = this.robots;  
+    this.setPaginatedData();   
     this.roboerrors=this.robots.map((robo)=>
       {
         return{
@@ -175,15 +179,25 @@ export class Userlogscomponent {
   async getRoboLogs() {
     this.liveRobos = await this.getLiveRoboInfo();
     this.updateLiveRoboInfo();
+    // this.roboErr=[];
     this.roboerrors.forEach((robo)=>{
-    console.log(robo.error);
+    // console.log(robo.error);
+    let date = new Date();
+    let createdAt = date.toLocaleString('en-IN', {
+      month: 'short',
+      year: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
     if(robo.error['EMERGENCY STOP'].length){
       robo.error['EMERGENCY STOP'].forEach((error:any) => {
         this.roboErr.push({
           name:robo.name,
           error:error.name,
           description:error.description,
-          id:robo.id
+          id:robo.id,
+          dateTime:createdAt
         })
       });
     }
@@ -193,13 +207,15 @@ export class Userlogscomponent {
           name:robo.name,
           error:error.name,
           description:error.description,
-          id:robo.id
+          id:robo.id,
+          dateTime:createdAt
         })
       });
     }
-    console.log(this.roboErr);
   })
-    
+  // console.log(this.roboErr);
+  this.paginatedData1=this.roboErr;
+  // this.roboerrors=[];//later to be removed if needed
     // console.log(this.liveRobos,this.robots);
     
     // fetch(
