@@ -162,7 +162,7 @@ export class Userlogscomponent {
       });
       return robo;
     });
-    this.filteredRobots = this.robots;     
+    this.filteredRobots = this.robots;    
     this.roboerrors=this.robots.map((robo)=>
       {
         return{

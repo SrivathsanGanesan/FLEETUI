@@ -114,6 +114,7 @@ export class ConfigurationComponent implements AfterViewInit {
   paginatedData: any[] = [];
   paginatedData1: any[] = [];
   paginatedData2: any[] = [];
+simRobos: any;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -1877,33 +1878,7 @@ setPaginatedData1(){
     this.robotCount = 0;
   }
 
-  async deleteRobot(amrId: number) {
-    try {
-      // Fetch the current list of robots for the selected map
-      let simRobos = await this.getSimRobos(this.selectedMap);
-      if (!simRobos) {
-        alert('No robots to delete.');
-        return;
-      }
-  
-      // Filter out the robot with the specified `amrId`
-      const updatedSimRobos = simRobos.filter((robot: any) => robot.amrId !== amrId);
-  
-      // Update the backend with the modified list of robots
-      let result = await this.updateSimInMap(updatedSimRobos);
-      if (result) {
-        alert(`Robot with ID ${amrId} deleted!`);
-        
-        // Update the local totalRobots count
-        this.totalRobots = updatedSimRobos.length;
-      } else {
-        console.error('Failed to delete robot from the backend.');
-      }
-    } catch (error) {
-      console.error('Error during robot deletion:', error);
-    }
-  }
-  
+ 
   async clearAllRobots() {
     try {
       if (this.totalRobots === 0) {
@@ -1930,6 +1905,49 @@ setPaginatedData1(){
   }
    
 
-}
+
+
+
+
+
+
+  async deleteRobot(amrId: number) {
+    try {
+      if (this.totalRobots === 0) {
+        alert('No robots available to delete.');
+        return;
+      }
   
+      // Fetch the current simRobos data
+      let existingSimRobos = await this.getSimRobos(this.selectedMap) || [];
+  
+      // Check if the robot with the given amrId exists
+      const robotToDelete = existingSimRobos.find((robot: { amrId: number; }) => robot.amrId === amrId);
+      if (!robotToDelete) {
+        alert(`Robot with ID ${amrId} not found.`);
+        return;
+      }
+  
+      // Filter out the robot to be deleted
+      const updatedSimRobos = existingSimRobos.filter((robot: { amrId: number; }) => robot.amrId !== amrId);
+  
+      // Update the backend with the updated list of robots
+      let result = await this.updateSimInMap(updatedSimRobos);
+      if (result) {
+        alert(`Robot with ID ${amrId} deleted!`);
+        
+        // Update the local totalRobots count
+        this.totalRobots = updatedSimRobos.length;
+      } else {
+        alert('Failed to delete the robot from the backend.');
+      }
+    } catch (error) {
+      console.error('Error during robot deletion:', error);
+    }
+  }
+  
+
+}
+
+
 
