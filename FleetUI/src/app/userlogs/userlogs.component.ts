@@ -2,7 +2,7 @@ import { environment } from '../../environments/environment.development';
 import { ExportService } from '../export.service';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ProjectService } from '../services/project.service';
-import { timeStamp } from 'console';
+import { error, timeStamp } from 'console';
 // import { PageEvent } from '@angular/material/paginator';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
@@ -30,10 +30,13 @@ export class Userlogscomponent {
   paginatedData: any[] = [];
   paginatedData1: any[] = [];
   paginatedData2: any[] = [];
-
+  initialRoboInfos: any[] = []; // to store data of initial robo details..
+  mapDetails: any | null = null;
   // Your task data
   taskData: any[] = [];
-
+  filteredRobots: any[] = []; // To store filtered robots
+  roboerrors: any[]=[];
+  roboErr:any[]=[];
   // Your robot data
   robotData: any[] = [];
 
@@ -47,12 +50,14 @@ export class Userlogscomponent {
     this.mapData = this.projectService.getMapData();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.mapData = this.projectService.getMapData();
     if (!this.mapData) {
       console.log('Seems no map has been selected');
       return;
     }
+    
+    await this.fetchRobos();
     // data rendering
     this.getTaskLogs();
     this.getRoboLogs();
@@ -79,8 +84,18 @@ export class Userlogscomponent {
       .then((data) => {
         const { taskLogs } = data;
         this.taskData = taskLogs.notifications.map((taskErr: any) => {
+          const date = new Date();
+          const formattedDateTime = `${date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}, ${date.toLocaleTimeString('en-IN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}`;
           return {
-            dateTime: new Date().toDateString(),
+            dateTime: formattedDateTime,
             taskId: taskErr.taskId,
             taskName: 'Pick Packs',
             errCode: taskErr.name,
@@ -90,49 +105,115 @@ export class Userlogscomponent {
         });
         this.filteredTaskData = this.taskData;
         this.setPaginatedData();
-        // console.log(taskLogs);
       })
       .catch((err) => {
         console.log(err);
       });
   }
-
-  getRoboLogs() {
+  async fetchRobos(){
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/err-logs/robo-logs/${this.mapData.id}`,
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.mapData.mapName}`,
       {
-        method: 'POST',
+        method: 'GET',
         credentials: 'include',
-        body: JSON.stringify({
-          timeStamp1: '',
-          timeStamp2: '',
-        }),
       }
     )
-      .then((response) => {
-        // if (!response.ok)
-        //   throw new Error(`Error with the statusCode of ${response.status}`);
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        const { roboLogs } = data;
-
-        this.robotData = roboLogs.table[0].values.map((roboErr: any) => {
-          return {
-            dateTime: new Date().toDateString(),
-            roboId: roboErr.ROBOT_ID,
-            roboName: roboErr.ROBOT_NAME,
-            errCode: '100',
-            criticality: Math.floor(Math.random() * 10),
-            desc: roboErr.DESCRIPTION,
-          };
-        });
-        this.filteredTaskData1 = this.robotData;
-        this.setPaginatedData();
+        if (!data.map || data.error) {  
+          return;
+        }    
+        const { map } = data; 
+         
+        // Check if the image URL is accessible
+        this.robots= map.roboPos
       })
-      .catch((err) => {
-        console.log(err);
+      
+  }
+  async getLiveRoboInfo(): Promise<any[]> {
+    const response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.mapData.id}`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+
+    const data = await response.json();
+    if (!data.map || data.error) return [];
+    return data.robos;
+  }
+  robots: any[] = [];
+  liveRobos: any[] = [];
+  updateLiveRoboInfo() {
+    // console.log(this.robots);
+    
+    if (!('robots' in this.liveRobos)) {
+      this.robots = this.initialRoboInfos;
+      return;
+    }
+
+//Robotstatus
+                  
+    let { robots }: any = this.liveRobos;
+    if (!robots.length) this.robots = this.initialRoboInfos;
+    this.robots = this.robots.map((robo) => {
+      robots.forEach((liveRobo: any) => {
+        if (robo.roboDet.id == liveRobo.id) {          
+          robo.errors=liveRobo.robot_errors;
+        }
       });
+      return robo;
+    });
+    this.filteredRobots = this.robots;     
+    this.roboerrors=this.robots.map((robo)=>
+      {
+        return{
+          name:robo.roboDet.roboName,
+          error:robo.errors,
+          id:robo.roboDet.id
+        }
+      })                      
+  }
+  async getRoboLogs() {
+    this.liveRobos = await this.getLiveRoboInfo();
+    this.updateLiveRoboInfo();
+    this.roboerrors.forEach((robo)=>{
+    console.log(robo.error);
+    if(robo.error['EMERGENCY STOP'].length){
+      robo.error['EMERGENCY STOP'].forEach((error:any) => {
+        this.roboErr.push({
+          name:robo.name,
+          error:error.name,
+          description:error.description,
+          id:robo.id
+        })
+      });
+    }
+    if(robo.error['LIDAR_ERROR'].length){
+      robo.error['LIDAR_ERROR'].forEach((error:any) => {
+        this.roboErr.push({
+          name:robo.name,
+          error:error.name,
+          description:error.description,
+          id:robo.id
+        })
+      });
+    }
+    console.log(this.roboErr);
+  })
+    
+    // console.log(this.liveRobos,this.robots);
+    
+    // fetch(
+    //   `http://${environment.API_URL}:${environment.PORT}/err-logs/robo-logs/${this.mapData.id}`,
+    //   {
+    //     method: 'POST',
+    //     credentials: 'include',
+    //     body: JSON.stringify({
+    //       timeStamp1: '',
+    //       timeStamp2: '',
+    //     }),
+    //   }
+    // )
+
   }
 
   getFleetLogs() {
@@ -154,10 +235,19 @@ export class Userlogscomponent {
       })
       .then((data) => {
         const { fleetLogs } = data;
-
         this.fleetData = fleetLogs.map((fleetErr: any) => {
+          const date = new Date();
+          const formattedDateTime = `${date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}, ${date.toLocaleTimeString('en-IN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}`;
           return {
-            dateTime: new Date().toDateString(),
+            dateTime: formattedDateTime,
             moduleName: fleetErr.moduleName,
             errCode: fleetErr.errCode,
             criticality: fleetErr.criticality,

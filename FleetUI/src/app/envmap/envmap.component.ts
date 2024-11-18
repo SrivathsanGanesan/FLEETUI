@@ -1544,6 +1544,7 @@ export class EnvmapComponent implements AfterViewInit {
 
           this.cdRef.detectChanges();
           this.refreshTable.emit(); // Emit the event to refresh the table
+          // window.location.reload();
         }
 
         // Success toast notification

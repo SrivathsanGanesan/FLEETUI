@@ -11,7 +11,7 @@ import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
-
+import { MessageService } from 'primeng/api';
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -143,7 +143,8 @@ export class DashboardComponent implements AfterViewInit {
     
   constructor(
     private projectService: ProjectService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private messageService:MessageService,
   ) {
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
@@ -191,9 +192,13 @@ export class DashboardComponent implements AfterViewInit {
     });
 
     this.selectedMap = this.projectService.getMapData();
-    if (!this.projectService.getMapData()) {
+    if (!this.selectedMap) {
       await this.onInitMapImg();
-      this.isMapLoaded = false;
+      await this.getMapDetails();
+      this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+      if(!this.isInLive) this.initSimRoboPos();
+      this.loadCanvas();
+      this.isMapLoaded = false;      
       return;
     }
     const img = new Image();
@@ -417,10 +422,21 @@ export class DashboardComponent implements AfterViewInit {
     console.log(data);
     // this.cancelDelete();
     if (data.isInitialized) {
-      alert('robo Initialized!');
+      // alert('robo Initialized!');
+      this.messageService.add({
+        severity: 'info',
+        summary: 'robo Initialized!',
+        detail: 'Robot',
+        life: 4000,
+      });
       return;
     }
-    if (data.msg) alert(data.msg);
+    if (data.msg) {
+      this.messageService.add({
+        severity: 'error',
+        summary: data.msg,
+        life: 2000,
+      });};
   }
 
   cancelAction() {
@@ -461,6 +477,13 @@ export class DashboardComponent implements AfterViewInit {
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     this.showModelCanvas = !this.showModelCanvas;
+    if(this.showModelCanvas){
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Map options',
+      detail: 'Map options are now visible',
+      life: 2000,
+    });}
     // if (!this.showModelCanvas) {
     //   this.nodes = [];
     // } else {
@@ -770,7 +793,7 @@ export class DashboardComponent implements AfterViewInit {
         // console.log("hey");
         return; // Exit if the click is outside the map image
       }
-
+      if(!this.isFleet)
       // Check if the click is on any robot within the map image
       for (let robo of this.robos) {
         const roboX = robo.pos.x;
@@ -924,6 +947,12 @@ export class DashboardComponent implements AfterViewInit {
       else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
       return robo;
     })
+    this.messageService.add({
+      severity: 'info',
+      summary: `${robot.roboName} has been enabled.`,
+      detail: 'Robot has been Enabled',
+      life: 4000,
+    });
     console.log(`${robot.roboName} has been enabled.`);
   }
 
@@ -1099,7 +1128,7 @@ export class DashboardComponent implements AfterViewInit {
     );
   }
 
-  async onInitMapImg() {
+async onInitMapImg() {
     let project = this.projectService.getSelectedProject();
     let mapArr = [];
 
@@ -1107,10 +1136,14 @@ export class DashboardComponent implements AfterViewInit {
       `http://${environment.API_URL}:${environment.PORT}/fleet-project/${project._id}`,
       { credentials: 'include' }
     );
-    if (!response.ok)
+    if (!response.ok) {
       console.error('Error while fetching map data : ', response.status);
+      return;
+    }
+
     let data = await response.json();
     let projectSites = data.project.sites;
+
     mapArr = projectSites.flatMap((sites: any) => {
       return sites.maps.map((map: any) => {
         let date = new Date(map?.createdAt);
@@ -1132,22 +1165,37 @@ export class DashboardComponent implements AfterViewInit {
         };
       });
     });
+
     mapArr.sort(
       (a: any, b: any) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
     if (!mapArr.length) return;
+
     const mapResponse = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapArr[0].mapName}`
     );
     let mapData = await mapResponse.json();
+
     this.projectService.setMapData({
       ...mapArr[0],
       imgUrl: mapData.map.imgUrl,
     });
+
+    // Set the zoomLevel after fetching the map data
+    const img = new Image();
+    img.src = `http://${mapData.map.imgUrl}`;
+
+    // Ensure the zoom level is calculated after the image is loaded
+    img.onload = () => {
+        this.zoomLevel = img.width > 1355 || img.height > 664 ? 0.8 : 1.0;
+        console.log(`Zoom level set to: ${this.zoomLevel}`);
+    };
+
     this.loadCanvas();
-  }
+}
+
 
   quaternionToYaw(w: number, x: number, y: number, z: number): number {
     // Calculate the yaw (rotation around the Z-axis)
@@ -1683,11 +1731,23 @@ export class DashboardComponent implements AfterViewInit {
   zoomIn() {
     this.zoomLevel *= 1.1;
     this.loadCanvas();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Zooming in',
+      detail: 'Map is zooming in',
+      life: 2000,
+    });
   }
 
   zoomOut() {
     this.zoomLevel /= 1.1;
     this.loadCanvas();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Zoomed Out',
+      detail: 'Map is zooming out',
+      life: 2000,
+    });
   }
 
   onMouseLeave() {
@@ -1723,6 +1783,7 @@ export class DashboardComponent implements AfterViewInit {
       this.offsetY += deltaY / this.zoomLevel;
 
       this.loadCanvas();
+
     }
   };
 
@@ -1755,11 +1816,33 @@ export class DashboardComponent implements AfterViewInit {
 
   togglePan() {
     this.isPanning = !this.isPanning;
+    if(this.isPanning){
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Panning on',
+      detail: 'Map is now able to pan ',
+      life: 4000,
+    });}
+    else{
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Panning off',
+        detail: 'panning turned off ',
+        life: 4000,
+      });}
+    
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
 
   async captureCanvas() {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Capturing Screen',
+      detail: 'Screen Capturing Turned On ',
+      life: 4000,
+    });
     try {
+      
       const displayMediaStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
 
@@ -1800,14 +1883,34 @@ export class DashboardComponent implements AfterViewInit {
 
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;
+    if(this.showDashboard){
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Dashboard',
+      detail: 'Dashboard is visible',
+      life: 2000,
+    });}
+
   }
 
   toggleRecording() {
     this.recording = !this.recording;
     if (this.recording) {
       this.startRecording();
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Recording on',
+        detail: 'Screen recording Turned On ',
+        life: 4000,
+      });
     } else {
       this.stopRecording();
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Recording off',
+        detail: 'Screen recording Turned Off ',
+        life: 4000,
+      });
     }
   }
 

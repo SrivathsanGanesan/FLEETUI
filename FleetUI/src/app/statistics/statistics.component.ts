@@ -26,63 +26,63 @@ export class StatisticsComponent {
     {
       message: 'Low Battery',
       taskId: 'AMR-001',
-      timestamp: '2024-08-16 14:32',
+      timestamp: '15 Nov 2024, 10:54 pm',
     },
     {
       message: 'Task Assigned ',
       taskId: ' AMR-002',
-      timestamp: '2024-08-16 14:32',
+      timestamp: '17 Nov 2024, 1:54 pm',
     },
     {
       message: 'Obstacle Detected ',
       taskId: ' AMR-003',
-      timestamp: '2024-08-16',
+      timestamp: '21 Dec 2024, 10:27 am',
     },
     {
       message: 'Low Battery',
       taskId: 'AMR-001',
-      timestamp: '2024-08-16 14:32',
+      timestamp: '21 Dec 2024, 10:50 am',
     },
     {
       message: 'Task Assigned ',
       taskId: ' AMR-002',
-      timestamp: '2024-08-16 14:32',
+      timestamp: '23 Dec 2024, 1:02 pm',
     },
     {
       message: 'Obstacle Detected ',
       taskId: ' AMR-003',
-      timestamp: '2024-08-16',
+      timestamp: '23 Dec 2024, 6:02 pm',
     },
     {
       message: 'Low Battery',
       taskId: 'AMR-001',
-      timestamp: '2024-08-16 14:32',
-    },
-    {
-      message: 'Task Assigned ',
-      taskId: ' AMR-002',
-      timestamp: '2024-08-16 14:32',
-    },
-    {
-      message: 'Obstacle Detected ',
-      taskId: ' AMR-003',
-      timestamp: '2024-08-16',
-    },
-    {
-      message: 'Low Battery',
-      taskId: 'AMR-001',
-      timestamp: '2024-08-16 14:32',
-    },
-    {
-      message: 'Task Assigned ',
-      taskId: ' AMR-002',
-      timestamp: '2024-08-16 14:32',
-    },
-    {
-      message: 'Obstacle Detected ',
-      taskId: ' AMR-003',
-      timestamp: '2024-08-16',
-    },
+      timestamp: '5 Jan 2024, 4:02 pm',
+    }
+    // {
+    //   message: 'Task Assigned ',
+    //   taskId: ' AMR-002',
+    //   timestamp: '2024-08-16 14:32',
+    // },
+    // {
+    //   message: 'Obstacle Detected ',
+    //   taskId: ' AMR-003',
+    //   timestamp: '2024-08-16',
+    // },
+    // {
+    //   message: 'Low Battery',
+    //   taskId: 'AMR-001',
+    //   timestamp: '2024-08-16 14:32',
+    // },
+    // {
+    //   message: 'Task Assigned ',
+    //   taskId: ' AMR-002',
+    //   timestamp: '2024-08-16 14:32',
+    // },
+    // {
+    //   message: 'Obstacle Detected ',
+    //   taskId: ' AMR-003',
+    //   timestamp: '2024-08-16',
+    // },
     // { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   ];
 
