@@ -194,8 +194,8 @@ export class DashboardComponent implements AfterViewInit {
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
       await this.onInitMapImg();
-      await this.getMapDetails();
       this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+      await this.getMapDetails();
       if(!this.isInLive) this.initSimRoboPos();
       this.loadCanvas();
       this.isMapLoaded = false;      
