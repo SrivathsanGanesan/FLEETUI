@@ -12,6 +12,8 @@ import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
 import { MessageService } from 'primeng/api';
+import { state } from '@angular/animations';
+import { log } from 'console';
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -228,6 +230,7 @@ export class DashboardComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     console.log('myCanvas:', this.myCanvas);
+  
     if (this.myCanvas) {
       const canvas = this.myCanvas.nativeElement;
       this.addMouseMoveListener(canvas);
@@ -235,40 +238,51 @@ export class DashboardComponent implements AfterViewInit {
       this.addMouseDownListener(canvas);
       this.addMouseUpListener(canvas);
       this.addRightClickListener(canvas);
-
     } else {
       console.error('myCanvas is undefined');
     }
+  
     this.robotImages = {
       robotB: new Image(),
+      init: new Image(),
+      move: new Image(),
+      normal: new Image(),
+      pause: new Image(),
+      error: new Image(),
+      wait: new Image(),
+      idle: new Image(),
+      dock: new Image(),
+      undock: new Image(),
+      load: new Image(),
+      unload: new Image(),
+      charge: new Image(),
+      failed: new Image(),
     };
     this.assetImages = {
       docking: new Image(),
       charging: new Image(),
     };
+  
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
-
-    const svgContent = `
-      <svg width="76" height="55" viewBox="0 0 76 55" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="11.5" y="0.5" width="14" height="7" rx="1.5" fill="#747070" stroke="black"/>
-        <rect x="11.5" y="47.5" width="14" height="7" rx="1.5" fill="#747070" stroke="black"/>
-        <rect x="52.5" y="47.5" width="14" height="7" rx="1.5" fill="#747070" stroke="black"/>
-        <rect x="52.5" y="0.5" width="14" height="7" rx="1.5" fill="#747070" stroke="black"/>
-        <path d="M6 4.5H70C73.0376 4.5 75.5 6.96243 75.5 10V45C75.5 48.0376 73.0376 50.5 70 50.5H6C2.96243 50.5 0.5 48.0376 0.5 45V10C0.5 6.96243 2.96243 4.5 6 4.5Z" fill="#FFA3A3" stroke="black"/>
-        <path d="M54.5 27C54.5 35.546 47.3512 42.5 38.5 42.5C29.6488 42.5 22.5 35.546 22.5 27C22.5 18.454 29.6488 11.5 38.5 11.5C47.3512 11.5 54.5 18.454 54.5 27Z" fill="white" stroke="black"/>
-      </svg>`;
-
-    // Create a data URL for the SVG content
-    const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
-    const svgUrl = URL.createObjectURL(svgBlob);
-
-    this.robotImages['robotB'] = new Image();
-    this.robotImages['robotB'].src = svgUrl;
-
-    // Optional: add event listener to clean up object URL after image loads
-    this.robotImages['robotB'].onload = () => URL.revokeObjectURL(svgUrl);    
+  
+    // Load the external SVG
+    this.robotImages['robotB'].src = 'assets/Roboimg/RoboB.svg';
+    this.robotImages['init'].src = 'assets/Roboimg/init.svg';
+    this.robotImages['move'].src = 'assets/Roboimg/move.svg';
+    this.robotImages['normal'].src = 'assets/Roboimg/normal.svg';
+    this.robotImages['pause'].src = 'assets/Roboimg/pause.svg';
+    this.robotImages['error'].src = 'assets/Roboimg/error.svg';
+    this.robotImages['wait'].src = 'assets/Roboimg/wait.svg';
+    this.robotImages['idle'].src = 'assets/Roboimg/idle.svg';
+    this.robotImages['dock'].src = 'assets/Roboimg/dock.svg';
+    this.robotImages['undock'].src = 'assets/Roboimg/undock.svg';
+    this.robotImages['load'].src = 'assets/Roboimg/load.svg';
+    this.robotImages['unload'].src = 'assets/Roboimg/unload.svg';
+    this.robotImages['charge'].src = 'assets/Roboimg/charge.svg';
+    this.robotImages['failed'].src = 'assets/Roboimg/failed.svg';
   }
+  
   // initSimRoboPos() {
   //   const imgWidth = this.mapImg.width; // * this.zoomLevel
   //   const imgHeight = this.mapImg.height; // * this.zoomLevel    
@@ -359,11 +373,9 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async initializeRobo() {
-    // Toggle between initializing and releasing the robot
     if (this.updatedrobo) {
       // If the robot is already initialized, release it
       if (this.updatedrobo.isInitialized) {
-        // await this.updateEditedMap();
         this.updatedrobo.isInitialized = false;
         console.log(`Robot ${this.updatedrobo.amrId} released`);
         this.hidePopup();
@@ -371,16 +383,15 @@ export class DashboardComponent implements AfterViewInit {
       } else {
         // Otherwise, initialize the robot
         this.updatedrobo.isInitialized = true;
-        console.log(`Robot ${this.updatedrobo.amrId} initialized`,this.updatedrobo);
+        console.log(`Robot ${this.updatedrobo.amrId} initialized`, this.updatedrobo);
       }
     }
-
-    // this.robotToInitialize = this.updatedrobo;
+  
     this.robotToInitialize = JSON.parse(JSON.stringify(this.updatedrobo));
     this.hidePopup();
-
     await this.initializeRobot();
   }
+  
 
   async initializeRobot(): Promise<void> {
     // console.log(this.robotToInitialize, this.ratio);
@@ -564,12 +575,12 @@ export class DashboardComponent implements AfterViewInit {
     this.simMode.forEach((robo) => {
       // const transformedY = img.height - robo.pos.y;
       console.log(!this.isFleet,"sim mode")
-      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation,robo.state);
     });}
 
     if(this.isFleet){
     this.robos.forEach((robo) =>
-      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected)
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
     if (!this.showModelCanvas) {
@@ -623,12 +634,12 @@ export class DashboardComponent implements AfterViewInit {
     this.simMode.forEach((robo) => {
       console.log(!this.isFleet,"sim mode")
       // const transformedY = img.height - robo.pos.y;
-      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation);
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation,robo.imgState);
     });}
 
     if(this.isFleet){
     this.robos.forEach((robo) =>
-      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected)
+      this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.imgState)
     );}
     ctx.restore(); // Reset transformation after drawing
   }
@@ -812,6 +823,7 @@ export class DashboardComponent implements AfterViewInit {
           // Set applySpacing to false when a robot is clicked
           this.applySpacing = false;
           console.log(`Robot clicked: ${robo.roboDet.id}`);
+          
           break;
         } else {
           // console.log('not_clicked');
@@ -1074,7 +1086,7 @@ export class DashboardComponent implements AfterViewInit {
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
       const transformedY = canvas.height - y;
       // console.log(amrPos[i].x, amrPos[i].y);
-      this.plotRobo(ctx, x, transformedY, yaw);
+      this.plotRobo(ctx, x, transformedY, yaw,"robotB");
     }
   }
 
@@ -1251,7 +1263,7 @@ async onInitMapImg() {
             );
 
             // Store each robot's position and orientation using the robot ID
-            robotsData[robot.id] = { posX, posY, yaw: yaw }; // here we go...
+            robotsData[robot.id] = { posX, posY, yaw: yaw, state:robot.robot_state }; // here we go...
 
             console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
 
@@ -1278,11 +1290,13 @@ async onInitMapImg() {
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
-    orientation: number
+    orientation: number,
+    state:string
   ) {
-    const image = this.robotImages['robotB'];
-    const imageSize = (25 * this.zoomLevel);
-
+    const roboType = state || 'robotB'; // Default to 'robotB' if no type is specified
+    const image = this.robotImages[roboType];
+    const imageSize = 25 * this.zoomLevel;
+  
     if (image && ctx) {
       ctx.save(); // Save the current context before rotation
       ctx.translate(x, y); // Move the rotation point to the robot's center
@@ -1297,6 +1311,7 @@ async onInitMapImg() {
       ctx.restore(); // Restore the context after rotation
     }
   }
+  
   isOptionsExpanded: boolean = false;
 
   toggleOptions() {
@@ -1358,7 +1373,15 @@ async onInitMapImg() {
       }
 
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
-        const { posX, posY, yaw } = robotsData[robotId];
+        const { posX, posY, yaw, state } = robotsData[robotId];
+        let imgState ="robotA";
+        console.log("hey",state);          
+        if(state==="INITSTATE"){
+          imgState="init";
+        }
+        if(state==="MOVESTATE"){
+          imgState="move";
+        }
         
         // Define the spacing between each robot
         const spacing = 60; // 60px when applySpacing is true, 0px when false
@@ -1375,7 +1398,7 @@ async onInitMapImg() {
         : imgHeight/this.zoomLevel-scaledPosY;            
         const robotCanvasX = scaledPosX;
         const robotCanvasY = transformedPosY;
-    
+
         // Update `simMode` data with the new scaled positions if the robot is not being dragged
         if (this.isFleet) {
           this.robos = this.robos.map((robo) => {
@@ -1383,6 +1406,7 @@ async onInitMapImg() {
                 robo.pos.x = robotCanvasX;
                 robo.pos.y = robotCanvasY;
                 robo.pos.orientation = -yaw;
+                robo.imgState=imgState;
             }
             return robo;
         });
@@ -1394,6 +1418,7 @@ async onInitMapImg() {
                 robo.pos.x = robotCanvasX;
                 robo.pos.y = robotCanvasY;
                 robo.pos.orientation = -yaw;
+                robo.imgState=imgState;
             }
             return robo;
         });
@@ -1423,9 +1448,9 @@ async onInitMapImg() {
         const robotPosX = centerX + (robo.pos.x * this.zoomLevel);
         const robotPosY = centerY + (robo.pos.y * this.zoomLevel);
         const yaw = robo.pos.orientation;
-    
+        
         // Draw the robot on the canvas with updated positions and orientation
-        this.plotRobo(ctx, robotPosX, robotPosY, yaw);
+        this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState);
     });    
     if(this.isFleet)
       this.robos.forEach((robo) => {
@@ -1434,7 +1459,7 @@ async onInitMapImg() {
           const yaw = robo.pos.orientation;
       
           // Draw the robot on the canvas with updated positions and orientation
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw);
+          this.plotRobo(ctx, robotPosX, robotPosY, yaw,robo.imgState);
       });  
       // Plot each robot on the map, yet to uncomment..
       // Object.keys(robotsData).forEach((robotId) => {

@@ -1860,6 +1860,7 @@ setPaginatedData1(){
         roboName: `MR${existingSimRobos.length + i}00`,  // Unique name
         enable: false,
         isInitialized: false,
+        imgState:"",
         pos: { x: existingSimRobos.length + i, y: 0, orientation: 0 },
       });
     }
