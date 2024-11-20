@@ -225,7 +225,7 @@ export class DashboardComponent implements AfterViewInit {
       this.projectService.setInLive(true);
       this.isInLive = true;
     }
-    console.log(this.simMode);
+    // console.log(this.simMode);
   }
 
   ngAfterViewInit(): void {
@@ -574,7 +574,7 @@ export class DashboardComponent implements AfterViewInit {
     if(!this.isFleet){
     this.simMode.forEach((robo) => {
       // const transformedY = img.height - robo.pos.y;
-      console.log(!this.isFleet,"sim mode")
+      // console.log(!this.isFleet,"sim mode")
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.pos.orientation,robo.state);
     });}
 
@@ -1344,7 +1344,7 @@ async onInitMapImg() {
       // Calculate the scaled image dimensions and center the image on the canvas
       const imgWidth = mapImage.width * this.zoomLevel;
       const imgHeight = mapImage.height * this.zoomLevel;
-      console.log("hey",canvas.height,canvas.width,imgHeight,imgWidth);
+      // console.log("hey",canvas.height,canvas.width,imgHeight,imgWidth);
       
       const centerX = (canvas.width - imgWidth) / 2;
       const centerY = (canvas.height - imgHeight) / 2;
@@ -1375,14 +1375,46 @@ async onInitMapImg() {
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
         let imgState ="robotA";
-        console.log("hey",state);          
+        // console.log("hey",state);          
         if(state==="INITSTATE"){
           imgState="init";
         }
         if(state==="MOVESTATE"){
           imgState="move";
         }
-        
+        if(state==="NORMALSTATE"){
+          imgState="normal";
+        }
+        if(state==="PAUSESTATE"){
+          imgState="pause";
+        }
+        if(state==="ERRORSTATE"){
+          imgState="error";
+        }
+        if(state==="IDLESTATE"){
+          imgState="idle";
+        }
+        if(state==="WAITSTATE"){
+          imgState="wait";
+        }
+        if(state==="DOCKSTATE"){
+          imgState="dock";
+        }
+        if(state==="UNDOCKSTATE"){
+          imgState="undock";
+        }
+        if(state==="LOADSTATE"){
+          imgState="load";
+        }
+        if(state==="UNLOADSTATE"){
+          imgState="unload";
+        }
+        if(state==="CHARGESTATE"){
+          imgState="charge";
+        }
+        if(state==="FAILEDSTATE"){
+          imgState="failed";
+        }
         // Define the spacing between each robot
         const spacing = 60; // 60px when applySpacing is true, 0px when false
         const offsetX = (index % 6) * spacing;
