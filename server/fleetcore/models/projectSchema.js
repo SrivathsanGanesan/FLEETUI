@@ -33,6 +33,8 @@ const projectSchema = new Schema(
       type: fleetParamsSchema,
       default: {},
     },
+
+    fleetRecords: { type: [{ type: { startTime: Date, endTime: Date } }], default: [] },
   },
   { timestamps: true, versionKey: false }
 );

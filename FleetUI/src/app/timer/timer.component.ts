@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ProjectService } from '../services/project.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-timer',
@@ -9,6 +10,7 @@ import { ProjectService } from '../services/project.service';
   styleUrls: ['./timer.component.css']
 })
 export class TimerComponent {
+  private subscription: Subscription = new Subscription();
   totalDuration: number = 18000; // 3 hours in seconds
   remainingTime: number = 0; // Initialize with 0
   fiveMinuteRemaining: number = 300; // 5 minutes in seconds
@@ -23,9 +25,16 @@ export class TimerComponent {
 
   ngOnInit() {
     this.initializeTimer();
-    this.initializeFiveMinuteTimer();    
+    this.initializeFiveMinuteTimer();   
+    this.subscription = this.projectService.isFleetUp$.subscribe(status => {
+      // this.fleetStatus = status;
+      console.log('Fleet status changed:', status);
+      // this.performActionOnStateChange(status); // Optional: Trigger a method on change
+    }); 
   }
-
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe(); // Clean up the subscription
+  }
   initializeTimer() {
     const storedStartTime = localStorage.getItem('timerStartTime');
     const lastSession = localStorage.getItem('lastSession');
@@ -95,7 +104,7 @@ export class TimerComponent {
   }
 
   triggerFiveMinuteAction() {
-    
+
   }
 
   logout() {

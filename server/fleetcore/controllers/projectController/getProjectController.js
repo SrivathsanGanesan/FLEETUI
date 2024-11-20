@@ -48,5 +48,21 @@ const getProjectList = async (req, res, next) => {
     return res.status(500).json({ error: error, msg: "request not attained!" });
   }
 };
-
-module.exports = { getProject, getProjectList };
+const setFleetRecords= async(req, res)=>{
+  try {
+    const {projectId,isFleetOn,timeStamp} = req.body;
+    const project = await projectModel.findById(projectId);
+    if (!project)
+      return res
+        .status(400)
+        .json({ exists: false, msg: "project name not found!" }); 
+    
+    let {fleetRecords}=project;
+    return res.status(200).json({ fleetRecords:fleetRecords });
+    
+  } catch (error) {
+    console.log("err occ : ", error);
+    return res.status(500).json({ error: error, msg: "request not attained!" });
+  }
+}
+module.exports = { getProject, getProjectList, setFleetRecords};
