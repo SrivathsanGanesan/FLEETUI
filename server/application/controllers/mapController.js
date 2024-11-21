@@ -60,7 +60,7 @@ const saveNodeGraph = async (mapData) => {
       robot_model: robo.roboDet.roboName,
       UUID: robo.roboDet.uuid,
       robot_id: robo.roboDet.amrid,
-      attachment: "",
+      attachment: robo.roboDet.attachmentType,
     };
   });
   let fleetNodes = getFleetNodes(nodes);
@@ -86,7 +86,7 @@ const saveNodeGraph = async (mapData) => {
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
   // console.log(fleetRobos);
   
-  // return true;
+  return true;
 
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",

@@ -28,6 +28,7 @@ interface Node {
   nodeDescription: string;
   released: boolean;
   nodePosition: { x: number; y: number; orientation: number };
+  quaternion:{x:number; y: number; z: number; w: number};
   actions: any[];
   intermediate_node: boolean;
   Waiting_node: boolean;
@@ -307,6 +308,7 @@ export class EnvmapComponent implements AfterViewInit {
   isOpen: boolean = false;
   descriptionWarning: boolean = false;
   currMulNode : Node[] = [];
+  currentQuaternion:{ x: number; y: number;z:number;w:number } | null = null;
   newOrientationAngle: number = 0;
   inputOrientationAngle: number = 0; // The value entered by the user
   // selectedNodeId: string; // Variable to store the selected node
@@ -789,9 +791,14 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.validationError) {
       return;
     }
+    let quaternion=this.ToQuaternion_(0,0,parseInt(orientation));
+
 
     this.nodes = this.nodes.map(node => {
-      if(this.selectedNode?.nodeId === node.nodeId) node.actions = this.actions;
+      if(this.selectedNode?.nodeId === node.nodeId) {
+        node.actions = this.actions;
+        node.quaternion = quaternion;
+      }
       return node;
     })
     
@@ -1361,18 +1368,22 @@ export class EnvmapComponent implements AfterViewInit {
       });
   }
   ToQuaternion_(roll : number, pitch : number, yaw : number){
+    yaw = (yaw * 3.14) / 180;
+    pitch = (pitch * 3.14) / 180;
+    roll = (roll * 3.14) / 180;
+
     const cy = Math.cos(yaw * 0.5);
     const sy = Math.sin(yaw * 0.5);
-    const cp = Math.cos(pitch * 0.5);
-    const sp = Math.sin(pitch * 0.5);
     const cr = Math.cos(roll * 0.5);
     const sr = Math.sin(roll * 0.5);
+    const cp = Math.cos(pitch * 0.5);
+    const sp = Math.sin(pitch * 0.5);
 
     const q = {
-      x: sr * cp * cy - cr * sp * sy,
-      y: cr * sp * cy + sr * cp * sy,
-      z: cr * cp * sy - sr * sp * cy,
-      w: cr * cp * cy + sr * sp * sy,
+      x: cy * sr * cp - sy * cr * sp,
+      y: cy * cr * sp + sy * sr * cp,
+      z: sy * cr * cp - cy * sr * sp,
+      w: cy * cr * cp + sy * sr * sp,
     };
 
     return q;
@@ -1878,6 +1889,7 @@ export class EnvmapComponent implements AfterViewInit {
     for (const node of this.nodes) {      
       if (this.isNodeClicked(node, x, y) ) {
         this.selectedNode=node;
+        this.currentQuaternion=node.quaternion;
         this.nodeDetails.description = this.selectedNode.nodeDescription;
         this.nodeDetails.intermediate_node = this.selectedNode.intermediate_node;
         this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
@@ -2326,6 +2338,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         nodeDescription: '',
         released: true,
         nodePosition: { x: x, y: transformedY, orientation: 0 },
+        quaternion:{ x: 0, y: 0,z:0,w:1},
         intermediate_node: false,
         Waiting_node: false,
         charge_node: false,
@@ -2347,6 +2360,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       dock_node:false,
       charge_node:false
     };
+    let quaternion=this.ToQuaternion_(0,0,this.orientationAngle);
 
     let node = {
       nodeId: this.nodeCounter.toString(),
@@ -2354,6 +2368,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       nodeDescription: '',
       released: true,
       nodePosition: { x: x , y:  transformedY , orientation: this.orientationAngle },
+      quaternion:quaternion,
       actions: [],
       intermediate_node: false,
       Waiting_node: false,
@@ -2420,6 +2435,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             nodeDescription: '',
             released: true,
             nodePosition: { x: x, y: transformedY, orientation: 0 },
+            quaternion:{ x: 0, y: 0,z:0,w:1},
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
@@ -2438,6 +2454,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             nodeDescription: '',
             released: true,
             nodePosition: { x: x, y: transformedY, orientation: 0 },
+            quaternion:{ x: 0, y: 0,z:0,w:1},
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
@@ -2454,6 +2471,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             nodeDescription: '',
             released: true,
             nodePosition: { x: x, y: transformedY, orientation: 0 },
+            quaternion:{ x: 0, y: 0,z:0,w:1},
             actions: [],
             intermediate_node: false,
             Waiting_node: false,
@@ -2519,6 +2537,15 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     }
     if (this.numberOfIntermediateNodes && this.numberOfIntermediateNodes > 0) {
       if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
+        let quaternion=this.ToQuaternion_(0,0,this.secondNode!.nodePosition.orientation);
+        this.nodes=this.nodes.map((node)=>{
+          if(node.nodeId===this.firstNode?.nodeId){
+            node.nodePosition.orientation=this.secondNode!.nodePosition.orientation;
+            node.quaternion=quaternion;
+          }
+          return node;
+        }
+        )
         const dx = (this.secondNode.nodePosition.x - this.firstNode.nodePosition.x) / (this.numberOfIntermediateNodes + 1);
         const dy = (this.secondNode.nodePosition.y - this.firstNode.nodePosition.y) / (this.numberOfIntermediateNodes + 1);
 
@@ -2555,13 +2582,14 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             this.redrawCanvas();
             return;
           }
-
+          // let quaternion=this.ToQuaternion_(0,0,this.secondNode!.nodePosition.orientation);
           let node = {
             nodeId: this.nodeCounter.toString(),
             sequenceId: this.nodeCounter,
             nodeDescription: 'Intermediate Node',
             released: true,
             nodePosition: { x: x, y: y, orientation: this.secondNode!.nodePosition.orientation },
+            quaternion:quaternion,
             actions: [],
             intermediate_node: true, // Marking it as intermediate
             Waiting_node: false,

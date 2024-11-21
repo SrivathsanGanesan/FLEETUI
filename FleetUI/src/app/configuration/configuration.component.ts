@@ -1467,11 +1467,11 @@ setPaginatedData1(){
   // isAGVGeometryFormVisible = false;
   // isLoadSpecificationFormVisible = false;
   // isLocalizationParametersFormVisible = false;
-
   formData =  {
     robotName: '',
     manufacturer: '',
     serialNumber: '',
+    attachmentType: 'NOT_SET',
     typeSpecification: {
       seriesName: '',
       seriesDescription: '',
@@ -1511,6 +1511,7 @@ setPaginatedData1(){
       robotName: '',
       manufacturer: '',
       serialNumber: '',
+      attachmentType: 'NOT_SET',
       typeSpecification: {
         seriesName: '',
         seriesDescription: '',
@@ -1704,13 +1705,16 @@ setPaginatedData1(){
     let amrId = 0;
     if (this.robotData.length)
       amrId = this.robotData[this.robotData.length - 1].amrId + 1;
+    const  dateInSecs = Math.round(Date.now() / 1000)
+    let uuid=(parseInt(dateInSecs.toString().slice(-8)));
+
     const roboDetails = {
       projectName: project.projectName,
       mapId: currMap.id,
       mapName: currMap.mapName,
       roboName: this.formData.robotName,
       amrId: amrId,
-      uuid: uuid(),
+      uuid: uuid,
       // isSimMode : false,
       ipAdd: this.currentRoboDet.ip,
       macAdd: this.currentRoboDet.mac,

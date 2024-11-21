@@ -1374,8 +1374,8 @@ async onInitMapImg() {
 
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
-        let imgState ="robotA";
-        // console.log("hey",state);          
+        let imgState ="robotB";
+        console.log("hey",state);          
         if(state==="INITSTATE"){
           imgState="init";
         }
