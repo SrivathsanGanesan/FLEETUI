@@ -1327,7 +1327,8 @@ export class EnvmapComponent implements AfterViewInit {
       edges: this.edges,
       zones: this.zones,
       stations: this.assets,
-      roboPos: this.robos
+      roboPos: this.robos,
+      isFleetup: this.projectService.getIsFleetUp()
     };
 
     fetch(
@@ -1482,7 +1483,7 @@ export class EnvmapComponent implements AfterViewInit {
       nodes: this.nodes,
       stations: this.assets,
       roboPos: this.robos,
-      roboInitialise : roboInit
+      isFleetup: this.projectService.getIsFleetUp()
     };
 
     this.form?.append('mapImg', this.selectedImage);
@@ -1581,7 +1582,6 @@ export class EnvmapComponent implements AfterViewInit {
       });
 
     this.form = null;
-    console.log("hey");
     
   }
   confirmDistance(): void {
