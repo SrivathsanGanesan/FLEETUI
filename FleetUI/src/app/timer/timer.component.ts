@@ -25,7 +25,7 @@ export class TimerComponent {
 
   ngOnInit() {
     this.initializeTimer();
-    this.initializeFiveMinuteTimer();   
+    // this.initializeFiveMinuteTimer();   
     this.subscription = this.projectService.isFleetUp$.subscribe(status => {
       // this.fleetStatus = status;
       console.log('Fleet status changed:', status);

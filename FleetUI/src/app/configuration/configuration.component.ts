@@ -20,6 +20,7 @@ import { MessageService } from 'primeng/api';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { FormBuilder } from '@angular/forms';
 import { v4 as uuid } from 'uuid';
+import { SessionService } from '../services/session.service';
 
 interface Poll {
   ip: string;
@@ -83,6 +84,7 @@ export class ConfigurationComponent implements AfterViewInit {
   currEditRobo: any | null = null;
 
   currEditMap: boolean = false;
+  onMapEdit:boolean=false;
   currEditMapDet: any | null = null;
   agvKinematicsOptions: any[] = [
     { name: 'DIFF', value: 'DIFF' },
@@ -121,7 +123,7 @@ simRobos: any;
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
     private messageService: MessageService,
-
+    private sessionService :SessionService
   ) {
     this.filteredEnvData = [...this.EnvData];
     // this.filteredRobotData = [...this.robotData];
@@ -201,6 +203,10 @@ simRobos: any;
           });
           this.projectService.setIsMapSet(true);
         }
+      }
+      if(this.sessionService.isMapInEdit()){
+        this.onMapEdit = true;
+        this.showImageUploadPopup = true;
       }
       // })
     } catch (error) {
@@ -1262,8 +1268,6 @@ setPaginatedData1(){
   }
   editItem(item: any) {
     if(this.currEditMap){
-      console.log("hey");
-      
       this.currEditMap = true;
     }
     fetch(
