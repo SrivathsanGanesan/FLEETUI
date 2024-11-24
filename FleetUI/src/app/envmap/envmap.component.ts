@@ -1411,9 +1411,6 @@ export class EnvmapComponent implements AfterViewInit {
     return q;
   };
   saveOpt() {
-    this.sessionService.deleteImage();
-    this.sessionService.deleteMapEdit();
-    this.sessionService.delMapDetails();
     if (!this.nodes || this.nodes.length === 0) {
       this.messageService.add({
         severity: 'error',
@@ -1764,19 +1761,19 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
       }
-      if (this.resolutionInput && this.resolutionInput.nativeElement) {
-        const resolutionInputValue = this.resolutionInput.nativeElement.value;
-  
-        if (!this.ratio) {
-          this.ratio = Number(resolutionInputValue);
-          if (!this.ratio || isNaN(this.ratio)) {
-            this.validationError = 'Please provide a valid resolution or click Locate.';
-            return;
-          }
+        if (this.resolutionInput && this.resolutionInput.nativeElement) {
+      const resolutionInputValue = this.resolutionInput.nativeElement.value;
+
+      if (!this.ratio) {
+        this.ratio = Number(resolutionInputValue);
+        if (!this.ratio || isNaN(this.ratio)) {
+          this.validationError = 'Please provide a valid resolution or click Locate.';
+          return;
         }
-      } else {
-        console.error('Resolution input element not found via ViewChild.');
       }
+    } else {
+      console.error('Resolution input element not found via ViewChild.');
+    }
 
     if (this.mapName && this.siteName && this.imageSrc ) {
       this.fileName = null;
