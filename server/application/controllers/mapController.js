@@ -148,12 +148,13 @@ const getFleetNodes = (nodes) => {
     let locationType = 0;
     if (node.intermediate_node) locationType = 3;
     else if (node.Waiting_node) locationType = 2;
+    else if (node.charge_node) locationType = 1;
 
     let dockPos = getPosition(node, dockAction);
     let undockPos = getPosition(node, undockAction);
     let x = 0;
     let y = 0;
-    let z = node.nodePosition.orientation; // angle of rotaion in that certain axis..
+    let z = node.nodePosition.orientation; // angle of rotation in that certain axis..
     return {
       name: node.nodeId,
       locationDescription: node.nodeDescription,

@@ -818,10 +818,11 @@ export class EnvmapComponent implements AfterViewInit {
     this.nodes = this.nodes.map(node => {
       if(this.selectedNode?.nodeId === node.nodeId) {
         node.actions = this.actions;
-        node.quaternion = quaternion;
+        node.quaternion = quaternion;        
       }
       return node;
     })
+    console.log("hey out");
     this.storeNodestoLocal();
     // this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
@@ -1761,19 +1762,19 @@ export class EnvmapComponent implements AfterViewInit {
           }
         }
       }
-        if (this.resolutionInput && this.resolutionInput.nativeElement) {
-      const resolutionInputValue = this.resolutionInput.nativeElement.value;
-
-      if (!this.ratio) {
-        this.ratio = Number(resolutionInputValue);
-        if (!this.ratio || isNaN(this.ratio)) {
-          this.validationError = 'Please provide a valid resolution or click Locate.';
-          return;
+      if (this.resolutionInput && this.resolutionInput.nativeElement) {
+        const resolutionInputValue = this.resolutionInput.nativeElement.value;
+  
+        if (!this.ratio) {
+          this.ratio = Number(resolutionInputValue);
+          if (!this.ratio || isNaN(this.ratio)) {
+            this.validationError = 'Please provide a valid resolution or click Locate.';
+            return;
+          }
         }
+      } else {
+        console.error('Resolution input element not found via ViewChild.');
       }
-    } else {
-      console.error('Resolution input element not found via ViewChild.');
-    }
 
     if (this.mapName && this.siteName && this.imageSrc ) {
       this.fileName = null;
@@ -2351,11 +2352,13 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     return nodeOccupied || assetOccupied || roboOccupied;
   }
   storeNodestoLocal(){
+    if(!this.sessionService.isMapInEdit())return; 
     let mapDetails = this.sessionService.getMapDetails();
     mapDetails.nodes=this.nodes;
     this.sessionService.storeMapDetails(mapDetails);
   }
   storeEdgestoLocal(){
+    if(!this.sessionService.isMapInEdit())return; 
     let mapDetails = this.sessionService.getMapDetails();
     mapDetails.edges=this.edges;
     this.sessionService.storeMapDetails(mapDetails);
