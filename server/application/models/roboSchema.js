@@ -13,7 +13,7 @@ const roboSchema = new Schema(
   {
     roboName: { type: String, required: true, unique: true },
     amrId: { type: Number, default: 0 }, //..
-    uuid: { type: String, default: "" }, //..
+    uuid: { type: Number, default: 0 }, //..
     // isSimMode: { type: Boolean, default: false }, // yet to take after simulation.. mind on it
     type: { type: String, default: "AGV" },
     ipAdd: { type: String, default: "" },

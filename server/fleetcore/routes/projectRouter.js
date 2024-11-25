@@ -5,6 +5,7 @@ const {
 const {
   getProject,
   getProjectList,
+  setFleetRecords
 } = require("../controllers/projectController/getProjectController");
 const {
   validateToken,
@@ -12,6 +13,7 @@ const {
 
 const projectRouter = express.Router();
 projectRouter.post("/project", validateToken, createProject);
+projectRouter.post("/track-fleet-status",setFleetRecords);
 projectRouter.get("/projects/project-list", validateToken, getProjectList);
 projectRouter.get("/:projectId", validateToken, getProject);
 

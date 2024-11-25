@@ -548,6 +548,7 @@
               *ngIf="showImageUploadPopup"
               [EnvData]="this.EnvData"
               [currEditMap]="this.currEditMap"
+              [onMapEdit]="this.onMapEdit"
               [currEditMapDet]="this.currEditMapDet"
               (save)="onPopupSave()"
               (closePopup)="closeImageUploadPopup()"
@@ -622,7 +623,23 @@
             name="serialNumber"
             required
           />
+
         </div>
+        <div style="margin-top: 1rem; margin-right: 1rem; margin-left: 1rem;margin-bottom: 1rem;">
+          <label for="attachmentType" style="margin-right: 1rem; margin-left: 1rem">Attachment Type:</label>
+          <select
+            id="attachmentType"
+            [(ngModel)]="formData.attachmentType"
+            name="attachmentType"
+            required
+            style="padding: 0.6rem;"
+          >
+            <option value="NOT_SET">NOT_SET</option>
+            <option value="LIFTER">LIFTER</option>
+            <option value="SINGLECONVEYOR">SINGLECONVEYOR</option>
+            <option value="TWINCONVEYOR">TWINCONVEYOR</option>
+          </select>
+      </div>
         <div class="flex">
           <div class="robBTN-inp">
             <button

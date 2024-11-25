@@ -1,4 +1,4 @@
-import { Component, ViewChild,Input } from '@angular/core';
+import { Component, ViewChild,Input,ChangeDetectorRef } from '@angular/core';
 import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
@@ -26,7 +26,8 @@ export type ChartOptions = {
 })
 export class Chart1Component {
   @ViewChild("chart") chart!: ChartComponent;
-  @Input() robos: any[] = [];
+  @Input() isFleet!:boolean;
+  robos: any[] = [];
 
   public chartOptions: Partial<ChartOptions>;
   public activeRobots: number = 0; // Example active robots count
@@ -35,6 +36,7 @@ export class Chart1Component {
   mapData:any|null=null;
   constructor(
     private projectService: ProjectService,
+    private cdRef: ChangeDetectorRef
   ) {
     const activeToTotal = `${this.activeRobots} / ${this.totalRobots}`;
     const percentage = (this.activeRobots / this.totalRobots) * 100;
@@ -124,7 +126,7 @@ export class Chart1Component {
     await this.getMapDetails();
     this.totalRobots = this.simMode.length;
     this.activeRobots = await this.getLiveRoboInfo();
-    console.log(this.activeRobots,this.totalRobots);
+    // console.log(this.activeRobots,this.totalRobots);
     const percentage = (this.activeRobots / this.totalRobots) * 100;
 
     // Ensure the required objects exist before assignment
@@ -141,6 +143,7 @@ export class Chart1Component {
         ...this.chartOptions.plotOptions.radialBar.dataLabels.value,
         formatter: () => this.getTotalRobos(), // Ensure 'this' is correctly bound
       };
+      
     }
   }
   
@@ -157,7 +160,7 @@ export class Chart1Component {
 
     this.robos = mapDet.roboPos;
     this.simMode= mapDet.simMode;
- 
+    this.totalRobots = this.simMode.length;
     // yet to check..
     // if(!this.isInLive)
     // this.simMode = mapData.simMode.map((robo: any) => {
@@ -184,4 +187,51 @@ export class Chart1Component {
     return data.robos.count;
   }
 
+ ngOnChanges() {
+    
+    if(this.isFleet){         
+      this.totalRobots = this.robos.length;
+      
+      const percentage = (this.activeRobots / this.totalRobots) * 100;
+
+      // Ensure the required objects exist before assignment
+      if (
+        this.chartOptions &&
+        this.chartOptions.plotOptions &&
+        this.chartOptions.series&&
+        this.chartOptions.plotOptions.radialBar &&
+        this.chartOptions.plotOptions.radialBar.dataLabels
+      ) 
+      {
+        this.chartOptions.series=[percentage]
+        this.chartOptions.plotOptions.radialBar.dataLabels.value = {
+          ...this.chartOptions.plotOptions.radialBar.dataLabels.value,
+          formatter: () => this.getTotalRobos(), // Ensure 'this' is correctly bound
+        };
+      }
+    }
+    else{
+            
+      this.totalRobots = this.simMode.length;
+      
+      const percentage = (this.activeRobots / this.totalRobots) * 100;
+
+      // Ensure the required objects exist before assignment
+      if (
+        this.chartOptions &&
+        this.chartOptions.plotOptions &&
+        this.chartOptions.series&&
+        this.chartOptions.plotOptions.radialBar &&
+        this.chartOptions.plotOptions.radialBar.dataLabels
+      ) 
+      {
+        this.chartOptions.series=[percentage]
+        this.chartOptions.plotOptions.radialBar.dataLabels.value = {
+          ...this.chartOptions.plotOptions.radialBar.dataLabels.value,
+          formatter: () => this.getTotalRobos(), // Ensure 'this' is correctly bound
+        };
+      }
+      }
+      
+  }
 }

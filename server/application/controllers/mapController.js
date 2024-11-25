@@ -60,7 +60,7 @@ const saveNodeGraph = async (mapData) => {
       robot_model: robo.roboDet.roboName,
       UUID: robo.roboDet.uuid,
       robot_id: robo.roboDet.amrid,
-      attachment: "",
+      attachment: robo.roboDet.attachmentType,
     };
   });
   let fleetNodes = getFleetNodes(nodes);
@@ -68,16 +68,7 @@ const saveNodeGraph = async (mapData) => {
     nodes: fleetNodes,
     edges: fleetEdges,
   };
-
-  // let robDetails = {
-  //   ip_address: "192.168.1.2",
-  //   amr_id: 2,
-  //   robot_model: "R_AMR",
-  //   UUID: "1234501",
-  //   robot_id: "AMR_100",
-  //   attachment: "Conveyor",
-  // };
-
+  
   const filePath = path.resolve(
     __dirname,
     "../../proj_assets/nodeGraph/nodeGraph.txt"
@@ -85,8 +76,7 @@ const saveNodeGraph = async (mapData) => {
 
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
   // console.log(fleetRobos);
-  
-  // return true;
+  if(mapData.isFleetup === false) return true;
 
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",
@@ -158,12 +148,13 @@ const getFleetNodes = (nodes) => {
     let locationType = 0;
     if (node.intermediate_node) locationType = 3;
     else if (node.Waiting_node) locationType = 2;
+    else if (node.charge_node) locationType = 1;
 
     let dockPos = getPosition(node, dockAction);
     let undockPos = getPosition(node, undockAction);
     let x = 0;
     let y = 0;
-    let z = node.nodePosition.orientation; // angle of rotaion in that certain axis..
+    let z = node.nodePosition.orientation; // angle of rotation in that certain axis..
     return {
       name: node.nodeId,
       locationDescription: node.nodeDescription,
@@ -356,7 +347,8 @@ const mapUpdate = async (req, res) => {
     for (let key of Object.keys(mapData)) {
       if (mapData[key] === null) delete mapData[key];
     }
-
+    
+    delete mapData["isFleetup"];
     const doc = await Map.findOneAndUpdate({ mapName: queMapName }, mapData, {
       new: true,
     });

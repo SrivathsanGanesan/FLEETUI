@@ -1,4 +1,3 @@
-
 <div id="container">
 
   <!-- Sidebar -->
@@ -84,18 +83,11 @@
       </div>
     </div>
     
-    
-      
-
-
   <!-- fleet and simulation -->
   <button class="indication-button" [ngClass]="buttonClass" (click)="toggleMode()">
     <img [src]="iconUrl" class="icon" alt="Icon">
     <span>{{ buttonLabel }}</span>
   </button>
-  
-  
-  
     <!-- ON Button -->
      
     <div class="ONBtn" (click)="startStopOpt()">
@@ -194,8 +186,9 @@
           <div class="Chart3" [ngClass]="{ blurred: ONBtn }">
             <p class="chart-title">Robots</p> <!-- Top-left title -->
             <app-chart1 
-            [robos]="this.robos"
-            [ONBtn]="ONBtn">
+            [isFleet]="this.isFleet"
+            [ONBtn]="ONBtn"
+            >
           </app-chart1>
             <span class="chart-label">No of Robots</span>
           </div>
