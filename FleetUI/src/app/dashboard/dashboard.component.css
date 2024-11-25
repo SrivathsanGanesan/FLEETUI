@@ -13,6 +13,10 @@
 app-sidenavbar{
   z-index: 12;
 }
+.state-container:hover {
+  background-color: white; /* Change background color to white */
+  transition: background-color 0.3s ease; /* Smooth transition effect */
+}
 
 .mainContent {
   flex-grow: 1;  

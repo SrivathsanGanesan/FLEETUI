@@ -2363,6 +2363,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     mapDetails.edges=this.edges;
     this.sessionService.storeMapDetails(mapDetails);
   }
+  
   plotSingleNode(x: number, y: number): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
