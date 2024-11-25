@@ -50,10 +50,12 @@ const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
       body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2 }),
     }
   );
+  // console.log(await response.json(),"data from fleet server")
   return await response.json();
 };
 
 const throughput = async (req, res, next) => {
+
   const mapId = req.params.mapId;
   const { timeSpan, timeStamp1, timeStamp2 } = req.body;
   try {
@@ -69,9 +71,14 @@ const throughput = async (req, res, next) => {
       "get_throughput_stats"
     );
 
+      console.log(timeSpan,'time span')
+      console.log(timeStamp1,'timestamp 1')
+      console.log(timeStamp2,'timestamp 2')
+
+
     if (timeSpan === "week")
       return res.status(200).json({
-        msg: "data sent",
+        msg: "data sent week",
         throughput: Array.from({ length: 7 }, () => {
           return {
             rate: Math.floor(Math.random() * 100),
