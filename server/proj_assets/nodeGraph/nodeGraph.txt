@@ -2,19 +2,19 @@
   "nodes": [
     {
       "name": "1",
-      "locationDescription": "adcsv",
+      "locationDescription": "",
       "type": 0,
       "preDockPose": {
         "position": {
-          "x": 12.365,
-          "y": 19.899,
-          "z": 135
+          "x": 0,
+          "y": 0,
+          "z": 0
         },
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
+          "z": 0,
+          "w": 1
         }
       },
       "dockPose": {
@@ -26,8 +26,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
+          "z": 0,
+          "w": 1
         },
         "dockParams": {
           "xOffset": 0,
@@ -44,20 +44,20 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
+          "z": 0,
+          "w": 1
         }
       }
     },
     {
       "name": "2",
-      "locationDescription": "advda",
-      "type": 2,
+      "locationDescription": "",
+      "type": 0,
       "preDockPose": {
         "position": {
-          "x": 23.606,
-          "y": 20.445,
-          "z": 135
+          "x": 0,
+          "y": 0,
+          "z": 0
         },
         "orientation": {
           "x": 0,
@@ -102,7 +102,7 @@
   "edges": [
     {
       "from": "1",
-      "isUniDirectional": false,
+      "isUniDirectional": true,
       "name": "1|2",
       "to": "2"
     }

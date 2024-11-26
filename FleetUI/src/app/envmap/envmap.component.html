@@ -255,7 +255,7 @@
                 aria-describedby="Y-Coordinate" 
                 />
           </div>  
-          <div>
+          <!-- <div>
             <label for="Orientation">Angle</label>
             <input 
                 pInputText
@@ -264,7 +264,7 @@
                 #orientationInput
                 aria-describedby="Orientation" 
                 />
-          </div>   
+          </div>    -->
             
         </div> 
         <div class="quaternion-inputs">
@@ -274,6 +274,7 @@
               <label for="quaternionX">X:</label>
               <input
                 pInputText
+                type="number"
                 id="quaternionX"
                 [(ngModel)]="currentQuaternion!.x"
                 placeholder="Enter X"
@@ -284,6 +285,7 @@
               <label for="quaternionY">Y:</label>
               <input
                 pInputText
+                type="number"
                 id="quaternionY"
                 [(ngModel)]="currentQuaternion!.y"
                 placeholder="Enter Y"
@@ -294,6 +296,7 @@
               <label for="quaternionZ">Z:</label>
               <input
                 pInputText
+                type="number"
                 id="quaternionZ"
                 [(ngModel)]="currentQuaternion!.z"
                 placeholder="Enter Z"
@@ -304,6 +307,7 @@
               <label for="quaternionW">W:</label>
               <input
                 pInputText
+                type="number"
                 id="quaternionW"
                 [(ngModel)]="currentQuaternion!.w"
                 placeholder="Enter W"
@@ -370,7 +374,8 @@
                       <option [value]="'Dock'">Dock Node</option>
                     </select>
                   </div>
-                  <div class="node1" *ngIf="selectedNodeType === 'Dock'">
+                  <div>
+                  <div class="node1-sub" *ngIf="selectedNodeType === 'Dock'">
                     <label for="predockPoseDropdown" class="label">Predock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedPredockPose">
                       <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
@@ -378,7 +383,15 @@
                       </option>
                     </select>
                   </div>
-                  
+                  <div class="node1-sub" *ngIf="selectedNodeType === 'Dock'">
+                    <label for="predockPoseDropdown" class="label">Undock Pose:</label>
+                    <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedUndockPose">
+                      <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
+                        {{ node.nodeId }}
+                      </option>
+                    </select>
+                  </div>
+                  </div>
                 </div>
               </div>
               
@@ -388,7 +401,8 @@
           </div>
           <div class="Node-btn">
             <button class="Delnode-btn" (click)="deleteSelectedNode()">Delete Node</button>
-            <button class="savenode-btn" (click)="saveNodeDetails(xInput.value, yInput.value, orientationInput.value)">Save</button>
+            <!-- <button class="savenode-btn" (click)="saveNodeDetails(xInput.value, yInput.value, orientationInput.value)">Save</button> use for later--> 
+            <button class="savenode-btn" (click)="saveNodeDetails(xInput.value, yInput.value, yInput.value)">Save</button>
             <button class="closenode-btn" (click)="closeNodeDetailsPopup()">Close</button>
           </div>
         </div>

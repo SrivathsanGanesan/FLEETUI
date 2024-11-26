@@ -35,6 +35,8 @@ interface Node {
   Waiting_node: boolean;
   charge_node: boolean;
   dock_node: boolean;
+  pre_dockNodeId:number|null;
+  Un_dockNodeId:number|null;
 }
 interface Edge {
   edgeId: string; //Unique edge identification
@@ -309,7 +311,7 @@ export class EnvmapComponent implements AfterViewInit {
   isOpen: boolean = false;
   descriptionWarning: boolean = false;
   currMulNode : Node[] = [];
-  currentQuaternion:{ x: number; y: number;z:number;w:number } | null = null;
+  currentQuaternion:{ x: number; y: number; z:number; w:number } | null = null;
   newOrientationAngle: number = 0;
   inputOrientationAngle: number = 0; // The value entered by the user
   // selectedNodeId: string; // Variable to store the selected node
@@ -407,6 +409,7 @@ export class EnvmapComponent implements AfterViewInit {
         parseInt(this.zones[this.zones.length - 1]?.id) + 1
           ? parseInt(this.zones[this.zones.length - 1].id) + 1
           : this.zoneCounter;
+      this.sessionService.onMapEdit();   //discuss later 
       this.open();
     }
     else if(this.sessionService.isMapInEdit()){
@@ -863,13 +866,15 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.validationError) {
       return;
     }
-    let quaternion=this.ToQuaternion_(0,0,parseInt(orientation));
-
+    // let quaternion=this.ToQuaternion_(0,0,parseInt(orientation));
+    let quaternion=this.currentQuaternion;
 
     this.nodes = this.nodes.map(node => {
       if(this.selectedNode?.nodeId === node.nodeId) {
         node.actions = this.actions;
-        node.quaternion = quaternion;        
+        node.quaternion = quaternion ? quaternion : {x:0,y:0,z:0,w:1};      
+        if(this.selectedPredockPose)  node.pre_dockNodeId =parseInt(this.selectedPredockPose);
+        if(this.selectedUndockPose)  node.Un_dockNodeId =parseInt(this.selectedUndockPose);
       }
       return node;
     })
@@ -934,6 +939,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.resetParameters(); // Reset the parameters
     this.actions = []; // Clear the actions array
     this.selectedAction = ''; // Reset the selected action
+    this.selectedNodeType = '';
     this.isNodeDetailsPopupVisible = false; // Hide the popup if needed
   }
   openActionForm(action: any): void {
@@ -1628,6 +1634,7 @@ export class EnvmapComponent implements AfterViewInit {
 
           this.cdRef.detectChanges();
           this.refreshTable.emit(); // Emit the event to refresh the table
+          this.sessionService.grossDelete();
           // window.location.reload();
         }
 
@@ -1856,6 +1863,10 @@ export class EnvmapComponent implements AfterViewInit {
               mapName: this.mapName,
               mpp: this.ratio,
               origin: this.origin,
+              nodes:this.nodes,
+              edges:this.edges,
+              assets:this.assets,
+              zones:this.zones
             })
             this.sessionService.onMapEdit();
           }
@@ -1975,6 +1986,11 @@ export class EnvmapComponent implements AfterViewInit {
     for (const node of this.nodes) {      
       if (this.isNodeClicked(node, x, y) ) {
         this.selectedNode=node;
+        if(node.intermediate_node) this.selectedNodeType = "Intermediate";
+        else if(node.Waiting_node) this.selectedNodeType = "Waiting";
+        else if(node.charge_node) this.selectedNodeType = "Charge";
+        else if(node.dock_node) this.selectedNodeType = "Dock";
+        // this.selectedPredockPose=node.pre_dockNodeId.toString();
         this.currentQuaternion=node.quaternion;
         this.nodeDetails.description = this.selectedNode.nodeDescription;
         this.nodeDetails.intermediate_node = this.selectedNode.intermediate_node;
@@ -2451,6 +2467,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         Waiting_node: false,
         charge_node: false,
         dock_node:false,
+        pre_dockNodeId:null,
+        Un_dockNodeId:null,
         actions: [],
       },
       color,
@@ -2481,7 +2499,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       intermediate_node: false,
       Waiting_node: false,
       charge_node: false,
-      dock_node: false
+      dock_node: false,
+      pre_dockNodeId:null,
+      Un_dockNodeId:null
     };
 
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
@@ -2549,7 +2569,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             intermediate_node: false,
             Waiting_node: false,
             charge_node: false,
-            dock_node: false
+            dock_node: false,
+            pre_dockNodeId:null,
+            Un_dockNodeId:null
         },
         color,
         false
@@ -2568,7 +2590,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             intermediate_node: false,
             Waiting_node: false,
             charge_node: false,
-            dock_node: false
+            dock_node: false,
+            pre_dockNodeId:null,
+            Un_dockNodeId:null
         };
         this.firstNode = firstnode;
         this.nodes.push(firstnode);
@@ -2586,7 +2610,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             intermediate_node: false,
             Waiting_node: false,
             charge_node: false,
-            dock_node: false
+            dock_node: false,
+            pre_dockNodeId:null,
+            Un_dockNodeId:null
         };
         this.secondNode = secondnode;
         this.currMulNode.push(this.firstNode);
@@ -2705,7 +2731,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             intermediate_node: true, // Marking it as intermediate
             Waiting_node: false,
             charge_node: false,
-            dock_node: false
+            dock_node: false,
+            pre_dockNodeId:null,
+            Un_dockNodeId:null
           };
 
           this.nodes.push(node);
@@ -3447,7 +3475,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
   connectedNodes: any[] = []; // Array to store connected nodes
   selectedPredockPose: string | null = null; // Holds the selected Predock Pose
-
+  selectedUndockPose: string | null = null;
 
   originalRoboPosition: { x: number; y: number } | null = null;
   originalAssetPosition: { x : number; y: number } | null = null;
