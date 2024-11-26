@@ -161,11 +161,13 @@ const getFleetNodes = (nodes) => {
       type: locationType,
       preDockPose: {
         position: preDockPos,
-        orientation: ToQuaternion_(x, y, z),
+        // orientation: ToQuaternion_(x, y, z),
+        orientation: node.quaternion
       },
       dockPose: {
         position: dockPos,
-        orientation: ToQuaternion_(x, y, z),
+        orientation: node.quaternion,
+        // orientation: ToQuaternion_(x, y, z),
         dockParams: {
           xOffset: dockPos.length ? dockPos[0].parameters.goalOffsetX : 0,
           yOffset: dockPos.length ? dockPos[0].parameters.goalOffsetY : 0,
@@ -177,7 +179,8 @@ const getFleetNodes = (nodes) => {
       },
       unDockPose: {
         position: undockPos,
-        orientation: ToQuaternion_(x, y, z),
+        orientation: node.quaternion
+        // orientation: ToQuaternion_(x, y, z),
       },
     };
   });

@@ -2,13 +2,13 @@
   "nodes": [
     {
       "name": "1",
-      "locationDescription": "",
+      "locationDescription": "adcsv",
       "type": 0,
       "preDockPose": {
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
+          "x": 12.365,
+          "y": 19.899,
+          "z": 135
         },
         "orientation": {
           "x": 0,
@@ -51,62 +51,13 @@
     },
     {
       "name": "2",
-      "locationDescription": "",
-      "type": 0,
+      "locationDescription": "advda",
+      "type": 2,
       "preDockPose": {
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
-        }
-      },
-      "dockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
-        },
-        "dockParams": {
-          "xOffset": 0,
-          "yOffset": 0,
-          "dockingType": 1
-        }
-      },
-      "unDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
-        }
-      }
-    },
-    {
-      "name": "3",
-      "locationDescription": "Intermediate Node",
-      "type": 3,
-      "preDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
+          "x": 23.606,
+          "y": 20.445,
+          "z": 135
         },
         "orientation": {
           "x": 0,
@@ -151,14 +102,8 @@
   "edges": [
     {
       "from": "1",
-      "isUniDirectional": true,
-      "name": "1|3",
-      "to": "3"
-    },
-    {
-      "from": "3",
-      "isUniDirectional": true,
-      "name": "3|2",
+      "isUniDirectional": false,
+      "name": "1|2",
       "to": "2"
     }
   ]
