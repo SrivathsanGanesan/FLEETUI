@@ -38,7 +38,6 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   );
   return proj;
 };
-
 // send node graph..
 const saveNodeGraph = async (mapData) => {
   const { nodes, edges, roboPos } = mapData;
@@ -132,6 +131,34 @@ const getPosition = (node, poseArr) => {
     : { x: 0, y: 0, z: 0 };
 };
 
+const getPre_dockPos = (nodeId,nodes) => {
+  nodeId=nodeId.toString();
+  let node = nodes.find((node) => {
+    return node.nodeId === nodeId
+  })
+  
+  return node
+    ? {
+        x: node.nodePosition.x,
+        y: node.nodePosition.y,
+        z: node.nodePosition.orientation,
+      }
+    : { x: 0, y: 0, z: 0 };
+};
+const getUn_dockPos = (nodeId,nodes) => {
+  nodeId=nodeId.toString();
+  let node = nodes.find((node) => {
+    return node.nodeId === nodeId
+  })
+  
+  return node
+    ? {
+        x: node.nodePosition.x,
+        y: node.nodePosition.y,
+        z: node.nodePosition.orientation,
+      }
+    : { x: 0, y: 0, z: 0 };
+};
 const getFleetNodes = (nodes) => {
   return nodes.map((node) => {
     let moveAction = node.actions.filter(
@@ -143,7 +170,8 @@ const getFleetNodes = (nodes) => {
     let undockAction = node.actions.filter(
       (action) => action.actionType === "Undock"
     );
-    let preDockPos = getPosition(node, moveAction);
+    let preDockPos = (node.pre_dockNodeId !== null) ? getPre_dockPos(node.pre_dockNodeId,nodes) : getPosition(node, moveAction)
+    let UnDockPos = (node.Un_dockNodeId !== null) ? getUn_dockPos(node.Un_dockNodeId,nodes) : getPosition(node, moveAction)
 
     let locationType = 0;
     if (node.intermediate_node) locationType = 3;
@@ -151,7 +179,7 @@ const getFleetNodes = (nodes) => {
     else if (node.charge_node) locationType = 1;
 
     let dockPos = getPosition(node, dockAction);
-    let undockPos = getPosition(node, undockAction);
+    // let undockPos = getPosition(node, undockAction);
     let x = 0;
     let y = 0;
     let z = node.nodePosition.orientation; // angle of rotation in that certain axis..
@@ -161,11 +189,13 @@ const getFleetNodes = (nodes) => {
       type: locationType,
       preDockPose: {
         position: preDockPos,
-        orientation: ToQuaternion_(x, y, z),
+        // orientation: ToQuaternion_(x, y, z),
+        orientation: node.quaternion
       },
       dockPose: {
         position: dockPos,
-        orientation: ToQuaternion_(x, y, z),
+        orientation: node.quaternion,
+        // orientation: ToQuaternion_(x, y, z),
         dockParams: {
           xOffset: dockPos.length ? dockPos[0].parameters.goalOffsetX : 0,
           yOffset: dockPos.length ? dockPos[0].parameters.goalOffsetY : 0,
@@ -176,8 +206,9 @@ const getFleetNodes = (nodes) => {
         },
       },
       unDockPose: {
-        position: undockPos,
-        orientation: ToQuaternion_(x, y, z),
+        position: UnDockPos,
+        orientation: node.quaternion
+        // orientation: ToQuaternion_(x, y, z),
       },
     };
   });
