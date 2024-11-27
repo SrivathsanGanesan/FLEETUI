@@ -29,7 +29,7 @@ export class TimerComponent {
     // this.initializeFiveMinuteTimer();   
     this.subscription = this.projectService.isFleetUp$.subscribe(async (status) => {
       console.log('Fleet status changed:', status);
-      await this.recordFleetStatus(status); // Optional: Trigger a method on change
+      await this.recordFleetStatus(status); // change the method by storing it in cookie, later for sure!!!
     }); 
   }
 
@@ -44,6 +44,7 @@ export class TimerComponent {
       {
         method: 'POST',
         credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           projectId: projectId._id,
           isFleetOn: status,
@@ -51,13 +52,13 @@ export class TimerComponent {
         })
       }
     );
-    if (!response.ok) {
-      console.log('Err with status code of ', response.status);
-    }
+    // if (!response.ok) {
+    //   console.log('Err with status code of ', response.status);
+    // }
     let data = await response.json();
-    if (!data.error) return;
-    console.log(data);
+    if (data.error) return;
     const { fleetRecords } = data;
+    // console.log(fleetRecords);
   }
 
   initializeTimer() {

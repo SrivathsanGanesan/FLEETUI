@@ -8,7 +8,7 @@ const dashbdGrossCountRouter = require("./application/routes/dashboardGrossCount
 const dashboardUptimeRouter = require("./application/routes/dashboardUptimeRouter");
 app.use("/dashboard/maps", dashboardMapRouter);
 app.use("/dashboard", dashbdGrossCountRouter);
-app.use("/dashboard/uptime", dashboardUptimeRouter);
+// app.use("/dashboard/uptime", dashboardUptimeRouter); // no need anymore!!!
 
 // login...
 const authRouter = require("./common/routes/authRouter");

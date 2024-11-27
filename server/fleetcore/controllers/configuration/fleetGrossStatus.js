@@ -1,6 +1,21 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
+const { projectModel } = require("../../models/projectSchema");
 
-// for operations..
+const getUptime = (fleetRecords) => {
+  let records = fleetRecords.map((fleetStatus) => {
+    let endTime = fleetStatus.endTime
+      ? Math.floor(new Date(fleetStatus.endTime).getTime() / 1000)
+      : Math.floor(Date.now() / 1000);
+    return {
+      startTime: Math.floor(new Date(fleetStatus.startTime).getTime() / 1000),
+      endTime: endTime,
+    };
+  });
+  return records;
+};
+
+// <<-----------------[ Middleware ]----------------->>
+
 const systemThroughput = async (req, res) => {
   const { mapId } = req.body;
   try {
@@ -23,18 +38,37 @@ const systemThroughput = async (req, res) => {
 };
 
 const systemUptime = async (req, res) => {
-  const { mapId } = req.body;
+  const { projectId } = req.body;
   try {
-    const isMapExist = await Map.findOne({ _id: mapId });
-    if (!isMapExist)
-      return res.status(422).json({ map: null, msg: "map not found" });
+    const project = await projectModel.findOne({ _id: projectId });
+    if (!project)
+      return res.status(422).json({ project: null, msg: "project not found" });
+    
+    let { fleetRecords, createdAt } = project;
+    let uptimeRecord = getUptime(fleetRecords);
+    createdAt = Math.floor(new Date(createdAt).getTime() / 1000);
+    let currentTime = Math.floor(Date.now() / 1000);
+
+    // reducer will only return one value
+    // const totalActiveTime = uptimeRecord.reduce((total, log) => {
+    //   return total + (log.endTime - log.startTime);
+    // }, 0); // 0 => initial value!
+    let totalActiveTime = 0;
+    for (let i = 0; i < uptimeRecord.length; i++){
+      totalActiveTime += Math.abs(
+        uptimeRecord[i].endTime - uptimeRecord[i].startTime
+      );
+    }
+    
+    const uptimePercentage = (totalActiveTime / (currentTime - createdAt)) * 100;
+    
     return res.status(200).json({
-      systemUptime: Math.floor(Math.random() * 4) + 95,
+      systemUptime: uptimePercentage.toFixed(2),
       msg: "data sent",
-      map: true,
+      project: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error.message);
+    console.error("Error in taskLogs:", error);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res

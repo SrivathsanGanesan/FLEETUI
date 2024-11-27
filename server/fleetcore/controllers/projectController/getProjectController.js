@@ -4,14 +4,16 @@ const {
 const { projectModel } = require("../../models/projectSchema");
 
 const enterFleetRecords = (fleetRecords, isFleetOn, timeStamp) => {
-  if (isFleetOn) fleetRecords.push({ start: timeStamp, end: null });
+  if (isFleetOn && !fleetRecords.length )
+    fleetRecords.push({ startTime: timeStamp, endTime: null });
+  else if (isFleetOn && fleetRecords[fleetRecords.length - 1].endTime !== null)
+    fleetRecords.push({ startTime: timeStamp, endTime: null });
   else {
-      const lastRecord = fleetRecords[fleetRecords.length - 1];
-      if (lastRecord && lastRecord.end === null) {
-          lastRecord.end = timeStamp;
-      }
+    const lastRecord = fleetRecords[fleetRecords.length - 1];
+    if (lastRecord && lastRecord.endTime === null) {
+      lastRecord.endTime = timeStamp;
+    }
   }
-
   return fleetRecords;
 };
 
@@ -65,16 +67,17 @@ const getProjectList = async (req, res, next) => {
 };
 
 const setFleetRecords = async (req, res) => {
+  const { projectId, isFleetOn, timeStamp} = req.body; 
   try {
-    const { projectId, isFleetOn, timeStamp} = req.body;
     const project = await projectModel.findById(projectId);
-    console.log({ projectId, isFleetOn, timeStamp });
 
     if (!project)
       return res .status(400) .json({ exists: false, msg: "project name not found!" });
     
     let { fleetRecords } = project;
     let newFleetRec = enterFleetRecords(fleetRecords, isFleetOn, timeStamp);
+    // console.log(isFleetOn, timeStamp, newFleetRec);
+    
 
     const updatedFleetRecords = await projectModel.findOneAndUpdate(
       {
@@ -84,7 +87,12 @@ const setFleetRecords = async (req, res) => {
       { new: true }
     );
 
-    return res.status(200).json({ msg: "Record have been sent", fleetRecords: updatedFleetRecords });
+    return res
+      .status(200)
+      .json({
+        msg: "Record have been sent",
+        fleetRecords: updatedFleetRecords.fleetRecords,
+      });
   } catch (error) {
     console.log("err occ : ", error);
     return res.status(500).json({ error: error, msg: "request not attained!" });
