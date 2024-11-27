@@ -219,7 +219,7 @@ export class AreaChartComponent implements OnInit {
         }),
       }
     );
-    console.log(await response.json(),"json resposne")
+    // console.log(await response.json(),"json resposne")
     return await response.json();
   }
 

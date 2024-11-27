@@ -4,6 +4,8 @@ import {
   ChangeDetectorRef,
   ViewChild,
   ElementRef,
+  EventEmitter,
+  Output
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
@@ -40,6 +42,7 @@ enum ZoneType {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit {
+  @Output() isfleetEmi=new EventEmitter();
   @ViewChild('robotB', { static: false }) robotBPath!: ElementRef;
   @ViewChild('robotTooltip', { static: true }) robotTooltip!: ElementRef;
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
@@ -163,6 +166,7 @@ export class DashboardComponent implements AfterViewInit {
     console.log(this.isFleet,"fleet condition")
     console.log("toggle is clicked")
     this.isFleet = !this.isFleet;
+    this.isfleetEmi.emit(this.isFleet)
     this.redrawCanvas();
   }
 
@@ -1268,7 +1272,7 @@ async onInitMapImg() {
             );
 
             // Store each robot's position and orientation using the robot ID
-            robotsData[robot.id] = { posX, posY, yaw: yaw, state:robot.robot_state }; // here we go...
+            robotsData[robot.id] = { posX, posY, yaw: yaw, state:robot.robot_state,speed:robot.speed }; // here we go...
 
             console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
 
@@ -1335,6 +1339,8 @@ async onInitMapImg() {
   }
   
   async plotAllRobots(robotsData: any) {
+    console.log(robotsData.speed);
+    
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
 
@@ -1377,7 +1383,6 @@ async onInitMapImg() {
         //   ctx.drawImage(tempCanvas, centerX, centerY);
         // }
       }
-
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
         let imgState ="robotB";

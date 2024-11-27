@@ -145,6 +145,7 @@ const getPre_dockPos = (nodeId,nodes) => {
       }
     : { x: 0, y: 0, z: 0 };
 };
+
 const getUn_dockPos = (nodeId,nodes) => {
   nodeId=nodeId.toString();
   let node = nodes.find((node) => {
@@ -159,6 +160,7 @@ const getUn_dockPos = (nodeId,nodes) => {
       }
     : { x: 0, y: 0, z: 0 };
 };
+
 const getFleetNodes = (nodes) => {
   return nodes.map((node) => {
     let moveAction = node.actions.filter(

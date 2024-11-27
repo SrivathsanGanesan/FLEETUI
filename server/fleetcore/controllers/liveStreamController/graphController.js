@@ -71,10 +71,6 @@ const throughput = async (req, res, next) => {
       "get_throughput_stats"
     );
 
-      console.log(timeSpan,'time span')
-      console.log(timeStamp1,'timestamp 1')
-      console.log(timeStamp2,'timestamp 2')
-
 
     if (timeSpan === "week")
       return res.status(200).json({
