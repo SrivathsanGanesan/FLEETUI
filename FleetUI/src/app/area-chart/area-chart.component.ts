@@ -206,6 +206,8 @@ export class AreaChartComponent implements OnInit {
   ) {
     // alter to date..
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    // console.log(timeStamp1,"start date")
+    // console.log(timeStamp2,'end date')
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/${endpoint}/${this.selectedMap.id}`,
       {
@@ -520,6 +522,12 @@ export class AreaChartComponent implements OnInit {
   }
 
   monthStartOfDay(){
+// Get the current date
+let currentDate = new Date();
 
+// Subtract 1 month from the current date
+let lastMonthDate = new Date();
+lastMonthDate.setMonth(currentDate.getMonth() - 1);
+return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
   }
 }
