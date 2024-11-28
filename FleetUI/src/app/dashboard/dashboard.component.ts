@@ -16,6 +16,8 @@ import { ThroughputComponent } from '../throughput/throughput.component';
 import { MessageService } from 'primeng/api';
 import { state } from '@angular/animations';
 import { log } from 'console';
+import { IsFleetService } from '../services/shared/is-fleet.service';
+
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -42,7 +44,6 @@ enum ZoneType {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit {
-  @Output() isfleetEmi=new EventEmitter();
   @ViewChild('robotB', { static: false }) robotBPath!: ElementRef;
   @ViewChild('robotTooltip', { static: true }) robotTooltip!: ElementRef;
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
@@ -150,6 +151,7 @@ export class DashboardComponent implements AfterViewInit {
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef,
     private messageService:MessageService,
+    private isFleetService: IsFleetService
   ) {
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
@@ -166,7 +168,7 @@ export class DashboardComponent implements AfterViewInit {
     console.log(this.isFleet,"fleet condition")
     console.log("toggle is clicked")
     this.isFleet = !this.isFleet;
-    this.isfleetEmi.emit(this.isFleet)
+    this.isFleetService.setIsFleet(this.isFleet);
     this.redrawCanvas();
   }
 
