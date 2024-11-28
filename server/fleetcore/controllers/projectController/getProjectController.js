@@ -3,17 +3,34 @@ const {
 } = require("../../../common/models/authRegisterSchema");
 const { projectModel } = require("../../models/projectSchema");
 
+const enterFleetRecords = (fleetRecords, isFleetOn, timeStamp) => {
+  if (isFleetOn && !fleetRecords.length )
+    fleetRecords.push({ startTime: timeStamp, endTime: null });
+  else if (isFleetOn && fleetRecords[fleetRecords.length - 1].endTime !== null)
+    fleetRecords.push({ startTime: timeStamp, endTime: null });
+  else {
+    const lastRecord = fleetRecords[fleetRecords.length - 1];
+    if (lastRecord && lastRecord.endTime === null) {
+      lastRecord.endTime = timeStamp;
+    }
+  }
+  return fleetRecords;
+};
+
+// <<-----------------[ Middleware ]----------------->>
+
 const getProject = async (req, res, next) => {
   const projectId = req.params.projectId;
   try {
     const project = await projectModel.findById(projectId);
+
     if (!project)
-      return res
-        .status(400)
-        .json({ exists: false, msg: "project name not found!" });
+      return res .status(400) .json({ exists: false, msg: "project name not found!" });
+    
     return res
       .status(200)
       .json({ exists: true, project: project, msg: "project returned!" });
+    
   } catch (error) {
     console.log("err occ : ", error);
     return res.status(500).json({ error: error, msg: "request not attained!" });
@@ -48,21 +65,38 @@ const getProjectList = async (req, res, next) => {
     return res.status(500).json({ error: error, msg: "request not attained!" });
   }
 };
-const setFleetRecords= async(req, res)=>{
+
+const setFleetRecords = async (req, res) => {
+  const { projectId, isFleetOn, timeStamp} = req.body; 
   try {
-    const {projectId,isFleetOn,timeStamp} = req.body;
     const project = await projectModel.findById(projectId);
+
     if (!project)
-      return res
-        .status(400)
-        .json({ exists: false, msg: "project name not found!" }); 
+      return res .status(400) .json({ exists: false, msg: "project name not found!" });
     
-    let {fleetRecords}=project;
-    return res.status(200).json({ fleetRecords:fleetRecords });
+    let { fleetRecords } = project;
+    let newFleetRec = enterFleetRecords(fleetRecords, isFleetOn, timeStamp);
+    // console.log(isFleetOn, timeStamp, newFleetRec);
     
+
+    const updatedFleetRecords = await projectModel.findOneAndUpdate(
+      {
+        _id: projectId,
+      },
+      { fleetRecords: newFleetRec }, // { $set: { fleetRecords: fleetRecords } } instead..
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .json({
+        msg: "Record have been sent",
+        fleetRecords: updatedFleetRecords.fleetRecords,
+      });
   } catch (error) {
     console.log("err occ : ", error);
     return res.status(500).json({ error: error, msg: "request not attained!" });
   }
 }
+
 module.exports = { getProject, getProjectList, setFleetRecords};

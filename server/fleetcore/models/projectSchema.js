@@ -33,8 +33,11 @@ const projectSchema = new Schema(
       type: fleetParamsSchema,
       default: {},
     },
-
-    fleetRecords: { type: [{ type: { startTime: Date, endTime: Date } }], default: [] },
+    fleetRecords: {
+      type: [{ type: { startTime: Date, endTime: Date } }],
+      _id: false, // remove it in later..
+      default: [],
+    },
   },
   { timestamps: true, versionKey: false }
 );
