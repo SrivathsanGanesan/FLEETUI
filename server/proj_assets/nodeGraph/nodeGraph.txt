@@ -101,10 +101,10 @@
   ],
   "edges": [
     {
-      "from": "1",
+      "from": "2",
       "isUniDirectional": true,
-      "name": "1|2",
-      "to": "2"
+      "name": "2|1",
+      "to": "1"
     }
   ]
 }

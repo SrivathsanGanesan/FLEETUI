@@ -121,6 +121,9 @@ export class DashboardComponent implements AfterViewInit {
   updatedrobo: any;
   isFleetUp: boolean = false;
   liveRobos : any | null = null;
+  // canvas loader
+  canvasloader:boolean=true;
+  canvasNoImage:boolean=false
   //  new robot
   isMoving: boolean = true;
   isDocking: boolean = false;
@@ -194,6 +197,11 @@ export class DashboardComponent implements AfterViewInit {
     });
 
     this.selectedMap = this.projectService.getMapData();
+    if(this.selectedMap == null){
+      this.canvasloader=false;
+      this.canvasNoImage=true
+    }
+   
     console.log(this.selectedMap,"selected map")
     if (!this.selectedMap) {
       await this.onInitMapImg();
@@ -573,9 +581,12 @@ export class DashboardComponent implements AfterViewInit {
     ctx.save();
     ctx.translate(centerX, centerY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
-
+    
     // Draw the image
     ctx.drawImage(img, 0, 0);
+    this.canvasNoImage=false
+    this.canvasloader=false;
+    console.log('canvas loader called')
 
     if(!this.isFleet){
     this.simMode.forEach((robo) => {
@@ -1160,6 +1171,7 @@ async onInitMapImg() {
     }
 
     let data = await response.json();
+    console.log(data,'oninit map')
     let projectSites = data.project.sites;
 
     mapArr = projectSites.flatMap((sites: any) => {

@@ -70,42 +70,43 @@ const throughput = async (req, res, next) => {
       timeStamp2,
       "get_throughput_stats"
     );
-
+      console.log(fleetThroughput,'fleet throughput')
       console.log(timeSpan,'time span')
       console.log(timeStamp1,'timestamp 1')
       console.log(timeStamp2,'timestamp 2')
 
-
-    if (timeSpan === "week")
-      return res.status(200).json({
-        msg: "data sent week",
-        throughput: Array.from({ length: 7 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
-      });
-    else if (timeSpan === "month")
-      return res.status(200).json({
-        msg: "data sent",
-        throughput: Array.from({ length: 30 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
-      });
+// start
+    // if (timeSpan === "week")
+    //   return res.status(200).json({
+    //     msg: "data sent week",
+    //     throughput: Array.from({ length: 7 }, () => {
+    //       return {
+    //         rate: Math.floor(Math.random() * 100),
+    //         time: new Date().toLocaleString("en-IN", {
+    //           month: "short",
+    //           day: "numeric",
+    //           hour: "numeric",
+    //           minute: "numeric",
+    //         }),
+    //       };
+    //     }),
+    //   });
+    // else if (timeSpan === "month")
+    //   return res.status(200).json({
+    //     msg: "data sent",
+    //     throughput: Array.from({ length: 30 }, () => {
+    //       return {
+    //         rate: Math.floor(Math.random() * 100),
+    //         time: new Date().toLocaleString("en-IN", {
+    //           month: "short",
+    //           day: "numeric",
+    //           hour: "numeric",
+    //           minute: "numeric",
+    //         }),
+    //       };
+    //     }),
+    //   });
+// end
     /* throughPutArr.push({
       rate: Math.floor(Math.random() * 100),
       time: new Date().toLocaleString("en-IN", {
