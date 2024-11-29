@@ -70,10 +70,10 @@ const throughput = async (req, res, next) => {
       timeStamp2,
       "get_throughput_stats"
     );
-      console.log(fleetThroughput,'fleet throughput')
-      console.log(timeSpan,'time span')
-      console.log(timeStamp1,'timestamp 1')
-      console.log(timeStamp2,'timestamp 2')
+      console.log('fleet throughput')
+      // console.log(timeSpan,'time span')
+      // console.log(timeStamp1,'timestamp 1')
+      // console.log(timeStamp2,'timestamp 2')
 
 // start
     // if (timeSpan === "week")
@@ -126,6 +126,109 @@ const throughput = async (req, res, next) => {
     res.status(500).json({ opt: "failed", error: err });
   }
 };
+
+const throughPut_starvation =async (req, res, next) => {
+         console.log('starvation called')
+  const mapId = req.params.mapId;
+  const { timeSpan, timeStamp1, timeStamp2 } = req.body;
+  try {
+    //..
+    const isMapExist = await Map.exists({ _id: mapId });
+    if (!isMapExist)
+      return res.status(500).json({ msg: "map not found!", map: null });
+
+    const mapData = await Map.findOne({ _id: mapId });
+    let fleetThroughput = await getFleetSeriesData(
+      timeStamp1,
+      timeStamp2,
+      "get_throughput_starvationTime"
+    );
+      console.log(fleetThroughput,'fleet starvation')
+      console.log(timeSpan,'time span')
+      console.log(timeStamp1,'timestamp 1')
+      console.log(timeStamp2,'timestamp 2')
+
+    return res.status(200).json({
+      msg: "data sent",
+      // throughput: throughPutArr,
+      throughput: fleetThroughput,
+    });
+  } catch (err) {
+    console.log("error occured : ", err);
+    if (err.name === "CastError")
+      return res.status(400).json({ error: err, msg: "not valid map Id" });
+    res.status(500).json({ opt: "failed", error: err });
+  }
+};
+
+const throughPut_pickAccuracy =async (req, res, next) => {
+  console.log('pick acc called')
+const mapId = req.params.mapId;
+const { timeSpan, timeStamp1, timeStamp2 } = req.body;
+try {
+//..
+const isMapExist = await Map.exists({ _id: mapId });
+if (!isMapExist)
+return res.status(500).json({ msg: "map not found!", map: null });
+
+const mapData = await Map.findOne({ _id: mapId });
+let fleetThroughput = await getFleetSeriesData(
+timeStamp1,
+timeStamp2,
+"get_pickAccuracy"
+);
+console.log(fleetThroughput,'fleet pick acc')
+console.log(timeSpan,'time span')
+console.log(timeStamp1,'timestamp 1')
+console.log(timeStamp2,'timestamp 2')
+
+return res.status(200).json({
+msg: "data sent",
+// throughput: throughPutArr,
+throughput: fleetThroughput,
+});
+} catch (err) {
+console.log("error occured : ", err);
+if (err.name === "CastError")
+return res.status(400).json({ error: err, msg: "not valid map Id" });
+res.status(500).json({ opt: "failed", error: err });
+}
+};
+
+const throughPut_errorRate =async (req, res, next) => {
+  console.log('err acc called')
+const mapId = req.params.mapId;
+const { timeSpan, timeStamp1, timeStamp2 } = req.body;
+try {
+//..
+const isMapExist = await Map.exists({ _id: mapId });
+if (!isMapExist)
+return res.status(500).json({ msg: "map not found!", map: null });
+
+const mapData = await Map.findOne({ _id: mapId });
+let fleetThroughput = await getFleetSeriesData(
+timeStamp1,
+timeStamp2,
+"get_throughput_errorRate"
+);
+console.log(fleetThroughput,'fleet err acc')
+console.log(timeSpan,'time span')
+console.log(timeStamp1,'timestamp 1')
+console.log(timeStamp2,'timestamp 2')
+
+return res.status(200).json({
+msg: "data sent",
+// throughput: throughPutArr,
+throughput: fleetThroughput,
+});
+} catch (err) {
+console.log("error occured : ", err);
+if (err.name === "CastError")
+return res.status(400).json({ error: err, msg: "not valid map Id" });
+res.status(500).json({ opt: "failed", error: err });
+}
+};
+
 
 const getFleetStarvation = (req, res, next) => {
   fetch(`http://fleetIp:8080/-----`, {
@@ -860,4 +963,7 @@ module.exports = {
   getNetworkStat,
   getIdleTime,
   getRoboErr,
+  throughPut_starvation,
+  throughPut_pickAccuracy,
+  throughPut_errorRate
 };
