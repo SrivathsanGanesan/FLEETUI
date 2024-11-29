@@ -6,6 +6,7 @@ const getUptime = (fleetRecords) => {
     let endTime = fleetStatus.endTime
       ? Math.floor(new Date(fleetStatus.endTime).getTime() / 1000)
       : Math.floor(Date.now() / 1000);
+    if (!Object.keys(fleetStatus).length) return null;
     return {
       startTime: Math.floor(new Date(fleetStatus.startTime).getTime() / 1000),
       endTime: endTime,
@@ -55,10 +56,10 @@ const systemUptime = async (req, res) => {
     // }, 0); // 0 => initial value!
     let totalActiveTime = 0;
     for (let i = 0; i < uptimeRecord.length; i++){
-      totalActiveTime += Math.abs(
-        uptimeRecord[i].endTime - uptimeRecord[i].startTime
-      );
+      if (uptimeRecord !== null)
+        totalActiveTime += Math.abs(uptimeRecord[i].endTime - uptimeRecord[i].startTime);
     }
+    // console.log(totalActiveTime, uptimeRecord);
     
     const uptimePercentage = (totalActiveTime / (currentTime - createdAt)) * 100;
     
@@ -209,7 +210,7 @@ module.exports = {
   systemUptime,
   successRate,
   systemResponsiveness,
-  getAverageSpeed,
+  getAverageSpeed, // no need anymore..
   getTotalDistance,
   getRoboUtilization,
   getNetworkConnection,
