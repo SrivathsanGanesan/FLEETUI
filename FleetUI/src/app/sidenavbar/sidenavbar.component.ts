@@ -20,6 +20,8 @@ import { environment } from '../../environments/environment.development';
 export class SidenavbarComponent implements OnInit {
   username: string | null = null;
   userrole: string | null = null;
+  robotActivities: any[] = []
+  selectedMap: any | null = null;
 
   showNotificationPopup = false; // Property to track popup visibility
   showProfilePopup = false;
@@ -35,6 +37,7 @@ export class SidenavbarComponent implements OnInit {
   
 
   private autoCloseTimeout: any;
+  
 
   // Notifications with 10 sample data
   notifications = [
@@ -43,64 +46,79 @@ export class SidenavbarComponent implements OnInit {
       message: 'Battery critically low on Robot A',
       type: 'red',
     },
-    {
-      label: 'Warning',
-      message: 'Connection issue detected on Robot B Connection issue detected on Robot B Connection issue detected on Robot B',
-      type: 'yellow',
-    },
-    {
-      label: 'Normal',
-      message: 'Robot C is operating normally',
-      type: 'green',
-    },
-    { label: 'Critical', message: 'High CPU usage on Robot D', type: 'red' },
-    { label: 'Warning', message: 'Robot E needs maintenance', type: 'yellow' },
-    {
-      label: 'Normal',
-      message: 'Robot F battery at optimal level',
-      type: 'green',
-    },
-    {
-      label: 'Critical',
-      message: 'Temperature sensor malfunction on Robot G',
-      type: 'red',
-    },
-    {
-      label: 'Warning',
-      message: 'Unstable WiFi signal on Robot H',
-      type: 'yellow',
-    },
-    {
-      label: 'Normal',
-      message: 'Robot I is performing tasks efficiently',
-      type: 'green',
-    },
-    {
-      label: 'Critical',
-      message: 'Robot J requires immediate attention',
-      type: 'red',
-    },
-    {
-      label: 'Critical',
-      message: 'Temperature sensor malfunction on Robot G',
-      type: 'red',
-    },
-    {
-      label: 'Warning',
-      message: 'Unstable WiFi signal on Robot H',
-      type: 'yellow',
-    },
-    {
-      label: 'Normal',
-      message: 'Robot I is performing tasks efficiently',
-      type: 'green',
-    },
-    {
-      label: 'Critical',
-      message: 'Robot J requires immediate attention',
-      type: 'red',
-    },
+    // {
+    //   label: 'Warning',
+    //   message: 'Connection issue detected on Robot B Connection issue detected on Robot B Connection issue detected on Robot B',
+    //   type: 'yellow',
+    // },
+    // {
+    //   label: 'Normal',
+    //   message: 'Robot C is operating normally',
+    //   type: 'green',
+    // },
+    // { label: 'Critical', message: 'High CPU usage on Robot D', type: 'red' },
+    // { label: 'Warning', message: 'Robot E needs maintenance', type: 'yellow' },
+    // {
+    //   label: 'Normal',
+    //   message: 'Robot F battery at optimal level',
+    //   type: 'green',
+    // },
+    // {
+    //   label: 'Critical',
+    //   message: 'Temperature sensor malfunction on Robot G',
+    //   type: 'red',
+    // },
+    // {
+    //   label: 'Warning',
+    //   message: 'Unstable WiFi signal on Robot H',
+    //   type: 'yellow',
+    // },
+    // {
+    //   label: 'Normal',
+    //   message: 'Robot I is performing tasks efficiently',
+    //   type: 'green',
+    // },
+    // {
+    //   label: 'Critical',
+    //   message: 'Robot J requires immediate attention',
+    //   type: 'red',
+    // },
+    // {
+    //   label: 'Critical',
+    //   message: 'Temperature sensor malfunction on Robot G',
+    //   type: 'red',
+    // },
+    // {
+    //   label: 'Warning',
+    //   message: 'Unstable WiFi signal on Robot H',
+    //   type: 'yellow',
+    // },
+    // {
+    //   label: 'Normal',
+    //   message: 'Robot I is performing tasks efficiently',
+    //   type: 'green',
+    // },
+    // {
+    //   label: 'Critical',
+    //   message: 'Robot J requires immediate attention',
+    //   type: 'red',
+    // },
   ];
+
+  filteredRobotActivities = this.robotActivities;
+  filteredNotifications = this.notifications;
+
+
+
+  // notifications = [];
+
+  
+
+
+
+
+
+
 
   
 
@@ -113,12 +131,14 @@ export class SidenavbarComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    
     const user = this.authService.getUser();
     if (user) {
       this.username = user.name;
       this.userrole = user.role;
     }
     this.cookieValue = JSON.parse(this.cookieService.get('_user'));
+    this.selectedMap = this.projectService.getMapData();
     await this.getFleetStatus();
     setInterval(async () => {
       await this.getFleetStatus();
@@ -135,6 +155,47 @@ export class SidenavbarComponent implements OnInit {
     let prevFleetStatus = this.projectService.getIsFleetUp();
     if(prevFleetStatus === this.isFleetUp) return;
     this.projectService.setIsFleetUp(this.isFleetUp)
+  }
+
+  async getRoboStatus(): Promise<void> {
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.selectedMap.id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+
+    );
+
+    const data = await response.json();
+    // console.log(data);
+    if (!data.map || data.error) return ;
+    this.robotActivities = data.robos;
+
+    if (!('robots' in this.robotActivities)) {
+      // this.robots = this.initialRoboInfos;
+      return;
+    }
+    let { robots }: any = this.robotActivities;
+    if (!robots.length) {
+      // this.robots = this.initialRoboInfos;
+      return;
+    }
+     
+    robots.forEach((robot: any) => {
+      if (robot.robot_errors) {
+        for (const [errorType, errors] of Object.entries(robot.robot_errors)) {
+          (errors as any []).forEach((error) => {
+            this.notifications.push({
+              label: error.name,
+              message: `${error.description} on ${robot.view_name}`,
+              type: 'red', // Assuming critical errors are marked as 'red'
+            });
+          });
+        }
+      }
+    });
+    // this.filteredRobotActivities = this.robotActivities;
   }
 
   // Clear all notifications when the button is clicked
