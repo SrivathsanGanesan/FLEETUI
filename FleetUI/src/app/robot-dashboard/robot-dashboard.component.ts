@@ -95,6 +95,8 @@ export class RobotDashboardComponent implements OnInit {
     // { message: 'Obstacle Detected - AMR-003', timestamp: '2024-08-16' },
   ];
 
+  
+
   filteredRobotActivities = this.robotActivities;
   filteredNotifications = this.notifications;
 
@@ -193,6 +195,7 @@ export class RobotDashboardComponent implements OnInit {
         task: robo.current_task,
         status: robo.isConnected ? 'ACTIVE' : 'INACTIVE',
         state: robo.robot_state,
+        criticality: robo.Criticality,
       };
     });
     this.statisticsData.robotUtilization = `${(tot_robotUtilization / robots.length) * 100} %`;
