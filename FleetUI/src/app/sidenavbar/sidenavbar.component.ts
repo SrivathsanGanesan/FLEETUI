@@ -33,14 +33,15 @@ export class SidenavbarComponent implements OnInit {
   isFleetUp: boolean = false; // Set to true or false based on your logic
 
   private autoCloseTimeout: any;
+  notifications: any[] = [];
 
-  notifications = [
-    {
-      label: 'Critical',
-      message: 'Battery critically low on Robot A',
-      type: 'red',
-    },
-  ];
+  // this.notifications = [
+    // {
+    //   label: 'Critical',
+    //   message: 'Battery critically low on Robot A',
+    //   type: 'red',
+    // },
+  // ];
 
   filteredRobotActivities = this.robotActivities;
   filteredNotifications = this.notifications;
@@ -90,7 +91,7 @@ export class SidenavbarComponent implements OnInit {
     );
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (!data.map || data.error) return ;
     this.robotActivities = data.robos;
 
@@ -106,8 +107,12 @@ export class SidenavbarComponent implements OnInit {
           for (let error of (errors as any[])) {
             let err_type = ["EMERGENCY STOP", "LIDAR_ERROR", "MANUAL MODE", "DOCKING", "NO ERROR"];
             let criticality = "Normal";
-            if(err_type.includes(err_type[0]) || err_type.includes(err_type[3])) criticality = "Critical"; // "EMERGENCY STOP", "DOCKING"
-            else if(err_type.includes(err_type[1]) || err_type.includes(err_type[2])) criticality = "Warning"; // "LIDAR_ERROR", "MANUAL MODE"
+
+            if(err_type.includes(err_type[0]) || err_type.includes(err_type[3])) 
+              criticality = "Critical"; // "EMERGENCY STOP", "DOCKING"
+            else if(err_type.includes(err_type[1]) || err_type.includes(err_type[2])) 
+              criticality = "Warning"; // "LIDAR_ERROR", "MANUAL MODE"
+            
             this.notifications.push({
               label: `${criticality}`,
               message: `${error.description} on robot ID ${robot.id}`,
@@ -118,7 +123,7 @@ export class SidenavbarComponent implements OnInit {
       }
     });
 
-    console.log(this.notifications);
+    // console.log(this.notifications);
     
   }
 
