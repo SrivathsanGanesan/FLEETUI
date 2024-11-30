@@ -75,12 +75,18 @@ export class RobotDashboardComponent implements OnInit {
     let averageSpeed = this.getAvgSpeed();
     this.statisticsData.averageSpeed = averageSpeed;
 
-    let totDistance = await this.fetchFleetStatus('total-distance', {
-      mapId: mapId,
-    });
-    // console.log(totDistance,"totDistance")
-    if (totDistance.totalDistance)
-      this.statisticsData.totalDistance = totDistance.totalDistance;
+    // let totDistance = this.getTotDistance()
+    // this.statisticsData.totalDistance = totDistance;
+
+    // let tot_Network = this.getNetworkConn()
+    // this.statisticsData.networkConnection = tot_Network;
+
+    // let totDistance = await this.fetchFleetStatus('total-distance', {
+    //   mapId: mapId,
+    // });
+    // // console.log(totDistance,"totDistance")
+    // if (totDistance.totalDistance)
+    //   this.statisticsData.totalDistance = totDistance.totalDistance;
 
     // let roboUtil = await this.fetchFleetStatus('robo-util', {
     //   mapId: mapId,
@@ -88,12 +94,12 @@ export class RobotDashboardComponent implements OnInit {
     // if (roboUtil.roboUtilization)
     //   this.statisticsData.robotUtilization = roboUtil.roboUtilization;
 
-    let networkConn = await this.fetchFleetStatus('network-conn', {
-      mapId: mapId,
-    });
-    // console.log(networkConn,"networkConn")
-    if (networkConn.networkConnection)
-      this.statisticsData.networkConnection = networkConn.networkConnection;
+    // let networkConn = await this.fetchFleetStatus('network-conn', {
+    //   mapId: mapId,
+    // });
+    // // console.log(networkConn,"networkConn")
+    // if (networkConn.networkConnection)
+    //   this.statisticsData.networkConnection = networkConn.networkConnection;
   }
 
   async getLiveRoboInfo(): Promise<any[]> {
@@ -167,10 +173,14 @@ export class RobotDashboardComponent implements OnInit {
     }
 
     let tot_robotUtilization = 0;
+    let tot_Dis = 0;
+    let tot_Network = 0;
     let roboNotIdle = ["MOVESTATE", "DOCKSTATE", "UNDOCKSTATE", "LOADSTATE", "UNLOADSTATE"]
 
     this.robotActivities = robots.map((robo: any) => {
       if (roboNotIdle.includes(robo.robot_state)) tot_robotUtilization += 1;
+      tot_Dis += robo.DISTANCE;
+      tot_Network += robo.NETWORK;
       return {
         roboId: robo.id,
         task: robo.current_task,
@@ -180,7 +190,10 @@ export class RobotDashboardComponent implements OnInit {
       };
     });
     this.statisticsData.robotUtilization = `${(tot_robotUtilization / robots.length) * 100} %`;
+    this.statisticsData.totalDistance = `${tot_Dis/robots.length} m`;
+    this.statisticsData.networkConnection = `${tot_Network/robots.length} dB`;
     this.filteredRobotActivities = this.robotActivities;
+
   }
 
   updateRoboActivities() {} // yet to use.. in case of dynamic update
@@ -236,6 +249,32 @@ export class RobotDashboardComponent implements OnInit {
 
     return `${tot_speed/robots.length} m/s`;
   }
+  // getTotDistance(): string{
+  //   if (!('robots' in this.robotActivities)) return `${0} m`;
+
+  //   let { robots }: any = this.robotActivities;
+  //   if (!robots.length) return `${0} m`;
+
+  //   let tot_Dis = 0;
+  //   for (let i = 0; i < robots.length; i++){
+  //     tot_Dis += robots[i].DISTANCE;
+  //   }
+
+  //   return `${tot_Dis/robots.length} m`;
+  // }
+  // getNetworkConn(): string{
+  //   if (!('robots' in this.robotActivities)) return `${0} dB`;
+
+  //   let { robots }: any = this.robotActivities;
+  //   if (!robots.length) return `${0} dB`;
+
+  //   let tot_Network = 0;
+  //   for (let i = 0; i < robots.length; i++){
+  //     tot_Network += robots[i].NETWORK;
+  //   }
+
+  //   return `${tot_Network/robots.length} dB`;
+  // }
 }
 
 
