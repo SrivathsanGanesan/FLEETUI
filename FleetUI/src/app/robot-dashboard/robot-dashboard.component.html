@@ -254,9 +254,10 @@
           <table class="notifications-table">
           <thead>
             <tr>
-              <th>Message</th>
-              <th>Task ID</th>
-              <th>Timestamp</th>
+              <th>Error/Warning</th>
+              <!-- <th>Error</th> -->
+              <th>Robot ID</th>
+              <th>Description</th>
             </tr>
           </thead>
 
@@ -272,9 +273,9 @@
             </tr>
 
             <tr *ngFor="let notification of filteredNotifications | slice:0:10">
-              <td>{{ notification.message }}</td>
-                <td>{{ notification.taskId }}</td>
-                <td>{{ notification.timestamp }}</td>
+              <td>{{ notification.errorName }}</td>
+                <td>{{ notification.roboId }}</td>
+                <td>{{ notification.desc }}</td>
             </tr>
           </tbody>
           </table>
