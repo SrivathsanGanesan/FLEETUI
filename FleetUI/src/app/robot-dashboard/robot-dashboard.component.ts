@@ -191,7 +191,7 @@ export class RobotDashboardComponent implements OnInit {
     });
     this.statisticsData.robotUtilization = `${(tot_robotUtilization / robots.length) * 100} %`;
     this.statisticsData.totalDistance = `${tot_Dis/robots.length} m`;
-    this.statisticsData.networkConnection = `${tot_Network/robots.length} dB`;
+    this.statisticsData.networkConnection = `${(tot_Network/robots.length)||"Loading..."} dB`;
     this.filteredRobotActivities = this.robotActivities;
 
   }
