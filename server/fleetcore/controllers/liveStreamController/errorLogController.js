@@ -11,7 +11,7 @@ for (let i = 1; i < 100; i++) {
     description: "Battery low",
     fix: ["Recharge the battery"],
     criticality: 2,
-    // icon: "fa-solid fa-circle-exclamation",
+    // icon: "fa-soli0d fa-circle-exclamation",
   });
 }
 
@@ -58,14 +58,14 @@ let errFleetLogs = {
   fleetStats: [],
 };
 
-for (let i = 1; i < 100; i++) {
-  errFleetLogs.fleetStats.push({
-    moduleName: "maintanence",
-    errCode: 4,
-    criticality: 4,
-    desc: "N/A",
-  });
-}
+// for (let i = 1; i < 100; i++) {
+//   errFleetLogs.fleetStats.push({
+//     moduleName: "maintanence",
+//     errCode: 4,
+//     criticality: 4,
+//     desc: "N/A",
+//   });
+// }
 
 //.. Task
 const getFleetTaskErrLogs = (req, res, next) => {
