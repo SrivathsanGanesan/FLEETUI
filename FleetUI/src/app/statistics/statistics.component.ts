@@ -276,7 +276,7 @@ export class StatisticsComponent {
       let errorTasks = tasksStatus[3];
       let cancelledTasks = tasksStatus[4];
       this.statisticsData.successRate = (
-        ((completedTasks -( errorTasks + cancelledTasks)) / tot_tasks) *
+        ((completedTasks ) / completedTasks +( errorTasks + cancelledTasks)) *
         100
       ).toFixed(2);
       return tasksStatus;
