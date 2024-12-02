@@ -11,7 +11,7 @@ for (let i = 1; i < 100; i++) {
     description: "Battery low",
     fix: ["Recharge the battery"],
     criticality: 2,
-    // icon: "fa-solid fa-circle-exclamation",
+    // icon: "fa-soli0d fa-circle-exclamation",
   });
 }
 
@@ -21,33 +21,33 @@ let errRoboLogs = {
       {
         name: "ERROR LIST",
         values: [
-          {
-            ROBOT_ID: "1",
-            ROBOT_NAME: "AMR_01",
-            ERROR_NAME: "Navigation Failure",
-            DESCRIPTION:
-              "The robot failed to navigate to the desired location.",
-            FIX: "Recalibrate sensors and retry.",
-            Duration: "5 minutes",
-            ROBOT_STATE: "Error",
-            TASKID: "123",
-            TASKSTATUS: "Pending",
-            SUBTASKSTATUS: "Not Started",
-            ROBOTPOSITION: "Warehouse Section A",
-          },
-          {
-            ROBOT_ID: "2",
-            ROBOT_NAME: "AMR_02",
-            ERROR_NAME: "Battery Low",
-            DESCRIPTION: "Battery level dropped below threshold.",
-            FIX: "Send robot to charging station.",
-            Duration: "15 minutes",
-            ROBOT_STATE: "Idle",
-            TASKID: "124",
-            TASKSTATUS: "Completed",
-            SUBTASKSTATUS: "Charging",
-            ROBOTPOSITION: "Docking Station 2",
-          },
+          // {
+          //   ROBOT_ID: "1",
+          //   ROBOT_NAME: "AMR_01",
+          //   ERROR_NAME: "Navigation Failure",
+          //   DESCRIPTION:
+          //     "The robot failed to navigate to the desired location.",
+          //   FIX: "Recalibrate sensors and retry.",
+          //   Duration: "5 minutes",
+          //   ROBOT_STATE: "Error",
+          //   TASKID: "123",
+          //   TASKSTATUS: "Pending",
+          //   SUBTASKSTATUS: "Not Started",
+          //   ROBOTPOSITION: "Warehouse Section A",
+          // },
+          // {
+          //   ROBOT_ID: "2",
+          //   ROBOT_NAME: "AMR_02",
+          //   ERROR_NAME: "Battery Low",
+          //   DESCRIPTION: "Battery level dropped below threshold.",
+          //   FIX: "Send robot to charging station.",
+          //   Duration: "15 minutes",
+          //   ROBOT_STATE: "Idle",
+          //   TASKID: "124",
+          //   TASKSTATUS: "Completed",
+          //   SUBTASKSTATUS: "Charging",
+          //   ROBOTPOSITION: "Docking Station 2",
+          // },
         ],
       },
     ],
@@ -58,14 +58,14 @@ let errFleetLogs = {
   fleetStats: [],
 };
 
-for (let i = 1; i < 100; i++) {
-  errFleetLogs.fleetStats.push({
-    moduleName: "maintanence",
-    errCode: 4,
-    criticality: 4,
-    desc: "N/A",
-  });
-}
+// for (let i = 1; i < 100; i++) {
+//   errFleetLogs.fleetStats.push({
+//     moduleName: "maintanence",
+//     errCode: 4,
+//     criticality: 4,
+//     desc: "N/A",
+//   });
+// }
 
 //.. Task
 const getFleetTaskErrLogs = (req, res, next) => {

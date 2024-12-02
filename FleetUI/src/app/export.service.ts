@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
 import * as jsPDF from 'jspdf';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Injectable({
@@ -29,5 +30,12 @@ export class ExportService {
       body: data.map(row => Object.values(row))
     });
     doc.save(`${filename}.pdf`);
+  }
+
+  private emergencyStopSubject = new BehaviorSubject<boolean>(false); // Default to "run"
+  emergencyStop$ = this.emergencyStopSubject.asObservable();
+
+  setEmergencyStop(value: boolean): void {
+    this.emergencyStopSubject.next(value);
   }
 }
