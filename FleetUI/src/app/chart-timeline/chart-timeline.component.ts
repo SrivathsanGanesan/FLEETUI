@@ -91,7 +91,8 @@ export class ChartTimelineComponent implements OnInit {
       { key: 'data2', label: 'Robot Utilization' },
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
-      { key: 'data5', label: 'Error' }
+      { key: 'data5', label: 'Idle Time' },
+      { key: 'data6', label: 'Error' }
     ],
     robot: [
       { key: 'data1', label: 'CPU Utilization' },
@@ -99,9 +100,11 @@ export class ChartTimelineComponent implements OnInit {
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
       { key: 'data5', label: 'Error' },
-      { key: 'data6', label: 'Battery' }
+      { key: 'data6', label: 'Idle Time' },
+      { key: 'data7', label: 'Battery' }
     ]
   };
+
 
   constructor(
     private projectService: ProjectService,
@@ -192,7 +195,7 @@ export class ChartTimelineComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.currentFilter = 'today';
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
       this.selectedMap = 'N/A';
@@ -312,6 +315,7 @@ export class ChartTimelineComponent implements OnInit {
   //   // }
   //   // });
   // }
+
   updateChart(dataKey: string, metricName: string): void {
     if (!this.selectedMap) {
       console.log('No map has been selected!');
@@ -340,15 +344,15 @@ export class ChartTimelineComponent implements OnInit {
   
   applyFilter(event: any): void {
     this.currentFilter = event.target.value.toLowerCase();
-  
+    // console.log(this.currentFilter)
     const metricToDataKey: { [key: string]: string } = {
       'CPU Utilization': 'data1',
       'Robot Utilization': 'data2',
-      'Battery': 'data3',
-      'Memory': 'data4',
-      'Network': 'data5',
-      'Idle Time': 'data6',
-      'Error': 'data7',
+      'Battery': 'data7',
+      'Memory': 'data3',
+      'Network': 'data4',
+      'Idle Time': 'data5',
+      'Error': 'data6',
     };
   
     const dataKey = metricToDataKey[this.selectedMetric];
@@ -377,6 +381,8 @@ export class ChartTimelineComponent implements OnInit {
   }
 
   async fetchChartData( endpoint: string, timeSpan: string, startTime: string, endTime: string ) {
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    console.log(timeSpan)
     // alter to date..
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/${endpoint}/${this.selectedMap.id}`,
@@ -385,13 +391,59 @@ export class ChartTimelineComponent implements OnInit {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          metrics: this.selectedType,
           timeSpan: timeSpan, // e.g. 'Daily' or 'Weekly'
-          startTime: startTime,
-          endTime: endTime,
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
         }),
       }
     );
+    // console.log(response);
     return await response.json();
+  }
+
+  getTimeStampsOfDay() {
+    let currentTime = Math.floor(new Date().getTime() / 1000);
+    let startTimeOfDay;
+    if(this.currentFilter == 'week'){
+       startTimeOfDay = this.weekStartOfDay()
+    }
+    else if(this.currentFilter == 'month'){
+      startTimeOfDay = this.monthStartOfDay()
+    }
+    else{
+      startTimeOfDay= this.getStartOfDay()
+    }
+    
+    return {
+      timeStamp1: startTimeOfDay,
+      timeStamp2: currentTime,
+    };
+  }
+
+  getStartOfDay() {
+    return Math.floor(new Date().setHours(0, 0, 0) / 1000);
+  }
+
+  weekStartOfDay(){
+
+    let currentDate = new Date();
+
+    // Subtract 7 days (last week) from the current date
+    let lastWeekDate = new Date();
+    lastWeekDate.setDate(currentDate.getDate() - 7);
+
+    return(Math.floor(new Date(lastWeekDate).setHours(0,0,0)/1000))
+  }
+
+  monthStartOfDay(){
+// Get the current date
+let currentDate = new Date();
+
+// Subtract 1 month from the current date
+let lastMonthDate = new Date();
+lastMonthDate.setMonth(currentDate.getMonth() - 1);
+return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
   }
 
   async updateCpuUtil() {

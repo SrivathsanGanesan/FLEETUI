@@ -176,7 +176,7 @@ export class DashboardComponent implements AfterViewInit {
     console.log("toggle is clicked")
     const newState = !this.isFleet;
     this.isFleetService.setIsFleet(newState);
-    this.modeChange.emit(this.buttonLabel);
+    // this.modeChange.emit(this.buttonLabel);
     this.redrawCanvas();
   }
 
