@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnInit,
   ViewChild,
@@ -20,6 +21,8 @@ import {
 } from 'ng-apexcharts';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Robot, RobotDetailPopupComponent } from '../robot-detail-popup/robot-detail-popup.component';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -44,8 +47,9 @@ export class ChartTimelineComponent implements OnInit {
   // @ViewChild('chart') chart: ChartComponent | undefined;
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
-
-  selectedMetric: string = 'CPU Utilization';
+  selectedType: string = 'Overall'; // Default selection for the dropdown
+  roboNames: string[] = [];
+  // selectedMetric: string = 'CPU Utilization';
   selectedMap: any | null = null;
   currentFilter: any | null = null;
 
@@ -78,13 +82,36 @@ export class ChartTimelineComponent implements OnInit {
   networkTimeInterval: any | null = null;
   idleTimeInterval: any | null = null;
   errTimeInterval: any | null = null;
+  selectedMetric: string = ''; // Initialize with an empty string or a default value
+
+
+  metrics = {
+    Overall: [
+      { key: 'data1', label: 'CPU Utilization' },
+      { key: 'data2', label: 'Robot Utilization' },
+      { key: 'data3', label: 'Memory' },
+      { key: 'data4', label: 'Network' },
+      { key: 'data5', label: 'Error' }
+    ],
+    robot: [
+      { key: 'data1', label: 'CPU Utilization' },
+      { key: 'data2', label: 'Robot Utilization' },
+      { key: 'data3', label: 'Memory' },
+      { key: 'data4', label: 'Network' },
+      { key: 'data5', label: 'Error' },
+      { key: 'data6', label: 'Battery' }
+    ]
+  };
 
   constructor(
     private projectService: ProjectService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
   ) {
     // this.chartOptions = this.getChartOptions(this.cpuUtilArr, 'CPU Utilization');
     // console.log(this.cpuUtilArr,"chart fn")
+    this.getLiveRoboInfo().then((names) => {
+      this.roboNames = names;
+    });
     this.chartOptions = {
       series: [
         {
@@ -165,64 +192,173 @@ export class ChartTimelineComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedMap = this.projectService.getMapData();
-    this.updateChart('data1', 'CPU Utilization');
-  }
 
-  updateChart(dataKey: string, metricName: string): void {
+    this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
-      console.log('no map has been selected!');
+      this.selectedMap = 'N/A';
       return;
     }
-    this.selectedMetric = metricName; // Update the displayed metric name
+        this.getLiveRoboInfo().then((names) => {
+      this.roboNames = names;
+    });
+    this.updateChart('data1', 'CPU Utilization');
+    this.getLiveRoboInfo();
+    console.log(this.getLiveRoboInfo)
+  }
 
-    switch (dataKey) {
-      case 'data1':
-        this.updateCpuUtil();
-        break;
-      case 'data2':
-        this.updateRoboUtil();
-        break;
-      case 'data3':
-        this.updateBattery();
-        break;
-      case 'data4':
-        this.updateMemory();
-        break;
-      case 'data5':
-        this.updateNetwork();
-        break;
-      case 'data6':
-        this.updateIdleTime();
-        break;
-      case 'data7':
-        this.updateErr();
-        break;
+  // Fetch Robo Names from API
+  async getLiveRoboInfo(): Promise<string[]> {
+    try {
+      const response = await fetch(
+        `http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${this.selectedMap.id}`,
+        {
+          method: 'GET',
+          credentials: 'include'
+        }
+      );
+      console.log(response);
+
+      const data = await response.json();
+      console.log(data)
+      if (!data.populatedRobos || data.msg !== 'data sent!') {
+        console.log(data)
+        console.error('Invalid API response');
+        return [];
+      }
+      return data.populatedRobos.map((robo: any) => robo.roboName || 'Unknown Robo');
+    } catch (error) {
+      console.error('Error fetching robot names:', error);
+      return [];
     }
   }
 
-  applyFilter(event: any) {
-    this.currentFilter = event.target.value.toLowerCase();
-
-    // this.intervals.forEach((interval) => {
-    //   if (this[interval]) {
-    if (this.selectedMetric === 'CPU Utilization')
-      this.updateChart('data1', this.selectedMetric);
-    else if (this.selectedMetric === 'Robot Utilization')
-      this.updateChart('data2', this.selectedMetric);
-    else if (this.selectedMetric === 'Battery')
-      this.updateChart('data3', this.selectedMetric);
-    else if (this.selectedMetric === 'Memory')
-      this.updateChart('data4', this.selectedMetric);
-    else if (this.selectedMetric === 'Network')
-      this.updateChart('data5', this.selectedMetric);
-    else if (this.selectedMetric === 'Idle Time')
-      this.updateChart('data6', this.selectedMetric);
-    else this.updateChart('data7', this.selectedMetric);
-    // return;
-    // }
-    // });
+    // Update the selected type
+    updateSelection(type: string): void {
+      this.selectedType = type;
+    }
+      // Get metrics based on the selected type
+  getMetrics(type: string): any[] {
+    return type === 'Overall' ? this.metrics.Overall : this.metrics.robot;
   }
+
+
+  // Method to update scope and metrics
+  // updateScope(scope: string): void {
+  //   this.selectedScope = scope;
+  //   // console.log(this.data)
+  //   // Update metric options based on scope
+  //   if (scope === 'Overall') {
+  //     this.metricOptions = this.overallMetrics;
+  //   } else if (scope === 'Robot') {
+  //     this.metricOptions = this.robotMetrics;
+  //   }
+
+  //   // Reset the selected metric
+  //   const defaultOption = this.metricOptions[0];
+  //   this.selectedMetric = defaultOption ? defaultOption.name : '';
+  // }
+
+  // updateChart(dataKey: string, metricName: string): void {
+  //   if (!this.selectedMap) {
+  //     console.log('no map has been selected!');
+  //     return;
+  //   }
+  //   this.selectedMetric = metricName; // Update the displayed metric name
+
+  //   switch (dataKey) {
+  //     case 'data1':
+  //       this.updateCpuUtil();
+  //       break;
+  //     case 'data2':
+  //       this.updateRoboUtil();
+  //       break;
+  //     case 'data3':
+  //       this.updateBattery();
+  //       break;
+  //     case 'data4':
+  //       this.updateMemory();
+  //       break;
+  //     case 'data5':
+  //       this.updateNetwork();
+  //       break;
+  //     case 'data6':
+  //       this.updateIdleTime();
+  //       break;
+  //     case 'data7':
+  //       this.updateErr();
+  //       break;
+  //   }
+  // }
+
+  // applyFilter(event: any) {
+  //   this.currentFilter = event.target.value.toLowerCase();
+
+  //   // this.intervals.forEach((interval) => {
+  //   //   if (this[interval]) {
+  //   if (this.selectedMetric === 'CPU Utilization')
+  //     this.updateChart('data1', this.selectedMetric);
+  //   else if (this.selectedMetric === 'Robot Utilization')
+  //     this.updateChart('data2', this.selectedMetric);
+  //   else if (this.selectedMetric === 'Battery')
+  //     this.updateChart('data3', this.selectedMetric);
+  //   else if (this.selectedMetric === 'Memory')
+  //     this.updateChart('data4', this.selectedMetric);
+  //   else if (this.selectedMetric === 'Network')
+  //     this.updateChart('data5', this.selectedMetric);
+  //   else if (this.selectedMetric === 'Idle Time')
+  //     this.updateChart('data6', this.selectedMetric);
+  //   else this.updateChart('data7', this.selectedMetric);
+  //   // return;
+  //   // }
+  //   // });
+  // }
+  updateChart(dataKey: string, metricName: string): void {
+    if (!this.selectedMap) {
+      console.log('No map has been selected!');
+      return;
+    }
+  
+    this.selectedMetric = metricName; // Update the displayed metric name
+  
+    const updateFunctions: { [key: string]: () => void } = {
+      data1: this.updateCpuUtil.bind(this),
+      data2: this.updateRoboUtil.bind(this),
+      data3: this.updateBattery.bind(this),
+      data4: this.updateMemory.bind(this),
+      data5: this.updateNetwork.bind(this),
+      data6: this.updateIdleTime.bind(this),
+      data7: this.updateErr.bind(this),
+    };
+  
+    const updateFunction = updateFunctions[dataKey];
+    if (updateFunction) {
+      updateFunction();
+    } else {
+      console.log(`No update function found for dataKey: ${dataKey}`);
+    }
+  }
+  
+  applyFilter(event: any): void {
+    this.currentFilter = event.target.value.toLowerCase();
+  
+    const metricToDataKey: { [key: string]: string } = {
+      'CPU Utilization': 'data1',
+      'Robot Utilization': 'data2',
+      'Battery': 'data3',
+      'Memory': 'data4',
+      'Network': 'data5',
+      'Idle Time': 'data6',
+      'Error': 'data7',
+    };
+  
+    const dataKey = metricToDataKey[this.selectedMetric];
+    if (dataKey) {
+      this.updateChart(dataKey, this.selectedMetric);
+    } else {
+      console.log(`No dataKey found for selectedMetric: ${this.selectedMetric}`);
+    }
+  }
+  
 
   plotChart(seriesName: string, data: any[], time: any[], limit: number = 12) {
     const limitedData = data.length > limit ? data.slice(-limit) : data;
