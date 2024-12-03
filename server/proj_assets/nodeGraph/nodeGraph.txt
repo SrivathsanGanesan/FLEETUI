@@ -2,48 +2,19 @@
   "nodes": [
     {
       "name": "1",
-      "locationDescription": "",
-      "type": 0,
+      "locationDescription": "svsv",
+      "type": 3,
       "preDockPose": {
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
+          "x": 12.79,
+          "y": 20.445,
+          "z": 20.445
         },
         "orientation": {
           "x": 0,
           "y": 0,
           "z": 0.9236508119468106,
           "w": 0.38323514660061825
-        }
-      },
-      "dockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 0.9236508119468106,
-          "w": 0.38323514660061825
-        },
-        "dockParams": {
-          "xOffset": 0,
-          "yOffset": 0,
-          "dockingType": 1
-        }
-      },
-      "unDockPose": {
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "orientation": {
-          "x": 0,
-          "y": 0,
           "z": 0.9236508119468106,
           "w": 0.38323514660061825
         }
@@ -62,8 +33,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0,
-          "w": 1
+          "z": 0.9236508119468106,
+          "w": 0.38323514660061825
         }
       },
       "dockPose": {
@@ -75,8 +46,8 @@
         "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0,
-          "w": 1
+          "z": 0.9236508119468106,
+          "w": 0.38323514660061825
         },
         "dockParams": {
           "xOffset": 0,
@@ -86,9 +57,9 @@
       },
       "unDockPose": {
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
+          "x": 12.79,
+          "y": 20.445,
+          "z": 20.445
         },
         "orientation": {
           "x": 0,
@@ -99,14 +70,14 @@
       }
     },
     {
-      "name": "3",
-      "locationDescription": "Intermediate Node",
+      "name": "2",
+      "locationDescription": "sdvsv",
       "type": 3,
       "preDockPose": {
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
+          "x": 12.79,
+          "y": 20.445,
+          "z": 20.445
         },
         "orientation": {
           "x": 0,
@@ -135,9 +106,58 @@
       },
       "unDockPose": {
         "position": {
+          "x": 27.009,
+          "y": 20.526,
+          "z": 20.526
+        },
+        "orientation": {
           "x": 0,
           "y": 0,
-          "z": 0
+          "z": 0.9236508119468106,
+          "w": 0.38323514660061825
+        }
+      }
+    },
+    {
+      "name": "3",
+      "locationDescription": "Intermediate Node",
+      "type": 0,
+      "preDockPose": {
+        "position": {
+          "x": 12.79,
+          "y": 20.445,
+          "z": 20.445
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0.9236508119468106,
+          "w": 0.38323514660061825
+        }
+      },
+      "dockPose": {
+        "position": {
+          "x": 19.899,
+          "y": 20.486,
+          "z": 20.486
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0.9236508119468106,
+          "w": 0.38323514660061825
+        },
+        "dockParams": {
+          "xOffset": 0,
+          "yOffset": 0,
+          "dockingType": 1
+        }
+      },
+      "unDockPose": {
+        "position": {
+          "x": 27.009,
+          "y": 20.526,
+          "z": 20.526
         },
         "orientation": {
           "x": 0,
@@ -150,12 +170,12 @@
     {
       "name": "4",
       "locationDescription": "Intermediate Node",
-      "type": 3,
+      "type": 1,
       "preDockPose": {
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
+          "x": 12.79,
+          "y": 20.445,
+          "z": 20.445
         },
         "orientation": {
           "x": 0,
@@ -166,9 +186,9 @@
       },
       "dockPose": {
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
+          "x": 27.009,
+          "y": 20.526,
+          "z": 20.526
         },
         "orientation": {
           "x": 0,
@@ -184,15 +204,16 @@
       },
       "unDockPose": {
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
+          "x": 27.009,
+          "y": 20.526,
+          "z": 20.526
         },
         "orientation": {
           "x": 0,
           "y": 0,
           "z": 0.9236508119468106,
           "w": 0.38323514660061825
+<<<<<<< HEAD
         }
       }
     },
@@ -293,6 +314,55 @@
           "w": 0.38323514660061825
         }
       }
+    },
+    {
+      "name": "7",
+      "locationDescription": "Intermediate Node",
+      "type": 3,
+      "preDockPose": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0.9236508119468106,
+          "w": 0.38323514660061825
+        }
+      },
+      "dockPose": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0.9236508119468106,
+          "w": 0.38323514660061825
+        },
+        "dockParams": {
+          "xOffset": 0,
+          "yOffset": 0,
+          "dockingType": 1
+        }
+      },
+      "unDockPose": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0.9236508119468106,
+          "w": 0.38323514660061825
+        }
+      }
     }
   ],
   "edges": [
@@ -310,20 +380,8 @@
     },
     {
       "from": "4",
-      "isUniDirectional": false,
-      "name": "4|5",
-      "to": "5"
-    },
-    {
-      "from": "5",
-      "isUniDirectional": false,
-      "name": "5|6",
-      "to": "6"
-    },
-    {
-      "from": "6",
-      "isUniDirectional": false,
-      "name": "6|2",
+      "isUniDirectional": true,
+      "name": "1|2",
       "to": "2"
     }
   ]

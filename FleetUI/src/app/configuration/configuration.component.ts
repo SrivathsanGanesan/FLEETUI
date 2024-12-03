@@ -74,6 +74,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
+  tableLoader:any;
 
   // formData: any;
   isPopupOpen: boolean = false;
@@ -161,12 +162,14 @@ export class ConfigurationComponent implements AfterViewInit {
 
       this.mapData = this.projectService.getSelectedProject(); // _id
       if (!this.mapData) return;
+      this.tableLoader=true;
       let response = await fetch(
         `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
         { credentials: 'include' }
       );
       if (!response.ok) throw new Error(`Error code of ${response.status}`);
       let data = await response.json();
+      this.tableLoader=false
       const { sites } = data.project;
       this.EnvData = sites
         .flatMap((sites: any) => {
@@ -1867,17 +1870,23 @@ export class ConfigurationComponent implements AfterViewInit {
     let data = await response.json();
     if (!data.error) return data.map.simMode;
   }
-
+robotCountError: boolean = false;
   async addRobot() {
     // Check for valid robot count
     if (this.robotCount <= 0) {
-      alert('Enter a valid number of robots greater than 0.');
+      this.robotCountError = true;
       return;
     }
 
     // Limit to a maximum of 10 robots in total
     if (this.robotCount + this.totalRobots > 10) {
-      alert('Total robots cannot exceed 10.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Total robots cannot exceed 10.',
+        life: 4000,
+      });
+      
       return;
     }
 
@@ -1902,8 +1911,15 @@ export class ConfigurationComponent implements AfterViewInit {
 
     // Update the map with the new list of robots
     let sims = await this.updateSimInMap(updatedSimRobos);
-    if (sims) alert('Sim Robos added!');
-
+    if (sims) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Info',
+        detail: 'Robots are added for Simulation',
+        life: 4000,
+      });
+    }
+      
     // Update the totalRobots count to reflect all robots now in sim mode
     this.totalRobots = updatedSimRobos.length;
 
@@ -1914,7 +1930,12 @@ export class ConfigurationComponent implements AfterViewInit {
   async clearAllRobots() {
     try {
       if (this.totalRobots === 0) {
-        alert('No robots to delete.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No Robots to Delete',
+          life: 4000,
+        });
         return;
       }
 
@@ -1924,7 +1945,12 @@ export class ConfigurationComponent implements AfterViewInit {
       // Update the backend with the empty list of robots
       let result = await this.updateSimInMap(updatedSimRobos);
       if (result) {
-        alert('All robots deleted!');
+          this.messageService.add({
+          severity: 'info',
+          summary: 'Info',
+          detail: 'All robots deleted!',
+          life: 4000,
+        });
 
         // Reset the local totalRobots count
         this.totalRobots = 0;

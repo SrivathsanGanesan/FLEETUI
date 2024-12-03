@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
 import { Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs';
-
+import { IsFleetService } from '../services/shared/is-fleet.service';
 export interface Robot {
   isCharging: boolean;
   networksrength: any;
@@ -75,13 +75,17 @@ export class RobotsComponent implements OnInit {
   menuOpenIndex: number | null = null;
   editIndex: number | null = null;
   centerIndex: any;
+  isFleet: boolean = false; // Store the emitted value
+  private subscriptions: Subscription[] = [];
+  
 
   private routerSubscription: Subscription | undefined; // Subscription to track navigation changes
 
   constructor(
     public dialog: MatDialog,
     private projectService: ProjectService,
-    private router: Router // Inject Router
+    private router: Router, // Inject Router
+    private isFleetService: IsFleetService
   ) {}
 
   async ngOnInit() {
@@ -97,6 +101,15 @@ export class RobotsComponent implements OnInit {
       robo.networkstrength = robo.networkstrength.toString() + ' dBm';
       return robo;
     });
+
+            // Subscribe to the isFleet$ observable
+            const fleetSub = this.isFleetService.isFleet$.subscribe((status: boolean) => {
+              this.isFleet = status; // Update the value whenever it changes
+              console.log('Received fleet statekjxhvjldlvkdlvk:', this.isFleet); // For debugging
+              sessionStorage.setItem('isFleet', String(this.isFleet)); // Save the value in session storage
+            });
+        
+            this.subscriptions.push(fleetSub);
 
     this.filteredRobots = this.robots;
     this.initialRoboInfos = this.robots;
