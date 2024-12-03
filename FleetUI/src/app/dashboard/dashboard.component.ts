@@ -213,6 +213,7 @@ export class DashboardComponent implements AfterViewInit {
   }
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
+
       // Subscribe to the fleet state
   //     const savedIsFleet = sessionStorage.getItem('isFleet');
   //     if (savedIsFleet !== null) {
@@ -231,19 +232,35 @@ export class DashboardComponent implements AfterViewInit {
     this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
       }
 
-    this.selectedMap = this.projectService.getMapData();
+    this.projectService.isFleetUp$.subscribe((status) => {      
+      this.isFleetUp = status;
+      console.log(this.isFleetUp);
+      if(!this.isFleetUp){ 
+        this.disableAllRobos();
+        this.isInLive = false;  // Ensure we're not in live mode if fleet is down
+        this.projectService.setInLive(false);  // Update the service
+      }
+    });
+      console.log(this.projectService.getInitializeMapSelected(),'dash board')
+    if(this.projectService.getInitializeMapSelected()== 'true'){
+      console.log('dash board map initiallizee')
+      this.canvasloader=true
+      this.selectedMap = this.projectService.getMapData();
+    }
     if(this.selectedMap == null){
       this.canvasloader=false;
       this.canvasNoImage=true
     }
-   
-    console.log(this.selectedMap,"selected map")
+    // console.log(this.selectedMap,"selected map")
     if (!this.selectedMap) {
       await this.onInitMapImg();
       this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+      if(this.projectService.getInitializeMapSelected() == 'true')
       await this.getMapDetails();
       if(!this.isInLive) this.initSimRoboPos();
-      this.loadCanvas();
+      if(this.projectService.getInitializeMapSelected()=='true'){
+        this.loadCanvas();
+      }
       this.isMapLoaded = false;      
       return;
     }
@@ -578,51 +595,103 @@ export class DashboardComponent implements AfterViewInit {
     
   }
 
+  // redrawCanvas() {
+  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+  //   const ctx = canvas.getContext('2d');
+
+  //   if (ctx) {
+  //     // Load the background image
+  //     this.isImage = true;
+  //     const img = new Image();
+  //     img.src = `http://${this.projectService.getMapData().imgUrl}`;
+
+  //     img.onload = () => {
+  //       // Draw the image and other elements
+  //       this.draw(ctx, img);
+  //     };
+  //   }
+  // }
   redrawCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx) {
-      // Load the background image
-      this.isImage = true;
-      const img = new Image();
-      img.src = `http://${this.projectService.getMapData().imgUrl}`;
-
-      img.onload = () => {
-        // Draw the image and other elements
-        this.draw(ctx, img);
-      };
+    if(this.projectService.getInitializeMapSelected()=='true'){
+     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+     const ctx = canvas.getContext('2d');
+ 
+     if (ctx) {
+       // Load the background image
+       this.isImage = true;
+       const img = new Image();
+       console.log('line 541')
+       img.src = `http://${this.projectService.getMapData().imgUrl}`;
+ 
+       img.onload = () => {
+         // Draw the image and other elements
+         this.draw(ctx, img);
+       };
+     }
     }
-  }
+   }
 
+  // loadCanvas() {
+  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+  //   const ctx = canvas.getContext('2d');
+
+  //   if (ctx) {
+  //     const img = new Image();
+  //     let imgName = this.projectService.getMapData();
+  //     img.src = `http://${imgName.imgUrl}`;
+
+  //     img.onload = () => {
+  //       // Set canvas dimensions based on its container
+  //       canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+  //       canvas.height =
+  //       canvas.parentElement?.clientHeight || window.innerHeight;
+
+  //       // Calculate the scaled image dimensions
+  //       this.mapImageWidth = img.width * this.zoomLevel;
+  //       this.mapImageHeight = img.height * this.zoomLevel;
+
+  //       // Center the image on the canvas
+  //       this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
+  //       this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+
+  //       // Draw the image and other elements
+  //       this.draw(ctx, img);
+  //     };
+  //   }
+  // }
   loadCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx) {
-      const img = new Image();
-      let imgName = this.projectService.getMapData();
-      img.src = `http://${imgName.imgUrl}`;
-
-      img.onload = () => {
-        // Set canvas dimensions based on its container
-        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height =
-        canvas.parentElement?.clientHeight || window.innerHeight;
-
-        // Calculate the scaled image dimensions
-        this.mapImageWidth = img.width * this.zoomLevel;
-        this.mapImageHeight = img.height * this.zoomLevel;
-
-        // Center the image on the canvas
-        this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-        this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
-
-        // Draw the image and other elements
-        this.draw(ctx, img);
-      };
+    if(this.projectService.getInitializeMapSelected()=='true'){
+      const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+  
+      if (ctx) {
+        const img = new Image();
+        console.log('line 557')
+        let imgName = this.projectService.getMapData();
+        img.src = `http://${imgName.imgUrl}`;
+  
+        img.onload = () => {
+          // Set canvas dimensions based on its container
+          canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+          canvas.height =
+          canvas.parentElement?.clientHeight || window.innerHeight;
+  
+          // Calculate the scaled image dimensions
+          this.mapImageWidth = img.width * this.zoomLevel;
+          this.mapImageHeight = img.height * this.zoomLevel;
+  
+          // Center the image on the canvas
+          this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
+          this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+  
+          // Draw the image and other elements
+          this.draw(ctx, img);
+        };
+      }
     }
+    
   }
+
 
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
