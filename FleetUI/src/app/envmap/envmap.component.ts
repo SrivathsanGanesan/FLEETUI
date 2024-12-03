@@ -409,7 +409,7 @@ export class EnvmapComponent implements AfterViewInit {
         parseInt(this.zones[this.zones.length - 1]?.id) + 1
           ? parseInt(this.zones[this.zones.length - 1].id) + 1
           : this.zoneCounter;
-      this.sessionService.onMapEdit();   //discuss later 
+      // this.sessionService.onMapEdit();   //discuss later 
       this.open();
     }
     else if(this.sessionService.isMapInEdit()){
@@ -879,6 +879,7 @@ export class EnvmapComponent implements AfterViewInit {
       return node;
     })
     this.storeNodestoLocal();
+    
     // this.projectService.setNode();
     // Ensure the nodeDetails object includes the checkbox values
     // const updatedNodeDetails = {
@@ -922,6 +923,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.selectedNode.nodePosition.x = (parsedX+this.origin.x||0)/this.ratio!||1;
       this.selectedNode.nodePosition.y = (parsedY+this.origin.y||0)/this.ratio!||1;
       this.selectedNode.nodePosition.orientation = parsedOrientation;
+      
       console.log(this.selectedNode.nodePosition.x,this.selectedNode.nodePosition.y)
       if (nodeIndex !== -1) {        
         this.nodes[nodeIndex].nodeDescription = this.nodeDetails.description;
@@ -1566,8 +1568,6 @@ export class EnvmapComponent implements AfterViewInit {
 
     this.form?.append('mapImg', this.selectedImage);
     this.form?.append('mapData', JSON.stringify(mapData));
-
-
 
     fetch(`http://${environment.API_URL}:${environment.PORT}/dashboard/maps`, {
       method: 'POST',

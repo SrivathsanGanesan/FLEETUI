@@ -28,10 +28,16 @@ const initRabbitMQConnection = async () => {
     rabbitMqClient = await amqp.connect(
       `amqp://${process.env.RABBITMQ_SERVER}:${process.env.RABBITMQ_PORT}`
     );
+    // rabbitMqClient.on('error', (err) => {
+    //     console.log('rabbitmq connection error:', err.message);
+    // });
+    // rabbitMqClient.on('close', () => {
+    //     console.log('rabbitmq connection closed');
+    // });
     rabbitMQChannel = await rabbitMqClient.createChannel();
     await consumeMessage();
   } catch (error) {
-    console.error("Error while connecting rabbitmq :", error.message);
+    console.error("Error while connecting rabbitmq :", error);
   }
 };
 
