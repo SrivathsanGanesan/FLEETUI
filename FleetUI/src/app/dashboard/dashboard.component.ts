@@ -420,7 +420,6 @@ export class DashboardComponent implements AfterViewInit {
   async initializeRobot(): Promise<void> {
     // console.log(this.robotToInitialize, this.ratio);
     let mapImg = new Image();
-    console.log('line 422')
     mapImg.src = `http://${this.projectService.getMapData().imgUrl}`;
 
     let ratio = this.ratio ? this.ratio : 1;
@@ -540,7 +539,6 @@ export class DashboardComponent implements AfterViewInit {
       // Load the background image
       this.isImage = true;
       const img = new Image();
-      console.log('line 541')
       img.src = `http://${this.projectService.getMapData().imgUrl}`;
 
       img.onload = () => {
@@ -558,7 +556,6 @@ export class DashboardComponent implements AfterViewInit {
   
       if (ctx) {
         const img = new Image();
-        console.log('line 557')
         let imgName = this.projectService.getMapData();
         img.src = `http://${imgName.imgUrl}`;
   
@@ -604,7 +601,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.drawImage(img, 0, 0);
     this.canvasNoImage=false
     this.canvasloader=false;
-    console.log('canvas loader called')
+    // console.log('canvas loader called')
 
     if(!this.isFleet){
     this.simMode.forEach((robo) => {
@@ -960,6 +957,7 @@ export class DashboardComponent implements AfterViewInit {
 
   // Toggle the dropdown menu
   toggleDropdown() {
+    console.log('toggle called')
     this.isDropdownOpen = !this.isDropdownOpen;
     // this.liveRobos = // yet to look at it..
   }
@@ -1004,7 +1002,6 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async getMapDetails() {
-    console.log('line 1001')
     let mapData = this.projectService.getMapData();
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapData.mapName}`
@@ -1068,7 +1065,6 @@ export class DashboardComponent implements AfterViewInit {
     });
 
     this.mapImg = new Image();
-    console.log('line 1065')
     let imgName = this.projectService.getMapData();
     this.mapImg.src = `http://${imgName.imgUrl}`;
   }
@@ -1091,7 +1087,6 @@ export class DashboardComponent implements AfterViewInit {
     //   );
     // };
     const mapImage = new Image();
-    console.log('line 1088')
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load
@@ -1259,7 +1254,6 @@ async onInitMapImg() {
   }
 
   async getLivePos() {
-    console.log('line 1256')
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
       console.log('no map selected');
@@ -1376,7 +1370,6 @@ async onInitMapImg() {
     const ctx = canvas.getContext('2d');
 
     const mapImage = new Image();
-    console.log('line 1373')
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load

@@ -148,8 +148,11 @@ export class StatisticsComponent {
     // if (throughputData.systemThroughput)
     //   this.statisticsData.systemThroughput = throughputData.systemThroughput;
     let uptime = await this.fetchFleetStatus('system-uptime', { projectId: projectId });
-    if (uptime.systemUptime)
-      this.statisticsData.systemUptime = uptime.systemUptime;
+    if (uptime.systemUptime){
+      this.statisticsData.systemUptime = uptime.systemUptime;}
+    else{
+      this.statisticsData.systemUptime = "Loading...";
+    }
     await this.fetchFleetStatus('success-rate', { // yet to take..
       mapId: mapId,
     });
@@ -198,7 +201,7 @@ export class StatisticsComponent {
       let tot_responsiveness = 0;
 
       let fleet_tasks = tasks.map((task: any) => {
-        tot_responsiveness += task.TaskAddTime - task.TaskAssignTime
+        tot_responsiveness += task.TaskAssignTime - task.TaskAddTime
 
         return {
           taskId: task.task_id,
