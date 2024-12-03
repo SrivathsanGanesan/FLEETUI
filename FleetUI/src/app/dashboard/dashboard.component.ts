@@ -263,7 +263,7 @@ export class DashboardComponent implements AfterViewInit {
     this.loadCanvas();
     if(this.isInLive){
       if (this.posEventSource) this.posEventSource.close();
-      await this.getLivePos();
+      // await this.getLivePos();
     } else if (!this.isInLive){ // yet to look at it..
       if (this.posEventSource) this.posEventSource.close();
       await this.getLivePos();
@@ -550,7 +550,6 @@ export class DashboardComponent implements AfterViewInit {
       const { updatedData } = data;
       this.simMode = updatedData.simMode;
       // console.log('updated sim robos position : ', this.simMode);
-
       // this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];
     } catch (error) {
       console.error('Error updating map:', error);

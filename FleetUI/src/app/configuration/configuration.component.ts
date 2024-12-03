@@ -74,6 +74,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
+  tableLoader:any;
 
   // formData: any;
   isPopupOpen: boolean = false;
@@ -156,12 +157,14 @@ simRobos: any;
 
       this.mapData = this.projectService.getSelectedProject(); // _id
       if (!this.mapData) return;
+      this.tableLoader=true;
       let response = await fetch(
         `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
         { credentials: 'include' }
       );
       if (!response.ok) throw new Error(`Error code of ${response.status}`);
       let data = await response.json();
+      this.tableLoader=false
       const { sites } = data.project;
       // console.log(sites,'sites')
       this.EnvData = sites

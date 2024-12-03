@@ -198,7 +198,7 @@ export class StatisticsComponent {
       let tot_responsiveness = 0;
 
       let fleet_tasks = tasks.map((task: any) => {
-        tot_responsiveness += task.TaskAssignTime - task.TaskAddTime
+        tot_responsiveness += task.TaskAddTime - task.TaskAssignTime
 
         return {
           taskId: task.task_id,
@@ -209,9 +209,11 @@ export class StatisticsComponent {
           status: task.task_status.status,
         };
       });
-
-      this.statisticsData.responsiveness = `${(tot_responsiveness / tasks.length) * 1000} ms`;
-
+      let average_responsiveness = (tot_responsiveness / tasks.length) * 1000;
+      this.statisticsData.responsiveness = `${Math.min(
+        Math.round(average_responsiveness),
+        999
+      )} ms`;
       return fleet_tasks;
     }
     return [];
@@ -260,9 +262,7 @@ export class StatisticsComponent {
         else if (
           task === 'INPROGRESS' ||
           task === 'COMPLETED' ||
-          task === 'ACCEPTED' ||
-          task === 'ERROR' ||
-          task === 'WARNING'
+          task === 'ACCEPTED'
         )
           tasksStatus[1] += 1;
         else if (task === 'NOTASSIGNED') tasksStatus[2] += 1;
@@ -276,7 +276,7 @@ export class StatisticsComponent {
       let errorTasks = tasksStatus[3];
       let cancelledTasks = tasksStatus[4];
       this.statisticsData.successRate = (
-        ((completedTasks + errorTasks + cancelledTasks) / tot_tasks) *
+        ((completedTasks ) / completedTasks +( errorTasks + cancelledTasks)) *
         100
       ).toFixed(2);
       return tasksStatus;
