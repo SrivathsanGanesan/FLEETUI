@@ -37,8 +37,9 @@ let roboErrRateArr = getSampSeries();
 //..
 
 // Operation..
-
-const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
+///////////////////// Getting the graph charts data's for robo module ///////////////////////
+const getFleetSeriesData_robo = async (timeStamp1, timeStamp2, endpoint) => {
+  console.log(endpoint)
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
@@ -47,10 +48,28 @@ const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
         "Content-Type": "application/json",
         Authorization: "Basic cm9vdDp0b29y",
       },
-      body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2 }),
+      body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2}),
     }
   );
-  // console.log(await response.json(),"data from fleet server")
+  console.log(await response.json(),"data from fleet server")
+  return await response.json();
+};
+
+///////////////////// Getting the graph charts data's for throughput module ///////////////////////
+const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
+  console.log(endpoint)
+  let response = await fetch(
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic cm9vdDp0b29y",
+      },
+      body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2}),
+    }
+  );
+  console.log(await response.json(),"data from fleet server")
   return await response.json();
 };
 
@@ -71,7 +90,6 @@ const throughput = async (req, res, next) => {
       "get_throughput_stats"
     );
 
-
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent week",
@@ -87,6 +105,7 @@ const throughput = async (req, res, next) => {
           };
         }),
       });
+      
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
@@ -273,6 +292,7 @@ const pickAccuracy = async (req, res) => {
           };
         }),
       });
+
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
@@ -366,6 +386,7 @@ const errRate = async (req, res) => {
           };
         }),
       });
+
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
@@ -427,417 +448,445 @@ const getRoboFleetGraph = async () => {
 };
 
 const getCpuUtilization = async (req, res) => {
+  console.log("CPU request has excuted")
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  API_data = req.body;
+  // console.log(API_data)
+  timeSpan = API_data['timeSpan']
+  startTime = API_data['startTime']
+  endTime  = API_data['endTime']
+  type     = API_data['metrics']
+  // console.log(timeSpan, startTime, endTime)
   try {
+    // MAP ID //
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    // if (type === 'Overall'){
+    //   var API_requestdata = "get_cummulativeCPU_Utilization"
+    // } else {
+    //   var API_requestdata = "get_CPU_Utilization"
+    // }
+    
+    // let fleetcpuutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
+    const fleetcpuutilization = {CPU_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+                                              {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+                                              {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+    // let fleetcpuutilization =[{
+    //   'data':
+    // }]
+    // WEEK WISE //
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        cpuUtil: Array.from({ length: 7 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        cpuUtil:fleetcpuutilization['CPU_Utilization']
       });
+    // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        cpuUtil: Array.from({ length: 30 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        cpuUtil:fleetcpuutilization['CPU_Utilization']
       });
-    cpuUtilArr.push({
-      rate: Math.floor(Math.random() * 100),
-      time: new Date().toLocaleString("en-IN", {
-        hour: "numeric",
-        minute: "numeric",
-      }),
-    });
-    return res.status(200).json({
-      msg: "data sent",
-      cpuUtil: cpuUtilArr,
-      map: mapData,
-    });
+    // PER DAY //
+    else if (timeSpan === "today")
+      console.log("body has excuted")
+      return res.status(200).json({
+        msg: "data sent",
+        cpuUtil:fleetcpuutilization['CPU_Utilization']
+      });
+
   } catch (err) {
     console.log("error occured : ", err);
-    if (err.name === "CastError")
+    if (err.name === "CZastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ opt: "failed", error: err });
   }
 };
+
+////////////   ROBOT UTILIZATION //////////////////////////
 
 const getRoboUtilization = async (req, res) => {
+  console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  API_data = req.body;
+  // console.log(API_data)
+  timeSpan = API_data['timeSpan']
+  startTime = API_data['startTime']
+  endTime  = API_data['endTime']
+  type     = API_data['metrics']
+  // console.log(timeSpan, startTime, endTime)
   try {
+    // MAP ID //
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    // if (type === 'Overall'){
+    //   var API_requestdata = "get_cummulativerobotUtilization"
+    // } else {
+    //   var API_requestdata = "get_robotUtilization"
+    // }
+    /// Fleet Server Communication ///
+    // let fleetROBOutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
+    
+    const fleetROBOutilization = {ROBO_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+                                              {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+                                              {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+    // let fleetcpuutilization =[{
+    //   'data':
+    // }]
+    // WEEK WISE //
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        roboUtil: Array.from({ length: 7 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        roboUtil:fleetROBOutilization['ROBO_Utilization']
       });
+    // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        roboUtil: Array.from({ length: 30 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        roboUtil:fleetROBOutilization['ROBO_Utilization']
       });
-    roboUtilArr.push({
-      rate: Math.floor(Math.random() * 100),
-      time: new Date().toLocaleString("en-IN", {
-        hour: "numeric",
-        minute: "numeric",
-      }),
-    });
-    return res.status(200).json({
-      msg: "data sent",
-      roboUtil: roboUtilArr,
-      map: mapData,
-    });
+    // PER DAY //
+    else if (timeSpan === "today")
+      return res.status(200).json({
+        msg: "data sent",
+        roboUtil:fleetROBOutilization['ROBO_Utilization']
+      });
+
   } catch (err) {
     console.log("error occured : ", err);
-    if (err.name === "CastError")
+    if (err.name === "CZastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ opt: "failed", error: err });
   }
 };
 
+/// BATTERY ////
 const getBatteryStat = async (req, res) => {
+  console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  API_data = req.body;
+  // console.log(API_data)
+  timeSpan = API_data['timeSpan']
+  startTime = API_data['startTime']
+  endTime  = API_data['endTime']
+  type     = API_data['metrics']
+  // console.log(timeSpan, startTime, endTime)
   try {
+    // MAP ID //
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    // if (type === 'Overall'){
+    //   var API_requestdata = "get_cummulativebatteryPercentage"
+    // } else {
+    //   var API_requestdata = "get_robotBattery"
+    // }
+    
+    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
+    // WEEK WISE //
+    const fleetBATTERYutilization = {BATTERY_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        batteryStat: Array.from({ length: 7 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        batteryStat:fleetBATTERYutilization['BATTERY_Utilization']
       });
+
+    // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        batteryStat: Array.from({ length: 30 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        batteryStat:fleetBATTERYutilization['BATTERY_Utilization']
       });
-    batteryStatArr.push({
-      rate: Math.floor(Math.random() * 100),
-      time: new Date().toLocaleString("en-IN", {
-        hour: "numeric",
-        minute: "numeric",
-      }),
-    });
-    return res.status(200).json({
-      msg: "data sent",
-      batteryStat: batteryStatArr,
-      map: mapData,
-    });
+
+    // PER DAY //
+    else if (timeSpan === "today")
+      return res.status(200).json({
+        msg: "data sent",
+        batteryStat:fleetBATTERYutilization['BATTERY_Utilization']
+      });
+
   } catch (err) {
     console.log("error occured : ", err);
-    if (err.name === "CastError")
+    if (err.name === "CZastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ opt: "failed", error: err });
   }
 };
 
+/// MEMORY //
 const getMemoryStat = async (req, res) => {
+  console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  API_data = req.body;
+  // console.log(API_data)
+  timeSpan = API_data['timeSpan']
+  startTime = API_data['startTime']
+  endTime  = API_data['endTime']
+  type     = API_data['metrics']
+  // console.log(timeSpan, startTime, endTime)
   try {
+    // MAP ID //
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    // if (type === 'Overall'){
+    //   var API_requestdata = "get_robotMemory"
+    // } else {
+    //   var API_requestdata = "get_robotMemory"
+    // }
+    
+    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
+    
+    // WEEK WISE //
+    const fleetMEMORYutilization = {MEMORY_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        memoryStat: Array.from({ length: 7 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        batteryStat:fleetMEMORYutilization['MEMORY_Utilization']
       });
+
+    // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        memoryStat: Array.from({ length: 30 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        batteryStat:fleetMEMORYutilization['MEMORY_Utilization']
       });
-    memoryStatArr.push({
-      rate: Math.floor(Math.random() * 100),
-      time: new Date().toLocaleString("en-IN", {
-        hour: "numeric",
-        minute: "numeric",
-      }),
-    });
-    return res.status(200).json({
-      msg: "data sent",
-      memoryStat: memoryStatArr,
-      map: mapData,
-    });
+
+    // PER DAY //
+    else if (timeSpan === "today")
+      return res.status(200).json({
+        msg: "data sent",
+        batteryStat:fleetMEMORYutilization['MEMORY_Utilization']
+      });
+
   } catch (err) {
     console.log("error occured : ", err);
-    if (err.name === "CastError")
+    if (err.name === "CZastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ opt: "failed", error: err });
   }
 };
 
 const getNetworkStat = async (req, res) => {
+  console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  API_data = req.body;
+  // console.log(API_data)
+  timeSpan = API_data['timeSpan']
+  startTime = API_data['startTime']
+  endTime  = API_data['endTime']
+  type     = API_data['metrics']
+  // console.log(timeSpan, startTime, endTime)
   try {
+    // MAP ID //
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    // if (type === 'Overall'){
+    //   var API_requestdata = "get_cummulativeNetwork"
+    // } else {
+    //   var API_requestdata = "get_robotNetwork"
+    // }
+    
+    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
+    // WEEK WISE //
+    const fleetNETWORKKutilization = {NETWORK_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        networkStat: Array.from({ length: 7 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        NetworkUtil:fleetNETWORKKutilization['NETWORK_Utilization']
       });
+
+    // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        networkStat: Array.from({ length: 30 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        NetworkUtil:fleetNETWORKKutilization['NETWORK_Utilization']
       });
-    networkStatArr.push({
-      rate: Math.floor(Math.random() * 100),
-      time: new Date().toLocaleString("en-IN", {
-        hour: "numeric",
-        minute: "numeric",
-      }),
-    });
-    return res.status(200).json({
-      msg: "data sent",
-      networkStat: networkStatArr,
-      map: mapData,
-    });
+
+    // PER DAY //
+    else if (timeSpan === "today")
+      return res.status(200).json({
+        msg: "data sent",
+        NetworkUtil:fleetNETWORKKutilization['NETWORK_Utilization']
+      });
+
   } catch (err) {
     console.log("error occured : ", err);
-    if (err.name === "CastError")
+    if (err.name === "CZastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ opt: "failed", error: err });
   }
 };
 
 const getIdleTime = async (req, res) => {
+  console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  API_data = req.body;
+  // console.log(API_data)
+  timeSpan = API_data['timeSpan']
+  startTime = API_data['startTime']
+  endTime  = API_data['endTime']
+  type     = API_data['metrics']
+  // console.log(timeSpan, startTime, endTime)
   try {
+    // MAP ID //
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    // if (type === 'Overall'){
+    //   var API_requestdata = "get_cummulativebatteryPercentage"
+    // } else {
+    //   var API_requestdata = "get_robotBattery"
+    // }
+    
+    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
+    // WEEK WISE //
+    const fleetIDLEUtilization = {IDLE_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        idleTime: Array.from({ length: 7 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        NetworkUtil:fleetIDLEUtilization['IDLE_Utilization']
       });
+
+    // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        idleTime: Array.from({ length: 30 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        NetworkUtil:fleetIDLEUtilization['IDLE_Utilization']
       });
-    idleTimeArr.push({
-      rate: Math.floor(Math.random() * 100),
-      time: new Date().toLocaleString("en-IN", {
-        hour: "numeric",
-        minute: "numeric",
-      }),
-    });
-    return res.status(200).json({
-      msg: "data sent",
-      idleTime: idleTimeArr,
-      map: mapData,
-    });
+
+    // PER DAY //
+    else if (timeSpan === "today")
+      return res.status(200).json({
+        msg: "data sent",
+        NetworkUtil:fleetIDLEUtilization['IDLE_Utilization']
+      });
+
   } catch (err) {
     console.log("error occured : ", err);
-    if (err.name === "CastError")
+    if (err.name === "CZastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ opt: "failed", error: err });
   }
 };
 
 const getRoboErr = async (req, res) => {
+  console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  API_data = req.body;
+  // console.log(API_data)
+  timeSpan = API_data['timeSpan']
+  startTime = API_data['startTime']
+  endTime  = API_data['endTime']
+  type     = API_data['metrics']
+  // console.log(timeSpan, startTime, endTime)
   try {
+    // MAP ID //
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
+    // if (type === 'Overall'){
+    //   var API_requestdata = "get_cummulativerobotUtilization"
+    // } else {
+    //   var API_requestdata = "get_robotUtilization"
+    // }
+    
+    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
+    // WEEK WISE //
+    const fleetROBOUtilization = {ROBO_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        roboErr: Array.from({ length: 7 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        NetworkUtil:fleetROBOUtilization['ROBO_Utilization']
       });
+
+    // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        roboErr: Array.from({ length: 30 }, () => {
-          return {
-            rate: Math.floor(Math.random() * 100),
-            time: new Date().toLocaleString("en-IN", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }),
-          };
-        }),
+        NetworkUtil:fleetROBOUtilization['ROBO_Utilization']
       });
-    roboErrRateArr.push({
-      rate: Math.floor(Math.random() * 100),
-      time: new Date().toLocaleString("en-IN", {
-        hour: "numeric",
-        minute: "numeric",
-      }),
-    });
-    return res.status(200).json({
-      msg: "data sent",
-      roboErr: roboErrRateArr,
-      map: mapData,
-    });
+
+    // PER DAY //
+    else if (timeSpan === "today")
+      return res.status(200).json({
+        msg: "data sent",
+        NetworkUtil:fleetROBOUtilization['ROBO_Utilization']
+      });
+
   } catch (err) {
     console.log("error occured : ", err);
-    if (err.name === "CastError")
+    if (err.name === "CZastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ opt: "failed", error: err });
   }
 };
+
+const varname = function (req, res)
+{
+  const API_request = req.body;
+  console.log(API_request["data"])
+  return res.status(500).json({ });
+}
 
 module.exports = {
   throughput,
@@ -855,4 +904,5 @@ module.exports = {
   getNetworkStat,
   getIdleTime,
   getRoboErr,
+  varname,
 };
