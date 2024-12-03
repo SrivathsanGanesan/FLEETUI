@@ -201,20 +201,27 @@ export class DashboardComponent implements AfterViewInit {
         this.projectService.setInLive(false);  // Update the service
       }
     });
-
-    this.selectedMap = this.projectService.getMapData();
+      console.log(this.projectService.getInitializeMapSelected(),'dash board')
+    if(this.projectService.getInitializeMapSelected()== 'true'){
+      console.log('dash board map initiallizee')
+      this.canvasloader=true
+      this.selectedMap = this.projectService.getMapData();
+    }
     if(this.selectedMap == null){
       this.canvasloader=false;
       this.canvasNoImage=true
     }
    
-    console.log(this.selectedMap,"selected map")
+    // console.log(this.selectedMap,"selected map")
     if (!this.selectedMap) {
       await this.onInitMapImg();
       this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+      if(this.projectService.getInitializeMapSelected() == 'true')
       await this.getMapDetails();
       if(!this.isInLive) this.initSimRoboPos();
-      this.loadCanvas();
+      if(this.projectService.getInitializeMapSelected()=='true'){
+        this.loadCanvas();
+      }
       this.isMapLoaded = false;      
       return;
     }
@@ -416,6 +423,7 @@ export class DashboardComponent implements AfterViewInit {
   async initializeRobot(): Promise<void> {
     // console.log(this.robotToInitialize, this.ratio);
     let mapImg = new Image();
+    console.log('line 422')
     mapImg.src = `http://${this.projectService.getMapData().imgUrl}`;
 
     let ratio = this.ratio ? this.ratio : 1;
@@ -527,6 +535,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   redrawCanvas() {
+   if(this.projectService.getInitializeMapSelected()=='true'){
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
 
@@ -534,6 +543,7 @@ export class DashboardComponent implements AfterViewInit {
       // Load the background image
       this.isImage = true;
       const img = new Image();
+      console.log('line 541')
       img.src = `http://${this.projectService.getMapData().imgUrl}`;
 
       img.onload = () => {
@@ -541,35 +551,40 @@ export class DashboardComponent implements AfterViewInit {
         this.draw(ctx, img);
       };
     }
+   }
   }
 
   loadCanvas() {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx) {
-      const img = new Image();
-      let imgName = this.projectService.getMapData();
-      img.src = `http://${imgName.imgUrl}`;
-
-      img.onload = () => {
-        // Set canvas dimensions based on its container
-        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-        canvas.height =
-        canvas.parentElement?.clientHeight || window.innerHeight;
-
-        // Calculate the scaled image dimensions
-        this.mapImageWidth = img.width * this.zoomLevel;
-        this.mapImageHeight = img.height * this.zoomLevel;
-
-        // Center the image on the canvas
-        this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-        this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
-
-        // Draw the image and other elements
-        this.draw(ctx, img);
-      };
+    if(this.projectService.getInitializeMapSelected()=='true'){
+      const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+  
+      if (ctx) {
+        const img = new Image();
+        console.log('line 557')
+        let imgName = this.projectService.getMapData();
+        img.src = `http://${imgName.imgUrl}`;
+  
+        img.onload = () => {
+          // Set canvas dimensions based on its container
+          canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+          canvas.height =
+          canvas.parentElement?.clientHeight || window.innerHeight;
+  
+          // Calculate the scaled image dimensions
+          this.mapImageWidth = img.width * this.zoomLevel;
+          this.mapImageHeight = img.height * this.zoomLevel;
+  
+          // Center the image on the canvas
+          this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
+          this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+  
+          // Draw the image and other elements
+          this.draw(ctx, img);
+        };
+      }
     }
+    
   }
 
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
@@ -992,6 +1007,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async getMapDetails() {
+    console.log('line 1001')
     let mapData = this.projectService.getMapData();
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapData.mapName}`
@@ -1055,6 +1071,7 @@ export class DashboardComponent implements AfterViewInit {
     });
 
     this.mapImg = new Image();
+    console.log('line 1065')
     let imgName = this.projectService.getMapData();
     this.mapImg.src = `http://${imgName.imgUrl}`;
   }
@@ -1077,6 +1094,7 @@ export class DashboardComponent implements AfterViewInit {
     //   );
     // };
     const mapImage = new Image();
+    console.log('line 1088')
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load
@@ -1244,6 +1262,7 @@ async onInitMapImg() {
   }
 
   async getLivePos() {
+    console.log('line 1256')
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
       console.log('no map selected');
@@ -1360,6 +1379,7 @@ async onInitMapImg() {
     const ctx = canvas.getContext('2d');
 
     const mapImage = new Image();
+    console.log('line 1373')
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load

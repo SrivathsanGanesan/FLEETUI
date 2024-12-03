@@ -166,6 +166,7 @@ export class ChartTimelineComponent implements OnInit {
 
   ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
+    this.currentFilter='today'
     this.updateChart('data1', 'CPU Utilization');
   }
 
@@ -203,7 +204,7 @@ export class ChartTimelineComponent implements OnInit {
 
   applyFilter(event: any) {
     this.currentFilter = event.target.value.toLowerCase();
-
+  console.log(this.currentFilter,'current filter')
     // this.intervals.forEach((interval) => {
     //   if (this[interval]) {
     if (this.selectedMetric === 'CPU Utilization')
@@ -242,6 +243,7 @@ export class ChartTimelineComponent implements OnInit {
 
   async fetchChartData( endpoint: string, timeSpan: string, startTime: string, endTime: string ) {
     // alter to date..
+    console.log(timeSpan,'time span robot')
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/${endpoint}/${this.selectedMap.id}`,
       {

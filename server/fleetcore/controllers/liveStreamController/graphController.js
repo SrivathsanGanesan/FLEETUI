@@ -536,7 +536,11 @@ const getRoboFleetGraph = async () => {
 
 const getCpuUtilization = async (req, res) => {
   const mapId = req.params.mapId;
-  const { timeSpan } = req.body;
+  let { timeSpan } = req.body;
+  // console.log(timeSpan,'time span')
+  // if(timeSpan==null){
+  //   timeSpan='today'
+  // }
   try {
     const isMapExist = await Map.exists({ _id: mapId });
     if (!isMapExist)
