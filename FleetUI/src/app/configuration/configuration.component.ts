@@ -85,7 +85,7 @@ export class ConfigurationComponent implements AfterViewInit {
   currEditRobo: any | null = null;
 
   currEditMap: boolean = false;
-  onMapEdit:boolean=false;
+  onMapEdit: boolean = false;
   currEditMapDet: any | null = null;
   agvKinematicsOptions: any[] = [
     { name: 'DIFF', value: 'DIFF' },
@@ -117,29 +117,30 @@ export class ConfigurationComponent implements AfterViewInit {
   paginatedData: any[] = [];
   paginatedData1: any[] = [];
   paginatedData2: any[] = [];
-simRobos: any;
+  simRobos: any;
+
+  // loader
+  editLoader:boolean=false;
 
   constructor(
     private cdRef: ChangeDetectorRef,
     private projectService: ProjectService,
     public dialog: MatDialog, // Inject MatDialog
     private messageService: MessageService,
-    private sessionService :SessionService
+    private sessionService: SessionService
   ) {
     this.filteredEnvData = [...this.EnvData];
-    // console.log(this.EnvData,"from constructor")
-
     // this.filteredRobotData = [...this.robotData];
     // this.filteredRobotData = this.robotData;
-
   }
 
   async ngOnInit() {
+    console.log('ngon init triggered');
     try {
       this.loadData();
       this.setPaginatedData();
       this.setPaginatedData1();
-      this.selectFirstMapIfNoneSelected();
+      // this.selectFirstMapIfNoneSelected();
       this.filteredEnvData = [...this.EnvData];
       this.filteredRobotData = [...this.robotData];
       this.cdRef.detectChanges();
@@ -149,10 +150,14 @@ simRobos: any;
 
       this.minDate = this.formatDate(pastFiveYears);
       this.maxDate = this.formatDate(today);
-      let currMapData = this.projectService.getMapData();
-      if (currMapData) {
-        this.selectedMap = currMapData;
-        this.setPaginatedData();
+
+      if (this.projectService.getInitializeMapSelected() == 'true') {
+        let currMapData = this.projectService.getMapData();
+        if (currMapData) {
+          console.log('line 154');
+          this.selectedMap = currMapData;
+          this.setPaginatedData();
+        }
       }
 
       this.mapData = this.projectService.getSelectedProject(); // _id
@@ -166,7 +171,6 @@ simRobos: any;
       let data = await response.json();
       this.tableLoader=false
       const { sites } = data.project;
-      // console.log(sites,'sites')
       this.EnvData = sites
         .flatMap((sites: any) => {
           return sites.maps.map((map: any) => {
@@ -178,8 +182,6 @@ simRobos: any;
               hour: 'numeric',
               minute: 'numeric',
             });
-
-            // console.log(this.EnvData,"env data")
 
             return {
               id: map.mapId,
@@ -197,23 +199,24 @@ simRobos: any;
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
       this.filteredEnvData = [...this.EnvData];
-      // console.log(this.filteredEnvData,'filtered env data')
       this.setPaginatedData();
       this.cdRef.detectChanges();
       // console.log(this.projectService.getIsMapSet(), this.projectService.getMapData(), this.EnvData[0]);
-      if (!this.projectService.getIsMapSet()) {
-        this.selectedMap = this.EnvData[0];
-        let imgUrl = '';
-        if (this.EnvData[0]) {
-          imgUrl = await this.getMapImgUrl(this.selectedMap);
-          this.projectService.setMapData({
-            ...this.EnvData[0],
-            imgUrl: imgUrl,
-          });
-          this.projectService.setIsMapSet(true);
-        }
-      }
-      if(this.sessionService.isMapInEdit()){
+      // if (!this.projectService.getIsMapSet()) {
+      //   console.log(this.projectService.getIsMapSet(), 'map set');
+      //   console.log('line 201');
+      //   this.selectedMap = this.EnvData[0];
+      //   let imgUrl = '';
+      //   if (this.EnvData[0]) {
+      //     imgUrl = await this.getMapImgUrl(this.selectedMap);
+      //     this.projectService.setMapData({
+      //       ...this.EnvData[0],
+      //       imgUrl: imgUrl,
+      //     });
+      //     this.projectService.setIsMapSet(true);
+      //   }
+      // }
+      if (this.sessionService.isMapInEdit()) {
         this.onMapEdit = true;
         this.showImageUploadPopup = true;
       }
@@ -287,7 +290,7 @@ simRobos: any;
     }
   }
 
-  async updateSimInMap(simRobots: any): Promise<boolean>  {
+  async updateSimInMap(simRobots: any): Promise<boolean> {
     let editedMap = {
       simMode: simRobots,
     };
@@ -301,7 +304,7 @@ simRobos: any;
       }
     );
     let data = await response.json();
-    if(data.updatedData) return true;
+    if (data.updatedData) return true;
     return false;
   }
 
@@ -329,7 +332,7 @@ simRobos: any;
     if (!mapData) return;
     try {
       let response = await fetch(
-        `http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.id}`, 
+        `http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${mapData.id}`,
         {
           method: 'GET',
           credentials: 'include',
@@ -371,26 +374,25 @@ simRobos: any;
   // edit robo..
   editRobo(robo: any) {
     // console.log(robo);
-      // Reset all form section visibility flags
-  this.isTypeSpecificationFormVisible = false;
-  this.isProtocolLimitsFormVisible = false;
-  this.isProtocolFeaturesFormVisible = false;
-  this.isAGVGeometryFormVisible = false;
-  this.isLoadSpecificationFormVisible = false;
-  this.isLocalizationParametersFormVisible = false;
+    // Reset all form section visibility flags
+    this.isTypeSpecificationFormVisible = false;
+    this.isProtocolLimitsFormVisible = false;
+    this.isProtocolFeaturesFormVisible = false;
+    this.isAGVGeometryFormVisible = false;
+    this.isLoadSpecificationFormVisible = false;
+    this.isLocalizationParametersFormVisible = false;
     this.formData = robo.grossInfo;
     this.isPopupOpen = !this.isPopupOpen;
-  
+
     // Track if we're in edit mode
     // this.isRoboInEdit = !this.isRoboInEdit;
     this.isRoboInEdit = true;
-  
+
     // Store the currently edited robot for reference
     this.currEditRobo = robo;
     // this.newItem = { ...item }; // Initialize with the clicked item's data
     this.cdRef.detectChanges();
   }
-  
 
   async updateRobo() {
     if (!this.currEditRobo.roboName) {
@@ -414,7 +416,7 @@ simRobos: any;
     );
 
     let data = await response.json();
-    // console.log(data);
+    console.log(data);
     if (data.roboExists === true) {
       alert('robo with this name already exists!');
       // return;
@@ -430,6 +432,7 @@ simRobos: any;
     }
     this.setPaginatedData1();
     this.closeroboPopup();
+    console.log('line 425');
     this.ngOnInit();
   }
 
@@ -481,10 +484,11 @@ simRobos: any;
   //     });
   // }
   deleteRobo(robo: any) {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent);  // Open confirmation dialog
-    
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {  // If the user confirmed deletion
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent); // Open confirmation dialog
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // If the user confirmed deletion
         let project = this.projectService.getSelectedProject();
         let map = this.projectService.getMapData();
         let roboInfo = {
@@ -492,7 +496,7 @@ simRobos: any;
           projectName: project.projectName,
           mapName: map.mapName,
         };
-  
+
         // Perform the delete operation
         fetch(
           `http://${environment.API_URL}:${environment.PORT}/robo-configuration`,
@@ -511,10 +515,11 @@ simRobos: any;
                 summary: 'Success',
                 detail: 'Robot deleted successfully!',
               });
-              this.fetchRobos();  // Refresh the list of robots
-              this.setPaginatedData1();  // Update the paginator data
-              this.cdRef.detectChanges();  // Trigger change detection
-              this.ngOnInit();  // Re-initialize the component if needed
+              this.fetchRobos(); // Refresh the list of robots
+              this.setPaginatedData1(); // Update the paginator data
+              this.cdRef.detectChanges(); // Trigger change detection
+              console.log('line 510');
+              this.ngOnInit(); // Re-initialize the component if needed
             } else {
               this.messageService.add({
                 severity: 'error',
@@ -534,13 +539,12 @@ simRobos: any;
       }
     });
   }
-  
 
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
   }
 
-  trackByTaskName(index:number, item:any): number{
+  trackByTaskName(index: number, item: any): number {
     return item._id;
   }
 
@@ -548,11 +552,11 @@ simRobos: any;
     const ipPattern = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
     return ipPattern.test(ip);
   }
-  
 
   setPaginatedData() {
+    console.log('paginated data called');
     if (this.currentTable === 'Environment') {
-      const pageSize = this.paginator?.pageSize || 5;  // Default pageSize to 5 if paginator is not yet available
+      const pageSize = this.paginator?.pageSize || 5; // Default pageSize to 5 if paginator is not yet available
       const pageIndex = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
 
       // Paginate the data based on current page and page size
@@ -560,52 +564,47 @@ simRobos: any;
       const endIndex = startIndex + pageSize;
 
       this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
-      let currMapData = this.projectService.getMapData();
-      if (currMapData) {
-        this.selectedMap = currMapData;
-      }
-      // console.log(this.selectedMap,"selected map")
       // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length
       if (this.paginator) {
-        
         this.paginator.length = this.filteredEnvData.length;
         // console.log(this.filteredRobotData);
       }
     }
-}
+  }
 
-setPaginatedData1(){
-  if (this.currentTable === 'robot') {
-    const pageSize1 = this.paginator?.pageSize || 5;  // Default pageSize to 5 if paginator is not yet available
-    let pageIndex1 = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
-  
-    // Ensure that we reset to the first page if the page becomes empty after deletion
-    const totalItems = this.filteredRobotData.length;
-    const totalPages = Math.ceil(totalItems / pageSize1);
-  
-    // If the current page index exceeds the total number of pages after deletion, reset to page 1
-    if (pageIndex1 >= totalPages) {
-      pageIndex1 = 0;
-      this.paginator.pageIndex = pageIndex1;
-    }
-  
-    // Paginate the data based on the current page and page size
-    const startIndex = pageIndex1 * pageSize1;
-    const endIndex = startIndex + pageSize1;
-  
-    // Update the paginated data with the sliced portion of the data array
-    this.paginatedData1 = this.filteredRobotData.slice(startIndex, endIndex);
-    // console.log(this.filteredRobotData);
-  
-    // Ensure the paginator reflects the correct page size and total data length
-    if (this.paginator) {
-      this.paginator.length = this.filteredRobotData.length;
+  setPaginatedData1() {
+    if (this.currentTable === 'robot') {
+      const pageSize1 = this.paginator?.pageSize || 5; // Default pageSize to 5 if paginator is not yet available
+      let pageIndex1 = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)
+
+      // Ensure that we reset to the first page if the page becomes empty after deletion
+      const totalItems = this.filteredRobotData.length;
+      const totalPages = Math.ceil(totalItems / pageSize1);
+
+      // If the current page index exceeds the total number of pages after deletion, reset to page 1
+      if (pageIndex1 >= totalPages) {
+        pageIndex1 = 0;
+        this.paginator.pageIndex = pageIndex1;
+      }
+
+      // Paginate the data based on the current page and page size
+      const startIndex = pageIndex1 * pageSize1;
+      const endIndex = startIndex + pageSize1;
+
+      // Update the paginated data with the sliced portion of the data array
+      this.paginatedData1 = this.filteredRobotData.slice(startIndex, endIndex);
+
       // console.log(this.filteredRobotData);
+
+      // Ensure the paginator reflects the correct page size and total data length
+      if (this.paginator) {
+        this.paginator.length = this.filteredRobotData.length;
+        // console.log(this.filteredRobotData);
+      }
     }
   }
-}
 
   // Ensure pagination is triggered on page change
   onPageChange(event: PageEvent) {
@@ -613,7 +612,7 @@ setPaginatedData1(){
     this.paginator.pageSize = event.pageSize;
     this.setPaginatedData(); // Update paginated data on page change
   }
-  onPageChanges(event: PageEvent){
+  onPageChanges(event: PageEvent) {
     this.paginator.pageIndex = event.pageIndex;
     this.paginator.pageSize = event.pageSize;
     this.setPaginatedData1();
@@ -650,6 +649,9 @@ setPaginatedData1(){
   }
 
   async selectMap(map: any) {
+    // console.log('select deselected clicked')
+    // let mapStatus=this.projectService.getInitializeMapSelected()
+    this.projectService.setInitializeMapSelected(true);
     // Deselect if the same map is clicked again
     if (this.selectedMap?.id === map.id) {
       this.projectService.clearMapData();
@@ -663,6 +665,7 @@ setPaginatedData1(){
         console.error('Error while fetching map data : ', response.status);
       let data = await response.json();
       // let { map } = data;
+      console.log('line 656');
       await this.ngOnInit();
 
       // if (this.projectService.getIsMapSet()) return; // yet to uncomment..
@@ -854,7 +857,7 @@ setPaginatedData1(){
   ngAfterViewInit() {
     if (this.paginator) {
       this.setPaginatedData(); // Safe to access paginator here
-      this.setPaginatedData1(); 
+      this.setPaginatedData1();
     }
   }
 
@@ -1017,7 +1020,7 @@ setPaginatedData1(){
   }
   showImageUploadPopup = false;
   openImageUploadPopup(): void {
-    this.currEditMap=false;
+    this.currEditMap = false;
     // Reset the search filters
     this.startDate = null;
     this.endDate = null;
@@ -1275,7 +1278,8 @@ setPaginatedData1(){
     this.currEditMap = currEditMap;
   }
   editItem(item: any) {
-    if(this.currEditMap){
+    this.editLoader=true;
+    if (this.currEditMap) {
       this.currEditMap = true;
     }
     fetch(
@@ -1285,7 +1289,11 @@ setPaginatedData1(){
         credentials: 'include',
       }
     )
-      .then((response) => response.json())
+      .then((response) =>
+        { 
+          return response.json()
+        }
+      )
       .then((data) => {
         if (!data.map) {
           this.messageService.add({
@@ -1295,7 +1303,7 @@ setPaginatedData1(){
           });
           return;
         }
-  
+
         if (data.error) {
           this.messageService.add({
             severity: 'error',
@@ -1304,10 +1312,10 @@ setPaginatedData1(){
           });
           return;
         }
-  
+
         const { map } = data;
         const mapImgUrl = `http://${map.imgUrl}`;
-  
+
         // Check if the image URL is accessible
         this.checkImageLoading(mapImgUrl)
           .then(() => {
@@ -1326,6 +1334,7 @@ setPaginatedData1(){
             };
             this.currEditMap = true;
             this.showImageUploadPopup = true;
+            this.editLoader=false
 
             this.messageService.add({
               severity: 'success',
@@ -1338,7 +1347,8 @@ setPaginatedData1(){
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to load map image. Please check the image URL or cookies.',
+              detail:
+                'Failed to load map image. Please check the image URL or cookies.',
             });
           });
       })
@@ -1351,18 +1361,18 @@ setPaginatedData1(){
         });
       });
   }
-  
+
   // Helper method to check if an image URL loads successfully
   private checkImageLoading(url: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.src = url;
-  
-      img.onload = () => resolve();  // Image loaded successfully
-      img.onerror = () => reject();  // Error loading the image
+
+      img.onload = () => resolve(); // Image loaded successfully
+      img.onerror = () => reject(); // Error loading the image
     });
   }
-  
+
   async deleteMap(map: any): Promise<boolean> {
     try {
       const response = await fetch(
@@ -1400,25 +1410,25 @@ setPaginatedData1(){
 
   showConfirmationDialog: boolean = false;
   itemToDelete: any;
-  
+
   openDeleteConfirmation(item: any) {
     this.itemToDelete = item;
     this.showConfirmationDialog = true;
   }
-  
+
   confirmDelete() {
     this.showConfirmationDialog = false;
     this.deleteItemConfirmed(this.itemToDelete);
   }
-  
+
   cancelDelete() {
     this.showConfirmationDialog = false;
     this.itemToDelete = null;
   }
-  
+
   deleteItemConfirmed(item: any) {
     let isDeleted = false;
-  
+
     this.deleteMap(item).then((result) => {
       isDeleted = result;
       if (isDeleted) {
@@ -1426,7 +1436,7 @@ setPaginatedData1(){
           this.projectService.setIsMapSet(false);
           this.projectService.clearMapData();
         }
-        
+
         if (this.currentTable === 'Environment') {
           this.EnvData = this.EnvData.filter((i) => i !== item);
           this.filteredEnvData = this.EnvData;
@@ -1437,11 +1447,16 @@ setPaginatedData1(){
           this.reloadTable();
           this.setPaginatedData();
         }
-  
+
+        console.log('line 1438');
         this.ngOnInit();
         this.reloadTable();
-  
+        console.log(this.paginatedData, 'page data');
+        if (this.paginatedData.length == 0) {
+          this.projectService.setInitializeMapSelected(false);
+        }
         console.log('Item deleted:', item);
+        // console.log(this.paginatedData1,'2page data')
         this.messageService.add({
           severity: 'success',
           summary: 'Deleted',
@@ -1450,8 +1465,7 @@ setPaginatedData1(){
       }
     });
   }
-  
-  
+
   addItem(item: any) {
     console.log('Add item:', item);
     this.messageService.add({
@@ -1479,7 +1493,7 @@ setPaginatedData1(){
   // isAGVGeometryFormVisible = false;
   // isLoadSpecificationFormVisible = false;
   // isLocalizationParametersFormVisible = false;
-  formData =  {
+  formData = {
     robotName: '',
     manufacturer: '',
     serialNumber: '',
@@ -1697,7 +1711,7 @@ setPaginatedData1(){
 
   saveItem(): void {
     this.isPopupOpen = false;
-    
+
     this.cdRef.detectChanges();
   }
 
@@ -1717,8 +1731,8 @@ setPaginatedData1(){
     let amrId = 0;
     if (this.robotData.length)
       amrId = this.robotData[this.robotData.length - 1].amrId + 1;
-    const  dateInSecs = Math.round(Date.now() / 1000)
-    let uuid=(parseInt(dateInSecs.toString().slice(-8)));
+    const dateInSecs = Math.round(Date.now() / 1000);
+    let uuid = parseInt(dateInSecs.toString().slice(-8));
 
     const roboDetails = {
       projectName: project.projectName,
@@ -1767,6 +1781,7 @@ setPaginatedData1(){
         }
         if (data.robo) {
           this.robotData = [...this.robotData, data.robo];
+          console.log('line 1768');
           this.ngOnInit();
           // this.filteredRobotData = [...this.robotData];
           // this.cdRef.detectChanges();
@@ -1779,8 +1794,9 @@ setPaginatedData1(){
           return;
         }
       });
-      
+
     this.isPopupOpen = false;
+    console.log('line 1783');
     this.ngOnInit();
     this.cdRef.detectChanges();
   }
@@ -1792,7 +1808,7 @@ setPaginatedData1(){
 
   openPopup(item: any) {
     // Reset all form section visibility flags
-    this.isRoboInEdit = false
+    this.isRoboInEdit = false;
     this.isTypeSpecificationFormVisible = false;
     this.isProtocolLimitsFormVisible = false;
     this.isProtocolFeaturesFormVisible = false;
@@ -1813,33 +1829,30 @@ setPaginatedData1(){
     this.isPhysicalParametersFormVisible =
       !this.isPhysicalParametersFormVisible;
   }
- 
-  // simulation robots 
-  
-  
+
+  // simulation robots
+
   isMapAvailable(): boolean {
     return this.selectedMap != null && this.selectedMap.mapName != null ;
   }
-  
-  
+
   async togglePopup() {
     console.log('Selected Map:', this.selectedMap);
-  
+
     if (!this.isMapAvailable()) {
       console.log('Map is not available, showing alert.');
       alert('Please create or select a map to simulate the robots.');
       return;
     }
-  
+
     let simRobos = await this.getSimRobos(this.selectedMap);
     this.totalRobots = simRobos ? simRobos.length : 0;
     this.isPopupVisible = !this.isPopupVisible;
   }
-  
-  
+
   robotCount: number = 0;
   totalRobots: number = 0;
-  
+
   async getSimRobos(map: any): Promise<any> {
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${map?.mapName}`
@@ -1866,7 +1879,7 @@ setPaginatedData1(){
       this.robotCountError = true;
       return;
     }
-  
+
     // Limit to a maximum of 10 robots in total
     if (this.robotCount + this.totalRobots > 10) {
       this.messageService.add({
@@ -1878,26 +1891,26 @@ setPaginatedData1(){
       
       return;
     }
-  
+
     // Fetch the current simRobos data to retain existing robots
-    let existingSimRobos = await this.getSimRobos(this.selectedMap) || [];
-    
+    let existingSimRobos = (await this.getSimRobos(this.selectedMap)) || [];
+
     // Create new robots based on robotCount
     let newRobots = [];
     for (let i = 0; i < this.robotCount; i++) {
       newRobots.push({
-        amrId: existingSimRobos.length + i,  // ID based on total robots
-        roboName: `MR${existingSimRobos.length + i}00`,  // Unique name
+        amrId: existingSimRobos.length + i, // ID based on total robots
+        roboName: `MR${existingSimRobos.length + i}00`, // Unique name
         enable: false,
         isInitialized: false,
-        imgState:"",
+        imgState: '',
         pos: { x: existingSimRobos.length + i, y: 0, orientation: 0 },
       });
     }
-  
+
     // Combine existing robots with the new robots
     const updatedSimRobos = [...existingSimRobos, ...newRobots];
-  
+
     // Update the map with the new list of robots
     let sims = await this.updateSimInMap(updatedSimRobos);
     if (sims) {
@@ -1912,12 +1925,11 @@ setPaginatedData1(){
     this.robotCountError = false;
     // Update the totalRobots count to reflect all robots now in sim mode
     this.totalRobots = updatedSimRobos.length;
-  
+
     // Reset the robotCount input field
     this.robotCount = 0;
   }
 
- 
   async clearAllRobots() {
     try {
       if (this.totalRobots === 0) {
@@ -1929,10 +1941,10 @@ setPaginatedData1(){
         });
         return;
       }
-  
+
       // Set the robots list to an empty array to clear all robots
       const updatedSimRobos: any[] = [];
-  
+
       // Update the backend with the empty list of robots
       let result = await this.updateSimInMap(updatedSimRobos);
       if (result) {
@@ -1942,7 +1954,7 @@ setPaginatedData1(){
           detail: 'All robots deleted!',
           life: 4000,
         });
-        
+
         // Reset the local totalRobots count
         this.totalRobots = 0;
       } else {
@@ -1964,24 +1976,26 @@ setPaginatedData1(){
         });
         return;
       }
-  
+
       // Fetch the current simRobos data
-      let existingSimRobos = await this.getSimRobos(this.selectedMap) || [];
-  
+      let existingSimRobos = (await this.getSimRobos(this.selectedMap)) || [];
+
       // Check if the robot with the given amrId exists
-      const robotToDelete = existingSimRobos.find((robot: { amrId: number; }) => robot.amrId === amrId);
+      const robotToDelete = existingSimRobos.find(
+        (robot: { amrId: number }) => robot.amrId === amrId
+      );
       if (!robotToDelete) {
         alert(`Robot with ID ${amrId} not found.`);
         return;
       }
-  
+
       // Filter out the robot to be deleted
       const updatedSimRobos = existingSimRobos.filter((robot: { amrId: number; }) => robot.amrId !== amrId);  
       // Update the backend with the updated list of robots
       let result = await this.updateSimInMap(updatedSimRobos);
       if (result) {
         alert(`Robot with ID ${amrId} deleted!`);
-        
+
         // Update the local totalRobots count
         this.totalRobots = updatedSimRobos.length;
       } else {
@@ -1992,6 +2006,3 @@ setPaginatedData1(){
     }
   }
 }
-
-
-
