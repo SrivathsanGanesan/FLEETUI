@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,9 @@ export class ProjectService {
   inLive$ = this.inLive.asObservable();
   isFleetUp$ = this.isFleetUp.asObservable();
 
-  constructor(private cookieService: CookieService) {}
+  constructor(private cookieService: CookieService, private http: HttpClient) {}
+
+  private apiUrl = '/get_robot_utilization';
 
   setProjectCreated(created: boolean) {
     this.cookieService.set('is-project-setted', JSON.stringify(created), {
@@ -91,5 +94,9 @@ export class ProjectService {
 
   setIsFleetUp(value: boolean): void {
     this.isFleetUp.next(value);
+  }
+
+  getRobotUtilization(mapId: string, timeStamp1: number, timeStamp2: number): Observable<any> {
+    return this.http.post(this.apiUrl, { mapId, timeStamp1, timeStamp2 });
   }
 }

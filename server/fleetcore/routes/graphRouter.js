@@ -17,14 +17,17 @@ const {
   getNetworkStat,
   getIdleTime,
   getRoboErr,
+  throughPut_starvation,
+  throughPut_pickAccuracy,
+  throughPut_errorRate,
   varname,
 } = require("../controllers/liveStreamController/graphController");
 
 // throughputRouter.get("/:mapId", getFleetThroughput, throughput); // when switch to fleet test..
 graphRouter.post("/throughput/:mapId", throughput);
-graphRouter.post("/starvationrate/:mapId", starvationRate);
-graphRouter.post("/pickaccuracy/:mapId", pickAccuracy);
-graphRouter.post("/err-rate/:mapId", errRate);
+graphRouter.post("/starvationrate/:mapId",  throughPut_starvation);
+graphRouter.post("/pickaccuracy/:mapId", throughPut_pickAccuracy);
+graphRouter.post("/err-rate/:mapId", throughPut_errorRate);
 
 // robo graph..
 graphRouter.post("/cpu-utilization/:mapId", getCpuUtilization);

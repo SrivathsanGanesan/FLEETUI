@@ -74,6 +74,7 @@ export class ConfigurationComponent implements AfterViewInit {
   filteredEnvData: any[] = [];
   filteredipData: any[] = [];
   filteredRobotData: any[] = [];
+  tableLoader:any;
 
   // formData: any;
   isPopupOpen: boolean = false;
@@ -126,6 +127,8 @@ simRobos: any;
     private sessionService :SessionService
   ) {
     this.filteredEnvData = [...this.EnvData];
+    // console.log(this.EnvData,"from constructor")
+
     // this.filteredRobotData = [...this.robotData];
     // this.filteredRobotData = this.robotData;
 
@@ -154,13 +157,16 @@ simRobos: any;
 
       this.mapData = this.projectService.getSelectedProject(); // _id
       if (!this.mapData) return;
+      this.tableLoader=true;
       let response = await fetch(
         `http://${environment.API_URL}:${environment.PORT}/fleet-project/${this.mapData._id}`,
         { credentials: 'include' }
       );
       if (!response.ok) throw new Error(`Error code of ${response.status}`);
       let data = await response.json();
+      this.tableLoader=false
       const { sites } = data.project;
+      // console.log(sites,'sites')
       this.EnvData = sites
         .flatMap((sites: any) => {
           return sites.maps.map((map: any) => {
@@ -172,6 +178,8 @@ simRobos: any;
               hour: 'numeric',
               minute: 'numeric',
             });
+
+            // console.log(this.EnvData,"env data")
 
             return {
               id: map.mapId,
@@ -189,6 +197,7 @@ simRobos: any;
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
       this.filteredEnvData = [...this.EnvData];
+      // console.log(this.filteredEnvData,'filtered env data')
       this.setPaginatedData();
       this.cdRef.detectChanges();
       // console.log(this.projectService.getIsMapSet(), this.projectService.getMapData(), this.EnvData[0]);
@@ -405,7 +414,7 @@ simRobos: any;
     );
 
     let data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (data.roboExists === true) {
       alert('robo with this name already exists!');
       // return;
@@ -551,6 +560,11 @@ simRobos: any;
       const endIndex = startIndex + pageSize;
 
       this.paginatedData = this.filteredEnvData.slice(startIndex, endIndex);
+      let currMapData = this.projectService.getMapData();
+      if (currMapData) {
+        this.selectedMap = currMapData;
+      }
+      // console.log(this.selectedMap,"selected map")
       // console.log(this.filteredRobotData);
 
       // Optionally, ensure that the paginator reflects the right page size and length

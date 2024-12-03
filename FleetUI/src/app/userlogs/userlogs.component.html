@@ -134,10 +134,10 @@
 
               
 
-        <tbody class="table-body">
+        <tbody class="table-body" *ngIf="currentTable === 'task' && isFleet == true">
 
           <!-- Show No Data Row with image and message -->
-          <tr *ngIf="paginatedData.length === 0">
+          <tr *ngIf="paginatedData.length === 0 && isFleet == true" >
             <td colspan="8" class="no-data">
               <div class="no-data-container">
                 <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
@@ -145,6 +145,7 @@
               </div>
             </td>
           </tr>
+
           <!-- <tr *ngIf="paginatedData.length === 0">
             <td colspan="6" class="iconTable">No data found</td>
           </tr> -->
@@ -157,12 +158,22 @@
             <td class="table-cell">{{ item.desc }}</td>
           </tr>
         </tbody>
+        <tbody *ngIf="currentTable === 'task' && isFleet == false">
+          <tr *ngIf=" isFleet == false" >
+            <td colspan="8" class="no-data">
+              <div class="no-data-container">
+                <img src="../../assets/image.png" alt="Simulation Mode" class="no-data-image">
+                <p class="no-data-text">Sim mode has been enabled.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>  
       </table>
     </div>
   </div>
 </div>
              <!-- Paginator -->
-      <div class="paginator-container" *ngIf="currentTable === 'task' && filteredTaskData.length > 0">
+      <div class="paginator-container" *ngIf="currentTable === 'task' && filteredTaskData.length > 0 && isFleet == true">
         <mat-paginator
           [length]="filteredTaskData.length"
           [pageSize]="10"
@@ -189,10 +200,10 @@
           </tr>
         </thead>
 
-        <tbody>
+        <tbody *ngIf="currentTable === 'robot' && isFleet == true">
 
               <!-- Show No Data Row with image and message -->
-              <tr *ngIf="paginatedData1.length === 0">
+              <tr *ngIf="paginatedData1.length === 0 && isFleet == true">
                 <td colspan="8" class="no-data">
                   <div class="no-data-container">
                     <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
@@ -200,6 +211,7 @@
                   </div>
                 </td>
               </tr>
+
 
         
           <!-- <tr *ngIf="paginatedData1.length === 0">
@@ -214,12 +226,23 @@
             <td class="table-cell">{{ item.description }}</td>
           </tr>
         </tbody>
+        <tbody *ngIf="currentTable === 'robot' && isFleet == false">
+          <tr *ngIf="paginatedData1.length === 0 && isFleet == false" >
+            <td colspan="8" class="no-data">
+              <div class="no-data-container">
+                <img src="../../assets/image.png" alt="Simulation Mode" class="no-data-image">
+                <p class="no-data-text">Sim mode has been enabled.</p>
+              </div>
+          </td>
+        </tr>
+        </tbody >  
+
       </table>
     </div>
   </div>
 </div>
              <!-- Paginator -->
-    <div class="paginator-container" *ngIf="currentTable === 'robot' && robotData.length > 0">
+    <div class="paginator-container" *ngIf="currentTable === 'robot' && robotData.length > 0 && isFleet == true">
       <mat-paginator
         [length]="robotData.length"
         [pageSize]="10"
@@ -245,10 +268,10 @@
             <th class="table-header-cell">Description</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody *ngIf="currentTable === 'fleet' && isFleet == true" >
 
               <!-- Show No Data Row with image and message -->
-              <tr *ngIf="paginatedData2.length === 0">
+              <tr *ngIf="paginatedData2.length === 0 && isFleet == true">
                 <td colspan="8" class="no-data">
                   <div class="no-data-container">
                     <img src="../../assets/no-data.png" alt="No Data" class="no-data-image">
@@ -256,11 +279,6 @@
                   </div>
                 </td>
               </tr>
-
-             
-
-
-       
           <!-- <tr *ngIf="paginatedData2.length === 0">
             <td colspan="6" class="iconTable">No data found</td>
           </tr> -->
@@ -273,6 +291,16 @@
           </tr>
         
         </tbody>
+        <tbody *ngIf="currentTable === 'fleet' && isFleet == false" >
+          <tr *ngIf=" isFleet == false" >
+            <td colspan="8" class="no-data">
+              <div class="no-data-container">
+                <img src="../../assets/image.png" alt="Simulation Mode" class="no-data-image">
+                <p class="no-data-text">Sim mode has been enabled.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>  
       
       </table>
 
@@ -281,7 +309,7 @@
 </div>
 
        <!-- Paginator -->
-    <div class="paginator-container" *ngIf="currentTable === 'fleet' && fleetData.length > 0">
+    <div class="paginator-container" *ngIf="currentTable === 'fleet' && fleetData.length > 0 && isFleet == true">
       <mat-paginator
         [length]="fleetData.length"
         [pageSize]="10"

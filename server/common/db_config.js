@@ -21,7 +21,7 @@ const isConnect = (dbConnection) => {
   });
 
   dbConnection.on("disconnected", () => {
-    console.log(`${dbConnection.name} disconnected bro..`);
+    console.log(`${dbConnection.name} disconnected`);
   });
 };
 

@@ -99,7 +99,56 @@ const getCurrTasksActivities = async (req, res) => {
   }
 };
 
-module.exports = { getFleetTask, getTasks, getCurrTasksActivities };
+const getRobotUtilization = async (req, res) => {
+  const { mapId, timeStamp1, timeStamp2 } = req.body;
+  try {
+    // Check if the map exists in the database
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(500).json({ msg: "map not exists", map: null });
+
+    // Prepare body data for the API call
+    let bodyData = {
+      timeStamp1: timeStamp1,
+      timeStamp2: timeStamp2,
+    };
+
+    // Fetch robot utilization data from the fleet server
+    let utilizationData = await getFleetTask("get_robotUtilization", bodyData);
+
+    // Handle cases where the response does not contain the expected data
+    if (!("robots" in utilizationData))
+      return res
+        .status(200)
+        .json({ msg: "data sent, no utilization data available", robots: null });
+
+    // Format the robot utilization data
+    let formattedUtilization = utilizationData.robots.map((robot) => {
+      return {
+        robot_id: robot.robot_id,
+        robot_name: robot.robot_name,
+        utilization_percentage: robot.utilization_percentage,
+        last_active: robot.last_active, // Add any additional fields as needed
+      };
+    });
+
+    return res.status(200).json({
+      msg: "data sent",
+      robots: formattedUtilization,
+    });
+  } catch (err) {
+    console.log("error occurred : ", err);
+    if (err.name === "CastError")
+      return res.status(400).json({ msg: "not valid map Id" });
+    res.status(500).json({ opt: "failed", error: err });
+  }
+};
+
+// Export the function along with others
+module.exports = { getFleetTask, getTasks, getCurrTasksActivities, getRobotUtilization };
+
+
+// module.exports = { getFleetTask, getTasks, getCurrTasksActivities };
 
 // Needed one!
 /* const mapData = await Map.findOneAndUpdate(
