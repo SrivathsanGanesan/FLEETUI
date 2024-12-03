@@ -52,15 +52,20 @@
           <!-- Popup for selecting robots -->
           <div *ngIf="isPopupVisible" class="sim-popup-modal">
             <div class="sim-popup-content">
-              <h3>Enter the Robots for simulation </h3>
+              <h3>Enter the Robots for Simulation </h3>
+              <div>
               <label for="robots">Number of Robots:</label>
+              
               <input 
                 type="number" 
                 [(ngModel)]="robotCount" 
                 id="robots" 
                 placeholder="Enter number of robots" 
                 min="1">
-              
+              </div>
+              <p *ngIf="robotCountError" class="error-message">
+                Enter a valid number of robots greater than 0.
+              </p>
               <div class="sim-button-container">
                 <button (click)="addRobot()">Add</button>
                 <!-- <button (click)="closePopup()">Cancel</button> -->
@@ -96,11 +101,7 @@
           
               <p>Total Robots: {{ totalRobots }}</p>
             </div>
-          </div>
-          
-            
-        
-          
+          </div>    
         <!-- Date Filter and Date Inputs -->
         <div class="date-filters" *ngIf="currentTable === 'Environment'">
           <div class="date-inputs">
