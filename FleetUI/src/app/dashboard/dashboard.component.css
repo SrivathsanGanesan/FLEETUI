@@ -248,6 +248,7 @@ canvas {
   
   font-family: "graphik", Arial,  sans-serif;
   margin-bottom: 0;
+  margin-top: 0;
   text-align: left;
 }
 
@@ -277,8 +278,12 @@ canvas {
   width: 540px; /* Increased width */
   padding: 10px 0px 0px 0px;
 }
-
-.Chart2, .Chart3 {
+.Chart3 {
+  padding: 0px 0px 0px 10px;
+  font-family: "graphik", Arial,  sans-serif;
+  font-weight: bold;
+}
+.Chart2{
   padding: 10px 0px 0px 10px;
   font-family: "graphik", Arial,  sans-serif;
   font-weight: bold;
@@ -319,7 +324,7 @@ canvas {
   position: relative; /* Allows positioning of the title */
   display: flex;
   flex-direction: column; /* Stack elements vertically */
-  align-items: center; /* Center chart and label */
+  /* align-items: center; Center chart and label */
   height: 100%;
 }
 
