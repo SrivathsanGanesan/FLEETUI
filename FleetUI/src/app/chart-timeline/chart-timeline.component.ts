@@ -326,11 +326,11 @@ export class ChartTimelineComponent implements OnInit {
     const updateFunctions: { [key: string]: () => void } = {
       data1: this.updateCpuUtil.bind(this),
       data2: this.updateRoboUtil.bind(this),
-      data3: this.updateBattery.bind(this),
-      data4: this.updateMemory.bind(this),
-      data5: this.updateNetwork.bind(this),
-      data6: this.updateIdleTime.bind(this),
-      data7: this.updateErr.bind(this),
+      data7: this.updateBattery.bind(this),
+      data3: this.updateMemory.bind(this),
+      data4: this.updateNetwork.bind(this),
+      data5: this.updateIdleTime.bind(this),
+      data6: this.updateErr.bind(this),
     };
 
     const updateFunction = updateFunctions[dataKey];
