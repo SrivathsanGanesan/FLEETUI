@@ -212,8 +212,8 @@ export class DashboardComponent implements AfterViewInit {
     if (!this.selectedMap) {
       await this.onInitMapImg();
       this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
-      await this.getMapDetails();
       if(!this.isInLive) this.initSimRoboPos();
+      await this.getMapDetails();
       this.loadCanvas();
       this.isMapLoaded = false;      
       return;
@@ -233,7 +233,7 @@ export class DashboardComponent implements AfterViewInit {
     this.loadCanvas();
     if(this.isInLive){
       if (this.posEventSource) this.posEventSource.close();
-      await this.getLivePos();
+      // await this.getLivePos();
     } else if (!this.isInLive){ // yet to look at it..
       if (this.posEventSource) this.posEventSource.close();
       await this.getLivePos();

@@ -58,8 +58,8 @@ canvas {
 /* live button */
 .ONBtn {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -14px;
+  right: -25px;
   padding: 20px 30px 0px 0px;
   filter: drop-shadow(5px 2px 2px rgba(130, 126, 126, 0.404));
   cursor: pointer;
@@ -68,8 +68,8 @@ canvas {
 
 .CanvasOptions {
   position: absolute;
-  bottom: 5%;
-  left: 1%;
+  bottom: 5px;
+  left: 5px;
   display: flex;
   background-color: #fffcfc6c;
   /* border-top-left-radius: 10px;
@@ -508,7 +508,7 @@ canvas {
   position: relative;
   display: inline-block;
   width: 180px;
-  margin: 20px;
+  margin: 5px;
 }
 
 .dropdown-item {
@@ -680,15 +680,11 @@ input:checked ~ .slider {
   color: #ff6666; /* Light red color on hover */
 }
 
-
-
-
-
 /* fleet and simulation */
 .indication-button {
   position: absolute;
-  top: 20px;
-  right: 150px; 
+  top: 5px;
+  right: 105px; 
   filter: drop-shadow(5px 2px 2px rgba(130, 126, 126, 0.404));
   cursor: pointer;
   z-index: 13;
@@ -728,6 +724,7 @@ input:checked ~ .slider {
 /* Background color for Simulation */
 .simulation-background {
   background-color: #f0453f; /* Red for Simulation */
+
 }
 
 

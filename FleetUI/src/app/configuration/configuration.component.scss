@@ -1303,9 +1303,7 @@ edit button */
   line-height: 1.5; /* Increase line height for better spacing between lines */
 }
 
-// .error-message{
 
-// }
 
 .sim-popup-content input[type="number"] {
   width: 50px;
@@ -1323,7 +1321,13 @@ edit button */
   -webkit-appearance: none; /* Chrome, Safari, Edge */
   appearance: none; /* Standard */
 }
-
+.simulation-button.disabled {
+  opacity: 0.5; /* Makes the button look "disabled" */
+  cursor: not-allowed; /* Changes the cursor to indicate it's disabled */
+}
+.error-message{
+  color: #dc2b31;
+}
 .sim-popup-content input[type="number"]:focus {
   border-color: #28a745; /* Green border on focus */
   outline: none;

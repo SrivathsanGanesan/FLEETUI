@@ -1270,13 +1270,7 @@ setPaginatedData1(){
     this.isPopupVisible = true;
   }
 
-  closePopup() {
-    this.isPopupVisible = false;
-    this.isImageOpened = false;
-    this.chosenImageName = '';
-    this.imageHeight = 0;
-    this.imageWidth = 0;
-  }
+
   onCurrEditMapChange(currEditMap: boolean) {
     this.currEditMap = currEditMap;
   }
@@ -1824,7 +1818,7 @@ setPaginatedData1(){
   
   
   isMapAvailable(): boolean {
-    return this.selectedMap != null && this.selectedMap.mapName != null;
+    return this.selectedMap != null && this.selectedMap.mapName != null ;
   }
   
   
@@ -1856,6 +1850,14 @@ setPaginatedData1(){
     }
     let data = await response.json();
     if (!data.error) return data.map.simMode;
+  }
+  closePopup() {
+    this.isPopupVisible = false;
+    this.isImageOpened = false;
+    this.chosenImageName = '';
+    this.imageHeight = 0;
+    this.imageWidth = 0;
+    this.robotCountError = false;
   }
   robotCountError: boolean = false;
   async addRobot() {
@@ -1907,6 +1909,7 @@ setPaginatedData1(){
       });
     }
         
+    this.robotCountError = false;
     // Update the totalRobots count to reflect all robots now in sim mode
     this.totalRobots = updatedSimRobos.length;
   
@@ -1949,18 +1952,16 @@ setPaginatedData1(){
       console.error('Error during clearing robots:', error);
     }
   }
-   
-
-
-
-
-
-
 
   async deleteRobot(amrId: number) {
     try {
       if (this.totalRobots === 0) {
-        alert('No robots available to delete.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No Robots to Delete',
+          life: 4000,
+        });
         return;
       }
   
@@ -1975,8 +1976,7 @@ setPaginatedData1(){
       }
   
       // Filter out the robot to be deleted
-      const updatedSimRobos = existingSimRobos.filter((robot: { amrId: number; }) => robot.amrId !== amrId);
-  
+      const updatedSimRobos = existingSimRobos.filter((robot: { amrId: number; }) => robot.amrId !== amrId);  
       // Update the backend with the updated list of robots
       let result = await this.updateSimInMap(updatedSimRobos);
       if (result) {
@@ -1991,8 +1991,6 @@ setPaginatedData1(){
       console.error('Error during robot deletion:', error);
     }
   }
-  
-
 }
 
 
