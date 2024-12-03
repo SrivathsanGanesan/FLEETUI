@@ -47,6 +47,8 @@ export class Chart1Component {
         width: 240,
         height: 250,
         type: "radialBar",
+        offsetX: -5, // Horizontal offset
+        offsetY: -10, // Vertical offset
         toolbar: {
           show: false
         }
