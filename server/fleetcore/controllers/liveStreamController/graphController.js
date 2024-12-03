@@ -686,7 +686,7 @@ const getRoboUtilization = async (req, res) => {
 
 /// BATTERY ////
 const getBatteryStat = async (req, res) => {
-  console.log("ROBO request has excuted")
+  console.log("BATTERY request has excuted")
   const mapId = req.params.mapId;
   API_data = req.body;
   // console.log(API_data)
@@ -748,7 +748,7 @@ const getBatteryStat = async (req, res) => {
 
 /// MEMORY //
 const getMemoryStat = async (req, res) => {
-  console.log("ROBO request has excuted")
+  console.log("MEMORY request has excuted")
   const mapId = req.params.mapId;
   API_data = req.body;
   // console.log(API_data)
@@ -811,7 +811,7 @@ const getMemoryStat = async (req, res) => {
 
 // Netwrok
 const getNetworkStat = async (req, res) => {
-  console.log("ROBO request has excuted")
+  console.log("NETWORK request has excuted")
   const mapId = req.params.mapId;
   API_data = req.body;
   // console.log(API_data)
@@ -873,7 +873,7 @@ const getNetworkStat = async (req, res) => {
 
 // IDLE Time
 const getIdleTime = async (req, res) => {
-  console.log("ROBO request has excuted")
+  console.log("IDLE TIME request has excuted")
   const mapId = req.params.mapId;
   API_data = req.body;
   // console.log(API_data)
@@ -935,10 +935,10 @@ const getIdleTime = async (req, res) => {
 
 // ROBOErro //
 const getRoboErr = async (req, res) => {
-  console.log("ROBO request has excuted")
+  console.log(" ERROR request has excuted")
   const mapId = req.params.mapId;
   API_data = req.body;
-  // console.log(API_data)
+  console.log("robo error:",API_data)
   timeSpan = API_data['timeSpan']
   startTime = API_data['startTime']
   endTime  = API_data['endTime']

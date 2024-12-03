@@ -327,11 +327,11 @@ export class ChartTimelineComponent implements OnInit {
     const updateFunctions: { [key: string]: () => void } = {
       data1: this.updateCpuUtil.bind(this),
       data2: this.updateRoboUtil.bind(this),
-      data3: this.updateBattery.bind(this),
-      data4: this.updateMemory.bind(this),
-      data5: this.updateNetwork.bind(this),
-      data6: this.updateIdleTime.bind(this),
-      data7: this.updateErr.bind(this),
+      data7: this.updateBattery.bind(this),
+      data3: this.updateMemory.bind(this),
+      data4: this.updateNetwork.bind(this),
+      data5: this.updateIdleTime.bind(this),
+      data6: this.updateErr.bind(this),
     };
 
     const updateFunction = updateFunctions[dataKey];
@@ -348,11 +348,14 @@ export class ChartTimelineComponent implements OnInit {
     const metricToDataKey: { [key: string]: string } = {
       'CPU Utilization': 'data1',
       'Robot Utilization': 'data2',
-      'Battery': 'data7',
       'Memory': 'data3',
+      // 'Battery': 'data7',
       'Network': 'data4',
+      // 'Memory': 'data3',
+      // 'Network': 'data4',
       'Idle Time': 'data5',
       'Error': 'data6',
+      'Battery': 'data7',
     };
 
     const dataKey = metricToDataKey[this.selectedMetric];
