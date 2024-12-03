@@ -1,3 +1,4 @@
+
 import {
   Component,
   AfterViewInit,
@@ -5,7 +6,7 @@ import {
   ViewChild,
   ElementRef,
   EventEmitter,
-  Output
+  Output, OnDestroy
 } from '@angular/core';
 import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
@@ -17,6 +18,8 @@ import { MessageService } from 'primeng/api';
 import { state } from '@angular/animations';
 import { log } from 'console';
 import { IsFleetService } from '../services/shared/is-fleet.service';
+import { ModeService } from './mode.service';
+import { Subscription } from 'rxjs';
 
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -49,6 +52,7 @@ export class DashboardComponent implements AfterViewInit {
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
   @ViewChild('myCanvas', { static: false })
+  @Output() modeChange = new EventEmitter<string>(); // Create an event emitter
   myCanvas!: ElementRef<HTMLCanvasElement>;
   eventSource!: EventSource;
   posEventSource!: EventSource;
@@ -154,26 +158,43 @@ export class DashboardComponent implements AfterViewInit {
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef,
     private messageService:MessageService,
-    private isFleetService: IsFleetService
+    private isFleetService: IsFleetService,
+    private modeService: ModeService
   ) {
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
   }
+  private subscriptions: Subscription[] = [];
+  isFleet: boolean = false;
 
-  isFleet: boolean = false; 
 
   // PNG icon URLs
   fleetIconUrl: string = "../assets/fleet_icon.png";
   simulationIconUrl: string = "../assets/simulation_icon.png";
   
    // Method to toggle the mode and change icon, label, and background
+  // toggleMode() {
+  //   console.log(this.isFleet,"fleet condition")
+  //   console.log("toggle is clicked")
+  //   const newState = !this.isFleet;
+  //   this.isFleetService.setIsFleet(newState);
+  //   sessionStorage.setItem('isFleet', String(this.isFleet)); // Save the value in session storage
+  //   // this.modeChange.emit(this.buttonLabel);
+  //   this.redrawCanvas();
+  // }
   toggleMode() {
-    console.log(this.isFleet,"fleet condition")
-    console.log("toggle is clicked")
-    this.isFleet = !this.isFleet;
-    this.isFleetService.setIsFleet(this.isFleet);
+    console.log(this.isFleet, "fleet condition");
+    console.log("toggle is clicked");
+  
+    const newState = !this.isFleet; // Calculate the new state
+    this.isFleet = newState; // Update the local value of isFleet
+    this.isFleetService.setIsFleet(newState); // Update the service state
+    sessionStorage.setItem('isFleet', String(newState)); // Save the updated value to session storage
+  
+    // Trigger any additional actions needed
     this.redrawCanvas();
   }
+
 
   // Get the appropriate icon based on the state
   get iconUrl(): string {
@@ -192,32 +213,36 @@ export class DashboardComponent implements AfterViewInit {
   }
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
-    this.projectService.isFleetUp$.subscribe((status) => {      
-      this.isFleetUp = status;
-      console.log(this.isFleetUp);
-      if(!this.isFleetUp){ 
-        this.disableAllRobos();
-        this.isInLive = false;  // Ensure we're not in live mode if fleet is down
-        this.projectService.setInLive(false);  // Update the service
+      // Subscribe to the fleet state
+  //     const savedIsFleet = sessionStorage.getItem('isFleet');
+  //     if (savedIsFleet !== null) {
+  //       this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
+  //     }
+  const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
+    this.isFleet = status;
+    // console.log(status,'oijdrgioerj')
+    this.updateUI(); // Update UI based on the current state
+  });
+
+  this.subscriptions.push(fleetSub);
+  const savedIsFleet = sessionStorage.getItem('isFleet');
+  if (savedIsFleet !== null) {
+    this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
+    this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
       }
-    });
-      console.log(this.projectService.getInitializeMapSelected(),'dash board')
-    if(this.projectService.getInitializeMapSelected()== 'true'){
-      console.log('dash board map initiallizee')
-      this.canvasloader=true
-      this.selectedMap = this.projectService.getMapData();
-    }
+
+    this.selectedMap = this.projectService.getMapData();
     if(this.selectedMap == null){
       this.canvasloader=false;
       this.canvasNoImage=true
     }
    
-    // console.log(this.selectedMap,"selected map")
+    console.log(this.selectedMap,"selected map")
     if (!this.selectedMap) {
       await this.onInitMapImg();
       this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
-      if(!this.isInLive) this.initSimRoboPos();
       await this.getMapDetails();
+      if(!this.isInLive) this.initSimRoboPos();
       this.loadCanvas();
       this.isMapLoaded = false;      
       return;
@@ -231,6 +256,8 @@ export class DashboardComponent implements AfterViewInit {
       this.zoomLevel = img.width > 1355 || img.height > 664 ? 0.8 : 1.0;
     // }
     };
+
+    
     await this.getMapDetails();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
@@ -247,7 +274,29 @@ export class DashboardComponent implements AfterViewInit {
     
     // console.log(this.simMode);
   }
+  updateUI() {
+    // Example of adding a simple fade-in/out effect to a specific element
+    const modeElement = document.querySelector('.mode-indicator');
+    if (modeElement) {
+      modeElement.classList.add('fade-out');
+      setTimeout(() => {
+        modeElement.classList.remove('fade-out');
+        modeElement.classList.add('fade-in');
+      }, 300); // Adjust timing for the effect
+    }
+     // For example, log the current mode for debugging
+  console.log(`Current Mode: ${this.isFleet ? 'Fleet' : 'Simulation'}`);
 
+  // If you have more dynamic UI elements to update, you can trigger them here.
+  // Example: trigger animations or visual updates if needed.
+  // e.g., update a title or progress bar related to the mode
+
+  // Example of updating a dynamic title based on mode
+  const titleElement = document.querySelector('.mode-title');
+  if (titleElement) {
+    titleElement.textContent = this.isFleet ? 'Fleet Mode Active' : 'Simulation Mode Active';
+  }
+  }
   ngAfterViewInit(): void {
     console.log('myCanvas:', this.myCanvas);
   
@@ -420,7 +469,6 @@ export class DashboardComponent implements AfterViewInit {
   async initializeRobot(): Promise<void> {
     // console.log(this.robotToInitialize, this.ratio);
     let mapImg = new Image();
-    console.log('line 422')
     mapImg.src = `http://${this.projectService.getMapData().imgUrl}`;
 
     let ratio = this.ratio ? this.ratio : 1;
@@ -503,7 +551,6 @@ export class DashboardComponent implements AfterViewInit {
       const { updatedData } = data;
       this.simMode = updatedData.simMode;
       // console.log('updated sim robos position : ', this.simMode);
-
       // this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];
     } catch (error) {
       console.error('Error updating map:', error);
@@ -532,7 +579,6 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   redrawCanvas() {
-   if(this.projectService.getInitializeMapSelected()=='true'){
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
 
@@ -540,7 +586,6 @@ export class DashboardComponent implements AfterViewInit {
       // Load the background image
       this.isImage = true;
       const img = new Image();
-      console.log('line 541')
       img.src = `http://${this.projectService.getMapData().imgUrl}`;
 
       img.onload = () => {
@@ -548,40 +593,35 @@ export class DashboardComponent implements AfterViewInit {
         this.draw(ctx, img);
       };
     }
-   }
   }
 
   loadCanvas() {
-    if(this.projectService.getInitializeMapSelected()=='true'){
-      const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-      const ctx = canvas.getContext('2d');
-  
-      if (ctx) {
-        const img = new Image();
-        console.log('line 557')
-        let imgName = this.projectService.getMapData();
-        img.src = `http://${imgName.imgUrl}`;
-  
-        img.onload = () => {
-          // Set canvas dimensions based on its container
-          canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-          canvas.height =
-          canvas.parentElement?.clientHeight || window.innerHeight;
-  
-          // Calculate the scaled image dimensions
-          this.mapImageWidth = img.width * this.zoomLevel;
-          this.mapImageHeight = img.height * this.zoomLevel;
-  
-          // Center the image on the canvas
-          this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-          this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
-  
-          // Draw the image and other elements
-          this.draw(ctx, img);
-        };
-      }
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+      const img = new Image();
+      let imgName = this.projectService.getMapData();
+      img.src = `http://${imgName.imgUrl}`;
+
+      img.onload = () => {
+        // Set canvas dimensions based on its container
+        canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+        canvas.height =
+        canvas.parentElement?.clientHeight || window.innerHeight;
+
+        // Calculate the scaled image dimensions
+        this.mapImageWidth = img.width * this.zoomLevel;
+        this.mapImageHeight = img.height * this.zoomLevel;
+
+        // Center the image on the canvas
+        this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
+        this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+
+        // Draw the image and other elements
+        this.draw(ctx, img);
+      };
     }
-    
   }
 
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
@@ -1004,7 +1044,6 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async getMapDetails() {
-    console.log('line 1001')
     let mapData = this.projectService.getMapData();
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${mapData.mapName}`
@@ -1068,7 +1107,6 @@ export class DashboardComponent implements AfterViewInit {
     });
 
     this.mapImg = new Image();
-    console.log('line 1065')
     let imgName = this.projectService.getMapData();
     this.mapImg.src = `http://${imgName.imgUrl}`;
   }
@@ -1091,7 +1129,6 @@ export class DashboardComponent implements AfterViewInit {
     //   );
     // };
     const mapImage = new Image();
-    console.log('line 1088')
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load
@@ -1259,7 +1296,6 @@ async onInitMapImg() {
   }
 
   async getLivePos() {
-    console.log('line 1256')
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) {
       console.log('no map selected');
@@ -1376,7 +1412,6 @@ async onInitMapImg() {
     const ctx = canvas.getContext('2d');
 
     const mapImage = new Image();
-    console.log('line 1373')
     let map = this.projectService.getMapData();
     mapImage.src = `http://${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load

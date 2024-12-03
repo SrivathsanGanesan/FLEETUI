@@ -1,3 +1,4 @@
+
 import { environment } from '../../environments/environment.development';
 import { ExportService } from '../export.service';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
@@ -70,20 +71,14 @@ export class Userlogscomponent {
       // console.log(this.currentMode,"dkjnonvofpsp")
     });
         // Subscribe to the isFleet$ observable
-        // const fleetSub = this.isFleetService.isFleet$.subscribe((status: boolean) => {
-        //   this.isFleet = status; // Update the value whenever it changes
-        //   console.log('Received fleet state:', this.isFleet); // For debugging
-        // });
+        const fleetSub = this.isFleetService.isFleet$.subscribe((status: boolean) => {
+          this.isFleet = status; // Update the value whenever it changes
+          console.log('Received fleet state:', this.isFleet); // For debugging
+        });
     
-        // this.subscriptions.push(fleetSub);
-        const savedIsFleet = sessionStorage.getItem('isFleet');
-        if (savedIsFleet !== null) {
-          this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
-          this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
-          console.log(this.isFleet)
-        }
+        this.subscriptions.push(fleetSub);
       
-    // this.onModeChange(this.currentMode);
+    this.onModeChange(this.currentMode);
     await this.fetchRobos();
     // data rendering
     await this.getRoboLogs();
@@ -98,10 +93,10 @@ export class Userlogscomponent {
     this.setPaginatedData();
   }
 
-  // onModeChange(newMode: string) {
-  //   this.currentMode = newMode; // Update mode on event
-  //   console.log('Mode changed to:', newMode);
-  // }
+  onModeChange(newMode: string) {
+    this.currentMode = newMode; // Update mode on event
+    console.log('Mode changed to:', newMode);
+  }
 
   getTimeStampsOfDay(establishedTime: Date) {
     let currentTime = Math.floor(new Date().getTime() / 1000);
@@ -119,9 +114,8 @@ export class Userlogscomponent {
     this.mapData = this.projectService.getMapData();
     let establishedTime = new Date(this.mapData.createdAt);
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
-    console.log(this.mapData.id)
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/task-logs/${this.mapData.id}`,
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks`,
       {
         method: 'POST',
         credentials: 'include',
@@ -139,11 +133,11 @@ export class Userlogscomponent {
       .then((data) => {
         const { taskLogs } = data;
               // Filter the notifications to include only those with specified statuses
-      // const filteredLogs = taskLogs.notifications.filter(
-      //   (taskErr: any) =>
-      //     ['FAILED', 'CANCELLED', 'REJECTED'].includes(taskErr.name)
-      // );
-        this.taskData = taskLogs.notifications.map((taskErr: any) => {
+      const filteredLogs = taskLogs.notifications.filter(
+        (taskErr: any) =>
+          ['FAILED', 'CANCELLED', 'REJECTED'].includes(taskErr.name)
+      );
+        this.taskData = filteredLogs.map((taskErr: any) => {
           const date = new Date();
           const formattedDateTime = `${date.toLocaleDateString('en-IN', {
             day: '2-digit',
