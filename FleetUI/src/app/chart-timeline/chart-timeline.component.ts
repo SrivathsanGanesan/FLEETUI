@@ -5,7 +5,7 @@ import {
   Input,
   OnInit,
   ViewChild,
-  
+
 } from '@angular/core';
 import {
   ChartComponent,
@@ -92,7 +92,8 @@ export class ChartTimelineComponent implements OnInit {
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
       { key: 'data5', label: 'Idle Time' },
-      { key: 'data6', label: 'Error' }
+      { key: 'data6', label: 'Error' },
+      { key: 'data7', label: 'Battery' }
     ],
     robot: [
       { key: 'data1', label: 'CPU Utilization' },
@@ -110,8 +111,6 @@ export class ChartTimelineComponent implements OnInit {
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef,
   ) {
-    // this.chartOptions = this.getChartOptions(this.cpuUtilArr, 'CPU Utilization');
-    // console.log(this.cpuUtilArr,"chart fn")
     this.getLiveRoboInfo().then((names) => {
       this.roboNames = names;
     });
@@ -321,9 +320,9 @@ export class ChartTimelineComponent implements OnInit {
       console.log('No map has been selected!');
       return;
     }
-  
+
     this.selectedMetric = metricName; // Update the displayed metric name
-  
+
     const updateFunctions: { [key: string]: () => void } = {
       data1: this.updateCpuUtil.bind(this),
       data2: this.updateRoboUtil.bind(this),
@@ -333,7 +332,7 @@ export class ChartTimelineComponent implements OnInit {
       data6: this.updateIdleTime.bind(this),
       data7: this.updateErr.bind(this),
     };
-  
+
     const updateFunction = updateFunctions[dataKey];
     if (updateFunction) {
       updateFunction();
@@ -341,7 +340,7 @@ export class ChartTimelineComponent implements OnInit {
       console.log(`No update function found for dataKey: ${dataKey}`);
     }
   }
-  
+
   applyFilter(event: any): void {
     this.currentFilter = event.target.value.toLowerCase();
     // console.log(this.currentFilter)
@@ -354,7 +353,7 @@ export class ChartTimelineComponent implements OnInit {
       'Idle Time': 'data5',
       'Error': 'data6',
     };
-  
+
     const dataKey = metricToDataKey[this.selectedMetric];
     if (dataKey) {
       this.updateChart(dataKey, this.selectedMetric);
@@ -362,7 +361,7 @@ export class ChartTimelineComponent implements OnInit {
       console.log(`No dataKey found for selectedMetric: ${this.selectedMetric}`);
     }
   }
-  
+
 
   plotChart(seriesName: string, data: any[], time: any[], limit: number = 12) {
     const limitedData = data.length > limit ? data.slice(-limit) : data;
@@ -414,7 +413,7 @@ export class ChartTimelineComponent implements OnInit {
     else{
       startTimeOfDay= this.getStartOfDay()
     }
-    
+
     return {
       timeStamp1: startTimeOfDay,
       timeStamp2: currentTime,
@@ -455,11 +454,12 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       clearInterval(this.cpuUtilTimeInterval);
       this.cpuUtilTimeInterval = 0;
       const data = await this.fetchChartData( 'cpu-utilization', this.currentFilter, '', '' );
+      console.log(data,'data-cpu util')
       if (data.cpuUtil) {
-        this.cpuUtilArr = data.cpuUtil.map((stat: any) => stat.rate);
-        this.cpuXaxisSeries = data.cpuUtil.map( (stat: any) => stat.time );
+        this.cpuUtilArr = data.cpuUtil.map((stat: any) => stat.CPU_Utilization);
+        this.cpuXaxisSeries = data.cpuUtil.map( (stat: any,index:any) => index+=1 );
       }
-      console.log("throughput 1")
+      console.log(this.cpuXaxisSeries,'x axis')
       this.plotChart( 'Throughput', this.cpuUtilArr, this.cpuXaxisSeries, 30 );
       return;
     }
@@ -473,16 +473,16 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       this.cpuXaxisSeries = data.cpuUtil.map( (stat: any) => stat.time );
     }
     // console.log("throughPut 2")
-    this.plotChart( 'Throughput', this.cpuUtilArr, this.cpuXaxisSeries );
+    this.plotChart( 'CPU Utilization', this.cpuUtilArr, this.cpuXaxisSeries );
 
     this.cpuUtilTimeInterval = setInterval(async () => {
       const data = await this.fetchChartData( 'cpu-utilization', this.currentFilter, '', '' );
       if (data.cpuUtil) {
-        this.cpuUtilArr = data.cpuUtil.map((stat: any) => stat.rate);
-        this.cpuXaxisSeries = data.cpuUtil.map( (stat: any) => stat.time );
+        this.cpuUtilArr = data.cpuUtil.map((stat: any) => stat.CPU_Utilization);
+        this.cpuXaxisSeries = data.cpuUtil.map( (stat: any,index:any) => index+=1  );
       }
       // console.log("throughPut 3")
-      this.plotChart( 'Throughput', this.cpuUtilArr, this.cpuXaxisSeries );
+      this.plotChart( 'CPU Utilization', this.cpuUtilArr, this.cpuXaxisSeries );
     }, 1000 * 2);
   }
 
@@ -495,7 +495,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'robo-utilization', this.currentFilter, '', '' );
       if (data.roboUtil) {
         this.roboUtilArr = data.roboUtil.map((stat: any) => stat.rate);
-        this.roboXaxisSeries = data.roboUtil.map( (stat: any) => stat.time );
+        this.roboXaxisSeries = data.roboUtil.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Robot Utilization', this.roboUtilArr, this.roboXaxisSeries, 30 );
       return;
@@ -506,7 +506,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
     const data = await this.fetchChartData( 'robo-utilization', this.currentFilter, '', '' );
     if (data.roboUtil) {
       this.roboUtilArr = data.roboUtil.map((stat: any) => stat.rate);
-      this.roboXaxisSeries = data.roboUtil.map( (stat: any) => stat.time );
+      this.roboXaxisSeries = data.roboUtil.map( (stat: any,index:any) => index+=1  );
     }
     this.plotChart( 'Robot Utilization', this.roboUtilArr, this.roboXaxisSeries );
 
@@ -514,7 +514,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'robo-utilization', this.currentFilter, '', '' );
       if (data.roboUtil) {
         this.roboUtilArr = data.roboUtil.map((stat: any) => stat.rate);
-        this.roboXaxisSeries = data.roboUtil.map( (stat: any) => stat.time );
+        this.roboXaxisSeries = data.roboUtil.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Robot Utilization', this.roboUtilArr, this.roboXaxisSeries );
     }, 1000 * 2);
@@ -528,7 +528,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'battery', this.currentFilter, '', '' );
       if (data.batteryStat) {
         this.batteryArr = data.batteryStat.map((stat: any) => stat.rate);
-        this.batteryXaxisSeries = data.batteryStat.map( (stat: any) => stat.time );
+        this.batteryXaxisSeries = data.batteryStat.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Battery', this.batteryArr, this.batteryXaxisSeries, 30 );
       return;
@@ -539,7 +539,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
     const data = await this.fetchChartData( 'battery', this.currentFilter, '', '' );
     if (data.batteryStat) {
       this.batteryArr = data.batteryStat.map((stat: any) => stat.rate);
-      this.batteryXaxisSeries = data.batteryStat.map( (stat: any) => stat.time );
+      this.batteryXaxisSeries = data.batteryStat.map( (stat: any,index:any) => index+=1  );
     }
     this.plotChart( 'Battery', this.batteryArr, this.batteryXaxisSeries );
 
@@ -547,7 +547,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
     const data = await this.fetchChartData( 'battery', this.currentFilter, '', '' );
     if (data.batteryStat) {
       this.batteryArr = data.batteryStat.map((stat: any) => stat.rate);
-      this.batteryXaxisSeries = data.batteryStat.map( (stat: any) => stat.time );
+      this.batteryXaxisSeries = data.batteryStat.map( (stat: any,index:any) => index+=1  );
     }
     this.plotChart( 'Battery', this.batteryArr, this.batteryXaxisSeries );
     }, 1000 * 2);
@@ -561,7 +561,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'memory', this.currentFilter, '', '' );
       if (data.memoryStat) {
         this.memoryArr = data.memoryStat.map((stat: any) => stat.rate);
-        this.memoryXaxisSeries = data.memoryStat.map( (stat: any) => stat.time );
+        this.memoryXaxisSeries = data.memoryStat.map((stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Memory', this.memoryArr, this.memoryXaxisSeries, 30 );
       return;
@@ -572,7 +572,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
     const data = await this.fetchChartData( 'memory', this.currentFilter, '', '' );
       if (data.memoryStat) {
         this.memoryArr = data.memoryStat.map((stat: any) => stat.rate);
-        this.memoryXaxisSeries = data.memoryStat.map( (stat: any) => stat.time );
+        this.memoryXaxisSeries = data.memoryStat.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Memory', this.memoryArr, this.memoryXaxisSeries );
 
@@ -580,7 +580,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'memory', this.currentFilter, '', '' );
       if (data.memoryStat) {
         this.memoryArr = data.memoryStat.map((stat: any) => stat.rate);
-        this.memoryXaxisSeries = data.memoryStat.map( (stat: any) => stat.time );
+        this.memoryXaxisSeries = data.memoryStat.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Memory', this.memoryArr, this.memoryXaxisSeries);
     }, 1000 * 2);
@@ -594,7 +594,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'network', this.currentFilter, '', '' );
       if (data.networkStat) {
         this.networkArr = data.networkStat.map((stat: any) => stat.rate);
-        this.networkXaxisSeries = data.networkStat.map( (stat: any) => stat.time );
+        this.networkXaxisSeries = data.networkStat.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Network', this.networkArr, this.networkXaxisSeries, 30 );
       return;
@@ -605,14 +605,14 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
     const data = await this.fetchChartData( 'network', this.currentFilter, '', '' );
       if (data.networkStat) {
         this.networkArr = data.networkStat.map((stat: any) => stat.rate);
-        this.networkXaxisSeries = data.networkStat.map( (stat: any) => stat.time );
+        this.networkXaxisSeries = data.networkStat.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Network', this.networkArr, this.networkXaxisSeries );
     this.networkTimeInterval = setInterval(async () => {
       const data = await this.fetchChartData( 'network', this.currentFilter, '', '' );
       if (data.networkStat) {
         this.networkArr = data.networkStat.map((stat: any) => stat.rate);
-        this.networkXaxisSeries = data.networkStat.map( (stat: any) => stat.time );
+        this.networkXaxisSeries = data.networkStat.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Network', this.networkArr, this.networkXaxisSeries );
     }, 1000 * 2);
@@ -626,7 +626,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'idle-time', this.currentFilter, '', '' );
       if (data.idleTime) {
         this.idleTimeArr = data.idleTime.map((stat: any) => stat.rate);
-        this.idleTimeXaxisSeries = data.idleTime.map( (stat: any) => stat.time );
+        this.idleTimeXaxisSeries = data.idleTime.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Idle Time', this.idleTimeArr, this.idleTimeXaxisSeries, 30 );
       return;
@@ -637,7 +637,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
     const data = await this.fetchChartData( 'idle-time', this.currentFilter, '', '' );
       if (data.idleTime) {
         this.idleTimeArr = data.idleTime.map((stat: any) => stat.rate);
-        this.idleTimeXaxisSeries = data.idleTime.map( (stat: any) => stat.time );
+        this.idleTimeXaxisSeries = data.idleTime.map((stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Idle Time', this.idleTimeArr, this.idleTimeXaxisSeries );
 
@@ -645,7 +645,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'idle-time', this.currentFilter, '', '' );
       if (data.idleTime) {
         this.idleTimeArr = data.idleTime.map((stat: any) => stat.rate);
-        this.idleTimeXaxisSeries = data.idleTime.map( (stat: any) => stat.time );
+        this.idleTimeXaxisSeries = data.idleTime.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Idle Time', this.idleTimeArr, this.idleTimeXaxisSeries );
     }, 1000 * 2);
@@ -659,7 +659,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'robo-err', this.currentFilter, '', '' );
       if (data.roboErr) {
         this.errorArr = data.roboErr.map((stat: any) => stat.rate);
-        this.errRateXaxisSeries = data.roboErr.map( (stat: any) => stat.time );
+        this.errRateXaxisSeries = data.roboErr.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Error', this.errorArr, this.errRateXaxisSeries, 30 );
       return;
@@ -670,7 +670,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
     const data = await this.fetchChartData( 'robo-err', this.currentFilter, '', '' );
       if (data.roboErr) {
         this.errorArr = data.roboErr.map((stat: any) => stat.rate);
-        this.errRateXaxisSeries = data.roboErr.map( (stat: any) => stat.time );
+        this.errRateXaxisSeries = data.roboErr.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Error', this.errorArr, this.errRateXaxisSeries );
 
@@ -678,7 +678,7 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       const data = await this.fetchChartData( 'robo-err', this.currentFilter, '', '' );
       if (data.roboErr) {
         this.errorArr = data.roboErr.map((stat: any) => stat.rate);
-        this.errRateXaxisSeries = data.roboErr.map( (stat: any) => stat.time );
+        this.errRateXaxisSeries = data.roboErr.map( (stat: any,index:any) => index+=1  );
       }
       this.plotChart( 'Error', this.errorArr, this.errRateXaxisSeries );
     }, 1000 * 2);

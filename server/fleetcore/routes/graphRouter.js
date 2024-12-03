@@ -19,7 +19,8 @@ const {
   getRoboErr,
   throughPut_starvation,
   throughPut_pickAccuracy,
-  throughPut_errorRate
+  throughPut_errorRate,
+  varname,
 } = require("../controllers/liveStreamController/graphController");
 
 // throughputRouter.get("/:mapId", getFleetThroughput, throughput); // when switch to fleet test..
@@ -36,5 +37,6 @@ graphRouter.post("/memory/:mapId", getMemoryStat);
 graphRouter.post("/network/:mapId", getNetworkStat);
 graphRouter.post("/idle-time/:mapId", getIdleTime);
 graphRouter.post("/robo-err/:mapId", getRoboErr);
+graphRouter.get("/sample", varname);
 
 module.exports = graphRouter;
