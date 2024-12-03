@@ -114,7 +114,7 @@ export class SidenavbarComponent implements OnInit {
         for (const [errorType, errors] of Object.entries(robot.robot_errors)) { // [errorType, errors] => [key, value]
           // if (errorType === "NO ERROR") continue;
           for (let error of (errors as any[])) {
-            let err_type = ["EMERGENCY STOP", "LIDAR_ERROR", "MANUAL MODE", "DOCKING", "NO ERROR"]; //Robot Errors List from RabbitMQ
+            let err_type = ["EMERGENCY STOP", "LIDAR_ERROR", "DOCKING ERROR", "LOADING ERROR", "NO ERROR"]; //Robot Errors List from RabbitMQ
             let criticality = "Normal";
 
             if(err_type.includes(err_type[0]) || err_type.includes(err_type[3])) 
