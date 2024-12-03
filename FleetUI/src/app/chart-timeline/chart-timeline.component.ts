@@ -203,6 +203,7 @@ export class ChartTimelineComponent implements OnInit {
         this.getLiveRoboInfo().then((names) => {
       this.roboNames = names;
     });
+    this.currentFilter='today'
     this.updateChart('data1', 'CPU Utilization');
     this.getLiveRoboInfo();
     console.log(this.getLiveRoboInfo)
@@ -343,7 +344,7 @@ export class ChartTimelineComponent implements OnInit {
 
   applyFilter(event: any): void {
     this.currentFilter = event.target.value.toLowerCase();
-    // console.log(this.currentFilter)
+  console.log(this.currentFilter,'current filter')    // console.log(this.currentFilter)
     const metricToDataKey: { [key: string]: string } = {
       'CPU Utilization': 'data1',
       'Robot Utilization': 'data2',
@@ -386,6 +387,7 @@ export class ChartTimelineComponent implements OnInit {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
     console.log(timeSpan)
     // alter to date..
+    console.log(timeSpan,'time span robot')
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/${endpoint}/${this.selectedMap.id}`,
       {

@@ -1,3 +1,4 @@
+
 import {
   Component,
   OnInit,
@@ -106,7 +107,6 @@ export class RobotsComponent implements OnInit {
             const fleetSub = this.isFleetService.isFleet$.subscribe((status: boolean) => {
               this.isFleet = status; // Update the value whenever it changes
               console.log('Received fleet statekjxhvjldlvkdlvk:', this.isFleet); // For debugging
-              sessionStorage.setItem('isFleet', String(this.isFleet)); // Save the value in session storage
             });
         
             this.subscriptions.push(fleetSub);
