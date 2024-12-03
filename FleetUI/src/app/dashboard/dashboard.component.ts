@@ -165,20 +165,35 @@ export class DashboardComponent implements AfterViewInit {
   }
   private subscriptions: Subscription[] = [];
   isFleet: boolean = false;
+  
 
   // PNG icon URLs
   fleetIconUrl: string = "../assets/fleet_icon.png";
   simulationIconUrl: string = "../assets/simulation_icon.png";
 
    // Method to toggle the mode and change icon, label, and background
+  // toggleMode() {
+  //   console.log(this.isFleet,"fleet condition")
+  //   console.log("toggle is clicked")
+  //   const newState = !this.isFleet;
+  //   this.isFleetService.setIsFleet(newState);
+  //   sessionStorage.setItem('isFleet', String(this.isFleet)); // Save the value in session storage
+  //   // this.modeChange.emit(this.buttonLabel);
+  //   this.redrawCanvas();
+  // }
   toggleMode() {
-    console.log(this.isFleet,"fleet condition")
-    console.log("toggle is clicked")
-    const newState = !this.isFleet;
-    this.isFleetService.setIsFleet(newState);
-    // this.modeChange.emit(this.buttonLabel);
+    console.log(this.isFleet, "fleet condition");
+    console.log("toggle is clicked");
+  
+    const newState = !this.isFleet; // Calculate the new state
+    this.isFleet = newState; // Update the local value of isFleet
+    this.isFleetService.setIsFleet(newState); // Update the service state
+    sessionStorage.setItem('isFleet', String(newState)); // Save the updated value to session storage
+  
+    // Trigger any additional actions needed
     this.redrawCanvas();
   }
+  
 
   // Get the appropriate icon based on the state
   get iconUrl(): string {
@@ -197,23 +212,23 @@ export class DashboardComponent implements AfterViewInit {
   }
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
-    // this.projectService.isFleetUp$.subscribe((status) => {
-    //   this.isFleetUp = status;
-    //   console.log(this.isFleetUp);
-    //   if(!this.isFleetUp){
-    //     this.disableAllRobos();
-    //     this.isInLive = false;  // Ensure we're not in live mode if fleet is down
-    //     this.projectService.setInLive(false);  // Update the service
-    //   }
-    // });
       // Subscribe to the fleet state
+  //     const savedIsFleet = sessionStorage.getItem('isFleet');
+  //     if (savedIsFleet !== null) {
+  //       this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
+  //     }
   const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
     this.isFleet = status;
-    console.log(status,'oijdrgioerj')
+    // console.log(status,'oijdrgioerj')
     this.updateUI(); // Update UI based on the current state
   });
 
   this.subscriptions.push(fleetSub);
+  const savedIsFleet = sessionStorage.getItem('isFleet');
+  if (savedIsFleet !== null) {
+    this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
+    this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
+  }
 
     this.selectedMap = this.projectService.getMapData();
     if(this.selectedMap == null){

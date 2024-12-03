@@ -13,13 +13,17 @@
     display: flex;
     justify-content: left;
     margin-bottom: 5px;
+    gap:20px;
     position: relative; /* Position relative for the dropdown arrow */
   }
+
   #myChart .apexcharts-toolbar {
     z-index: 0;
   }
   
-
+  #overall .link{
+    width: 150px;
+  }
   
   .menu {
     font-size: 14px;
