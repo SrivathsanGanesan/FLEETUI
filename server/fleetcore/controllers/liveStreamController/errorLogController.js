@@ -294,5 +294,5 @@ module.exports = {
   getRoboErrLogs,
   getFleetCoreErrLogs,
   getFleetErrLogs,
-  getTaskError
+  // getTaskError
 };

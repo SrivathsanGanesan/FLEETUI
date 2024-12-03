@@ -137,8 +137,13 @@
 
 
                       <!-- Cancel Button -->
-                      <button class="btn-common btn-cancel" (click)="onCancel(item)">Cancel</button>
-                    </div>
+                      <button 
+                      *ngIf="item.status !== 'COMPLETED'" 
+                      class="btn-common btn-cancel" 
+                      (click)="onCancel(item)">
+                      Cancel
+                    </button>
+                   </div>
                   </td>
                 </tr>
               </tbody>

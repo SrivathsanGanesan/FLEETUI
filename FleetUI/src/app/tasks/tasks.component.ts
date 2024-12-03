@@ -97,6 +97,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
     if (tasks)
       this.tasks = tasks.map((task: any) => {
+        // if(task.task_status.status === "COMPLETED")
         return {
           taskId: task.task_id,
           taskType: task.sub_task[0]?.task_type
