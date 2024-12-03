@@ -347,11 +347,14 @@ export class ChartTimelineComponent implements OnInit {
     const metricToDataKey: { [key: string]: string } = {
       'CPU Utilization': 'data1',
       'Robot Utilization': 'data2',
-      'Battery': 'data7',
       'Memory': 'data3',
+      // 'Battery': 'data7',
       'Network': 'data4',
+      // 'Memory': 'data3',
+      // 'Network': 'data4',
       'Idle Time': 'data5',
       'Error': 'data6',
+      'Battery': 'data7',
     };
 
     const dataKey = metricToDataKey[this.selectedMetric];
