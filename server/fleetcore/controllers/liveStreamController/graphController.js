@@ -572,20 +572,22 @@ const getCpuUtilization = async (req, res) => {
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
-    // if (type === 'Overall'){
-    //   var API_requestdata = "get_cummulativeCPU_Utilization"
-    // } else {
-    //   var API_requestdata = "get_CPU_Utilization"
-    // }
+    if (type === 'Overall'){
+      var API_requestdata = "get_cummulativeCPU_Utilization"
+      var  List_name = "cummulativeCPU_Utilization"
+    } else {
+      var API_requestdata = "get_CPU_Utilization"
+      var List_name  = "CPU_Utilization"
+    }
     
-    // let fleetcpuutilization = await getFleetSeriesData_robo(
-    //   startTime,
-    //   endTime,
-    //   API_requestdata
-    // )
-    const fleetcpuutilization = {CPU_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-                                              {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-                                              {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+    let fleetcpuutilization = await getFleetSeriesData_robo(
+      startTime,
+      endTime,
+      API_requestdata
+    )
+    // const fleetcpuutilization = {CPU_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+    //                                           {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+    //                                           {CPU_Utilization: 90},{CPU_Utilization: 80}]}
     // let fleetcpuutilization =[{
     //   'data':
     // }]
@@ -593,20 +595,20 @@ const getCpuUtilization = async (req, res) => {
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        cpuUtil:fleetcpuutilization['CPU_Utilization']
+        cpuUtil:fleetcpuutilization[List_name]
       });
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        cpuUtil:fleetcpuutilization['CPU_Utilization']
+        cpuUtil:fleetcpuutilization[List_name]
       });
     // PER DAY //
     else if (timeSpan === "today")
       console.log("body has excuted")
       return res.status(200).json({
         msg: "data sent",
-        cpuUtil:fleetcpuutilization['CPU_Utilization']
+        cpuUtil:fleetcpuutilization[List_name]
       });
 
   } catch (err) {
@@ -636,21 +638,22 @@ const getRoboUtilization = async (req, res) => {
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
-    // if (type === 'Overall'){
-    //   var API_requestdata = "get_cummulativerobotUtilization"
-    // } else {
-    //   var API_requestdata = "get_robotUtilization"
-    // }
-    /// Fleet Server Communication ///
-    // let fleetROBOutilization = await getFleetSeriesData_robo(
-    //   startTime,
-    //   endTime,
-    //   API_requestdata
-    // )
+    if (type === 'Overall'){
+      var API_requestdata = "get_cummulativerobotUtilization"
+    } else {
+      var API_requestdata = "get_robotUtilization"
+    }
+    // Fleet Server Communication ///
+    let fleetROBOutilization = await getFleetSeriesData_robo(
+      startTime,
+      endTime,
+      API_requestdata
+    )
+    console.log(fleetROBOutilization)
     
-    const fleetROBOutilization = {ROBO_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-                                              {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-                                              {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+    // const fleetROBOutilization = {ROBO_Utilization : [{Robot_Utilization: 0}, {Robot_Utilization: 1}, {Robot_Utilization: 10}, 
+    //                                           {Robot_Utilization: 50}, {Robot_Utilization: 60}, {Robot_Utilization: 40},
+    //                                           {Robot_Utilization: 90},{Robot_Utilization: 80}]}
     // let fleetcpuutilization =[{
     //   'data':
     // }]
@@ -658,19 +661,19 @@ const getRoboUtilization = async (req, res) => {
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        roboUtil:fleetROBOutilization['ROBO_Utilization']
+        roboUtil:fleetROBOutilization['Robot_Utilization']
       });
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        roboUtil:fleetROBOutilization['ROBO_Utilization']
+        roboUtil:fleetROBOutilization['Robot_Utilization']
       });
     // PER DAY //
     else if (timeSpan === "today")
       return res.status(200).json({
         msg: "data sent",
-        roboUtil:fleetROBOutilization['ROBO_Utilization']
+        roboUtil:fleetROBOutilization['Robot_Utilization']
       });
 
   } catch (err) {
@@ -699,21 +702,21 @@ const getBatteryStat = async (req, res) => {
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
-    // if (type === 'Overall'){
-    //   var API_requestdata = "get_cummulativebatteryPercentage"
-    // } else {
-    //   var API_requestdata = "get_robotBattery"
-    // }
+    if (type === 'Overall'){
+      var API_requestdata = "get_cummulativebatteryPercentage"
+    } else {
+      var API_requestdata = "get_robotBattery"
+    }
     
-    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
-    //   startTime,
-    //   endTime,
-    //   API_requestdata
-    // )
+    let fleetBATTERYutilization = await getFleetSeriesData_robo(
+      startTime,
+      endTime,
+      API_requestdata
+    )
     // WEEK WISE //
-    const fleetBATTERYutilization = {BATTERY_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+    // const fleetBATTERYutilization = {BATTERY_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+    //   {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+    //   {CPU_Utilization: 90},{CPU_Utilization: 80}]}
 
     if (timeSpan === "week")
       return res.status(200).json({
@@ -761,22 +764,22 @@ const getMemoryStat = async (req, res) => {
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
-    // if (type === 'Overall'){
-    //   var API_requestdata = "get_robotMemory"
-    // } else {
-    //   var API_requestdata = "get_robotMemory"
-    // }
+    if (type === 'Overall'){
+      var API_requestdata = "get_robotMemory"
+    } else {
+      var API_requestdata = "get_robotMemory"
+    }
     
-    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
-    //   startTime,
-    //   endTime,
-    //   API_requestdata
-    // )
+    let fleetMEMORYutilization = await getFleetSeriesData_robo(
+      startTime,
+      endTime,
+      API_requestdata
+    )
     
     // WEEK WISE //
-    const fleetMEMORYutilization = {MEMORY_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+    // const fleetMEMORYutilization = {MEMORY_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
+    //   {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
+    //   {CPU_Utilization: 90},{CPU_Utilization: 80}]}
 
     if (timeSpan === "week")
       return res.status(200).json({
@@ -806,6 +809,7 @@ const getMemoryStat = async (req, res) => {
   }
 };
 
+// Netwrok
 const getNetworkStat = async (req, res) => {
   console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
@@ -867,6 +871,7 @@ const getNetworkStat = async (req, res) => {
   }
 };
 
+// IDLE Time
 const getIdleTime = async (req, res) => {
   console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
@@ -928,6 +933,7 @@ const getIdleTime = async (req, res) => {
   }
 };
 
+// ROBOErro //
 const getRoboErr = async (req, res) => {
   console.log("ROBO request has excuted")
   const mapId = req.params.mapId;
