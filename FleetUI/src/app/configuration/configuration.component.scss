@@ -1295,7 +1295,7 @@ edit button */
 .sim-popup-content h3 {
   margin-top: 20px; 
   margin-bottom: 30px;
-  font-size: 30px;
+  font-size: 20px;
   font-family: "graphik", Arial,  sans-serif;
   color: #DA2127;
   font-weight: 600;
@@ -1303,12 +1303,15 @@ edit button */
   line-height: 1.5; /* Increase line height for better spacing between lines */
 }
 
+// .error-message{
 
+// }
 
 .sim-popup-content input[type="number"] {
-  width: 100%;
+  width: 50px;
   padding: 12px;
   margin-top: 10px;
+  margin-left: 5px;
   margin-bottom: 20px;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -1316,11 +1319,19 @@ edit button */
   font-family: "graphik", Arial,  sans-serif;
   transition: border-color 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  -moz-appearance: textfield; /* Firefox */
+  -webkit-appearance: none; /* Chrome, Safari, Edge */
+  appearance: none; /* Standard */
 }
 
 .sim-popup-content input[type="number"]:focus {
   border-color: #28a745; /* Green border on focus */
   outline: none;
+}
+.sim-popup-content input[type="number"]::-webkit-inner-spin-button,
+.sim-popup-content input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .sim-button-container {
