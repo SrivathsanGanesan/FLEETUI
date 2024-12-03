@@ -34,42 +34,40 @@ let memoryStatArr = getSampSeries();
 let networkStatArr = getSampSeries();
 let idleTimeArr = getSampSeries();
 let roboErrRateArr = getSampSeries();
-//..
-
-// Operation..
-///////////////////// Getting the graph charts data's for robo module ///////////////////////
-const getFleetSeriesData_robo = async (timeStamp1, timeStamp2, endpoint) => {
-  console.log(endpoint)
-  let response = await fetch(
-    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic cm9vdDp0b29y",
-      },
-      body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2}),
-    }
-  );
-  console.log(await response.json(),"data from fleet server")
-  return await response.json();
-};
 
 ///////////////////// Getting the graph charts data's for throughput module ///////////////////////
+// const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
+//   console.log(endpoint)
+//   console.log("fleet server has runned")
+//   let response = await fetch(
+//     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+//     {
+//       method: "POST",
+//       headers: {
+//         credentials: "include",
+//         "Content-Type": "application/json",
+//         Authorization: "Basic cm9vdDp0b29y",
+//       },
+//       body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2}),
+//     }
+//   );
+//   console.log(await response.json(),"data from fleet server")
+//   return await response.json();
+// };
+
 const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
-  console.log(endpoint)
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Basic cm9vdDp0b29y",
       },
-      body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2}),
+      body: JSON.stringify({timeStamp1: timeStamp1, timeStamp2: timeStamp2}),
     }
   );
-  console.log(await response.json(),"data from fleet server")
   return await response.json();
 };
 
@@ -575,22 +573,24 @@ const getCpuUtilization = async (req, res) => {
     if (type === 'Overall'){
       var API_requestdata = "get_cummulativeCPU_Utilization"
       var  List_name = "cummulativeCPU_Utilization"
+      // var fleetcpuutilization = {cummulativeCPU_Utilization : [{cummulativeCPU_Utilization: 0}, {cummulativeCPU_Utilization: 1}, {cummulativeCPU_Utilization: 10}, 
+      //   {cummulativeCPU_Utilization: 50}, {cummulativeCPU_Utilization: 60}, {cummulativeCPU_Utilization: 40},
+      //   {cummulativeCPU_Utilization: 90},{cummulativeCPU_Utilization: 80}]}
+
     } else {
       var API_requestdata = "get_CPU_Utilization"
       var List_name  = "CPU_Utilization"
+      // var fleetcpuutilization = {CPU_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 1}, 
+      //   {CPU_Utilization: 5}, {CPU_Utilization: 6}, {CPU_Utilization: 4},
+      //   {CPU_Utilization: 9},{CPU_Utilization: 8}]}
     }
     
-    let fleetcpuutilization = await getFleetSeriesData_robo(
+    var fleetcpuutilization = await getFleetSeriesData(
       startTime,
       endTime,
       API_requestdata
     )
-    // const fleetcpuutilization = {CPU_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-    //                                           {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-    //                                           {CPU_Utilization: 90},{CPU_Utilization: 80}]}
-    // let fleetcpuutilization =[{
-    //   'data':
-    // }]
+
     // WEEK WISE //
     if (timeSpan === "week")
       return res.status(200).json({
@@ -640,40 +640,43 @@ const getRoboUtilization = async (req, res) => {
 
     if (type === 'Overall'){
       var API_requestdata = "get_cummulativerobotUtilization"
+      var  List_name = "cummulativerobotUtilization"
+      var fleetROBOutilization = {cummulativerobotUtilization : [{cummulativerobotUtilization: 0}, {cummulativerobotUtilization: 1}, {cummulativerobotUtilization: 10}, 
+        {cummulativerobotUtilization: 50}, {cummulativerobotUtilization: 60}, {cummulativerobotUtilization: 40},
+        {cummulativerobotUtilization: 90},{cummulativerobotUtilization: 80}]}
+
     } else {
       var API_requestdata = "get_robotUtilization"
+      var List_name  = "Robot_Utilization"
+      var fleetROBOutilization = {Robot_Utilization : [{Robot_Utilization: 0}, {Robot_Utilization: 1}, {Robot_Utilization: 1}, 
+        {Robot_Utilization: 5}, {Robot_Utilization: 6}, {Robot_Utilization: 4},
+        {Robot_Utilization: 9},{Robot_Utilization: 8}]}
     }
-    // Fleet Server Communication ///
-    let fleetROBOutilization = await getFleetSeriesData_robo(
-      startTime,
-      endTime,
-      API_requestdata
-    )
-    console.log(fleetROBOutilization)
     
-    // const fleetROBOutilization = {ROBO_Utilization : [{Robot_Utilization: 0}, {Robot_Utilization: 1}, {Robot_Utilization: 10}, 
-    //                                           {Robot_Utilization: 50}, {Robot_Utilization: 60}, {Robot_Utilization: 40},
-    //                                           {Robot_Utilization: 90},{Robot_Utilization: 80}]}
-    // let fleetcpuutilization =[{
-    //   'data':
-    // }]
+    // Fleet Server Communication ///
+    // let fleetROBOutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )    
+  
     // WEEK WISE //
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        roboUtil:fleetROBOutilization['Robot_Utilization']
+        roboUtil:fleetROBOutilization[List_name]
       });
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        roboUtil:fleetROBOutilization['Robot_Utilization']
+        roboUtil:fleetROBOutilization[List_name]
       });
     // PER DAY //
     else if (timeSpan === "today")
       return res.status(200).json({
         msg: "data sent",
-        roboUtil:fleetROBOutilization['Robot_Utilization']
+        roboUtil:fleetROBOutilization[List_name]
       });
 
   } catch (err) {
@@ -704,15 +707,23 @@ const getBatteryStat = async (req, res) => {
 
     if (type === 'Overall'){
       var API_requestdata = "get_cummulativebatteryPercentage"
+      var  List_name = "cummulativebatteryPercentage"
+      var fleetBATTERYutilization = {cummulativebatteryPercentage : [{cummulativebatteryPercentage: 0}, {cummulativebatteryPercentage: 1}, {cummulativebatteryPercentage: 10}, 
+        {cummulativebatteryPercentage: 50}, {cummulativebatteryPercentage: 60}, {cummulativebatteryPercentage: 40},
+        {cummulativebatteryPercentage: 90},{cummulativebatteryPercentage: 80}]}
+      
     } else {
       var API_requestdata = "get_robotBattery"
+      var List_name  = "batteryPercentage"
+      var fleetBATTERYutilization = {batteryPercentage : [{batteryPercentage: 0}, {batteryPercentage: 1}, {batteryPercentage: 1}, 
+        {batteryPercentage: 5}, {batteryPercentage: 6}, {batteryPercentage: 4},
+        {batteryPercentage: 9},{batteryPercentage: 8}]}
     }
-    
-    let fleetBATTERYutilization = await getFleetSeriesData_robo(
-      startTime,
-      endTime,
-      API_requestdata
-    )
+    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
     // WEEK WISE //
     // const fleetBATTERYutilization = {BATTERY_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
     //   {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
@@ -721,21 +732,21 @@ const getBatteryStat = async (req, res) => {
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        batteryStat:fleetBATTERYutilization['BATTERY_Utilization']
+        batteryStat:fleetBATTERYutilization[List_name]
       });
 
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        batteryStat:fleetBATTERYutilization['BATTERY_Utilization']
+        batteryStat:fleetBATTERYutilization[List_name]
       });
 
     // PER DAY //
     else if (timeSpan === "today")
       return res.status(200).json({
         msg: "data sent",
-        batteryStat:fleetBATTERYutilization['BATTERY_Utilization']
+        batteryStat:fleetBATTERYutilization[List_name]
       });
 
   } catch (err) {
@@ -763,42 +774,46 @@ const getMemoryStat = async (req, res) => {
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
-
+    
     if (type === 'Overall'){
-      var API_requestdata = "get_robotMemory"
+      var API_requestdata = "get_robotBattery"
+      var  List_name = "cummlativeMemory"
+      var fleetMEMORYutilization = {cummlativeMemory : [{cummlativeMemory: 1}, {cummlativeMemory: 1}, {cummlativeMemory: 10}, 
+        {cummlativeMemory: 50}, {cummlativeMemory: 60}, {cummlativeMemory: 40},
+        {cummlativeMemory: 90},{cummlativeMemory: 80}]}
+      
     } else {
-      var API_requestdata = "get_robotMemory"
+      var API_requestdata = "get_robotBattery"
+      var List_name  = "robot_Memory"
+      var fleetMEMORYutilization = {robot_Memory : [{robot_Memory: 0}, {robot_Memory: 1}, {robot_Memory: 10}, 
+        {robot_Memory: 50}, {robot_Memory: 60}, {robot_Memory: 40},
+        {robot_Memory: 90},{robot_Memory: 80}]}
     }
-    
-    let fleetMEMORYutilization = await getFleetSeriesData_robo(
-      startTime,
-      endTime,
-      API_requestdata
-    )
-    
-    // WEEK WISE //
-    // const fleetMEMORYutilization = {MEMORY_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-    //   {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-    //   {CPU_Utilization: 90},{CPU_Utilization: 80}]}
+
+    // let fleetMEMORYutilization = await getFleetSeriesData_robo(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
 
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        batteryStat:fleetMEMORYutilization['MEMORY_Utilization']
+        memoryStat:fleetMEMORYutilization[List_name]
       });
 
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        batteryStat:fleetMEMORYutilization['MEMORY_Utilization']
+        memoryStat:fleetMEMORYutilization[List_name]
       });
 
     // PER DAY //
     else if (timeSpan === "today")
       return res.status(200).json({
         msg: "data sent",
-        batteryStat:fleetMEMORYutilization['MEMORY_Utilization']
+        memoryStat:fleetMEMORYutilization[List_name]
       });
 
   } catch (err) {
@@ -827,40 +842,36 @@ const getNetworkStat = async (req, res) => {
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
-    // if (type === 'Overall'){
-    //   var API_requestdata = "get_cummulativeNetwork"
-    // } else {
-    //   var API_requestdata = "get_robotNetwork"
-    // }
-    
-    // let fleetBATTERYutilization = await getFleetSeriesData_robo(
-    //   startTime,
-    //   endTime,
-    //   API_requestdata
-    // )
+    if (type === 'Overall'){
+      var API_requestdata = "get_cummulativeNetwork"
+      var  List_name = "cummulativeNetwork"
+      var fleetNETWORKKutilization = {cummulativeNetwork : [{cummulativeNetwork: 100}, {cummulativeNetwork: 1}, {cummulativeNetwork: 10}, 
+        {cummulativeNetwork: 50}, {cummulativeNetwork: 60}, {cummulativeNetwork: 40},
+        {cummulativeNetwork: 90},{cummulativeNetwork: 80}]}
+    } else {
+      var API_requestdata = "get_robotNetwork"
+      var List_name  = "robot_Network"
+      var fleetNETWORKKutilization = {robot_Network : [{robot_Network: 0}, {robot_Network: 1}, {robot_Network: 10}, 
+        {robot_Network: 50}, {robot_Network: 60}, {robot_Network: 40},
+        {robot_Network: 90},{robot_Network: 80}]}
+    }
     // WEEK WISE //
-    const fleetNETWORKKutilization = {NETWORK_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
-
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetNETWORKKutilization['NETWORK_Utilization']
+        networkUtil:fleetNETWORKKutilization[List_name]
       });
-
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetNETWORKKutilization['NETWORK_Utilization']
+        networkUtil:fleetNETWORKKutilization[List_name]
       });
-
     // PER DAY //
     else if (timeSpan === "today")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetNETWORKKutilization['NETWORK_Utilization']
+        networkUtil:fleetNETWORKKutilization[List_name]
       });
 
   } catch (err) {
@@ -889,11 +900,19 @@ const getIdleTime = async (req, res) => {
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
-    // if (type === 'Overall'){
-    //   var API_requestdata = "get_cummulativebatteryPercentage"
-    // } else {
-    //   var API_requestdata = "get_robotBattery"
-    // }
+    if (type === 'Overall'){
+      var API_requestdata = "get_idletime"
+      var  List_name = "cummulativeidle_Time"
+      var fleetIDLEUtilization = {cummulativeidle_Time : [{cummulativeidle_Time: 120}, {cummulativeidle_Time: 1}, {cummulativeidle_Time: 10}, 
+        {cummulativeidle_Time: 50}, {cummulativeidle_Time: 60}, {cummulativeidle_Time: 40},
+        {cummulativeidle_Time: 90},{cummulativeidle_Time: 80}]}
+    } else {
+      var API_requestdata = "get_idletime"
+      var List_name  = "cummulativeidle_Time"
+      var fleetIDLEUtilization = {cummulativeidle_Time : [{cummulativeidle_Time: 300}, {cummulativeidle_Time: 1}, {cummulativeidle_Time: 10}, 
+        {cummulativeidle_Time: 50}, {cummulativeidle_Time: 60}, {cummulativeidle_Time: 40},
+        {cummulativeidle_Time: 90},{cummulativeidle_Time: 80}]}
+    }
     
     // let fleetBATTERYutilization = await getFleetSeriesData_robo(
     //   startTime,
@@ -901,28 +920,24 @@ const getIdleTime = async (req, res) => {
     //   API_requestdata
     // )
     // WEEK WISE //
-    const fleetIDLEUtilization = {IDLE_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
-
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetIDLEUtilization['IDLE_Utilization']
+        idleTime:fleetIDLEUtilization[List_name]
       });
 
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetIDLEUtilization['IDLE_Utilization']
+        idleTime:fleetIDLEUtilization[List_name]
       });
 
     // PER DAY //
     else if (timeSpan === "today")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetIDLEUtilization['IDLE_Utilization']
+        idleTime:fleetIDLEUtilization[List_name]
       });
 
   } catch (err) {
@@ -951,40 +966,43 @@ const getRoboErr = async (req, res) => {
       return res.status(500).json({ msg: "map not found!", map: null });
     const mapData = await Map.findOne({ _id: mapId });
 
-    // if (type === 'Overall'){
-    //   var API_requestdata = "get_cummulativerobotUtilization"
-    // } else {
-    //   var API_requestdata = "get_robotUtilization"
-    // }
-    
+    if (type === 'Overall'){
+      var API_requestdata = "get_robotError"
+      var  List_name = "cummulativerobotError"
+      var fleetROBOUtilization = {cummulativerobotError : [{cummulativerobotError: 100}, {cummulativerobotError: 1}, {cummulativerobotError: 10}, 
+        {cummulativerobotError: 50}, {cummulativerobotError: 60}, {cummulativerobotError: 40},
+        {cummulativerobotError: 90},{cummulativerobotError: 80}]}
+    } else {
+      var API_requestdata = "get_robotError"
+      var List_name  = "robot_Error"
+      var fleetROBOUtilization = {robot_Error : [{robot_Error: 0}, {robot_Error: 1}, {robot_Error: 10}, 
+        {robot_Error: 50}, {robot_Error: 60}, {robot_Error: 40},
+        {robot_Error: 90},{robot_Error: 80}]}
+    }
     // let fleetBATTERYutilization = await getFleetSeriesData_robo(
     //   startTime,
     //   endTime,
     //   API_requestdata
     // )
     // WEEK WISE //
-    const fleetROBOUtilization = {ROBO_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 10}, 
-      {CPU_Utilization: 50}, {CPU_Utilization: 60}, {CPU_Utilization: 40},
-      {CPU_Utilization: 90},{CPU_Utilization: 80}]}
-
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetROBOUtilization['ROBO_Utilization']
+        roboErr:fleetROBOUtilization[List_name]
       });
 
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetROBOUtilization['ROBO_Utilization']
+        roboErr:fleetROBOUtilization[List_name]
       });
 
     // PER DAY //
     else if (timeSpan === "today")
       return res.status(200).json({
         msg: "data sent",
-        NetworkUtil:fleetROBOUtilization['ROBO_Utilization']
+        roboErr:fleetROBOUtilization[List_name]
       });
 
   } catch (err) {
