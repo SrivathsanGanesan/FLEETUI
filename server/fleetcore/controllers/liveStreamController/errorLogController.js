@@ -242,49 +242,49 @@ const getFleetErrLogs = async (req, res) => {
 };
 
 //.. Task error
-const getTaskError= async (req, res, next) => {
-  console.log('task error called')
-try {
-//..
-let taskErrorLog = await getFleetSeriesData(
-'',
-'',
-"get_tasks_errors"
-);
-console.log(taskErrorLog,'fleet starvation')
-console.log(timeSpan,'time span')
-console.log(timeStamp1,'timestamp 1')
-console.log(timeStamp2,'timestamp 2')
+// const getTaskError= async (req, res, next) => {
+//   console.log('task error called')
+// try {
+// //..
+// let taskErrorLog = await getFleetSeriesData(
+// '',
+// '',
+// "get_tasks_errors"
+// );
+// console.log(taskErrorLog,'fleet starvation')
+// console.log(timeSpan,'time span')
+// console.log(timeStamp1,'timestamp 1')
+// console.log(timeStamp2,'timestamp 2')
 
-return res.status(200).json({
-msg: "data sent",
-// throughput: throughPutArr,
-throughput: taskErrorLog,
-});
-} catch (err) {
-console.log("error occured : ", err);
-if (err.name === "CastError")
-return res.status(400).json({ error: err, msg: "not valid map Id" });
-res.status(500).json({ opt: "failed", error: err });
-}
-};
+// return res.status(200).json({
+// msg: "data sent",
+// // throughput: throughPutArr,
+// throughput: taskErrorLog,
+// });
+// } catch (err) {
+// console.log("error occured : ", err);
+// if (err.name === "CastError")
+// return res.status(400).json({ error: err, msg: "not valid map Id" });
+// res.status(500).json({ opt: "failed", error: err });
+// }
+// };
 
-//.. task error server log
-const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
-  let response = await fetch(
-    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic cm9vdDp0b29y",
-      },
-      body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2 }),
-    }
-  );
-  // console.log(await response.json(),"data from fleet server")
-  return await response.json();
-};
+// //.. task error server log
+// const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
+//   let response = await fetch(
+//     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+//     {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: "Basic cm9vdDp0b29y",
+//       },
+//       body: JSON.stringify({ timeStamp1: timeStamp1, timeStamp2: timeStamp2 }),
+//     }
+//   );
+//   // console.log(await response.json(),"data from fleet server")
+//   return await response.json();
+// };
 
 
 module.exports = {
@@ -294,5 +294,5 @@ module.exports = {
   getRoboErrLogs,
   getFleetCoreErrLogs,
   getFleetErrLogs,
-  getTaskError
+  // getTaskError
 };
