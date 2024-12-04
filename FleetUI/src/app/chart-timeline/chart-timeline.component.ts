@@ -463,12 +463,12 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       if (data.cpuUtil) {
         this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any)=> {
           let res;
-          console.log(stat,'stat')
+          // console.log(stat,'stat')
           for(let key in stat){
             res=stat[key]
             // console.log(key,"-----------------")
           }
-          console.log(res,'res')
+          // console.log(res,'res')
           return res;
         }
       );
