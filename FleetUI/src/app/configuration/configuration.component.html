@@ -59,9 +59,16 @@
         <!-- simulation -->
         <!-- robots.component.html -->
 
-          <div class="simulation-container" *ngIf="currentTable === 'robot'">
-            <button class="simulation-button" (click)="togglePopup()" [disabled]="!isMapAvailable()">Simulation</button>    
-          </div>
+        <div class="simulation-container" *ngIf="currentTable === 'robot'">
+          <button 
+            class="simulation-button" 
+            (click)="togglePopup()" 
+            [class.disabled]="!isMapAvailable()" 
+            [disabled]="!isMapAvailable()">
+            Simulation
+          </button>
+        </div>
+        
 
           <!-- Popup for selecting robots -->
           <div *ngIf="isPopupVisible" class="sim-popup-modal">
@@ -77,9 +84,9 @@
                 placeholder="Enter number of robots" 
                 min="1">
               </div>
-              <p *ngIf="robotCountError" class="error-message">
-                Enter a valid number of robots greater than 0.
-              </p>
+              <h4 *ngIf="robotCountError" class="error-message">
+                No Robots Added
+              </h4>
               <div class="sim-button-container">
                 <button (click)="addRobot()">Add</button>
                 <!-- <button (click)="closePopup()">Cancel</button> -->

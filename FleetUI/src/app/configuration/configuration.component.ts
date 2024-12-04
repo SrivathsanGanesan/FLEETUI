@@ -154,7 +154,7 @@ export class ConfigurationComponent implements AfterViewInit {
       if (this.projectService.getInitializeMapSelected() == 'true') {
         let currMapData = this.projectService.getMapData();
         if (currMapData) {
-          console.log('line 154');
+          // console.log('line 154');
           this.selectedMap = currMapData;
           this.setPaginatedData();
         }
@@ -432,7 +432,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
     this.setPaginatedData1();
     this.closeroboPopup();
-    console.log('line 425');
+    // console.log('line 425');
     this.ngOnInit();
   }
 
@@ -514,17 +514,19 @@ export class ConfigurationComponent implements AfterViewInit {
                 severity: 'success',
                 summary: 'Success',
                 detail: 'Robot deleted successfully!',
+                life: 4000,
               });
               this.fetchRobos(); // Refresh the list of robots
               this.setPaginatedData1(); // Update the paginator data
               this.cdRef.detectChanges(); // Trigger change detection
-              console.log('line 510');
+              // console.log('line 510');
               this.ngOnInit(); // Re-initialize the component if needed
             } else {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: 'Failed to delete the robot.',
+                life: 4000,
               });
             }
           })
@@ -534,6 +536,7 @@ export class ConfigurationComponent implements AfterViewInit {
               severity: 'error',
               summary: 'Error',
               detail: 'An error occurred while deleting the robot.',
+              life: 4000,
             });
           });
       }
@@ -665,7 +668,7 @@ export class ConfigurationComponent implements AfterViewInit {
         console.error('Error while fetching map data : ', response.status);
       let data = await response.json();
       // let { map } = data;
-      console.log('line 656');
+      // console.log('line 656');
       await this.ngOnInit();
 
       // if (this.projectService.getIsMapSet()) return; // yet to uncomment..
@@ -1273,13 +1276,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.isPopupVisible = true;
   }
 
-  closePopup() {
-    this.isPopupVisible = false;
-    this.isImageOpened = false;
-    this.chosenImageName = '';
-    this.imageHeight = 0;
-    this.imageWidth = 0;
-  }
+
   onCurrEditMapChange(currEditMap: boolean) {
     this.currEditMap = currEditMap;
   }
@@ -1454,7 +1451,7 @@ export class ConfigurationComponent implements AfterViewInit {
           this.setPaginatedData();
         }
 
-        console.log('line 1438');
+        // console.log('line 1438');
         this.ngOnInit();
         this.reloadTable();
         console.log(this.paginatedData, 'page data');
@@ -1787,7 +1784,7 @@ export class ConfigurationComponent implements AfterViewInit {
         }
         if (data.robo) {
           this.robotData = [...this.robotData, data.robo];
-          console.log('line 1768');
+          // console.log('line 1768');
           this.ngOnInit();
           // this.filteredRobotData = [...this.robotData];
           // this.cdRef.detectChanges();
@@ -1802,7 +1799,7 @@ export class ConfigurationComponent implements AfterViewInit {
       });
 
     this.isPopupOpen = false;
-    console.log('line 1783');
+    // console.log('line 1783');
     this.ngOnInit();
     this.cdRef.detectChanges();
   }
@@ -1839,7 +1836,7 @@ export class ConfigurationComponent implements AfterViewInit {
   // simulation robots
 
   isMapAvailable(): boolean {
-    return this.selectedMap != null && this.selectedMap.mapName != null;
+    return this.selectedMap != null && this.selectedMap.mapName != null ;
   }
 
   async togglePopup() {
@@ -1870,7 +1867,15 @@ export class ConfigurationComponent implements AfterViewInit {
     let data = await response.json();
     if (!data.error) return data.map.simMode;
   }
-robotCountError: boolean = false;
+  closePopup() {
+    this.isPopupVisible = false;
+    this.isImageOpened = false;
+    this.chosenImageName = '';
+    this.imageHeight = 0;
+    this.imageWidth = 0;
+    this.robotCountError = false;
+  }
+  robotCountError: boolean = false;
   async addRobot() {
     // Check for valid robot count
     if (this.robotCount <= 0) {
@@ -1919,7 +1924,8 @@ robotCountError: boolean = false;
         life: 4000,
       });
     }
-      
+        
+    this.robotCountError = false;
     // Update the totalRobots count to reflect all robots now in sim mode
     this.totalRobots = updatedSimRobos.length;
 
@@ -1965,7 +1971,12 @@ robotCountError: boolean = false;
   async deleteRobot(amrId: number) {
     try {
       if (this.totalRobots === 0) {
-        alert('No robots available to delete.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No Robots to Delete',
+          life: 4000,
+        });
         return;
       }
 
@@ -1982,10 +1993,7 @@ robotCountError: boolean = false;
       }
 
       // Filter out the robot to be deleted
-      const updatedSimRobos = existingSimRobos.filter(
-        (robot: { amrId: number }) => robot.amrId !== amrId
-      );
-
+      const updatedSimRobos = existingSimRobos.filter((robot: { amrId: number; }) => robot.amrId !== amrId);  
       // Update the backend with the updated list of robots
       let result = await this.updateSimInMap(updatedSimRobos);
       if (result) {

@@ -280,7 +280,6 @@
       <button
         class="dropdown-button"
         (click)="toggleDropdown()"
-        [disabled]="!simMode.length"
       >
         Enable Robot
         <svg
@@ -300,7 +299,7 @@
       </button>
 
       <!-- Dropdown content, will only display if robots are present -->
-      <div class="dropdown-content" *ngIf="isDropdownOpen && simMode.length">
+      <div class="dropdown-content" *ngIf="isDropdownOpen">
         <div *ngIf="isFleet">
           <div *ngFor="let robot of robos; let i = index" class="dropdown-item">
             <span>{{ robot.roboDet.id }}</span>

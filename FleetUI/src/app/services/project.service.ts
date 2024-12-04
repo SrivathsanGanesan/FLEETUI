@@ -53,7 +53,6 @@ export class ProjectService {
   }
 
   setMapData(mapData: any) {
-    console.log('set map called')
     this.cookieService.set('map-data', JSON.stringify(mapData), {
       path: '/',
     });
@@ -64,7 +63,6 @@ export class ProjectService {
   }
 
   getMapData() {
-    console.log('get map called')
     const storedMap = this.cookieService.get('map-data');
     return storedMap ? JSON.parse(storedMap) : null;
   }
@@ -105,11 +103,11 @@ export class ProjectService {
 
   setInitializeMapSelected(value:boolean){
     this.initializeMapSelectedStatus=value
-    console.log('set initializer called and status--->',this.initializeMapSelectedStatus)
+    // console.log('set initializer called and status--->',this.initializeMapSelectedStatus)
     this.cookieService.set('mapInitializeStatus',this.initializeMapSelectedStatus)
   }
   getInitializeMapSelected(){
-    console.log('get initialize called and status -->',this.cookieService.get('mapInitializeStatus'))
+    // console.log('get initialize called and status -->',this.cookieService.get('mapInitializeStatus'))
     return this.cookieService.get('mapInitializeStatus');
   }
 }
