@@ -1,6 +1,6 @@
 const { getIPRange } = require("get-ip-range");
-// const NetworkScanner = require("network-scanner-js");
-// const netScan = new NetworkScanner();
+const NetworkScanner = require("network-scanner-js");
+const netScan = new NetworkScanner();
 const arp = require("node-arp");
 const dns = require("dns");
 
