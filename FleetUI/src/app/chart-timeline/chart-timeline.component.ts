@@ -385,7 +385,7 @@ export class ChartTimelineComponent implements OnInit {
 
   async fetchChartData( endpoint: string, timeSpan: string, startTime: string, endTime: string ) {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
-    console.log(timeSpan)
+    // console.log(timeStamp1,'---------------------',timeStamp2)
     // alter to date..
     console.log(timeSpan,'time span robot')
     const response = await fetch(
@@ -459,18 +459,23 @@ return(Math.floor(new Date(lastMonthDate).setHours(0,0,0)/1000))
       clearInterval(this.cpuUtilTimeInterval);
       this.cpuUtilTimeInterval = 0;
       const data = await this.fetchChartData( 'cpu-utilization', this.currentFilter, '', '' );
-      console.log(data,'data-cpu util')
+      console.log(data.cpuUtil.CPU_Utilization,'data-cpu util')
       if (data.cpuUtil) {
-        this.cpuUtilArr = data.cpuUtil.map((stat: any)=> {
+        this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any)=> {
           let res;
+          console.log(stat,'stat')
           for(let key in stat){
             res=stat[key]
-            console.log(key,"-----------------")
+            // console.log(key,"-----------------")
           }
+          console.log(res,'res')
           return res;
         }
       );
-        this.cpuXaxisSeries = data.cpuUtil.map( (stat: any,index:any) => index+=1 );
+        this.cpuXaxisSeries = data.cpuUtil.CPU_Utilization.map( (stat: any,index:any) => index+=1 );
+      }
+      let mapArr=(stat:any)=>{
+
       }
       console.log(this.cpuUtilArr,'<----cpu')
       console.log(this.cpuXaxisSeries,'x axis')
