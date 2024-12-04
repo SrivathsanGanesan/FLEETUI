@@ -146,8 +146,26 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  deleteRobot(index: number) {
-    this.simMode.splice(index, 1);  // Remove robot from the list
+  async deleteRobot(robot: any, index: number) {
+    // console.log(robot);
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/dlt-sim-robo`,
+      {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          roboId: robot.amrId, 
+        }),
+      }
+    );
+    let data = await response.json();
+    if (data.error || !data.isRoboDeleted) return;
+    if(data.isRoboDeleted)
+      this.simMode = this.simMode.filter((robo: any) => robot.amrId !== robo.amrId )
+      this.redrawCanvas();
+    // this.simMode.splice(index, 1);  // Remove robot from the list
   }
     
   constructor(
@@ -194,7 +212,7 @@ export class DashboardComponent implements AfterViewInit {
     this.isInLive = this.projectService.getInLive();
     this.projectService.isFleetUp$.subscribe((status) => {      
       this.isFleetUp = status;
-      console.log(this.isFleetUp);
+      // console.log(this.isFleetUp);
       if(!this.isFleetUp){ 
         this.disableAllRobos();
         this.isInLive = false;  // Ensure we're not in live mode if fleet is down
@@ -231,11 +249,15 @@ export class DashboardComponent implements AfterViewInit {
       this.zoomLevel = img.width > 1355 || img.height > 664 ? 0.8 : 1.0;
     // }
     };
-    await this.getMapDetails();
-    if(!this.isInLive) this.initSimRoboPos();
+    await this.getMapDetails(); 
+    // this.showModelCanvas = false;
+    this.projectService.setShowModelCanvas(false);
+    this.cdRef.detectChanges();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+    if(!this.isInLive) this.initSimRoboPos();
     this.loadCanvas();
     if(this.isInLive){
+      this.initSimRoboPos();
       await this.getLivePos();
       if (this.posEventSource){ this.posEventSource.close();}
     } else if (!this.isInLive){ // yet to look at it..      
@@ -243,8 +265,7 @@ export class DashboardComponent implements AfterViewInit {
       await this.getLivePos();
       this.projectService.setInLive(true);
       this.isInLive = true;
-    }
-    
+    }    
     // console.log(this.simMode);
   }
 
@@ -511,14 +532,15 @@ export class DashboardComponent implements AfterViewInit {
 
   async toggleModelCanvas() {
     // this.fetchRoboPos ();   
-    this.showModelCanvas = !this.showModelCanvas;
+    // this.showModelCanvas = !this.showModelCanvas;
+    this.projectService.setShowModelCanvas(!this.projectService.getShowModelCanvas());
     if(this.isInLive){
-      this.initSimRoboPos();
+      // this.initSimRoboPos();
       await this.getLivePos();
       // if (this.posEventSource){ this.posEventSource.close();}
     }
     // await this.getLivePos(); 
-    if(this.showModelCanvas){
+    if(this.projectService.getShowModelCanvas()){ // this.showModelCanvas use instead..
     this.messageService.add({
       severity: 'info',
       summary: 'Map options',
@@ -621,7 +643,7 @@ export class DashboardComponent implements AfterViewInit {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
-    if (!this.showModelCanvas) {      
+    if (!this.projectService.getShowModelCanvas()) { // this.showModelCanvas use instead..      
       ctx.restore();
       return;
     }
@@ -998,12 +1020,21 @@ export class DashboardComponent implements AfterViewInit {
       else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
       return robo;
     })
-    this.messageService.add({
-      severity: 'info',
-      summary: `${robot.roboName} has been enabled.`,
-      detail: 'Robot has been Enabled',
-      life: 4000,
-    });
+    if(data.isRoboEnabled)
+      this.messageService.add({
+        severity: 'info',
+        summary: `${robot.roboName || robot.name} has been enabled.`,
+        detail: 'Robot has been Enabled',
+        life: 4000,
+      });
+      else{
+        this.messageService.add({
+          severity: 'error',
+          summary: `${robot.roboName || robot.name} has not been enabled.`,
+          detail: 'Robot has not been Enabled',
+          life: 4000,
+        });
+      }
     console.log(`${robot.roboName} has been enabled.`);
   }
 
@@ -1113,13 +1144,14 @@ export class DashboardComponent implements AfterViewInit {
       ctx.scale(this.zoomLevel, this.zoomLevel);
       ctx.restore(); // Reset transformation after drawing
 
-      if (this.showModelCanvas) {
+      if (this.projectService.getShowModelCanvas()) { // this.showModelCanvas
         this.redrawOtherElements(ctx, mapImage); // Pass the mapImage for transformations
       }
       // Draw the map image
       ctx.drawImage(mapImage, 0, 0);
+
       // If showModelCanvas is true, draw additional elements
-      if (this.showModelCanvas) {
+      if (this.projectService.getShowModelCanvas()) { // this.showModelCanvas
         this.redrawOtherElements(ctx, mapImage);
       }
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
@@ -1370,7 +1402,7 @@ async onInitMapImg() {
   }
   
   async plotAllRobots(robotsData: any) {
-    console.log(robotsData.speed);
+    // console.log(robotsData.speed);
     
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -1398,7 +1430,7 @@ async onInitMapImg() {
       ctx.drawImage(mapImage, 0, 0);
       ctx.restore(); // Reset transformation after drawing the map
 
-      if (this.showModelCanvas) {
+      if (this.projectService.getShowModelCanvas()) { // this.showModelCanvas
         this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
         // Create a temporary canvas to draw nodes and edges
         // const tempCanvas = document.createElement('canvas');
@@ -1417,7 +1449,7 @@ async onInitMapImg() {
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
         let imgState ="robotB";
-        console.log("hey",state);          
+        // console.log("hey",state);          
         if(state==="INITSTATE"){
           imgState="init";
         }

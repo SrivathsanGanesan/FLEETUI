@@ -387,8 +387,8 @@ const mapUpdate = async (req, res) => {
     });
     return res.status(200).json({ updatedData: doc, msg: "data updated" });
   } catch (error) {
-    console.log("err occs : ", err);
-    if (err.code === 11000)
+    console.log("err occs : ", error);
+    if (error.code === 11000)
       return res.status(400).json({
         msg: "duplicate key error, might conflicts in field values",
         map: null,
@@ -510,6 +510,23 @@ const deleteMap = async (req, res) => {
   }
 };
 
+const deleteSimModeRobo = async (req, res) => {
+  const { mapId, roboId } = req.body;
+  try {
+    const isExists = await Map.exists({ _id: mapId });
+    if (!isExists) return res.status(404).json({ error: null, isRoboDeleted: false, msg: "Map not found!" });
+    let map = await Map.findOneAndUpdate(
+      { _id: mapId },
+      { $pull: { simMode: { amrId: roboId } } },
+      {new: true}
+    );
+    return res.status(200).json({ error: null, isRoboDeleted: true, msg: "Virtual robo deleted!" });
+  } catch (error) {
+    console.log("err occs : ", error);
+    res .status(500) .json({ error: error, isRoboDeleted: false, msg: "error occured while inserting!", });
+  }
+}
+
 const delMapImg = async (req, res, next) => {
   try {
     const mapDoc = await Map.findOne({ mapId: req.params.mapId });
@@ -559,6 +576,7 @@ module.exports = {
   mapUpdate,
   newRoboInMap,
   deleteRoboInMap,
+  deleteSimModeRobo,
   deleteMap,
   delMapImg,
   newMapImg,
