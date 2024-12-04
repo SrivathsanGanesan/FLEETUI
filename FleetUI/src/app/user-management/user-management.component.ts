@@ -113,6 +113,39 @@ export class UserManagementComponent implements OnInit {
     ],
   ];
 
+
+
+
+  pages:any = [
+    {
+      order: 0,
+      nameTag: "GENERAL",
+      isOpen:true,
+      general: "General"
+    },
+    {
+      order:1,
+      nameTag: "CONFIGURATION",
+      isOpen: false,
+      general: "Configuration"
+    }
+  ]
+
+
+  changePage(order:any) {
+    // alert(order)
+    this.pages.map((page:any)=> {
+      page.isOpen = false
+    })
+
+    this.pages[order].isOpen = true
+    this.activeTab = this.pages[order].general
+    // alert(this.activeTab)
+
+  }
+
+
+
   userPermissionOptions = [
     {
       order: 0,
@@ -172,17 +205,13 @@ export class UserManagementComponent implements OnInit {
 
 
   generalPermissions = [
-    { order: 0, nameTag: 'DASHBOARD', icon: '../../assets/icons/dashboard_icon copy.svg', enabled: false },
-    { order: 1, nameTag: 'STATISTICS', icon: '../../assets/icons/Statistics.svg', enabled: false },
-    { order: 2, nameTag: 'ROBOTS', icon: '../../assets/icons/Statistics_icon.svg', enabled: false },
-    { order: 3, nameTag: 'ERRORS', icon: '../../assets/icons/Logs_icons.svg', enabled: false },
-    { order: 4, nameTag: 'TASKS', icon: '../../assets/icons/Tasks_icons.svg', enabled: false },
-    { order: 5, nameTag: 'USER MANAGEMENT', icon: '../../assets/icons/Usermanagement_icons.svg', enabled: false },
+    { order: 0, nameTag: 'DASHBOARD', icon: '../../assets/icons/dashboard_icon copy.svg', enabled: false, description: "Control user access to dashboard data and performance insights." },
+    { order: 1, nameTag: 'STATISTICS', icon: '../../assets/icons/Statistics.svg', enabled: false, description: "Manage access to statistical data and analytical reports." },
+    { order: 2, nameTag: 'ROBOTS', icon: '../../assets/icons/Statistics_icon.svg', enabled: false, description: "Grant control over robot monitoring and performance tracking." },
+    { order: 3, nameTag: 'ERRORS', icon: '../../assets/icons/Logs_icons.svg', enabled: false, description: "Manage permissions to view and resolve error logs and issues."},
+    { order: 4, nameTag: 'TASKS', icon: '../../assets/icons/Tasks_icons.svg', enabled: false, description: "Control user access to create, edit, and view tasks." },
+    { order: 5, nameTag: 'USER MANAGEMENT', icon: '../../assets/icons/Usermanagement_icons.svg', enabled: false, description:  "Administer user roles and permissions within the system."  },
 ];
-
-
-
-
 
 
   configurationPermissions = [
