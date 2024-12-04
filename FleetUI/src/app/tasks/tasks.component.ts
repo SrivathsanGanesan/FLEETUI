@@ -32,18 +32,18 @@ export class TasksComponent implements OnInit, AfterViewInit {
   }
 
   async onCancel(item: any) {    
-    let response = await fetch(
-      `http://192.168.2.103:3300/fms/amr/cancelTask`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Basic cm9vdDp0b29y",
-        },
-        body: JSON.stringify({taskId:item.taskId}),
-      }
-    );
+    // let response = await fetch(
+    //   `http://192.168.2.103:3300/fms/amr/cancelTask`,
+    //   {
+    //     method: "POST",
+    //     credentials: "include",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: "Basic cm9vdDp0b29y",
+    //     },
+    //     body: JSON.stringify({taskId:item.taskId}),
+    //   }
+    // );
     // return await response.json();
 
     // Find the index of the item in the tasks array and remove it
