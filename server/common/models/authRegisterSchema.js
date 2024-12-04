@@ -16,48 +16,83 @@ const userProjListschema = new Schema(
 
 const userPermission = new Schema(
   {
-    dashboard: {
-      enable: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      edit: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      view: { type: Boolean, default: false },
+    // dashboard: {
+    //   enable: { type: Boolean, default: false },
+    //   create: { type: Boolean, default: false },
+    //   edit: { type: Boolean, default: false },
+    //   delete: { type: Boolean, default: false },
+    //   view: { type: Boolean, default: false },
+    // },
+
+    generalPermissions: {
+      dashboard: { type: Boolean, default: false },
+      statistics: { type: Boolean, default: false },
+      robots: { type: Boolean, default: false },
+      errors: { type: Boolean, default: false },
+      tasks: { type: Boolean, default: false },
+      userManagement: { type: Boolean, default: false },
     },
-    statistics: {
-      enable: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      edit: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      view: { type: Boolean, default: false },
-    },
-    robots: {
-      enable: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      edit: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      view: { type: Boolean, default: false },
-    },
-    configuration: {
-      enable: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      edit: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      view: { type: Boolean, default: false },
-    },
-    errLogs: {
-      enable: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      edit: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      view: { type: Boolean, default: false },
-    },
-    tasks: {
-      enable: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      edit: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      view: { type: Boolean, default: false },
-    },
+
+    configurationPermissions: {
+      environment: {
+        enabled: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+        view: { type: Boolean, default: false }
+      },
+      robot: {
+        enabled: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+        view: { type: Boolean, default: false }
+
+      },
+      fleet: {
+        enabled: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+        view: { type: Boolean, default: false }
+      }
+    }
+
+    // statistics: {
+    //   enable: { type: Boolean, default: false },
+    //   create: { type: Boolean, default: false },
+    //   edit: { type: Boolean, default: false },
+    //   delete: { type: Boolean, default: false },
+    //   view: { type: Boolean, default: false },
+    // },
+    // robots: {
+    //   enable: { type: Boolean, default: false },
+    //   create: { type: Boolean, default: false },
+    //   edit: { type: Boolean, default: false },
+    //   delete: { type: Boolean, default: false },
+    //   view: { type: Boolean, default: false },
+    // },
+    // configuration: {
+    //   enable: { type: Boolean, default: false },
+    //   create: { type: Boolean, default: false },
+    //   edit: { type: Boolean, default: false },
+    //   delete: { type: Boolean, default: false },
+    //   view: { type: Boolean, default: false },
+    // },
+    // errLogs: {
+    //   enable: { type: Boolean, default: false },
+    //   create: { type: Boolean, default: false },
+    //   edit: { type: Boolean, default: false },
+    //   delete: { type: Boolean, default: false },
+    //   view: { type: Boolean, default: false },
+    // },
+    // tasks: {
+    //   enable: { type: Boolean, default: false },
+    //   create: { type: Boolean, default: false },
+    //   edit: { type: Boolean, default: false },
+    //   delete: { type: Boolean, default: false },
+    //   view: { type: Boolean, default: false },
+    // },
   },
   { _id: false, versionKey: false }
 );
