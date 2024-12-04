@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, Observable, retry } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class ProjectService {
 
   constructor(private cookieService: CookieService, private http: HttpClient) {}
 
-  private apiUrl = '/get_robot_utilization';
+  private apiUrl = `http://${environment.API_URL}:${environment.PORT}/get_robot_utilization`;
 
   setProjectCreated(created: boolean) {
     this.cookieService.set('is-project-setted', JSON.stringify(created), {
