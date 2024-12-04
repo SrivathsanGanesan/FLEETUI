@@ -73,7 +73,7 @@ export class RobotDashboardComponent implements OnInit {
     const mapId = this.selectedMap.id;
 
     let averageSpeed = this.getAvgSpeed();
-    this.statisticsData.averageSpeed = averageSpeed;
+    this.statisticsData.averageSpeed = averageSpeed || "Loading...";
 
     // let totDistance = this.getTotDistance()
     // this.statisticsData.totalDistance = totDistance;
@@ -249,10 +249,10 @@ export class RobotDashboardComponent implements OnInit {
   }
 
   getAvgSpeed(): string{
-    if (!('robots' in this.robotActivities)) return `${0} m/s`;
+    if (!('robots' in this.robotActivities)) return `Loading...`;
 
     let { robots }: any = this.robotActivities;
-    if (!robots.length) return `${0} m/s`;
+    if (!robots.length) return `Loading...`;
 
     let tot_speed = 0;
     for (let i = 0; i < robots.length; i++){

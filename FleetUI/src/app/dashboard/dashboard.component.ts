@@ -232,13 +232,13 @@ export class DashboardComponent implements AfterViewInit {
     // }
     };
     await this.getMapDetails();
-    this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
+    this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     this.loadCanvas();
     if(this.isInLive){
-      if (this.posEventSource) this.posEventSource.close();
       await this.getLivePos();
-    } else if (!this.isInLive){ // yet to look at it..
+      if (this.posEventSource){ this.posEventSource.close();}
+    } else if (!this.isInLive){ // yet to look at it..      
       if (this.posEventSource) this.posEventSource.close();
       await this.getLivePos();
       this.projectService.setInLive(true);
@@ -510,8 +510,14 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async toggleModelCanvas() {
-    // this.fetchRoboPos ();
+    // this.fetchRoboPos ();   
     this.showModelCanvas = !this.showModelCanvas;
+    if(this.isInLive){
+      this.initSimRoboPos();
+      await this.getLivePos();
+      // if (this.posEventSource){ this.posEventSource.close();}
+    }
+    // await this.getLivePos(); 
     if(this.showModelCanvas){
     this.messageService.add({
       severity: 'info',
@@ -615,7 +621,7 @@ export class DashboardComponent implements AfterViewInit {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
-    if (!this.showModelCanvas) {
+    if (!this.showModelCanvas) {      
       ctx.restore();
       return;
     }
