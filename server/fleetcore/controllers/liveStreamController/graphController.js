@@ -573,23 +573,23 @@ const getCpuUtilization = async (req, res) => {
     if (type === 'Overall'){
       var API_requestdata = "get_cummulativeCPU_Utilization"
       var  List_name = "cummulativeCPU_Utilization"
-      // var fleetcpuutilization = {cummulativeCPU_Utilization : [{cummulativeCPU_Utilization: 0}, {cummulativeCPU_Utilization: 1}, {cummulativeCPU_Utilization: 10}, 
-      //   {cummulativeCPU_Utilization: 50}, {cummulativeCPU_Utilization: 60}, {cummulativeCPU_Utilization: 40},
-      //   {cummulativeCPU_Utilization: 90},{cummulativeCPU_Utilization: 80}]}
+      var fleetcpuutilization = {cummulativeCPU_Utilization : [{cummulativeCPU_Utilization: 0}, {cummulativeCPU_Utilization: 1}, {cummulativeCPU_Utilization: 10}, 
+        {cummulativeCPU_Utilization: 50}, {cummulativeCPU_Utilization: 60}, {cummulativeCPU_Utilization: 40},
+        {cummulativeCPU_Utilization: 90},{cummulativeCPU_Utilization: 80}]}
 
     } else {
       var API_requestdata = "get_CPU_Utilization"
       var List_name  = "CPU_Utilization"
-      // var fleetcpuutilization = {CPU_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 1}, 
-      //   {CPU_Utilization: 5}, {CPU_Utilization: 6}, {CPU_Utilization: 4},
-      //   {CPU_Utilization: 9},{CPU_Utilization: 8}]}
+      var fleetcpuutilization = {CPU_Utilization : [{CPU_Utilization: 0}, {CPU_Utilization: 1}, {CPU_Utilization: 1}, 
+        {CPU_Utilization: 5}, {CPU_Utilization: 6}, {CPU_Utilization: 4},
+        {CPU_Utilization: 9},{CPU_Utilization: 8}]}
     }
     
-    var fleetcpuutilization = await getFleetSeriesData(
-      startTime,
-      endTime,
-      API_requestdata
-    )
+    // var fleetcpuutilization = await getFleetSeriesData(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
 
     // WEEK WISE //
     if (timeSpan === "week")
