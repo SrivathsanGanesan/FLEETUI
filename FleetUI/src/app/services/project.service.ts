@@ -10,9 +10,13 @@ import { environment } from '../../environments/environment.development';
 export class ProjectService {
   private projectCreatedKey = 'is-project-setted';
   private selectedProjectKey = 'project-data';
+
   private inLive: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( false );
-  private isFleetUp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( false );
-  initializeMapSelectedStatus:any
+  private isFleetUp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  
+  initializeMapSelectedStatus: any
+  showModelCanvas: boolean = false;
+  
   inLive$ = this.inLive.asObservable();
   isFleetUp$ = this.isFleetUp.asObservable();
 
@@ -107,8 +111,17 @@ export class ProjectService {
     // console.log('set initializer called and status--->',this.initializeMapSelectedStatus)
     this.cookieService.set('mapInitializeStatus',this.initializeMapSelectedStatus)
   }
+
   getInitializeMapSelected(){
     // console.log('get initialize called and status -->',this.cookieService.get('mapInitializeStatus'))
     return this.cookieService.get('mapInitializeStatus');
+  }
+
+  setShowModelCanvas(state: boolean) {
+    this.showModelCanvas = state;
+  }
+
+  getShowModelCanvas():boolean{
+    return this.showModelCanvas;
   }
 }

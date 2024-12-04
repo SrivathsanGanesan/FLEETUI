@@ -181,7 +181,7 @@
     class="w-[60%] h-[85%] relative overflow-y-scroll scrollCSS MinimalScrollCSS py-14 bg-[#D9D9D9] rounded-[20px] px-14 flex gap-1 flex-col">
 
     <!-- Title and Close Button -->
-    <!-- <span class="flex items-center justify-between w-full mb-3 ">
+<!-- <span class="flex items-center justify-between w-full mb-3 ">
       <span class="flex flex-col items-start justify-center  gap-3.5">
         <p class="text-[38px]  text-[#DA2127] font-bold">User Permission</p>
         <p class="flex items-center text-[14px] justify-between gap-2 text-[#7B7B7B] font-medium">
@@ -209,7 +209,7 @@
       </button>
     </span> -->
 
-    <!-- <span class="flex flex-col items-start justify-center gap-3 w-full">
+<!-- <span class="flex flex-col items-start justify-center gap-3 w-full">
       @for (permission of userPermissionOptions; track permission) {
       <span class="w-full flex flex-col border-b-2 pb-5 gap-3 text-[#535353]">
         <span class="flex gap-3 items-center">
@@ -218,7 +218,7 @@
         <span class="grid grid-cols-5 w-full font-medium text-[14px] items-center">
 
           <!-- Enable Toggle -->
-          <!-- <span class="w-full flex items-center justify-start gap-3">
+<!-- <span class="w-full flex items-center justify-start gap-3">
             <label class="switch">
               <input type="checkbox" [checked]="userPermissionState[permission.order][permission.isAvail]"
                 (change)="changeUserPermission(permission.order, permission.isAvail)" class="sr-only peer">
@@ -227,8 +227,8 @@
             <p class="text-[15px] font-medium">ENABLE</p>
           </span> -->
 
-          <!-- Create Toggle -->
-          <!-- <span class="w-full flex items-center justify-start gap-3">
+<!-- Create Toggle -->
+<!-- <span class="w-full flex items-center justify-start gap-3">
 
             <label class="switch">
               <input type="checkbox" [checked]="userPermissionState[permission.order][permission.create]"
@@ -240,8 +240,8 @@
 
           </span> -->
 
-          <!-- Edit Toggle -->
-          <!-- <span class="w-full flex items-center justify-start gap-3">
+<!-- Edit Toggle -->
+<!-- <span class="w-full flex items-center justify-start gap-3">
 
             <input type="checkbox" [checked]="userPermissionState[permission.order][permission.edit]"
               (change)="changeUserPermission(permission.order, permission.edit)" class="sr-only peer">
@@ -255,8 +255,8 @@
 
           </span> -->
 
-          <!-- Delete Toggle -->
-          <!-- <span class="w-full flex items-center justify-start gap-3">
+<!-- Delete Toggle -->
+<!-- <span class="w-full flex items-center justify-start gap-3">
 
             <label class="switch">
               <input type="checkbox" [checked]="userPermissionState[permission.order][permission.delete]"
@@ -268,8 +268,8 @@
 
           </span> -->
 
-          <!-- View Toggle -->
-          <!-- <span class="w-full flex items-center justify-start gap-3">
+<!-- View Toggle -->
+<!-- <span class="w-full flex items-center justify-start gap-3">
 
             <input type="checkbox" [checked]="userPermissionState[permission.order][permission.view]"
               (change)="changeUserPermission(permission.order, permission.view)" class="sr-only peer">
@@ -284,41 +284,41 @@
 
           </span> -->
 
-        <!-- </span> -->
-      <!-- </span> -->
-      <!-- } -->
-    <!-- </span>  -->
+<!-- </span> -->
+<!-- </span> -->
+<!-- } -->
+<!-- </span>  -->
 
 
-    <!-- <span class="mt-7 w-full flex items-center justify-end">
+<!-- <span class="mt-7 w-full flex items-center justify-end">
       <button class="px-10 py-3 bg-[#D30000] rounded-md text-white font-semibold text-[14px]"
         (click)="saveEditPermission()">Edit Permission</button>
     </span> -->
-  <!-- </div> -->
+<!-- </div> -->
 <!-- </div>  -->
 
 <!-- <div [ngClass]="{'hidden': !userPermissionOCstate}"
   class="relative overflow-hidden flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50"> -->
 
-  <!-- <div class="w-[60%] h-[85%] relative overflow-y-scroll scrollCSS MinimalScrollCSS py-14 bg-[#D9D9D9] rounded-[20px] px-14 flex gap-5 flex-col"> -->
-    <!-- Title and Close Button -->
-    <!-- <div class="flex items-center justify-between w-full mb-5">
+<!-- <div class="w-[60%] h-[85%] relative overflow-y-scroll scrollCSS MinimalScrollCSS py-14 bg-[#D9D9D9] rounded-[20px] px-14 flex gap-5 flex-col"> -->
+<!-- Title and Close Button -->
+<!-- <div class="flex items-center justify-between w-full mb-5">
       <div class="flex flex-col items-start justify-center gap-2.5">
         <p class="text-[38px] text-[#DA2127] font-bold">User Permission</p>
         <p class="text-[14px] text-[#7B7B7B] font-medium">Select a category to manage permissions</p>
       </div> -->
 
-      <!-- <button class="close-button" (click)="userPermissionPopUpClose()">
+<!-- <button class="close-button" (click)="userPermissionPopUpClose()">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
           <path fill="none" d="M0 0h24v24H0z" />
           <path
             d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z" />
         </svg>
       </button> -->
-    <!-- </div> -->
+<!-- </div> -->
 
-    <!-- Permission Cards -->
-    <!-- <div class="grid grid-cols-2 gap-6">
+<!-- Permission Cards -->
+<!-- <div class="grid grid-cols-2 gap-6">
       <div *ngFor="let permission of userPermissionOptions" class="cursor-pointer">
         <div class="bg-white p-5 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition transform duration-300 ease-in-out">
           <p class="text-[22px] font-semibold text-black mb-2">{{ permission.nameTag }}</p>
@@ -327,24 +327,26 @@
       </div>
     </div> -->
 
-    <!-- Save Button -->
-    <!-- <div class="mt-7 w-full flex items-center justify-end">
+<!-- Save Button -->
+<!-- <div class="mt-7 w-full flex items-center justify-end">
       <button class="px-10 py-3 bg-[#D30000] rounded-md text-white font-semibold text-[14px]"
         (click)="saveEditPermission()">Save Changes</button>
     </div> -->
-  <!-- </div> -->
+<!-- </div> -->
 <!-- </div> -->
 
 
 <!--Joel's code-->
 
 <div [ngClass]="{'hidden': !userPermissionOCstate}"
-  class="relative overflow-hidden flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50"> 
+  class="relative overflow-hidden flex items-center justify-center w-screen h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50 box-border">
 
-  <div class="w-[60%] h-[85%] relative overflow-y-scroll scrollCSS MinimalScrollCSS py-10 bg-[#D9D9D9] rounded-[20px] px-10 flex flex-col gap-5">
+  <div
+    class="w-[70%] h-[70%] relative overflow-y-auto scrollCSS MinimalScrollCSS py-10 bg-[#D9D9D9] rounded-[20px] px-10 flex flex-col gap-5">
+
     <!-- Title and Close Button -->
     <div class="flex items-center justify-between w-full">
-       <div class="flex flex-col items-start gap-2.5">
+      <div class="flex flex-col items-start gap-2.5">
         <p class="text-[38px] text-[#DA2127] font-bold">User Permissions</p>
         <p class="text-[14px] text-[#7B7B7B] font-medium">Select a category to manage permissions</p>
       </div>
@@ -355,122 +357,121 @@
             d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z" />
         </svg>
       </button>
-    </div> 
+    </div>
 
     <!-- Tabs and Save Button -->
-     <div class="flex items-center justify-between border-b-2 pb-3">
-      <div class="flex gap-3">
-        <button
-          [ngClass]="{'bg-[#D30000] text-white': activeTab === 'General', 'bg-[#E4E4E4] text-[#535353]': activeTab !== 'General'}"
-          class="px-6 py-2 rounded-lg text-[16px] font-medium transition duration-200"
-          (click)="setActiveTab('General')">
-          GENERAL
-        </button>
-        <button
-          [ngClass]="{'bg-[#D30000] text-white': activeTab === 'Configuration', 'bg-[#E4E4E4] text-[#535353]': activeTab !== 'Configuration'}"
-          class="px-6 py-2 rounded-lg text-[16px] font-medium transition duration-200"
-          (click)="setActiveTab('Configuration')">
-          CONFIGURATION
-        </button>
+    <div class="flex items-center justify-between border-b-2 border-gray-800 pb-3">
+      <div class="flex">
+
+        <div [ngClass]="{
+            'transform translate-x-0': pages[0].isOpen,
+            'transform translate-x-[100%]': pages[1].isOpen,
+          }" class="flex absolute w-[180px] h-[50px] rounded-md duration-300 bg-[#FF3333]">
+
+        </div>
+
+        <!-- Tab Buttons -->
+        @for (page of pages; track page) {
+        <span (click)=changePage(page.order)
+          class="flex z-40 items-center justify-center text-black w-[180px] cursor-pointer h-[50px]">
+          <p [ngClass]="{'text-white font-bold duration-300 ': page.isOpen}">{{page.nameTag}}</p>
+        </span>
+        }
       </div>
       <button class="px-8 py-3 bg-[#D30000] rounded-md text-white font-semibold text-[14px]"
         (click)="saveEditPermission()">UPDATE</button>
-    </div> 
-
-    <!-- Tab Content -->
-    <div *ngIf="activeTab === 'General'" class="mt-5"> 
-      <div class="grid grid-cols-2 gap-6"> 
-        <div *ngFor="let permission of generalPermissions" class="cursor-pointer"> 
-          <div
-            class="bg-white p-5 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition transform duration-300 ease-in-out relative">
-            <div class="flex items-center mb-2">
-              <!-- Icon to the left of the title -->
-              <img 
-              [src]="permission.icon" 
-              alt="{{ permission.nameTag }} icon" 
-              class="icon-size mr-3 image" />
-            
-              <p class="text-[22px] font-semibold text-black">{{ permission.nameTag }}</p>
-            </div>
-            <p class="text-[14px] text-[#7B7B7B]">Manage permissions for {{ permission.nameTag.toLowerCase() }}.</p>
-            
-            <!-- Toggle Switch -->
-            <div class="absolute bottom-5 right-5">
-              <label class="switch">
-                <input type="checkbox" [(ngModel)]="permission.enabled" />
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div> 
-        </div> 
-      </div> 
     </div>
-    
-    
-    
-    
-    
-    
 
-
-
-    <!-- <div *ngIf="activeTab === 'Configuration'" class="mt-5"> 
-      <!-- Populate Configuration Content Here -->
-       <!-- <div class="grid grid-cols-2 gap-6">  -->
-         <!-- <div *ngFor="let permission of configurationPermissions" class="cursor-pointer">  -->
-           <!-- <div 
-             class="bg-white p-5 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition transform duration-300 ease-in-out">
-            <p class="text-[22px] font-semibold text-black mb-2">{{ permission.nameTag }}</p>
-            <p class="text-[14px] text-[#7B7B7B]">Manage permissions for {{ permission.nameTag.toLowerCase() }}.</p> 
-           </div> 
-         </div> 
-       </div> 
-     </div> -->
-
-
-
-     <div *ngIf="activeTab === 'Configuration'" class="mt-5">
-      <div class="grid grid-cols-3 gap-4">
-        <!-- Each column represents a main heading -->
-        <div *ngFor="let config of configurationSettings">
-          <!-- Main Heading and Toggle -->
-          <div class="flex items-center justify-between mb-3">
-            <div>
-              <p class="text-[20px] font-semibold text-black">{{ config.title }}</p>
-              <p class="text-[14px] text-[#7B7B7B]">{{ config.description }}</p>
-            </div>
-            <label class="switch">
-              <input type="checkbox" [(ngModel)]="config.enabled" (change)="onToggleMain(config)" class="sr-only peer">
-              <span class="slider"></span>
-            </label>
-          </div>
-    
-          <!-- Sub-options (Create, Edit, Delete, View) -->
-          <div class="flex flex-col gap-3">
-            <div *ngFor="let subOption of config.subOptions" class="flex items-center gap-3">
-              <label class="switch">
-                <input type="checkbox" [disabled]="!config.enabled" [(ngModel)]="subOption.enabled"
-                  (change)="onToggleSub(config, subOption)" class="sr-only peer">
-                <span class="slider"></span>
-              </label>
-              <p [class.text-gray-400]="!config.enabled" [class.text-black]="config.enabled" 
-                class="text-[15px] font-medium">{{ subOption.label }}</p>
+    <!-- Tab Content Wrapper -->
+    <div class="relative w-full h-full mt-5 overflow-hidden">
+      <!-- General Tab -->
+      <div class="absolute top-0 left-0 w-full h-full transition-transform duration-500 ease-in-out"
+        [class.translate-x-[-100%]]="activeTab !== 'General'" [class.translate-x-0]="activeTab === 'General'">
+        <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div *ngFor="let permission of generalPermissions">
+            <!-- Card -->
+            <div
+              class="bg-white p-5 w-full h-[200px] gap-3 rounded-[15px] shadow-lg hover:shadow-xl hover:scale-[1.02] transition transform duration-300 ease-in-out relative flex flex-col">
+              <div class="flex items-center justify-start gap-3">
+                <!-- Icon -->
+                <div class="bg-[#FF3333] rounded-md size-[50px] flex items-center justify-center">
+                  <img [src]="permission.icon" alt="{{ permission.nameTag }} icon" class="size-[60%]" />
+                </div>
+                <!-- Title -->
+                <p class="text-[26px] font-black pt-1  text-black">{{ permission.nameTag }}</p>
+              </div>
+              <!-- Description -->
+              <p class="text-[16px] text-[#7B7B7B] text-wrap text-justify leading-5 indent-4 tracking-wide flex-grow">
+                 {{ permission.description }}
+              </p>
+              <!-- Toggle Switch -->
+              <div class="self-end">
+                <label class="switch">
+                  <input type="checkbox" [(ngModel)]="permission.enabled" />
+                  <span class="slider"></span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Configuration Tab -->
+
+      <div class="absolute top-0 left-0 w-full h-full transition-transform duration-500 ease-in-out"
+        [class.translate-x-0]="activeTab === 'Configuration'"
+        [class.translate-x-[100%]]="activeTab !== 'Configuration'">
+
+        <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+         
+          <!-- Cards -->
+          <div *ngFor="let config of configurationSettings; let i = index" class="p-4 border-r-2 border-gray-800 last:border-none">
+
+            <!-- Card -->
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <p class="text-[24px] sm:text-[20px] lg:text-[28px] font-semibold text-black">{{ config.title }}</p>
+                <p class="text-[16px] sm:text-[14px] lg:text-[18px] text-[#7B7B7B]">{{ config.description }}</p>
+
+              </div>
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="config.enabled" class="sr-only peer" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Suboptions -->
+            <div class="flex flex-col gap-4">
+              <div *ngFor="let subOption of config.subOptions; let i = index" class="flex flex-col">
+                <!-- Each Row -->
+                <div class="flex items-center justify-between gap-4 py-2">
+                  <!-- Option Text -->
+                  <p [class.text-gray-400]="!config.enabled" [class.text-black]="config.enabled"
+                    class="text-[15px] font-medium">
+                    {{ subOption.label }}
+                  </p>
+
+                  <!-- Toggle Switch -->
+                  <label class="switch">
+                    <input type="checkbox" [disabled]="!config.enabled" [(ngModel)]="subOption.enabled"
+                      class="sr-only peer" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
-    
+
+  </div>
+</div>
 
 
- 
-    
-
-
-
-     
-   </div> 
- </div> 
 
 
 
