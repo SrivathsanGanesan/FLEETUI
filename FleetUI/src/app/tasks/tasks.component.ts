@@ -31,16 +31,33 @@ export class TasksComponent implements OnInit, AfterViewInit {
     console.log(`${action} task: ${item.taskId}`);
   }
 
-  onCancel(item: any) {
-    // Find the index of the item in the tasks array and remove it
-    const index = this.tasks.indexOf(item);
-    if (index > -1) {
-      this.tasks.splice(index, 1); // Remove the task from the tasks array
+  async onCancel(item: any) {    
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks/cancel-task`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.mapData.id,
+          taskId:item.taskId
+        }),
+      }
+    );
+    let data=await response.json();
+    console.log(item);
+    
+    if(!data.isTaskCancelled) {
+      alert(data.response || data.msg)
+      return
     }
-
-    // Update the filteredTaskData and reapply pagination
-    this.filteredTaskData = [...this.tasks]; // Ensure it's updated
-    this.setPaginatedData(); // Recalculate the displayed paginated data
+    if(data.isTaskCancelled){
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Info',
+        detail: 'Task Cancelled',
+      });
+    }
   }
 
   mapData: any | null = null;

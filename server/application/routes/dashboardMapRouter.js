@@ -7,6 +7,7 @@ const {
   mapUpdate,
   newRoboInMap,
   deleteRoboInMap,
+  deleteSimModeRobo,
   deleteMap,
   delMapImg,
   newMapImg,
@@ -30,6 +31,7 @@ dashboardMapRouter.get("/:mapName", mapGet);
 dashboardMapRouter.post("/update-map/:mapName", mapUpdate);
 dashboardMapRouter.put("/:mapName/robots", newRoboInMap);
 dashboardMapRouter.delete("/:mapId/robots/:roboId", deleteRoboInMap);
+dashboardMapRouter.put("/dlt-sim-robo", deleteSimModeRobo);
 dashboardMapRouter.delete("/:mapName", deleteMap);
 dashboardMapRouter.delete("/:mapId/delete_img", delMapImg);
 dashboardMapRouter.post(
