@@ -167,9 +167,9 @@ export class DashboardComponent implements AfterViewInit {
     );
     let data = await response.json();
     if (data.error || !data.isRoboDeleted) return;
-    if(data.isRoboDeleted){
+    if(data.isRoboDeleted)
       this.simMode = this.simMode.filter((robo: any) => robot.amrId !== robo.amrId )
-      this.redrawCanvas();}
+      this.redrawCanvas();
     // this.simMode.splice(index, 1);  // Remove robot from the list
   }
 
@@ -202,8 +202,8 @@ export class DashboardComponent implements AfterViewInit {
   //   this.redrawCanvas();
   // }
   toggleMode() {
-    // console.log(this.isFleet, "fleet condition");
-    // console.log("toggle is clicked");
+    console.log(this.isFleet, "fleet condition");
+    console.log("toggle is clicked");
 
     const newState = !this.isFleet; // Calculate the new state
     this.isFleet = newState; // Update the local value of isFleet
@@ -238,18 +238,18 @@ export class DashboardComponent implements AfterViewInit {
   //     if (savedIsFleet !== null) {
   //       this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
   //     }
-  // const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
-  //   this.isFleet = status;
-  //   // console.log(status,'oijdrgioerj')
-  //   this.updateUI(); // Update UI based on the current state
-  // });
+  const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
+    this.isFleet = status;
+    // console.log(status,'oijdrgioerj')
+    this.updateUI(); // Update UI based on the current state
+  });
 
-  // this.subscriptions.push(fleetSub);
-  // const savedIsFleet = sessionStorage.getItem('isFleet');
-  // if (savedIsFleet !== null) {
-  //   this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
-  //   this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
-  //     }
+  this.subscriptions.push(fleetSub);
+  const savedIsFleet = sessionStorage.getItem('isFleet');
+  if (savedIsFleet !== null) {
+    this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
+    this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
+      }
 
     this.projectService.isFleetUp$.subscribe((status) => {
       this.isFleetUp = status;
@@ -260,9 +260,9 @@ export class DashboardComponent implements AfterViewInit {
         this.projectService.setInLive(false);  // Update the service
       }
     });
-      // console.log(this.projectService.getInitializeMapSelected(),'dash board')
+      console.log(this.projectService.getInitializeMapSelected(),'dash board')
     if(this.projectService.getInitializeMapSelected()== 'true'){
-      // console.log('dash board map initiallizee')
+      console.log('dash board map initiallizee')
       this.canvasloader=true
       this.selectedMap = this.projectService.getMapData();
     }
@@ -296,8 +296,8 @@ export class DashboardComponent implements AfterViewInit {
     // this.showModelCanvas = false;
     this.projectService.setShowModelCanvas(false);
     this.cdRef.detectChanges();
-    if(!this.isInLive) this.initSimRoboPos();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+    if(!this.isInLive) this.initSimRoboPos();
     this.loadCanvas();
     if(this.isInLive){
       this.initSimRoboPos();
@@ -322,7 +322,7 @@ export class DashboardComponent implements AfterViewInit {
       }, 300); // Adjust timing for the effect
     }
      // For example, log the current mode for debugging
-  // console.log(`Current Mode: ${this.isFleet ? 'Fleet' : 'Simulation'}`);
+  console.log(`Current Mode: ${this.isFleet ? 'Fleet' : 'Simulation'}`);
 
   // If you have more dynamic UI elements to update, you can trigger them here.
   // Example: trigger animations or visual updates if needed.
@@ -336,6 +336,7 @@ export class DashboardComponent implements AfterViewInit {
   }
   ngAfterViewInit(): void {
     console.log('myCanvas:', this.myCanvas);
+
     if (this.myCanvas) {
       const canvas = this.myCanvas.nativeElement;
       this.addMouseMoveListener(canvas);
@@ -1541,6 +1542,8 @@ async onInitMapImg() {
 
       if (this.projectService.getShowModelCanvas()) { // this.showModelCanvas
         this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
+        // this.redrawOtherElements(ctx, mapImage);
+
         // Create a temporary canvas to draw nodes and edges
         // const tempCanvas = document.createElement('canvas');
         // const tempCtx = tempCanvas.getContext('2d');

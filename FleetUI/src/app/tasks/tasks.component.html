@@ -138,8 +138,8 @@
 
                       <!-- Cancel Button -->
                       <button 
-                      *ngIf="item.status !== 'COMPLETED'" 
-                      class="btn-common btn-cancel" 
+                      *ngIf="item.status !== 'COMPLETED' && item.status !== 'CANCELLED'" 
+                       class="btn-common btn-cancel" 
                       (click)="onCancel(item)">
                       Cancel
                     </button>
