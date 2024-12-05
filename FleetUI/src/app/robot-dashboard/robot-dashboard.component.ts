@@ -73,7 +73,7 @@ export class RobotDashboardComponent implements OnInit {
     const mapId = this.selectedMap.id;
 
     let averageSpeed = this.getAvgSpeed();
-    this.statisticsData.averageSpeed = averageSpeed;
+    this.statisticsData.averageSpeed = averageSpeed || "Loading...";
 
     // let totDistance = this.getTotDistance()
     // this.statisticsData.totalDistance = totDistance;
@@ -189,9 +189,21 @@ export class RobotDashboardComponent implements OnInit {
         criticality: robo.Criticality,
       };
     });
-    this.statisticsData.robotUtilization = `${(tot_robotUtilization / robots.length) * 100} %`;
-    this.statisticsData.totalDistance = `${tot_Dis/robots.length} m`;
-    this.statisticsData.networkConnection = `${(tot_Network/robots.length)||"Loading..."} dB`;
+    this.statisticsData.robotUtilization = 
+      tot_robotUtilization && robots.length 
+      ? `${((tot_robotUtilization / robots.length) * 100).toFixed(2)} %` 
+      : "Loading...";
+    
+    this.statisticsData.totalDistance = 
+        tot_Dis && robots.length 
+        ? `${(tot_Dis / robots.length).toFixed(2)} m` 
+        : "Loading...";
+        
+    this.statisticsData.networkConnection = 
+        tot_Network && robots.length 
+        ? `${(tot_Network / robots.length).toFixed(2)} dB` 
+        : "Loading...";
+
     this.filteredRobotActivities = this.robotActivities;
 
   }
@@ -237,10 +249,10 @@ export class RobotDashboardComponent implements OnInit {
   }
 
   getAvgSpeed(): string{
-    if (!('robots' in this.robotActivities)) return `${0} m/s`;
+    if (!('robots' in this.robotActivities)) return `Loading...`;
 
     let { robots }: any = this.robotActivities;
-    if (!robots.length) return `${0} m/s`;
+    if (!robots.length) return `Loading...`;
 
     let tot_speed = 0;
     for (let i = 0; i < robots.length; i++){

@@ -154,7 +154,7 @@ export class ConfigurationComponent implements AfterViewInit {
       if (this.projectService.getInitializeMapSelected() == 'true') {
         let currMapData = this.projectService.getMapData();
         if (currMapData) {
-          console.log('line 154');
+          // console.log('line 154');
           this.selectedMap = currMapData;
           this.setPaginatedData();
         }
@@ -432,7 +432,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
     this.setPaginatedData1();
     this.closeroboPopup();
-    console.log('line 425');
+    // console.log('line 425');
     this.ngOnInit();
   }
 
@@ -514,17 +514,19 @@ export class ConfigurationComponent implements AfterViewInit {
                 severity: 'success',
                 summary: 'Success',
                 detail: 'Robot deleted successfully!',
+                life: 4000,
               });
               this.fetchRobos(); // Refresh the list of robots
               this.setPaginatedData1(); // Update the paginator data
               this.cdRef.detectChanges(); // Trigger change detection
-              console.log('line 510');
+              // console.log('line 510');
               this.ngOnInit(); // Re-initialize the component if needed
             } else {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: 'Failed to delete the robot.',
+                life: 4000,
               });
             }
           })
@@ -534,6 +536,7 @@ export class ConfigurationComponent implements AfterViewInit {
               severity: 'error',
               summary: 'Error',
               detail: 'An error occurred while deleting the robot.',
+              life: 4000,
             });
           });
       }
@@ -665,7 +668,7 @@ export class ConfigurationComponent implements AfterViewInit {
         console.error('Error while fetching map data : ', response.status);
       let data = await response.json();
       // let { map } = data;
-      console.log('line 656');
+      // console.log('line 656');
       await this.ngOnInit();
 
       // if (this.projectService.getIsMapSet()) return; // yet to uncomment..
@@ -1448,7 +1451,7 @@ export class ConfigurationComponent implements AfterViewInit {
           this.setPaginatedData();
         }
 
-        console.log('line 1438');
+        // console.log('line 1438');
         this.ngOnInit();
         this.reloadTable();
         console.log(this.paginatedData, 'page data');
@@ -1781,7 +1784,7 @@ export class ConfigurationComponent implements AfterViewInit {
         }
         if (data.robo) {
           this.robotData = [...this.robotData, data.robo];
-          console.log('line 1768');
+          // console.log('line 1768');
           this.ngOnInit();
           // this.filteredRobotData = [...this.robotData];
           // this.cdRef.detectChanges();
@@ -1796,7 +1799,7 @@ export class ConfigurationComponent implements AfterViewInit {
       });
 
     this.isPopupOpen = false;
-    console.log('line 1783');
+    // console.log('line 1783');
     this.ngOnInit();
     this.cdRef.detectChanges();
   }

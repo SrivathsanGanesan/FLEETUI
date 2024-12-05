@@ -9,9 +9,13 @@ import { HttpClient } from '@angular/common/http';
 export class ProjectService {
   private projectCreatedKey = 'is-project-setted';
   private selectedProjectKey = 'project-data';
+
   private inLive: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( false );
-  private isFleetUp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( false );
-  initializeMapSelectedStatus:any
+  private isFleetUp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  
+  initializeMapSelectedStatus: any
+  showModelCanvas: boolean = false;
+  
   inLive$ = this.inLive.asObservable();
   isFleetUp$ = this.isFleetUp.asObservable();
 
@@ -53,7 +57,6 @@ export class ProjectService {
   }
 
   setMapData(mapData: any) {
-    console.log('set map called')
     this.cookieService.set('map-data', JSON.stringify(mapData), {
       path: '/',
     });
@@ -64,7 +67,6 @@ export class ProjectService {
   }
 
   getMapData() {
-    console.log('get map called')
     const storedMap = this.cookieService.get('map-data');
     return storedMap ? JSON.parse(storedMap) : null;
   }
@@ -105,11 +107,20 @@ export class ProjectService {
 
   setInitializeMapSelected(value:boolean){
     this.initializeMapSelectedStatus=value
-    console.log('set initializer called and status--->',this.initializeMapSelectedStatus)
+    // console.log('set initializer called and status--->',this.initializeMapSelectedStatus)
     this.cookieService.set('mapInitializeStatus',this.initializeMapSelectedStatus)
   }
+
   getInitializeMapSelected(){
-    console.log('get initialize called and status -->',this.cookieService.get('mapInitializeStatus'))
+    // console.log('get initialize called and status -->',this.cookieService.get('mapInitializeStatus'))
     return this.cookieService.get('mapInitializeStatus');
+  }
+
+  setShowModelCanvas(state: boolean) {
+    this.showModelCanvas = state;
+  }
+
+  getShowModelCanvas():boolean{
+    return this.showModelCanvas;
   }
 }

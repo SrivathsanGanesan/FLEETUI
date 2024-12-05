@@ -148,8 +148,11 @@ export class StatisticsComponent {
     // if (throughputData.systemThroughput)
     //   this.statisticsData.systemThroughput = throughputData.systemThroughput;
     let uptime = await this.fetchFleetStatus('system-uptime', { projectId: projectId });
-    if (uptime.systemUptime)
-      this.statisticsData.systemUptime = uptime.systemUptime;
+    if (uptime.systemUptime){
+      this.statisticsData.systemUptime = uptime.systemUptime;}
+    else{
+      this.statisticsData.systemUptime = "Loading...";
+    }
     await this.fetchFleetStatus('success-rate', { // yet to take..
       mapId: mapId,
     });
@@ -198,7 +201,7 @@ export class StatisticsComponent {
       let tot_responsiveness = 0;
 
       let fleet_tasks = tasks.map((task: any) => {
-        tot_responsiveness += task.TaskAddTime - task.TaskAssignTime
+        tot_responsiveness += task.TaskAssignTime - task.TaskAddTime
 
         return {
           taskId: task.task_id,
@@ -275,10 +278,19 @@ export class StatisticsComponent {
       let completedTasks = tasksStatus[0];
       let errorTasks = tasksStatus[3];
       let cancelledTasks = tasksStatus[4];
-      this.statisticsData.successRate = (
-        ((completedTasks ) / completedTasks +( errorTasks + cancelledTasks)) *
-        100
-      ).toFixed(2);
+      if (
+        completedTasks === 0 ||
+        isNaN(completedTasks) ||
+        isNaN(errorTasks) ||
+        isNaN(cancelledTasks)
+      ) {
+        this.statisticsData.successRate = 'Loading...';
+      } else {
+        this.statisticsData.successRate = (
+          ((completedTasks / (completedTasks + errorTasks)) *
+            100) || 0
+        ).toFixed(2);
+      }
       return tasksStatus;
     }
     return [0, 0, 0, 0, 0];

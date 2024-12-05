@@ -49,6 +49,7 @@ export class UserManagementComponent implements OnInit {
   deleteUserRole = '';
   pageSize:any = 0
   pageNumber:any = 0
+  activeTab: string = 'General'; // Default tab
 
   ngOnInit(): void {
     this.selectedProject = this.projectService.getSelectedProject();
@@ -65,6 +66,7 @@ export class UserManagementComponent implements OnInit {
     this.fetchUsers();
     this.setPaginatedData();
   }
+
 
   userPermissionState = [
     [
@@ -110,6 +112,39 @@ export class UserManagementComponent implements OnInit {
       false, //index = 5 TASKS =[isAvail, Create, Edit Delete, View]
     ],
   ];
+
+
+
+
+  pages:any = [
+    {
+      order: 0,
+      nameTag: "GENERAL",
+      isOpen:true,
+      general: "General"
+    },
+    {
+      order:1,
+      nameTag: "CONFIGURATION",
+      isOpen: false,
+      general: "Configuration"
+    }
+  ]
+
+
+  changePage(order:any) {
+    // alert(order)
+    this.pages.map((page:any)=> {
+      page.isOpen = false
+    })
+
+    this.pages[order].isOpen = true
+    this.activeTab = this.pages[order].general
+    // alert(this.activeTab)
+
+  }
+
+
 
   userPermissionOptions = [
     {
@@ -168,6 +203,24 @@ export class UserManagementComponent implements OnInit {
     },
   ];
 
+
+  generalPermissions = [
+    { order: 0, nameTag: 'DASHBOARD', icon: '../../assets/icons/dashboard_icon copy.svg', enabled: false, description: "Control user access to dashboard data and performance insights." },
+    { order: 1, nameTag: 'STATISTICS', icon: '../../assets/icons/Statistics.svg', enabled: false, description: "Manage access to statistical data and analytical reports." },
+    { order: 2, nameTag: 'ROBOTS', icon: '../../assets/icons/Statistics_icon.svg', enabled: false, description: "Grant control over robot monitoring and performance tracking." },
+    { order: 3, nameTag: 'ERRORS', icon: '../../assets/icons/Logs_icons.svg', enabled: false, description: "Manage permissions to view and resolve error logs and issues."},
+    { order: 4, nameTag: 'TASKS', icon: '../../assets/icons/Tasks_icons.svg', enabled: false, description: "Control user access to create, edit, and view tasks." },
+    { order: 5, nameTag: 'USER MANAGEMENT', icon: '../../assets/icons/Usermanagement_icons.svg', enabled: false, description:  "Administer user roles and permissions within the system."  },
+];
+
+
+  configurationPermissions = [
+    { order: 3, nameTag: 'CONFIGURATION' },
+    { order: 4, nameTag: 'ERROR LOGS' },
+    { order: 5, nameTag: 'TASKS' },
+  ];
+
+
   userRoleCredentials = [
     {
       order: 0,
@@ -185,6 +238,62 @@ export class UserManagementComponent implements OnInit {
       nameTag: 'MAINTAINER',
     },
   ];
+
+  configurationSettings = [
+    {
+      title: 'Environment',
+      description: 'Manage environment-related configurations.',
+      enabled: false, // Main toggle
+      subOptions: [
+        { label: 'Create', enabled: false },
+        { label: 'Edit', enabled: false },
+        { label: 'Delete', enabled: false },
+        { label: 'View', enabled: false },
+      ],
+    },
+    {
+      title: 'Robot',
+      description: 'Manage robot-specific settings.',
+      enabled: false,
+      subOptions: [
+        { label: 'Create', enabled: false },
+        { label: 'Edit', enabled: false },
+        { label: 'Delete', enabled: false },
+        { label: 'View', enabled: false },
+      ],
+    },
+    {
+      title: 'Fleet',
+      description: 'Configure fleet operations and settings.',
+      enabled: false,
+      subOptions: [
+        { label: 'Create', enabled: false },
+        { label: 'Edit', enabled: false },
+        { label: 'Delete', enabled: false },
+        { label: 'View', enabled: false },
+      ],
+    },
+  ];
+  
+  
+  // Triggered when a main toggle is switched
+  onToggleMain(config: any): void {
+    if (!config.enabled) {
+      config.subOptions.forEach((option: any) => {
+        option.enabled = false;
+      });
+    }
+  }
+  
+  // Triggered when a sub-option is toggled
+  onToggleSub(config: any, subOption: any): void {
+    console.log(`Sub-option ${subOption.label} for ${config.title} is now ${subOption.enabled}`);
+  }
+  
+
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+  }
 
   userCredentials: any[] = []; // Initialized as an empty array
 

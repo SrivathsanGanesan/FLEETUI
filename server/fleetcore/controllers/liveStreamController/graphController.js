@@ -56,6 +56,10 @@ let roboErrRateArr = getSampSeries();
 // };
 
 const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
+  // console.log('cup data')
+  console.log(timeStamp1,'time stamp1')
+  console.log(timeStamp2,'time stamp2')
+  console.log(endpoint,'endpoint')
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
@@ -529,7 +533,6 @@ const errRate = async (req, res) => {
 };
 
 // robo..
-
 const getRoboFleetGraph = async () => {
   fetch(`http://fleetIp:8080/-----`, {
     method: "POST",
@@ -559,10 +562,10 @@ const getCpuUtilization = async (req, res) => {
   API_data = req.body;
   // console.log(API_data)
   timeSpan = API_data['timeSpan']
-  startTime = API_data['startTime']
-  endTime  = API_data['endTime']
+  startTime = API_data['timeStamp1']
+  endTime  = API_data['timeStamp2']
   type     = API_data['metrics']
-  // console.log(timeSpan, startTime, endTime)
+  // console.log(timeSpan, startTime, endTime,'-----------------------------------------node backend')
   try {
     // MAP ID //
     const isMapExist = await Map.exists({ _id: mapId });
@@ -584,31 +587,31 @@ const getCpuUtilization = async (req, res) => {
         {CPU_Utilization: 5}, {CPU_Utilization: 6}, {CPU_Utilization: 4},
         {CPU_Utilization: 9},{CPU_Utilization: 8}]}
     }
-    
     // var fleetcpuutilization = await getFleetSeriesData(
     //   startTime,
     //   endTime,
     //   API_requestdata
     // )
-
+    
+    console.log(fleetcpuutilization,'fleet cpu-------------------------------')
     // WEEK WISE //
     if (timeSpan === "week")
       return res.status(200).json({
         msg: "data sent",
-        cpuUtil:fleetcpuutilization[List_name]
+        cpuUtil:fleetcpuutilization
       });
     // MONTH WISE //
     else if (timeSpan === "month")
       return res.status(200).json({
         msg: "data sent",
-        cpuUtil:fleetcpuutilization[List_name]
+        cpuUtil:fleetcpuutilization
       });
     // PER DAY //
     else if (timeSpan === "today")
       console.log("body has excuted")
       return res.status(200).json({
         msg: "data sent",
-        cpuUtil:fleetcpuutilization[List_name]
+        cpuUtil:fleetcpuutilization
       });
 
   } catch (err) {
