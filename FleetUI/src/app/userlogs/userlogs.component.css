@@ -186,6 +186,7 @@ tr:nth-child(even) {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-family:"graphik", Arial, sans-serif; 
 }
 
 /* Export Popup Styles */

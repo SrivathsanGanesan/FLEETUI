@@ -527,14 +527,29 @@ export class Userlogscomponent {
 
   exportData(format: string) {
     const data = this.getCurrentTableData();
+    // let csvHeader:any={};
+    let excelHeader:any={}
     switch (format) {
       case 'csv':
-        this.exportService.exportToCSV(data, `${this.currentTable}DataExport`);
+        let csvHeader:{[k:string]:any}={}
+          if(data.length==0){
+             csvHeader['status']=true;
+             csvHeader['structure']=this.structuredFormatter(this.currentTable)[0]
+          }
+          csvHeader['length']=this.structuredFormatter(this.currentTable)[1]
+        this.exportService.exportToCSV(data, `${this.currentTable}DataExport`,csvHeader);
         break;
       case 'excel':
+        let excelHeader:{[k:string]:any}={}
+          if(data.length==0){
+            excelHeader['status']=true,
+            excelHeader['structure']=this.structuredFormatter(this.currentTable)[0]
+         }
+         excelHeader['length']=this.structuredFormatter(this.currentTable)[1]
         this.exportService.exportToExcel(
           data,
-          `${this.currentTable}DataExport`
+          `${this.currentTable}DataExport`,
+         excelHeader
         );
         break;
       case 'pdf':
@@ -542,6 +557,41 @@ export class Userlogscomponent {
         break;
       default:
         console.error('Invalid export format');
+    }
+  }
+
+  structuredFormatter(type:any):any{
+    switch (type) {
+      case 'task':
+        return [[{
+            dateTime: '',
+            taskId: '',
+            taskName: '',
+            errCode: '',
+            criticality: '',
+            desc: '',
+        }],6];
+      case 'robot':
+        return [[{
+            dateTime: '',
+            robotId: '',
+            robotName: '',
+            errCode: '',
+            criticality: '',
+            desc: '',
+        }],6];
+      case 'fleet':
+        return [[{
+          dateTime: '',
+          moduleName: '',
+          errCode: '',
+          criticality: '',
+          desc: '',
+        }],5];
+      default:
+        return {
+
+        };
     }
   }
 

@@ -1594,4 +1594,27 @@ tbody td {
 }
   
 
-  
+.date-inputs label{
+  font-family: "graphik", Arial,  sans-serif !important;
+}
+
+::ng-deep .mat-paginator {
+  font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+}
+
+::ng-deep .mat-paginator .mat-paginator-range-label {
+ font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+}
+
+::ng-deep .mat-paginator .mat-paginator-page-size .mat-select-trigger {
+  font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+}
+
+::ng-deep .mat-paginator .mat-button {
+  font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+}
+
+.form-group{
+  font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+
+}
