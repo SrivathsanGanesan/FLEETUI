@@ -146,62 +146,62 @@ export class UserManagementComponent implements OnInit {
 
 
 
-  userPermissionOptions = [
-    {
-      order: 0,
-      nameTag: 'DASHBOARD',
-      isAvail: 0,
-      create: 1,
-      edit: 2,
-      delete: 3,
-      view: 4,
-    },
-    {
-      order: 1,
-      nameTag: 'STATISTICS',
-      isAvail: 0,
-      create: 1,
-      edit: 2,
-      delete: 3,
-      view: 4,
-    },
-    {
-      order: 2,
-      nameTag: 'ROBOTS',
-      isAvail: 0,
-      create: 1,
-      edit: 2,
-      delete: 3,
-      view: 4,
-    },
-    {
-      order: 3,
-      nameTag: 'CONFIGURATION',
-      isAvail: 0,
-      create: 1,
-      edit: 2,
-      delete: 3,
-      view: 4,
-    },
-    {
-      order: 4,
-      nameTag: 'ERROR LOGS',
-      isAvail: 0,
-      create: 1,
-      edit: 2,
-      delete: 3,
-      view: 4,
-    },
-    {
-      order: 5,
-      nameTag: 'TASKS',
-      isAvail: 0,
-      create: 1,
-      edit: 2,
-      delete: 3,
-      view: 4,
-    },
-  ];
+  // userPermissionOptions = [
+  //   {
+  //     order: 0,
+  //     nameTag: 'DASHBOARD',
+  //     isAvail: 0,
+  //     create: 1,
+  //     edit: 2,
+  //     delete: 3,
+  //     view: 4,
+  //   },
+  //   {
+  //     order: 1,
+  //     nameTag: 'STATISTICS',
+  //     isAvail: 0,
+  //     create: 1,
+  //     edit: 2,
+  //     delete: 3,
+  //     view: 4,
+  //   },
+  //   {
+  //     order: 2,
+  //     nameTag: 'ROBOTS',
+  //     isAvail: 0,
+  //     create: 1,
+  //     edit: 2,
+  //     delete: 3,
+  //     view: 4,
+  //   },
+  //   {
+  //     order: 3,
+  //     nameTag: 'CONFIGURATION',
+  //     isAvail: 0,
+  //     create: 1,
+  //     edit: 2,
+  //     delete: 3,
+  //     view: 4,
+  //   },
+  //   {
+  //     order: 4,
+  //     nameTag: 'ERROR LOGS',
+  //     isAvail: 0,
+  //     create: 1,
+  //     edit: 2,
+  //     delete: 3,
+  //     view: 4,
+  //   },
+  //   {
+  //     order: 5,
+  //     nameTag: 'TASKS',
+  //     isAvail: 0,
+  //     create: 1,
+  //     edit: 2,
+  //     delete: 3,
+  //     view: 4,
+  //   },
+  // ];
 
 
   generalPermissions = [
@@ -402,7 +402,7 @@ export class UserManagementComponent implements OnInit {
       this.paginator.length = this.filteredData.length;
       // console.log(this.filteredRobotData);
     }
-     this.fetchUsers();
+    //  this.fetchUsers();
   }
    
 
@@ -693,50 +693,39 @@ export class UserManagementComponent implements OnInit {
       .then((data) => {
         // console.log(data.permissions);
         // Update the local permission state
-        this.userPermissionState = [
-          [
-            data.permissions.dashboard.enable,
-            data.permissions.dashboard.create,
-            data.permissions.dashboard.edit,
-            data.permissions.dashboard.delete,
-            data.permissions.dashboard.view,
-          ],
-          [
-            data.permissions.statistics.enable,
-            data.permissions.statistics.create,
-            data.permissions.statistics.edit,
-            data.permissions.statistics.delete,
-            data.permissions.statistics.view,
-          ],
-          [
-            data.permissions.robots.enable,
-            data.permissions.robots.create,
-            data.permissions.robots.edit,
-            data.permissions.robots.delete,
-            data.permissions.robots.view,
-          ],
-          [
-            data.permissions.configuration.enable,
-            data.permissions.configuration.create,
-            data.permissions.configuration.edit,
-            data.permissions.configuration.delete,
-            data.permissions.configuration.view,
-          ],
-          [
-            data.permissions.errLogs.enable,
-            data.permissions.errLogs.create,
-            data.permissions.errLogs.edit,
-            data.permissions.errLogs.delete,
-            data.permissions.errLogs.view,
-          ],
-          [
-            data.permissions.tasks.enable,
-            data.permissions.tasks.create,
-            data.permissions.tasks.edit,
-            data.permissions.tasks.delete,
-            data.permissions.tasks.view,
-          ],
-        ];
+
+        let {generalPermissions, configurationPermissions} = data.permissions
+        this.generalPermissions[0].enabled = generalPermissions.dashboard;
+        this.generalPermissions[1].enabled = generalPermissions.statistics;
+        this.generalPermissions[2].enabled = generalPermissions.robots;
+        this.generalPermissions[3].enabled = generalPermissions.errors;
+        this.generalPermissions[4].enabled = generalPermissions.tasks;
+        this.generalPermissions[5].enabled = generalPermissions.userManagement;
+        
+
+        this.configurationSettings[0].enabled = configurationPermissions.environment.enabled
+        this.configurationSettings[0].subOptions[0].enabled = configurationPermissions.environment.create
+        this.configurationSettings[0].subOptions[1].enabled = configurationPermissions.environment.edit
+        this.configurationSettings[0].subOptions[2].enabled = configurationPermissions.environment.delete
+        this.configurationSettings[0].subOptions[3].enabled = configurationPermissions.environment.view
+
+
+        this.configurationSettings[1].enabled = configurationPermissions.robot.enabled
+        this.configurationSettings[1].subOptions[0].enabled = configurationPermissions.robot.create
+        this.configurationSettings[1].subOptions[1].enabled = configurationPermissions.robot.edit
+        this.configurationSettings[1].subOptions[2].enabled = configurationPermissions.robot.delete
+        this.configurationSettings[1].subOptions[3].enabled = configurationPermissions.robot.view
+
+
+
+
+        this.configurationSettings[2].enabled = configurationPermissions.fleet.enabled
+        this.configurationSettings[2].subOptions[0].enabled = configurationPermissions.fleet.create
+        this.configurationSettings[2].subOptions[1].enabled = configurationPermissions.fleet.edit
+        this.configurationSettings[2].subOptions[2].enabled = configurationPermissions.fleet.delete
+        this.configurationSettings[2].subOptions[3].enabled = configurationPermissions.fleet.view
+
+
       })
       .catch((error) => {
         console.error('Error fetching user permissions:', error);
@@ -788,50 +777,94 @@ export class UserManagementComponent implements OnInit {
     }
 
     // Prepare the permissions object to send to the backend
+    // const updatedPermissions = {
+    //   dashboard: {
+    //     enable: this.userPermissionState[0][0],
+    //     create: this.userPermissionState[0][1],
+    //     edit: this.userPermissionState[0][2],
+    //     delete: this.userPermissionState[0][3],
+    //     view: this.userPermissionState[0][4],
+    //   },
+    //   statistics: {
+    //     enable: this.userPermissionState[1][0],
+    //     create: this.userPermissionState[1][1],
+    //     edit: this.userPermissionState[1][2],
+    //     delete: this.userPermissionState[1][3],
+    //     view: this.userPermissionState[1][4],
+    //   },
+    //   robots: {
+    //     enable: this.userPermissionState[2][0],
+    //     create: this.userPermissionState[2][1],
+    //     edit: this.userPermissionState[2][2],
+    //     delete: this.userPermissionState[2][3],
+    //     view: this.userPermissionState[2][4],
+    //   },
+    //   configuration: {
+    //     enable: this.userPermissionState[3][0],
+    //     create: this.userPermissionState[3][1],
+    //     edit: this.userPermissionState[3][2],
+    //     delete: this.userPermissionState[3][3],
+    //     view: this.userPermissionState[3][4],
+    //   },
+    //   errLogs: {
+    //     enable: this.userPermissionState[4][0],
+    //     create: this.userPermissionState[4][1],
+    //     edit: this.userPermissionState[4][2],
+    //     delete: this.userPermissionState[4][3],
+    //     view: this.userPermissionState[4][4],
+    //   },
+    //   tasks: {
+    //     enable: this.userPermissionState[5][0],
+    //     create: this.userPermissionState[5][1],
+    //     edit: this.userPermissionState[5][2],
+    //     delete: this.userPermissionState[5][3],
+    //     view: this.userPermissionState[5][4],
+    //   },
+    // };
+
+    //NEW UI BACKEND SCHEMA
     const updatedPermissions = {
-      dashboard: {
-        enable: this.userPermissionState[0][0],
-        create: this.userPermissionState[0][1],
-        edit: this.userPermissionState[0][2],
-        delete: this.userPermissionState[0][3],
-        view: this.userPermissionState[0][4],
+
+      generalPermissions: {
+        dashboard: this.generalPermissions[0].enabled,
+        statistics: this.generalPermissions[1].enabled,
+        robots: this.generalPermissions[2].enabled,
+        errors: this.generalPermissions[3].enabled,
+        tasks: this.generalPermissions[4].enabled,
+        userManagement: this.generalPermissions[5].enabled,
       },
-      statistics: {
-        enable: this.userPermissionState[1][0],
-        create: this.userPermissionState[1][1],
-        edit: this.userPermissionState[1][2],
-        delete: this.userPermissionState[1][3],
-        view: this.userPermissionState[1][4],
-      },
-      robots: {
-        enable: this.userPermissionState[2][0],
-        create: this.userPermissionState[2][1],
-        edit: this.userPermissionState[2][2],
-        delete: this.userPermissionState[2][3],
-        view: this.userPermissionState[2][4],
-      },
-      configuration: {
-        enable: this.userPermissionState[3][0],
-        create: this.userPermissionState[3][1],
-        edit: this.userPermissionState[3][2],
-        delete: this.userPermissionState[3][3],
-        view: this.userPermissionState[3][4],
-      },
-      errLogs: {
-        enable: this.userPermissionState[4][0],
-        create: this.userPermissionState[4][1],
-        edit: this.userPermissionState[4][2],
-        delete: this.userPermissionState[4][3],
-        view: this.userPermissionState[4][4],
-      },
-      tasks: {
-        enable: this.userPermissionState[5][0],
-        create: this.userPermissionState[5][1],
-        edit: this.userPermissionState[5][2],
-        delete: this.userPermissionState[5][3],
-        view: this.userPermissionState[5][4],
-      },
-    };
+
+      configurationPermissions: {
+        environment: {
+          enabled: this.configurationSettings[0].enabled,
+          create: this.configurationSettings[0].subOptions[0].enabled,
+          edit: this.configurationSettings[0].subOptions[1].enabled,
+          delete: this.configurationSettings[0].subOptions[2].enabled,
+          view: this.configurationSettings[0].subOptions[3].enabled
+
+
+        },
+        robot: {
+          enabled: this.configurationSettings[1].enabled,
+          create: this.configurationSettings[1].subOptions[0].enabled,
+          edit: this.configurationSettings[1].subOptions[1].enabled,
+          delete: this.configurationSettings[1].subOptions[2].enabled,
+          view: this.configurationSettings[1].subOptions[3].enabled
+
+        },
+        fleet: {
+          enabled: this.configurationSettings[2].enabled,
+          create: this.configurationSettings[2].subOptions[0].enabled,
+          edit: this.configurationSettings[2].subOptions[1].enabled,
+          delete: this.configurationSettings[2].subOptions[2].enabled,
+          view: this.configurationSettings[2].subOptions[3].enabled
+
+        }
+      }
+    }
+
+    // console.log(updatedPermissions)
+    
 
     // Send the PUT request to update the user permissions
     fetch(
