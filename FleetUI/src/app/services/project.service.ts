@@ -15,7 +15,6 @@ export class ProjectService {
   private isFleetUp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   
   initializeMapSelectedStatus: any
-  showModelCanvas: boolean = false;
   
   inLive$ = this.inLive.asObservable();
   isFleetUp$ = this.isFleetUp.asObservable();
@@ -115,13 +114,5 @@ export class ProjectService {
   getInitializeMapSelected(){
     // console.log('get initialize called and status -->',this.cookieService.get('mapInitializeStatus'))
     return this.cookieService.get('mapInitializeStatus');
-  }
-
-  setShowModelCanvas(state: boolean) {
-    this.showModelCanvas = state;
-  }
-
-  getShowModelCanvas():boolean{
-    return this.showModelCanvas;
   }
 }
