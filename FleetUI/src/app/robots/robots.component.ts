@@ -78,7 +78,7 @@ export class RobotsComponent implements OnInit {
   centerIndex: any;
   isFleet: boolean = false; // Store the emitted value
   private subscriptions: Subscription[] = [];
-  
+
 
   private routerSubscription: Subscription | undefined; // Subscription to track navigation changes
 
@@ -92,7 +92,7 @@ export class RobotsComponent implements OnInit {
   async ngOnInit() {
     this.mapDetails = this.projectService.getMapData();
     if (!this.mapDetails) return;
-    
+
     let grossFactSheet = await this.fetchAllRobos();
     this.robots = grossFactSheet.map((robo) => {
       robo.imageUrl = '../../assets/robots/agv1.png';
@@ -108,7 +108,7 @@ export class RobotsComponent implements OnInit {
               this.isFleet = status; // Update the value whenever it changes
               console.log('Received fleet statekjxhvjldlvkdlvk:', this.isFleet); // For debugging
             });
-        
+
             this.subscriptions.push(fleetSub);
 
     this.filteredRobots = this.robots;
@@ -126,6 +126,13 @@ export class RobotsComponent implements OnInit {
         this.dialog.closeAll(); // Close all open dialogs when navigation starts
       }
     });
+
+    this.subscriptions.push(fleetSub);
+    const savedIsFleet = sessionStorage.getItem('isFleet');
+    if (savedIsFleet !== null) {
+      this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
+      this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
+        }
   }
 
   ngOnDestroy(): void {
@@ -142,8 +149,8 @@ export class RobotsComponent implements OnInit {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mapId: this.mapDetails.id })
-    });                          
-           
+    });
+
     const data = await response.json();
     return data.robots || [];
   }
@@ -166,7 +173,7 @@ export class RobotsComponent implements OnInit {
     }
 
 //Robotstatus
-                  
+
     let { robots }: any = this.liveRobos;
     if (!robots.length) this.robots = this.initialRoboInfos;
     this.robots = this.robots.map((robo) => {
@@ -188,7 +195,7 @@ export class RobotsComponent implements OnInit {
       return robo;
     });
 
-    this.filteredRobots = this.robots;                   
+    this.filteredRobots = this.robots;
   }
 
   openRobotDetail(robot: Robot): void {
