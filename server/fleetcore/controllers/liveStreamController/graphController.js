@@ -650,7 +650,7 @@ const getRoboUtilization = async (req, res) => {
       startTime,
       endTime,
       API_requestdata
-    )    
+    )
     console.log(fleetROBOutilization,'fleet robot-------------------------------')
   
     // WEEK WISE //

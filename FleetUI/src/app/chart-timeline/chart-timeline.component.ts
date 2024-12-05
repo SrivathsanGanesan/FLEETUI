@@ -97,7 +97,7 @@ export class ChartTimelineComponent implements OnInit {
     ],
     robot: [
       { key: 'data1', label: 'CPU Utilization' },
-      { key: 'data2', label: 'Robot Utilization' },
+      // { key: 'data2', label: 'Robot Utilization' },
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
       { key: 'data5', label: 'Error' },
@@ -466,7 +466,7 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data, 'data-cpu util');
+      console.log(data, 'data-cpu util');
       if (data.cpuUtil) {
         this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
           let res;
@@ -502,7 +502,7 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,"data") //hold the chart data
+    console.log(data,"data =======cpu") //hold the chart data
     if (data.cpuUtil) {
       this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
         let res;
@@ -647,7 +647,7 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data,"========")
+      console.log(data,"=====Battery===")
       if (data.batteryStat) {
         this.batteryArr = data.batteryStat.batteryPercentage.map((stat: any) => {
           let res;
@@ -673,7 +673,7 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,'========battery====')
+    console.log(data,'========battery====')
     if (data.batteryStat) {
       this.batteryArr = data.batteryStat.batteryPercentage.map((stat: any) => {
         let res;
@@ -724,7 +724,7 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data,'======memory====')
+      console.log(data,'======memory====')
       if (data.memoryStat) {
         this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
           let res;
@@ -750,7 +750,7 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,'=======memory=======')
+    console.log(data,'=======memory=======')
     if (data.memoryStat) {
       this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
         let res;
@@ -801,7 +801,7 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data,"======network=====")
+      console.log(data,"======network=====")
       if (data.networkUtil) {
         this.networkArr = data.networkUtil.Network.map((stat: any) => {
           let res;
@@ -877,7 +877,7 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data,'=====idle====')
+      console.log(data,'=====idle====')
       if (data.idleTime) {
         this.idleTimeArr = data.idleTime.map((stat: any) => {
           let res;
@@ -908,7 +908,7 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,'=====idle====')
+    console.log(data,'=====idle====')
     if (data.idleTime) {
       this.idleTimeArr = data.idleTime.map((stat: any) => {
         let res;
@@ -985,7 +985,7 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,'=====error====')
+    console.log(data,'=====error====')
     if (data.roboErr) {
       this.errorArr = data.roboErr.map((stat: any) => {
         let res;

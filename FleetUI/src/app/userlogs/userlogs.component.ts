@@ -50,7 +50,6 @@ export class Userlogscomponent {
   isFleet: boolean = false; // Store the emitted value
   private subscriptions: Subscription[] = [];
   
-
   constructor(
     private exportService: ExportService,
     private projectService: ProjectService,
@@ -115,7 +114,7 @@ export class Userlogscomponent {
     let establishedTime = new Date(this.mapData.createdAt);
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks`,
+      `http://${environment.API_URL}:${environment.PORT}/task-logs`,
       {
         method: 'POST',
         credentials: 'include',
@@ -133,11 +132,11 @@ export class Userlogscomponent {
       .then((data) => {
         const { taskLogs } = data;
               // Filter the notifications to include only those with specified statuses
-      const filteredLogs = taskLogs.notifications.filter(
-        (taskErr: any) =>
-          ['FAILED', 'CANCELLED', 'REJECTED'].includes(taskErr.name)
-      );
-        this.taskData = filteredLogs.map((taskErr: any) => {
+      // const filteredLogs = taskLogs.notifications.filter(
+      //   (taskErr: any) =>
+      //     ['FAILED', 'CANCELLED', 'REJECTED'].includes(taskErr.name)
+      // );
+        this.taskData = taskLogs.notifications.map((taskErr: any) => {
           const date = new Date();
           const formattedDateTime = `${date.toLocaleDateString('en-IN', {
             day: '2-digit',
