@@ -183,7 +183,7 @@ export class UserManagementComponent implements OnInit {
   configurationSettings = [
     {
       title: 'Environment',
-      description: 'Manage environment-related configurations.',
+      description: 'Environment configurations.',
       enabled: false, // Main toggle
       subOptions: [
         { label: 'Create', enabled: false },
@@ -194,7 +194,7 @@ export class UserManagementComponent implements OnInit {
     },
     {
       title: 'Robot',
-      description: 'Manage robot-specific settings.',
+      description: 'Robot configurations.',
       enabled: false,
       subOptions: [
         { label: 'Create', enabled: false },
@@ -205,7 +205,7 @@ export class UserManagementComponent implements OnInit {
     },
     {
       title: 'Fleet',
-      description: 'Configure fleet operations and settings.',
+      description: 'Fleet configurations.',
       enabled: false,
       subOptions: [
         { label: 'Create', enabled: false },
