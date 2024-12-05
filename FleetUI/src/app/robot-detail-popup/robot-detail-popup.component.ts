@@ -61,6 +61,7 @@ export class RobotDetailPopupComponent {
   mapId: any;
   isConnected: boolean = true;
   robotUtilization: string = '0';
+  pick: any;
 
   toggleConnection() {
     console.log('toggle is clicked')
@@ -126,6 +127,7 @@ export class RobotDetailPopupComponent {
       this.selectedMap = 'N/A';
       return;
     }
+    this.pick = this.fetchChartData();
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
     // console.log('Battery Percentage:', this.data.batteryPercentage);
     // console.log('Is Charging:', this.data.isCharging);
@@ -147,7 +149,34 @@ export class RobotDetailPopupComponent {
         console.error('Error fetching robot utilization:', error);
       }
     );
+    console.log(this.robotUtilization,"---------------robot utilization ------------");
    }
+
+   fetchChartData(
+  ): Promise<any> {
+    const { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    // console.log(timeSpan, 'time span robot');
+  
+    // Return a Promise to handle asynchronous behavior
+    return fetch(
+      `http://${environment.API_URL}:${environment.PORT}/get_pickdropCount`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
+        }),
+      }
+    ).then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    });
+  }
+  
 
    populatedRobo():void{
     fetch(`http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${this.selectedMap.id}`, {

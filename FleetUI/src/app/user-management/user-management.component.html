@@ -89,7 +89,7 @@
 
 
 <!-- Create User Popup -->
-<div [ngClass]="{'hidden': !userCreatePopUp}"
+<div *ngIf="userCreatePopUp"
   class="absolute flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50">
   <div class="popup w-[700px] py-7 bg-[#D9D9D9]">
     <!-- Title -->
@@ -338,7 +338,7 @@
 
 <!--Joel's code-->
 
-<div [ngClass]="{'hidden': !userPermissionOCstate}"
+<div *ngIf="userPermissionOCstate"
   class="relative overflow-hidden flex items-center justify-center w-screen h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50 box-border">
 
   <div
@@ -483,8 +483,7 @@
 
 
 <!-- Delete User Permission -->
-<div [ngClass]="{'hidden': !deleteUserOCstate}"
-  class="absolute flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50">
+<div *ngIf="deleteUserOCstate" class="absolute flex items-center justify-center w-screen box-border h-screen bg-[#000000] bg-opacity-90 bg-blur top-0 left-0 z-50">
   <div class="w-[600px] bg-white flex flex-col gap-5 rounded-[20px] shadow-[0_0_100px_#00000060] p-10">
     <!-- Title -->
     <span class="flex flex-col items-start justify-center">
