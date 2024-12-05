@@ -1,5 +1,6 @@
 
 
+
 import {
   Component,
   AfterViewInit,
@@ -233,6 +234,7 @@ export class DashboardComponent implements AfterViewInit {
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
 
+
       // Subscribe to the fleet state
       // const savedIsFleet = sessionStorage.getItem('isFleet');
       // if (savedIsFleet !== null) {
@@ -285,9 +287,16 @@ export class DashboardComponent implements AfterViewInit {
       this.canvasNoImage=true
     }
     // console.log(this.selectedMap,"selected map")
+    // console.log(this.selectedMap,"selected map")
     if (!this.selectedMap) {
       await this.onInitMapImg();
       this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+      if(this.projectService.getInitializeMapSelected() == 'true')
+        if(!this.isInLive) this.initSimRoboPos();
+      await this.getMapDetails();
+      if(this.projectService.getInitializeMapSelected()=='true'){
+        this.loadCanvas();
+      }
       if(this.projectService.getInitializeMapSelected() == 'true')
         if(!this.isInLive) this.initSimRoboPos();
       await this.getMapDetails();
@@ -1527,7 +1536,7 @@ async onInitMapImg() {
 
   async plotAllRobots(robotsData: any) {
     // console.log(robotsData.speed);
-
+    
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
 
@@ -1575,7 +1584,7 @@ async onInitMapImg() {
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
         let imgState ="robotB";
-        // console.log("hey",state);
+        // console.log("hey",state);          
         if(state==="INITSTATE"){
           imgState="init";
         }
