@@ -57,9 +57,9 @@ let roboErrRateArr = getSampSeries();
 
 const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
   // console.log('cup data')
-  console.log(timeStamp1,'time stamp1')
-  console.log(timeStamp2,'time stamp2')
-  console.log(endpoint,'endpoint')
+  // console.log(timeStamp1,'time stamp1')
+  // console.log(timeStamp2,'time stamp2')
+  // console.log(endpoint,'endpoint')
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
@@ -166,8 +166,8 @@ const throughPut_starvation =async (req, res, next) => {
     );
       console.log(fleetThroughput,'fleet starvation')
       console.log(timeSpan,'time span')
-      console.log(timeStamp1,'timestamp 1')
-      console.log(timeStamp2,'timestamp 2')
+      // console.log(timeStamp1,'timestamp 1')
+      // console.log(timeStamp2,'timestamp 2')
 
     return res.status(200).json({
       msg: "data sent",
@@ -533,7 +533,6 @@ const errRate = async (req, res) => {
 };
 
 // robo..
-
 const getRoboFleetGraph = async () => {
   fetch(`http://fleetIp:8080/-----`, {
     method: "POST",
@@ -583,13 +582,12 @@ const getCpuUtilization = async (req, res) => {
       var API_requestdata = "get_CPU_Utilization"
       var List_name  = "CPU_Utilization"
     }
+    // var fleetcpuutilization = await getFleetSeriesData(
+    //   startTime,
+    //   endTime,
+    //   API_requestdata
+    // )
     
-    var fleetcpuutilization = await getFleetSeriesData(
-      startTime,
-      endTime,
-      API_requestdata
-    )
-
     console.log(fleetcpuutilization,'fleet cpu-------------------------------')
     // WEEK WISE //
     if (timeSpan === "week")

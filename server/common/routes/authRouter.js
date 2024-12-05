@@ -1,5 +1,8 @@
 const express = require("express");
 const authRouter = express.Router();
+const {checkPermission} = require("../middleware/permissionMiddleware")
+
+
 const {
   login,
   logout,

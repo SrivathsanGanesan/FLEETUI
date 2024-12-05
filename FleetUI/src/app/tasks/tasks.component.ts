@@ -101,7 +101,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     // if (!response.ok)
     //   throw new Error(`Error with status code of : ${response.status}`);
     let data = await response.json();
-
+console.log(data,'task data')
     if (!data.tasks) return;
     const { tasks } = data.tasks;
     if (!('tasks' in data.tasks)) {
@@ -128,6 +128,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
           destinationLocation: 'N/A',
         };
       });
+      console.log(this.filteredTaskData,'filtered data')
+      console.log(this.tasks,'task  sep data')
     this.filteredTaskData = this.tasks;
     // console.log(this.tasks);
     this.setPaginatedData();
@@ -207,7 +209,21 @@ export class TasksComponent implements OnInit, AfterViewInit {
     try {
       switch (format) {
         case 'csv':
-          this.exportService.exportToCSV(data, 'TaskDataExport');
+           let csvHeader:{[k:string]:any}={}
+          if(data.length==0){
+            csvHeader['status']=true
+            csvHeader['structure']=[{
+              taskId:'',
+              taskType:'',
+              status:'',
+              roboName:'',
+              sourceLocation:'',
+              destinationLocation:''
+            }]
+          }
+          csvHeader['length']=6;
+          // console.log(data,'excel task cmptdata')
+          this.exportService.exportToCSV(data, 'TaskDataExport',csvHeader);
           this.messageService.add({
             severity: 'success',
             summary: 'Export Successful',
@@ -216,7 +232,20 @@ export class TasksComponent implements OnInit, AfterViewInit {
           });
           break;
         case 'excel':
-          this.exportService.exportToExcel(data, 'TaskDataExport');
+          let excelHeader:{[k:string]:any}={}
+          if(data.length==0){
+            excelHeader['status']=true
+            excelHeader['structure']=[{
+              taskId:'',
+              taskType:'',
+              status:'',
+              roboName:'',
+              sourceLocation:'',
+              destinationLocation:''
+            }]
+         }
+         excelHeader['length']=6;
+          this.exportService.exportToExcel(data, 'TaskDataExport',excelHeader);
           this.messageService.add({
             severity: 'success',
             summary: 'Export Successful',

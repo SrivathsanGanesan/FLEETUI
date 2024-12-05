@@ -145,65 +145,6 @@ export class UserManagementComponent implements OnInit {
   }
 
 
-
-  // userPermissionOptions = [
-  //   {
-  //     order: 0,
-  //     nameTag: 'DASHBOARD',
-  //     isAvail: 0,
-  //     create: 1,
-  //     edit: 2,
-  //     delete: 3,
-  //     view: 4,
-  //   },
-  //   {
-  //     order: 1,
-  //     nameTag: 'STATISTICS',
-  //     isAvail: 0,
-  //     create: 1,
-  //     edit: 2,
-  //     delete: 3,
-  //     view: 4,
-  //   },
-  //   {
-  //     order: 2,
-  //     nameTag: 'ROBOTS',
-  //     isAvail: 0,
-  //     create: 1,
-  //     edit: 2,
-  //     delete: 3,
-  //     view: 4,
-  //   },
-  //   {
-  //     order: 3,
-  //     nameTag: 'CONFIGURATION',
-  //     isAvail: 0,
-  //     create: 1,
-  //     edit: 2,
-  //     delete: 3,
-  //     view: 4,
-  //   },
-  //   {
-  //     order: 4,
-  //     nameTag: 'ERROR LOGS',
-  //     isAvail: 0,
-  //     create: 1,
-  //     edit: 2,
-  //     delete: 3,
-  //     view: 4,
-  //   },
-  //   {
-  //     order: 5,
-  //     nameTag: 'TASKS',
-  //     isAvail: 0,
-  //     create: 1,
-  //     edit: 2,
-  //     delete: 3,
-  //     view: 4,
-  //   },
-  // ];
-
-
   generalPermissions = [
     { order: 0, nameTag: 'DASHBOARD', icon: '../../assets/icons/dashboard_icon copy.svg', enabled: false, description: "Control user access to dashboard data and performance insights." },
     { order: 1, nameTag: 'STATISTICS', icon: '../../assets/icons/Statistics.svg', enabled: false, description: "Manage access to statistical data and analytical reports." },
@@ -242,7 +183,7 @@ export class UserManagementComponent implements OnInit {
   configurationSettings = [
     {
       title: 'Environment',
-      description: 'Manage environment-related configurations.',
+      description: 'Environment configurations.',
       enabled: false, // Main toggle
       subOptions: [
         { label: 'Create', enabled: false },
@@ -253,7 +194,7 @@ export class UserManagementComponent implements OnInit {
     },
     {
       title: 'Robot',
-      description: 'Manage robot-specific settings.',
+      description: 'Robot configurations.',
       enabled: false,
       subOptions: [
         { label: 'Create', enabled: false },
@@ -264,7 +205,7 @@ export class UserManagementComponent implements OnInit {
     },
     {
       title: 'Fleet',
-      description: 'Configure fleet operations and settings.',
+      description: 'Fleet configurations.',
       enabled: false,
       subOptions: [
         { label: 'Create', enabled: false },
@@ -822,6 +763,9 @@ export class UserManagementComponent implements OnInit {
     //   },
     // };
 
+
+
+
     //NEW UI BACKEND SCHEMA
     const updatedPermissions = {
 
@@ -915,6 +859,8 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteUserPopUp() {
-    this.deleteUserOCstate = !this.deleteUserOCstate;
+    this.deleteUserOCstate = true;
   }
 }
+
+
