@@ -264,7 +264,21 @@ export class DashboardComponent implements AfterViewInit {
     if(this.projectService.getInitializeMapSelected()== 'true'){
       // console.log('dash board map initiallizee')
       this.canvasloader=true
+      this.projectService.isFleetUp$.subscribe((status) => {
+      this.isFleetUp = status;
+      // console.log(this.isFleetUp);
+      if(!this.isFleetUp){
+        this.disableAllRobos();
+        this.isInLive = false;  // Ensure we're not in live mode if fleet is down
+        this.projectService.setInLive(false);  // Update the service
+      }
+    });
+      console.log(this.projectService.getInitializeMapSelected(),'dash board')
+    if(this.projectService.getInitializeMapSelected()== 'true'){
+      console.log('dash board map initiallizee')
+      this.canvasloader=true
       this.selectedMap = this.projectService.getMapData();
+    }
     }
     if(this.selectedMap == null){
       this.canvasloader=false;
@@ -296,6 +310,7 @@ export class DashboardComponent implements AfterViewInit {
     // this.showModelCanvas = false;
     this.projectService.setShowModelCanvas(false);
     this.cdRef.detectChanges();
+    this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     this.loadCanvas();
@@ -1541,6 +1556,8 @@ async onInitMapImg() {
 
       if (this.projectService.getShowModelCanvas()) { // this.showModelCanvas
         this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
+        // this.redrawOtherElements(ctx, mapImage);
+
         // Create a temporary canvas to draw nodes and edges
         // const tempCanvas = document.createElement('canvas');
         // const tempCtx = tempCanvas.getContext('2d');
