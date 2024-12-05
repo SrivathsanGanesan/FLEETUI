@@ -3477,7 +3477,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   connectedNodes: any[] = []; // Array to store connected nodes
   selectedPredockPose: string | null = null; // Holds the selected Predock Pose
   selectedUndockPose: string | null = null;
-  selectedDockPose: string | null = null;
   originalRoboPosition: { x: number; y: number } | null = null;
   originalAssetPosition: { x : number; y: number } | null = null;
   originalNodePosition: { x : number; y: number } | null = null;

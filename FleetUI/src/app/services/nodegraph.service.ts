@@ -9,7 +9,7 @@ export class NodeGraphService {
   private assets: any[] = [];
   private zones: any[] = [];
   private simMode: any[] = [];
-
+  private robos: any[] = [];
   showModelCanvas: boolean = false;
 
   constructor() {}
@@ -61,5 +61,12 @@ export class NodeGraphService {
   getsimMode() {
     return this.simMode;
   }
+  
+  setRobos(robos: any[]) {
+    this.robos = robos;
+  }
 
+  getRobos() {
+    return this.robos;
+  }
 }

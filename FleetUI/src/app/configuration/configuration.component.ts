@@ -1875,6 +1875,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.imageHeight = 0;
     this.imageWidth = 0;
     this.robotCountError = false;
+    this.robotCount=0;
   }
   
   robotCountError: boolean = false;

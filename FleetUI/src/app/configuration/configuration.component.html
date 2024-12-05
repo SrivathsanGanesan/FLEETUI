@@ -424,12 +424,13 @@
                 <span *ngIf="endIPInput.invalid && endIPInput.touched" class="error">
                   <!-- Invalid IP Address -->
                 </span>
-            </div>
+            </div >
 
               <button
                 type="button"
                 class="start-button"
                 (click)="startScanning()"
+                [disabled]="!isMapAvailable()"
               >
                 Scan
               </button>
@@ -437,6 +438,7 @@
                 type="button"
                 class="stop-button"
                 (click)="stopScanning()"
+                [disabled]="!isMapAvailable()"
               >
                 Stop
               </button>

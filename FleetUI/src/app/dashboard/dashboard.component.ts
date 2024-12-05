@@ -1218,6 +1218,7 @@ export class DashboardComponent implements AfterViewInit {
 
       return robo;
     });
+    this.nodeGraphService.setsimMode(this.simMode);
 
     this.mapImg = new Image();
     let imgName = this.projectService.getMapData();
@@ -1460,6 +1461,7 @@ async onInitMapImg() {
             // yet to remove if cond..
             // if (robot.pose.position.x && robot.pose.position.y)
             // Re-plot all robots
+            this.simMode=this.nodeGraphService.getsimMode();
             await this.plotAllRobots(robotsData);
           });
         }
@@ -1520,7 +1522,7 @@ async onInitMapImg() {
   }
 
   async plotAllRobots(robotsData: any) {
-    // console.log(robotsData.speed);
+    // console.log(robotsDatplotAllRobotsa.speed);
     
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -1641,7 +1643,7 @@ async onInitMapImg() {
             return robo;
         });
         }
-
+        
         this.simMode = this.simMode.map((robo) => {
             let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
             if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
