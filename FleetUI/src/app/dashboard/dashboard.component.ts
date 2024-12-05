@@ -1,5 +1,6 @@
 
 
+
 import {
   Component,
   AfterViewInit,
@@ -161,15 +162,15 @@ export class DashboardComponent implements AfterViewInit {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mapId: this.selectedMap.id,
-          roboId: robot.amrId, 
+          roboId: robot.amrId,
         }),
       }
     );
     let data = await response.json();
     if (data.error || !data.isRoboDeleted) return;
-    if(data.isRoboDeleted)
+    if(data.isRoboDeleted){
       this.simMode = this.simMode.filter((robo: any) => robot.amrId !== robo.amrId )
-      this.redrawCanvas();
+      this.redrawCanvas();}
     // this.simMode.splice(index, 1);  // Remove robot from the list
   }
 
@@ -202,8 +203,8 @@ export class DashboardComponent implements AfterViewInit {
   //   this.redrawCanvas();
   // }
   toggleMode() {
-    console.log(this.isFleet, "fleet condition");
-    console.log("toggle is clicked");
+    // console.log(this.isFleet, "fleet condition");
+    // console.log("toggle is clicked");
 
     const newState = !this.isFleet; // Calculate the new state
     this.isFleet = newState; // Update the local value of isFleet
@@ -233,11 +234,12 @@ export class DashboardComponent implements AfterViewInit {
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
 
+
       // Subscribe to the fleet state
-  //     const savedIsFleet = sessionStorage.getItem('isFleet');
-  //     if (savedIsFleet !== null) {
-  //       this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
-  //     }
+      // const savedIsFleet = sessionStorage.getItem('isFleet');
+      // if (savedIsFleet !== null) {
+      //   this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
+      // }
   const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
     this.isFleet = status;
     // console.log(status,'oijdrgioerj')
@@ -254,7 +256,20 @@ export class DashboardComponent implements AfterViewInit {
     this.projectService.isFleetUp$.subscribe((status) => {
       this.isFleetUp = status;
       // console.log(this.isFleetUp);
-      if(!this.isFleetUp){ 
+      if(!this.isFleetUp){
+        this.disableAllRobos();
+        this.isInLive = false;  // Ensure we're not in live mode if fleet is down
+        this.projectService.setInLive(false);  // Update the service
+      }
+    });
+      // console.log(this.projectService.getInitializeMapSelected(),'dash board')
+    if(this.projectService.getInitializeMapSelected()== 'true'){
+      // console.log('dash board map initiallizee')
+      this.canvasloader=true
+      this.projectService.isFleetUp$.subscribe((status) => {
+      this.isFleetUp = status;
+      // console.log(this.isFleetUp);
+      if(!this.isFleetUp){
         this.disableAllRobos();
         this.isInLive = false;  // Ensure we're not in live mode if fleet is down
         this.projectService.setInLive(false);  // Update the service
@@ -266,14 +281,22 @@ export class DashboardComponent implements AfterViewInit {
       this.canvasloader=true
       this.selectedMap = this.projectService.getMapData();
     }
+    }
     if(this.selectedMap == null){
       this.canvasloader=false;
       this.canvasNoImage=true
     }
     // console.log(this.selectedMap,"selected map")
+    // console.log(this.selectedMap,"selected map")
     if (!this.selectedMap) {
       await this.onInitMapImg();
       this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+      if(this.projectService.getInitializeMapSelected() == 'true')
+        if(!this.isInLive) this.initSimRoboPos();
+      await this.getMapDetails();
+      if(this.projectService.getInitializeMapSelected()=='true'){
+        this.loadCanvas();
+      }
       if(this.projectService.getInitializeMapSelected() == 'true')
         if(!this.isInLive) this.initSimRoboPos();
       await this.getMapDetails();
@@ -292,23 +315,24 @@ export class DashboardComponent implements AfterViewInit {
       this.zoomLevel = img.width > 1355 || img.height > 664 ? 0.8 : 1.0;
     // }
     };
-    await this.getMapDetails(); 
+    await this.getMapDetails();
     // this.showModelCanvas = false;
     this.projectService.setShowModelCanvas(false);
     this.cdRef.detectChanges();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
+    this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     this.loadCanvas();
     if(this.isInLive){
       this.initSimRoboPos();
       await this.getLivePos();
       if (this.posEventSource){ this.posEventSource.close();}
-    } else if (!this.isInLive){ // yet to look at it..      
+    } else if (!this.isInLive){ // yet to look at it..
       if (this.posEventSource) this.posEventSource.close();
       await this.getLivePos();
       this.projectService.setInLive(true);
       this.isInLive = true;
-    }    
+    }
     // console.log(this.simMode);
   }
   updateUI() {
@@ -322,7 +346,7 @@ export class DashboardComponent implements AfterViewInit {
       }, 300); // Adjust timing for the effect
     }
      // For example, log the current mode for debugging
-  console.log(`Current Mode: ${this.isFleet ? 'Fleet' : 'Simulation'}`);
+  // console.log(`Current Mode: ${this.isFleet ? 'Fleet' : 'Simulation'}`);
 
   // If you have more dynamic UI elements to update, you can trigger them here.
   // Example: trigger animations or visual updates if needed.
@@ -336,7 +360,6 @@ export class DashboardComponent implements AfterViewInit {
   }
   ngAfterViewInit(): void {
     console.log('myCanvas:', this.myCanvas);
-
     if (this.myCanvas) {
       const canvas = this.myCanvas.nativeElement;
       this.addMouseMoveListener(canvas);
@@ -595,7 +618,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async toggleModelCanvas() {
-    // this.fetchRoboPos ();   
+    // this.fetchRoboPos ();
     // this.showModelCanvas = !this.showModelCanvas;
     this.projectService.setShowModelCanvas(!this.projectService.getShowModelCanvas());
     if(this.isInLive){
@@ -603,7 +626,7 @@ export class DashboardComponent implements AfterViewInit {
       await this.getLivePos();
       // if (this.posEventSource){ this.posEventSource.close();}
     }
-    // await this.getLivePos(); 
+    // await this.getLivePos();
     if(this.projectService.getShowModelCanvas()){ // this.showModelCanvas use instead..
     this.messageService.add({
       severity: 'info',
@@ -754,7 +777,7 @@ export class DashboardComponent implements AfterViewInit {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
-    if (!this.projectService.getShowModelCanvas()) { // this.showModelCanvas use instead..      
+    if (!this.projectService.getShowModelCanvas()) { // this.showModelCanvas use instead..
       ctx.restore();
       return;
     }
