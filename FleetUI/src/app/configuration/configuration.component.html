@@ -5,6 +5,7 @@
   <!-- Sidebar -->
   <!-- <app-sidenavbar></app-sidenavbar> -->
   <app-loader></app-loader>
+  <!-- <p-toast></p-toast> -->
 
  <!-- loader -->
  <div *ngIf="editLoader" class="edit-loader">
@@ -86,6 +87,7 @@
               <h4 *ngIf="robotCountError" class="error-message">
                 No Robots Added
               </h4>
+              
               <div class="sim-button-container">
                 <button (click)="addRobot()">Add</button>
                 <!-- <button (click)="closePopup()">Cancel</button> -->
@@ -271,8 +273,7 @@
                   <td class="iconTable">
                     <button class="sel-btn" (click)="selectMap(item)">
                       <!-- [disabled]="isButtonDisabled(item)" -->
-                      <!-- SELECT -->
-              
+                      <!-- SELECT -->              
                       {{ item.mapName === this.selectedMap?.mapName ? "Deselect" : "Select" }}
                     </button>
                   </td>

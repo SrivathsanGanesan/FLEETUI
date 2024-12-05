@@ -904,6 +904,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
 
     if (this.startIP === '' || this.EndIP === '') {
+      this.setPaginatedData() 
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -1875,6 +1876,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.imageWidth = 0;
     this.robotCountError = false;
   }
+  
   robotCountError: boolean = false;
   async addRobot() {
     // Check for valid robot count
