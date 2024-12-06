@@ -1,7 +1,7 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
 const { projectModel, siteModel } = require("../../models/projectSchema");
 const convert = require("xml-js");
-
+ 
 const getFleetSeriesData = async (FleetMode, ServerIP, ServerPort, MongodbIP, MongoDatabaseName, endpoint) => {
   console.log("fleet data",FleetMode, ServerIP, ServerPort, MongodbIP, MongoDatabaseName, endpoint)
   let response = await fetch(
@@ -18,7 +18,7 @@ const getFleetSeriesData = async (FleetMode, ServerIP, ServerPort, MongodbIP, Mo
   );
   return await response.json();
 };
-
+ 
 const setGeneralParam = async (req, res) => {
   const { projectId, generalParams } = req.body;
   try {
@@ -36,7 +36,7 @@ const setGeneralParam = async (req, res) => {
       return res
         .status(500)
         .json({ isSet: false, project: null, msg: "project not updated..!" });
-    
+   
     let fleetGeneral = await getFleetSeriesData(
       updatedProj['fleetParams']['General']['fleetServerMode'],
       updatedProj['fleetParams']['General']['serverIP'],
@@ -60,7 +60,7 @@ const setGeneralParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
-
+ 
 const setPlannerParam = async (req, res) => {
   const { projectId, plannerParams } = req.body;
   try {
@@ -92,7 +92,7 @@ const setPlannerParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
-
+ 
 const setTaskParam = async (req, res) => {
   const { projectId, taskParams } = req.body;
   try {
@@ -124,7 +124,7 @@ const setTaskParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
-
+ 
 const setBatteryParam = async (req, res) => {
   const { projectId, batteryParams } = req.body;
   try {
@@ -156,7 +156,7 @@ const setBatteryParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
-
+ 
 const setCommunicationParam = async (req, res) => {
   const { projectId, communicationParams } = req.body;
   try {
@@ -188,7 +188,7 @@ const setCommunicationParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
-
+ 
 /* let json = {
   root: { serverIp: "127.0.0.1", serverPort: 3300 },
 };
@@ -198,7 +198,7 @@ let xmlData = convert.json2xml(json, {
   spaces: 4,
 });
 console.log(xmlData); */
-
+ 
 module.exports = {
   setGeneralParam,
   setPlannerParam,
