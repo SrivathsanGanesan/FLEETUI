@@ -116,12 +116,4 @@ export class ProjectService {
     // console.log('get initialize called and status -->',this.cookieService.get('mapInitializeStatus'))
     return this.cookieService.get('mapInitializeStatus');
   }
-
-  setShowModelCanvas(state: boolean) {
-    this.showModelCanvas = state;
-  }
-
-  getShowModelCanvas():boolean{
-    return this.showModelCanvas;
-  }
 }

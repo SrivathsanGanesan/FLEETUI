@@ -1,3 +1,4 @@
+
 import {
   ChangeDetectorRef,
   Component,
@@ -97,7 +98,7 @@ export class ChartTimelineComponent implements OnInit {
     ],
     robot: [
       { key: 'data1', label: 'CPU Utilization' },
-      { key: 'data2', label: 'Robot Utilization' },
+      // { key: 'data2', label: 'Robot Utilization' },
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
       { key: 'data5', label: 'Error' },
@@ -466,7 +467,9 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data, 'data-cpu util');
+
+      console.log(data.cpuUtil.CPU_Utilization, 'data-cpu util');
+
       if (data.cpuUtil) {
         this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
           let res;
@@ -502,7 +505,7 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,"data") //hold the chart data
+    console.log(data,"data =======cpu") //hold the chart data
     if (data.cpuUtil) {
       this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
         let res;
@@ -877,9 +880,9 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data,'=====idle====')
+      console.log(data,'=====idle====')
       if (data.idleTime) {
-        this.idleTimeArr = data.idleTime.map((stat: any) => {
+        this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
@@ -887,7 +890,7 @@ export class ChartTimelineComponent implements OnInit {
           }
           return res;
         });
-        this.idleTimeXaxisSeries = data.idleTime.map(
+        this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -908,9 +911,9 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,'=====idle====')
+    console.log(data,'=====idle====')
     if (data.idleTime) {
-      this.idleTimeArr = data.idleTime.map((stat: any) => {
+      this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
         let res;
         for (let key in stat) {
           res = stat[key];
@@ -918,7 +921,7 @@ export class ChartTimelineComponent implements OnInit {
         }
         return res;
       });
-      this.idleTimeXaxisSeries = data.idleTime.map(
+      this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -931,8 +934,9 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+      console.log(data,'=====idle====')
       if (data.idleTime) {
-        this.idleTimeArr = data.idleTime.map((stat: any) => {
+        this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
@@ -940,7 +944,7 @@ export class ChartTimelineComponent implements OnInit {
           }
           return res;
         });
-        this.idleTimeXaxisSeries = data.idleTime.map(
+        this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -961,14 +965,14 @@ export class ChartTimelineComponent implements OnInit {
       );
       console.log(data,'=====error====')
       if (data.roboErr) {
-        this.errorArr = data.roboErr.map((stat: any) => {
+        this.errorArr = data.roboErr.RobotError.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
           }
           return res;
         });
-        this.errRateXaxisSeries = data.roboErr.map(
+        this.errRateXaxisSeries = data.roboErr.RobotError.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -985,9 +989,9 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,'=====error====')
+    console.log(data,'=====error====')
     if (data.roboErr) {
-      this.errorArr = data.roboErr.map((stat: any) => {
+      this.errorArr = data.roboErr.RobotError.map((stat: any) => {
         let res;
         for (let key in stat) {
           res = stat[key];
@@ -995,7 +999,7 @@ export class ChartTimelineComponent implements OnInit {
         }
         return res;
       });
-      this.errRateXaxisSeries = data.roboErr.map(
+      this.errRateXaxisSeries = data.roboErr.RobotError.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -1009,7 +1013,7 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.roboErr) {
-        this.errorArr = data.roboErr.map((stat: any) => {
+        this.errorArr = data.roboErr.RobotError.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
@@ -1017,7 +1021,7 @@ export class ChartTimelineComponent implements OnInit {
           }
           return res;
         });
-        this.errRateXaxisSeries = data.roboErr.map(
+        this.errRateXaxisSeries = data.roboErr.RobotError.map(
           (stat: any, index: any) => (index += 1)
         );
       }

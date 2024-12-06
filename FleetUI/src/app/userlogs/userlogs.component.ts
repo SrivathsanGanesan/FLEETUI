@@ -50,7 +50,6 @@ export class Userlogscomponent {
   isFleet: boolean = false; // Store the emitted value
   private subscriptions: Subscription[] = [];
   
-
   constructor(
     private exportService: ExportService,
     private projectService: ProjectService,
@@ -115,7 +114,7 @@ export class Userlogscomponent {
     let establishedTime = new Date(this.mapData.createdAt);
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
     fetch(
-      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks`,
+      `http://${environment.API_URL}:${environment.PORT}/task-logs`,
       {
         method: 'POST',
         credentials: 'include',
@@ -133,11 +132,11 @@ export class Userlogscomponent {
       .then((data) => {
         const { taskLogs } = data;
               // Filter the notifications to include only those with specified statuses
-      const filteredLogs = taskLogs.notifications.filter(
-        (taskErr: any) =>
-          ['FAILED', 'CANCELLED', 'REJECTED'].includes(taskErr.name)
-      );
-        this.taskData = filteredLogs.map((taskErr: any) => {
+      // const filteredLogs = taskLogs.notifications.filter(
+      //   (taskErr: any) =>
+      //     ['FAILED', 'CANCELLED', 'REJECTED'].includes(taskErr.name)
+      // );
+        this.taskData = taskLogs.notifications.map((taskErr: any) => {
           const date = new Date();
           const formattedDateTime = `${date.toLocaleDateString('en-IN', {
             day: '2-digit',
@@ -527,14 +526,29 @@ export class Userlogscomponent {
 
   exportData(format: string) {
     const data = this.getCurrentTableData();
+    // let csvHeader:any={};
+    let excelHeader:any={}
     switch (format) {
       case 'csv':
-        this.exportService.exportToCSV(data, `${this.currentTable}DataExport`);
+        let csvHeader:{[k:string]:any}={}
+          if(data.length==0){
+             csvHeader['status']=true;
+             csvHeader['structure']=this.structuredFormatter(this.currentTable)[0]
+          }
+          csvHeader['length']=this.structuredFormatter(this.currentTable)[1]
+        this.exportService.exportToCSV(data, `${this.currentTable}DataExport`,csvHeader);
         break;
       case 'excel':
+        let excelHeader:{[k:string]:any}={}
+          if(data.length==0){
+            excelHeader['status']=true,
+            excelHeader['structure']=this.structuredFormatter(this.currentTable)[0]
+         }
+         excelHeader['length']=this.structuredFormatter(this.currentTable)[1]
         this.exportService.exportToExcel(
           data,
-          `${this.currentTable}DataExport`
+          `${this.currentTable}DataExport`,
+         excelHeader
         );
         break;
       case 'pdf':
@@ -542,6 +556,41 @@ export class Userlogscomponent {
         break;
       default:
         console.error('Invalid export format');
+    }
+  }
+
+  structuredFormatter(type:any):any{
+    switch (type) {
+      case 'task':
+        return [[{
+            dateTime: '',
+            taskId: '',
+            taskName: '',
+            errCode: '',
+            criticality: '',
+            desc: '',
+        }],6];
+      case 'robot':
+        return [[{
+            dateTime: '',
+            robotId: '',
+            robotName: '',
+            errCode: '',
+            criticality: '',
+            desc: '',
+        }],6];
+      case 'fleet':
+        return [[{
+          dateTime: '',
+          moduleName: '',
+          errCode: '',
+          criticality: '',
+          desc: '',
+        }],5];
+      default:
+        return {
+
+        };
     }
   }
 

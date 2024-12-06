@@ -360,8 +360,8 @@ export class ConfigurationComponent implements AfterViewInit {
       // });
 
       if (data.error) return;
-      if (data.populatedRobos) this.robotData = data.populatedRobos;
-      this.filteredRobotData = this.robotData;
+      if (data.populatedRobos) this.robotData = data.populatedRobos ;
+      this.filteredRobotData = this.robotData ;
       this.setPaginatedData1();
       this.reloadTable();
       // console.log(this.filteredRobotData)
@@ -904,6 +904,7 @@ export class ConfigurationComponent implements AfterViewInit {
     }
 
     if (this.startIP === '' || this.EndIP === '') {
+      this.setPaginatedData() 
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -1874,7 +1875,9 @@ export class ConfigurationComponent implements AfterViewInit {
     this.imageHeight = 0;
     this.imageWidth = 0;
     this.robotCountError = false;
+    this.robotCount=0;
   }
+  
   robotCountError: boolean = false;
   async addRobot() {
     // Check for valid robot count

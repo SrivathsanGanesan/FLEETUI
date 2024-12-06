@@ -2,6 +2,23 @@ const { Map, Robo } = require("../../../application/models/mapSchema");
 const { projectModel, siteModel } = require("../../models/projectSchema");
 const convert = require("xml-js");
 
+const getFleetSeriesData = async (FleetMode, ServerIP, ServerPort, MongodbIP, MongoDatabaseName, endpoint) => {
+  console.log("fleet data",FleetMode, ServerIP, ServerPort, MongodbIP, MongoDatabaseName, endpoint)
+  let response = await fetch(
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic cm9vdDp0b29y",
+      },
+      body: JSON.stringify({FleetMode:FleetMode, ServerIP:ServerIP, ServerPort:ServerPort, MongodbIP:MongodbIP, MongoDatabaseName:MongoDatabaseName}),
+    }
+  );
+  return await response.json();
+};
+
 const setGeneralParam = async (req, res) => {
   const { projectId, generalParams } = req.body;
   try {
@@ -19,6 +36,16 @@ const setGeneralParam = async (req, res) => {
       return res
         .status(500)
         .json({ isSet: false, project: null, msg: "project not updated..!" });
+    
+    let fleetGeneral = await getFleetSeriesData(
+      updatedProj['fleetParams']['General']['fleetServerMode'],
+      updatedProj['fleetParams']['General']['serverIP'],
+      updatedProj['fleetParams']['General']['serverPort'],
+      updatedProj['fleetParams']['General']['databaseIp'],
+      updatedProj['fleetParams']['General']['databaseName'],
+      "FMS_Data"
+      );
+    console.log(fleetGeneral)
     return res.status(200).json({
       isSet: true,
       msg: "data sent",
