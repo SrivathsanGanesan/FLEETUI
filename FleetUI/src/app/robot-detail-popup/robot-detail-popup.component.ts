@@ -137,7 +137,7 @@ export class RobotDetailPopupComponent {
     console.log(this.distance,"======================distance=======================");
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
     this.setSignalStrength(this.data.SignalStrength);
-    console.log(this.data,'data')
+    console.log(this.data,'data=========================')
     this.mapId = this.selectedMap.id;
     console.log("dolu", this.mapId)
     this.populatedRobo();
