@@ -582,11 +582,11 @@ const getCpuUtilization = async (req, res) => {
       var API_requestdata = "get_CPU_Utilization"
       var List_name  = "CPU_Utilization"
     }
-    // var fleetcpuutilization = await getFleetSeriesData(
-    //   startTime,
-    //   endTime,
-    //   API_requestdata
-    // )
+    var fleetcpuutilization = await getFleetSeriesData(
+      startTime,
+      endTime,
+      API_requestdata
+    )
     
     console.log(fleetcpuutilization,'fleet cpu-------------------------------')
     // WEEK WISE //
@@ -650,7 +650,7 @@ const getRoboUtilization = async (req, res) => {
       startTime,
       endTime,
       API_requestdata
-    )    
+    )
     console.log(fleetROBOutilization,'fleet robot-------------------------------')
   
     // WEEK WISE //

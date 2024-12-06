@@ -14,7 +14,7 @@ export interface Robot {
   averageSpeed: any;
   distanceLeft: string;
   isConnected : boolean;
-
+  distance: string;
   id: number;
   name: string;
   imageUrl: string;
