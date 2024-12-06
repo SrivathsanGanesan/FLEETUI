@@ -191,20 +191,23 @@ export class RobotsComponent implements OnInit {
           robo.temperature = liveRobo.robotTemperature;
           robo.networkstrength = liveRobo.NetworkSpeed;
           robo.memory = liveRobo.Memory;
-          robo.error = liveRobo.robotError;
-          robo.currentspeed = liveRobo.Speed;
-          robo.averagespeed = liveRobo.Speed;
+          robo.totalPicks = liveRobo.PickCount;
+          robo.cpuutilization=liveRobo.CPU_Utilization;
+          robo.totalDrops= liveRobo.DropCount;
+          // robo.error = liveRobo.robotError;
+          robo.currentspeed = liveRobo["Robot Speed"];
+          robo.averagespeed = liveRobo["Robot Speed"];
 
 
-          if ('EMERGENCY STOP' in liveRobo.robot_errors)
-            robo.error += liveRobo.robot_errors['EMERGENCY STOP'].length;
-          if ('LIDAR_ERROR' in liveRobo.robot_errors)
-            robo.error += liveRobo.robot_errors['LIDAR_ERROR'].length;
+          // if ('EMERGENCY STOP' in liveRobo.robot_errors)
+          //   robo.error += liveRobo.robot_errors['EMERGENCY STOP'].length;
+          // if ('LIDAR_ERROR' in liveRobo.robot_errors)
+          //   robo.error += liveRobo.robot_errors['LIDAR_ERROR'].length;
         }
       });
       return robo;
     });
-    console.log(this.robots,'=======================================')
+    console.log(this.robots,'=================Robot======================')
 
     this.filteredRobots = this.robots;
   }

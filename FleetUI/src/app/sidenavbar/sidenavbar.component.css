@@ -80,10 +80,13 @@
   .notification-popup {
     position: absolute;
     top: 52px;
+
     right: 10px;
     background-color: rgba(243, 243, 243, 0.301);
     backdrop-filter: blur(10px);
     border: 1px solid #ffffff;
+    background-color: rgba(243, 243, 243, 0.301);
+    backdrop-filter: blur(10px);
     padding: 5px;
     border-radius: 10px;
     font-family: Arial, sans-serif;
