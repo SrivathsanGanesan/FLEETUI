@@ -62,6 +62,8 @@ export class RobotDetailPopupComponent {
   isConnected: boolean = true;
   robotUtilization: string = '0';
   pick: any;
+  data : any;
+  distance: any;
 
   toggleConnection() {
     console.log('toggle is clicked')
@@ -106,7 +108,7 @@ export class RobotDetailPopupComponent {
   constructor(
     public dialogRef: MatDialogRef<RobotDetailPopupComponent>,
     private projectService: ProjectService,
-    @Inject(MAT_DIALOG_DATA) public data: Robot
+    // @Inject(MAT_DIALOG_DATA) public data: Robot
   ) {
 
   }
@@ -128,9 +130,12 @@ export class RobotDetailPopupComponent {
       return;
     }
     this.pick = this.fetchChartData();
+    this.data = this.robotDetails();
+    this.distance = this.fetchDistance();
+    console.log(this.data,"=============================================");
+    console.log(this.pick,"=============================================");
+    console.log(this.distance,"=============================================");
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
-    // console.log('Battery Percentage:', this.data.batteryPercentage);
-    // console.log('Is Charging:', this.data.isCharging);
     this.setSignalStrength(this.data.SignalStrength);
     console.log(this.data,'data')
     this.mapId = this.selectedMap.id;
@@ -138,8 +143,7 @@ export class RobotDetailPopupComponent {
     this.populatedRobo();
     console.log(this.populatedRobo)
     this.fetchLiveRobosData();
-    this.projectService.getRobotUtilization(this.mapId, timeStamp1, timeStamp2)
-    .subscribe(
+    this.projectService.getRobotUtilization(this.mapId, timeStamp1, timeStamp2).subscribe(
       (data) => {
         if (data && data.robots && data.robots.length > 0) {
           this.robotUtilization = data.robots[0].utilization_percentage;
@@ -152,11 +156,10 @@ export class RobotDetailPopupComponent {
     console.log(this.robotUtilization,"---------------robot utilization ------------");
    }
 
-   fetchChartData(
-  ): Promise<any> {
+   fetchChartData(): Promise<any> {
     const { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
     // console.log(timeSpan, 'time span robot');
-  
+
     // Return a Promise to handle asynchronous behavior
     return fetch(
       `http://${environment.API_URL}:${environment.PORT}/get_pickdropCount`,
@@ -176,7 +179,55 @@ export class RobotDetailPopupComponent {
       return response.json();
     });
   }
-  
+
+  fetchDistance(): Promise<any> {
+    const { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    // console.log(timeSpan, 'time span robot');
+
+    // Return a Promise to handle asynchronous behavior
+    return fetch(
+      `http://${environment.API_URL}:${environment.PORT}/get_distance`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
+        }),
+      }
+    ).then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    });
+  }
+
+  robotDetails(): Promise<any> {
+    const { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
+    // console.log(timeSpan, 'time span robot');
+
+    // Return a Promise to handle asynchronous behavior
+    return fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.selectedMap.id}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
+        }),
+      }
+    ).then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    });
+  }
+
 
    populatedRobo():void{
     fetch(`http://${environment.API_URL}:${environment.PORT}/robo-configuration/get-robos/${this.selectedMap.id}`, {
