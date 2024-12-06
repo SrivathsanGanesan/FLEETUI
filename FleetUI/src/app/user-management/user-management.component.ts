@@ -859,8 +859,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteUserPopUp() {
-    this.deleteUserOCstate = true;
+    this.deleteUserOCstate = !this.deleteUserOCstate;
   }
 }
-
 

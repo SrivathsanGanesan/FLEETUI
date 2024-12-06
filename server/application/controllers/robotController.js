@@ -7,6 +7,24 @@ const eventStreamHeader = {
   Connection: "keep-alive",
 };
 
+
+const getFleetSeriesData = async (timeStamp1, timeStamp2, endpoint) => {
+  // console.log('cup data')
+  let response = await fetch(
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic cm9vdDp0b29y",
+      },
+      body: JSON.stringify({timeStamp1: timeStamp1, timeStamp2: timeStamp2}),
+    }
+  );
+  return await response.json();
+};
+
 const insertRoboIdInProj = async ({ roboId, roboName, projectName }) => {
   const proj = await projectModel.findOneAndUpdate(
     { projectName: projectName }, // wanna add robo name.. to the ref
@@ -239,6 +257,26 @@ const uptime = async (req, res, next) => {
   }
 };
 
+// -------- [ALTER : active number of robots] --------------
+const getpickdrop  = async (req, res) => {
+  API_data = res.body;
+  timeStamp1 = API_data['timeStamp1']
+  timeStamp2 = API_data['timeStamp2']
+  try {
+    // get the pick & drop data from fleet server ///
+    // let fleetpickdrop = await getFleetSeriesData(
+    //   startTime,
+    //   endTime,
+    //   "get_pickdropCount"
+    // )
+      res.status(200)
+      .json({pick : 15, drop : 10});
+  } catch (err) {
+    res.status(500).json({ opt: "failed", error: err });
+  }
+};
+
+
 module.exports = {
   getGrossCount,
   uptime,
@@ -246,4 +284,5 @@ module.exports = {
   updateRobo,
   getAllRobo,
   deleteRobo,
+  getpickdrop
 };

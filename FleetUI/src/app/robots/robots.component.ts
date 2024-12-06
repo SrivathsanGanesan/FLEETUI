@@ -49,6 +49,7 @@ export interface Robot {
   maximumspeed: string;
   averagetransfertime: string;
   averagedockingtime: string;
+  distance:number;
 }
 
 @Component({
@@ -92,7 +93,8 @@ export class RobotsComponent implements OnInit {
   async ngOnInit() {
     this.mapDetails = this.projectService.getMapData();
     if (!this.mapDetails) return;
-
+    console.log(this.liveRobos,'====================================')
+    this.updateLiveRoboInfo();
     let grossFactSheet = await this.fetchAllRobos();
     this.robots = grossFactSheet.map((robo) => {
       robo.imageUrl = '../../assets/robots/agv1.png';
@@ -179,12 +181,20 @@ export class RobotsComponent implements OnInit {
     this.robots = this.robots.map((robo) => {
       robots.forEach((liveRobo: any) => {
         if (robo.id == liveRobo.id) {
-          robo.error = 0;
+          robo.error = liveRobo.robotError;
           robo.battery = liveRobo.battery.toFixed(2);
           robo.batteryPercentage = liveRobo.battery.toFixed(2);
           robo.currentTask = liveRobo.current_task;
           robo.status = liveRobo.isConnected ? 'ACTIVE' : 'INACTIVE';
           robo.isConnected = liveRobo.isConnected;
+          robo.distance = liveRobo.DISTANCE;
+          robo.temperature = liveRobo.robotTemperature;
+          robo.networkstrength = liveRobo.NetworkSpeed;
+          robo.memory = liveRobo.Memory;
+          robo.error = liveRobo.robotError;
+          robo.currentspeed = liveRobo.Speed;
+          robo.averagespeed = liveRobo.Speed;
+
 
           if ('EMERGENCY STOP' in liveRobo.robot_errors)
             robo.error += liveRobo.robot_errors['EMERGENCY STOP'].length;
@@ -194,6 +204,7 @@ export class RobotsComponent implements OnInit {
       });
       return robo;
     });
+    console.log(this.robots,'=======================================')
 
     this.filteredRobots = this.robots;
   }

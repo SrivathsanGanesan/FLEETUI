@@ -169,6 +169,7 @@ export class DashboardComponent implements AfterViewInit {
     if (data.error || !data.isRoboDeleted) return;
     if(data.isRoboDeleted){
       this.simMode = this.simMode.filter((robo: any) => robot.amrId !== robo.amrId )
+      this.nodeGraphService.setsimMode(this.simMode);
       this.redrawCanvas();}
     // this.simMode.splice(index, 1);  // Remove robot from the list
   }
@@ -210,7 +211,9 @@ export class DashboardComponent implements AfterViewInit {
     this.isFleet = newState; // Update the local value of isFleet
     this.isFleetService.setIsFleet(newState); // Update the service state
     sessionStorage.setItem('isFleet', String(newState)); // Save the updated value to session storage
-
+    if(!this.isFleet){
+      this.initSimRoboPos();
+    }
     // Trigger any additional actions needed
     this.redrawCanvas();
   }
@@ -233,8 +236,6 @@ export class DashboardComponent implements AfterViewInit {
   }
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
-
-
       // Subscribe to the fleet state
         // const savedIsFleet = sessionStorage.getItem('isFleet');
         // if (savedIsFleet !== null) {
@@ -286,7 +287,6 @@ export class DashboardComponent implements AfterViewInit {
         this.canvasloader=false;
         this.canvasNoImage=true
       }
-      // console.log(this.selectedMap,"selected map")
     // console.log(this.selectedMap,"selected map")
       if (!this.selectedMap) {
         await this.onInitMapImg();
@@ -321,7 +321,6 @@ export class DashboardComponent implements AfterViewInit {
     this.cdRef.detectChanges();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
-    this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     this.loadCanvas();
     if(this.isInLive){
       this.initSimRoboPos();
@@ -626,7 +625,14 @@ export class DashboardComponent implements AfterViewInit {
       await this.getLivePos();
       // if (this.posEventSource){ this.posEventSource.close();}
     }
-    // await this.getLivePos(); 
+    // await this.getLivePos();
+    // if(this.projectService.getShowModelCanvas()){ // this.showModelCanvas use instead..
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Map options',
+    //   detail: 'Map options are now visible',
+    //   life: 2000,
+    // });}
     if(this.nodeGraphService.getShowModelCanvas()){ // this.showModelCanvas use instead..
     this.messageService.add({
       severity: 'info',
@@ -777,7 +783,7 @@ export class DashboardComponent implements AfterViewInit {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
-    if (!this.nodeGraphService.getShowModelCanvas()) { // this.showModelCanvas use instead..      
+    if (!this.nodeGraphService.getShowModelCanvas()) { // this.showModelCanvas use instead..
       ctx.restore();
       return;
     }
@@ -1153,7 +1159,7 @@ export class DashboardComponent implements AfterViewInit {
       else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
       return robo;
     })
-    
+
     if(data.isRoboEnabled)
       this.messageService.add({
         severity: 'info',
@@ -1547,7 +1553,7 @@ async onInitMapImg() {
 
   async plotAllRobots(robotsData: any) {
     // console.log(robotsDatplotAllRobotsa.speed);
-    
+
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
 
@@ -1599,7 +1605,7 @@ async onInitMapImg() {
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
         let imgState ="robotB";
-        // console.log("hey",state);          
+        // console.log("hey",state);
         if(state==="INITSTATE"){
           imgState="init";
         }
@@ -1667,7 +1673,7 @@ async onInitMapImg() {
             return robo;
         });
         }
-        
+
         this.simMode = this.simMode.map((robo) => {
             let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
             if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
