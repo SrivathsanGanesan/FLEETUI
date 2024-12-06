@@ -14,7 +14,6 @@ export interface Robot {
   averageSpeed: any;
   distanceLeft: string;
   isConnected : boolean;
-  distance: string;
   id: number;
   name: string;
   imageUrl: string;
@@ -41,6 +40,7 @@ export interface Robot {
   maximumspeed: string;
   averagetransfertime: string;
   averagedockingtime: string;
+  distance:number;
 }
 
 @Component({
@@ -62,7 +62,7 @@ export class RobotDetailPopupComponent {
   isConnected: boolean = true;
   robotUtilization: string = '0';
   pick: any;
-  data : any;
+  specific : any;
   distance: any;
 
   toggleConnection() {
@@ -108,7 +108,7 @@ export class RobotDetailPopupComponent {
   constructor(
     public dialogRef: MatDialogRef<RobotDetailPopupComponent>,
     private projectService: ProjectService,
-    // @Inject(MAT_DIALOG_DATA) public data: Robot
+    @Inject(MAT_DIALOG_DATA) public data: Robot
   ) {
 
   }
@@ -130,11 +130,11 @@ export class RobotDetailPopupComponent {
       return;
     }
     this.pick = this.fetchChartData();
-    this.data = this.robotDetails();
+    this.specific = this.robotDetails();
     this.distance = this.fetchDistance();
-    console.log(this.data,"=============================================");
-    console.log(this.pick,"=============================================");
-    console.log(this.distance,"=============================================");
+    console.log(this.specific,"=======================specific======================");
+    console.log(this.pick,"==========================pick===================");
+    console.log(this.distance,"======================distance=======================");
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
     this.setSignalStrength(this.data.SignalStrength);
     console.log(this.data,'data')
@@ -212,13 +212,8 @@ export class RobotDetailPopupComponent {
     return fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.selectedMap.id}`,
       {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          timeStamp1: timeStamp1,
-          timeStamp2: timeStamp2,
-        }),
+        method: 'GET',
+        credentials: 'include'
       }
     ).then(response => {
       if (!response.ok) {

@@ -626,13 +626,13 @@ export class DashboardComponent implements AfterViewInit {
       // if (this.posEventSource){ this.posEventSource.close();}
     }
     // await this.getLivePos();
-    if(this.projectService.getShowModelCanvas()){ // this.showModelCanvas use instead..
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Map options',
-      detail: 'Map options are now visible',
-      life: 2000,
-    });}
+    // if(this.projectService.getShowModelCanvas()){ // this.showModelCanvas use instead..
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Map options',
+    //   detail: 'Map options are now visible',
+    //   life: 2000,
+    // });}
     // if (!this.showModelCanvas) {
     //   this.nodes = [];
     // } else {
@@ -776,10 +776,10 @@ export class DashboardComponent implements AfterViewInit {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
-    if (!this.projectService.getShowModelCanvas()) { // this.showModelCanvas use instead..
-      ctx.restore();
-      return;
-    }
+    // if (!this.projectService.getShowModelCanvas()) { // this.showModelCanvas use instead..
+    //   ctx.restore();
+    //   return;
+    // }
 
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;

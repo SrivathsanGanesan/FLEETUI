@@ -49,6 +49,7 @@ export interface Robot {
   maximumspeed: string;
   averagetransfertime: string;
   averagedockingtime: string;
+  distance:number;
 }
 
 @Component({
@@ -185,6 +186,8 @@ export class RobotsComponent implements OnInit {
           robo.currentTask = liveRobo.current_task;
           robo.status = liveRobo.isConnected ? 'ACTIVE' : 'INACTIVE';
           robo.isConnected = liveRobo.isConnected;
+          robo.distance = liveRobo.DISTANCE;
+
 
           if ('EMERGENCY STOP' in liveRobo.robot_errors)
             robo.error += liveRobo.robot_errors['EMERGENCY STOP'].length;
