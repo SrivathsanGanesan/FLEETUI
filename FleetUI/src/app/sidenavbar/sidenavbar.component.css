@@ -83,7 +83,7 @@
     right: 10px;  
     /* background: linear-gradient(135deg, #d3d3d3, #a9a9a9); Grey gradient */
     border: 1px solid #ffffff;
-    background: linear-gradient(135deg, #d3d3d3, #a9a9a9); /* Grey gradient */
+    background-color: rgba(243, 243, 243, 0.301);
     backdrop-filter: blur(10px);
     padding: 5px;
     border-radius: 10px;
