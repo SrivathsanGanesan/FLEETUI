@@ -69,6 +69,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 // import { BrowserModule } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {MatRadioModule} from '@angular/material/radio';
+// import { NotAuthorizedComponent } from './guards/not-authorized/not-authorized.component';
 
 
 
@@ -110,7 +111,8 @@ import {MatRadioModule} from '@angular/material/radio';
     FaqComponent,
     ContactusComponent,
     LoaderComponent,
-    TimerComponent
+    TimerComponent,
+    // NotAuthorizedComponent
   ],
   imports: [
     MatRadioModule,
