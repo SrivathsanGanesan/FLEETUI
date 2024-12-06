@@ -1,7 +1,7 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
 
 //.. Task
-const getFleetTaskErrLogs = async (endpoint) => {
+const getFleetTaskErrLogs = async (endpoint, bodyData) => {
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
@@ -11,17 +11,17 @@ const getFleetTaskErrLogs = async (endpoint) => {
         "Content-Type": "application/json",
         Authorization: "Basic cm9vdDp0b29y",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify(bodyData),
     }
   );
   return await response.json();
-  };
+};
 
-// const getFleetTaskErrLogs = (req, res, next) => {
-//   fetch(`http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/get_tasks_errors${endpoint}`, {
+// const getFleetTaskErrLogs = (endpoint, bodyData) => {
+//   fetch(`http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`, {
 //     method: "POST",
 //     credentials: "include",
-//     body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
+//     body: JSON.stringify(bodyData),
 //   })
 //     .then((response) => {
 //       if (!response.ok) {
@@ -40,7 +40,7 @@ const getFleetTaskErrLogs = async (endpoint) => {
 //   next();
 // };
 
-//.. Task error
+// .. Task error
 // const getTaskError= async (req, res, next) => {
 //   console.log('task error called')
 // try {
@@ -86,19 +86,25 @@ const getFleetTaskErrLogs = async (endpoint) => {
 // };
 
 const getTaskErrLogs = async (req, res) => {
-  console.log('task')
+  // console.log('task')
   const mapId = req.params.mapId;
+  console.log(req.body)
+  const { timeStamp1, timeStamp2 } = req.body;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(500).json({ msg: "map not exists", map: null });
     const map = await Map.findOne({ _id: mapId });
     if (!map) return res.status(500).json({ map: map, msg: "Map not exists!" });
-    let FleetTaskErrLogs = await getFleetTaskErrLogs(
-      "get_tasks_errors"
-    )
+    let bodyData = {
+      timeStamp1: timeStamp1,
+      timeStamp2: timeStamp2,
+    };
+
+    let FleetTaskErrLogs = await getFleetTaskErrLogs( "get_tasks_errors", bodyData );
     console.log(FleetTaskErrLogs)
-    return res.status(200).json({ taskLogs: errTaskLogs, msg: "data sent" });
+    console.log(FleetTaskErrLogs.tasks)
+    return res.status(200).json({task_id : FleetTaskErrLogs.tasks[1],  task_type : 'task_type', criticality : 'criticality'});
   } catch (err) {
     console.error("Error in taskLogs:", err);
     if (err.name === "CastError")

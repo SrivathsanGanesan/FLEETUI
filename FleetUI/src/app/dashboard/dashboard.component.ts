@@ -1,3 +1,4 @@
+
 import {
   Component,
   AfterViewInit,
@@ -168,6 +169,7 @@ export class DashboardComponent implements AfterViewInit {
     if (data.error || !data.isRoboDeleted) return;
     if(data.isRoboDeleted){
       this.simMode = this.simMode.filter((robo: any) => robot.amrId !== robo.amrId )
+      this.nodeGraphService.setsimMode(this.simMode);
       this.redrawCanvas();}
     // this.simMode.splice(index, 1);  // Remove robot from the list
   }
@@ -209,7 +211,9 @@ export class DashboardComponent implements AfterViewInit {
     this.isFleet = newState; // Update the local value of isFleet
     this.isFleetService.setIsFleet(newState); // Update the service state
     sessionStorage.setItem('isFleet', String(newState)); // Save the updated value to session storage
-
+    if(!this.isFleet){
+      this.initSimRoboPos();
+    }
     // Trigger any additional actions needed
     this.redrawCanvas();
   }
@@ -233,13 +237,7 @@ export class DashboardComponent implements AfterViewInit {
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
 
-    this.simMode = this.simMode.map((robot) => {
-      const savedState = sessionStorage.getItem(`robot_${robot.amrId}_isActive`);
-      if (savedState !== null) {
-        robot.isActive = JSON.parse(savedState); // Restore saved state
-      }
-      return robot;
-    });
+    this.isInLive = this.projectService.getInLive();
       // Subscribe to the fleet state
         // const savedIsFleet = sessionStorage.getItem('isFleet');
         // if (savedIsFleet !== null) {
@@ -287,11 +285,14 @@ export class DashboardComponent implements AfterViewInit {
         this.selectedMap = this.projectService.getMapData();
       }
       }
+    this.simMode.forEach(robot => {
+        const savedState = this.nodeGraphService.getRobotState(robot.amrId);
+        robot.isActive = savedState;
+    });
     if(this.selectedMap == null){
         this.canvasloader=false;
         this.canvasNoImage=true
       }
-      // console.log(this.selectedMap,"selected map")
     // console.log(this.selectedMap,"selected map")
       if (!this.selectedMap) {
         await this.onInitMapImg();
@@ -326,7 +327,6 @@ export class DashboardComponent implements AfterViewInit {
     this.cdRef.detectChanges();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
-    this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     this.loadCanvas();
     if(this.isInLive){
       this.initSimRoboPos();
@@ -639,6 +639,13 @@ export class DashboardComponent implements AfterViewInit {
     //   detail: 'Map options are now visible',
     //   life: 2000,
     // });}
+    if(this.nodeGraphService.getShowModelCanvas()){ // this.showModelCanvas use instead..
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Map options',
+      detail: 'Map options are now visible',
+      life: 2000,
+    });}
     // if (!this.showModelCanvas) {
     //   this.nodes = [];
     // } else {
@@ -782,10 +789,10 @@ export class DashboardComponent implements AfterViewInit {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
-    // if (!this.projectService.getShowModelCanvas()) { // this.showModelCanvas use instead..
-    //   ctx.restore();
-    //   return;
-    // }
+    if (!this.nodeGraphService.getShowModelCanvas()) { // this.showModelCanvas use instead..
+      ctx.restore();
+      return;
+    }
 
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
@@ -1156,30 +1163,32 @@ export class DashboardComponent implements AfterViewInit {
 
     // Update robot state and persist to sessionStorage
     this.simMode = this.simMode.map((robo) => {
-      if (robo.amrId === robot.amrId) {
-        robo.isActive = data.isRoboEnabled;
-        sessionStorage.setItem(`robot_${robo.amrId}_isActive`, JSON.stringify(robo.isActive)); // Persist state
+      if(robo.amrId === robot.amrId && data.isRoboEnabled){
+         robo.isActive = true;
+         this.nodeGraphService.setRobotState(robot.amrId, true); // Store the state
+      }
+      else if(robo.amrId === robot.amrId && !data.isRoboEnabled) {
+        robo.isActive = false;
+        this.nodeGraphService.setRobotState(robot.amrId, true);
       }
       return robo;
-    });
+    })
 
-    // Show appropriate message
-    if (data.isRoboEnabled) {
+    if(data.isRoboEnabled)
       this.messageService.add({
         severity: 'info',
-        summary: `${robot.roboName || robot.name} has been enabled.`,
+        summary: `${robot.roboName || robot.roboDet.roboName} has been enabled.`,
         detail: 'Robot has been Enabled',
         life: 4000,
       });
-    } else {
-      this.messageService.add({
-        severity: 'error',
-        summary: `${robot.roboName || robot.name} has not been enabled.`,
-        detail: 'The robot is not initialized, so it cannot be enabled',
-        life: 4000,
-      });
-    }
-
+      else{
+        this.messageService.add({
+          severity: 'error',
+          summary: `${robot.roboName || robot.roboDet.roboName} has not been enabled.`,
+          detail: 'The robot is not initialized, so it cannot be Enabled',
+          life: 4000,
+        });
+      }
     console.log(`${robot.roboName} has been enabled.`);
   }
 
@@ -1558,7 +1567,7 @@ async onInitMapImg() {
   }
 
   async plotAllRobots(robotsData: any) {
-    // console.log(robotsData.speed);
+    // console.log(robotsDatplotAllRobotsa.speed);
 
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
