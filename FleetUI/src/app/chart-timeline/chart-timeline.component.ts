@@ -650,9 +650,9 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data,"========")
+      console.log(data,"========")
       if (data.batteryStat) {
-        this.batteryArr = data.batteryStat.batteryPercentage.map((stat: any) => {
+        this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
@@ -660,7 +660,7 @@ export class ChartTimelineComponent implements OnInit {
           }
           return res;
         });
-        this.batteryXaxisSeries = data.batteryStat.batteryPercentage.map(
+        this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -676,9 +676,9 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,'========battery====')
+    console.log(data,'========battery====')
     if (data.batteryStat) {
-      this.batteryArr = data.batteryStat.batteryPercentage.map((stat: any) => {
+      this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
         let res;
         for (let key in stat) {
           res = stat[key];
@@ -686,7 +686,7 @@ export class ChartTimelineComponent implements OnInit {
         }
         return res;
       });
-      this.batteryXaxisSeries = data.batteryStat.batteryPercentage.map(
+      this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -700,7 +700,7 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.batteryStat) {
-        this.batteryArr = data.batteryStat.batteryPercentage.map((stat: any) => {
+        this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
@@ -708,7 +708,7 @@ export class ChartTimelineComponent implements OnInit {
           }
           return res;
         });
-        this.batteryXaxisSeries = data.batteryStat.batteryPercentage.map(
+        this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -727,7 +727,7 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data,'======memory====')
+      console.log(data,'======memory====')
       if (data.memoryStat) {
         this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
           let res;
@@ -753,7 +753,7 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,'=======memory=======')
+    console.log(data,'=======memory=======')
     if (data.memoryStat) {
       this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
         let res;

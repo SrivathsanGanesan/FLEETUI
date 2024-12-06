@@ -29,7 +29,7 @@ for (let i = 1; i < 100; i++) {
 
 const getFleetTask = async (endpoint, bodyData) => {
   let response = await fetch(
-    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/Err${endpoint}`,
+    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
       method: "POST",
       credentials: "include",
