@@ -233,7 +233,13 @@ export class DashboardComponent implements AfterViewInit {
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
 
-
+    this.simMode = this.simMode.map((robot) => {
+      const savedState = sessionStorage.getItem(`robot_${robot.amrId}_isActive`);
+      if (savedState !== null) {
+        robot.isActive = JSON.parse(savedState); // Restore saved state
+      }
+      return robot;
+    });
       // Subscribe to the fleet state
         // const savedIsFleet = sessionStorage.getItem('isFleet');
         // if (savedIsFleet !== null) {
@@ -1143,32 +1149,40 @@ export class DashboardComponent implements AfterViewInit {
 
   async activateRobot(robot: any) {
     let fleetUp = this.projectService.getIsFleetUp();
-    if(!fleetUp) return;
+    if (!fleetUp) return;
+
     robot.enabled = true;
     let data = await this.enable_robot(robot);
-    // if(data.isRoboEnabled)
+
+    // Update robot state and persist to sessionStorage
     this.simMode = this.simMode.map((robo) => {
-      if(robo.amrId === robot.amrId && data.isRoboEnabled) robo.isActive = true;
-      else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
+      if (robo.amrId === robot.amrId) {
+        robo.isActive = data.isRoboEnabled;
+        sessionStorage.setItem(`robot_${robo.amrId}_isActive`, JSON.stringify(robo.isActive)); // Persist state
+      }
       return robo;
-    })
-    if(data.isRoboEnabled)
+    });
+
+    // Show appropriate message
+    if (data.isRoboEnabled) {
       this.messageService.add({
         severity: 'info',
         summary: `${robot.roboName || robot.name} has been enabled.`,
         detail: 'Robot has been Enabled',
         life: 4000,
       });
-      else{
-        this.messageService.add({
-          severity: 'error',
-          summary: `${robot.roboName || robot.name} has not been enabled.`,
-          detail: 'The robot is not initialized, so it cannot be enabled',
-          life: 4000,
-        });
-      }
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: `${robot.roboName || robot.name} has not been enabled.`,
+        detail: 'The robot is not initialized, so it cannot be enabled',
+        life: 4000,
+      });
+    }
+
     console.log(`${robot.roboName} has been enabled.`);
   }
+
 
   async getMapDetails() {
     let mapData = this.projectService.getMapData();
