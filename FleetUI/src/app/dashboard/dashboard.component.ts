@@ -211,7 +211,9 @@ export class DashboardComponent implements AfterViewInit {
     this.isFleet = newState; // Update the local value of isFleet
     this.isFleetService.setIsFleet(newState); // Update the service state
     sessionStorage.setItem('isFleet', String(newState)); // Save the updated value to session storage
-
+    if(!this.isFleet){
+      this.initSimRoboPos();
+    }
     // Trigger any additional actions needed
     this.redrawCanvas();
   }
@@ -234,8 +236,6 @@ export class DashboardComponent implements AfterViewInit {
   }
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
-
-
       // Subscribe to the fleet state
         // const savedIsFleet = sessionStorage.getItem('isFleet');
         // if (savedIsFleet !== null) {
@@ -287,7 +287,6 @@ export class DashboardComponent implements AfterViewInit {
         this.canvasloader=false;
         this.canvasNoImage=true
       }
-      // console.log(this.selectedMap,"selected map")
     // console.log(this.selectedMap,"selected map")
       if (!this.selectedMap) {
         await this.onInitMapImg();
@@ -322,7 +321,6 @@ export class DashboardComponent implements AfterViewInit {
     this.cdRef.detectChanges();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
-    this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     this.loadCanvas();
     if(this.isInLive){
       this.initSimRoboPos();
