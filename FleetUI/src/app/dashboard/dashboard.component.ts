@@ -1,6 +1,3 @@
-
-
-
 import {
   Component,
   AfterViewInit,
@@ -1166,7 +1163,7 @@ export class DashboardComponent implements AfterViewInit {
         this.messageService.add({
           severity: 'error',
           summary: `${robot.roboName || robot.name} has not been enabled.`,
-          detail: 'Robot has not been Enabled',
+          detail: 'The robot is not initialized, so it cannot be enabled',
           life: 4000,
         });
       }
