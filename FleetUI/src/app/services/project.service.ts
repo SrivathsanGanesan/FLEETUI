@@ -15,7 +15,7 @@ export class ProjectService {
   private isFleetUp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   initializeMapSelectedStatus: any
-  showModelCanvas: boolean = false;
+  // showModelCanvas: boolean = false;
 
   inLive$ = this.inLive.asObservable();
   isFleetUp$ = this.isFleetUp.asObservable();

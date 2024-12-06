@@ -628,6 +628,13 @@ export class DashboardComponent implements AfterViewInit {
       // if (this.posEventSource){ this.posEventSource.close();}
     }
     // await this.getLivePos();
+    // if(this.projectService.getShowModelCanvas()){ // this.showModelCanvas use instead..
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Map options',
+    //   detail: 'Map options are now visible',
+    //   life: 2000,
+    // });}
     if(this.nodeGraphService.getShowModelCanvas()){ // this.showModelCanvas use instead..
     this.messageService.add({
       severity: 'info',
