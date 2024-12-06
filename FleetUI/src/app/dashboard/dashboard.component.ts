@@ -235,6 +235,7 @@ export class DashboardComponent implements AfterViewInit {
     return this.isFleet ? 'fleet-background' : 'simulation-background';
   }
   async ngOnInit() {
+
     this.isInLive = this.projectService.getInLive();
       // Subscribe to the fleet state
         // const savedIsFleet = sessionStorage.getItem('isFleet');
@@ -283,6 +284,10 @@ export class DashboardComponent implements AfterViewInit {
         this.selectedMap = this.projectService.getMapData();
       }
       }
+    this.simMode.forEach(robot => {
+        const savedState = this.nodeGraphService.getRobotState(robot.amrId);
+        robot.isActive = savedState;
+    });
     if(this.selectedMap == null){
         this.canvasloader=false;
         this.canvasNoImage=true
@@ -1155,8 +1160,14 @@ export class DashboardComponent implements AfterViewInit {
     let data = await this.enable_robot(robot);
     // if(data.isRoboEnabled)
     this.simMode = this.simMode.map((robo) => {
-      if(robo.amrId === robot.amrId && data.isRoboEnabled) robo.isActive = true;
-      else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
+      if(robo.amrId === robot.amrId && data.isRoboEnabled){
+         robo.isActive = true;
+         this.nodeGraphService.setRobotState(robot.amrId, true); // Store the state
+      }
+      else if(robo.amrId === robot.amrId && !data.isRoboEnabled) {
+        robo.isActive = false;
+        this.nodeGraphService.setRobotState(robot.amrId, true);
+      }
       return robo;
     })
 
