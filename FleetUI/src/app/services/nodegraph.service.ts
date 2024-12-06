@@ -54,14 +54,16 @@ export class NodeGraphService {
   getShowModelCanvas():boolean{
     return this.showModelCanvas;
   }
+  
   setsimMode(simMode: any[]) {
     this.simMode = simMode;
   }
 
   getsimMode() {
+    console.log(this.simMode);
     return this.simMode;
   }
-  
+
   setRobos(robos: any[]) {
     this.robos = robos;
   }
@@ -69,5 +71,5 @@ export class NodeGraphService {
   getRobos() {
     return this.robos;
   }
-  
+
 }
