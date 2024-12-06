@@ -69,4 +69,5 @@ export class NodeGraphService {
   getRobos() {
     return this.robos;
   }
+  
 }
