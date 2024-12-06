@@ -1,3 +1,4 @@
+
 import {
   ChangeDetectorRef,
   Component,
@@ -97,7 +98,7 @@ export class ChartTimelineComponent implements OnInit {
     ],
     robot: [
       { key: 'data1', label: 'CPU Utilization' },
-      { key: 'data2', label: 'Robot Utilization' },
+      // { key: 'data2', label: 'Robot Utilization' },
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
       { key: 'data5', label: 'Error' },
@@ -392,9 +393,7 @@ export class ChartTimelineComponent implements OnInit {
     endTime: string
   ) {
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay();
-    // console.log(timeStamp1,'---------------------',timeStamp2)
-    // alter to date..
-    console.log(timeSpan, 'time span robot');
+    // console.log(this.selectedType, '++++++++++++++++++++++');
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/graph/${endpoint}/${this.selectedMap.id}`,
       {
@@ -468,16 +467,18 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+
       console.log(data.cpuUtil.CPU_Utilization, 'data-cpu util');
+
       if (data.cpuUtil) {
         this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
           let res;
-          console.log(stat, 'stat');
+          // console.log(stat, 'stat');
           for (let key in stat) {
             res = stat[key];
             // console.log(key,"-----------------")
           }
-          console.log(res, 'res');
+          // console.log(res, 'res');
           return res;
         });
         this.cpuXaxisSeries = data.cpuUtil.CPU_Utilization.map(
@@ -485,8 +486,8 @@ export class ChartTimelineComponent implements OnInit {
         );
       }
       let mapArr = (stat: any) => {};
-      console.log(this.cpuUtilArr, '<----cpu');
-      console.log(this.cpuXaxisSeries, 'x axis');
+      // console.log(this.cpuUtilArr, '<----cpu');
+      // console.log(this.cpuXaxisSeries, 'x axis');
       this.plotChart(
         'CPU Utilization',
         this.cpuUtilArr,
@@ -504,16 +505,16 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,"data") //hold the chart data
+    console.log(data,"data =======cpu") //hold the chart data
     if (data.cpuUtil) {
       this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
         let res;
-        console.log(stat, 'stat');
+        // console.log(stat, 'stat');
         for (let key in stat) {
           res = stat[key];
           // console.log(key,"-----------------")
         }
-        console.log(res, 'res');
+        // console.log(res, 'res');
         return res;
       });
       this.cpuXaxisSeries = data.cpuUtil.CPU_Utilization.map(
@@ -535,7 +536,7 @@ export class ChartTimelineComponent implements OnInit {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
@@ -560,16 +561,18 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+      // console.log(data,'------------------------');
       if (data.roboUtil) {
-        this.roboUtilArr = data.roboUtil.map((stat: any) => {
+        this.roboUtilArr = data.roboUtil.Robot_Utilization.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.roboXaxisSeries = data.roboUtil.map(
+        // console.log(data.roboUtil,'-------------------')
+        this.roboXaxisSeries = data.roboUtil.Robot_Utilization.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -590,11 +593,19 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
+    console.log(data,'data robot util')
     if (data.roboUtil) {
-      this.roboUtilArr = data.roboUtil.map(
-        (stat: any) => stat.Robot_Utilization
-      );
-      this.roboXaxisSeries = data.roboUtil.map(
+      this.roboUtilArr = data.roboUtil.Robot_Utilization
+      .map(
+        (stat: any) =>{
+          let res;
+          for (let key in stat) {
+            res = stat[key];
+            // console.log(key, '-----------------');
+          }
+          return res;
+        });
+      this.roboXaxisSeries = data.roboUtil.Robot_Utilization.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -608,15 +619,15 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.roboUtil) {
-        this.roboUtilArr = data.roboUtil.map((stat: any) => {
+        this.roboUtilArr = data.roboUtil.Robot_Utilization.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.roboXaxisSeries = data.roboUtil.map(
+        this.roboXaxisSeries = data.roboUtil.Robot_Utilization.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -639,16 +650,17 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+      console.log(data,"========")
       if (data.batteryStat) {
-        this.batteryArr = data.batteryStat.map((stat: any) => {
+        this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.batteryXaxisSeries = data.batteryStat.map(
+        this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -664,16 +676,17 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
+    console.log(data,'========battery====')
     if (data.batteryStat) {
-      this.batteryArr = data.batteryStat.map((stat: any) => {
+      this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
         let res;
         for (let key in stat) {
           res = stat[key];
-          console.log(key, '-----------------');
+          // console.log(key, '-----------------');
         }
         return res;
       });
-      this.batteryXaxisSeries = data.batteryStat.map(
+      this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -687,15 +700,15 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.batteryStat) {
-        this.batteryArr = data.batteryStat.map((stat: any) => {
+        this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.batteryXaxisSeries = data.batteryStat.map(
+        this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -714,16 +727,17 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+      console.log(data,'======memory====')
       if (data.memoryStat) {
-        this.memoryArr = data.memoryStat.map((stat: any) => {
+        this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.memoryXaxisSeries = data.memoryStat.map(
+        this.memoryXaxisSeries = data.memoryStat.Memory.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -739,16 +753,17 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
+    console.log(data,'=======memory=======')
     if (data.memoryStat) {
-      this.memoryArr = data.memoryStat.map((stat: any) => {
+      this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
         let res;
         for (let key in stat) {
           res = stat[key];
-          console.log(key, '-----------------');
+          // console.log(key, '-----------------');
         }
         return res;
       });
-      this.memoryXaxisSeries = data.memoryStat.map(
+      this.memoryXaxisSeries = data.memoryStat.Memory.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -762,15 +777,15 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.memoryStat) {
-        this.memoryArr = data.memoryStat.map((stat: any) => {
+        this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.memoryXaxisSeries = data.memoryStat.map(
+        this.memoryXaxisSeries = data.memoryStat.Memory.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -789,16 +804,17 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+      // console.log(data,"======network=====")
       if (data.networkUtil) {
-        this.networkArr = data.networkUtil.map((stat: any) => {
+        this.networkArr = data.networkUtil.Network.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.networkXaxisSeries = data.networkUtil.map(
+        this.networkXaxisSeries = data.networkUtil.Network.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -814,16 +830,17 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
+    console.log(data,'=======network=====')//
     if (data.networkUtil) {
-      this.networkArr = data.networkUtil.map((stat: any) => {
+      this.networkArr = data.networkUtil.Network.map((stat: any) => {
         let res;
         for (let key in stat) {
           res = stat[key];
-          console.log(key, '-----------------');
+          // console.log(key, '-----------------');
         }
         return res;
       });
-      this.networkXaxisSeries = data.networkUtil.map(
+      this.networkXaxisSeries = data.networkUtil.Network.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -836,15 +853,15 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.networkUtil) {
-        this.networkArr = data.networkUtil.map((stat: any) => {
+        this.networkArr = data.networkUtil.Network.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.networkXaxisSeries = data.networkUtil.map(
+        this.networkXaxisSeries = data.networkUtil.Network.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -863,16 +880,17 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+      console.log(data,'=====idle====')
       if (data.idleTime) {
-        this.idleTimeArr = data.idleTime.map((stat: any) => {
+        this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.idleTimeXaxisSeries = data.idleTime.map(
+        this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -893,16 +911,17 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
+    console.log(data,'=====idle====')
     if (data.idleTime) {
-      this.idleTimeArr = data.idleTime.map((stat: any) => {
+      this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
         let res;
         for (let key in stat) {
           res = stat[key];
-          console.log(key, '-----------------');
+          // console.log(key, '-----------------');
         }
         return res;
       });
-      this.idleTimeXaxisSeries = data.idleTime.map(
+      this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -915,16 +934,17 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+      console.log(data,'=====idle====')
       if (data.idleTime) {
-        this.idleTimeArr = data.idleTime.map((stat: any) => {
+        this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.idleTimeXaxisSeries = data.idleTime.map(
+        this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
           (stat: any, index: any) => (index += 1)
         );
       }
@@ -943,19 +963,20 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
+      console.log(data,'=====error====')
       if (data.roboErr) {
-        this.errorArr = data.roboErr.map((stat: any) => {
+        this.errorArr = data.roboErr.RobotError.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
           }
           return res;
         });
-        this.errRateXaxisSeries = data.roboErr.map(
+        this.errRateXaxisSeries = data.roboErr.RobotError.map(
           (stat: any, index: any) => (index += 1)
         );
       }
-      console.log(this.errorArr, 'error arr');
+      // console.log(this.errorArr, 'error arr');
       this.plotChart('Error', this.errorArr, this.errRateXaxisSeries, 30);
       return;
     }
@@ -968,16 +989,17 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
+    console.log(data,'=====error====')
     if (data.roboErr) {
-      this.errorArr = data.roboErr.map((stat: any) => {
+      this.errorArr = data.roboErr.RobotError.map((stat: any) => {
         let res;
         for (let key in stat) {
           res = stat[key];
-          console.log(key, '-----------------');
+          // console.log(key, '-----------------');
         }
         return res;
       });
-      this.errRateXaxisSeries = data.roboErr.map(
+      this.errRateXaxisSeries = data.roboErr.RobotError.map(
         (stat: any, index: any) => (index += 1)
       );
     }
@@ -991,15 +1013,15 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.roboErr) {
-        this.errorArr = data.roboErr.map((stat: any) => {
+        this.errorArr = data.roboErr.RobotError.map((stat: any) => {
           let res;
           for (let key in stat) {
             res = stat[key];
-            console.log(key, '-----------------');
+            // console.log(key, '-----------------');
           }
           return res;
         });
-        this.errRateXaxisSeries = data.roboErr.map(
+        this.errRateXaxisSeries = data.roboErr.RobotError.map(
           (stat: any, index: any) => (index += 1)
         );
       }

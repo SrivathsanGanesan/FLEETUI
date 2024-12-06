@@ -257,7 +257,7 @@ export class StatisticsComponent {
         if(task.TaskAssignTime>=task.TaskAddTime){
         tot_responsiveness += task.TaskAssignTime - task.TaskAddTime
         console.log("tot_responsiveness",tot_responsiveness );}
-        
+
         return {
           taskId: task.task_id,
           taskName: task.sub_task[0]?.task_type
@@ -272,7 +272,7 @@ export class StatisticsComponent {
         Math.round(average_responsiveness)
       } ms`;
       console.log("Responsiveness",Math.round(average_responsiveness));
-      
+
       return fleet_tasks;
     }
     return [];

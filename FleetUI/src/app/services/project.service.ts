@@ -10,12 +10,44 @@ import { environment } from '../../environments/environment.development';
 export class ProjectService {
   private projectCreatedKey = 'is-project-setted';
   private selectedProjectKey = 'project-data';
+  private storageKeyPrefix = 'robot_';
+    /**
+   * Get the toggle state of a specific robot by ID.
+   * @param amrId - The ID of the robot.
+   * @returns The toggle state (true/false) or null if not set.
+   */
+
+    getToggleState(amrId: string): boolean | null {
+      const storedValue = sessionStorage.getItem(`${this.storageKeyPrefix}${amrId}`);
+      return storedValue !== null ? storedValue === 'true' : null;
+    }
+  
+    /**
+     * Set the toggle state of a specific robot.
+     * @param amrId - The ID of the robot.
+     * @param isActive - The new state (true/false).
+     */
+    setToggleState(amrId: string, isActive: boolean): void {
+      sessionStorage.setItem(`${this.storageKeyPrefix}${amrId}`, String(isActive));
+    }
+  
+    /**
+     * Clear all toggle states from sessionStorage (optional utility method).
+     */
+    clearAllStates(): void {
+      Object.keys(sessionStorage).forEach((key) => {
+        if (key.startsWith(this.storageKeyPrefix)) {
+          sessionStorage.removeItem(key);
+        }
+      });
+    }
 
   private inLive: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( false );
   private isFleetUp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  
+
   initializeMapSelectedStatus: any
-  
+  // showModelCanvas: boolean = false;
+
   inLive$ = this.inLive.asObservable();
   isFleetUp$ = this.isFleetUp.asObservable();
 

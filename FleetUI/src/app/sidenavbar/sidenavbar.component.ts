@@ -181,9 +181,9 @@ export class SidenavbarComponent implements OnInit {
             let err_type = ["EMERGENCY STOP", "LIDAR_ERROR", "DOCKING ERROR", "LOADING ERROR", "NO ERROR"]; //Robot Errors List from RabbitMQ
             let criticality = "Normal";
 
-            if(err_type.includes(err_type[0]) || err_type.includes(err_type[3])) 
+            if(err_type.includes(err_type[0]) || err_type.includes(err_type[3]))
               criticality = "Critical"; // "EMERGENCY STOP", "DOCKING"
-            else if(err_type.includes(err_type[1]) || err_type.includes(err_type[2])) 
+            else if(err_type.includes(err_type[1]) || err_type.includes(err_type[2]))
               criticality = "Warning"; // "LIDAR_ERROR", "MANUAL MODE"
 
             let notificationKey = `${error.description} on robot ID ${robot.id}`;
