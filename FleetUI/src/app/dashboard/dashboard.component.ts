@@ -1536,7 +1536,7 @@ async onInitMapImg() {
 
   async plotAllRobots(robotsData: any) {
     // console.log(robotsData.speed);
-    
+
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
 
@@ -1584,7 +1584,7 @@ async onInitMapImg() {
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
         let imgState ="robotB";
-        // console.log("hey",state);          
+        // console.log("hey",state);
         if(state==="INITSTATE"){
           imgState="init";
         }
