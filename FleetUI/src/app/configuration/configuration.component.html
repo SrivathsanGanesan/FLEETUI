@@ -524,7 +524,7 @@
                 >
                   General
                 </li>
-                <li
+                <!-- <li
                   [class.active]="fleetTab === 'planner'"
                   (click)="setFleetTab('planner')"
                 >
@@ -547,7 +547,7 @@
                   (click)="setFleetTab('communication')"
                 >
                   Communication
-                </li>
+                </li> -->
               </ul>
 
               <div *ngIf="fleetTab === 'general'">
@@ -555,25 +555,18 @@
                 <!-- Add content for the General tab -->
                 <app-general></app-general>
               </div>
-              <div *ngIf="fleetTab === 'planner'">
-                <!-- <h2>Planner Settings</h2> -->
-                <!-- Add content for the Planner tab -->
+              <!-- <div *ngIf="fleetTab === 'planner'">
                 <app-planner></app-planner>
               </div>
               <div *ngIf="fleetTab === 'task'">
-                <!-- <h2>Task Management</h2> -->
-                <!-- Add content for the Task tab -->
                 <app-task></app-task>
               </div>
               <div *ngIf="fleetTab === 'battery'">
-                <!-- <h2>Battery Information</h2> -->
-                <!-- Add content for the Battery tab -->
                 <app-battery></app-battery>
               </div>
               <div *ngIf="fleetTab === 'communication'">
-                <!-- <h2>Communication Settings</h2> -->
                 <app-communication></app-communication>
-              </div>
+              </div> -->
             </div>
 
             <div class="Create-button-container">
