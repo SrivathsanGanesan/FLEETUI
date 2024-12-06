@@ -65,6 +65,8 @@ export class Userlogscomponent {
       console.log('Seems no map has been selected');
       return;
     }
+    const apoi = this.getTaskLogs();
+    console.log(apoi,"===========sfkjvbsfj========")
     this.modeService.currentMode$.subscribe((mode) => {
       this.currentMode = mode; // React to mode updates
       // console.log(this.currentMode,"dkjnonvofpsp")
@@ -84,7 +86,7 @@ export class Userlogscomponent {
     setInterval(async() => {
       await this.getRoboLogs();
     }, 1000*3);
-    this.getTaskLogs();
+    await this.getTaskLogs();
     this.getFleetLogs();
   }
 
@@ -98,6 +100,7 @@ export class Userlogscomponent {
   }
 
   getTimeStampsOfDay(establishedTime: Date) {
+
     let currentTime = Math.floor(new Date().getTime() / 1000);
     let startTimeOfDay = this.getStartOfDay(establishedTime);
     return {
@@ -106,65 +109,54 @@ export class Userlogscomponent {
     };
   }
   getStartOfDay(establishedTime: Date) {
+    // console.log(establishedTime.toLocaleDateString(),'locale')
     return Math.floor(establishedTime.setHours(0, 0, 0) / 1000);
   }
 
-  getTaskLogs() {
+ async getTaskLogs() {
     this.mapData = this.projectService.getMapData();
     let establishedTime = new Date(this.mapData.createdAt);
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/task-logs`,
+    // console.log(timeStamp1,'t-1')
+    // console.log(timeStamp2,'t-2')
+    let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs`,
       {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify({
-          timeStamp1: timeStamp1,
-          timeStamp2: timeStamp2,
-        }),
-      }
-    )
-      .then((response) => {
-        // if (!response.ok)
-        //   throw new Error(`Error with the statusCode of ${response.status}`);
-        return response.json();
-      })
-      .then((data) => {
-        const { taskLogs } = data;
-              // Filter the notifications to include only those with specified statuses
-      // const filteredLogs = taskLogs.notifications.filter(
-      //   (taskErr: any) =>
-      //     ['FAILED', 'CANCELLED', 'REJECTED'].includes(taskErr.name)
-      // );
-        this.taskData = taskLogs.notifications.map((taskErr: any) => {
-          const date = new Date();
-          const formattedDateTime = `${date.toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-          })}, ${date.toLocaleTimeString('en-IN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-          })}`;
-          return {
-            dateTime: formattedDateTime,
-            taskId: taskErr.task_id,
-            taskName: taskErr.sub_task[0]?.task_type
-            ? taskErr.sub_task[0]?.task_type
-            : 'N/A',
-            errCode: "Err001",
-            criticality: taskErr.criticality,
-            desc: "Robot is in Error State",
-          };
-        });
-        this.filteredTaskData = this.taskData;
-        this.setPaginatedData();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+          method: 'POST',
+          credentials: 'include',
+          body: JSON.stringify({
+            timeStamp1: timeStamp1,
+            timeStamp2: timeStamp2,
+          }),
+        }
+      )
+    let data = await response.json();
+    const { taskLogs } = data;
+    this.taskData = taskLogs.notifications.map((taskErr: any) => {
+      const date = new Date();
+      const formattedDateTime = `${date.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })}, ${date.toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      })}`;
+      return {
+        dateTime: formattedDateTime,
+        taskId: taskErr.task_id,
+        taskName: taskErr.sub_task[0]?.task_type
+        ? taskErr.sub_task[0]?.task_type
+        : 'N/A',
+        errCode: "Err001",
+        criticality: taskErr.criticality,
+        desc: "Robot is in Error State",
+      };
+    });
+    this.filteredTaskData = this.taskData;
+    this.setPaginatedData();
   }
+
   async fetchRobos(){
     fetch(
       `http://${environment.API_URL}:${environment.PORT}/dashboard/maps/${this.mapData.mapName}`,
@@ -228,9 +220,6 @@ export class Userlogscomponent {
         }
       })
   }
-
-
-
 
   async getRoboLogs() {
     this.liveRobos = await this.getLiveRoboInfo();
