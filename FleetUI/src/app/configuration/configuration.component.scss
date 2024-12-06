@@ -1328,6 +1328,9 @@ edit button */
 .error-message{
   color: #dc2b31;
 }
+.Success-message{
+  color: #34580d;
+}
 .sim-popup-content input[type="number"]:focus {
   border-color: #28a745; /* Green border on focus */
   outline: none;
@@ -1594,4 +1597,27 @@ tbody td {
 }
   
 
-  
+.date-inputs label{
+  font-family: "graphik", Arial,  sans-serif !important;
+}
+
+::ng-deep .mat-paginator {
+  font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+}
+
+::ng-deep .mat-paginator .mat-paginator-range-label {
+ font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+}
+
+::ng-deep .mat-paginator .mat-paginator-page-size .mat-select-trigger {
+  font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+}
+
+::ng-deep .mat-paginator .mat-button {
+  font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+}
+
+.form-group{
+  font-family: "Graphik", Arial, sans-serif !important; /* Change font family */
+
+}

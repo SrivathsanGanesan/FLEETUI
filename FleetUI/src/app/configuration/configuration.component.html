@@ -5,6 +5,7 @@
   <!-- Sidebar -->
   <!-- <app-sidenavbar></app-sidenavbar> -->
   <app-loader></app-loader>
+  <!-- <p-toast></p-toast> -->
 
  <!-- loader -->
  <div *ngIf="editLoader" class="edit-loader">
@@ -86,6 +87,7 @@
               <h4 *ngIf="robotCountError" class="error-message">
                 No Robots Added
               </h4>
+              
               <div class="sim-button-container">
                 <button (click)="addRobot()">Add</button>
                 <!-- <button (click)="closePopup()">Cancel</button> -->
@@ -271,8 +273,7 @@
                   <td class="iconTable">
                     <button class="sel-btn" (click)="selectMap(item)">
                       <!-- [disabled]="isButtonDisabled(item)" -->
-                      <!-- SELECT -->
-              
+                      <!-- SELECT -->              
                       {{ item.mapName === this.selectedMap?.mapName ? "Deselect" : "Select" }}
                     </button>
                   </td>
@@ -336,7 +337,7 @@
                   <td>{{ (paginator ? paginator.pageIndex * paginator.pageSize : 0) + i + 1 }}</td>
                   <td>{{ item.ipAdd }}</td>
                   <td>{{ item.amrId }}</td>
-                  <td>{{ item.uuid.slice(0, 8)+'...' }}</td>
+                  <td>{{ item.uuid }}</td>
                   <td>{{ item.roboName }}</td>
                   <td class="iconTable">
                     <div class="edit">
@@ -423,12 +424,13 @@
                 <span *ngIf="endIPInput.invalid && endIPInput.touched" class="error">
                   <!-- Invalid IP Address -->
                 </span>
-            </div>
+            </div >
 
               <button
                 type="button"
                 class="start-button"
                 (click)="startScanning()"
+                [disabled]="!isMapAvailable()"
               >
                 Scan
               </button>
@@ -436,6 +438,7 @@
                 type="button"
                 class="stop-button"
                 (click)="stopScanning()"
+                [disabled]="!isMapAvailable()"
               >
                 Stop
               </button>

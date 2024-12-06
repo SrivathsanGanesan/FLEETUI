@@ -1,6 +1,4 @@
 
-
-
 import {
   Component,
   AfterViewInit,
@@ -16,12 +14,13 @@ import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
-import { MessageService } from 'primeng/api';
+import { MessageService, PrimeIcons } from 'primeng/api';
 import { state } from '@angular/animations';
 import { log } from 'console';
 import { IsFleetService } from '../services/shared/is-fleet.service';
 import { ModeService } from './mode.service';
 import { Subscription } from 'rxjs';
+import { NodeGraphService } from '../services/nodegraph.service';
 
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -179,7 +178,8 @@ export class DashboardComponent implements AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private messageService:MessageService,
     private isFleetService: IsFleetService,
-    private modeService: ModeService
+    private modeService: ModeService,
+    private nodeGraphService:NodeGraphService
   ) {
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
@@ -236,24 +236,24 @@ export class DashboardComponent implements AfterViewInit {
 
 
       // Subscribe to the fleet state
-      // const savedIsFleet = sessionStorage.getItem('isFleet');
-      // if (savedIsFleet !== null) {
-      //   this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
-      // }
-  const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
-    this.isFleet = status;
-    // console.log(status,'oijdrgioerj')
-    this.updateUI(); // Update UI based on the current state
-  });
+        // const savedIsFleet = sessionStorage.getItem('isFleet');
+        // if (savedIsFleet !== null) {
+        //   this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
+        // }
+    const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
+      this.isFleet = status;
+      // console.log(status,'oijdrgioerj')
+      this.updateUI(); // Update UI based on the current state
+    });
 
-  this.subscriptions.push(fleetSub);
-  const savedIsFleet = sessionStorage.getItem('isFleet');
-  if (savedIsFleet !== null) {
-    this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
-    this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
-      }
+    this.subscriptions.push(fleetSub);
+    const savedIsFleet = sessionStorage.getItem('isFleet');
+    if (savedIsFleet !== null) {
+      this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
+      this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
+        }
 
-    this.projectService.isFleetUp$.subscribe((status) => {
+      this.projectService.isFleetUp$.subscribe((status) => {
       this.isFleetUp = status;
       // console.log(this.isFleetUp);
       if(!this.isFleetUp){
@@ -267,57 +267,57 @@ export class DashboardComponent implements AfterViewInit {
       // console.log('dash board map initiallizee')
       this.canvasloader=true
       this.projectService.isFleetUp$.subscribe((status) => {
-      this.isFleetUp = status;
-      // console.log(this.isFleetUp);
-      if(!this.isFleetUp){
-        this.disableAllRobos();
-        this.isInLive = false;  // Ensure we're not in live mode if fleet is down
-        this.projectService.setInLive(false);  // Update the service
+        this.isFleetUp = status;
+        // console.log(this.isFleetUp);
+        if(!this.isFleetUp){
+          this.disableAllRobos();
+          this.isInLive = false;  // Ensure we're not in live mode if fleet is down
+          this.projectService.setInLive(false);  // Update the service
+        }
+      });
+      // console.log(this.projectService.getInitializeMapSelected(),'dash board')
+      if(this.projectService.getInitializeMapSelected()== 'true'){
+        console.log('dash board map initiallizee')
+        this.canvasloader=true
+        this.selectedMap = this.projectService.getMapData();
       }
-    });
-      console.log(this.projectService.getInitializeMapSelected(),'dash board')
-    if(this.projectService.getInitializeMapSelected()== 'true'){
-      console.log('dash board map initiallizee')
-      this.canvasloader=true
-      this.selectedMap = this.projectService.getMapData();
-    }
-    }
+      }
     if(this.selectedMap == null){
-      this.canvasloader=false;
-      this.canvasNoImage=true
-    }
+        this.canvasloader=false;
+        this.canvasNoImage=true
+      }
+      // console.log(this.selectedMap,"selected map")
     // console.log(this.selectedMap,"selected map")
-    // console.log(this.selectedMap,"selected map")
-    if (!this.selectedMap) {
-      await this.onInitMapImg();
-      this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
-      if(this.projectService.getInitializeMapSelected() == 'true')
+      if (!this.selectedMap) {
+        await this.onInitMapImg();
+        this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
+        if(this.projectService.getInitializeMapSelected() == 'true')
         if(!this.isInLive) this.initSimRoboPos();
       await this.getMapDetails();
       if(this.projectService.getInitializeMapSelected()=='true'){
         this.loadCanvas();
       }
       if(this.projectService.getInitializeMapSelected() == 'true')
-        if(!this.isInLive) this.initSimRoboPos();
-      await this.getMapDetails();
-      if(this.projectService.getInitializeMapSelected()=='true'){
-        this.loadCanvas();
+          if(!this.isInLive) this.initSimRoboPos();
+        await this.getMapDetails();
+        if(this.projectService.getInitializeMapSelected()=='true'){
+          this.loadCanvas();
+        }
+        this.isMapLoaded = false;
+        return;
       }
-      this.isMapLoaded = false;
-      return;
-    }
-    const img = new Image();
-    img.src = `http://${this.selectedMap.imgUrl}`;
+      const img = new Image();
+      img.src = `http://${this.selectedMap.imgUrl}`;
 
-    img.onload = () => {
-    // Calculate zoom level only once during initialization
-    // if (this.zoomLevel) {
-      this.zoomLevel = img.width > 1355 || img.height > 664 ? 0.8 : 1.0;
-    // }
+      img.onload = () => {
+      // Calculate zoom level only once during initialization
+      // if (this.zoomLevel) {
+        this.zoomLevel = img.width > 1355 || img.height > 664 ? 0.8 : 1.0;
+      // }
     };
     await this.getMapDetails();
     // this.showModelCanvas = false;
-    this.projectService.setShowModelCanvas(false);
+    this.nodeGraphService.setShowModelCanvas(false);
     this.cdRef.detectChanges();
     this.redrawCanvas();   // yet to look at it... and stay above initSimRoboPos()
     if(!this.isInLive) this.initSimRoboPos();
@@ -620,14 +620,14 @@ export class DashboardComponent implements AfterViewInit {
   async toggleModelCanvas() {
     // this.fetchRoboPos ();
     // this.showModelCanvas = !this.showModelCanvas;
-    this.projectService.setShowModelCanvas(!this.projectService.getShowModelCanvas());
+    this.nodeGraphService.setShowModelCanvas(!this.nodeGraphService.getShowModelCanvas());
     if(this.isInLive){
       // this.initSimRoboPos();
       await this.getLivePos();
       // if (this.posEventSource){ this.posEventSource.close();}
     }
-    // await this.getLivePos();
-    if(this.projectService.getShowModelCanvas()){ // this.showModelCanvas use instead..
+    // await this.getLivePos(); 
+    if(this.nodeGraphService.getShowModelCanvas()){ // this.showModelCanvas use instead..
     this.messageService.add({
       severity: 'info',
       summary: 'Map options',
@@ -777,7 +777,7 @@ export class DashboardComponent implements AfterViewInit {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
-    if (!this.projectService.getShowModelCanvas()) { // this.showModelCanvas use instead..
+    if (!this.nodeGraphService.getShowModelCanvas()) { // this.showModelCanvas use instead..      
       ctx.restore();
       return;
     }
@@ -1153,6 +1153,7 @@ export class DashboardComponent implements AfterViewInit {
       else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
       return robo;
     })
+    
     if(data.isRoboEnabled)
       this.messageService.add({
         severity: 'info',
@@ -1164,7 +1165,7 @@ export class DashboardComponent implements AfterViewInit {
         this.messageService.add({
           severity: 'error',
           summary: `${robot.roboName || robot.name} has not been enabled.`,
-          detail: 'Robot has not been Enabled',
+          detail: 'The robot is not initialized, so it cannot be Enabled',
           life: 4000,
         });
       }
@@ -1196,13 +1197,19 @@ export class DashboardComponent implements AfterViewInit {
       return node;
     });
 
+    this.nodeGraphService.setNodes(this.nodes); // in use..
+
     this.edges = mapData.edges;
+
+    this.nodeGraphService.setEdges(this.edges); // in use..
 
     this.assets = mapData.stations.map((asset: any) => {
       asset.x = (asset.x + (this.origin.x || 0)) / (this.ratio || 1);
       asset.y = (asset.y + (this.origin.y || 0)) / (this.ratio || 1);
       return asset;
     });
+
+    this.nodeGraphService.setAssets(this.assets);
 
     this.zones = mapData.zones.map((zone: any) => {
       zone.pos = zone.pos.map((pos: any) => {
@@ -1212,6 +1219,8 @@ export class DashboardComponent implements AfterViewInit {
       });
       return zone;
     });
+
+    this.nodeGraphService.setZones(this.zones);
 
     this.robos = mapData.roboPos.map((robo: any) => {
       robo.pos.x = robo.pos.x / (this.ratio || 1);
@@ -1233,6 +1242,7 @@ export class DashboardComponent implements AfterViewInit {
 
       return robo;
     });
+    this.nodeGraphService.setsimMode(this.simMode);
 
     this.mapImg = new Image();
     let imgName = this.projectService.getMapData();
@@ -1277,14 +1287,14 @@ export class DashboardComponent implements AfterViewInit {
       ctx.scale(this.zoomLevel, this.zoomLevel);
       ctx.restore(); // Reset transformation after drawing
 
-      if (this.projectService.getShowModelCanvas()) { // this.showModelCanvas
+      if (this.nodeGraphService.getShowModelCanvas()) { // this.showModelCanvas
         this.redrawOtherElements(ctx, mapImage); // Pass the mapImage for transformations
       }
       // Draw the map image
       ctx.drawImage(mapImage, 0, 0);
 
       // If showModelCanvas is true, draw additional elements
-      if (this.projectService.getShowModelCanvas()) { // this.showModelCanvas
+      if (this.nodeGraphService.getShowModelCanvas()) { // this.showModelCanvas
         this.redrawOtherElements(ctx, mapImage);
       }
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
@@ -1474,8 +1484,9 @@ async onInitMapImg() {
 
             // yet to remove if cond..
             // if (robot.pose.position.x && robot.pose.position.y)
-              // Re-plot all robots
-              await this.plotAllRobots(robotsData);
+            // Re-plot all robots
+            this.simMode=this.nodeGraphService.getsimMode();
+            await this.plotAllRobots(robotsData);
           });
         }
       } catch (error) {
@@ -1535,7 +1546,7 @@ async onInitMapImg() {
   }
 
   async plotAllRobots(robotsData: any) {
-    // console.log(robotsData.speed);
+    // console.log(robotsDatplotAllRobotsa.speed);
     
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -1563,7 +1574,11 @@ async onInitMapImg() {
       ctx.drawImage(mapImage, 0, 0);
       ctx.restore(); // Reset transformation after drawing the map
 
-      if (this.projectService.getShowModelCanvas()) { // this.showModelCanvas
+      if (this.nodeGraphService.getShowModelCanvas()) { // this.showModelCanvas
+        this.nodes = this.nodeGraphService.getNodes();
+        this.edges = this.nodeGraphService.getEdges();
+        this.zones = this.nodeGraphService.getZones();
+        this.assets = this.nodeGraphService.getAssets();
         this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
         // this.redrawOtherElements(ctx, mapImage);
 
@@ -1652,7 +1667,7 @@ async onInitMapImg() {
             return robo;
         });
         }
-
+        
         this.simMode = this.simMode.map((robo) => {
             let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
             if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
@@ -1765,7 +1780,7 @@ async onInitMapImg() {
         const assetY = (img.height - asset.y) * zoomLevel;
         this.plotAsset(ctx, centerX + assetX, centerY + assetY, asset.type);
     });
-}
+ }
 
   async showSpline() {
     if (!this.selectedMap.id) return;
@@ -1783,6 +1798,7 @@ async onInitMapImg() {
     let data = await response.json();
     if (data.isShowSplined) this.getLivePos();
   }
+
   // start-stop the operation!
   startStopOpt() {
     // this.showSpline();
