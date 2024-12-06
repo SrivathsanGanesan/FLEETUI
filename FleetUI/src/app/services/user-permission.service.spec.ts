@@ -1,16 +1,16 @@
-// import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-// import { UserPermissionService } from './user-permission.service';
+import { UserPermissionService } from './user-permission.service';
 
-// describe('UserPermissionService', () => {
-//   let service: UserPermissionService;
+describe('UserPermissionService', () => {
+  let service: UserPermissionService;
 
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({});
-//     service = TestBed.inject(UserPermissionService);
-//   });
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(UserPermissionService);
+  });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
-// });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

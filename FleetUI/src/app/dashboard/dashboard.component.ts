@@ -172,6 +172,7 @@ export class DashboardComponent implements AfterViewInit {
       this.redrawCanvas();}
     // this.simMode.splice(index, 1);  // Remove robot from the list
   }
+  
 
   constructor(
     private projectService: ProjectService,
@@ -1355,6 +1356,7 @@ export class DashboardComponent implements AfterViewInit {
 
 async onInitMapImg() {
     let project = this.projectService.getSelectedProject();
+    console.log(project,'Project')
     let mapArr = [];
 
     const response = await fetch(

@@ -30,6 +30,8 @@ export class ProjectService {
     // localStorage.setItem(this.projectCreatedKey, JSON.stringify(created));
   }
 
+ 
+
   isProjectCreated(): boolean {
     const storedValue = this.cookieService.get('is-project-setted');
     return storedValue ? JSON.parse(storedValue) : false;
@@ -114,5 +116,17 @@ export class ProjectService {
   getInitializeMapSelected(){
     // console.log('get initialize called and status -->',this.cookieService.get('mapInitializeStatus'))
     return this.cookieService.get('mapInitializeStatus');
+  }
+
+  userManagementService(userData:any){
+    console.log(userData,'from service call')
+    
+    this.cookieService.set('userManagementData',JSON.stringify(userData))
+  }
+
+  userManagementSericeGet(){
+    console.log('get fn called')
+    console.log(this.cookieService.get('userManagementData'))
+    return this.cookieService.get('userManagementData');
   }
 }
