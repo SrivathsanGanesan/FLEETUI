@@ -65,19 +65,19 @@ export class Userlogscomponent {
       console.log('Seems no map has been selected');
       return;
     }
+    this.getTaskLogs();
     const apoi = this.getTaskLogs();
     console.log(apoi,"===========sfkjvbsfj========")
     this.modeService.currentMode$.subscribe((mode) => {
       this.currentMode = mode; // React to mode updates
       // console.log(this.currentMode,"dkjnonvofpsp")
     });
-        // Subscribe to the isFleet$ observable
-        const fleetSub = this.isFleetService.isFleet$.subscribe((status: boolean) => {
-          this.isFleet = status; // Update the value whenever it changes
-          console.log('Received fleet state:', this.isFleet); // For debugging
-        });
-    
-        this.subscriptions.push(fleetSub);
+    // this.subscriptions.push(fleetSub);
+    const savedIsFleet = sessionStorage.getItem('isFleet');
+    if (savedIsFleet !== null) {
+      this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
+      this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
+        }
       
     this.onModeChange(this.currentMode);
     await this.fetchRobos();
@@ -87,7 +87,13 @@ export class Userlogscomponent {
       await this.getRoboLogs();
     }, 1000*3);
     await this.getTaskLogs();
+    setInterval(async() => {
+      await this.getTaskLogs();
+    }, 1000*3);
     this.getFleetLogs();
+    setInterval(async() => {
+      await this.getFleetLogs();
+    }, 1000*3);
   }
 
   async ngAfterViewInit(){
@@ -117,12 +123,13 @@ export class Userlogscomponent {
     this.mapData = this.projectService.getMapData();
     let establishedTime = new Date(this.mapData.createdAt);
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
-    // console.log(timeStamp1,'t-1')
-    // console.log(timeStamp2,'t-2')
-    let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs`,
+    console.log(timeStamp1,'t-1')
+    console.log(timeStamp2,'t-2')
+    let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs/${this.mapData.id}`,
       {
           method: 'POST',
           credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             timeStamp1: timeStamp1,
             timeStamp2: timeStamp2,
@@ -130,8 +137,9 @@ export class Userlogscomponent {
         }
       )
     let data = await response.json();
+    console.log(data,"==============data=============")
     const { taskLogs } = data;
-    this.taskData = taskLogs.notifications.map((taskErr: any) => {
+    this.taskData = data.map((taskErr: any) => {
       const date = new Date();
       const formattedDateTime = `${date.toLocaleDateString('en-IN', {
         day: '2-digit',
@@ -153,9 +161,57 @@ export class Userlogscomponent {
         desc: "Robot is in Error State",
       };
     });
+    console.log("jusghowhtiwo")
     this.filteredTaskData = this.taskData;
+    console.log("94u350803485-43")
     this.setPaginatedData();
   }
+// async getTaskLogs() {
+//   this.mapData = this.projectService.getMapData();
+//   let establishedTime = new Date(this.mapData.createdAt);
+//   let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
+
+//   let response = await fetch(
+//     `http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs/${this.mapData.id}`,
+//     {
+//       method: 'POST',
+//       credentials: 'include',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({
+//         timeStamp1: timeStamp1,
+//         timeStamp2: timeStamp2,
+//       }),
+//     }
+//   );
+//   let data = await response.json();
+//   let { taskLogs } = data;
+
+//   this.taskData = taskLogs.notifications.map((taskErr: any) => {
+//     const date = new Date();
+//     const formattedDateTime = `${date.toLocaleDateString('en-IN', {
+//       day: '2-digit',
+//       month: 'short',
+//       year: 'numeric',
+//     })}, ${date.toLocaleTimeString('en-IN', {
+//       hour: '2-digit',
+//       minute: '2-digit',
+//       hour12: true,
+//     })}`;
+//     return {
+//       dateTime: formattedDateTime,
+//       taskId: taskErr.task_id,
+//       taskName: taskErr.sub_task[0]?.task_type || 'N/A',
+//       errCode: 'Err001',
+//       criticality: taskErr.criticality,
+//       desc: 'Robot is in Error State',
+//     };
+//   });
+//   console.log(this.taskData,"==32=r4=2=42=34=24=")
+//   this.filteredTaskData = this.taskData;
+//   this.setPaginatedData();
+// }
+
+
 
   async fetchRobos(){
     fetch(
@@ -442,9 +498,7 @@ export class Userlogscomponent {
     this.setPaginatedData(); // Update paginated data
   }
 
-
-
-  trackByTaskId(index: number, item: any): number {
+  trackByTaskId(index: number, item: any) {
     return item.taskId; // or any unique identifier like taskId
   }
 

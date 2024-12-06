@@ -88,6 +88,7 @@ const getFleetTaskErrLogs = async (endpoint, bodyData) => {
 const getTaskErrLogs = async (req, res) => {
   // console.log('task')
   const mapId = req.params.mapId;
+  console.log(req.body)
   const { timeStamp1, timeStamp2 } = req.body;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
@@ -99,11 +100,11 @@ const getTaskErrLogs = async (req, res) => {
       timeStamp1: timeStamp1,
       timeStamp2: timeStamp2,
     };
+
     let FleetTaskErrLogs = await getFleetTaskErrLogs( "get_tasks_errors", bodyData );
     console.log(FleetTaskErrLogs)
-    return res
-      .status(200)
-      .json({ taskLogs: FleetTaskErrLogs, msg: "data sent" });
+    console.log(FleetTaskErrLogs.tasks)
+    return res.status(200).json({task_id : FleetTaskErrLogs.tasks[1],  task_type : 'task_type', criticality : 'criticality'});
   } catch (err) {
     console.error("Error in taskLogs:", err);
     if (err.name === "CastError")
