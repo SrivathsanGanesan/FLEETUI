@@ -84,7 +84,7 @@ export class ChartTimelineComponent implements OnInit {
   networkTimeInterval: any | null = null;
   idleTimeInterval: any | null = null;
   errTimeInterval: any | null = null;
-  selectedMetric: string = ''; // Initialize with an empty string or a default value
+  selectedMetric: string = 'CPU Utilization'; // Initialize with an empty string or a default value
 
   metrics = {
     Overall: [
@@ -98,7 +98,6 @@ export class ChartTimelineComponent implements OnInit {
     ],
     robot: [
       { key: 'data1', label: 'CPU Utilization' },
-      // { key: 'data2', label: 'Robot Utilization' },
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
       { key: 'data5', label: 'Error' },
