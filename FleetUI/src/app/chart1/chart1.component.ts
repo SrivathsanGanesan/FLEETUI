@@ -126,7 +126,12 @@ export class Chart1Component {
   }
   async ngOnInit() {    
     await this.getMapDetails();
-    this.totalRobots = this.simMode.length;
+    if(this.isFleet){
+      this.totalRobots=this.robos.length;
+    }
+    else{
+      this.totalRobots=this.simMode.length;
+    }
     this.activeRobots = await this.getLiveRoboInfo();
     // console.log(this.activeRobots,this.totalRobots);
     const percentage = (this.activeRobots / this.totalRobots) * 100;
@@ -162,7 +167,12 @@ export class Chart1Component {
 
     this.robos = mapDet.roboPos;
     this.simMode= mapDet.simMode;
-    this.totalRobots = this.simMode.length;
+    if(this.isFleet){
+      this.totalRobots=this.robos.length;
+    }
+    else{
+      this.totalRobots=this.simMode.length;
+    }
     // yet to check..
     // if(!this.isInLive)
     // this.simMode = mapData.simMode.map((robo: any) => {

@@ -80,15 +80,17 @@
   .notification-popup {
     position: absolute;
     top: 52px;
-    right: 10px;
-    background: linear-gradient(135deg, #d3d3d3, #a9a9a9); /* Grey gradient */
+    right: 10px;  
+    /* background: linear-gradient(135deg, #d3d3d3, #a9a9a9); Grey gradient */
     border: 1px solid #ffffff;
+    background: linear-gradient(135deg, #d3d3d3, #a9a9a9); /* Grey gradient */
+    backdrop-filter: blur(10px);
     padding: 5px;
     border-radius: 10px;
     font-family: Arial, sans-serif;
     z-index: 1000;
     width: 600px;
-    height: 600px;
+    height: auto;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); /* Heavy box shadow */
     display: none; /* Hidden by default */
     opacity: 0;

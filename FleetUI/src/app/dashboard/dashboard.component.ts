@@ -1157,14 +1157,14 @@ export class DashboardComponent implements AfterViewInit {
     if(data.isRoboEnabled)
       this.messageService.add({
         severity: 'info',
-        summary: `${robot.roboName || robot.name} has been enabled.`,
+        summary: `${robot.roboName || robot.roboDet.roboName} has been enabled.`,
         detail: 'Robot has been Enabled',
         life: 4000,
       });
       else{
         this.messageService.add({
           severity: 'error',
-          summary: `${robot.roboName || robot.name} has not been enabled.`,
+          summary: `${robot.roboName || robot.roboDet.roboName} has not been enabled.`,
           detail: 'The robot is not initialized, so it cannot be Enabled',
           life: 4000,
         });
