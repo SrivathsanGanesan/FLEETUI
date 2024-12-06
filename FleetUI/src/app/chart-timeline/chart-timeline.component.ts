@@ -98,7 +98,7 @@ export class ChartTimelineComponent implements OnInit {
     ],
     robot: [
       { key: 'data1', label: 'CPU Utilization' },
-      { key: 'data2', label: 'Robot Utilization' },
+      // { key: 'data2', label: 'Robot Utilization' },
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
       { key: 'data5', label: 'Error' },
@@ -467,7 +467,9 @@ export class ChartTimelineComponent implements OnInit {
         '',
         ''
       );
-      // console.log(data, 'data-cpu util');
+
+      console.log(data.cpuUtil.CPU_Utilization, 'data-cpu util');
+
       if (data.cpuUtil) {
         this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
           let res;
@@ -503,7 +505,7 @@ export class ChartTimelineComponent implements OnInit {
       '',
       ''
     );
-    // console.log(data,"data") //hold the chart data
+    console.log(data,"data =======cpu") //hold the chart data
     if (data.cpuUtil) {
       this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
         let res;

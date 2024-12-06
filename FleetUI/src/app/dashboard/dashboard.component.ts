@@ -1152,6 +1152,7 @@ export class DashboardComponent implements AfterViewInit {
       else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
       return robo;
     })
+    
     if(data.isRoboEnabled)
       this.messageService.add({
         severity: 'info',
