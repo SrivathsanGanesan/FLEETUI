@@ -10,6 +10,8 @@ export class NodeGraphService {
   private zones: any[] = [];
   private simMode: any[] = [];
   private robos: any[] = [];
+  private robotState: { [key: string]: boolean } = {};
+
   showModelCanvas: boolean = false;
 
   constructor() {}
@@ -54,7 +56,7 @@ export class NodeGraphService {
   getShowModelCanvas():boolean{
     return this.showModelCanvas;
   }
-  
+
   setsimMode(simMode: any[]) {
     this.simMode = simMode;
   }
@@ -70,6 +72,17 @@ export class NodeGraphService {
 
   getRobos() {
     return this.robos;
+  }
+  // Save robot state
+  setRobotState(robotId: string, isActive: boolean) {
+    this.robotState[robotId] = isActive;
+    sessionStorage.setItem('robotState', JSON.stringify(this.robotState)); // Persist to sessionStorage
+  }
+
+  // Get robot state
+  getRobotState(robotId: string): boolean {
+    const savedState = JSON.parse(sessionStorage.getItem('robotState') || '{}');
+    return savedState[robotId] !== undefined ? savedState[robotId] : false;
   }
 
 }
