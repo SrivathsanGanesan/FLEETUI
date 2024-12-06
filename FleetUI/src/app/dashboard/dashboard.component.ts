@@ -1,3 +1,4 @@
+
 import {
   Component,
   AfterViewInit,
@@ -168,6 +169,7 @@ export class DashboardComponent implements AfterViewInit {
     if (data.error || !data.isRoboDeleted) return;
     if(data.isRoboDeleted){
       this.simMode = this.simMode.filter((robo: any) => robot.amrId !== robo.amrId )
+      this.nodeGraphService.setsimMode(this.simMode);
       this.redrawCanvas();}
     // this.simMode.splice(index, 1);  // Remove robot from the list
   }
@@ -626,7 +628,7 @@ export class DashboardComponent implements AfterViewInit {
       // if (this.posEventSource){ this.posEventSource.close();}
     }
     // await this.getLivePos();
-    if(this.projectService.getShowModelCanvas()){ // this.showModelCanvas use instead..
+    if(this.nodeGraphService.getShowModelCanvas()){ // this.showModelCanvas use instead..
     this.messageService.add({
       severity: 'info',
       summary: 'Map options',
@@ -776,7 +778,7 @@ export class DashboardComponent implements AfterViewInit {
       this.plotRobo(ctx, robo.pos.x, robo.pos.y, robo.roboDet.selected,robo.state)
     );}
 
-    if (!this.projectService.getShowModelCanvas()) { // this.showModelCanvas use instead..
+    if (!this.nodeGraphService.getShowModelCanvas()) { // this.showModelCanvas use instead..
       ctx.restore();
       return;
     }
@@ -1152,18 +1154,19 @@ export class DashboardComponent implements AfterViewInit {
       else if(robo.amrId === robot.amrId && !data.isRoboEnabled) robo.isActive = false;
       return robo;
     })
+
     if(data.isRoboEnabled)
       this.messageService.add({
         severity: 'info',
-        summary: `${robot.roboName || robot.name} has been enabled.`,
+        summary: `${robot.roboName || robot.roboDet.roboName} has been enabled.`,
         detail: 'Robot has been Enabled',
         life: 4000,
       });
       else{
         this.messageService.add({
           severity: 'error',
-          summary: `${robot.roboName || robot.name} has not been enabled.`,
-          detail: 'The robot is not initialized, so it cannot be enabled',
+          summary: `${robot.roboName || robot.roboDet.roboName} has not been enabled.`,
+          detail: 'The robot is not initialized, so it cannot be Enabled',
           life: 4000,
         });
       }
@@ -1544,7 +1547,7 @@ async onInitMapImg() {
   }
 
   async plotAllRobots(robotsData: any) {
-    // console.log(robotsData.speed);
+    // console.log(robotsDatplotAllRobotsa.speed);
 
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
