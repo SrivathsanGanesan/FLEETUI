@@ -108,12 +108,51 @@ const register = async (req, res) => {
       return res
         .status(409) // 409 - already exists!
         .json({ isExist: true, msg: "person already exists" });
+    let permissions  = {}
+    if(role === "Administrator"){
+      permissions = {
+        generalPermissions: {
+          dashboard: true,
+          statistics: true,
+          robots: true,
+          errors: true,
+          tasks: true,
+          userManagement: true,
+        },
+    
+        configurationPermissions: {
+          environment: {
+            enabled: true,
+            create: true,
+            edit: true,
+            delete: true,
+            view: true
+          },
+          robot: {
+            enabled: true,
+            create: true,
+            edit: true,
+            delete: true,
+            view: true
+    
+          },
+          fleet: {
+            enabled: true,
+            create: true,
+            edit: true,
+            delete: true,
+            view: true
+          }
+        }
+      }
 
+    }
     const newData = new authRegisterModel({
       name: name,
       password: hashhedPassword,
       role: role,
       priority: role === "Administrator" ? 1 : role === "Maintainer" ? 2 : 3,
+      permissions : permissions,
       projects: [{ projectId: projectId, projectName: projectName }],
       createdBy: createdBy,
     });
