@@ -160,23 +160,29 @@
               class="button" [ngClass]="{
                 'active-button': activeButton === 'Environment',
                 'transition-active': isTransitioning
-              }" (click)="showTable('Environment')" (click)="setActiveButton('Environment')">
+              }" (click)="showTable('Environment')" (click)="setActiveButton('Environment', 'Environment')">
               Environment
             </button>
+
+
             <button *ngIf="userManagementData?.permissions?.configurationPermissions?.robot?.enabled" class="button"
               [ngClass]="{
                 'active-button': activeButton === 'robot',
                 'transition-active': isTransitioning
-              }" (click)="showTable('robot')" (click)="setActiveButton('robot')">
+              }" (click)="showTable('robot')" (click)="setActiveButton('robot', 'Robot')">
               Robot
             </button>
+
+
             <button *ngIf="userManagementData?.permissions?.configurationPermissions?.fleet?.enabled" class="button"
               [ngClass]="{
                 'active-button': activeButton === 'fleet',
                 'transition-active': isTransitioning
-              }" (click)="setActiveButton('fleet')">
+              }" (click)="setActiveButton('fleet', 'Fleet')">
               Fleet
             </button>
+
+
           </div>
         </div>
       </div>

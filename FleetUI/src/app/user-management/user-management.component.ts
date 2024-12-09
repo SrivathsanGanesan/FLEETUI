@@ -633,7 +633,7 @@ export class UserManagementComponent implements OnInit {
         return response.json();
       })
       .then((data) => {
-        console.log(data,'permission -----------');
+        console.log(data.permissions,'permission -----------');
         // Update the local permission state
 
         let {generalPermissions, configurationPermissions} = data.permissions
@@ -649,14 +649,14 @@ export class UserManagementComponent implements OnInit {
         this.configurationSettings[0].subOptions[0].enabled = configurationPermissions.environment.create
         this.configurationSettings[0].subOptions[1].enabled = configurationPermissions.environment.edit
         this.configurationSettings[0].subOptions[2].enabled = configurationPermissions.environment.delete
-        this.configurationSettings[0].subOptions[3].enabled = configurationPermissions.environment.view
+        // this.configurationSettings[0].subOptions[3].enabled = configurationPermissions.environment.view
 
 
         this.configurationSettings[1].enabled = configurationPermissions.robot.enabled
         this.configurationSettings[1].subOptions[0].enabled = configurationPermissions.robot.create
         this.configurationSettings[1].subOptions[1].enabled = configurationPermissions.robot.edit
         this.configurationSettings[1].subOptions[2].enabled = configurationPermissions.robot.delete
-        this.configurationSettings[1].subOptions[3].enabled = configurationPermissions.robot.view
+        // this.configurationSettings[1].subOptions[3].enabled = configurationPermissions.robot.view
 
 
 

@@ -55,7 +55,7 @@ export class ConfigurationComponent implements AfterViewInit {
   isPopupVisible: boolean = false;
   isTransitioning: boolean = false;
   activeButton: string = 'Environment'; // Default active button
-  activeHeader: string = 'Environment'; // Default header
+  activeHeader: string | undefined; // Default header
   chosenImageName = ''; // Initialize chosenImageName with an empty string
   imageUploaded: boolean = false; // To track if an image is uploaded
   imageFile: File | null = null; // Store the uploaded image file
@@ -175,6 +175,10 @@ export class ConfigurationComponent implements AfterViewInit {
       this.environmentPermissions = { read: false, view: false, edit: false }; // Default permissions
 
     }
+
+    this.initializeDefaultButton()
+
+
     
 
     
@@ -287,6 +291,20 @@ export class ConfigurationComponent implements AfterViewInit {
     this.searchTerm = '';
     this.searchTermChanged();
   }
+
+  initializeDefaultButton() {
+    const permissions = this.userManagementData?.permissions?.configurationPermissions;
+
+    if (permissions?.robot?.enabled) {
+      this.setActiveButton('robot', 'Robot')
+    } else if (permissions?.environment?.enabled) {
+      this.setActiveButton('environment', 'Environment')
+    } else if (permissions?.fleet?.enabled) {
+      this.setActiveButton('fleet', 'Fleet')
+    }
+  }
+
+
 
   reloadTable() {
     this.loadData(); // Ensure data is reloaded properly
@@ -1167,8 +1185,10 @@ export class ConfigurationComponent implements AfterViewInit {
     console.log('Remove Robots clicked');
   }
 
-  setActiveButton(button: string) {
+  setActiveButton(button: string, header: string) {
     this.activeButton = button;
+    this.currentTable = button;
+    this.activeHeader = header;
     this.isTransitioning = true;
     this.filterData();
     this.setPaginatedData();
