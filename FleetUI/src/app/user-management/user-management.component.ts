@@ -208,10 +208,10 @@ export class UserManagementComponent implements OnInit {
       description: 'Fleet configurations.',
       enabled: false,
       subOptions: [
-        { label: 'Create', enabled: false },
-        { label: 'Edit', enabled: false },
-        { label: 'Delete', enabled: false },
-        { label: 'View', enabled: false },
+        // { label: 'Create', enabled: false },
+        // { label: 'Edit', enabled: false },
+        // { label: 'Delete', enabled: false },
+        // { label: 'View', enabled: false },
       ],
     },
   ];
@@ -662,11 +662,10 @@ export class UserManagementComponent implements OnInit {
 
 
         this.configurationSettings[2].enabled = configurationPermissions.fleet.enabled
-        this.configurationSettings[2].subOptions[0].enabled = configurationPermissions.fleet.create
-        this.configurationSettings[2].subOptions[1].enabled = configurationPermissions.fleet.edit
-        this.configurationSettings[2].subOptions[2].enabled = configurationPermissions.fleet.delete
-        this.configurationSettings[2].subOptions[3].enabled = configurationPermissions.fleet.view
-
+        // this.configurationSettings[2].subOptions[0].enabled = configurationPermissions.fleet.create
+        // this.configurationSettings[2].subOptions[1].enabled = configurationPermissions.fleet.edit
+        // this.configurationSettings[2].subOptions[2].enabled = configurationPermissions.fleet.delete
+        // this.configurationSettings[2].subOptions[3].enabled = configurationPermissions.fleet.view
 
       })
       .catch((error) => {
@@ -799,10 +798,10 @@ export class UserManagementComponent implements OnInit {
         },
         fleet: {
           enabled: this.configurationSettings[2].enabled,
-          create: this.configurationSettings[2].subOptions[0].enabled,
-          edit: this.configurationSettings[2].subOptions[1].enabled,
-          delete: this.configurationSettings[2].subOptions[2].enabled,
-          view: this.configurationSettings[2].subOptions[3].enabled
+          // create: this.configurationSettings[2].subOptions[0].enabled,
+          // edit: this.configurationSettings[2].subOptions[1].enabled,
+          // delete: this.configurationSettings[2].subOptions[2].enabled,
+          // view: this.configurationSettings[2].subOptions[3].enabled
 
         }
       }

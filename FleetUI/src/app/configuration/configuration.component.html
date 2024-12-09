@@ -152,40 +152,29 @@
         </div>
       </div>
 
-      <!-- Buttons -->
-      <div class="button-container">
+       <!-- Buttons -->
+       <div class="button-container">
         <div class="button-frame">
           <div class="">
-            <button
-              class="button"
-              [ngClass]="{
+            <button *ngIf="userManagementData?.permissions?.configurationPermissions?.environment?.enabled"
+              class="button" [ngClass]="{
                 'active-button': activeButton === 'Environment',
                 'transition-active': isTransitioning
-              }"
-              (click)="showTable('Environment')"
-              (click)="setActiveButton('Environment')"
-            >
+              }" (click)="showTable('Environment')" (click)="setActiveButton('Environment')">
               Environment
             </button>
-            <button
-              class="button"
+            <button *ngIf="userManagementData?.permissions?.configurationPermissions?.robot?.enabled" class="button"
               [ngClass]="{
                 'active-button': activeButton === 'robot',
                 'transition-active': isTransitioning
-              }"
-              (click)="showTable('robot')"
-              (click)="setActiveButton('robot')"
-            >
+              }" (click)="showTable('robot')" (click)="setActiveButton('robot')">
               Robot
             </button>
-            <button
-              class="button"
+            <button *ngIf="userManagementData?.permissions?.configurationPermissions?.fleet?.enabled" class="button"
               [ngClass]="{
                 'active-button': activeButton === 'fleet',
                 'transition-active': isTransitioning
-              }"
-              (click)="setActiveButton('fleet')"
-            >
+              }" (click)="setActiveButton('fleet')">
               Fleet
             </button>
           </div>
