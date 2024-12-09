@@ -57,6 +57,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
         summary: 'Info',
         detail: 'Task Cancelled',
       });
+      await this.refreshTableData();
     }
   }
 
@@ -128,8 +129,6 @@ console.log(data,'task data')
           destinationLocation: 'N/A',
         };
       });
-      console.log(this.filteredTaskData,'filtered data')
-      console.log(this.tasks,'task  sep data')
     this.filteredTaskData = this.tasks;
     // console.log(this.tasks);
     this.setPaginatedData();
@@ -141,6 +140,42 @@ console.log(data,'task data')
   ngAfterViewInit() {
     this.setPaginatedData(); // Set initial paginated data after view is initialized
   }
+  async refreshTableData() {
+    let establishedTime = new Date(this.mapData.createdAt); // created time of map
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
+
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-tasks`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.mapData.id,
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
+        }),
+      }
+    );
+
+    let data = await response.json();
+    console.log(data, 'refreshed task data');
+
+    if (data.tasks) {
+      const { tasks } = data.tasks;
+      this.tasks = tasks.map((task: any) => ({
+        taskId: task.task_id,
+        taskType: task.sub_task[0]?.task_type || 'N/A',
+        status: task.task_status.status,
+        roboName: task.agent_ID,
+        sourceLocation: task.sub_task[0]?.source_location || 'N/A',
+        destinationLocation: 'N/A',
+      }));
+
+      this.filteredTaskData = this.tasks;
+      this.setPaginatedData(); // Update pagination
+    }
+}
 
   getTimeStampsOfDay(establishedTime: Date) {
     let currentTime = Math.floor(new Date().getTime() / 1000);
