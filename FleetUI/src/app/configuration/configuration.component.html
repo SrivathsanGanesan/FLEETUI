@@ -160,7 +160,7 @@
               class="button" [ngClass]="{
                 'active-button': activeButton === 'Environment',
                 'transition-active': isTransitioning
-              }" (click)="showTable('Environment')" (click)="setActiveButton('Environment', 'Environment')">
+              }" (click)="showTable('Environment')" (click)="setActiveButton('Environment')">
               Environment
             </button>
 
@@ -169,7 +169,7 @@
               [ngClass]="{
                 'active-button': activeButton === 'robot',
                 'transition-active': isTransitioning
-              }" (click)="showTable('robot')" (click)="setActiveButton('robot', 'Robot')">
+              }" (click)="showTable('robot')" (click)="setActiveButton('robot')">
               Robot
             </button>
 
@@ -178,7 +178,7 @@
               [ngClass]="{
                 'active-button': activeButton === 'fleet',
                 'transition-active': isTransitioning
-              }" (click)="setActiveButton('fleet', 'Fleet')">
+              }" (click)="setActiveButton('fleet')">
               Fleet
             </button>
 
