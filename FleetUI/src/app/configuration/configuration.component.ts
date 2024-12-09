@@ -55,7 +55,7 @@ export class ConfigurationComponent implements AfterViewInit {
   isPopupVisible: boolean = false;
   isTransitioning: boolean = false;
   activeButton: string = 'Environment'; // Default active button
-  activeHeader: string | undefined; // Default header
+  activeHeader: string = 'Environment'; // Default header
   chosenImageName = ''; // Initialize chosenImageName with an empty string
   imageUploaded: boolean = false; // To track if an image is uploaded
   imageFile: File | null = null; // Store the uploaded image file
@@ -176,7 +176,7 @@ export class ConfigurationComponent implements AfterViewInit {
 
     }
 
-    this.initializeDefaultButton()
+    // this.initializeDefaultButton()
 
 
     
@@ -292,17 +292,17 @@ export class ConfigurationComponent implements AfterViewInit {
     this.searchTermChanged();
   }
 
-  initializeDefaultButton() {
-    const permissions = this.userManagementData?.permissions?.configurationPermissions;
+  // initializeDefaultButton() {
+  //   const permissions = this.userManagementData?.permissions?.configurationPermissions;
 
-    if (permissions?.robot?.enabled) {
-      this.setActiveButton('robot', 'Robot')
-    } else if (permissions?.environment?.enabled) {
-      this.setActiveButton('environment', 'Environment')
-    } else if (permissions?.fleet?.enabled) {
-      this.setActiveButton('fleet', 'Fleet')
-    }
-  }
+  //   if (permissions?.robot?.enabled) {
+  //     this.setActiveButton('robot', 'Robot')
+  //   } else if (permissions?.environment?.enabled) {
+  //     this.setActiveButton('environment', 'Environment')
+  //   } else if (permissions?.fleet?.enabled) {
+  //     this.setActiveButton('fleet', 'Fleet')
+  //   }
+  // }
 
 
 
@@ -1185,10 +1185,10 @@ export class ConfigurationComponent implements AfterViewInit {
     console.log('Remove Robots clicked');
   }
 
-  setActiveButton(button: string, header: string) {
+  setActiveButton(button: string) {
     this.activeButton = button;
-    this.currentTable = button;
-    this.activeHeader = header;
+    // this.currentTable = button;
+    // this.activeHeader = header;
     this.isTransitioning = true;
     this.filterData();
     this.setPaginatedData();
