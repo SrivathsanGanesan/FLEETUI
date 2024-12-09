@@ -21,7 +21,7 @@ import { IsFleetService } from '../services/shared/is-fleet.service';
 import { ModeService } from './mode.service';
 import { Subscription } from 'rxjs';
 import { NodeGraphService } from '../services/nodegraph.service';
-
+import html2canvas from 'html2canvas';
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -2135,7 +2135,6 @@ async onInitMapImg() {
 
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }
-
   async captureCanvas() {
     this.messageService.add({
       severity: 'info',
@@ -2181,8 +2180,6 @@ async onInitMapImg() {
       console.error('Error capturing screen:', err);
     }
   }
-
-
   toggleDashboard() {
     this.showDashboard = !this.showDashboard;
     if(this.showDashboard){

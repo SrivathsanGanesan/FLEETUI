@@ -189,7 +189,7 @@ export class UserManagementComponent implements OnInit {
         { label: 'Create', enabled: false },
         { label: 'Edit', enabled: false },
         { label: 'Delete', enabled: false },
-        { label: 'View', enabled: false },
+        // { label: 'View', enabled: false },
       ],
     },
     {
@@ -200,7 +200,7 @@ export class UserManagementComponent implements OnInit {
         { label: 'Create', enabled: false },
         { label: 'Edit', enabled: false },
         { label: 'Delete', enabled: false },
-        { label: 'View', enabled: false },
+        // { label: 'View', enabled: false },
       ],
     },
     {
@@ -784,7 +784,7 @@ export class UserManagementComponent implements OnInit {
           create: this.configurationSettings[0].subOptions[0].enabled,
           edit: this.configurationSettings[0].subOptions[1].enabled,
           delete: this.configurationSettings[0].subOptions[2].enabled,
-          view: this.configurationSettings[0].subOptions[3].enabled
+          // view: this.configurationSettings[0].subOptions[3].enabled
 
 
         },
@@ -793,7 +793,7 @@ export class UserManagementComponent implements OnInit {
           create: this.configurationSettings[1].subOptions[0].enabled,
           edit: this.configurationSettings[1].subOptions[1].enabled,
           delete: this.configurationSettings[1].subOptions[2].enabled,
-          view: this.configurationSettings[1].subOptions[3].enabled
+          // view: this.configurationSettings[1].subOptions[3].enabled
 
         },
         fleet: {
