@@ -151,7 +151,7 @@ export class UserManagementComponent implements OnInit {
     { order: 2, nameTag: 'ROBOTS', icon: '../../assets/icons/Statistics_icon.svg', enabled: false, description: "Grant control over robot monitoring and performance tracking." },
     { order: 3, nameTag: 'ERRORS', icon: '../../assets/icons/Logs_icons.svg', enabled: false, description: "Manage permissions to view and resolve error logs and issues."},
     { order: 4, nameTag: 'TASKS', icon: '../../assets/icons/Tasks_icons.svg', enabled: false, description: "Control user access to create, edit, and view tasks." },
-    { order: 5, nameTag: 'USER MANAGEMENT', icon: '../../assets/icons/Usermanagement_icons.svg', enabled: false, description:  "Administer user roles and permissions within the system."  },
+    { order: 5, nameTag: 'USER MANAGEMENT', icon: '../../assets/icons/Usermanagement_icons.svg', enabled: false, description:  "Administrator user roles and permissions within the system."  },
 ];
 
 
