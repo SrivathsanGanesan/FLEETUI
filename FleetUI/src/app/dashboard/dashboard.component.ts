@@ -8,7 +8,6 @@ import {
   EventEmitter,
   Output, OnDestroy
 } from '@angular/core';
-import domtoimage from 'dom-to-image-more';
 import RecordRTC from 'recordrtc';
 import { ProjectService } from '../services/project.service';
 import { environment } from '../../environments/environment.development';
@@ -22,6 +21,8 @@ import { ModeService } from './mode.service';
 import { Subscription } from 'rxjs';
 import { NodeGraphService } from '../services/nodegraph.service';
 import html2canvas from 'html2canvas';
+import * as domtoimage from 'dom-to-image-more';
+import { saveAs } from 'file-saver';
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -48,6 +49,7 @@ enum ZoneType {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit {
+  @ViewChild('dashboardContainer', { static: false }) dashboardContainer!: ElementRef;
   @ViewChild('robotB', { static: false }) robotBPath!: ElementRef;
   @ViewChild('robotTooltip', { static: true }) robotTooltip!: ElementRef;
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
@@ -2150,14 +2152,17 @@ async onInitMapImg() {
         },
         audio: false
       });
+   
 
+    // Introduce a delay of 2 seconds before proceeding
+    await new Promise((resolve) => setTimeout(resolve, 2000));
       const video = document.createElement('video');
       video.srcObject = displayMediaStream;
       video.play();
 
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
-
+      // setTimeout(() => {
       video.addEventListener('loadedmetadata', () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -2176,6 +2181,7 @@ async onInitMapImg() {
         // Stop the stream after capture
         displayMediaStream.getTracks().forEach(track => track.stop());
       });
+    // }, 2000);
     } catch (err) {
       console.error('Error capturing screen:', err);
     }
