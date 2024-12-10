@@ -256,7 +256,8 @@ export class StatisticsComponent {
       let fleet_tasks = tasks.map((task: any) => {
         if(task.TaskAssignTime>=task.TaskAddTime){
         tot_responsiveness += task.TaskAssignTime - task.TaskAddTime
-        console.log("tot_responsiveness",tot_responsiveness );}
+        // console.log("tot_responsiveness",tot_responsiveness );
+      }
 
         return {
           taskId: task.task_id,

@@ -3,13 +3,9 @@ const graphRouter = express.Router();
 const {
   // getFleetThroughput,
   throughput,
-  getFleetStarvation,
   starvationRate,
-  getFleetPickAccuracy,
   pickAccuracy,
-  getFleetErrRate,
   errRate,
-  getRoboFleetGraph,
   getCpuUtilization,
   getRoboUtilization,
   getBatteryStat,

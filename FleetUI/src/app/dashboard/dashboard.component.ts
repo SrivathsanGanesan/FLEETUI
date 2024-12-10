@@ -922,7 +922,9 @@ export class DashboardComponent implements AfterViewInit {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
-
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
@@ -997,6 +999,9 @@ export class DashboardComponent implements AfterViewInit {
       const mouseY = event.clientY - rect.top;
 
       const transY = canvas.height - mouseY;
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       // console.log(this.zoomLevel);
 
       // Adjust for zoom and pan
@@ -1056,6 +1061,9 @@ export class DashboardComponent implements AfterViewInit {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
@@ -1302,7 +1310,9 @@ export class DashboardComponent implements AfterViewInit {
 
     if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       // Calculate the scaled image dimensions
       const imgWidth = mapImage.width * this.zoomLevel;
       const imgHeight = mapImage.height * this.zoomLevel;
@@ -1769,6 +1779,9 @@ async onInitMapImg() {
   }
 
   drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement, centerX: number, centerY: number, zoomLevel: number) {
+    this.offsetX=this.nodeGraphService.getOffsetX();
+    this.offsetY=this.nodeGraphService.getOffsetY();
+    this.zoomLevel=this.nodeGraphService.getZoomLevel();
     // Plot nodes with scaling and centering
     this.nodes.forEach((node) => {
         const scaledX = node.nodePosition.x * zoomLevel;
