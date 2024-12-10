@@ -156,10 +156,10 @@ export class RadialChartComponent implements OnInit {
 
     let active_robos = 0;
     let err_robos = 0;
-    console.log("hey",robots.robots);
+
     if(!robots.robots) return [0, 0, 0];
     robots.robots.forEach((robo: any) => {
-      console.log("HEY",robo.enableRobot);
+      
       active_robos += robo.enableRobot;
 
       if (robo.robotError != 0) err_robos += 1;
