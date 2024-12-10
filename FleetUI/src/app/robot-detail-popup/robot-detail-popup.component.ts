@@ -28,8 +28,8 @@ export interface Robot {
   robotutilization: string;
   cpuutilization: string;
   memory: string;
-  totalPicks: string;
-  totalDrops: string;
+  PickCount: string;
+  DropCount: string;
   SignalStrength: string;
   error: number;
   batteryPercentage: number;

@@ -256,7 +256,7 @@
                   <td>
                     {{ item.date }}
                   </td>
-                  <td class="iconTable" *ngIf="configurationPermissions.environment.enabled === true && configurationPermissions.environment.edit=== true|| configurationPermissions.environment.delete === true" >
+                  <td class="iconTable" *ngIf="configurationPermissions.environment.enabled === true && configurationPermissions.environment.edit=== true|| configurationPermissions.environment.delete === true"> 
                     <div class="edit">
                       <button class="edit-button" (click)="editItem(item)"  *ngIf="configurationPermissions.environment.enabled === true && configurationPermissions.environment.edit=== true">
                         <svg class="edit-svgIcon" viewBox="0 0 512 512">
@@ -372,7 +372,7 @@
                 <td>{{ item.uuid}}</td>
                 <td>{{ item.roboName }}</td>
                 <td class="iconTable" *ngIf="configurationPermissions.robot.enabled === true && configurationPermissions.robot.edit=== true || configurationPermissions.robot.delete === true">
-                  >
+                  
                   <div class="edit">
                     <button class="edit-button" (click)="editRobo(item)" *ngIf="configurationPermissions.robot.enabled === true && configurationPermissions.robot.edit=== true ">
                       <svg class="edit-svgIcon" viewBox="0 0 512 512">
