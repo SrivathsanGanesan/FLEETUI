@@ -1585,9 +1585,8 @@ async onInitMapImg() {
       const imgHeight = mapImage.height * this.zoomLevel;
       // console.log("hey",canvas.height,canvas.width,imgHeight,imgWidth);
 
-      const centerX = (canvas.width - imgWidth) / 2;
-      const centerY = (canvas.height - imgHeight) / 2;
-
+      const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+      const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.scale(this.zoomLevel, this.zoomLevel);
@@ -2035,23 +2034,23 @@ async onInitMapImg() {
   zoomIn() {
     this.zoomLevel *= 1.1;
     this.loadCanvas();
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Zooming in',
-      detail: 'Map is zooming in',
-      life: 2000,
-    });
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Zooming in',
+    //   detail: 'Map is zooming in',
+    //   life: 2000,
+    // });
   }
 
   zoomOut() {
     this.zoomLevel /= 1.1;
     this.loadCanvas();
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Zoomed Out',
-      detail: 'Map is zooming out',
-      life: 2000,
-    });
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Zoomed Out',
+    //   detail: 'Map is zooming out',
+    //   life: 2000,
+    // });
   }
 
   onMouseLeave() {
@@ -2121,19 +2120,21 @@ async onInitMapImg() {
   togglePan() {
     this.isPanning = !this.isPanning;
     if(this.isPanning){
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Panning on',
-      detail: 'Map is now able to pan ',
-      life: 4000,
-    });}
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Panning on',
+    //   detail: 'Map is now able to pan ',
+    //   life: 4000,
+    // });
+  }
     else{
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Panning off',
-        detail: 'panning turned off ',
-        life: 4000,
-      });}
+      // this.messageService.add({
+      //   severity: 'info',
+      //   summary: 'Panning off',
+      //   detail: 'panning turned off ',
+      //   life: 4000,
+      // });
+    }
 
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }

@@ -140,7 +140,7 @@ console.log(data,'task data')
   ngAfterViewInit() {
     this.setPaginatedData(); // Set initial paginated data after view is initialized
   }
-  async refreshTableData() {
+async refreshTableData() {
     let establishedTime = new Date(this.mapData.createdAt); // created time of map
     let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
 
@@ -172,8 +172,8 @@ console.log(data,'task data')
         destinationLocation: 'N/A',
       }));
 
-      this.filteredTaskData = this.tasks;
       this.setPaginatedData(); // Update pagination
+      this.filteredTaskData = this.tasks;
     }
 }
 
@@ -193,10 +193,10 @@ console.log(data,'task data')
   setPaginatedData() {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      this.paginatedData = this.filteredTaskData.slice(
-        startIndex,
-        startIndex + this.paginator.pageSize
-      );
+      const endIndex = startIndex + this.paginator.pageSize;
+      this.paginatedData = this.filteredTaskData.slice(startIndex, endIndex);
+    } else {
+      this.paginatedData = this.filteredTaskData.slice(0, 5); // Default to first 5 items if paginator is not defined
     }
   }
 
