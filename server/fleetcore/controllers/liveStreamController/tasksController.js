@@ -174,7 +174,7 @@ const cancelTask = async (req, res) => {
 
     // Fetch robot utilization data from the fleet server
     let cancel_Task = await taskOperation("cancelTask", bodyData);
-    console.log(taskId,cancel_Task);
+    // console.log(taskId,cancel_Task);
     if(cancel_Task.errorCode===4006 || cancel_Task.errorCode!==1000)
       return res.status(200).json({
         msg: cancel_Task.messageText,

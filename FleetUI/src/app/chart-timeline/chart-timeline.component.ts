@@ -105,8 +105,8 @@ export class ChartTimelineComponent implements OnInit {
       { key: 'data1', label: 'CPU Utilization' },
       { key: 'data3', label: 'Memory' },
       { key: 'data4', label: 'Network' },
-      { key: 'data5', label: 'Error' },
-      { key: 'data6', label: 'Idle Time' },
+      { key: 'data5', label: 'Idle Time' },
+      { key: 'data6', label: 'Error' },
       { key: 'data7', label: 'Battery' },
     ],
   };
@@ -154,6 +154,9 @@ export class ChartTimelineComponent implements OnInit {
           style: {
             colors: '#9aa0ac',
             fontSize: '12px',
+          },
+          formatter: function (value: number) {
+            return value.toFixed(2); // Ensure two decimal places
           },
         },
       },
@@ -223,10 +226,10 @@ export class ChartTimelineComponent implements OnInit {
           credentials: 'include',
         }
       );
-      console.log(response);
+      // console.log(response);
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       if (!data.populatedRobos || data.msg !== 'data sent!') {
         console.log(data);
         console.error('Invalid API response');
@@ -249,7 +252,6 @@ export class ChartTimelineComponent implements OnInit {
   updateSelection(type: string,robo:any): void {
     this.selectedType = type;
     this.selectedRobo = robo;
-    console.log("hey",robo,type);
     
     // this.getTimeStampsOfDay()
   }
@@ -340,11 +342,11 @@ export class ChartTimelineComponent implements OnInit {
     const updateFunctions: { [key: string]: () => void } = {
       data1: this.updateCpuUtil.bind(this),
       data2: this.updateRoboUtil.bind(this),
-      data7: this.updateBattery.bind(this),
       data3: this.updateMemory.bind(this),
       data4: this.updateNetwork.bind(this),
       data5: this.updateIdleTime.bind(this),
       data6: this.updateErr.bind(this),
+      data7: this.updateBattery.bind(this),
     };
 
     const updateFunction = updateFunctions[dataKey];
@@ -357,7 +359,7 @@ export class ChartTimelineComponent implements OnInit {
 
   applyFilter(event: any): void {
     this.currentFilter = event.target.value.toLowerCase();
-    console.log(this.currentFilter, 'current filter'); // console.log(this.currentFilter)
+    // console.log(this.currentFilter, 'current filter'); // console.log(this.currentFilter)
     const metricToDataKey: { [key: string]: string } = {
       'CPU Utilization': 'data1',
       'Robot Utilization': 'data2',
@@ -429,7 +431,7 @@ export class ChartTimelineComponent implements OnInit {
     let startTimeOfDay;
     if (this.currentFilter == 'week') {
       startTimeOfDay = this.weekStartOfDay();
-    } else if (this.currentFilter == 'month') {
+    } else if (this.currentFilter == 'month') {      
       startTimeOfDay = this.monthStartOfDay();
     } else {
       startTimeOfDay = this.getStartOfDay();
@@ -458,7 +460,6 @@ export class ChartTimelineComponent implements OnInit {
   monthStartOfDay() {
     // Get the current date
     let currentDate = new Date();
-
     // Subtract 1 month from the current date
     let lastMonthDate = new Date();
     lastMonthDate.setMonth(currentDate.getMonth() - 1);
@@ -476,9 +477,13 @@ export class ChartTimelineComponent implements OnInit {
       const data = await this.fetchChartData( 'cpu-utilization', this.currentFilter, '', '' );
 
       if (data.cpuUtil) {
-        this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
-          return stat ? stat.cummulativeCPU_Utilization : 0;
-        });
+        let len = (data.cpuUtil.CPU_Utilization)?.length-1;
+        if(this.selectedType !== 'Overall')
+          this.cpuUtilArr = data.cpuUtil.CPU_Utilization[len]['CPU_Utilization'];
+        else
+          this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
+            return stat ? stat.cummulativeCPU_Utilization : 0;
+          });
         this.cpuXaxisSeries = data.cpuUtil.CPU_Utilization.map(
           (stat: any, index: any) => (index += 1)
         );
@@ -492,9 +497,14 @@ export class ChartTimelineComponent implements OnInit {
     const data = await this.fetchChartData( 'cpu-utilization', this.currentFilter, '', '' );
     // console.log(data,"data =======cpu") //hold the chart data
     if (data.cpuUtil) {
-      this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
-        return stat ? stat.cummulativeCPU_Utilization : 0;
-      });
+      let len = (data.cpuUtil.CPU_Utilization)?.length-1;
+      if(this.selectedType !== 'Overall')
+        this.cpuUtilArr = data.cpuUtil.CPU_Utilization[len]['CPU_Utilization'];
+      else
+        this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
+          return stat ? stat.cummulativeCPU_Utilization : 0;
+        });
+        
       this.cpuXaxisSeries = data.cpuUtil.CPU_Utilization.map( (stat: any, index: any) => (index += 1) );
       // this.cpuXaxisSeries = data.cpuUtil.CPU_Utilization.map( (stat: any) => stat.time );
     }
@@ -503,9 +513,13 @@ export class ChartTimelineComponent implements OnInit {
     this.cpuUtilTimeInterval = setInterval(async () => {
       const data = await this.fetchChartData( 'cpu-utilization', this.currentFilter, '', '' );
       if (data.cpuUtil) {
-        this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
-          return stat ? stat.cummulativeCPU_Utilization : 0;
-        });
+        let len = (data.cpuUtil.CPU_Utilization)?.length-1;
+        if(this.selectedType !== 'Overall')
+          this.cpuUtilArr = data.cpuUtil.CPU_Utilization[len]['CPU_Utilization'];
+        else
+          this.cpuUtilArr = data.cpuUtil.CPU_Utilization.map((stat: any) => {
+            return stat ? stat.cummulativeCPU_Utilization : 0;
+          });
         this.cpuXaxisSeries = data.cpuUtil.CPU_Utilization.map(
           (stat: any, index: any) => (index += 1)
         );
@@ -611,9 +625,13 @@ export class ChartTimelineComponent implements OnInit {
       this.batteryTimeInterval = 0;
       const data = await this.fetchChartData( 'battery', this.currentFilter, '', '' );
       if (data.batteryStat) {
-        this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
-          return stat ? stat.cummulativebatteryPercentage : 0;
-        });
+        let len = (data.batteryStat.BatteryPercentage)?.length-1;
+        if(this.selectedType !== 'Overall')
+          this.batteryArr = data.batteryStat.BatteryPercentage[len]['batteryPercentage']
+        else
+          this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
+            return stat ? stat.cummulativebatteryPercentage : 0;
+          });
         this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
           (stat: any, index: any) => (index += 1)
         );
@@ -625,9 +643,13 @@ export class ChartTimelineComponent implements OnInit {
     if (this.batteryTimeInterval) return;
     const data = await this.fetchChartData( 'battery', this.currentFilter, '', '' );
     if (data.batteryStat && data.batteryStat.BatteryPercentage) {
-      this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
-        return stat ? stat.cummulativebatteryPercentage : 0;
-      });
+      let len = (data.batteryStat.BatteryPercentage)?.length-1;
+      if(this.selectedType !== 'Overall')
+        this.batteryArr = data.batteryStat.BatteryPercentage[len]['batteryPercentage']
+      else
+        this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
+          return stat ? stat.cummulativebatteryPercentage : 0;
+        });
       this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
         (stat: any, index: any) => (index += 1)
       );
@@ -643,14 +665,13 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.batteryStat) {
-        this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
-          let res;
-          for (let key in stat) {
-            res = stat[key];
-            // console.log(key, '-----------------');
-          }
-          return res;
-        });
+        let len = (data.batteryStat.BatteryPercentage)?.length-1;
+        if(this.selectedType !== 'Overall')
+          this.batteryArr = data.batteryStat.BatteryPercentage[len]['batteryPercentage']
+        else
+          this.batteryArr = data.batteryStat.BatteryPercentage.map((stat: any) => {
+            return stat ? stat.cummulativebatteryPercentage : 0;
+          });
         this.batteryXaxisSeries = data.batteryStat.BatteryPercentage.map(
           (stat: any, index: any) => (index += 1)
         );
@@ -710,12 +731,13 @@ export class ChartTimelineComponent implements OnInit {
       const data = await this.fetchChartData( 'network', this.currentFilter, '', '' );
       // console.log(data,"======network=====")
       if (data.networkUtil) {
-        this.networkArr = data.networkUtil.Network.map((stat: any) => {
-          return stat ? stat.cummulativeNetwork : 0;
-        });
-        this.networkXaxisSeries = data.networkUtil.Network.map(
-          (stat: any, index: any) => (index += 1)
-        );
+        let len = (data.networkUtil.Network)?.length-1;
+        if(this.selectedType !== 'Overall') this.networkArr = data.networkUtil.Network[len]['Network'];
+        else
+          this.networkArr = data.networkUtil.Network.map((stat: any) => {
+            return stat ? stat.cummulativeNetwork : 0;
+          });
+        this.networkXaxisSeries = data.networkUtil.Network.map( (stat: any, index: any) => (index += 1) );
       }
       this.plotChart('Network', this.networkArr, this.networkXaxisSeries, 30);
       return;
@@ -724,12 +746,14 @@ export class ChartTimelineComponent implements OnInit {
     if (this.networkTimeInterval) return;
     const data = await this.fetchChartData( 'memory', this.currentFilter, '', '' );
     if (data.networkUtil && data.networkUtil.Network) {
-      this.networkArr = data.networkUtil.Network.map((stat: any) => {
-        return stat ? stat.cummulativeNetwork : 0;
-      });
-      this.networkXaxisSeries = data.networkUtil.Network.map(
-        (stat: any, index: any) => (index += 1)
-      );
+      let len = (data.networkUtil.Network)?.length-1;
+      if(this.selectedType !== 'Overall')
+        this.networkArr = data.networkUtil.Network[len]['Network'];
+      else
+        this.networkArr = data.networkUtil.Network.map((stat: any) => {
+          return stat ? stat.cummulativeNetwork : 0;
+        });
+      this.networkXaxisSeries = data.networkUtil.Network.map( (stat: any, index: any) => (index += 1) );
     }
 
 
@@ -742,17 +766,14 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.networkUtil) {
-        this.networkArr = data.networkUtil.Network.map((stat: any) => {
-          let res;
-          for (let key in stat) {
-            res = stat[key];
-            // console.log(key, '-----------------');
-          }
-          return res;
-        });
-        this.networkXaxisSeries = data.networkUtil.Network.map(
-          (stat: any, index: any) => (index += 1)
-        );
+        let len = (data.networkUtil.Network)?.length-1;
+        if(this.selectedType !== 'Overall')
+          this.networkArr = data.networkUtil.Network[len]['Network'];
+        else
+          this.networkArr = data.networkUtil.Network.map((stat: any) => {
+            return stat ? stat.cummulativeNetwork : 0;
+          });
+        this.networkXaxisSeries = data.networkUtil.Network.map( (stat: any, index: any) => (index += 1) );
       }
       this.plotChart('Network', this.networkArr, this.networkXaxisSeries);
     }, 1000 * 2);
@@ -765,9 +786,13 @@ export class ChartTimelineComponent implements OnInit {
       this.idleTimeInterval = 0;
       const data = await this.fetchChartData( 'idle-time', this.currentFilter, '', '' );
       if (data.idleTime) {
-        this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
-          return stat ? stat.cummulativeIdleTime : 0;
-        });
+        let len = (data.idleTime.IdleTime)?.length-1;
+        if(this.selectedType !== 'Overall')
+          this.idleTimeArr = data.idleTime.IdleTime[len]['IdleTime']
+        else
+          this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
+            return stat ? stat.cummulativeIdleTime : 0;
+          });
         this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
           (stat: any, index: any) => (index += 1)
         );
@@ -780,9 +805,13 @@ export class ChartTimelineComponent implements OnInit {
 
     const data = await this.fetchChartData( 'idle-time', this.currentFilter, '', '' );
     if (data.idleTime && data.idleTime.IdleTime) {
-      this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
-        return stat ? stat.cummulativeIdleTime : 0;
-      });
+      let len = (data.idleTime.IdleTime)?.length-1;
+      if(this.selectedType !== 'Overall')
+        this.idleTimeArr = data.idleTime.IdleTime[len]['IdleTime']
+      else
+        this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
+          return stat ? stat.cummulativeIdleTime : 0;
+        });
       this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
         (stat: any, index: any) => (index += 1)
       );
@@ -791,21 +820,15 @@ export class ChartTimelineComponent implements OnInit {
     this.plotChart('Idle Time', this.idleTimeArr, this.idleTimeXaxisSeries);
 
     this.idleTimeInterval = setInterval(async () => {
-      const data = await this.fetchChartData(
-        'idle-time',
-        this.currentFilter,
-        '',
-        ''
-      );
+      const data = await this.fetchChartData( 'idle-time', this.currentFilter, '', '' );
       if (data.idleTime) {
-        this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
-          let res;
-          for (let key in stat) {
-            res = stat[key];
-            // console.log(key, '-----------------');
-          }
-          return res;
-        });
+        let len = (data.idleTime.IdleTime)?.length-1;
+        if(this.selectedType !== 'Overall')
+          this.idleTimeArr = data.idleTime.IdleTime[len]['IdleTime']
+        else
+          this.idleTimeArr = data.idleTime.IdleTime.map((stat: any) => {
+            return stat ? stat.cummulativeIdleTime : 0;
+          });
         this.idleTimeXaxisSeries = data.idleTime.IdleTime.map(
           (stat: any, index: any) => (index += 1)
         );
@@ -821,13 +844,21 @@ export class ChartTimelineComponent implements OnInit {
       this.errTimeInterval = 0;
       const data = await this.fetchChartData( 'robo-err', this.currentFilter, '', '' );
       if (data.roboErr) {
-        this.errorArr = data.roboErr.RobotError.map((stat: any) => {
-          return stat ? stat.cummulativeRobotError : 0;
-        });
-
-        this.errRateXaxisSeries = data.roboErr.RobotError.map(
-          (stat: any, index: any) => (index += 1)
-        );
+        if(this.selectedType !== 'Overall'){
+          let len = (data.roboErr.RobotError)?.length-1;
+          this.errorArr = data.roboErr.RobotError[len]['RobotError'];
+          this.errRateXaxisSeries = data.roboErr.RobotError[len]['RobotError'].map(
+            (stat: any, index: any) => (index += 1)
+          );
+        }
+        else{
+          this.errorArr = data.roboErr.cummulativeRobotError.map((stat: any) => {
+            return stat ? stat.cummulativeRobotError : 0;
+          });
+          this.errRateXaxisSeries = data.roboErr.cummulativeRobotError.map(
+            (stat: any, index: any) => (index += 1)
+          );
+        }
       }
       // console.log(this.errorArr, 'error arr');
       this.plotChart('Error', this.errorArr, this.errRateXaxisSeries, 30);
@@ -836,36 +867,48 @@ export class ChartTimelineComponent implements OnInit {
 
     if (this.errTimeInterval) return;
     const data = await this.fetchChartData( 'robo-err', this.currentFilter, '', '' );
-    if (data.roboErr && data.roboErr.RobotError) {
-      this.errorArr = data.roboErr.RobotError.map((stat: any) => {
-        return stat ? stat.cummulativeRobotError : 0;
-      });
-      this.errRateXaxisSeries = data.roboErr.RobotError.map(
-        (stat: any, index: any) => (index += 1)
-      );
+    // console.log((data.roboErr.RobotError)?.length-1)
+    if (data.roboErr) {
+      if(this.selectedType !== 'Overall'){
+        let len = (data.roboErr.RobotError)?.length-1;
+        this.errorArr = data.roboErr.RobotError[len]['RobotError'];
+        this.errRateXaxisSeries = data.roboErr.RobotError[len]['RobotError'].map(
+          (stat: any, index: any) => (index += 1)
+        );
+      }
+      else{
+        this.errorArr = data.roboErr.cummulativeRobotError.map((stat: any) => {
+          return stat ? stat.cummulativeRobotError : 0;
+        });
+        this.errRateXaxisSeries = data.roboErr.cummulativeRobotError.map(
+          (stat: any, index: any) => (index += 1)
+        );
+      }
+      // this.errRateXaxisSeries = data.roboErr.RobotError.map(
+      //   (stat: any, index: any) => (index += 1)
+      // );
     }
 
     this.plotChart('Error', this.errorArr, this.errRateXaxisSeries);
-
     this.errTimeInterval = setInterval(async () => {
-      const data = await this.fetchChartData(
-        'robo-err',
-        this.currentFilter,
-        '',
-        ''
-      );
+      const data = await this.fetchChartData( 'robo-err', this.currentFilter, '', '' );
+      // console.log((data.roboErr.RobotError)?.length-1)
       if (data.roboErr) {
-        this.errorArr = data.roboErr.RobotError.map((stat: any) => {
-          let res;
-          for (let key in stat) {
-            res = stat[key];
-            // console.log(key, '-----------------');
-          }
-          return res;
-        });
-        this.errRateXaxisSeries = data.roboErr.RobotError.map(
-          (stat: any, index: any) => (index += 1)
-        );
+        if(this.selectedType !== 'Overall'){
+          let len = (data.roboErr.RobotError)?.length-1;
+          this.errorArr = data.roboErr.RobotError[len]['RobotError'];
+          this.errRateXaxisSeries = data.roboErr.RobotError[len]['RobotError'].map(
+            (stat: any, index: any) => (index += 1)
+          );
+        }
+        else{
+          this.errorArr = data.roboErr.cummulativeRobotError.map((stat: any) => {
+            return stat ? stat.cummulativeRobotError : 0;
+          });
+          this.errRateXaxisSeries = data.roboErr.cummulativeRobotError.map(
+            (stat: any, index: any) => (index += 1)
+          );
+        }
       }
       this.plotChart('Error', this.errorArr, this.errRateXaxisSeries);
     }, 1000 * 2);

@@ -24,43 +24,8 @@ export class StatisticsComponent {
   // { taskId: 9, taskName: 'AMR-003', task: 'Transporting materials', progress: 90, status: 'Actively Working', },
   // ];
 
-  notifications = [
-    // {
-    //   message: '',
-    //   taskId: '',
-    //   timestamp: '',
-    // },
-    // {
-    //   message: 'Task Assigned ',
-    //   taskId: ' AMR-002',
-    //   timestamp: '17 Nov 2024, 1:54 pm',
-    // },
-    // {
-    //   message: 'Obstacle Detected ',
-    //   taskId: ' AMR-003',
-    //   timestamp: '21 Dec 2024, 10:27 am',
-    // },
-    // {
-    //   message: 'Low Battery',
-    //   taskId: 'AMR-001',
-    //   timestamp: '21 Dec 2024, 10:50 am',
-    // },
-    // {
-    //   message: 'Task Assigned ',
-    //   taskId: ' AMR-002',
-    //   timestamp: '23 Dec 2024, 1:02 pm',
-    // },
-    // {
-    //   message: 'Obstacle Detected ',
-    //   taskId: ' AMR-003',
-    //   timestamp: '23 Dec 2024, 6:02 pm',
-    // },
-    // {
-    //   message: 'Low Battery',
-    //   taskId: 'AMR-001',
-    //   timestamp: '5 Jan 2024, 4:02 pm',
-    // }
-  ];
+  notifications:any[] = [];
+  taskErrNotifications:any[] = [];
 
   statisticsData: any = {
     systemThroughput: 0,
@@ -77,15 +42,12 @@ export class StatisticsComponent {
 
   filteredOperationActivities = this.operationActivities;
   filteredNotifications = this.notifications;
+  filteredTaskNotifications = this.taskErrNotifications;
 
   taskStatus_interval: any | null = null;
   currTaskStatus_interval: any | null = null;
 
-  constructor(
-    private router: Router,
-    private projectService: ProjectService,
-    private cdRef: ChangeDetectorRef
-  ) {
+  constructor( private router: Router, private projectService: ProjectService, private cdRef: ChangeDetectorRef ) {
     if (!this.selectedMap) this.selectedMap = this.projectService.getMapData();
   }
 
@@ -115,13 +77,7 @@ export class StatisticsComponent {
     this.filteredOperationActivities = this.operationActivities;
     this.currTaskStatus_interval = setInterval(async () => {
       let currTasks = await this.fetchCurrTasksStatus();
-      // this.filteredOperationActivities.push(currTasks[0]);
       this.filteredOperationActivities = currTasks;
-      // console.log(this.operationActivities);
-      // this.filteredOperationActivities = [
-      //   ...this.filteredNotifications,
-      //   currTasks[0],
-      // ];
     }, 1000 * 10);
   }
 
@@ -139,7 +95,7 @@ export class StatisticsComponent {
     return await response.json();
   }
 
-//FLEET LOG API FOR DASHBOARD
+  // not called anywhere..
   async getFleetLogStatus(){
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.selectedMap.id}`,
@@ -172,25 +128,31 @@ export class StatisticsComponent {
             if (this.processedErrors?.has(notificationKey)) continue;
             this.processedErrors?.add(notificationKey);
 
-            // this.notifications.push({
-            //   label: `${criticality}`,
-            //   message: `${error.description} on robot ID ${robot.id}`,
-            //   type: criticality === "Critical" ? 'red' : criticality === "Warning" ? 'yellow' : 'green',
-            // });
+            this.notifications.push({
+              label: `${criticality}`,
+              message: `${error.description} on robot ID ${robot.id}`,
+              type: criticality === "Critical" ? 'red' : criticality === "Warning" ? 'yellow' : 'green',
+            });
 
             this.cdRef.detectChanges(); // yet to notify..
           }
         }
       }
     });
-
-
-
-
-
   }
 
-  // async to synchronous...
+  async getTaskNotifications(){
+    const response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.selectedMap.id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+    const data = await response.json();
+    if (!data.map || data.error) return ;
+  }
+
   async getGrossStatus() {
     const mapId = this.selectedMap.id;
     const projectId = this.projectService.getSelectedProject()._id;
@@ -365,13 +327,13 @@ export class StatisticsComponent {
     );
   }
 
-  // onSearchNotifications(event: Event): void {
-  //   const input = event.target as HTMLInputElement;
-  //   const query = input.value.toLowerCase();
-  //   this.filteredNotifications = this.notifications.filter((notification) =>
-  //     // notification.message.toLowerCase().includes(query)
-  //   );
-  // }
+  onSearchNotifications(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const query = input.value.toLowerCase();
+    this.filteredNotifications = this.notifications.filter((notification) =>
+      notification.message.toLowerCase().includes(query)
+    );
+  }
 
   getTimeStampsOfDay(establishedTime: Date) {
     let currentTime = Math.floor(new Date().getTime() / 1000);

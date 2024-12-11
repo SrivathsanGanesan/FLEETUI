@@ -81,10 +81,11 @@ export class RadialChartComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.isFleetService.isFleet$.subscribe((value) => {
-      this.isFleet = value; // React to changes
-      console.log('isFleet in RadialChartComponent:', this.isFleet);
-    });
+    // this.isFleetService.isFleet$.subscribe((value) => { // use for later..
+    //   this.isFleet = value; // React to changes
+    //   console.log('isFleet in RadialChartComponent:', this.isFleet);
+    // });
+    this.isFleet = sessionStorage.getItem('isFleet') ? true : false;
 
     await this.getMapDetails();
 

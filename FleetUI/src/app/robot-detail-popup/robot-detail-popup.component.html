@@ -91,9 +91,14 @@
     <!-- Battery Details -->
       <div class="battery-details">
         <div class="average-discharge">
-          <span class="discharge-distance">{{ data.averagedischarge | number:'1.2-2' }} m</span>
+          <span 
+            class="discharge-distance"
+            [title]="data.averagedischarge"> 
+            {{ truncateNumber(data.averagedischarge) }} m
+          </span>
           <span class="discharge-label">Average Discharge</span>
         </div>
+        
         <div class="battery-status-container">
           <span class="battery-percentage">{{ data.batteryPercentage| number:'1.2-2' }} %</span>
           <span class="battery-label">Battery</span>
@@ -444,7 +449,11 @@
       </div>
       <span class="cpu-utilization-text">CPU Utilization</span>
     </div>
-    <span class="cpu-utilization-value">{{ data.cpuutilization| number:'1.2-2' }} %</span>
+    <span 
+    class="cpu-utilization-value" 
+    [title]="data.cpuutilization">
+    {{ truncateNumber(data.cpuutilization) }} %
+  </span>
   </div>
 </div>
 

@@ -1,10 +1,7 @@
 const express = require("express");
 const {
-  getFleetTaskErrLogs,
   getTaskErrLogs,
-  getFleetRoboErrLogs,
   getRoboErrLogs,
-  getFleetCoreErrLogs,
   getFleetErrLogs,
   // getTaskError
 } = require("../controllers/liveStreamController/errorLogController");

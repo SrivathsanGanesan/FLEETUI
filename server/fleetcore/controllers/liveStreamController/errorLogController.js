@@ -113,30 +113,6 @@ const getTaskErrLogs = async (req, res) => {
   }
 };
 
-//.. Robot
-const getFleetRoboErrLogs = (req, res, next) => {
-  fetch(`http://fleetIp:8080/fms/amr/getRobotStats`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        req.responseStatus = "NOT_OK";
-        return next();
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      req.fleetData = data;
-    })
-    .catch((err) => {
-      req.fleetErr = err;
-    });
-  next();
-};
-
 const getRoboErrLogs = async (req, res) => {
   const mapId = req.params.mapId;
   try {
@@ -154,30 +130,6 @@ const getRoboErrLogs = async (req, res) => {
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
   }
-};
-
-//.. Fleet
-const getFleetCoreErrLogs = (req, res, next) => {
-  fetch(`http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify({ timeStamp1: "", timeStamp2: "" }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        req.responseStatus = "NOT_OK";
-        return next();
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      req.fleetData = data;
-    })
-    .catch((err) => {
-      req.fleetErr = err;
-    });
-  next();
 };
 
 const getFleetErrLogs = async (req, res) => {
@@ -248,9 +200,7 @@ const getFleetErrLogs = async (req, res) => {
 module.exports = {
   getFleetTaskErrLogs,
   getTaskErrLogs,
-  getFleetRoboErrLogs,
   getRoboErrLogs,
-  getFleetCoreErrLogs,
   getFleetErrLogs,
   // getTaskError
 };
