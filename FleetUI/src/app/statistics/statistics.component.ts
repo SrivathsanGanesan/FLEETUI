@@ -68,8 +68,9 @@ export class StatisticsComponent {
     this.router.navigate(['/statistics/operation']); // Default to operation view
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) return;
-    await this.getGrossStatus();
+    // await this.getGrossStatus(); // no need anymore..
     this.operationPie = await this.fetchTasksStatus();
+    await this.getTaskNotifications();
     this.taskStatus_interval = setInterval(async () => {
       this.operationPie = await this.fetchTasksStatus();
     }, 1000 * 10);
@@ -142,35 +143,53 @@ export class StatisticsComponent {
   }
 
   async getTaskNotifications(){
+    let establishedTime = new Date(this.selectedMap.createdAt);
+    let { timeStamp1, timeStamp2 } = this.getTimeStampsOfDay(establishedTime);
     const response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.selectedMap.id}`,
+      `http://${environment.API_URL}:${environment.PORT}/err-logs/task-logs/${this.selectedMap.id}`,
       {
-        method: 'GET',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
+        body: JSON.stringify({
+          // mapId: this.selectedMap.id,
+          timeStamp1: timeStamp1,
+          timeStamp2: timeStamp2,
+        }),
       }
     );
     const data = await response.json();
     if (!data.map || data.error) return ;
+    this.taskErrNotifications = data.taskErr.map((err:any)=>{
+      if(!err) return null;
+      let dateCreated = new Date(err.TaskAddTime * 1000);
+      return {
+        status: err.task_status.status,
+        taskId: err.task_id,
+        timestamp: dateCreated.toLocaleString()
+      }
+    }).filter((err:any) => err !== null);
+    this.filteredTaskNotifications = this.taskErrNotifications
   }
 
   async getGrossStatus() {
     const mapId = this.selectedMap.id;
     const projectId = this.projectService.getSelectedProject()._id;
 
-    let throughputData = await this.fetchFleetStatus('system-throughput', {
-      mapId: mapId,
-    });
+    // let throughputData = await this.fetchFleetStatus('system-throughput', {
+    //   mapId: mapId,
+    // });
     // if (throughputData.systemThroughput)
     //   this.statisticsData.systemThroughput = throughputData.systemThroughput;
-    let uptime = await this.fetchFleetStatus('system-uptime', { projectId: projectId });
-    if (uptime.systemUptime){
-      this.statisticsData.systemUptime = uptime.systemUptime;}
-    else{
-      this.statisticsData.systemUptime = "Loading...";
-    }
-    await this.fetchFleetStatus('success-rate', { // yet to take..
-      mapId: mapId,
-    });
+    // let uptime = await this.fetchFleetStatus('system-uptime', { projectId: projectId });
+    // if (uptime.systemUptime){
+    //   this.statisticsData.systemUptime = uptime.systemUptime;}
+    // else{
+    //   this.statisticsData.systemUptime = "Loading...";
+    // }
+    // await this.fetchFleetStatus('success-rate', { // yet to take..
+    //   mapId: mapId,
+    // });
     // yet to uncomment..
     // if (successRate.successRate)
     //   this.statisticsData.successRate = successRate.successRate;

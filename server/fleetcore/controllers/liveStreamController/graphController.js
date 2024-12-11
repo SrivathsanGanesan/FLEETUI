@@ -36,7 +36,6 @@ let idleTimeArr = getSampSeries();
 let roboErrRateArr = getSampSeries();
 
 const getFleetSeriesData = async (timeStamp1, timeStamp2, roboId, endpoint) => {
-  
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
     {
@@ -61,8 +60,8 @@ const throughput = async (req, res, next) => {
     if (!isMapExist)
       return res.status(500).json({ msg: "map not found!", map: null });
 
-    const mapData = await Map.findOne({ _id: mapId });
-    let fleetThroughput = await getFleetSeriesData( timeStamp1, timeStamp2, "get_throughput_stats" );
+    // const mapData = await Map.findOne({ _id: mapId });
+    let fleetThroughput = await getFleetSeriesData( timeStamp1, timeStamp2, 0, "get_throughput_stats" );
   
     return res.status(200).json({
       msg: "data sent",

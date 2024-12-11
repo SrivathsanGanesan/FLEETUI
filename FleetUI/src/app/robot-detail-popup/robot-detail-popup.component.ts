@@ -166,7 +166,7 @@ export class RobotDetailPopupComponent {
    truncateNumber(value: number): string {
     const numberString = value.toString();
     // Limit visible characters, truncate after a few digits and add '...'
-    return numberString.length > 5 ? numberString.substring(0, 4) + '...' : numberString;
+    return numberString.length > 5 ? numberString.substring(0, 4) + '..' : numberString;
     }
   
    fetchChartData(): Promise<any> {

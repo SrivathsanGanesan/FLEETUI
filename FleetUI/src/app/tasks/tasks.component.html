@@ -83,7 +83,7 @@
           <!-- Table container without scroll -->
           <div class="table-responsive">
             <table class="table">
-              <thead style="z-index: 10;">
+              <thead >
                 <tr>
                   <th>S.no</th>
                   <th>Task ID</th>
@@ -159,7 +159,7 @@
       <mat-paginator
         [length]="filteredTaskData.length"
         [pageSize]="5"
-        [pageSizeOptions]="[5, 10,15]"
+        [pageSizeOptions]="[5, 10]"
         (page)="onPageChange($event)"
         showFirstLastButtons
       >
