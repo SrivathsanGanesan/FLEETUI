@@ -384,6 +384,7 @@ export class ChartTimelineComponent implements OnInit {
   }
 
   plotChart(seriesName: string, data: any[], time: any[], limit: number = 12) {
+    // console.log(data);    
     const limitedData = data.length > limit ? data.slice(-limit) : data;
     const limitedTime = time.length > limit ? time.slice(-limit) : time;
 
@@ -689,14 +690,15 @@ export class ChartTimelineComponent implements OnInit {
       // console.log(data,"======network=====")
       if (data.memoryStat) {
         let len = (data.memoryStat.Memory)?.length-1;
-        if(this.selectedType !== 'Overall') this.memoryArr = data.memoryStat.Memory[len]['Network'];
+        if(this.selectedType !== 'Overall') this.memoryArr = data.memoryStat.Memory[len]['Memory'];
         else
           this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
             return stat ? stat.cummlativeMemory : 0;
           });
           this.memoryXaxisSeries = data.memoryStat.Memory.map(
             (stat: any, index: any) => (index += 1)
-          );      }
+          );
+        }
           this.plotChart('Memory', this.memoryArr, this.memoryXaxisSeries, 30);
           return;
     }
@@ -706,7 +708,7 @@ export class ChartTimelineComponent implements OnInit {
     if (data.memoryStat && data.memoryStat.Memory) {
       let len = (data.memoryStat.Memory)?.length-1;
       if(this.selectedType !== 'Overall')
-        this.memoryArr = data.memoryStat.Memory[len]['Network'];
+        this.memoryArr = data.memoryStat.Memory[len]['Memory'];
       else
         this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
           return stat ? stat.cummlativeMemory : 0;
@@ -727,10 +729,10 @@ export class ChartTimelineComponent implements OnInit {
       if (data.memoryStat) {
         let len = (data.memoryStat.Memory)?.length-1;
         if(this.selectedType !== 'Overall')
-          this.memoryArr = data.memoryStat.Memory[len]['Network'];
+          this.memoryArr = data.memoryStat.Memory[len]['Memory'];
         else
           this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
-            return stat ? stat.cummulativeNetwork : 0;
+            return stat ? stat.cummlativeMemory : 0;
           });
         this.memoryXaxisSeries = data.memoryStat.Memory.map( (stat: any, index: any) => (index += 1) );
       }

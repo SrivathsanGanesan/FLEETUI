@@ -101,7 +101,7 @@ export class RobotsComponent implements OnInit {
       if (robo.networkstrength < 20) robo.SignalStrength = 'Weak';
       else if (robo.networkstrength < 40) robo.SignalStrength = 'Medium';
       else if (robo.networkstrength < 80) robo.SignalStrength = 'Full';
-      robo.networkstrength = robo.networkstrength.toString() + ' dBm';
+      robo.networkstrength = robo.networkstrength.toString() ;
       return robo;
     });
 
