@@ -3,13 +3,9 @@ const graphRouter = express.Router();
 const {
   // getFleetThroughput,
   throughput,
-  getFleetStarvation,
   starvationRate,
-  getFleetPickAccuracy,
   pickAccuracy,
-  getFleetErrRate,
   errRate,
-  getRoboFleetGraph,
   getCpuUtilization,
   getRoboUtilization,
   getBatteryStat,
@@ -19,8 +15,7 @@ const {
   getRoboErr,
   throughPut_starvation,
   throughPut_pickAccuracy,
-  throughPut_errorRate,
-  varname,
+  throughPut_errorRate
 } = require("../controllers/liveStreamController/graphController");
 
 // throughputRouter.get("/:mapId", getFleetThroughput, throughput); // when switch to fleet test..
@@ -37,6 +32,5 @@ graphRouter.post("/memory/:mapId", getMemoryStat);
 graphRouter.post("/network/:mapId", getNetworkStat);
 graphRouter.post("/idle-time/:mapId", getIdleTime);
 graphRouter.post("/robo-err/:mapId", getRoboErr);
-graphRouter.get("/sample", varname);
 
 module.exports = graphRouter;

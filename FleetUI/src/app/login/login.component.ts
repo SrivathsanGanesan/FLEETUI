@@ -114,10 +114,7 @@ export class LoginComponent {
       }),
     })
       .then((res) => {
-        // if (res.ok) {
-        //   return res.json();
-        // } else
-        console.log(res,'---response')
+        // console.log(res,'---response')
         if (res.status === 404 || res.status === 401) {
           this.errorMessage =
             "*Wrong password or user with this role doesn't exist";
@@ -129,11 +126,13 @@ export class LoginComponent {
       .then((data) => {
         // console.log(data.user.projects);
         if (data.user) {
-          console.log(data.user.id,'----data id')
-          this.fetchUserPermissions(data.user.id)
+          // console.log(data.user.id,'----data id')
+          let { permissions } = data.user;
+          this.userPermissionService.setPermissions(permissions);
+          // console.log(this.userPermissionService.getPermissions());
+          
           if (data.user.role === 'User') {
             console.log('user initilalized')
-            // this.fetchUserPermissions(data.user.id)
          
             if (!data.project) {
               alert('No project has been assigned to this user.');
@@ -194,37 +193,5 @@ export class LoginComponent {
       this.focusedContainer.classList.remove('focused');
       this.focusedContainer = null;
     }
-  }
-
-  // user auth
-   fetchUserPermissions(userId: string) {
-    console.log(userId,'---------------userId')
-    fetch(
-      `http://${environment.API_URL}:${environment.PORT}/auth/get-permissions/${userId}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch user permissions');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data,'permission -----------');
-        this.UserService.userManagementService(data)
-        // Update the local permission state
-        let {permissions } = data
-        this.userPermissionService.setPermissions(permissions)
-        // console.log(this.userPermissionService.getPermissions())
-     
-      })
-      .catch((error) => {
-        console.error('Error fetching user permissions:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Failed',
-          detail: 'Error fetching user permissions',
-          life: 5000,
-        });
-      });
   }
 }

@@ -453,7 +453,7 @@
 
                   <!-- Toggle Switch -->
                   <label class="switch">
-                    <input type="checkbox" [disabled]="!config.enabled" [(ngModel)]="subOption.enabled"
+                    <input type="checkbox" *ngIf="config.enabled" [disabled]="!config.enabled" [(ngModel)]="subOption.enabled"
                       class="sr-only peer" />
                     <span class="slider"></span>
                   </label>

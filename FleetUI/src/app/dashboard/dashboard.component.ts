@@ -240,12 +240,12 @@ export class DashboardComponent implements AfterViewInit {
   async ngOnInit() {
     this.isInLive = this.projectService.getInLive();
 
-    this.isInLive = this.projectService.getInLive();
-      // Subscribe to the fleet state
-        // const savedIsFleet = sessionStorage.getItem('isFleet');
-        // if (savedIsFleet !== null) {
-        //   this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
-        // }
+    // this.isInLive = this.projectService.getInLive();
+    // Subscribe to the fleet state
+    // const savedIsFleet = sessionStorage.getItem('isFleet');
+    // if (savedIsFleet !== null) {
+    //   this.isFleet = savedIsFleet === 'true'; // Convert the string to a boolean
+    // }
     const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
       this.isFleet = status;
       // console.log(status,'oijdrgioerj')
@@ -319,8 +319,13 @@ export class DashboardComponent implements AfterViewInit {
       // Calculate zoom level only once during initialization
       // if (this.zoomLevel) {
         this.zoomLevel = img.width > 1355 || img.height > 664 ? 0.8 : 1.0;
+        this.nodeGraphService.setZoomLevel(this.zoomLevel);
       // }
-    };
+       };
+    this.nodeGraphService.setZoomLevel(this.zoomLevel);
+    this.nodeGraphService.setOffsetX(this.offsetX);//defaultvalue
+    this.nodeGraphService.setOffsetY(this.offsetY);//defaultvalue
+
     await this.getMapDetails();
     // this.showModelCanvas = false;
     this.nodeGraphService.setShowModelCanvas(false);
@@ -491,7 +496,7 @@ export class DashboardComponent implements AfterViewInit {
       const mouseY = event.clientY - rect.top;
       const transY = this.mapImageHeight - mouseY;
       // console.log("hey",this.offsetX,this.offsetY);
-
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       const imgX = (mouseX - this.mapImageX ) / this.zoomLevel;
       const imgY = (mouseY - this.mapImageY ) / this.zoomLevel ;
 
@@ -737,10 +742,13 @@ export class DashboardComponent implements AfterViewInit {
           canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
           canvas.height =
           canvas.parentElement?.clientHeight || window.innerHeight;
+          this.zoomLevel=this.nodeGraphService.getZoomLevel();
 
           // Calculate the scaled image dimensions
           this.mapImageWidth = img.width * this.zoomLevel;
           this.mapImageHeight = img.height * this.zoomLevel;
+          this.offsetX=this.nodeGraphService.getOffsetX();
+          this.offsetY=this.nodeGraphService.getOffsetY();
 
           // Center the image on the canvas
           this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
@@ -866,7 +874,9 @@ export class DashboardComponent implements AfterViewInit {
   addRightClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('contextmenu', (event) => {
       event.preventDefault(); // Prevent the default context menu
-
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -912,7 +922,9 @@ export class DashboardComponent implements AfterViewInit {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
-
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
@@ -987,6 +999,9 @@ export class DashboardComponent implements AfterViewInit {
       const mouseY = event.clientY - rect.top;
 
       const transY = canvas.height - mouseY;
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       // console.log(this.zoomLevel);
 
       // Adjust for zoom and pan
@@ -1046,6 +1061,9 @@ export class DashboardComponent implements AfterViewInit {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
@@ -1292,7 +1310,9 @@ export class DashboardComponent implements AfterViewInit {
 
     if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
       // Calculate the scaled image dimensions
       const imgWidth = mapImage.width * this.zoomLevel;
       const imgHeight = mapImage.height * this.zoomLevel;
@@ -1375,7 +1395,7 @@ export class DashboardComponent implements AfterViewInit {
 
 async onInitMapImg() {
     let project = this.projectService.getSelectedProject();
-    console.log(project,'Project')
+    // console.log(project,'Project')
     let mapArr = [];
 
     const response = await fetch(
@@ -1579,14 +1599,16 @@ async onInitMapImg() {
     if (ctx) {
       // Clear the whole canvas before redrawing the map and all robots
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+      this.zoomLevel=this.nodeGraphService.getZoomLevel();
+      this.offsetX=this.nodeGraphService.getOffsetX();
+      this.offsetY=this.nodeGraphService.getOffsetY();
       // Calculate the scaled image dimensions and center the image on the canvas
       const imgWidth = mapImage.width * this.zoomLevel;
       const imgHeight = mapImage.height * this.zoomLevel;
       // console.log("hey",canvas.height,canvas.width,imgHeight,imgWidth);
 
-      const centerX = (canvas.width - imgWidth) / 2;
-      const centerY = (canvas.height - imgHeight) / 2;
+      const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+      const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
 
       ctx.save();
       ctx.translate(centerX, centerY);
@@ -1757,6 +1779,9 @@ async onInitMapImg() {
   }
 
   drawNodesAndEdges(ctx: CanvasRenderingContext2D, img: HTMLImageElement, centerX: number, centerY: number, zoomLevel: number) {
+    this.offsetX=this.nodeGraphService.getOffsetX();
+    this.offsetY=this.nodeGraphService.getOffsetY();
+    this.zoomLevel=this.nodeGraphService.getZoomLevel();
     // Plot nodes with scaling and centering
     this.nodes.forEach((node) => {
         const scaledX = node.nodePosition.x * zoomLevel;
@@ -2034,24 +2059,26 @@ async onInitMapImg() {
 
   zoomIn() {
     this.zoomLevel *= 1.1;
+    this.nodeGraphService.setZoomLevel(this.zoomLevel);
     this.loadCanvas();
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Zooming in',
-      detail: 'Map is zooming in',
-      life: 2000,
-    });
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Zooming in',
+    //   detail: 'Map is zooming in',
+    //   life: 2000,
+    // });
   }
 
   zoomOut() {
     this.zoomLevel /= 1.1;
+    this.nodeGraphService.setZoomLevel(this.zoomLevel);
     this.loadCanvas();
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Zoomed Out',
-      detail: 'Map is zooming out',
-      life: 2000,
-    });
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Zoomed Out',
+    //   detail: 'Map is zooming out',
+    //   life: 2000,
+    // });
   }
 
   onMouseLeave() {
@@ -2085,7 +2112,8 @@ async onInitMapImg() {
 
       this.offsetX += deltaX / this.zoomLevel;
       this.offsetY += deltaY / this.zoomLevel;
-
+      this.nodeGraphService.setOffsetX(this.offsetX);
+      this.nodeGraphService.setOffsetY(this.offsetY);
       this.loadCanvas();
 
     }
@@ -2121,19 +2149,21 @@ async onInitMapImg() {
   togglePan() {
     this.isPanning = !this.isPanning;
     if(this.isPanning){
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Panning on',
-      detail: 'Map is now able to pan ',
-      life: 4000,
-    });}
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Panning on',
+    //   detail: 'Map is now able to pan ',
+    //   life: 4000,
+    // });
+  }
     else{
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Panning off',
-        detail: 'panning turned off ',
-        life: 4000,
-      });}
+      // this.messageService.add({
+      //   severity: 'info',
+      //   summary: 'Panning off',
+      //   detail: 'panning turned off ',
+      //   life: 4000,
+      // });
+    }
 
     document.body.style.cursor = this.isPanning ? 'grab' : 'default';
   }

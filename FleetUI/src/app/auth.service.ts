@@ -3,25 +3,33 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ProjectService } from './services/project.service';
 import { environment } from '../environments/environment.development';
+import { UserPermissionService } from './services/user-permission.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private user: { name: string; role: string } | null = null;
+  private user: { name: string; role: string }  | null = null;
 
-  constructor(private cookieService: CookieService, private router: Router,private projectService: ProjectService) {}
+  constructor(
+    private cookieService: CookieService, 
+    private router: Router,
+    private projectService: ProjectService, 
+    private userPermissionService: UserPermissionService
+  ) {}
 
   private isCookieEmpty(): boolean {
-    return document.cookie === '';
+    // return document.cookie === '';
+    let user  = this.cookieService.get('_user');
+    return user ? true : false;
   }
 
   // Simulating user login
   login(user: { name: string; role: string }) {
-    if (this.isCookieEmpty()) {
+    // if (this.isCookieEmpty()) {
       this.cookieService.set('_user', JSON.stringify(user));
       this.user = user;
-    }
+    // }
   }
 
   // Simulating user logout
@@ -45,6 +53,7 @@ export class AuthService {
           this.projectService.clearMapData();
           this.projectService.clearIsMapSet();
           this.projectService.clearAllUserState();
+          this.userPermissionService.deletePermissions();
           console.log('Logging out...');
           this.router.navigate(['/']);
         }
@@ -70,5 +79,14 @@ export class AuthService {
     }
     return this.user;
   }
+
+  // Getting permissions Data
+  getPermissions() {
+    // return this.permissionsSource.getValue(); // Get current permissions
+    // return this.permissions;
+
+   
+  }
+
 
 }

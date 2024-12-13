@@ -13,16 +13,16 @@ import { formatDate } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { RobotParametersPopupComponent } from '../robot-parameters-popup/robot-parameters-popup.component';
 import { environment } from '../../environments/environment.development';
-import { ProjectService } from '../services/project.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { EnvmapComponent } from '../envmap/envmap.component';
 import { MessageService } from 'primeng/api';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { FormBuilder } from '@angular/forms';
-import { v4 as uuid } from 'uuid';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from '../auth.service';
 import { SessionService } from '../services/session.service';
+import { ProjectService } from '../services/project.service';
+import { UserPermissionService } from '../services/user-permission.service';
 
 interface Poll {
   ip: string;
@@ -80,7 +80,7 @@ export class ConfigurationComponent implements AfterViewInit {
   cookieValue: any;
   userManagementData:any;
   username: string | null = null;
-  userrole                                                : string | null = null;
+  userrole: string | null = null;
 
 
   // formData: any;
@@ -139,6 +139,7 @@ export class ConfigurationComponent implements AfterViewInit {
     private sessionService: SessionService,
     private authService: AuthService,
     private cookieService: CookieService,
+    private userPermissionService: UserPermissionService
   ) {
     this.filteredEnvData = [...this.EnvData];
     // this.filteredRobotData = [...this.robotData];
@@ -146,47 +147,36 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   async ngOnInit() {
-    console.log('ngon init triggered');
-    this.userManagementData=JSON.parse(this.projectService.userManagementSericeGet());
-    console.log(this.userManagementData.permissions.configurationPermissions,'--configuration permissions')
+    // const rawData = this.projectService.userManagementServiceGet();
 
-    if(this.userManagementData?.permissions?.configuraionPermissions){
-      this.configurationPermissions = this.userManagementData.permissions.configurationPermissions;
-      console.log('Config Permissions --', this.userManagementData.configuraionPermissions)
-    }else {
-      console.error('Configuration permissions not found in response');
-      this.configurationPermissions = null; // Fallback for safety
-    }
-
-    if (this.userManagementData?.permissions?.configurationPermissions) {
-      this.configurationPermissions = this.userManagementData.permissions.configurationPermissions;
+    this.userManagementData = this.userPermissionService.getPermissions();
     
-      // Extract specific states for "Environment"
-      this.environmentPermissions = {
-        read: this.configurationPermissions.environment.read ?? false,
-        view: this.configurationPermissions.environment.view ?? false,
-        edit: this.configurationPermissions.environment.edit ?? false,
-      };
-    
-      console.log('Environment Permissions:', this.environmentPermissions);
-    } else {
-      console.error('Configuration permissions not found in response');
-      this.configurationPermissions = null; // Fallback for safety
-      this.environmentPermissions = { read: false, view: false, edit: false }; // Default permissions
-
+    if(this.userManagementData?.configurationPermissions){
+      this.configurationPermissions = this.userManagementData.configurationPermissions;
+      let tabs = ['environment','robot','fleet'];
+      let UITabs = ['Environment','Robot','Fleet'];
+      let activeButtons = ['Environment','robot','fleet'];
+      let i = 0;
+      for(let tab of tabs){
+        // console.log(this.configurationPermissions[tab].enabled);
+        if(this.configurationPermissions[tab].enabled){
+          this.activeHeader = UITabs[i];
+          this.setActiveButton(activeButtons[i]);
+          break;
+        }
+        i++;
+      }
     }
+    // console.log(this.userManagementData.configurationPermissions)
+    
+    // Extract specific states for "Environment"
+    this.environmentPermissions = {
+      read: this.configurationPermissions.environment.read ?? false,
+      view: this.configurationPermissions.environment.view ?? false,
+      edit: this.configurationPermissions.environment.edit ?? false,
+    };
 
     // this.initializeDefaultButton()
-
-
-    
-
-    
-
-    
-
-
-
 
     const user = this.authService.getUser();
     if (user) {
@@ -630,7 +620,7 @@ export class ConfigurationComponent implements AfterViewInit {
   }
 
   setPaginatedData() {
-    console.log('paginated data called');
+    // console.log('paginated data called');
     if (this.currentTable === 'Environment') {
       const pageSize = this.paginator?.pageSize || 5; // Default pageSize to 5 if paginator is not yet available
       const pageIndex = this.paginator?.pageIndex || 0; // Default pageIndex to 0 (first page)

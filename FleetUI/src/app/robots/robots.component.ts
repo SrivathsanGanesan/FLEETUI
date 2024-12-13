@@ -37,8 +37,8 @@ export interface Robot {
   robotutilization: string;
   cpuutilization: string;
   memory: string;
-  totalPicks: string;
-  totalDrops: string;
+  PickCount: string;
+  DropCount: string;
   SignalStrength: string;
   error: number;
   batteryPercentage: number;
@@ -93,7 +93,7 @@ export class RobotsComponent implements OnInit {
   async ngOnInit() {
     this.mapDetails = this.projectService.getMapData();
     if (!this.mapDetails) return;
-    console.log(this.liveRobos,'====================================')
+    // console.log(this.liveRobos,'====================================')
     this.updateLiveRoboInfo();
     let grossFactSheet = await this.fetchAllRobos();
     this.robots = grossFactSheet.map((robo) => {
@@ -105,13 +105,13 @@ export class RobotsComponent implements OnInit {
       return robo;
     });
 
-            // Subscribe to the isFleet$ observable
-            const fleetSub = this.isFleetService.isFleet$.subscribe((status: boolean) => {
-              this.isFleet = status; // Update the value whenever it changes
-              console.log('Received fleet statekjxhvjldlvkdlvk:', this.isFleet); // For debugging
-            });
+    // Subscribe to the isFleet$ observable
+    const fleetSub = this.isFleetService.isFleet$.subscribe((status: boolean) => {
+      this.isFleet = status; // Update the value whenever it changes
+      console.log('Received fleet statekjxhvjldlvkdlvk:', this.isFleet); // For debugging
+    });
 
-            this.subscriptions.push(fleetSub);
+    this.subscriptions.push(fleetSub);
 
     this.filteredRobots = this.robots;
     this.initialRoboInfos = this.robots;
@@ -191,9 +191,9 @@ export class RobotsComponent implements OnInit {
           robo.temperature = liveRobo.robotTemperature;
           robo.networkstrength = liveRobo.NetworkSpeed;
           robo.memory = liveRobo.Memory;
-          robo.totalPicks = liveRobo.PickCount;
+          robo.PickCount = liveRobo.PickCount;
           robo.cpuutilization=liveRobo.CPU_Utilization;
-          robo.totalDrops= liveRobo.DropCount;
+          robo.DropCount= liveRobo.DropCount;
           // robo.error = liveRobo.robotError;
           robo.currentspeed = liveRobo["Robot Speed"];
           robo.averagespeed = liveRobo["Robot Speed"];
