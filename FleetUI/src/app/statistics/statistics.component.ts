@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment.development';
 import { ProjectService } from '../services/project.service';
+import { log } from 'console';
 
 @Component({
   selector: 'app-statistics',
@@ -68,7 +69,7 @@ export class StatisticsComponent {
     this.router.navigate(['/statistics/operation']); // Default to operation view
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) return;
-    // await this.getGrossStatus(); // no need anymore..
+    await this.getGrossStatus();
     this.operationPie = await this.fetchTasksStatus();
     await this.getTaskNotifications();
     this.taskStatus_interval = setInterval(async () => {
@@ -181,12 +182,14 @@ export class StatisticsComponent {
     // });
     // if (throughputData.systemThroughput)
     //   this.statisticsData.systemThroughput = throughputData.systemThroughput;
-    // let uptime = await this.fetchFleetStatus('system-uptime', { projectId: projectId });
-    // if (uptime.systemUptime){
-    //   this.statisticsData.systemUptime = uptime.systemUptime;}
-    // else{
-    //   this.statisticsData.systemUptime = "Loading...";
-    // }
+    // console.log("hey",this.statisticsData.systemThroughput);
+    
+    let uptime = await this.fetchFleetStatus('system-uptime', { projectId: projectId });
+    if (uptime.systemUptime){
+      this.statisticsData.systemUptime = uptime.systemUptime;}
+    else{
+      this.statisticsData.systemUptime = "Loading...";
+    }
     // await this.fetchFleetStatus('success-rate', { // yet to take..
     //   mapId: mapId,
     // });
@@ -251,8 +254,8 @@ export class StatisticsComponent {
       });
       let average_responsiveness = (tot_responsiveness / tasks.length) * 1000;
       this.statisticsData.responsiveness = `${
-        Math.round(average_responsiveness)
-      } ms`;
+        Math.round(average_responsiveness/1000)
+      } s`;
       console.log("Responsiveness",Math.round(average_responsiveness));
 
       return fleet_tasks;
@@ -368,9 +371,11 @@ export class StatisticsComponent {
   }
 
   updateSysThroughput(data: any) {
+    // console.log("nan tha",data[data.length - 1]);
     if (data.length)
       this.statisticsData.systemThroughput = data[data.length - 1];
-    else this.statisticsData.systemThroughput = 0;
+    else this.statisticsData.systemThroughput = "Loading...";
+    
   }
 
   /* ngOnDestroy() {

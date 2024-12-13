@@ -384,6 +384,7 @@ export class ChartTimelineComponent implements OnInit {
   }
 
   plotChart(seriesName: string, data: any[], time: any[], limit: number = 12) {
+    // console.log(data);    
     const limitedData = data.length > limit ? data.slice(-limit) : data;
     const limitedTime = time.length > limit ? time.slice(-limit) : time;
 
@@ -688,32 +689,45 @@ export class ChartTimelineComponent implements OnInit {
       const data = await this.fetchChartData( 'memory', this.currentFilter, '', '' );
       // console.log(data,"======network=====")
       if (data.memoryStat) {
-        let len = (data.memoryStat.Memory)?.length-1;
-        if(this.selectedType !== 'Overall') this.memoryArr = data.memoryStat.Memory[len]['Network'];
-        else
-          this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
-            return stat ? stat.cummlativeMemory : 0;
-          });
-          this.memoryXaxisSeries = data.memoryStat.Memory.map(
-            (stat: any, index: any) => (index += 1)
-          );      }
-          this.plotChart('Memory', this.memoryArr, this.memoryXaxisSeries, 30);
-          return;
-    }
-
-    if (this.memoryTimeInterval) return;
-    const data = await this.fetchChartData( 'memory', this.currentFilter, '', '' );
-    if (data.memoryStat && data.memoryStat.Memory) {
-      let len = (data.memoryStat.Memory)?.length-1;
-      if(this.selectedType !== 'Overall')
-        this.memoryArr = data.memoryStat.Memory[len]['Network'];
-      else
         this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
-          return stat ? stat.cummlativeMemory : 0;
+          let res;
+          for (let key in stat) {
+            res = stat[key];
+            // console.log(key, '-----------------');
+          }
+          return res;
         });
         this.memoryXaxisSeries = data.memoryStat.Memory.map(
           (stat: any, index: any) => (index += 1)
-        );    }
+        );
+      }
+      this.plotChart('Memory', this.memoryArr, this.memoryXaxisSeries, 30);
+      return;
+    }
+
+    if (this.memoryTimeInterval) return;
+
+    const data = await this.fetchChartData(
+      'memory',
+      this.currentFilter,
+      '',
+      ''
+    );
+    console.log(data,'=======memory=======')
+    if (data.memoryStat) {
+      this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
+        let res;
+        for (let key in stat) {
+          res = stat[key];
+          // console.log(key, '-----------------');
+        }
+        return res;
+      });
+      this.memoryXaxisSeries = data.memoryStat.Memory.map(
+        (stat: any, index: any) => (index += 1)
+      );
+    }
+    this.plotChart('Memory', this.memoryArr, this.memoryXaxisSeries);
 
 
       this.plotChart('Memory', this.memoryArr, this.memoryXaxisSeries);
@@ -725,14 +739,17 @@ export class ChartTimelineComponent implements OnInit {
         ''
       );
       if (data.memoryStat) {
-        let len = (data.memoryStat.Memory)?.length-1;
-        if(this.selectedType !== 'Overall')
-          this.memoryArr = data.memoryStat.Memory[len]['Network'];
-        else
-          this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
-            return stat ? stat.cummulativeNetwork : 0;
-          });
-        this.memoryXaxisSeries = data.memoryStat.Memory.map( (stat: any, index: any) => (index += 1) );
+        this.memoryArr = data.memoryStat.Memory.map((stat: any) => {
+          let res;
+          for (let key in stat) {
+            res = stat[key];
+            // console.log(key, '-----------------');
+          }
+          return res;
+        });
+        this.memoryXaxisSeries = data.memoryStat.Memory.map(
+          (stat: any, index: any) => (index += 1)
+        );
       }
       this.plotChart('Memory', this.memoryArr, this.memoryXaxisSeries);
     }, 1000 * 2);

@@ -85,7 +85,7 @@ const throughPut_starvation = async (req, res, next) => {
       return res.status(500).json({ msg: "map not found!", map: null });
 
     // const mapData = await Map.findOne({ _id: mapId });
-    let fleetStarvation = await getFleetSeriesData( timeStamp1, timeStamp2, "get_throughput_starvationRate" );
+    let fleetStarvation = await getFleetSeriesData( timeStamp1, timeStamp2,0,  "get_throughput_starvationRate" );
 
     if (fleetStarvation.hasOwnProperty("starvationRate"))
       return res.status(200).json({
@@ -114,7 +114,7 @@ const throughPut_pickAccuracy = async (req, res, next) => {
       return res.status(500).json({ msg: "map not found!", map: null });
 
     // const mapData = await Map.findOne({ _id: mapId });
-    let fleetThroughput = await getFleetSeriesData( timeStamp1, timeStamp2, "get_pickAccuracy" );
+    let fleetThroughput = await getFleetSeriesData( timeStamp1, timeStamp2,0, "get_pickAccuracy" );
 
     return res.status(200).json({
       msg: "data sent",
@@ -141,6 +141,7 @@ const throughPut_errorRate = async (req, res, next) => {
     let fleetErrRate = await getFleetSeriesData(
       timeStamp1,
       timeStamp2,
+      0,
       "get_throughput_errorRate"
     );
 
