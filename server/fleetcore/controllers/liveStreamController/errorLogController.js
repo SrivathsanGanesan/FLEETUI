@@ -31,6 +31,7 @@ const getTaskErrLogs = async (req, res) => {
     };
 
     let FleetTaskErrLogs = await getFleetTaskErrLogs( "get_tasks_errors", bodyData );
+    
     // console.log(FleetTaskErrLogs)
     if(FleetTaskErrLogs && FleetTaskErrLogs.hasOwnProperty('tasks'))
       return res.status(200).json({taskErr : FleetTaskErrLogs.tasks,  map: true, msg: "data sent"});

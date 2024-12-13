@@ -21,7 +21,7 @@ export class AuthService {
   private isCookieEmpty(): boolean {
     // return document.cookie === '';
     let user  = this.cookieService.get('_user');
-    return user ? true : false;
+    return user ? false : true;
   }
 
   // Simulating user login
@@ -70,12 +70,10 @@ export class AuthService {
   }
 
   // Getting the user data
-  getUser(): { name: string; role: string } | null {
-    if (!this.user && !this.isCookieEmpty()) {
+  getUser(): any { // { name: string; role: string } | null
+    if (!this.isCookieEmpty()) { // !this.user && 
       const cookieValue = this.cookieService.get('_user');
-      if (cookieValue) {
-        this.user = JSON.parse(cookieValue);
-      }
+      this.user = cookieValue ? JSON.parse(cookieValue) : null;
     }
     return this.user;
   }
@@ -84,8 +82,6 @@ export class AuthService {
   getPermissions() {
     // return this.permissionsSource.getValue(); // Get current permissions
     // return this.permissions;
-
-   
   }
 
 
