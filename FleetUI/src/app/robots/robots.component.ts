@@ -108,7 +108,6 @@ export class RobotsComponent implements OnInit {
     // Subscribe to the isFleet$ observable
     const fleetSub = this.isFleetService.isFleet$.subscribe((status: boolean) => {
       this.isFleet = status; // Update the value whenever it changes
-      console.log('Received fleet statekjxhvjldlvkdlvk:', this.isFleet); // For debugging
     });
 
     this.subscriptions.push(fleetSub);
