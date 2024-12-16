@@ -142,6 +142,7 @@ export class DashboardComponent implements AfterViewInit {
   isCharging: boolean = false;
   shouldAnimate: boolean = true; // Control the animation
   svgFillColor: string = '#FFA3A3'; // Default color
+  rackSize: number = 25;
   get statusColor(): string {
     if (this.isMoving) {
       return 'green';
@@ -728,6 +729,7 @@ export class DashboardComponent implements AfterViewInit {
 
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
+      // this.plotRack(ctx, node.nodePosition.x - (this.rackSize/2), transformedY - (this.rackSize/2), this.rackSize, 'red');
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
 
@@ -1134,6 +1136,7 @@ export class DashboardComponent implements AfterViewInit {
     if (!data.map) return;
     mapData = data.map;
     this.ratio = data.map.mpp;
+    this.rackSize = 1 / this.ratio; // to get the size in pixels.. to plot rack!
     this.origin = {
       x: mapData.origin.x,
       y: mapData.origin.y,
@@ -1643,7 +1646,13 @@ export class DashboardComponent implements AfterViewInit {
         });
     }
   }
+  plotRack(ctx: CanvasRenderingContext2D, x: number, y: number, size : number = this.rackSize, color: string = "black"){ // #000
+    // Set the fill color for the square
+   ctx.fillStyle = color;
 
+   // Draw the square at the given x, y position with the given size
+   ctx.fillRect(x, y, size, size);
+ }
   drawNodesAndEdges(
     ctx: CanvasRenderingContext2D,
     img: HTMLImageElement,
