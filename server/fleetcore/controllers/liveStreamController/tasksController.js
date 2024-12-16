@@ -43,6 +43,7 @@ const getFleetTask = async (endpoint, bodyData) => {
 
   return await response.json();
 };
+
 const taskOperation = async (endpoint, bodyData) => {
   let response = await fetch(
     `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT2}/fms/amr/${endpoint}`,
@@ -59,6 +60,7 @@ const taskOperation = async (endpoint, bodyData) => {
 
   return await response.json();
 };
+
 const getTasks = async (req, res) => {
   const { mapId, timeStamp1, timeStamp2 } = req.body;
   try {
@@ -70,7 +72,7 @@ const getTasks = async (req, res) => {
       timeStamp1: timeStamp1,
       timeStamp2: timeStamp2,
     };
-    let tasks = await getFleetTask("get_tasks_list", bodyData);
+    let tasks = await getFleetTask("get_tasks_list", bodyData); // make a look at here..
     return res.status(200).json({
       msg: "data sent",
       tasks: tasks,
@@ -97,7 +99,8 @@ const getCurrTasksActivities = async (req, res) => {
 
     let tasks = await getFleetTask("get_tasks_list", bodyData);
 
-    if (!("tasks" in tasks))
+    if (tasks === undefined || !tasks.hasOwnProperty("tasks"))
+      // (!("tasks" in tasks))
       return res
         .status(200)
         .json({ msg: "data sent, only with default columns", tasks: null });
@@ -133,9 +136,10 @@ const getRobotUtilization = async (req, res) => {
 
     // Handle cases where the response does not contain the expected data
     if (!("robots" in utilizationData))
-      return res
-        .status(200)
-        .json({ msg: "data sent, no utilization data available", robots: null });
+      return res.status(200).json({
+        msg: "data sent, no utilization data available",
+        robots: null,
+      });
 
     // Format the robot utilization data
     let formattedUtilization = utilizationData.robots.map((robot) => {
@@ -169,19 +173,19 @@ const cancelTask = async (req, res) => {
 
     // Prepare body data for the API call
     let bodyData = {
-      "taskId": taskId
+      taskId: taskId,
     };
 
     // Fetch robot utilization data from the fleet server
     let cancel_Task = await taskOperation("cancelTask", bodyData);
     // console.log(taskId,cancel_Task);
-    if(cancel_Task.errorCode===4006 || cancel_Task.errorCode!==1000)
+    if (cancel_Task.errorCode === 4006 || cancel_Task.errorCode !== 1000)
       return res.status(200).json({
         msg: cancel_Task.messageText,
         response: cancel_Task.responseId,
         isTaskCancelled: false,
       });
-    if(cancel_Task.errorCode===1000)
+    if (cancel_Task.errorCode === 1000)
       return res.status(200).json({
         msg: "Task Cancelled",
         isTaskCancelled: true,
@@ -190,15 +194,18 @@ const cancelTask = async (req, res) => {
     console.log("error occurred : ", err);
     if (err.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
-    res.status(500).json({isTaskCancelled: false, opt: "failed", error: err });
+    res.status(500).json({ isTaskCancelled: false, opt: "failed", error: err });
   }
 };
 
 // Export the function along with others
-module.exports = { getFleetTask, getTasks, getCurrTasksActivities, getRobotUtilization ,cancelTask};
-
-
-// module.exports = { getFleetTask, getTasks, getCurrTasksActivities };
+module.exports = {
+  getFleetTask,
+  getTasks,
+  getCurrTasksActivities,
+  getRobotUtilization,
+  cancelTask,
+};
 
 // Needed one!
 /* const mapData = await Map.findOneAndUpdate(
