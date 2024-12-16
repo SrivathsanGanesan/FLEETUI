@@ -523,8 +523,8 @@ export class EnvmapComponent implements AfterViewInit {
       this.robotImages['robotA'] = new Image();
       this.robotImages['robotA'].src = 'assets/CanvasRobo/robotA.svg';
 
-      this.robotImages['robotB'] = new Image();
-      this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
+      this.robotImages['robot0'] = new Image();
+      this.robotImages['robot0'].src = 'assets/CanvasRobo/Robot/Robo0.svg';
       // Initialize assets and robots
       this.assetImages['docking'] = new Image();
       this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
