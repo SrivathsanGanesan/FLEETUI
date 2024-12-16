@@ -8,7 +8,6 @@ import { env } from 'node:process';
 import { MessageService } from 'primeng/api';
 import { UserPermissionService } from '../services/user-permission.service';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,8 +23,8 @@ export class LoginComponent {
     private router: Router,
     private authService: AuthService,
     private projectService: ProjectService, //private cookieService: CookieService
-    private UserService:ProjectService,
-    private userPermissionService:UserPermissionService,
+    private UserService: ProjectService,
+    private userPermissionService: UserPermissionService,
     private messageService: MessageService
   ) {}
 
@@ -62,37 +61,72 @@ export class LoginComponent {
 
     if (!username && !password && !userRole) {
       this.errorMessage = '*Enter Username, Password and Select User Role';
-      this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: 'Enter Username, Password and Select User Role', life: 4000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Authencation Failed',
+        detail: 'Enter Username, Password and Select User Role',
+        life: 4000,
+      });
       return;
     }
     if (!username && !password) {
       this.errorMessage = '*Enter Username and Password';
-      this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: 'Enter Username and Password', life: 4000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Authencation Failed',
+        detail: 'Enter Username and Password',
+        life: 4000,
+      });
       return;
     }
     if (!password && !userRole) {
       this.errorMessage = '*Enter Password and Select User Role';
-      this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: 'Enter Password and Select User Role', life: 4000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Authencation Failed',
+        detail: 'Enter Password and Select User Role',
+        life: 4000,
+      });
       return;
     }
     if (!userRole && !username) {
       this.errorMessage = '*Select User Role and Enter Username';
-      this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: 'Select User Role and Enter Username', life: 4000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Authencation Failed',
+        detail: 'Select User Role and Enter Username',
+        life: 4000,
+      });
       return;
     }
     if (!userRole) {
       this.errorMessage = '*Select User Role ';
-      this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: 'Select User Role ', life: 4000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Authencation Failed',
+        detail: 'Select User Role ',
+        life: 4000,
+      });
       return;
     }
     if (!username) {
       this.errorMessage = '*Enter Username';
-      this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: 'Enter Username', life: 4000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Authencation Failed',
+        detail: 'Enter Username',
+        life: 4000,
+      });
       return;
     }
     if (!password) {
       this.errorMessage = '*Enter Password ';
-      this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: 'Enter Password', life: 4000 });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Authencation Failed',
+        detail: 'Enter Password',
+        life: 4000,
+      });
       return;
     }
 
@@ -118,7 +152,12 @@ export class LoginComponent {
         if (res.status === 404 || res.status === 401) {
           this.errorMessage =
             "*Wrong password or user with this role doesn't exist";
-            this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: "Wrong password or user with this role doesn't exist", life: 4000 });
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Authencation Failed',
+            detail: "Wrong password or user with this role doesn't exist",
+            life: 4000,
+          });
         }
         return res.json();
         // throw new Error('Login failed');
@@ -126,14 +165,11 @@ export class LoginComponent {
       .then((data) => {
         // console.log(data.user.projects);
         if (data.user) {
-          // console.log(data.user.id,'----data id')
           let { permissions } = data.user;
           this.userPermissionService.setPermissions(permissions);
-          // console.log(this.userPermissionService.getPermissions());
-          
           if (data.user.role === 'User') {
-            console.log('user initilalized')
-         
+            // console.log('user initilalized')
+
             if (!data.project) {
               alert('No project has been assigned to this user.');
               return;
@@ -150,7 +186,14 @@ export class LoginComponent {
             };
             this.projectService.setSelectedProject(project_data);
             this.projectService.setProjectCreated(true);
-            this.messageService.add({ severity: 'success', summary: `Welcome ${this.projectService.setSelectedProject(data.project)}`, detail: 'Authentication Success', life: 4000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: `Welcome ${this.projectService.setSelectedProject(
+                data.project
+              )}`,
+              detail: 'Authentication Success',
+              life: 4000,
+            });
             setTimeout(() => {
               this.router.navigate(['/dashboard']);
             }, 100);
@@ -160,18 +203,26 @@ export class LoginComponent {
             name: data.user.name,
             role: data.user.role,
           });
-          this.messageService.add({ severity: 'success', summary: `Welcome`, detail: 'Authentication Success', life: 4000 });
+          this.messageService.add({
+            severity: 'success',
+            summary: `Welcome`,
+            detail: 'Authentication Success',
+            life: 4000,
+          });
           this.router.navigate(['project_setup']);
         }
       })
       .catch((err) => {
         console.error(err);
         this.errorMessage = 'Login failed. Please try again.';
-        this.messageService.add({ severity: 'error', summary: 'Authencation Failed', detail: "Login failed. Please try again", life: 4000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Authencation Failed',
+          detail: 'Login failed. Please try again',
+          life: 4000,
+        });
       });
   }
-
-
 
   onContainerClick(event: Event) {
     const target = event.currentTarget as HTMLElement;

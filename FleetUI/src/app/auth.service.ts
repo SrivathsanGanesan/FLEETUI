@@ -9,37 +9,28 @@ import { UserPermissionService } from './services/user-permission.service';
   providedIn: 'root',
 })
 export class AuthService {
-  private user: { name: string; role: string }  | null = null;
+  private user: { name: string; role: string } | null = null;
 
   constructor(
-    private cookieService: CookieService, 
+    private cookieService: CookieService,
     private router: Router,
-    private projectService: ProjectService, 
+    private projectService: ProjectService,
     private userPermissionService: UserPermissionService
   ) {}
 
   private isCookieEmpty(): boolean {
-    // return document.cookie === '';
-    let user  = this.cookieService.get('_user');
+    let user = this.cookieService.get('_user');
     return user ? false : true;
   }
 
   // Simulating user login
   login(user: { name: string; role: string }) {
     // if (this.isCookieEmpty()) {
-      this.cookieService.set('_user', JSON.stringify(user));
-      this.user = user;
+    this.cookieService.set('_user', JSON.stringify(user));
+    this.user = user;
     // }
   }
 
-  // Simulating user logout
-  // logout() {
-  //   if (!this.isCookieEmpty()) {
-  //     this.cookieService.delete('_user', '/');
-  //     // document.cookie = '_user=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
-  //     this.user = null;
-  //   }
-  // }
   logout() {
     localStorage.removeItem('timerStartTime');
     localStorage.removeItem('lastSession');
@@ -61,8 +52,6 @@ export class AuthService {
       .catch((err) => console.log(err));
   }
 
-
-
   // Checking if the user is logged in
   isLoggedIn(): boolean {
     const cookieValue = this.cookieService.get('_user');
@@ -70,8 +59,10 @@ export class AuthService {
   }
 
   // Getting the user data
-  getUser(): any { // { name: string; role: string } | null
-    if (!this.isCookieEmpty()) { // !this.user && 
+  getUser(): any {
+    // { name: string; role: string } | null
+    if (!this.isCookieEmpty()) {
+      // !this.user &&
       const cookieValue = this.cookieService.get('_user');
       this.user = cookieValue ? JSON.parse(cookieValue) : null;
     }
@@ -83,6 +74,4 @@ export class AuthService {
     // return this.permissionsSource.getValue(); // Get current permissions
     // return this.permissions;
   }
-
-
 }
