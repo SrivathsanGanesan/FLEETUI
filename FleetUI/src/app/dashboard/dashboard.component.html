@@ -402,7 +402,7 @@
     <div class="FloorSelector" *ngIf="ONBtn"></div>
 
     <!-- Canvas Options (Zoom, Pan, Capture, etc.) -->
-    <div class="CanvasOptions">
+    <div class="CanvasOptions" >
       <span class="empty" (click)="toggleOptions()">
         <img src="../../assets/CanvasOptions/setting.svg" />
       </span>
@@ -482,6 +482,20 @@
           />
           <span class="tooltiptext">Map Option</span>
         </div>
+        <div class="tooltip">
+          <img
+            src="../../assets/CanvasOptions/Model.svg"
+            class="ModelCanvas"
+          />
+          <span class="tooltiptext">Show Path</span>
+        </div>
+        <div class="tooltip">
+          <img
+            src="../../assets/CanvasOptions/Model.svg"
+            class="ModelCanvas"
+          />
+          <span class="tooltiptext">Heat Map</span>
+        </div>
       </div>
       <!-- <div class="tooltip">
         <img src="../../assets/CanvasOptions/live.svg" class="ModelCanvas" (click)="fetchlive()" />
@@ -543,5 +557,6 @@
   <button (click)="initializeRobo()">
     {{ updatedrobo?.isInitialized ? "Release Robot" : "Initialize Robot" }}
   </button>
+  <button>Show Path</button>
   <button (click)="cancelAction()">Cancel</button>
 </div>

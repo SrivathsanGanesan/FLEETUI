@@ -131,11 +131,7 @@ canvas {
   transform: translateX(0);
 }
 
-/* .CanvasOptions {
-  width: 450px;
-  background-color: rgb(255, 255, 255);
-  box-shadow: 0 3px 6px #ff7373;
-} */
+
 
 .tooltip {
   position: relative;

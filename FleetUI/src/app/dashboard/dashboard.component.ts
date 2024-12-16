@@ -1575,7 +1575,7 @@ async onInitMapImg() {
     const canvasOptions = document.querySelector('.CanvasOptions') as HTMLElement;
 
     if (this.isOptionsExpanded) {
-      canvasOptions.style.width = '450px';
+      canvasOptions.style.width = '570px';
       canvasOptions.style.backgroundColor = 'rgb(255, 255, 255)';
       canvasOptions.style.boxShadow = '0 3px 6px #ff7373';
     } else {
