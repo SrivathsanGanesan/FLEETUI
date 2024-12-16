@@ -721,6 +721,7 @@ export class ConfigurationComponent implements AfterViewInit {
     // Deselect if the same map is clicked again
     if (this.selectedMap?.id === map.id) {
       this.projectService.clearMapData();
+      this.projectService.setInitializeMapSelected(false); // confirm it..
       this.projectService.setIsMapSet(false);
       if (!this.EnvData.length) return;
       this.selectedMap = this.EnvData[0];
@@ -1504,6 +1505,7 @@ export class ConfigurationComponent implements AfterViewInit {
         if (item.id === this.projectService.getMapData().id) {
           this.projectService.setIsMapSet(false);
           this.projectService.clearMapData();
+          this.projectService.setInitializeMapSelected(false); // confirm it.
         }
 
         if (this.currentTable === 'Environment') {
@@ -1520,7 +1522,7 @@ export class ConfigurationComponent implements AfterViewInit {
         // console.log('line 1438');
         this.ngOnInit();
         this.reloadTable();
-        console.log(this.paginatedData, 'page data');
+        // console.log(this.paginatedData, 'page data');
         if (this.paginatedData.length == 0) {
           this.projectService.setInitializeMapSelected(false);
         }
