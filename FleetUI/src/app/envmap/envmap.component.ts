@@ -731,7 +731,10 @@ export class EnvmapComponent implements AfterViewInit {
         this.nodeDetails.dock_node = true;
         break;
     }
-    if (this.selectedNodeType === 'Dock' && this.selectedNode) {
+    if (
+      (this.selectedNodeType === 'Dock' || this.selectedNodeType === 'Charge') &&
+      this.selectedNode
+    ) {
       this.fetchConnectedNodes(this.selectedNode.nodeId);
     } else {
       this.connectedNodes = []; // Clear connected nodes if not a Dock node

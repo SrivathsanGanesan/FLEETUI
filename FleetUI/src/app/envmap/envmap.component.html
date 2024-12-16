@@ -377,7 +377,7 @@
                     </select>
                   </div>
                   <div>
-                  <div class="node1-sub" *ngIf="selectedNodeType === 'Dock'">
+                  <div class="node1-sub" *ngIf="selectedNodeType === 'Dock' || selectedNodeType === 'Charge'">
                     <label for="predockPoseDropdown" class="label">Predock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedPredockPose">
                       <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
@@ -385,7 +385,7 @@
                       </option>
                     </select>
                   </div>
-                  <div class="node1-sub" *ngIf="selectedNodeType === 'Dock'">
+                  <div class="node1-sub" *ngIf="selectedNodeType === 'Dock' || selectedNodeType === 'Charge'">
                     <label for="predockPoseDropdown" class="label">Undock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedUndockPose">
                       <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
