@@ -30,14 +30,14 @@ interface Node {
   nodeDescription: string;
   released: boolean;
   nodePosition: { x: number; y: number; orientation: number };
-  quaternion:{x:number; y: number; z: number; w: number};
+  quaternion: { x: number; y: number; z: number; w: number };
   actions: any[];
   intermediate_node: boolean;
   Waiting_node: boolean;
   charge_node: boolean;
   dock_node: boolean;
-  pre_dockNodeId:number|null;
-  Un_dockNodeId:number|null;
+  pre_dockNodeId: number | null;
+  Un_dockNodeId: number | null;
 }
 interface Edge {
   edgeId: string; //Unique edge identification
@@ -74,7 +74,7 @@ interface Zone {
 }
 interface Robo {
   roboDet: any;
-  pos : {x : number, y : number, orientation : number}
+  pos: { x: number; y: number; orientation: number };
 }
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -100,7 +100,7 @@ enum ZoneType {
   selector: 'app-envmap',
   templateUrl: './envmap.component.html',
   styleUrls: ['./envmap.component.css'],
-  preserveWhitespaces: true
+  preserveWhitespaces: true,
 })
 export class EnvmapComponent implements AfterViewInit {
   @Input() EnvData: any[] = [];
@@ -108,22 +108,25 @@ export class EnvmapComponent implements AfterViewInit {
   @Input() currEditMapDet: any | null = null;
   @Output() currEditMapChange = new EventEmitter<any>();
   @Input() addEnvToEnvData!: (data: any) => void;
-  @Output() refreshTable = new EventEmitter<void>();  // Add this
+  @Output() refreshTable = new EventEmitter<void>(); // Add this
   @Output() closePopup = new EventEmitter<void>();
   @Output() newEnvEvent = new EventEmitter<any>();
-  @Output() save = new EventEmitter<void>();//emit the save function
-  @ViewChild('imageCanvas', { static: false }) imageCanvas!: ElementRef<HTMLCanvasElement>;
+  @Output() save = new EventEmitter<void>(); //emit the save function
+  @ViewChild('imageCanvas', { static: false })
+  imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('pixTooltip') pixTooltip!: ElementRef;
-  @ViewChild('overlayCanvas', { static: false }) overlayCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('imagePopupCanvas', { static: false }) imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('OriginPopupCanvas', { static: false }) OriginPopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('overlayCanvas', { static: false })
+  overlayCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('imagePopupCanvas', { static: false })
+  imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('OriginPopupCanvas', { static: false })
+  OriginPopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
   @ViewChild('xInput') xInput!: ElementRef<HTMLInputElement>;
   @ViewChild('yInput') yInput!: ElementRef<HTMLInputElement>;
   @ViewChild('nodeDetailsPopup', { static: false })
   nodeDetailsPopup!: ElementRef<HTMLDivElement>;
   @ViewChild('tooltip') tooltip!: ElementRef<HTMLDivElement>;
-
 
   projData: any;
   form: FormData | null = null;
@@ -142,7 +145,7 @@ export class EnvmapComponent implements AfterViewInit {
   public assets: asset[] = []; // Org_assets
   public zones: Zone[] = []; // Org_zones
   robos: Robo[] = []; // Org_robos
-  selectedAction: string| null = null;
+  selectedAction: string | null = null;
   validationError: string | null = null;
   savedEdge: Edge | null = null; // This will hold the saved edge details
   rightClickEnabled: boolean = false; // Control right-click functionality
@@ -171,7 +174,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   isNodeDetailsPopupVisible = false; // Control popup visibility
   public ratio: number | null = null; // Store the resolution ratio (meters per pixel)
-  origin : {x : number, y : number, w : number} = { x : 0, y : 0, w : 0 };
+  origin: { x: number; y: number; w: number } = { x: 0, y: 0, w: 0 };
   plottingMode: 'single' | 'multi' | null = null;
   isPlottingEnabled: boolean = false;
   isDrawing: boolean = false;
@@ -180,7 +183,7 @@ export class EnvmapComponent implements AfterViewInit {
   isOptionsMenuVisible = false;
   isCalibrationLayerVisible = false;
   showIntermediateNodesDialog: boolean = false;
-  numberOfIntermediateNodes: any ;
+  numberOfIntermediateNodes: any;
   firstNode: Node | null = null;
   secondNode: Node | null = null;
   robotImages: { [key: string]: HTMLImageElement } = {};
@@ -221,7 +224,7 @@ export class EnvmapComponent implements AfterViewInit {
     intermediate_node: false,
     waiting_node: false,
     charge_node: false,
-    dock_node: false
+    dock_node: false,
   };
   isMoveActionFormVisible: boolean = true;
   isDockActionFormVisible: boolean = true;
@@ -237,7 +240,7 @@ export class EnvmapComponent implements AfterViewInit {
   isEnterButtonVisible = false;
   isCanvasInitialized = false;
   showError: boolean = false; // Flag to show error message
-  direction: 'uni' | 'bi' |''| null = '';
+  direction: 'uni' | 'bi' | '' | null = '';
   selectedAssetType: string | null = null;
   assetImages: { [key: string]: HTMLImageElement } = {};
   // selectedAsset: { x: number, y: number, type: string } | null = null;
@@ -247,7 +250,7 @@ export class EnvmapComponent implements AfterViewInit {
   draggingAsset: boolean = false;
   draggingRobo: boolean = false;
   private draggingZonePoint: boolean = false;
-  private selectedZone: Zone | null = null;   
+  private selectedZone: Zone | null = null;
   private selectedZonePoint: { x: number; y: number } | null = null;
   isZonePlottingEnabled = false;
   plottedPoints: { id: number; x: number; y: number }[] = [];
@@ -295,8 +298,8 @@ export class EnvmapComponent implements AfterViewInit {
     maxRotationSpeed: 0,
     length: 0,
     action: [],
-  };  
-  selectedMap : any | null = null;
+  };
+  selectedMap: any | null = null;
   showPopup = false;
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
   DockPopup: boolean = false; // To control the popup visibility
@@ -306,13 +309,14 @@ export class EnvmapComponent implements AfterViewInit {
   selectedAssetId: string | null = null; // Store the selected asset ID
   // private draggedNode: Node | null = null;
   private selectionStart: { x: number; y: number } | null = null;
-  private selectionTransformStart : {x :number ; y : number} | null = null;
+  private selectionTransformStart: { x: number; y: number } | null = null;
   private selectionEnd: { x: number; y: number } | null = null;
   private nodesToDelete: Node[] = [];
   isOpen: boolean = false;
   descriptionWarning: boolean = false;
-  currMulNode : Node[] = [];
-  currentQuaternion:{ x: number; y: number; z:number; w:number } | null = null;
+  currMulNode: Node[] = [];
+  currentQuaternion: { x: number; y: number; z: number; w: number } | null =
+    null;
   newOrientationAngle: number = 0;
   inputOrientationAngle: number = 0; // The value entered by the user
   // selectedNodeId: string; // Variable to store the selected node
@@ -346,53 +350,58 @@ export class EnvmapComponent implements AfterViewInit {
     this.isPlottingAsset = true;
 
     // console.log("hey");
-    
   }
   constructor(
     private cdRef: ChangeDetectorRef,
     private renderer: Renderer2,
     private projectService: ProjectService,
-    private messageService:MessageService,
-    private sessionService:SessionService,
-    // private nodeGraphService:NodeGraphService
-  ) {
+    private messageService: MessageService,
+    private sessionService: SessionService
+  ) // private nodeGraphService:NodeGraphService
+  {
     if (this.currEditMap) this.showImage = true;
   }
-  
+
   ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
-    if(!this.selectedMap) return;
-    if (this.currEditMap) {            
+    if (!this.selectedMap) return;
+    if (this.currEditMap) {
       this.showImage = true;
       this.mapName = this.currEditMapDet.mapName;
       this.siteName = this.currEditMapDet.siteName;
       this.ratio = this.currEditMapDet.ratio;
       this.imageSrc = this.currEditMapDet.imgUrl;
-      this.origin = {x : this.currEditMapDet.origin.x, y : this.currEditMapDet.origin.y, w : this.currEditMapDet.origin.w};
-      this.nodes = this.currEditMapDet.nodes.map((node : Node)=>{
-        node.nodePosition.x = ((node.nodePosition.x + (this.origin.x || 0)) / (this.ratio || 1));
-        node.nodePosition.y = ((node.nodePosition.y + (this.origin.y || 0)) / (this.ratio || 1));
+      this.origin = {
+        x: this.currEditMapDet.origin.x,
+        y: this.currEditMapDet.origin.y,
+        w: this.currEditMapDet.origin.w,
+      };
+      this.nodes = this.currEditMapDet.nodes.map((node: Node) => {
+        node.nodePosition.x =
+          (node.nodePosition.x + (this.origin.x || 0)) / (this.ratio || 1);
+        node.nodePosition.y =
+          (node.nodePosition.y + (this.origin.y || 0)) / (this.ratio || 1);
         return node;
       });
       this.edges = this.currEditMapDet.edges;
-      this.assets = this.currEditMapDet.assets.map((asset : asset)=>{
-        asset.x = ((asset.x + (this.origin.x || 0)) / (this.ratio || 1));
-        asset.y = ((asset.y + (this.origin.y || 0)) / (this.ratio || 1));
+      this.assets = this.currEditMapDet.assets.map((asset: asset) => {
+        asset.x = (asset.x + (this.origin.x || 0)) / (this.ratio || 1);
+        asset.y = (asset.y + (this.origin.y || 0)) / (this.ratio || 1);
         return asset;
       });
-      this.zones = this.currEditMapDet.zones.map((zone : Zone)=>{
-        zone.pos = zone.pos.map((pos)=>{
-          pos.x = ((pos.x + (this.origin.x || 0)) / (this.ratio || 1));
-          pos.y = ((pos.y + (this.origin.y || 0)) / (this.ratio || 1));
+      this.zones = this.currEditMapDet.zones.map((zone: Zone) => {
+        zone.pos = zone.pos.map((pos) => {
+          pos.x = (pos.x + (this.origin.x || 0)) / (this.ratio || 1);
+          pos.y = (pos.y + (this.origin.y || 0)) / (this.ratio || 1);
           return pos;
-        })
+        });
         return zone;
       });
-      this.robos = this.currEditMapDet.robos.map((robo : Robo)=>{
+      this.robos = this.currEditMapDet.robos.map((robo: Robo) => {
         robo.pos.x = robo.pos.x / (this.ratio || 1);
         robo.pos.y = robo.pos.y / (this.ratio || 1);
         return robo;
-      })
+      });
 
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
@@ -411,37 +420,36 @@ export class EnvmapComponent implements AfterViewInit {
         parseInt(this.zones[this.zones.length - 1]?.id) + 1
           ? parseInt(this.zones[this.zones.length - 1].id) + 1
           : this.zoneCounter;
-      // this.sessionService.onMapEdit();   //discuss later 
+      // this.sessionService.onMapEdit();   //discuss later
       this.open();
-    }
-    else if(this.sessionService.isMapInEdit()){
+    } else if (this.sessionService.isMapInEdit()) {
       this.imageSrc = this.sessionService.getImage();
-      let mapData=this.sessionService.getMapDetails();
-      this.siteName=mapData.siteName;
-      this.mapName=mapData.mapName;
-      this.ratio=mapData.mpp;
-      this.origin=mapData.origin;  
-      this.nodes=mapData.nodes;    
+      let mapData = this.sessionService.getMapDetails();
+      this.siteName = mapData.siteName;
+      this.mapName = mapData.mapName;
+      this.ratio = mapData.mpp;
+      this.origin = mapData.origin;
+      this.nodes = mapData.nodes;
       this.nodeCounter =
         parseInt(this.nodes[this.nodes.length - 1]?.nodeId) + 1
           ? parseInt(this.nodes[this.nodes.length - 1].nodeId) + 1
           : this.nodeCounter;
-      this.edges=mapData.edges;
+      this.edges = mapData.edges;
       this.edgeCounter =
-      parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
-        ? parseInt(this.edges[this.edges.length - 1].edgeId) + 1
-        : this.edgeCounter;
+        parseInt(this.edges[this.edges.length - 1]?.edgeId) + 1
+          ? parseInt(this.edges[this.edges.length - 1].edgeId) + 1
+          : this.edgeCounter;
       this.selectedImage = this.sessionService.base64toFile();
-      this.zones=mapData.zones;
+      this.zones = mapData.zones;
       this.zoneCounter =
-      parseInt(this.zones[this.zones.length - 1]?.id) + 1
-        ? parseInt(this.zones[this.zones.length - 1].id) + 1
-        : this.zoneCounter;
-      this.assets=mapData.assets;
+        parseInt(this.zones[this.zones.length - 1]?.id) + 1
+          ? parseInt(this.zones[this.zones.length - 1].id) + 1
+          : this.zoneCounter;
+      this.assets = mapData.assets;
       this.assetCounter =
-      this.assets[this.assets.length - 1]?.id + 1
-        ? this.assets[this.assets.length - 1].id + 1
-        : this.assetCounter;
+        this.assets[this.assets.length - 1]?.id + 1
+          ? this.assets[this.assets.length - 1].id + 1
+          : this.assetCounter;
       this.open();
     }
   }
@@ -455,9 +463,9 @@ export class EnvmapComponent implements AfterViewInit {
   }
   orientationTypes = [
     { label: 'Global', value: 'GLOBAL' },
-    { label: 'Tangential', value: 'Tangential' }
+    { label: 'Tangential', value: 'Tangential' },
   ];
-  
+
   ngAfterViewInit(): void {
     this.projData = this.projectService.getSelectedProject();
 
@@ -491,19 +499,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.selectionEnd = null;
     this.redrawCanvas(); // Clear any leftover selection box or drawing
   }
-//   private isPositionOccupied(x: number, y: number): boolean {
-//     // Check if the position is occupied by any existing node
-//     const isNodeOccupied = this.nodes.some(node =>
-//         Math.abs(node.pos.x - x)  && Math.abs(node.pos.y - y)
-//     );
 
-//     // Check if the position is occupied by any existing asset
-//     const isAssetOccupied = this.assets.some(asset =>
-//         Math.abs(asset.x - x)  && Math.abs(asset.y - y)
-//     );
-
-//     return isNodeOccupied || isAssetOccupied;
-// }
   setupCanvas(): void {
     const canvas = this.getOverlayCanvas();
     const imageCanvas = this.imageCanvas?.nativeElement;
@@ -536,8 +532,6 @@ export class EnvmapComponent implements AfterViewInit {
       this.assetImages['charging'] = new Image();
       this.assetImages['charging'].src =
         'assets/Asseticon/charging-station.svg';
-
-
     } else {
       console.error('Failed to get canvas context');
     }
@@ -552,15 +546,10 @@ export class EnvmapComponent implements AfterViewInit {
       (event.clientY - rect.top) * (canvas.height / rect.height);
 
     const selected = this.nodes.find(
-      (node) => Math.abs(node.nodePosition.x - x) < 5 && Math.abs(node.nodePosition.y - y) < 5
+      (node) =>
+        Math.abs(node.nodePosition.x - x) < 5 &&
+        Math.abs(node.nodePosition.y - y) < 5
     );
-
-    // if (selected) {
-    //   this.selectedNode = selected;
-    //   console.log(
-    //     `Node selected at position: (${x.toFixed(2)}, ${y.toFixed(2)})`
-    //   );
-    // }
   }
   isConfirmingDelete: boolean = false;
   isConfirmationVisible: boolean = false;
@@ -583,7 +572,7 @@ export class EnvmapComponent implements AfterViewInit {
     }
     this.isNodeDetailsPopupVisible = false;
   }
-  confirmRoboDelete():void{
+  confirmRoboDelete(): void {
     if (this.selectedRobo) {
       this.robos = this.robos.filter(
         (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
@@ -592,11 +581,13 @@ export class EnvmapComponent implements AfterViewInit {
     }
     if (this.robotToDelete) {
       // Remove the robot from the robos array
-      this.robos = this.robos.filter(r => r.roboDet.id !== this.robotToDelete.roboDet.id);
+      this.robos = this.robos.filter(
+        (r) => r.roboDet.id !== this.robotToDelete.roboDet.id
+      );
       // Redraw the canvas after deleting the robot
       this.redrawCanvas();
     }
-    this.isRoboConfirmationVisible=false;
+    this.isRoboConfirmationVisible = false;
   }
   confirmDelete(): void {
     // if(this.isDeleteModeEnabled){
@@ -608,7 +599,8 @@ export class EnvmapComponent implements AfterViewInit {
       // Remove edges related to deleted nodes
       this.edges = this.edges.filter((edge) => {
         return !this.nodesToDelete.some(
-          (node) => edge.startNodeId === node.nodeId || edge.endNodeId === node.nodeId
+          (node) =>
+            edge.startNodeId === node.nodeId || edge.endNodeId === node.nodeId
         );
       });
       // Clear the selected nodes
@@ -628,9 +620,10 @@ export class EnvmapComponent implements AfterViewInit {
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
-        detail: 'No items selected for deletion.'
+        detail: 'No items selected for deletion.',
       });
-    }1
+    }
+    1;
 
     if (this.selectedAsset) {
       this.assets = this.assets.filter(
@@ -658,23 +651,24 @@ export class EnvmapComponent implements AfterViewInit {
         detail: 'Node Deleted Successfully',
         life: 4000,
       });
-      if(this.isDeleteModeEnabled){
-      // Remove from nodes array
-      this.nodes = this.nodes.filter((node) => {
-        return (
-          node.nodePosition.x !== this.selectedNode?.nodePosition.x &&
-          node.nodePosition.y !== this.selectedNode?.nodePosition.y
-        );
-      });
+      if (this.isDeleteModeEnabled) {
+        // Remove from nodes array
+        this.nodes = this.nodes.filter((node) => {
+          return (
+            node.nodePosition.x !== this.selectedNode?.nodePosition.x &&
+            node.nodePosition.y !== this.selectedNode?.nodePosition.y
+          );
+        });
 
-      // Remove edges related to the deleted node
-      this.edges = this.edges.filter((edge) => {
-        return (
-          edge.startNodeId !== this.selectedNode?.nodeId &&
-          edge.endNodeId !== this.selectedNode?.nodeId
-        );
-      });}
-     
+        // Remove edges related to the deleted node
+        this.edges = this.edges.filter((edge) => {
+          return (
+            edge.startNodeId !== this.selectedNode?.nodeId &&
+            edge.endNodeId !== this.selectedNode?.nodeId
+          );
+        });
+      }
+
       // Clear the selected node
       this.selectedNode = null;
       // Redraw the canvas
@@ -682,142 +676,37 @@ export class EnvmapComponent implements AfterViewInit {
     } else {
       console.log('No node selected to delete.');
     }
-    // if (this.robotToDelete) {
-    //   // Remove the robot from the robos array
-    //   this.robos = this.robos.filter(r => r.roboDet.id !== this.robotToDelete.roboDet.id);
-    //   // Redraw the canvas after deleting the robot
-    //   this.redrawCanvas();
-    // }
+
     // Disable delete mode after confirmation
     this.isDeleteModeEnabled = false;
 
     // Hide confirmation dialog
     this.isConfirmationVisible = false;
   }
-  // confirmDelete(): void {
-  //   let nodesDeleted = false;
-  //   let assetDeleted = false;
-  //   let roboDeleted = false;
-  //   let nodeDeleted = false;
-
-  //   // Check if any nodes are selected for deletion
-  //   if (this.nodesToDelete.length > 0) {
-  //     console.log('Selected nodes for deletion:', this.nodesToDelete.map(node => ({ nodeId: node.nodeId, node })));
-
-  //     // Remove selected nodes from the nodes array
-  //     this.nodes = this.nodes.filter(
-  //       (node) => !this.nodesToDelete.includes(node)
-  //     );
-
-  //     // Remove edges related to deleted nodes
-  //     this.edges = this.edges.filter((edge) => {
-  //       return !this.nodesToDelete.some(
-  //         (node) => edge.startNodeId === node.nodeId || edge.endNodeId === node.nodeId
-  //       );
-  //     });
-
-  //     // Clear the selected nodes
-  //     this.nodesToDelete = [];
-
-  //     // Redraw the canvas
-  //     this.redrawCanvas();
-
-  //     nodesDeleted = true; // Mark that nodes were deleted
-  //   }
-
-  //   // Check if an asset is selected for deletion
-  //   if (this.selectedAsset) {
-  //     console.log('Selected asset for deletion:', this.selectedAsset);
-
-  //     this.assets = this.assets.filter(
-  //       (asset) => this.selectedAsset?.id !== asset.id
-  //     );
-  //     this.redrawCanvas();
-  //     assetDeleted = true; // Mark that an asset was deleted
-  //   }
-
-  //   // Check if a robot is selected for deletion
-  //   if (this.selectedRobo) {
-  //     console.log('Selected robot for deletion:', this.selectedRobo);
-
-  //     this.robos = this.robos.filter(
-  //       (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
-  //     );
-  //     this.redrawCanvas();
-  //     roboDeleted = true; // Mark that a robot was deleted
-  //   }
-
-  //   // Check if a node is selected for deletion
-  //   if (this.selectedNode) {
-  //     console.log('Selected node for deletion:', { nodeId: this.selectedNode.nodeId, node: this.selectedNode });
-
-  //     // Remove the node by its unique ID
-  //     this.nodes = this.nodes.filter(
-  //       (node) => node.nodeId !== this.selectedNode?.nodeId
-  //     );
-
-  //     // Remove edges related to the deleted node
-  //     this.edges = this.edges.filter((edge) => {
-  //       return (
-  //         edge.startNodeId !== this.selectedNode?.nodeId &&
-  //         edge.endNodeId !== this.selectedNode?.nodeId
-  //       );
-  //     });
-
-  //     // Clear the selected node
-  //     this.selectedNode = null;
-
-  //     // Redraw the canvas
-  //     this.redrawCanvas();
-
-  //     nodeDeleted = true; // Mark that a node was deleted
-  //   }
-
-  //   // Toast message logic: Show warning if nothing was selected or deleted
-  //   if (!nodesDeleted && !assetDeleted && !roboDeleted && !nodeDeleted) {
-  //     this.messageService.add({
-  //       severity: 'warn',
-  //       summary: 'Warning',
-  //       detail: 'No items selected for deletion.'
-  //     });
-  //   } else {
-  //     this.messageService.add({
-  //       severity: 'success',
-  //       summary: 'Success',
-  //       detail: 'Deletion successful.'
-  //     });
-  //   }
-
-  //   // Disable delete mode after confirmation
-  //   this.isDeleteModeEnabled = false;
-
-  //   // Hide confirmation dialog
-  //   this.isConfirmationVisible = false;
-  // }
 
   cancelDelete(): void {
-    this.isConfirmingDelete
-    this.isConfirmationVisible=false;
+    this.isConfirmingDelete;
+    this.isConfirmationVisible = false;
     this.isRoboConfirmationVisible = false;
     // Hide confirmation dialog without deleting
     // this.isDeleteModeEnabled = false;
   }
 
   closeImagePopup(): void {
-    if(this.showOriginPopup=true){
-      this.showOriginPopup=false;
+    if ((this.showOriginPopup = true)) {
+      this.showOriginPopup = false;
     }
     this.showImagePopup = false;
-      this.points = [];
-      this.showDistanceDialog = false;
-      this.distanceBetweenPoints = null; // Reset distance if applicable
-      this.isDistanceConfirmed=false;
-      if (this.resolutionInput) {
-        this.resolutionInput.nativeElement.value = ''; // Reset the input field
-      }
-      this.validationError=null;
+    this.points = [];
+    this.showDistanceDialog = false;
+    this.distanceBetweenPoints = null; // Reset distance if applicable
+    this.isDistanceConfirmed = false;
+    if (this.resolutionInput) {
+      this.resolutionInput.nativeElement.value = ''; // Reset the input field
+    }
+    this.validationError = null;
   }
-  
+
   selectedNodeType: string = '';
 
   updateNodeType(): void {
@@ -851,70 +740,72 @@ export class EnvmapComponent implements AfterViewInit {
   fetchConnectedNodes(nodeId: string): void {
     // Use the edges array to find connected nodes
     const connectedNodeIds = this.edges
-      .filter(edge => edge.startNodeId === nodeId || edge.endNodeId === nodeId)
-      .map(edge => (edge.startNodeId === nodeId ? edge.endNodeId : edge.startNodeId));
-  
+      .filter(
+        (edge) => edge.startNodeId === nodeId || edge.endNodeId === nodeId
+      )
+      .map((edge) =>
+        edge.startNodeId === nodeId ? edge.endNodeId : edge.startNodeId
+      );
+
     // Fetch node details for the connected node IDs
-    this.connectedNodes = this.nodes.filter(node => connectedNodeIds.includes(node.nodeId));
+    this.connectedNodes = this.nodes.filter((node) =>
+      connectedNodeIds.includes(node.nodeId)
+    );
   }
-  
-  saveNodeDetails(x: string, y: string,orientation: string ): void {
+
+  saveNodeDetails(x: string, y: string, orientation: string): void {
     this.validationError = '';
-    
+
     if (!this.nodeDetails.description) {
       this.validationError = 'Node Description is required.';
-    } 
+    }
     // If there is a validation error, don't save the details
     if (this.validationError) {
       return;
     }
     // let quaternion=this.ToQuaternion_(0,0,parseInt(orientation));
-    let quaternion=this.currentQuaternion;
+    let quaternion = this.currentQuaternion;
 
-    this.nodes = this.nodes.map(node => {
-      if(this.selectedNode?.nodeId === node.nodeId) {
+    this.nodes = this.nodes.map((node) => {
+      if (this.selectedNode?.nodeId === node.nodeId) {
         node.actions = this.actions;
-        node.quaternion = quaternion ? quaternion : {x:0,y:0,z:0,w:1};      
-        if(this.selectedPredockPose)  node.pre_dockNodeId =parseInt(this.selectedPredockPose);
-        if(this.selectedUndockPose)  node.Un_dockNodeId =parseInt(this.selectedUndockPose);
+        node.quaternion = quaternion ? quaternion : { x: 0, y: 0, z: 0, w: 1 };
+        if (this.selectedPredockPose)
+          node.pre_dockNodeId = parseInt(this.selectedPredockPose);
+        if (this.selectedUndockPose)
+          node.Un_dockNodeId = parseInt(this.selectedUndockPose);
       }
       return node;
-    })
+    });
     this.storeNodestoLocal();
-    
-    // this.projectService.setNode();
-    // Ensure the nodeDetails object includes the checkbox values
-    // const updatedNodeDetails = {
-    //   ...this.nodeDetails,  // Spread the existing details
-    //   intermediate_node: this.nodeDetails.intermediate_node,
-    //   waiting_node: this.nodeDetails.waiting_node,
-    // };
+
     if (!x || !y || !orientation) {
       this.validationError = 'All fields are required.';
       return;
     }
-  
+
     // Convert values to numbers
     const parsedX = parseFloat(x);
     const parsedY = parseFloat(y);
     const parsedOrientation = parseFloat(orientation);
-  
+
     if (isNaN(parsedX) || isNaN(parsedY) || isNaN(parsedOrientation)) {
       this.validationError = 'Invalid input: Please enter valid numbers.';
       return;
     }
-    
+
     const canvas = this.overlayCanvas.nativeElement;
-    // console.log("Hey",canvas.width,canvas.height);
     // Validation: Check if coordinates are within map boundaries
-    const mapWidth = canvas.width*this.ratio!-this.origin.x;  // Assuming the map image width
-    const mapHeight = canvas.height*this.ratio!-this.origin.y; // Assuming the map image height
+    const mapWidth = canvas.width * this.ratio! - this.origin.x; // Assuming the map image width
+    const mapHeight = canvas.height * this.ratio! - this.origin.y; // Assuming the map image height
     // console.log("map",mapWidth,mapHeight);
     if (parsedX > mapWidth || parsedY > mapHeight) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
-        detail: `Coordinates out of bounds: X should be between 0 and ${mapWidth.toFixed(3)}, Y should be between 0 and ${mapHeight.toFixed(3)}.`
+        detail: `Coordinates out of bounds: X should be between 0 and ${mapWidth.toFixed(
+          3
+        )}, Y should be between 0 and ${mapHeight.toFixed(3)}.`,
       });
       return;
     }
@@ -922,14 +813,20 @@ export class EnvmapComponent implements AfterViewInit {
       const nodeIndex = this.nodes.findIndex(
         (node) => node.nodeId === this.selectedNode!.nodeId
       );
-      this.selectedNode.nodePosition.x = (parsedX+this.origin.x||0)/this.ratio!||1;
-      this.selectedNode.nodePosition.y = (parsedY+this.origin.y||0)/this.ratio!||1;
+      this.selectedNode.nodePosition.x =
+        (parsedX + this.origin.x || 0) / this.ratio! || 1;
+      this.selectedNode.nodePosition.y =
+        (parsedY + this.origin.y || 0) / this.ratio! || 1;
       this.selectedNode.nodePosition.orientation = parsedOrientation;
-      
-      console.log(this.selectedNode.nodePosition.x,this.selectedNode.nodePosition.y)
-      if (nodeIndex !== -1) {        
+
+      console.log(
+        this.selectedNode.nodePosition.x,
+        this.selectedNode.nodePosition.y
+      );
+      if (nodeIndex !== -1) {
         this.nodes[nodeIndex].nodeDescription = this.nodeDetails.description;
-        this.nodes[nodeIndex].intermediate_node = this.nodeDetails.intermediate_node;
+        this.nodes[nodeIndex].intermediate_node =
+          this.nodeDetails.intermediate_node;
         this.nodes[nodeIndex].Waiting_node = this.nodeDetails.waiting_node;
         this.nodes[nodeIndex].charge_node = this.nodeDetails.charge_node;
         this.nodes[nodeIndex].dock_node = this.nodeDetails.dock_node;
@@ -949,7 +846,7 @@ export class EnvmapComponent implements AfterViewInit {
   openActionForm(action: any): void {
     // Hide all other forms
     this.hideActionForms();
-  
+
     // Show the relevant form based on the action type
     if (action.actionType === 'Move') {
       this.isMoveActionFormVisible = true;
@@ -961,14 +858,14 @@ export class EnvmapComponent implements AfterViewInit {
       this.isUndockActionFormVisible = true;
       this.undockParameters = action.parameters;
     }
-  
+
     // Set the selected action
     this.selectedAction = action.actionType;
-  
+
     // Remove the action from the list
     // this.actions = this.actions.filter(a => a.actionType !== action.actionType);
   }
-  
+
   moveParameters = {
     maxLinearVelocity: 0,
     maxAngularVelocity: 0,
@@ -1003,7 +900,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.selectedAction = selectedValue;
     this.resetParameters();
     this.showActionForm();
-  }  
+  }
   resetParameters(): void {
     this.moveParameters = {
       maxLinearVelocity: 0,
@@ -1055,26 +952,37 @@ export class EnvmapComponent implements AfterViewInit {
     if (this.selectedAction) {
       let action: any;
 
-      const parameters = 
-        this.selectedAction === 'Move' ? { ...this.moveParameters } :
-        this.selectedAction === 'Dock' ? { ...this.dockParameters } :
-        this.selectedAction === 'Undock' ? { ...this.undockParameters } :
-        null;
+      const parameters =
+        this.selectedAction === 'Move'
+          ? { ...this.moveParameters }
+          : this.selectedAction === 'Dock'
+          ? { ...this.dockParameters }
+          : this.selectedAction === 'Undock'
+          ? { ...this.undockParameters }
+          : null;
 
-      const existingAction = this.actions.find(action => action.actionType === this.selectedAction);
+      const existingAction = this.actions.find(
+        (action) => action.actionType === this.selectedAction
+      );
 
       if (existingAction) {
-        this.actions = this.actions.map(action => {
-          if(action.actionType === this.selectedAction) action.parameters = parameters;
+        this.actions = this.actions.map((action) => {
+          if (action.actionType === this.selectedAction)
+            action.parameters = parameters;
           return action;
-        })
+        });
       } else if (parameters) {
-        this.actions.push({ actionType: this.selectedAction, parameters : parameters });
+        this.actions.push({
+          actionType: this.selectedAction,
+          parameters: parameters,
+        });
       }
-  
+
       // Remove the selected action from dropdown options
-      this.actionOptions = this.actionOptions.filter(option => option.value !== this.selectedAction);
-  
+      this.actionOptions = this.actionOptions.filter(
+        (option) => option.value !== this.selectedAction
+      );
+
       // Hide the action forms
       this.hideActionForms();
       // Clear the selected action
@@ -1085,17 +993,23 @@ export class EnvmapComponent implements AfterViewInit {
 
   cancelAction(): void {
     // Hide all action forms
-    this.hideActionForms();  
+    this.hideActionForms();
     // Reset the selected action
-    this.selectedAction = null;       
-    this.actionOptions = this.allActions.filter(option => !this.actions.some(a => a.actionType === option.value)); 
+    this.selectedAction = null;
+    this.actionOptions = this.allActions.filter(
+      (option) => !this.actions.some((a) => a.actionType === option.value)
+    );
   }
 
-  deleteActionFromNode(selectedAction : any){
-    this.actions = this.actions.filter(action => action.actionType !== selectedAction.actionType );
-    this.actionOptions = this.allActions.filter(option => !this.actions.some(a => a.actionType === option.value)); 
+  deleteActionFromNode(selectedAction: any) {
+    this.actions = this.actions.filter(
+      (action) => action.actionType !== selectedAction.actionType
+    );
+    this.actionOptions = this.allActions.filter(
+      (option) => !this.actions.some((a) => a.actionType === option.value)
+    );
   }
-  
+
   openMoveActionForm(): void {
     this.isMoveActionFormVisible = true;
     this.isDockActionFormVisible = true;
@@ -1106,15 +1020,15 @@ export class EnvmapComponent implements AfterViewInit {
     this.actions = [];
     this.selectedAction = null;
     this.selectedNode = null;
-    this.selectedNodeType="";
+    this.selectedNodeType = '';
     this.isNodeDetailsPopupVisible = false;
     this.hideActionForms();
   }
-  
+
   allActions = [
     { label: 'Move', value: 'Move' },
     { label: 'Dock', value: 'Dock' },
-    { label: 'Undock', value: 'Undock' }
+    { label: 'Undock', value: 'Undock' },
   ];
   isOptionDisabled(option: string): boolean {
     return this.actions.some((action) => action.actionType === option);
@@ -1125,15 +1039,7 @@ export class EnvmapComponent implements AfterViewInit {
     if (input.files && input.files[0]) {
       this.selectedImage = input.files[0];
       const file = input.files[0];
-      // if (file) {
-      //   const reader = new FileReader();
-      //   reader.onload = (e: any) => {
-      //     this.imageBase64 = e.target.result;
-      //     console.log(this.imageBase64);
-      //     // if(this.imageBase64) this.mapService.setOnCreateMapImg(this.imageBase64);  // Save to cookie after conversion
-      //   };
-      //   reader.readAsDataURL(file);
-      // }
+
       this.fileName = file.name;
       this.showImage = false;
 
@@ -1141,7 +1047,6 @@ export class EnvmapComponent implements AfterViewInit {
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.imageSrc = e.target!.result as string;
         // console.log(this.imageSrc);
-        
       };
       reader.readAsDataURL(file);
     }
@@ -1150,41 +1055,47 @@ export class EnvmapComponent implements AfterViewInit {
   private startPoint: { x: number; y: number } | null = null; // Store the initial point
 
   openOriginPopup(): void {
-    if(!this.ratio){
+    if (!this.ratio) {
       this.messageService.add({
         severity: 'error',
         summary: 'Warning',
         detail: 'Please Enter Resolution before Locating Origin',
       });
-      return
+      return;
     }
     if (this.imageSrc) {
       this.showOriginPopup = true;
       this.cdRef.detectChanges();
-  
+
       const canvas = this.OriginPopupCanvas?.nativeElement;
       if (!canvas) {
         console.error('Canvas element not found');
         return;
       }
-  
+
       const ctx = canvas.getContext('2d');
       const img = new Image();
       img.src = this.imageSrc;
-  
+
       img.onload = () => {
         this.Originpoints = []; // Clear previous points
-  
+
         // Clear the canvas and draw the image
         ctx!.clearRect(0, 0, canvas.width, canvas.height);
         canvas.width = img.width;
         canvas.height = img.height;
         ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
-  
+
         // Add event listeners for click, mousemove, and mouseup
-        canvas.addEventListener('mousedown', (event) => this.onCanvasMouseDown(event));
-        canvas.addEventListener('mousemove', (event) => this.onCanvasMouseMove(event));
-        canvas.addEventListener('mouseup', (event) => this.onCanvasMouseUp(event));
+        canvas.addEventListener('mousedown', (event) =>
+          this.onCanvasMouseDown(event)
+        );
+        canvas.addEventListener('mousemove', (event) =>
+          this.onCanvasMouseMove(event)
+        );
+        canvas.addEventListener('mouseup', (event) =>
+          this.onCanvasMouseUp(event)
+        );
       };
     } else {
       this.messageService.add({
@@ -1194,19 +1105,19 @@ export class EnvmapComponent implements AfterViewInit {
       });
     }
   }
-  
+
   private onCanvasMouseDown(event: MouseEvent): void {
     const canvas = this.OriginPopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
-  
+
     // Calculate the click coordinates relative to the canvas
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-    const transy =canvas.height -y;
+    const transy = canvas.height - y;
     // Store the initial point
     this.startPoint = { x, y };
     this.isDrawing = true;
-  
+
     // Draw the initial point
     const ctx = canvas.getContext('2d');
     ctx!.beginPath();
@@ -1214,47 +1125,59 @@ export class EnvmapComponent implements AfterViewInit {
     ctx!.fillStyle = 'red';
     ctx!.fill();
   }
-  
+
   private onCanvasMouseMove(event: MouseEvent): void {
     const canvas = this.OriginPopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
-    
+
     // Calculate mouse coordinates relative to the canvas
-    const mouseX = Math.round((event.clientX - rect.left) * (canvas.width / rect.width));
-    const mouseY = Math.round((event.clientY - rect.top) * (canvas.height / rect.height));
-    const TransY = canvas.height -mouseY;
+    const mouseX = Math.round(
+      (event.clientX - rect.left) * (canvas.width / rect.width)
+    );
+    const mouseY = Math.round(
+      (event.clientY - rect.top) * (canvas.height / rect.height)
+    );
+    const TransY = canvas.height - mouseY;
     // Update tooltip content and position (if needed)
     const tooltip = this.tooltip.nativeElement;
-    tooltip.textContent = `(x: ${mouseX*this.ratio!}, y: ${TransY*this.ratio!})`;
+    tooltip.textContent = `(x: ${mouseX * this.ratio!}, y: ${
+      TransY * this.ratio!
+    })`;
     if (!this.isDrawing || !this.startPoint) return;
-  
+
     // const canvas = this.OriginPopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     // const rect = canvas.getBoundingClientRect();
-  
+
     // Calculate current mouse coordinates relative to the canvas
     const currentX = (event.clientX - rect.left) * (canvas.width / rect.width);
     const currentY = (event.clientY - rect.top) * (canvas.height / rect.height);
-  
+
     // Redraw the image and point to clear previous lines
     const img = new Image();
     img.src = this.imageSrc!;
-  
+
     img.onload = () => {
       ctx!.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
       ctx!.drawImage(img, 0, 0, canvas.width, canvas.height); // Redraw image
-  
+
       // Redraw the initial point
       ctx!.beginPath();
       ctx!.arc(this.startPoint!.x, this.startPoint!.y, 6, 0, 2 * Math.PI);
       ctx!.fillStyle = 'red';
       ctx!.fill();
-  
+
       // Draw the line with an arrow
-      this.drawArrow(ctx!, this.startPoint!.x, this.startPoint!.y, currentX, currentY);
+      this.drawArrow(
+        ctx!,
+        this.startPoint!.x,
+        this.startPoint!.y,
+        currentX,
+        currentY
+      );
     };
   }
-  
+
   private onCanvasMouseUp(event: MouseEvent): void {
     if (!this.isDrawing || !this.startPoint) return;
 
@@ -1264,27 +1187,37 @@ export class EnvmapComponent implements AfterViewInit {
     // Get the final mouse position
     const finalX = (event.clientX - rect.left) * (canvas.width / rect.width);
     const finalY = (event.clientY - rect.top) * (canvas.height / rect.height);
-    const toX =(finalX * this.ratio!)
-    const toY =(canvas.height-finalY)*this.ratio!||1
+    const toX = finalX * this.ratio!;
+    const toY = (canvas.height - finalY) * this.ratio! || 1;
     // Calculate the angle relative to the canvas X-axis
     const dx = this.startPoint.x - finalX; // X difference
     const dy = this.startPoint.y - finalY; // Y difference (inverted)
     const transY = canvas.height - dy;
     const angle = Math.atan2(dy, dx) * (180 / Math.PI); // Angle in degrees
 
-    console.log("hey", 'X:', finalX, 'Y:', transY, 'W (Angle):', angle);
- 
+    console.log('hey', 'X:', finalX, 'Y:', transY, 'W (Angle):', angle);
+
     // Update the origin object with the calculated values
-    this.origin = { x: this.startPoint.x*this.ratio!, y: (canvas.height-this.startPoint.y)*this.ratio!, w: angle };
+    this.origin = {
+      x: this.startPoint.x * this.ratio!,
+      y: (canvas.height - this.startPoint.y) * this.ratio!,
+      w: angle,
+    };
 
     // Reset the drawing state
     this.isDrawing = false;
     this.startPoint = null;
     this.showOriginPopup = false;
-}
-  
+  }
+
   // Helper function to draw a line with an arrow
-  private drawArrow(ctx: CanvasRenderingContext2D, fromX: number, fromY: number, toX: number, toY: number): void {
+  private drawArrow(
+    ctx: CanvasRenderingContext2D,
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number
+  ): void {
     const headLength = 10; // Length of the arrowhead
     const maxLength = 50; // Maximum length of the arrow
     const dx = toX - fromX;
@@ -1297,8 +1230,8 @@ export class EnvmapComponent implements AfterViewInit {
 
     // Limit the distance if it exceeds maxLength
     if (distance > maxLength) {
-        toX = fromX + directionX * maxLength;
-        toY = fromY + directionY * maxLength;
+      toX = fromX + directionX * maxLength;
+      toY = fromY + directionY * maxLength;
     }
 
     // Draw the line
@@ -1313,19 +1246,19 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.beginPath();
     ctx.moveTo(toX, toY);
     ctx.lineTo(
-        toX - headLength * Math.cos(Math.atan2(dy, dx) - Math.PI / 6),
-        toY - headLength * Math.sin(Math.atan2(dy, dx) - Math.PI / 6)
+      toX - headLength * Math.cos(Math.atan2(dy, dx) - Math.PI / 6),
+      toY - headLength * Math.sin(Math.atan2(dy, dx) - Math.PI / 6)
     );
     ctx.lineTo(
-        toX - headLength * Math.cos(Math.atan2(dy, dx) + Math.PI / 6),
-        toY - headLength * Math.sin(Math.atan2(dy, dx) + Math.PI / 6)
+      toX - headLength * Math.cos(Math.atan2(dy, dx) + Math.PI / 6),
+      toY - headLength * Math.sin(Math.atan2(dy, dx) + Math.PI / 6)
     );
     ctx.lineTo(toX, toY);
     ctx.closePath();
     ctx.fillStyle = 'red';
     ctx.fill();
   }
-  
+
   openImagePopup(): void {
     if (this.imageSrc) {
       this.showImagePopup = true;
@@ -1370,33 +1303,33 @@ export class EnvmapComponent implements AfterViewInit {
       Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)
     );
   }
-  updateEditedMap() {    
-    this.nodes = this.nodes.map((node)=>{
-      // node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)));
-      // node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)));
-      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) - (this.origin.x || 0));
-      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) - (this.origin.y || 0));
+  updateEditedMap() {
+    this.nodes = this.nodes.map((node) => {
+      node.nodePosition.x =
+        node.nodePosition.x * (this.ratio || 1) - (this.origin.x || 0);
+      node.nodePosition.y =
+        node.nodePosition.y * (this.ratio || 1) - (this.origin.y || 0);
       return node;
-    })
+    });
 
     this.assets = this.assets.map((asset) => {
-      asset.x = ((asset.x * (this.ratio || 1)) - (this.origin.x || 0));
-      asset.y = ((asset.y * (this.ratio || 1)) - (this.origin.y || 0));
+      asset.x = asset.x * (this.ratio || 1) - (this.origin.x || 0);
+      asset.y = asset.y * (this.ratio || 1) - (this.origin.y || 0);
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = ((pos.x * (this.ratio || 1)) - (this.origin.x || 0));
-        pos.y = ((pos.y * (this.ratio || 1)) - (this.origin.y || 0));
+        pos.x = pos.x * (this.ratio || 1) - (this.origin.x || 0);
+        pos.y = pos.y * (this.ratio || 1) - (this.origin.y || 0);
         return pos;
       });
       return zone;
     });
 
     this.robos = this.robos.map((robo) => {
-      robo.pos.x = ((robo.pos.x * (this.ratio || 1)));
-      robo.pos.y = ((robo.pos.y * (this.ratio || 1)));
+      robo.pos.x = robo.pos.x * (this.ratio || 1);
+      robo.pos.y = robo.pos.y * (this.ratio || 1);
       return robo;
     });
 
@@ -1410,7 +1343,7 @@ export class EnvmapComponent implements AfterViewInit {
       zones: this.zones,
       stations: this.assets,
       roboPos: this.robos,
-      isFleetup: this.projectService.getIsFleetUp()
+      isFleetup: this.projectService.getIsFleetUp(),
     };
 
     fetch(
@@ -1450,7 +1383,7 @@ export class EnvmapComponent implements AfterViewInit {
         });
       });
   }
-  ToQuaternion_(roll : number, pitch : number, yaw : number){
+  ToQuaternion_(roll: number, pitch: number, yaw: number) {
     yaw = (yaw * 3.14) / 180;
     pitch = (pitch * 3.14) / 180;
     roll = (roll * 3.14) / 180;
@@ -1470,7 +1403,7 @@ export class EnvmapComponent implements AfterViewInit {
     };
 
     return q;
-  };
+  }
   saveOpt() {
     if (!this.nodes || this.nodes.length === 0) {
       this.messageService.add({
@@ -1481,15 +1414,20 @@ export class EnvmapComponent implements AfterViewInit {
       });
       return;
     }
-      // Check for nodes not connected as startNodeId or endNodeId of any edges
-    const connectedNodeIds = new Set(this.edges.flatMap(edge => [edge.startNodeId, edge.endNodeId]));
-    const unconnectedNodes = this.nodes.filter(node => !connectedNodeIds.has(node.nodeId));
+    // Check for nodes not connected as startNodeId or endNodeId of any edges
+    const connectedNodeIds = new Set(
+      this.edges.flatMap((edge) => [edge.startNodeId, edge.endNodeId])
+    );
+    const unconnectedNodes = this.nodes.filter(
+      (node) => !connectedNodeIds.has(node.nodeId)
+    );
 
     if (unconnectedNodes.length > 0) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
-        detail: 'Some nodes are not connected to any edges. Please connect all nodes before saving.',
+        detail:
+          'Some nodes are not connected to any edges. Please connect all nodes before saving.',
         life: 4000,
       });
       return;
@@ -1510,47 +1448,52 @@ export class EnvmapComponent implements AfterViewInit {
     }
 
     this.nodes = this.nodes.map((node) => {
-      node.nodePosition.x = ((node.nodePosition.x * (this.ratio || 1)) - (this.origin.x || 0));
-      node.nodePosition.y = ((node.nodePosition.y * (this.ratio || 1)) - (this.origin.y || 0));
+      node.nodePosition.x =
+        node.nodePosition.x * (this.ratio || 1) - (this.origin.x || 0);
+      node.nodePosition.y =
+        node.nodePosition.y * (this.ratio || 1) - (this.origin.y || 0);
       return node;
     });
 
     this.assets = this.assets.map((asset) => {
-      asset.x = ((asset.x * (this.ratio || 1))- (this.origin.x || 0));
-      asset.y = ((asset.y * (this.ratio || 1))- (this.origin.y || 0));
+      asset.x = asset.x * (this.ratio || 1) - (this.origin.x || 0);
+      asset.y = asset.y * (this.ratio || 1) - (this.origin.y || 0);
       return asset;
     });
 
     this.zones = this.zones.map((zone) => {
       zone.pos = zone.pos.map((pos) => {
-        pos.x = ((pos.x * (this.ratio || 1))- (this.origin.x || 0));
-        pos.y = ((pos.y * (this.ratio || 1))- (this.origin.y || 0));
+        pos.x = pos.x * (this.ratio || 1) - (this.origin.x || 0);
+        pos.y = pos.y * (this.ratio || 1) - (this.origin.y || 0);
         return pos;
       });
       return zone;
     });
     this.robos = this.robos.map((robo) => {
-      robo.pos.x = ((robo.pos.x * (this.ratio || 1))- (this.origin.x || 0));
-      robo.pos.y = ((robo.pos.y * (this.ratio || 1))- (this.origin.y || 0));
+      robo.pos.x = robo.pos.x * (this.ratio || 1) - (this.origin.x || 0);
+      robo.pos.y = robo.pos.y * (this.ratio || 1) - (this.origin.y || 0);
       return robo;
     });
-    
-    let orientation = {x :0, y : 0, z : 0, w : 0};
-    if(this.nodes.length)
-      orientation = this.ToQuaternion_(0,0,this.nodes[0].nodePosition.orientation);
-    
-    let roboInit  = {
+
+    let orientation = { x: 0, y: 0, z: 0, w: 0 };
+    if (this.nodes.length)
+      orientation = this.ToQuaternion_(
+        0,
+        0,
+        this.nodes[0].nodePosition.orientation
+      );
+
+    let roboInit = {
       id: 0,
       pose: {
         position: {
           x: this.nodes[0].nodePosition.x,
           y: this.nodes[0].nodePosition.y,
-          z: this.nodes[0].nodePosition.orientation
+          z: this.nodes[0].nodePosition.orientation,
         },
-        orientation: orientation
-      }
-    }
-
+        orientation: orientation,
+      },
+    };
 
     this.form = new FormData();
     const mapData = {
@@ -1565,7 +1508,7 @@ export class EnvmapComponent implements AfterViewInit {
       nodes: this.nodes,
       stations: this.assets,
       roboPos: this.robos,
-      isFleetup: this.projectService.getIsFleetUp()
+      isFleetup: this.projectService.getIsFleetUp(),
     };
 
     this.form?.append('mapImg', this.selectedImage);
@@ -1598,9 +1541,8 @@ export class EnvmapComponent implements AfterViewInit {
             minute: 'numeric',
             second: 'numeric',
           });
-          
 
-          if(!this.EnvData.length){
+          if (!this.EnvData.length) {
             this.projectService.setMapData({
               id: data.map._id,
               mapName: data.map.mapName,
@@ -1646,7 +1588,7 @@ export class EnvmapComponent implements AfterViewInit {
           summary: 'Success',
           detail: 'Map saved successfully',
           life: 4000,
-        });        
+        });
         this.closePopup.emit();
       })
       .catch((error) => {
@@ -1662,7 +1604,6 @@ export class EnvmapComponent implements AfterViewInit {
       });
 
     this.form = null;
-    
   }
   confirmDistance(): void {
     if (
@@ -1719,7 +1660,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.points = [];
       this.showDistanceDialog = false;
       this.distanceBetweenPoints = null; // Reset distance if applicable
-      this.isDistanceConfirmed=false;
+      this.isDistanceConfirmed = false;
 
       // Redraw the image if necessary without resetting canvas size
       const img = new Image();
@@ -1764,14 +1705,15 @@ export class EnvmapComponent implements AfterViewInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Two points are plotted in a same located',
-            detail: 'Both Points are plotted in a same location, so kindly re-point it',
+            detail:
+              'Both Points are plotted in a same location, so kindly re-point it',
           });
           // Clear the points and re-draw the canvas to remove the second point
           this.points = [];
           this.clearCanvas();
           return;
         }
-  
+
         console.log(`Distance between points: ${distance.toFixed(2)} pixels`);
         this.showDistanceDialog = true; // Show the distance input dialog
       }
@@ -1815,32 +1757,33 @@ export class EnvmapComponent implements AfterViewInit {
       if (this.mapName && this.siteName) {
         for (let map of this.EnvData) {
           if (this.mapName.toLowerCase() === map.mapName?.toLowerCase()) {
-            this.validationError="Map name seems already exists, try another";
+            this.validationError = 'Map name seems already exists, try another';
             return;
           }
         }
       }
-      if (this.resolutionInput && this.resolutionInput.nativeElement) {
-        const resolutionInputValue = this.resolutionInput.nativeElement.value;
-  
-        if (!this.ratio) {
-          this.ratio = Number(resolutionInputValue);
-          if (!this.ratio || isNaN(this.ratio)) {
-            this.validationError = 'Please provide a valid resolution or click Locate.';
-            return;
-          }
-        }
-      } else {
-        console.error('Resolution input element not found via ViewChild.');
-      }
+    if (this.resolutionInput && this.resolutionInput.nativeElement) {
+      const resolutionInputValue = this.resolutionInput.nativeElement.value;
 
-    if (this.mapName && this.siteName && this.imageSrc ) {
+      if (!this.ratio) {
+        this.ratio = Number(resolutionInputValue);
+        if (!this.ratio || isNaN(this.ratio)) {
+          this.validationError =
+            'Please provide a valid resolution or click Locate.';
+          return;
+        }
+      }
+    } else {
+      console.error('Resolution input element not found via ViewChild.');
+    }
+
+    if (this.mapName && this.siteName && this.imageSrc) {
       this.fileName = null;
       this.showImage = true;
       const img = new Image();
       img.src = this.imageSrc;
 
-      img.onload =  () => {
+      img.onload = () => {
         if (this.imageCanvas && this.imageCanvas.nativeElement) {
           const canvas = this.imageCanvas.nativeElement;
           const ctx = canvas.getContext('2d')!;
@@ -1857,29 +1800,25 @@ export class EnvmapComponent implements AfterViewInit {
             overlay.height = canvas.height;
             this.redrawCanvas();
           }
-          if(this.selectedImage && !this.sessionService.isMapInEdit()){
-            this.sessionService.storeImage(this.selectedImage)
+          if (this.selectedImage && !this.sessionService.isMapInEdit()) {
+            this.sessionService.storeImage(this.selectedImage);
             this.sessionService.storeMapDetails({
               siteName: this.siteName,
               mapName: this.mapName,
               mpp: this.ratio,
               origin: this.origin,
-              nodes:this.nodes,
-              edges:this.edges,
-              assets:this.assets,
-              zones:this.zones
-            })
+              nodes: this.nodes,
+              edges: this.edges,
+              assets: this.assets,
+              zones: this.zones,
+            });
             this.sessionService.onMapEdit();
           }
-          
         }
       };
-
+    } else {
+      this.validationError = 'Please enter Map name and Site name';
     }
-    else{
-      this.validationError="Please enter Map name and Site name"
-    }
-
   }
   close(): void {
     this.currEditMapChange.emit(false);
@@ -1903,34 +1842,46 @@ export class EnvmapComponent implements AfterViewInit {
     // Use canvas's isPointInPath method to check if the click is inside the zone
     return ctx.isPointInPath(x, y);
   }
-  private isPointNearFirstZonePoint(x: number, y: number, firstPoint: any, threshold: number = 6): boolean {
+  private isPointNearFirstZonePoint(
+    x: number,
+    y: number,
+    firstPoint: any,
+    threshold: number = 6
+  ): boolean {
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     if (!ctx) return false;
     ctx.beginPath();
-    const distance = Math.sqrt((x - firstPoint.x) ** 2 + (y - firstPoint.y) ** 2);
+    const distance = Math.sqrt(
+      (x - firstPoint.x) ** 2 + (y - firstPoint.y) ** 2
+    );
     return distance < threshold;
   }
   public showZoneText: boolean = false;
   robotToDelete: any; // Store the robot to be deleted
-  originalEdgeDetails: any = null;  // Can initialize it as null or {}
+  originalEdgeDetails: any = null; // Can initialize it as null or {}
   private getNodeById(nodeId: string): Node | undefined {
     return this.nodes.find((node) => node.nodeId === nodeId);
   }
-  
-  private calculateDistanceBetweenNodes(startNodeId: string, endNodeId: string): number | null {
+
+  private calculateDistanceBetweenNodes(
+    startNodeId: string,
+    endNodeId: string
+  ): number | null {
     const startNode = this.getNodeById(startNodeId);
     const endNode = this.getNodeById(endNodeId);
-  
+
     if (startNode && endNode) {
-      const dx = (endNode.nodePosition.x - startNode.nodePosition.x)-this.origin.x;
-      const dy = (endNode.nodePosition.y - startNode.nodePosition.y)-this.origin.y;
-      const dis=Math.sqrt(dx * dx + dy * dy);
-      const dist=(dis*this.ratio!)
+      const dx =
+        endNode.nodePosition.x - startNode.nodePosition.x - this.origin.x;
+      const dy =
+        endNode.nodePosition.y - startNode.nodePosition.y - this.origin.y;
+      const dis = Math.sqrt(dx * dx + dy * dy);
+      const dist = dis * this.ratio!;
       return parseFloat(dist.toFixed(2));
     }
     return null;
   }
-  
+
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
     if (this.isMultiNodePlotting) {
@@ -1943,58 +1894,47 @@ export class EnvmapComponent implements AfterViewInit {
       return;
     }
     event.preventDefault();
-    // if (!this.rightClickEnabled) {
-    //   event.preventDefault(); // Block right-click interaction
 
-    //   this.messageService.add({
-    //     severity: 'info',
-    //     summary: 'Action Restricted',
-    //     detail: 'Please plot both nodes before interacting.'
-    //   });
-    //   return;
-    // }
     const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-    const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-    const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+    const x =
+      (event.clientX - rect.left) *
+      (this.overlayCanvas.nativeElement.width / rect.width);
+    const y =
+      (event.clientY - rect.top) *
+      (this.overlayCanvas.nativeElement.height / rect.height);
 
-  for (const zone of this.zones) {
-
-    const firstPoint = zone.pos[0]; // The first point of the zone
-    if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
-      this.zoneType = zone.type; // Prepopulate the selected zone type
-      this.selectedZone = zone; // Store the selected zone
-      this.isPopupVisible = true;
-      this.isDeleteVisible=true;
-      // this.showZoneTypePopup(); // Display the popup
-      return;
+    for (const zone of this.zones) {
+      const firstPoint = zone.pos[0]; // The first point of the zone
+      if (this.isPointNearFirstZonePoint(x, y, firstPoint)) {
+        this.zoneType = zone.type; // Prepopulate the selected zone type
+        this.selectedZone = zone; // Store the selected zone
+        this.isPopupVisible = true;
+        this.isDeleteVisible = true;
+        // this.showZoneTypePopup(); // Display the popup
+        return;
+      }
     }
-  }
     for (const robo of this.robos) {
       if (this.isRobotClicked(robo, x, y)) {
-        this.robotToDelete = robo;  // Store the robot that was right-clicked
+        this.robotToDelete = robo; // Store the robot that was right-clicked
         this.isRoboConfirmationVisible = true;
-        // const confirmDelete = confirm('Do you want to delete this robot?');
-        // if (confirmDelete) {
-        //   // Remove the robot from the robos array
-        //   this.robos = this.robos.filter(r => r.roboDet.id !== robo.roboDet.id);
-        //   // Redraw the canvas after deleting the robot
-        //   this.redrawCanvas();
-        // }
+
         return;
       }
     }
     // Check if a node is clicked
-    for (const node of this.nodes) {      
-      if (this.isNodeClicked(node, x, y) ) {
-        this.selectedNode=node;
-        if(node.intermediate_node) this.selectedNodeType = "Intermediate";
-        else if(node.Waiting_node) this.selectedNodeType = "Waiting";
-        else if(node.charge_node) this.selectedNodeType = "Charge";
-        else if(node.dock_node) this.selectedNodeType = "Dock";
+    for (const node of this.nodes) {
+      if (this.isNodeClicked(node, x, y)) {
+        this.selectedNode = node;
+        if (node.intermediate_node) this.selectedNodeType = 'Intermediate';
+        else if (node.Waiting_node) this.selectedNodeType = 'Waiting';
+        else if (node.charge_node) this.selectedNodeType = 'Charge';
+        else if (node.dock_node) this.selectedNodeType = 'Dock';
         // this.selectedPredockPose=node.pre_dockNodeId.toString();
-        this.currentQuaternion=node.quaternion;
+        this.currentQuaternion = node.quaternion;
         this.nodeDetails.description = this.selectedNode.nodeDescription;
-        this.nodeDetails.intermediate_node = this.selectedNode.intermediate_node;
+        this.nodeDetails.intermediate_node =
+          this.selectedNode.intermediate_node;
         this.nodeDetails.waiting_node = this.selectedNode.Waiting_node;
         this.nodeDetails.charge_node = this.selectedNode.charge_node;
         this.nodeDetails.dock_node = this.selectedNode.dock_node;
@@ -2017,11 +1957,16 @@ export class EnvmapComponent implements AfterViewInit {
 
         // this.cdRef.detectChanges();
         // Remove selected action from the dropdown options
-        let actionOpt = this.selectedNode.actions.map(action => action.actionType);
-        this.actionOptions = []
-        if(!actionOpt.includes('Move')) this.actionOptions.push({label: 'Move', value: 'Move'})
-        if(!actionOpt.includes('Dock')) this.actionOptions.push({label: 'Dock', value: 'Dock'})
-        if(!actionOpt.includes('Undock')) this.actionOptions.push({label: 'Undock', value: 'Undock'})
+        let actionOpt = this.selectedNode.actions.map(
+          (action) => action.actionType
+        );
+        this.actionOptions = [];
+        if (!actionOpt.includes('Move'))
+          this.actionOptions.push({ label: 'Move', value: 'Move' });
+        if (!actionOpt.includes('Dock'))
+          this.actionOptions.push({ label: 'Dock', value: 'Dock' });
+        if (!actionOpt.includes('Undock'))
+          this.actionOptions.push({ label: 'Undock', value: 'Undock' });
 
         this.showNodeDetailsPopup();
         return;
@@ -2047,27 +1992,29 @@ export class EnvmapComponent implements AfterViewInit {
       }
     }
     if (clickedEdge) {
-      this.currentEdge = { ...clickedEdge };  // Set the current edge details for editing
-      this.originalEdgeDetails = { ...clickedEdge };  // Store the original unmodified edge details
+      this.currentEdge = { ...clickedEdge }; // Set the current edge details for editing
+      this.originalEdgeDetails = { ...clickedEdge }; // Store the original unmodified edge details
       const distance = this.calculateDistanceBetweenNodes(
         this.currentEdge.startNodeId,
         this.currentEdge.endNodeId
       );
-  
+
       // Assign the distance to the length field if available
       if (distance !== null) {
         this.currentEdge.length = distance;
       } else {
         this.currentEdge.length = 0; // Default to 0 if nodes are not found
       }
-      this.showPopup = true;  // Show the popup with form fields
+      this.showPopup = true; // Show the popup with form fields
       return;
     }
   }
   onDeleteZone(): void {
     if (this.selectedZone) {
       // Remove the selected zone from the zones array
-      this.zones = this.zones.filter((zone) => zone.id !== this.selectedZone?.id);
+      this.zones = this.zones.filter(
+        (zone) => zone.id !== this.selectedZone?.id
+      );
       this.selectedZone = null;
 
       // Hide the popup and redraw the canvas to reflect the deletion
@@ -2120,16 +2067,16 @@ export class EnvmapComponent implements AfterViewInit {
     this.DockPopup = false;
     this.undockingDistance = '';
     this.description = '';
-    this.validationMessage=""
+    this.validationMessage = '';
     this.selectedAssetId = null;
   }
   showNodeDetailsPopup(): void {
-    this.validationError="";
+    this.validationError = '';
     // Load saved actions for the selected node
-    if(this.selectedNode)
-      this.actions = [...(this.selectedNode.actions || [])];  // Load node's saved actions or an empty array
+    if (this.selectedNode)
+      this.actions = [...(this.selectedNode.actions || [])]; // Load node's saved actions or an empty array
     this.isNodeDetailsPopupVisible = true;
-    
+
     // this.cdRef.detectChanges(); // Ensure the popup updates
   }
   private drawNode(node: Node, color: string, selected: boolean): void {
@@ -2200,16 +2147,11 @@ export class EnvmapComponent implements AfterViewInit {
       });
 
       this.orientationAngle = angleDegrees;
-      if (this.secondNode) this.secondNode.nodePosition.orientation = angleDegrees;
+      if (this.secondNode)
+        this.secondNode.nodePosition.orientation = angleDegrees;
       if (currentNode) {
         currentNode.nodePosition.orientation = angleDegrees;
       }
-
-      // console.log(
-      //   `Orientation angle with respect to the X-axis: ${angleDegrees.toFixed(
-      //     2
-      //   )}°`
-      // );
 
       // Draw the line
       ctx.beginPath();
@@ -2239,145 +2181,155 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.stroke();
     }
   }
-  selectedRobots: any[] = [ /* Selected robot(s) */ ]; // Predefined robot(s) to initialize
+  selectedRobots: any[] = [
+    /* Selected robot(s) */
+  ]; // Predefined robot(s) to initialize
 
-  positionToQuaternion(position : any) {
-    const angle = position.orientation;  // z contains the rotation angle (in radians)
+  positionToQuaternion(position: any) {
+    const angle = position.orientation; // z contains the rotation angle (in radians)
 
     // Calculate quaternion for rotation around z-axis
     const quaternion = {
-        x: 0,  // No rotation around x-axis
-        y: 0,  // No rotation around y-axis
-        z: Math.sin(angle / 2),  // Rotation around z-axis
-        w: Math.cos(angle / 2)   // Scalar part of the quaternion
+      x: 0, // No rotation around x-axis
+      y: 0, // No rotation around y-axis
+      z: Math.sin(angle / 2), // Rotation around z-axis
+      w: Math.cos(angle / 2), // Scalar part of the quaternion
     };
 
     return quaternion;
-}
-generateRobotId(): string {
-  return 'robot_' + (this.robos.length + 1);
-}
-// Method to initialize the selected robot and log its details
-async initializeRobot(): Promise<void> {
-  let ratio = this.ratio ? this.ratio : 1;
-  let quaternion = { x:0, y:0, z:0, w:1 };
-  const transformedY = this.overlayCanvas.nativeElement.height - this.robotToDelete.pos.y;
-  this.robotToDelete.pos.x = this.robotToDelete.pos.x * ratio;
-  this.robotToDelete.pos.y = transformedY * ratio;
+  }
+  generateRobotId(): string {
+    return 'robot_' + (this.robos.length + 1);
+  }
+  // Method to initialize the selected robot and log its details
+  async initializeRobot(): Promise<void> {
+    let ratio = this.ratio ? this.ratio : 1;
+    let quaternion = { x: 0, y: 0, z: 0, w: 1 };
+    const transformedY =
+      this.overlayCanvas.nativeElement.height - this.robotToDelete.pos.y;
+    this.robotToDelete.pos.x = this.robotToDelete.pos.x * ratio;
+    this.robotToDelete.pos.y = transformedY * ratio;
 
-  // quaternion = this.positionToQuaternion(this.robotToDelete.pos);
-  let initializeRobo = {
-    id : this.robotToDelete.roboDet.id,
-    pose:{
-      position: {
-        x: this.robotToDelete.pos.x,
-        y: this.robotToDelete.pos.y,
-        z: this.robotToDelete.pos.orientation
+    // quaternion = this.positionToQuaternion(this.robotToDelete.pos);
+    let initializeRobo = {
+      id: this.robotToDelete.roboDet.id,
+      pose: {
+        position: {
+          x: this.robotToDelete.pos.x,
+          y: this.robotToDelete.pos.y,
+          z: this.robotToDelete.pos.orientation,
         },
-      orientation: quaternion
-    }
-  }
+        orientation: quaternion,
+      },
+    };
 
-  let response = await fetch(`http://${environment.API_URL}:${environment.PORT}/stream-data/initialize-robot`,{
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      mapId : this.selectedMap.id,
-      initializeRobo : initializeRobo
-    }),
-  })
-  let data = await response.json();
-  console.log(data);
-  // this.cancelDelete();
-  if(data.isInitialized){
-    alert('robo Initialized!');
-    return;
-  }
-  if(data.msg) alert(data.msg)
-}
-
-placeRobots(selectedRobots: any[]): void {
-  if (!this.overlayCanvas) return;
-  const canvas = this.overlayCanvas.nativeElement;
-  console.log(selectedRobots,"hey");
-  
-  selectedRobots.forEach((robot) => {
-    let x = 0 + this.roboInitOffset;
-    let y = canvas.height - 100;
-    const orientation = 90; // Initial orientation
-
-    // Check if the robot is already in the map
-    if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'Robot already in map!'
-      });
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/initialize-robot`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mapId: this.selectedMap.id,
+          initializeRobo: initializeRobo,
+        }),
+      }
+    );
+    let data = await response.json();
+    console.log(data);
+    // this.cancelDelete();
+    if (data.isInitialized) {
+      alert('robo Initialized!');
       return;
     }
-
-    // Check if the initial position is occupied
-    if (this.isPositionOccupied(x, y, 'robot')) {
-      // Find a nearby available position
-      const spacing = 50; // Spacing distance to move the robot if position is occupied
-      let attempts = 0;
-
-      while (this.isPositionOccupied(x, y, 'robot') && attempts < 10) {
-        // Try moving the robot to the right by a certain spacing distance
-        x += spacing;
-        // If x exceeds canvas width, reset x and move y upwards
-        if (x > canvas.width) {
-          x = 0 + this.roboInitOffset;
-          y -= spacing; // Move upwards
-        }
-        attempts++;
-      }
-    }
-        
-   
-    // Create and store robot details with the new orientation
-    const robo: Robo = {
-      roboDet: robot, // Add orientation to roboDet
-      pos: { x: x, y: y, orientation } // Store orientation in pos as well
-    };
-    this.robos.push(robo);
-    console.log(this.robos,"robot")
-    this.roboInitOffset += 60; // Update offset for next robot placement
-    this.plotRobo(x, y, false, orientation); // Pass the orientation to plotRobo
-  });
-}
-
-plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number = 0): void {
-  const image = this.robotImages['robotB'];
-  const canvas = this.overlayCanvas.nativeElement;
-  const ctx = canvas.getContext('2d');
-
-  if (image && ctx) {
-    const imageSize = 20;
-    ctx.save(); // Save the current state of the canvas before applying transformations
-    // Translate to the robot's position and rotate by the orientation
-    ctx.translate(x, y);
-    ctx.rotate(orientation); // Rotate by the specified orientation (90 degrees)
-
-    if (!isSelected) {
-      ctx.beginPath();
-      ctx.arc(0, 0, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
-      ctx.fillStyle = 'rgba(255, 0, 0, 0.4)'; // Semi-transparent red
-      ctx.fill();
-      ctx.closePath();
-    }
-    // Draw the robot image, which is now rotated
-    ctx.drawImage(
-      image,
-      -imageSize / 2, // Adjust for rotation
-      -imageSize / 2,
-      imageSize * 1.3,
-      imageSize
-    );
-    ctx.restore(); // Restore the original canvas state
+    if (data.msg) alert(data.msg);
   }
-}
+
+  placeRobots(selectedRobots: any[]): void {
+    if (!this.overlayCanvas) return;
+    const canvas = this.overlayCanvas.nativeElement;
+    console.log(selectedRobots, 'hey');
+
+    selectedRobots.forEach((robot) => {
+      let x = 0 + this.roboInitOffset;
+      let y = canvas.height - 100;
+      const orientation = 90; // Initial orientation
+
+      // Check if the robot is already in the map
+      if (this.robos.some((robo) => robo.roboDet.id === robot.id)) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Robot already in map!',
+        });
+        return;
+      }
+
+      // Check if the initial position is occupied
+      if (this.isPositionOccupied(x, y, 'robot')) {
+        // Find a nearby available position
+        const spacing = 50; // Spacing distance to move the robot if position is occupied
+        let attempts = 0;
+
+        while (this.isPositionOccupied(x, y, 'robot') && attempts < 10) {
+          // Try moving the robot to the right by a certain spacing distance
+          x += spacing;
+          // If x exceeds canvas width, reset x and move y upwards
+          if (x > canvas.width) {
+            x = 0 + this.roboInitOffset;
+            y -= spacing; // Move upwards
+          }
+          attempts++;
+        }
+      }
+
+      // Create and store robot details with the new orientation
+      const robo: Robo = {
+        roboDet: robot, // Add orientation to roboDet
+        pos: { x: x, y: y, orientation }, // Store orientation in pos as well
+      };
+      this.robos.push(robo);
+      console.log(this.robos, 'robot');
+      this.roboInitOffset += 60; // Update offset for next robot placement
+      this.plotRobo(x, y, false, orientation); // Pass the orientation to plotRobo
+    });
+  }
+
+  plotRobo(
+    x: number,
+    y: number,
+    isSelected: boolean = false,
+    orientation: number = 0
+  ): void {
+    const image = this.robotImages['robotB'];
+    const canvas = this.overlayCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+
+    if (image && ctx) {
+      const imageSize = 20;
+      ctx.save(); // Save the current state of the canvas before applying transformations
+      // Translate to the robot's position and rotate by the orientation
+      ctx.translate(x, y);
+      ctx.rotate(orientation); // Rotate by the specified orientation (90 degrees)
+
+      if (!isSelected) {
+        ctx.beginPath();
+        ctx.arc(0, 0, imageSize * 1, 0, 2 * Math.PI); // Draw a circle centered on the robot
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.4)'; // Semi-transparent red
+        ctx.fill();
+        ctx.closePath();
+      }
+      // Draw the robot image, which is now rotated
+      ctx.drawImage(
+        image,
+        -imageSize / 2, // Adjust for rotation
+        -imageSize / 2,
+        imageSize * 1.3,
+        imageSize
+      );
+      ctx.restore(); // Restore the original canvas state
+    }
+  }
 
   drawText(
     ctx: CanvasRenderingContext2D,
@@ -2396,50 +2348,57 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     let assetOccupied = false;
 
     // Single node or asset placement logic
-    if (type !== 'node') {    
-      nodeOccupied = this.nodes.some((node) => {          
-          const distance = Math.sqrt(Math.pow(node.nodePosition.x - x, 2) + Math.pow(node.nodePosition.y - y, 2));
-          return distance < 25; // Threshold for proximity 
+    if (type !== 'node') {
+      nodeOccupied = this.nodes.some((node) => {
+        const distance = Math.sqrt(
+          Math.pow(node.nodePosition.x - x, 2) +
+            Math.pow(node.nodePosition.y - y, 2)
+        );
+        return distance < 25; // Threshold for proximity
       });
     }
-  
+
     if (type !== 'asset') {
       assetOccupied = this.assets.some((asset) => {
-        const distance = Math.sqrt(Math.pow(asset.x - x, 2) + Math.pow(asset.y - y, 2));
+        const distance = Math.sqrt(
+          Math.pow(asset.x - x, 2) + Math.pow(asset.y - y, 2)
+        );
         return distance < 20; // Threshold for proximity
       });
     }
-  
+
     // Check if any robot is already occupying the position
     const roboOccupied = this.robos.some((robo) => {
-      const distance = Math.sqrt(Math.pow(robo.pos.x - x, 2) + Math.pow(robo.pos.y - y, 2));
+      const distance = Math.sqrt(
+        Math.pow(robo.pos.x - x, 2) + Math.pow(robo.pos.y - y, 2)
+      );
       return distance < 30; // Threshold for robots proximity
     });
-  
+
     return nodeOccupied || assetOccupied || roboOccupied;
   }
-  storeNodestoLocal(){
-    if(!this.sessionService.isMapInEdit())return; 
+  storeNodestoLocal() {
+    if (!this.sessionService.isMapInEdit()) return;
     let mapDetails = this.sessionService.getMapDetails();
-    mapDetails.nodes=this.nodes;
+    mapDetails.nodes = this.nodes;
     this.sessionService.storeMapDetails(mapDetails);
   }
-  storeEdgestoLocal(){
-    if(!this.sessionService.isMapInEdit())return; 
+  storeEdgestoLocal() {
+    if (!this.sessionService.isMapInEdit()) return;
     let mapDetails = this.sessionService.getMapDetails();
-    mapDetails.edges=this.edges;
+    mapDetails.edges = this.edges;
     this.sessionService.storeMapDetails(mapDetails);
   }
-  storeZonestoLocal(){
-    if(!this.sessionService.isMapInEdit())return; 
+  storeZonestoLocal() {
+    if (!this.sessionService.isMapInEdit()) return;
     let mapDetails = this.sessionService.getMapDetails();
-    mapDetails.zones=this.zones;
+    mapDetails.zones = this.zones;
     this.sessionService.storeMapDetails(mapDetails);
   }
-  storeAssetstoLocal(){
-    if(!this.sessionService.isMapInEdit())return; 
+  storeAssetstoLocal() {
+    if (!this.sessionService.isMapInEdit()) return;
     let mapDetails = this.sessionService.getMapDetails();
-    mapDetails.assets=this.assets;
+    mapDetails.assets = this.assets;
     this.sessionService.storeMapDetails(mapDetails);
   }
   plotSingleNode(x: number, y: number): void {
@@ -2451,7 +2410,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.messageService.add({
         severity: 'warn',
         summary: 'Please choose different Location',
-        detail: 'This position is already occupies by a node or asset.'
+        detail: 'This position is already occupies by a node or asset.',
       });
       return;
     }
@@ -2463,13 +2422,13 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         nodeDescription: '',
         released: true,
         nodePosition: { x: x, y: transformedY, orientation: 0 },
-        quaternion:{ x: 0, y: 0,z:0,w:1},
+        quaternion: { x: 0, y: 0, z: 0, w: 1 },
         intermediate_node: false,
         Waiting_node: false,
         charge_node: false,
-        dock_node:false,
-        pre_dockNodeId:null,
-        Un_dockNodeId:null,
+        dock_node: false,
+        pre_dockNodeId: null,
+        Un_dockNodeId: null,
         actions: [],
       },
       color,
@@ -2484,25 +2443,29 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       actions: [],
       intermediate_node: false,
       waiting_node: false,
-      dock_node:false,
-      charge_node:false
+      dock_node: false,
+      charge_node: false,
     };
-    let quaternion=this.ToQuaternion_(0,0,this.orientationAngle);
+    let quaternion = this.ToQuaternion_(0, 0, this.orientationAngle);
 
     let node = {
       nodeId: this.nodeCounter.toString(),
       sequenceId: this.nodeCounter,
       nodeDescription: '',
       released: true,
-      nodePosition: { x: x , y:  transformedY , orientation: this.orientationAngle },
-      quaternion:quaternion,
+      nodePosition: {
+        x: x,
+        y: transformedY,
+        orientation: this.orientationAngle,
+      },
+      quaternion: quaternion,
       actions: [],
       intermediate_node: false,
       Waiting_node: false,
       charge_node: false,
       dock_node: false,
-      pre_dockNodeId:null,
-      Un_dockNodeId:null
+      pre_dockNodeId: null,
+      Un_dockNodeId: null,
     };
 
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
@@ -2525,7 +2488,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       'mouseup',
       this.onMouseUp.bind(this)
     );
-
   }
 
   setPlottingMode(mode: 'single' | 'multi'): void {
@@ -2548,175 +2510,176 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const transformedY = canvas.height - y; // Flip the Y-axis
 
     if (this.isPositionOccupied(x, y, 'node')) {
-        // alert('This position is already occupied by a node or asset. Please choose a different location.');
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Please choose different Location',
-          detail: 'This position is already occupies by a node or asset.'
-        });
-        return;
+      // alert('This position is already occupied by a node or asset. Please choose a different location.');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Please choose different Location',
+        detail: 'This position is already occupies by a node or asset.',
+      });
+      return;
     }
 
     const color = 'blue'; // Color for multi-nodes
     this.drawNode(
-        {
-            nodeId: '',
-            sequenceId: 0,
-            nodeDescription: '',
-            released: true,
-            nodePosition: { x: x, y: transformedY, orientation: 0 },
-            quaternion:{ x: 0, y: 0,z:0,w:1},
-            actions: [],
-            intermediate_node: false,
-            Waiting_node: false,
-            charge_node: false,
-            dock_node: false,
-            pre_dockNodeId:null,
-            Un_dockNodeId:null
-        },
-        color,
-        false
+      {
+        nodeId: '',
+        sequenceId: 0,
+        nodeDescription: '',
+        released: true,
+        nodePosition: { x: x, y: transformedY, orientation: 0 },
+        quaternion: { x: 0, y: 0, z: 0, w: 1 },
+        actions: [],
+        intermediate_node: false,
+        Waiting_node: false,
+        charge_node: false,
+        dock_node: false,
+        pre_dockNodeId: null,
+        Un_dockNodeId: null,
+      },
+      color,
+      false
     );
 
     if (this.firstNode === null) {
-        // Plotting the first node
-        let firstnode = {
-            nodeId: this.nodeCounter.toString(),
-            sequenceId: this.nodeCounter,
-            nodeDescription: '',
-            released: true,
-            nodePosition: { x: x, y: transformedY, orientation: 0 },
-            quaternion:{ x: 0, y: 0,z:0,w:1},
-            actions: [],
-            intermediate_node: false,
-            Waiting_node: false,
-            charge_node: false,
-            dock_node: false,
-            pre_dockNodeId:null,
-            Un_dockNodeId:null
-        };
-        this.firstNode = firstnode;
-        this.nodes.push(firstnode);
-        this.storeNodestoLocal();
+      // Plotting the first node
+      let firstnode = {
+        nodeId: this.nodeCounter.toString(),
+        sequenceId: this.nodeCounter,
+        nodeDescription: '',
+        released: true,
+        nodePosition: { x: x, y: transformedY, orientation: 0 },
+        quaternion: { x: 0, y: 0, z: 0, w: 1 },
+        actions: [],
+        intermediate_node: false,
+        Waiting_node: false,
+        charge_node: false,
+        dock_node: false,
+        pre_dockNodeId: null,
+        Un_dockNodeId: null,
+      };
+      this.firstNode = firstnode;
+      this.nodes.push(firstnode);
+      this.storeNodestoLocal();
     } else if (this.secondNode === null) {
-        // Plotting the second node
-        let secondnode = {
-            nodeId: this.nodeCounter.toString(),
-            sequenceId: this.nodeCounter,
-            nodeDescription: '',
-            released: true,
-            nodePosition: { x: x, y: transformedY, orientation: 0 },
-            quaternion:{ x: 0, y: 0,z:0,w:1},
-            actions: [],
-            intermediate_node: false,
-            Waiting_node: false,
-            charge_node: false,
-            dock_node: false,
-            pre_dockNodeId:null,
-            Un_dockNodeId:null
-        };
-        this.secondNode = secondnode;
-        this.currMulNode.push(this.firstNode);
-        this.currMulNode.push(this.secondNode);
+      // Plotting the second node
+      let secondnode = {
+        nodeId: this.nodeCounter.toString(),
+        sequenceId: this.nodeCounter,
+        nodeDescription: '',
+        released: true,
+        nodePosition: { x: x, y: transformedY, orientation: 0 },
+        quaternion: { x: 0, y: 0, z: 0, w: 1 },
+        actions: [],
+        intermediate_node: false,
+        Waiting_node: false,
+        charge_node: false,
+        dock_node: false,
+        pre_dockNodeId: null,
+        Un_dockNodeId: null,
+      };
+      this.secondNode = secondnode;
+      this.currMulNode.push(this.firstNode);
+      this.currMulNode.push(this.secondNode);
 
-        this.nodes.push(secondnode);
-        this.storeNodestoLocal();
+      this.nodes.push(secondnode);
+      this.storeNodestoLocal();
 
-        this.isDrawingLine = true;
-        this.lineStartX = x;
-        this.lineStartY = y;
+      this.isDrawingLine = true;
+      this.lineStartX = x;
+      this.lineStartY = y;
 
-        this.overlayCanvas.nativeElement.addEventListener(
-            'mousemove',
-            this.onMouseMove.bind(this)
-        );
-        this.overlayCanvas.nativeElement.addEventListener(
-            'mouseup',
-            this.onMouseUp.bind(this)
-        );
+      this.overlayCanvas.nativeElement.addEventListener(
+        'mousemove',
+        this.onMouseMove.bind(this)
+      );
+      this.overlayCanvas.nativeElement.addEventListener(
+        'mouseup',
+        this.onMouseUp.bind(this)
+      );
 
-        this.isPlottingEnabled = false; // Disable further plotting after two nodes
-        this.isMultiNodePlotting = false;
+      this.isPlottingEnabled = false; // Disable further plotting after two nodes
+      this.isMultiNodePlotting = false;
     }
-    //yet to uncomment..
-    // else {
-    //     // Plotting additional nodes
-    //     let node = {
-    //         nodeId: this.nodeCounter.toString(),
-    //         sequenceId: this.nodeCounter,
-    //         nodeDescription: '',
-    //         released: true,
-    //         nodePosition: {
-    //             x: x,
-    //             y: transformedY,
-    //             orientation: this.secondNode.nodePosition.orientation,
-    //         },
-    //         actions: [],
-    //         intermediate_node: false,
-    //         Waiting_node: false,
-    //     };
-    //     this.nodes.push(node);
-    // }
-    
+
     this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
     this.nodeCounter++; // Increment the node counter
   }
   onInputChanged(): void {
     this.isEnterButtonVisible =
       this.numberOfIntermediateNodes !== null &&
-      this.numberOfIntermediateNodes >0;
+      this.numberOfIntermediateNodes > 0;
   }
   plotIntermediateNodes(): void {
     if (!this.direction) {
       this.isDirectionSelected = false; // Show validation message
       return; // Do not proceed if direction is not selected
     } else {
-        this.isDirectionSelected = true; // Reset validation flag
+      this.isDirectionSelected = true; // Reset validation flag
     }
     if (this.numberOfIntermediateNodes && this.numberOfIntermediateNodes > 0) {
-      if (this.firstNode && this.secondNode && this.numberOfIntermediateNodes > 0) {
-        let quaternion=this.ToQuaternion_(0,0,this.secondNode!.nodePosition.orientation);
-        this.nodes=this.nodes.map((node)=>{
-          if(node.nodeId===this.firstNode?.nodeId){
-            node.nodePosition.orientation=this.secondNode!.nodePosition.orientation;
-            node.quaternion=quaternion;
+      if (
+        this.firstNode &&
+        this.secondNode &&
+        this.numberOfIntermediateNodes > 0
+      ) {
+        let quaternion = this.ToQuaternion_(
+          0,
+          0,
+          this.secondNode!.nodePosition.orientation
+        );
+        this.nodes = this.nodes.map((node) => {
+          if (node.nodeId === this.firstNode?.nodeId) {
+            node.nodePosition.orientation =
+              this.secondNode!.nodePosition.orientation;
+            node.quaternion = quaternion;
           }
           return node;
-        }
-        )
-        const dx = (this.secondNode.nodePosition.x - this.firstNode.nodePosition.x) / (this.numberOfIntermediateNodes + 1);
-        const dy = (this.secondNode.nodePosition.y - this.firstNode.nodePosition.y) / (this.numberOfIntermediateNodes + 1);
+        });
+        const dx =
+          (this.secondNode.nodePosition.x - this.firstNode.nodePosition.x) /
+          (this.numberOfIntermediateNodes + 1);
+        const dy =
+          (this.secondNode.nodePosition.y - this.firstNode.nodePosition.y) /
+          (this.numberOfIntermediateNodes + 1);
 
         for (let i = 1; i <= this.numberOfIntermediateNodes; i++) {
           const x = this.firstNode.nodePosition.x + i * dx;
           const y = this.firstNode.nodePosition.y + i * dy;
           const transformedY = this.overlayCanvas.nativeElement.height - y; // Flip the Y-axis
 
-          if(this.isPositionOccupied(x, transformedY, 'node')){
+          if (this.isPositionOccupied(x, transformedY, 'node')) {
             // alert('Nodes cannot plotted as there are nodes or assets are between them');
             this.messageService.add({
               severity: 'warn',
               summary: 'Warning',
-              detail: 'Nodes Cannot plotted as there are nodes or assets are between them'
+              detail:
+                'Nodes Cannot plotted as there are nodes or assets are between them',
             });
-            this.nodes = this.nodes.filter(node =>
-              !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
+            this.nodes = this.nodes.filter(
+              (node) =>
+                !this.currMulNode.some(
+                  (mulNode) => mulNode.nodeId === node.nodeId
+                )
             );
             this.closeIntermediateNodesDialog();
             this.redrawCanvas();
             return;
           }
-          if(this.isOverLappingWithOtherNodesInPlotting(x, y)){
+          if (this.isOverLappingWithOtherNodesInPlotting(x, y)) {
             // alert('Nodes cannot plotted as there are nodes or assets are between them');
             this.messageService.add({
               severity: 'warn',
               summary: 'Warning',
-              detail: 'Nodes cannot plotted as there are nodes or assets are between them.'
+              detail:
+                'Nodes cannot plotted as there are nodes or assets are between them.',
             });
-            this.nodes = this.nodes.filter(node =>
-              !this.currMulNode.some(mulNode => mulNode.nodeId === node.nodeId)
+            this.nodes = this.nodes.filter(
+              (node) =>
+                !this.currMulNode.some(
+                  (mulNode) => mulNode.nodeId === node.nodeId
+                )
             );
-            this.closeIntermediateNodesDialog()
+            this.closeIntermediateNodesDialog();
             this.redrawCanvas();
             return;
           }
@@ -2726,20 +2689,23 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
             sequenceId: this.nodeCounter,
             nodeDescription: 'Intermediate Node',
             released: true,
-            nodePosition: { x: x, y: y, orientation: this.secondNode!.nodePosition.orientation },
-            quaternion:quaternion,
+            nodePosition: {
+              x: x,
+              y: y,
+              orientation: this.secondNode!.nodePosition.orientation,
+            },
+            quaternion: quaternion,
             actions: [],
             intermediate_node: true, // Marking it as intermediate
             Waiting_node: false,
             charge_node: false,
             dock_node: false,
-            pre_dockNodeId:null,
-            Un_dockNodeId:null
+            pre_dockNodeId: null,
+            Un_dockNodeId: null,
           };
 
           this.nodes.push(node);
           this.currMulNode.push(node);
-          
 
           // Draw the node
           this.drawNode(node, 'blue', false);
@@ -2748,7 +2714,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
           const canvas = this.overlayCanvas.nativeElement;
           const ctx = canvas.getContext('2d')!;
 
-          console.log(`Intermediate Node ${this.nodeCounter} plotted at:`, { x, y });
+          console.log(`Intermediate Node ${this.nodeCounter} plotted at:`, {
+            x,
+            y,
+          });
 
           this.Nodes.push({ ...this.nodeDetails, type: 'multi' });
 
@@ -2756,20 +2725,20 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         }
         this.storeNodestoLocal();
       }
-      this.plotMulNodesEdges()// call here..
+      this.plotMulNodesEdges(); // call here..
       this.closeIntermediateNodesDialog();
     }
   }
 
-  plotMulNodesEdges(){
+  plotMulNodesEdges() {
     if (this.currMulNode.length >= 2) {
       let secondValue = this.currMulNode[1];
       this.currMulNode.splice(1, 1);
       this.currMulNode.push(secondValue);
     }
     let arr = this.currMulNode;
-    for(let i = 0; i < arr.length-1; i++){
-      let edge : Edge;
+    for (let i = 0; i < arr.length - 1; i++) {
+      let edge: Edge;
 
       // console.log(this.currMulNode);
       edge = {
@@ -2778,7 +2747,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         edgeDescription: '',
         released: false,
         startNodeId: arr[i].nodeId,
-        endNodeId: arr[i+1].nodeId,
+        endNodeId: arr[i + 1].nodeId,
         maxSpeed: 0,
         maxHeight: 0,
         minHeight: 0,
@@ -2806,19 +2775,28 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     if (!this.nodeDetails.description) {
       this.validationError = 'Node Description is required.';
     } else if (this.selectedAction === 'Move') {
-      if (!this.moveParameters.maxLinearVelocity || !this.moveParameters.maxAngularVelocity) {
+      if (
+        !this.moveParameters.maxLinearVelocity ||
+        !this.moveParameters.maxAngularVelocity
+      ) {
         this.validationError = 'All Move Action fields are required.';
       } else {
         this.validationError = null; // Clear error if all fields are valid
       }
     } else if (this.selectedAction === 'Dock') {
-      if (!this.dockParameters.maxAngularVelocity || !this.dockParameters.goalOffsetX) {
+      if (
+        !this.dockParameters.maxAngularVelocity ||
+        !this.dockParameters.goalOffsetX
+      ) {
         this.validationError = 'All Dock Action fields are required.';
       } else {
         this.validationError = null;
       }
     } else if (this.selectedAction === 'Undock') {
-      if (!this.undockParameters.maxLinearVelocity || !this.undockParameters.maxToleranceAtGoalX) {
+      if (
+        !this.undockParameters.maxLinearVelocity ||
+        !this.undockParameters.maxToleranceAtGoalX
+      ) {
         this.validationError = 'All Undock Action fields are required.';
       } else {
         this.validationError = null;
@@ -2829,58 +2807,57 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
   get nodePositionX(): number {
     if (this.selectedNode?.nodePosition && this.ratio) {
-      const calculatedX = this.selectedNode.nodePosition.x * this.ratio - this.origin.x;
+      const calculatedX =
+        this.selectedNode.nodePosition.x * this.ratio - this.origin.x;
       return parseFloat(calculatedX.toFixed(3));
     }
     return this.selectedNode?.nodePosition?.x ?? 0;
   }
-  
+
   set nodePositionX(value: number) {
     // console.log(this.ratio);
-    
+
     if (this.selectedNode?.nodePosition && this.ratio) {
-      console.log(this.ratio,value,this.origin.x);
-      
       // Reverse the transformation and update the node position
-      this.selectedNode.nodePosition.x = (value / this.ratio) - this.origin.x;
-      console.log("hey",this.selectedNode.nodePosition.x);
-      
+      this.selectedNode.nodePosition.x = value / this.ratio - this.origin.x;
     }
-  
   }
-  
+
   get nodePositionY(): number {
     if (this.selectedNode?.nodePosition && this.ratio) {
-      const calculatedY = this.selectedNode.nodePosition.y * this.ratio - this.origin.y;
+      const calculatedY =
+        this.selectedNode.nodePosition.y * this.ratio - this.origin.y;
       return parseFloat(calculatedY.toFixed(3));
     }
     return this.selectedNode?.nodePosition?.y ?? 0;
   }
-  
+
   set nodePositionY(value: number) {
-    if (this.selectedNode?.nodePosition ) {
+    if (this.selectedNode?.nodePosition) {
       // Reverse the transformation and update the node position
-      this.selectedNode.nodePosition.y = (value / this.ratio!) - this.origin.y;
+      this.selectedNode.nodePosition.y = value / this.ratio! - this.origin.y;
     }
   }
-  
+
   get orientation(): number {
-    return parseFloat((this.selectedNode?.nodePosition?.orientation ?? 0).toFixed(3));
+    return parseFloat(
+      (this.selectedNode?.nodePosition?.orientation ?? 0).toFixed(3)
+    );
   }
-  
+
   set orientation(value: number) {
     if (this.selectedNode?.nodePosition) {
       this.selectedNode.nodePosition.orientation = value;
     }
   }
-  
+
   closeIntermediateNodesDialog(): void {
     this.showIntermediateNodesDialog = false;
     this.firstNode = null;
     this.secondNode = null;
     this.numberOfIntermediateNodes = null;
     this.currMulNode = [];
-    this.onInputChanged ();
+    this.onInputChanged();
   }
   private onNodeClick(x: number, y: number): void {
     // Find the clicked node
@@ -2898,18 +2875,20 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         this.drawNode(clickedNode, 'red', true); // Highlight the second node
 
         // Check if the edge between the selected nodes already exists
-        const existingEdge = this.edges.find(
-          (edge) => {
-            let cond1 = edge.startNodeId === this.firstNode?.nodeId && edge.endNodeId === this.secondNode?.nodeId;
-            let cond2 = edge.startNodeId === this.secondNode?.nodeId && edge.endNodeId === this.firstNode?.nodeId;
-            return cond1 || cond2;
-          }
-        );
+        const existingEdge = this.edges.find((edge) => {
+          let cond1 =
+            edge.startNodeId === this.firstNode?.nodeId &&
+            edge.endNodeId === this.secondNode?.nodeId;
+          let cond2 =
+            edge.startNodeId === this.secondNode?.nodeId &&
+            edge.endNodeId === this.firstNode?.nodeId;
+          return cond1 || cond2;
+        });
 
         // If the edge already exists in the same direction, show alert
         // if (existingEdge) alert('Edge already exists!');
 
-        if(!existingEdge){
+        if (!existingEdge) {
           // If no existing edge, proceed to draw
           if (this.direction === 'uni') {
             let edge: Edge;
@@ -3008,7 +2987,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     startNodeId: string,
     endNodeId: string,
     nodeRadius: number = 10, // Define a radius or threshold value for nodes
-    threshold: number = 5   // Define a padding/threshold for the line
+    threshold: number = 5 // Define a padding/threshold for the line
   ): void {
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
@@ -3043,11 +3022,21 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      this.drawArrowhead(ctx, { x: startX, y: startY }, { x: endX, y: endY }, direction);
+      this.drawArrowhead(
+        ctx,
+        { x: startX, y: startY },
+        { x: endX, y: endY },
+        direction
+      );
 
       if (direction === 'bi') {
         // Draw the reverse arrow for bi-directional
-        this.drawArrowhead(ctx, { x: endX, y: endY }, { x: startX, y: startY }, direction);
+        this.drawArrowhead(
+          ctx,
+          { x: endX, y: endY },
+          { x: startX, y: startY },
+          direction
+        );
       }
 
       // Draw edge ID in the middle of the line
@@ -3115,8 +3104,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   resetSelection(): void {
     this.firstNode = null;
     this.secondNode = null;
-    this.direction = "";
-    this.selectedNodeId = '';  // Reset the selected node ID
+    this.direction = '';
+    this.selectedNodeId = ''; // Reset the selected node ID
   }
   private deselectNode(): void {
     if (this.selectedNode) {
@@ -3136,12 +3125,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
 
   private plotAsset(x: number, y: number, assetType: string): void {
-
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     const image = this.assetImages[assetType];
     const transformedY = canvas.height - y; // Flip the Y-axis
-    
 
     if (image && ctx) {
       const imageSize = 50; // Set image size
@@ -3195,7 +3182,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       ctx.arc(x, y, 4, 0, 2 * Math.PI);
       ctx.fillStyle = isFirstPoint ? 'blue' : 'red'; // Violet for the first point, red for others
       ctx.fill();
-      
     } else {
       console.error('Failed to get canvas context');
     }
@@ -3277,7 +3263,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     // No separating axis found, polygons intersect
     return true;
   }
-  private projectPolygon(polygon: any[], axis: { x: number; y: number }): { min: number; max: number } {
+  private projectPolygon(
+    polygon: any[],
+    axis: { x: number; y: number }
+  ): { min: number; max: number } {
     if (!polygon || polygon.length === 0) {
       // console.error("Invalid polygon data");
       return { min: 0, max: 0 };
@@ -3287,9 +3276,13 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     let max = min;
 
     for (let i = 1; i < polygon.length; i++) {
-      if (!polygon[i] || polygon[i].x === undefined || polygon[i].y === undefined) {
-        console.error("Invalid polygon point:", polygon[i]);
-        continue;  // Skip invalid points
+      if (
+        !polygon[i] ||
+        polygon[i].x === undefined ||
+        polygon[i].y === undefined
+      ) {
+        console.error('Invalid polygon point:', polygon[i]);
+        continue; // Skip invalid points
       }
 
       const projection = polygon[i].x * axis.x + polygon[i].y * axis.y;
@@ -3319,7 +3312,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     return [minX, minY, maxX, maxY];
   }
   onZoneTypeSelected(zoneType: ZoneType): void {
-
     this.zoneType = zoneType;
 
     if (this.isZoneOverlapping(this.plottedPoints)) {
@@ -3327,15 +3319,14 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
-        detail: 'Zone overlaps with an existing zone!.'
+        detail: 'Zone overlaps with an existing zone!.',
       });
       return; // Do not allow drawing
-    }
-    else{
+    } else {
       this.messageService.add({
         severity: 'info',
         summary: 'information on zone',
-        detail: `${this.zoneType} is plotted`
+        detail: `${this.zoneType} is plotted`,
       });
     }
 
@@ -3380,25 +3371,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   openRobotPopup(): void {
     this.isRobotPopupVisible = true;
   }
-  // removeRobots(): void {
-  //   // Check if there are any robots to remove
-  //   if (this.robos.length === 0) {
-  //     console.log("No robots to remove.");
-  //     return; // Exit the function if no robots are present
-  //   }
 
-  //   // If robots are present, show the confirmation
-  //   this.isConfirmationVisible = true;
-
-  //   // If confirmed, proceed with removing the selected robots
-  //   // Uncomment and modify based on your confirmation logic
-  //   // this.robos = this.robos.filter(
-  //   //   (robo) => robo.roboDet.id !== this.selectedRobo?.roboDet.id
-  //   // );
-
-  //   // Redraw the canvas after removing robots
-  //   // this.redrawCanvas();
-  // }
   showZoneTypePopup(): void {
     this.zoneType = null;
     this.isPopupVisible = true;
@@ -3408,7 +3381,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
   private originalZonePointPosition: { x: number; y: number } | null = null;
   // Helper function to check if a node overlaps with another node or asset
-  drawSelectionBox(start: { x: number, y: number }, end: { x: number, y: number }): void {
+  drawSelectionBox(
+    start: { x: number; y: number },
+    end: { x: number; y: number }
+  ): void {
     const ctx = this.overlayCanvas.nativeElement.getContext('2d');
     if (!ctx) return;
 
@@ -3430,7 +3406,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const threshold = 30; // Adjust this value as needed for the distance to consider as overlap
     for (const robo of this.robos) {
       if (robo.roboDet.id !== currentRobo.roboDet.id) {
-        const distance = Math.sqrt(Math.pow(robo.pos.x - currentRobo.pos.x, 2) + Math.pow(robo.pos.y - currentRobo.pos.y, 2));
+        const distance = Math.sqrt(
+          Math.pow(robo.pos.x - currentRobo.pos.x, 2) +
+            Math.pow(robo.pos.y - currentRobo.pos.y, 2)
+        );
         if (distance < threshold) {
           return true; // Overlap found
         }
@@ -3438,11 +3417,14 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     }
     return false; // No overlap
   }
-  isOverlappingwithOtherAssets(currAsset: asset):boolean{
+  isOverlappingwithOtherAssets(currAsset: asset): boolean {
     let threshold = 30; // Adjust this value as needed for the precisson..
     for (const asset of this.assets) {
       if (asset.id !== currAsset.id) {
-        const distance = Math.sqrt(Math.pow(asset.x - currAsset.x, 2) + Math.pow(asset.y - currAsset.y, 2));
+        const distance = Math.sqrt(
+          Math.pow(asset.x - currAsset.x, 2) +
+            Math.pow(asset.y - currAsset.y, 2)
+        );
         if (distance < threshold) {
           return true; // Overlap found
         }
@@ -3450,11 +3432,14 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     }
     return false; // No overlap
   }
-  isOverLappingWithOtherNodes(currNode : Node):boolean{
+  isOverLappingWithOtherNodes(currNode: Node): boolean {
     const threshold = 15;
     for (const node of this.nodes) {
       if (node.nodeId !== currNode.nodeId) {
-        const distance = Math.sqrt(Math.pow(node.nodePosition.x - currNode.nodePosition.x, 2) + Math.pow(node.nodePosition.y - currNode.nodePosition.y, 2));
+        const distance = Math.sqrt(
+          Math.pow(node.nodePosition.x - currNode.nodePosition.x, 2) +
+            Math.pow(node.nodePosition.y - currNode.nodePosition.y, 2)
+        );
         if (distance < threshold) {
           return true;
         }
@@ -3462,14 +3447,20 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     }
     return false;
   }
-  isOverLappingWithOtherNodesInPlotting(currNodex : number, currNodey : number):boolean{
+  isOverLappingWithOtherNodesInPlotting(
+    currNodex: number,
+    currNodey: number
+  ): boolean {
     const threshold = 15;
     for (const node of this.nodes) {
       // if (node.nodeId !== currNode.nodeId) {
-        const distance = Math.sqrt(Math.pow(node.nodePosition.x - currNodex, 2) + Math.pow(node.nodePosition.y - currNodey, 2));
-        if (distance < threshold) {
-          return true;
-        }
+      const distance = Math.sqrt(
+        Math.pow(node.nodePosition.x - currNodex, 2) +
+          Math.pow(node.nodePosition.y - currNodey, 2)
+      );
+      if (distance < threshold) {
+        return true;
+      }
       // }
     }
     return false;
@@ -3478,8 +3469,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   selectedPredockPose: string | null = null; // Holds the selected Predock Pose
   selectedUndockPose: string | null = null;
   originalRoboPosition: { x: number; y: number } | null = null;
-  originalAssetPosition: { x : number; y: number } | null = null;
-  originalNodePosition: { x : number; y: number } | null = null;
+  originalAssetPosition: { x: number; y: number } | null = null;
+  originalNodePosition: { x: number; y: number } | null = null;
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     if (event.button !== 0) {
@@ -3487,14 +3478,18 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     }
     if (this.overlayCanvas && this.overlayCanvas.nativeElement) {
       const rect = this.overlayCanvas.nativeElement.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * (this.overlayCanvas.nativeElement.width / rect.width);
-      const y = (event.clientY - rect.top) * (this.overlayCanvas.nativeElement.height / rect.height);
+      const x =
+        (event.clientX - rect.left) *
+        (this.overlayCanvas.nativeElement.width / rect.width);
+      const y =
+        (event.clientY - rect.top) *
+        (this.overlayCanvas.nativeElement.height / rect.height);
       const transformedY = this.overlayCanvas.nativeElement.height - y;
 
       if (this.isDeleteModeEnabled) {
         // Start drawing the selection box
         this.selectionStart = { x, y };
-        this.selectionTransformStart = {x , y :transformedY}
+        this.selectionTransformStart = { x, y: transformedY };
         this.selectionEnd = null;
       }
 
@@ -3511,7 +3506,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
               this.messageService.add({
                 severity: 'warn',
                 summary: 'Warning',
-                detail: 'Should atleast minimum 3 zone points to plot!.'
+                detail: 'Should atleast minimum 3 zone points to plot!.',
               });
               return;
             }
@@ -3526,7 +3521,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         // Add the point to the array of plotted points
         this.plottedPoints.push({ id: this.zonePosCounter, x, y });
         this.zonePosCounter++;
-        // this.plottedPoints[0];
         if (this.firstPlottedPoint === null)
           this.firstPlottedPoint = { id: this.zonePosCounter, x, y };
         // If six points are plotted, form the layer (polygon)
@@ -3534,15 +3528,15 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       }
 
       if (this.selectedAssetType) {
-              // Prevent plotting if the position is occupied
-      if (this.isPositionOccupied(x, y, 'asset')) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Position Occupied',
-          detail: 'Cannot place an asset at an occupied position.'
-        });
-        return; // Exit early if position is occupied
-      }
+        // Prevent plotting if the position is occupied
+        if (this.isPositionOccupied(x, y, 'asset')) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Position Occupied',
+            detail: 'Cannot place an asset at an occupied position.',
+          });
+          return; // Exit early if position is occupied
+        }
 
         let asset: asset;
         asset = {
@@ -3555,24 +3549,25 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
           desc: '',
         };
         let removeAsset = false;
-      for (const node of this.nodes) {
-        // Check if the asset is too close to the node
-        if (Math.abs(node.nodePosition.x - x) <= 10) {
-          console.log("hey"); // Log for debugging
-          removeAsset = true; // Mark the asset for removal
-          break; // Exit the loop early if a node is found too close
+        for (const node of this.nodes) {
+          // Check if the asset is too close to the node
+          if (Math.abs(node.nodePosition.x - x) <= 10) {
+            console.log('hey'); // Log for debugging
+            removeAsset = true; // Mark the asset for removal
+            break; // Exit the loop early if a node is found too close
+          }
         }
-      }
 
-      // If the asset is marked for removal, do not plot it and clear selected asset
-      if (removeAsset) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Asset Not Plotted',
-          detail: 'The asset cannot be plotted too close to a node, place it on any other place.'
-        });
-        return; // Exit early to prevent further processing
-      }
+        // If the asset is marked for removal, do not plot it and clear selected asset
+        if (removeAsset) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Asset Not Plotted',
+            detail:
+              'The asset cannot be plotted too close to a node, place it on any other place.',
+          });
+          return; // Exit early to prevent further processing
+        }
         this.selectedAsset = asset;
         this.assets.push(asset);
         this.storeAssetstoLocal();
@@ -3592,7 +3587,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         // assuming `this.assets` is an array holding your plotted assets
         if (this.isAssetClicked(asset, x, y)) {
           this.selectedAsset = asset;
-          this.originalAssetPosition = {x : asset.x, y : asset.y};
+          this.originalAssetPosition = { x: asset.x, y: asset.y };
           this.draggingAsset = true;
           break;
         }
@@ -3600,7 +3595,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       for (const zone of this.zones) {
         for (const point of zone.pos) {
           const radius = 6; // Same as the point's radius
-          if ( Math.abs(x - point.x) <= radius && Math.abs(y - point.y) <= radius ) {
+          if (
+            Math.abs(x - point.x) <= radius &&
+            Math.abs(y - point.y) <= radius
+          ) {
             this.selectedZone = zone;
             this.selectedZonePoint = point;
             this.originalZonePointPosition = { x: point.x, y: point.y };
@@ -3612,7 +3610,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       let robotClicked = false; // Track if the robot was clicked
       // Check if a robot is clicked
       for (const robo of this.robos) {
-        
         if (this.isRobotClicked(robo, x, y)) {
           this.selectedRobo = robo;
           this.draggingRobo = true;
@@ -3631,42 +3628,49 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
       // Handle other types of clicks like zone plotting, asset dragging, etc.
 
-    // Check if the first node is clicked
-    if (this.firstNode && this.isNodeClicked(this.firstNode, x, y) && this.isMultiNodePlotting) {
-      // Remove the first node and reset plotting state
-      const index = this.nodes.indexOf(this.firstNode);
-      if (index > -1) {
-        this.nodes.splice(index, 1); // Remove the first node from the nodes array
+      // Check if the first node is clicked
+      if (
+        this.firstNode &&
+        this.isNodeClicked(this.firstNode, x, y) &&
+        this.isMultiNodePlotting
+      ) {
+        // Remove the first node and reset plotting state
+        const index = this.nodes.indexOf(this.firstNode);
+        if (index > -1) {
+          this.nodes.splice(index, 1); // Remove the first node from the nodes array
+        }
+        this.firstNode = null; // Reset first node
+        this.redrawCanvas();
+        this.isPlottingEnabled = false; // Re-enable plotting
+        this.isMultiNodePlotting = false; // Keep multi-node plotting enabled
+        this.messageService.add({
+          severity: 'info',
+          summary: 'First Node Removed',
+          detail: 'The first node has been removed. You can plot again.',
+        });
+        return; // Exit the method to prevent further processing
       }
-      this.firstNode = null; // Reset first node
-      this.redrawCanvas();
-      this.isPlottingEnabled = false; // Re-enable plotting
-      this.isMultiNodePlotting = false; // Keep multi-node plotting enabled
-      this.messageService.add({
-        severity: 'info',
-        summary: 'First Node Removed',
-        detail: 'The first node has been removed. You can plot again.'
-      });
-      return; // Exit the method to prevent further processing
-    }
       let nodeClicked = false;
       for (const node of this.nodes) {
-
         if (this.isNodeClicked(node, x, y)) {
           // console.log(node)
-          
+
           if (this.isMultiNodePlotting) {
-          this.isPlottingEnabled = false; // Disable further plotting
-          this.isMultiNodePlotting = false; // Disable multi-node plotting mode
-          this.messageService.add({
-            severity: 'info',
-            summary: 'Multi-Node Plotting Disabled',
-            detail: 'You cannot plot more nodes while another node is selected.'
-          });
-        }
+            this.isPlottingEnabled = false; // Disable further plotting
+            this.isMultiNodePlotting = false; // Disable multi-node plotting mode
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Multi-Node Plotting Disabled',
+              detail:
+                'You cannot plot more nodes while another node is selected.',
+            });
+          }
           this.onNodeClick(node.nodePosition.x, node.nodePosition.y);
           this.selectedNode = node;
-          this.originalNodePosition = { x : node.nodePosition.x, y : node.nodePosition.y };
+          this.originalNodePosition = {
+            x: node.nodePosition.x,
+            y: node.nodePosition.y,
+          };
           this.draggingNode = true;
           nodeClicked = true;
           break;
@@ -3698,9 +3702,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y; // yet to remove..
 
-    const tooltipX =(x * this.ratio!) - this.origin.x;
-    const tooltipY = (transformedY * this.ratio!) - this.origin.y;  
-  
+    const tooltipX = x * this.ratio! - this.origin.x;
+    const tooltipY = transformedY * this.ratio! - this.origin.y;
+
     tooltip.innerHTML = `X: ${tooltipX},    Y: ${tooltipY}`;
     tooltip.style.display = 'block';
     tooltip.style.left = `${event.clientX}`; // Position with padding
@@ -3730,21 +3734,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         this.messageService.add({
           severity: 'warn',
           summary: 'Warning',
-          detail: 'The point is too close to an existing zone point.'
+          detail: 'The point is too close to an existing zone point.',
         });
         return;
       }
-
-      // if (this.isZoneOverlapping(this.selectedZone.pos)) {
-      //   this.draggingZonePoint = false;
-
-      //   this.selectedZonePoint.x = this.originalZonePointPosition?.x ? this.originalZonePointPosition?.x : x;
-      //   this.selectedZonePoint.y = this.originalZonePointPosition?.y ? this.originalZonePointPosition?.y : y;
-      //   alert('Zone point overlaps with another zone!');
-      //   // this.selectedZonePoint = null;
-      //   this.redrawCanvas();
-      //   return;
-      // }
 
       // Update the position of the selected zone point
       this.selectedZonePoint.x = x;
@@ -3782,7 +3775,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
       this.selectedRobo.pos.x = x;
       this.selectedRobo.pos.y = y;
-      const roboIndex = this.robos.findIndex(robo => robo.roboDet === this.selectedRobo?.roboDet);
+      const roboIndex = this.robos.findIndex(
+        (robo) => robo.roboDet === this.selectedRobo?.roboDet
+      );
       if (roboIndex !== -1) {
         this.robos[roboIndex].pos.x = x;
         this.robos[roboIndex].pos.y = y;
@@ -3800,8 +3795,12 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const transformedY = canvas.height - y;
 
-    if (this.isDeleteModeEnabled && this.selectionStart && this.selectionEnd && this.selectionTransformStart) {
-
+    if (
+      this.isDeleteModeEnabled &&
+      this.selectionStart &&
+      this.selectionEnd &&
+      this.selectionTransformStart
+    ) {
       // Calculate selection box bounds
       const minX = Math.min(this.selectionStart.x, this.selectionEnd.x);
       const maxX = Math.max(this.selectionStart.x, this.selectionEnd.x);
@@ -3812,10 +3811,14 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.nodesToDelete = this.nodes.filter((node) => {
         const nodeX = node.nodePosition.x;
         const nodeY = node.nodePosition.y;
-        const radius = 10;  // Assuming nodes may have a radius
+        const radius = 10; // Assuming nodes may have a radius
 
-        return (nodeX + radius >= minX && nodeX - radius <= maxX) &&
-               (nodeY + radius >= minY && nodeY - radius <= maxY);
+        return (
+          nodeX + radius >= minX &&
+          nodeX - radius <= maxX &&
+          nodeY + radius >= minY &&
+          nodeY - radius <= maxY
+        );
       });
 
       console.log('Nodes selected for deletion:', this.nodesToDelete);
@@ -3846,7 +3849,8 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         this.messageService.add({
           severity: 'error',
           summary: 'Warning',
-          detail: 'Zone point overlaps with another zone!',life:4000
+          detail: 'Zone point overlaps with another zone!',
+          life: 4000,
         });
         // this.selectedZonePoint = null;
         this.redrawCanvas();
@@ -3880,11 +3884,18 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       this.lineStartX = this.lineStartY = this.lineEndX = this.lineEndY = null;
 
       // Remove the mousemove and mouseup event listeners
-      this.overlayCanvas.nativeElement.removeEventListener( 'mousemove', this.onMouseMove.bind(this) );
-      this.overlayCanvas.nativeElement.removeEventListener( 'mouseup', this.onMouseUp.bind(this) );
+      this.overlayCanvas.nativeElement.removeEventListener(
+        'mousemove',
+        this.onMouseMove.bind(this)
+      );
+      this.overlayCanvas.nativeElement.removeEventListener(
+        'mouseup',
+        this.onMouseUp.bind(this)
+      );
     }
 
-    if(this.plottingMode === 'multi' && this.secondNode) this.showIntermediateNodesDialog = true;
+    if (this.plottingMode === 'multi' && this.secondNode)
+      this.showIntermediateNodesDialog = true;
 
     if (this.draggingZonePoint) {
       this.draggingZonePoint = false;
@@ -3892,7 +3903,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     }
 
     if (this.draggingAsset && this.selectedAsset) {
-
       this.draggingAsset = false;
       if (this.selectedAssetType) {
         // let asset : asset;
@@ -3914,25 +3924,27 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       }
       // Update asset position
       this.updateAssetPosition(this.selectedAsset.id, x, y);
-      if(this.isPositionOccupied(x,transformedY,'asset')){
+      if (this.isPositionOccupied(x, transformedY, 'asset')) {
         this.selectedAsset.x = this.originalAssetPosition!.x;
         this.selectedAsset.y = this.originalAssetPosition!.y;
         // alert('Overlapping detected! Asset has been reset to its original position.');
         this.messageService.add({
           severity: 'error',
           summary: 'Warning',
-          detail: 'Overlapping detected! Asset has been reset to its original position.'
+          detail:
+            'Overlapping detected! Asset has been reset to its original position.',
         });
         this.redrawCanvas();
       }
-      if(this.isOverlappingwithOtherAssets(this.selectedAsset)){
+      if (this.isOverlappingwithOtherAssets(this.selectedAsset)) {
         this.selectedAsset.x = this.originalAssetPosition!.x;
         this.selectedAsset.y = this.originalAssetPosition!.y;
         // alert('Overlapping detected! Asset has been reset to its original position.');
         this.messageService.add({
           severity: 'warn',
           summary: 'Warning',
-          detail: 'Overlapping detected! Asset has been reset to its original position.'
+          detail:
+            'Overlapping detected! Asset has been reset to its original position.',
         });
         this.redrawCanvas();
       }
@@ -3956,14 +3968,15 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         this.messageService.add({
           severity: 'warn',
           summary: 'Warning',
-          detail: 'Overlapping detected! Asset has been reset to its original position.'
+          detail:
+            'Overlapping detected! Asset has been reset to its original position.',
         });
         this.redrawCanvas();
-        return
+        return;
       }
 
       this.draggingRobo = false;
-      if(this.selectedRobo){
+      if (this.selectedRobo) {
         this.robos = this.robos.map((robo) => {
           if (this.selectedRobo?.roboDet.id === robo.roboDet.id) {
             robo.pos.x = x;
@@ -3976,29 +3989,30 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       }
       this.redrawCanvas();
     }
-     // Reset originalRoboPosition after the drag ends
-     this.originalRoboPosition = null;
+    // Reset originalRoboPosition after the drag ends
+    this.originalRoboPosition = null;
 
     if (this.draggingNode && this.selectedNode) {
-      if(this.isPositionOccupied(x, y,'node')){
+      if (this.isPositionOccupied(x, y, 'node')) {
         this.selectedNode.nodePosition.x = this.originalNodePosition!.x;
         this.selectedNode.nodePosition.y = this.originalNodePosition!.y;
         // alert('node lapping with other assets');
         this.messageService.add({
           severity: 'warn',
           summary: 'Warning',
-          detail: 'Node lapping with other assets'
+          detail: 'Node lapping with other assets',
         });
       }
 
-      if(this.isOverLappingWithOtherNodes(this.selectedNode)){
+      if (this.isOverLappingWithOtherNodes(this.selectedNode)) {
         this.selectedNode.nodePosition.x = this.originalNodePosition!.x;
         this.selectedNode.nodePosition.y = this.originalNodePosition!.y;
         // alert('Overlapping detected! node has been reset to its original position.');
         this.messageService.add({
           severity: 'warn',
           summary: 'Warning',
-          detail: 'Overlapping detected! Asset has been reset to its original position.'
+          detail:
+            'Overlapping detected! Asset has been reset to its original position.',
         });
       }
       this.redrawCanvas();
@@ -4020,22 +4034,22 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
   @HostListener('document:keydown', ['$event'])
   onKeydownHandler(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    console.log('ESC pressed, disabling delete mode');
-    this.isDeleteModeEnabled = false; // Disable delete mode
-    // this.isPlottingEnabled =false;
-    if(this.isZonePlottingEnabled){
-      this.plottedPoints = [];
-      this.isZonePlottingEnabled = false;
-      this.isPopupVisible = false;
-      this.firstPlottedPoint = null;
-      // Redraw the canvas to remove the temporary zone points
-      this.redrawCanvas();
+    if (event.key === 'Escape') {
+      console.log('ESC pressed, disabling delete mode');
+      this.isDeleteModeEnabled = false; // Disable delete mode
+      // this.isPlottingEnabled =false;
+      if (this.isZonePlottingEnabled) {
+        this.plottedPoints = [];
+        this.isZonePlottingEnabled = false;
+        this.isPopupVisible = false;
+        this.firstPlottedPoint = null;
+        // Redraw the canvas to remove the temporary zone points
+        this.redrawCanvas();
+      }
+      // this.isZonePlottingEnabled=false;
+      // this.isPlottingAsset =false;
+      this.isEdgeDrawingInProgress = false;
     }
-    // this.isZonePlottingEnabled=false;
-    // this.isPlottingAsset =false;
-    this.isEdgeDrawingInProgress =false;
-  }
   }
   private isAssetClicked(
     asset: { x: number; y: number; type: string },
@@ -4090,7 +4104,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
         const fromNode = this.nodes.find(
           (node) => node.nodeId === edge.startNodeId
         );
-        const toNode = this.nodes.find((node) => node.nodeId === edge.endNodeId);
+        const toNode = this.nodes.find(
+          (node) => node.nodeId === edge.endNodeId
+        );
 
         if (fromNode && toNode) {
           // Pass the stored direction (either 'uni' or 'bi') to the drawEdge function
@@ -4118,9 +4134,9 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       });
 
       for (const robo of this.robos) {
-        const isSelected = this.selectedRobo && this.selectedRobo.roboDet.id === robo.roboDet.id;
+        const isSelected =
+          this.selectedRobo && this.selectedRobo.roboDet.id === robo.roboDet.id;
         this.plotRobo(robo.pos.x, robo.pos.y, !isSelected);
-
       }
     }
   }
@@ -4136,7 +4152,7 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
       y: this.selectedNode.nodePosition.y,
     });
 
-    console.log('Drawing connection between nodes with IDs:', fromId, toId);
+    // console.log('Drawing connection between nodes with IDs:', fromId, toId);
 
     const canvas = this.overlayCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
@@ -4152,7 +4168,10 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
     // Draw line between the nodes
     ctx.beginPath();
     ctx.moveTo(this.lastSelectedNode.x, this.lastSelectedNode.y);
-    ctx.lineTo(this.selectedNode.nodePosition.x, this.selectedNode.nodePosition.y);
+    ctx.lineTo(
+      this.selectedNode.nodePosition.x,
+      this.selectedNode.nodePosition.y
+    );
     ctx.stroke();
   }
   private getNodeId(node: { x: number; y: number }): number {
@@ -4163,7 +4182,6 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
   toggleOptionsMenu(): void {
     this.isOptionsMenuVisible = !this.isOptionsMenuVisible;
-
   }
   toggleCalibrationLayer(): void {
     this.isCalibrationLayerVisible = !this.isCalibrationLayerVisible;
@@ -4178,13 +4196,21 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
 
     if (!ctx) return false;
 
-    const startNode = this.nodes.find((node) => node.nodeId === edge.startNodeId);
+    const startNode = this.nodes.find(
+      (node) => node.nodeId === edge.startNodeId
+    );
     const endNode = this.nodes.find((node) => node.nodeId === edge.endNodeId);
 
     if (!startNode || !endNode) return false;
 
-    const startPos = { x: startNode.nodePosition.x, y: canvas.height - startNode.nodePosition.y };
-    const endPos = { x: endNode.nodePosition.x, y: canvas.height - endNode.nodePosition.y };
+    const startPos = {
+      x: startNode.nodePosition.x,
+      y: canvas.height - startNode.nodePosition.y,
+    };
+    const endPos = {
+      x: endNode.nodePosition.x,
+      y: canvas.height - endNode.nodePosition.y,
+    };
 
     // Calculate the length of the line
     const lineLength = Math.sqrt(
@@ -4225,59 +4251,60 @@ plotRobo(x: number, y: number, isSelected: boolean = false, orientation: number 
   }
 
   updateEdge() {
-    if (!this.currentEdge.edgeId || !this.currentEdge.sequenceId || !this.currentEdge.minHeight || !this.currentEdge.orientation || !this.currentEdge.orientationType || !this.currentEdge.maxRotationSpeed) {
-        this.showEdgeError = true; // Show error message
-        return; // Stop saving if validation fails
+    if (
+      !this.currentEdge.edgeId ||
+      !this.currentEdge.sequenceId ||
+      !this.currentEdge.minHeight ||
+      !this.currentEdge.orientation ||
+      !this.currentEdge.orientationType ||
+      !this.currentEdge.maxRotationSpeed
+    ) {
+      this.showEdgeError = true; // Show error message
+      return; // Stop saving if validation fails
     }
 
     // If validation passes, hide the error message
     this.showEdgeError = false;
 
     if (this.currentEdge) {
-        // Update or save the edge
-        this.edges = this.edges.map((edge) => {
-            if (this.currentEdge.edgeId === edge.edgeId) {
-                // Preserve color and direction
-                edge = { ...this.currentEdge }; // Update with new values
-            }
-            return edge;
-        });
-        
-        // Save the current edge details
-        this.savedEdge = { ...this.currentEdge };
-        this.redrawCanvas();
+      // Update or save the edge
+      this.edges = this.edges.map((edge) => {
+        if (this.currentEdge.edgeId === edge.edgeId) {
+          // Preserve color and direction
+          edge = { ...this.currentEdge }; // Update with new values
+        }
+        return edge;
+      });
+
+      // Save the current edge details
+      this.savedEdge = { ...this.currentEdge };
+      this.redrawCanvas();
     }
     console.log(this.edges);
     this.showPopup = false;
-}
-cancelEdge(): void {
-  if(!this.savedEdge){ 
-    // this.currentEdge.edgeId = '';
-    // this.currentEdge.sequenceId= 0;
-    this.currentEdge.edgeDescription= '';
-    this.currentEdge.released= false;
-    // this.currentEdge.startNodeId= '';
-    // this.currentEdge.endNodeId= '';
-    this.currentEdge.maxSpeed= 0;
-    this.currentEdge.maxHeight= 0;
-    this.currentEdge.minHeight= 0;
-    this.currentEdge.orientation= 0;
-    this.currentEdge.orientationType= '';
-    // this.currentEdge.direction= 'UN_DIRECTIONAL';
-    this.currentEdge.rotationAllowed= false;
-    this.currentEdge.maxRotationSpeed= 0;
-    this.currentEdge.length= 0;
-    this.currentEdge.action= [];
   }
-  // if (this.savedEdge) {
-  //   // Revert the current edge to the last saved values
-  //   this.currentEdge = { ...this.savedEdge };  // Restore saved edge details
-  // }
-  this.showPopup = false;
-  this.showEdgeError = false;
-  console.log(this.currentEdge);
-  console.log(this.originalEdgeDetails );  
-}
+  cancelEdge(): void {
+    if (!this.savedEdge) {
+      this.currentEdge.edgeDescription = '';
+      this.currentEdge.released = false;
+
+      this.currentEdge.maxSpeed = 0;
+      this.currentEdge.maxHeight = 0;
+      this.currentEdge.minHeight = 0;
+      this.currentEdge.orientation = 0;
+      this.currentEdge.orientationType = '';
+
+      this.currentEdge.rotationAllowed = false;
+      this.currentEdge.maxRotationSpeed = 0;
+      this.currentEdge.length = 0;
+      this.currentEdge.action = [];
+    }
+
+    this.showPopup = false;
+    this.showEdgeError = false;
+    console.log(this.currentEdge);
+    console.log(this.originalEdgeDetails);
+  }
   // Method to delete the edge
   deleteEdge(): void {
     if (this.currentEdge) {
