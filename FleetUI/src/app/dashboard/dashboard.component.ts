@@ -49,9 +49,8 @@ enum ZoneType {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit {
-  @ViewChild('dashboardContainer', { static: false })
-  dashboardContainer!: ElementRef;
-  @ViewChild('robotB', { static: false }) robotBPath!: ElementRef;
+  @ViewChild('dashboardContainer', { static: false }) dashboardContainer!: ElementRef;
+  @ViewChild('robot0', { static: false }) robot0Path!: ElementRef;
   @ViewChild('robotTooltip', { static: true }) robotTooltip!: ElementRef;
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
   @ViewChild(ThroughputComponent) throughputComponent!: ThroughputComponent;
@@ -359,7 +358,18 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     this.robotImages = {
-      robotB: new Image(),
+      robot0: new Image(),
+      robot1: new Image(),
+      robot2: new Image(),
+      robot3: new Image(),
+      robot4: new Image(),
+      robot5: new Image(),
+      robot6: new Image(),
+      robot7: new Image(),
+      robot8: new Image(),
+      robot9: new Image(),
+      robot10: new Image(),
+
       init: new Image(),
       move: new Image(),
       normal: new Image(),
@@ -383,7 +393,18 @@ export class DashboardComponent implements AfterViewInit {
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
 
     // Load the external SVG
-    this.robotImages['robotB'].src = 'assets/Roboimg/RoboB.svg';
+    this.robotImages['robot0'].src = 'assets/Roboimg/Robot/Robo0.svg';
+    this.robotImages['robot1'].src = 'assets/Roboimg/Robot/Robo1.svg';
+    this.robotImages['robot2'].src = 'assets/Roboimg/Robot/Robo2.svg';
+    this.robotImages['robot3'].src = 'assets/Roboimg/Robot/Robo3.svg';
+    this.robotImages['robot4'].src = 'assets/Roboimg/Robot/Robo4.svg';
+    this.robotImages['robot5'].src = 'assets/Roboimg/Robot/Robo5.svg';
+    this.robotImages['robot6'].src = 'assets/Roboimg/Robot/Robo6.svg';
+    this.robotImages['robot7'].src = 'assets/Roboimg/Robot/Robo7.svg';
+    this.robotImages['robot8'].src = 'assets/Roboimg/Robot/Robo8.svg';
+    this.robotImages['robot9'].src = 'assets/Roboimg/Robot/Robo9.svg';
+    this.robotImages['robot10'].src = 'assets/Roboimg/Robot/Robo10.svg';
+
     this.robotImages['init'].src = 'assets/Roboimg/init.svg';
     this.robotImages['move'].src = 'assets/Roboimg/move.svg';
     this.robotImages['normal'].src = 'assets/Roboimg/normal.svg';
@@ -694,6 +715,7 @@ export class DashboardComponent implements AfterViewInit {
     this.canvasNoImage = false;
     this.canvasloader = false;
     console.log('canvas loader called');
+    // this.plotRandomRacks(ctx, 70);
 
     if (!this.isFleet) {
       this.simMode.forEach((robo) => {
@@ -729,7 +751,7 @@ export class DashboardComponent implements AfterViewInit {
 
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
-      // this.plotRack(ctx, node.nodePosition.x - (this.rackSize/2), transformedY - (this.rackSize/2), this.rackSize, 'red');
+      // this.plotRack(ctx, node.nodePosition.x - (this.rackSize/2), transformedY - (this.rackSize/2), this.rackSize);
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
 
@@ -791,6 +813,34 @@ export class DashboardComponent implements AfterViewInit {
     }
     ctx.restore(); // Reset transformation after drawing
   }
+
+  // plotRandomRacks(ctx: CanvasRenderingContext2D, rackCount: number) {
+  //   // Map image boundaries in the canvas coordinate system
+  //   const imgWidth = this.mapImageWidth;
+  //   const imgHeight = this.mapImageHeight;
+  //   const mapX = this.mapImageX; // Top-left corner X of the map image
+  //   const mapY = this.mapImageY; // Top-left corner Y of the map image
+  
+  //   // Generate and plot racks within the map image boundaries
+  //   for (let i = 0; i < rackCount; i++) {
+  //     // Generate random positions within the map image bounds
+  //     const randomX = Math.random() * imgWidth;
+  //     const randomY = Math.random() * imgHeight;
+  
+  //     // Translate the random coordinates into the map image space
+  //     const adjustedX = mapX + randomX;
+  //     const adjustedY = mapY + randomY;
+  
+  //     // Ensure the rack is drawn entirely within the image bounds
+  //     if (
+  //       adjustedX + this.rackSize <= mapX + imgWidth &&
+  //       adjustedY + this.rackSize <= mapY + imgHeight
+  //     ) {
+  //       this.plotRack(ctx, adjustedX, adjustedY);
+  //     }
+  //   }
+  // }
+  
 
   isRobotClicked(robo: any, x: number, y: number): boolean {
     const imageSize = 25;
@@ -1244,7 +1294,7 @@ export class DashboardComponent implements AfterViewInit {
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
       const transformedY = canvas.height - y;
       // console.log(amrPos[i].x, amrPos[i].y);
-      this.plotRobo(ctx, x, transformedY, yaw, 'robotB');
+      this.plotRobo(ctx, x, transformedY, yaw, 'robot0');
     }
   }
 
@@ -1455,7 +1505,7 @@ export class DashboardComponent implements AfterViewInit {
     orientation: number,
     state: string
   ) {
-    const roboType = state || 'robotB'; // Default to 'robotB' if no type is specified
+    const roboType = state || 'robot0'; // Default to 'robotB' if no type is specified
     const image = this.robotImages[roboType];
     const imageSize = 25 * this.zoomLevel;
 
@@ -1534,7 +1584,7 @@ export class DashboardComponent implements AfterViewInit {
       }
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
-        let imgState = 'robotB';
+        let imgState = 'robot0';
         // console.log("hey",state);
         if (state === 'INITSTATE') {
           imgState = 'init';
@@ -1646,13 +1696,20 @@ export class DashboardComponent implements AfterViewInit {
         });
     }
   }
-  plotRack(ctx: CanvasRenderingContext2D, x: number, y: number, size : number = this.rackSize, color: string = "black"){ // #000
+  plotRack(ctx: CanvasRenderingContext2D, x: number, y: number, size: number = this.rackSize, color: string = "#4C61C2") { 
+    // Set the transparency (0 is fully transparent, 1 is fully opaque)
+    ctx.globalAlpha = 0.7;
+  
     // Set the fill color for the square
-   ctx.fillStyle = color;
-
-   // Draw the square at the given x, y position with the given size
-   ctx.fillRect(x, y, size, size);
- }
+    ctx.fillStyle = color;
+  
+    // Draw the square at the given x, y position with the given size
+    ctx.fillRect(x, y, size, size);
+  
+    // Reset globalAlpha to 1 to avoid affecting subsequent drawings
+    ctx.globalAlpha = 1;
+  }
+  
   drawNodesAndEdges(
     ctx: CanvasRenderingContext2D,
     img: HTMLImageElement,
