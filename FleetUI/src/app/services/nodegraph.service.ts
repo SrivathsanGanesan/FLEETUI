@@ -13,6 +13,9 @@ export class NodeGraphService {
   private zoomLevel:number=1.0;
   private offsetX:number=0;
   private offsetY:number=0;
+
+  roboIDColor: Map<number, string> = new Map<number, string>(); // check...
+
   showModelCanvas: boolean = false;
 
   constructor() {}
@@ -63,8 +66,16 @@ export class NodeGraphService {
   }
 
   getsimMode() {
-    console.log(this.simMode);
+    // console.log(this.simMode);
     return this.simMode;
+  }
+
+  setRoboIdClr(roboIDColor: Map<number, string>){
+    this.roboIDColor = roboIDColor;
+  }
+
+  getRoboIdClr(): Map<number, string> {
+    return this.roboIDColor;
   }
 
   setRobos(robos: any[]) {
@@ -78,18 +89,23 @@ export class NodeGraphService {
   setZoomLevel(zoomLevel:number){
     this.zoomLevel = zoomLevel;
   }
+
   getZoomLevel(){
     return this.zoomLevel;
   }
+
   setOffsetX(offsetX:number){
     this.offsetX = offsetX;
   }
+
   getOffsetX(){
     return this.offsetX;
   }
+
   setOffsetY(offsetY:number){
     this.offsetY = offsetY;
   }
+
   getOffsetY(){
     return this.offsetY;
   }

@@ -175,9 +175,24 @@ export class DashboardComponent implements AfterViewInit {
         (robo: any) => robot.amrId !== robo.amrId
       );
       this.nodeGraphService.setsimMode(this.simMode);
+      this.updateRoboClrs();
+      this.updateRoboClrs();
       this.redrawCanvas();
     }
     // this.simMode.splice(index, 1);  // Remove robot from the list
+  }
+
+  updateRoboClrs(){
+    // this.simMode = this.nodeGraphService.getsimMode();
+    let colors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A6","#FFC300", "#1f6600", "#fc5661", "#a438ba", "#00aabd", "#472a2a"];
+    // clear an roboIdColor
+    this.roboIDColor.clear();
+    let i = 0;
+    for(let robo of this.simMode){
+      this.roboIDColor.set(robo.amrId, colors[i]);
+      i++;
+    }
+    this.nodeGraphService.setRoboIdClr(this.roboIDColor);
   }
 
   constructor(
@@ -722,14 +737,8 @@ export class DashboardComponent implements AfterViewInit {
       this.simMode.forEach((robo) => {
         // const transformedY = img.height - robo.pos.y;
         // console.log(!this.isFleet,"sim mode")
-        this.plotRobo(
-          ctx,
-          robo.pos.x,
-          robo.pos.y,
-          robo.pos.orientation,
-          robo.state,
-          robo.roboID
-        );
+        let clr = this.roboIDColor.get(robo.amrId) || 'white';
+        this.plotRobo( ctx, robo.pos.x, robo.pos.y, robo.pos.orientation, robo.state, clr );
       });
     }
 
@@ -741,7 +750,7 @@ export class DashboardComponent implements AfterViewInit {
           robo.pos.y,
           robo.roboDet.selected,
           robo.state,
-          robo.roboID
+          'black'
         )
       );
     }
@@ -791,16 +800,10 @@ export class DashboardComponent implements AfterViewInit {
     );
     if (!this.isFleet) {
       this.simMode.forEach((robo) => {
-        console.log(!this.isFleet, 'sim mode');
+        // console.log(!this.isFleet, 'sim mode');
         // const transformedY = img.height - robo.pos.y;
-        this.plotRobo(
-          ctx,
-          robo.pos.x,
-          robo.pos.y,
-          robo.pos.orientation,
-          robo.imgState,
-          robo.roboID
-        );
+        let clr = this.roboIDColor.get(robo.amrId) || 'white';
+        this.plotRobo( ctx, robo.pos.x, robo.pos.y, robo.pos.orientation, robo.imgState, clr );
       });
     }
 
@@ -812,7 +815,7 @@ export class DashboardComponent implements AfterViewInit {
           robo.pos.y,
           robo.roboDet.selected,
           robo.imgState,
-          robo.roboID
+          'black'
         )
       );
     }
@@ -1246,6 +1249,7 @@ export class DashboardComponent implements AfterViewInit {
 
       return robo;
     });
+    this.updateRoboClrs(); // temp. right ig
     this.nodeGraphService.setsimMode(this.simMode);
 
     this.mapImg = new Image();
@@ -1299,7 +1303,7 @@ export class DashboardComponent implements AfterViewInit {
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
       const transformedY = canvas.height - y;
       // console.log(amrPos[i].x, amrPos[i].y);
-      this.plotRobo(ctx, x, transformedY, yaw, 'robot0',0);
+      this.plotRobo(ctx, x, transformedY, yaw, 'robot0','black');
     }
   }
 
@@ -1487,6 +1491,7 @@ export class DashboardComponent implements AfterViewInit {
             // if (robot.pose.position.x && robot.pose.position.y)
             // Re-plot all robots
             this.simMode = this.nodeGraphService.getsimMode();
+            this.roboIDColor = this.nodeGraphService.getRoboIdClr();
             await this.plotAllRobots(robotsData);
           });
         }
@@ -1518,34 +1523,15 @@ export class DashboardComponent implements AfterViewInit {
     CHARGESTATE: "#9900cc",
     FAILEDSTATE: "#ff0800",
   };
-  roboIDColorMap: { [key: number]: string } = {
-    0: "#FF5733", // Example color for roboID 0
-    1: "#33FF57",
-    2: "#3357FF",
-    3: "#FF33A6",
-    4: "#FFC300",
-    5: "#DAF7A6",
-    6: "#581845",
-    7: "#900C3F",
-    8: "#C70039",
-    9: "#900C3F",
-    10: "#1C2833",
-  };
+  // roboIDColor: { [key: number]: string } = {};
+  roboIDColor = new Map<number, string>();
   
-  plotRobo(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    orientation: number,
-    state: string,
-    roboID:number
-  ) {
+  plotRobo( ctx: CanvasRenderingContext2D, x: number, y: number, orientation: number, state: string, circleColor: string ) {
     const width = 25 * this.zoomLevel * 1.3; // Define the width of the square
     const height = 25 * this.zoomLevel; // Define the height of the square
     const borderRadius = 3; // Border radius for the square
     const circleRadius = height / 3.5; // Circle radius
-    const rectangleColor = this.stateColorMap[state] || "#f0453f";
-    const circleColor = this.roboIDColorMap[roboID] || "#ffffff";
+    const rectangleColor = this.stateColorMap[state] || "#ff7373";
     if (ctx) {
       ctx.save();
       ctx.translate(x, y);
@@ -1762,7 +1748,7 @@ export class DashboardComponent implements AfterViewInit {
           const yaw = robo.pos.orientation;
 
           // Draw the robot on the canvas with updated positions and orientation
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState,robo.roboID);
+          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState,'black');
         });
       if (this.isFleet)
         this.robos.forEach((robo) => {
@@ -1771,7 +1757,7 @@ export class DashboardComponent implements AfterViewInit {
           const yaw = robo.pos.orientation;
 
           // Draw the robot on the canvas with updated positions and orientation
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState,robo.roboID);
+          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState,'black');
         });
     }
   }
