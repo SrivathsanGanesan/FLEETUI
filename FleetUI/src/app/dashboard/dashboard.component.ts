@@ -1505,28 +1505,43 @@ export class DashboardComponent implements AfterViewInit {
     orientation: number,
     state: string
   ) {
-    const size = 25 * this.zoomLevel; // Define the size of the square
+    const width = 25 * this.zoomLevel * 1.3; // Define the width of the square
+    const height = 25 * this.zoomLevel; // Define the height of the square
+    const borderRadius = 2; // Border radius for the square
+    const circleRadius = height / 3; // Circle radius
   
     if (ctx) {
-      ctx.save(); // Save the current context before rotation
-      ctx.translate(x, y); // Move the rotation point to the robot's center
-      ctx.rotate((orientation * Math.PI) / 180); // Rotate by the given orientation angle (converted to radians)
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate((orientation * Math.PI) / 180);
   
-      // Draw the square
-      
-      ctx.fillStyle = '#3498db'; // Set the square color
-      ctx.fillRect(-size / 2, -size / 2, size * 1.4, size);
-  
-      // Draw the circle inside the square
+      // Draw the rounded rectangle (manually if roundRect is unsupported)
       ctx.beginPath();
-      ctx.arc(size/4, 0, size / 3.7, 0, Math.PI * 2); // Circle radius is one-third of the square size
+      ctx.moveTo(-width / 2 + borderRadius, -height / 2);
+      ctx.lineTo(width / 2 - borderRadius, -height / 2);
+      ctx.quadraticCurveTo(width / 2, -height / 2, width / 2, -height / 2 + borderRadius);
+      ctx.lineTo(width / 2, height / 2 - borderRadius);
+      ctx.quadraticCurveTo(width / 2, height / 2, width / 2 - borderRadius, height / 2);
+      ctx.lineTo(-width / 2 + borderRadius, height / 2);
+      ctx.quadraticCurveTo(-width / 2, height / 2, -width / 2, height / 2 - borderRadius);
+      ctx.lineTo(-width / 2, -height / 2 + borderRadius);
+      ctx.quadraticCurveTo(-width / 2, -height / 2, -width / 2 + borderRadius, -height / 2);
+      ctx.closePath();
+  
+      ctx.fillStyle = '#3498db'; // Set the rectangle color
+      ctx.fill();
+  
+      // Draw the circle inside the rounded rectangle
+      ctx.beginPath();
+      ctx.arc(0, 0, circleRadius, 0, Math.PI * 2); // Circle at the center
       ctx.fillStyle = '#ffffff'; // Set the circle color
       ctx.fill();
       ctx.closePath();
   
-      ctx.restore(); // Restore the context after rotation
+      ctx.restore();
     }
   }
+  
   // plotRobo(
   //   ctx: CanvasRenderingContext2D,
   //   x: number,
