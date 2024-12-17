@@ -38,6 +38,7 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
   );
   return proj;
 };
+
 // send node graph..
 const saveNodeGraph = async (mapData) => {
   const { nodes, edges, roboPos } = mapData;
@@ -51,7 +52,7 @@ const saveNodeGraph = async (mapData) => {
       to: edge.endNodeId,
     });
   });
-  
+
   let fleetRobos = roboPos.map((robo) => {
     return {
       ip_address: robo.roboDet.ipAdd,
@@ -67,7 +68,7 @@ const saveNodeGraph = async (mapData) => {
     nodes: fleetNodes,
     edges: fleetEdges,
   };
-  
+
   const filePath = path.resolve(
     __dirname,
     "../../proj_assets/nodeGraph/nodeGraph.txt"
@@ -75,7 +76,7 @@ const saveNodeGraph = async (mapData) => {
 
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
   // console.log(fleetRobos);
-  if(mapData.isFleetup === false) return true;
+  if (mapData.isFleetup === false) return true;
 
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",
@@ -87,7 +88,7 @@ const saveNodeGraph = async (mapData) => {
       endpoint: "Robots",
       bodyData: fleetRobos[i],
     });
-    // console.log(fleetRobos[i]);    
+    // console.log(fleetRobos[i]);
   }
 
   if (
@@ -131,27 +132,12 @@ const getPosition = (node, poseArr) => {
     : { x: 0, y: 0, z: 0 };
 };
 
-const getPre_dockPos = (nodeId,nodes) => {
-  nodeId=nodeId.toString();
+const getNodePos = (nodeId, nodes) => {
+  nodeId = nodeId.toString();
   let node = nodes.find((node) => {
-    return node.nodeId === nodeId
-  })
-  
-  return node
-    ? {
-        x: node.nodePosition.x,
-        y: node.nodePosition.y,
-        z: node.nodePosition.orientation,
-      }
-    : { x: 0, y: 0, z: 0 };
-};
+    return node.nodeId === nodeId;
+  });
 
-const getUn_dockPos = (nodeId,nodes) => {
-  nodeId=nodeId.toString();
-  let node = nodes.find((node) => {
-    return node.nodeId === nodeId
-  })
-  
   return node
     ? {
         x: node.nodePosition.x,
@@ -172,16 +158,19 @@ const getFleetNodes = (nodes) => {
     let undockAction = node.actions.filter(
       (action) => action.actionType === "Undock"
     );
-    let preDockPos = (node.pre_dockNodeId !== null) ? getPre_dockPos(node.pre_dockNodeId,nodes) : getPosition(node, moveAction)
-    let UnDockPos = (node.Un_dockNodeId !== null) ? getUn_dockPos(node.Un_dockNodeId,nodes) : getPosition(node, moveAction)
-
+    
+    let preDockPos = node.pre_dockNodeId !== null ? getNodePos(node.pre_dockNodeId, nodes) : getPosition(node, moveAction);
+    let UnDockPos = node.Un_dockNodeId !== null ? getNodePos(node.Un_dockNodeId, nodes) : getPosition(node, undockAction); // moveAction
+    let dockPos = getPosition(node, dockAction);
+    // let dockPos = (node.dockNodeId !== null ) ? getNodePos(node.dockNodeId, nodes) : getPosition(node, dockAction);
+    
     let locationType = 0;
     if (node.intermediate_node) locationType = 3;
     else if (node.Waiting_node) locationType = 2;
     else if (node.charge_node) locationType = 1;
 
-    let dockPos = getPosition(node, dockAction);
     // let undockPos = getPosition(node, undockAction);
+    // UnDockPos = (node.dock_NodeId !== null) getNodePos(node.Un_dockNodeId, nodes); // check with later..
     let x = 0;
     let y = 0;
     let z = node.nodePosition.orientation; // angle of rotation in that certain axis..
@@ -192,7 +181,7 @@ const getFleetNodes = (nodes) => {
       preDockPose: {
         position: preDockPos,
         // orientation: ToQuaternion_(x, y, z),
-        orientation: node.quaternion
+        orientation: node.quaternion,
       },
       dockPose: {
         position: dockPos,
@@ -209,7 +198,7 @@ const getFleetNodes = (nodes) => {
       },
       unDockPose: {
         position: UnDockPos,
-        orientation: node.quaternion
+        orientation: node.quaternion,
         // orientation: ToQuaternion_(x, y, z),
       },
     };
@@ -380,7 +369,7 @@ const mapUpdate = async (req, res) => {
     for (let key of Object.keys(mapData)) {
       if (mapData[key] === null) delete mapData[key];
     }
-    
+
     delete mapData["isFleetup"];
     const doc = await Map.findOneAndUpdate({ mapName: queMapName }, mapData, {
       new: true,
@@ -514,18 +503,29 @@ const deleteSimModeRobo = async (req, res) => {
   const { mapId, roboId } = req.body;
   try {
     const isExists = await Map.exists({ _id: mapId });
-    if (!isExists) return res.status(404).json({ error: null, isRoboDeleted: false, msg: "Map not found!" });
+    if (!isExists)
+      return res
+        .status(404)
+        .json({ error: null, isRoboDeleted: false, msg: "Map not found!" });
     let map = await Map.findOneAndUpdate(
       { _id: mapId },
       { $pull: { simMode: { amrId: roboId } } },
-      {new: true}
+      { new: true }
     );
-    return res.status(200).json({ error: null, isRoboDeleted: true, msg: "Virtual robo deleted!" });
+    return res
+      .status(200)
+      .json({ error: null, isRoboDeleted: true, msg: "Virtual robo deleted!" });
   } catch (error) {
     console.log("err occs : ", error);
-    res .status(500) .json({ error: error, isRoboDeleted: false, msg: "error occured while inserting!", });
+    res
+      .status(500)
+      .json({
+        error: error,
+        isRoboDeleted: false,
+        msg: "error occured while inserting!",
+      });
   }
-}
+};
 
 const delMapImg = async (req, res, next) => {
   try {

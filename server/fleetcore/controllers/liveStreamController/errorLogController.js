@@ -47,7 +47,7 @@ const getTaskErrLogs = async (req, res) => {
       msg: "data sent, no tasks are found!",
     });
   } catch (err) {
-    console.error("Error in taskLogs:", err);
+    console.error("Error in taskLogs:", err.cause);
     if (err.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
