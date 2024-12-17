@@ -276,7 +276,6 @@ export class DashboardComponent implements AfterViewInit {
         }
       });
       if (this.projectService.getInitializeMapSelected() == 'true') {
-        console.log('dash board map initiallizee');
         this.canvasloader = true;
         this.selectedMap = this.projectService.getMapData();
       }
@@ -361,7 +360,6 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
   ngAfterViewInit(): void {
-    console.log('myCanvas:', this.myCanvas);
     if (this.myCanvas) {
       const canvas = this.myCanvas.nativeElement;
       this.addMouseMoveListener(canvas);
@@ -662,7 +660,6 @@ export class DashboardComponent implements AfterViewInit {
         // Load the background image
         this.isImage = true;
         const img = new Image();
-        console.log('line 541');
         img.src = `http://${this.projectService.getMapData().imgUrl}`;
 
         img.onload = () => {
@@ -680,7 +677,6 @@ export class DashboardComponent implements AfterViewInit {
 
       if (ctx) {
         const img = new Image();
-        console.log('line 557');
         let imgName = this.projectService.getMapData();
         img.src = `http://${imgName.imgUrl}`;
 
@@ -730,7 +726,6 @@ export class DashboardComponent implements AfterViewInit {
     ctx.drawImage(img, 0, 0);
     this.canvasNoImage = false;
     this.canvasloader = false;
-    console.log('canvas loader called');
     // this.plotRandomRacks(ctx, 70);
 
     if (!this.isFleet) {
@@ -1057,7 +1052,7 @@ export class DashboardComponent implements AfterViewInit {
       }
       let isOverRobot = false;
       let robotId = null;
-
+      if(!this.isFleet){
       for (let robo of this.simMode) {
         const roboX = robo.pos.x;
         const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
@@ -1084,8 +1079,36 @@ export class DashboardComponent implements AfterViewInit {
           robottooltip.style.display = 'block';
           break; // Exit the loop after finding the first robot
         }
-      }
+      }}
+      if(this.isFleet){
+      for (let robo of this.robos) {
+        
+        const roboX = robo.pos.x;
+        const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
+        const imageSize = 25; // Adjust to the size of the robot image
 
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
+          isOverRobot = true;
+          robotId = robo.roboDet.id;
+
+          // Position the robot tooltip above the robot
+          const robotScreenX = roboX * this.zoomLevel + this.mapImageX; // X position on the canvas
+          const robotScreenY =
+            (this.mapImageHeight / this.zoomLevel - roboY) * this.zoomLevel +
+            this.mapImageY; // Y position on the canvas
+
+          robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
+          robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position
+          robottooltip.innerHTML = `Robot ID: ${robotId}`;
+          robottooltip.style.display = 'block';
+          break; // Exit the loop after finding the first robot
+        }
+      }}
       if (!isOverRobot || robotId === null) {
         robottooltip.style.display = 'none'; // Hide tooltip when not over a robot
       }
@@ -1553,6 +1576,10 @@ export class DashboardComponent implements AfterViewInit {
       ctx.fillStyle = rectangleColor ; // Set the rectangle color
       ctx.fill();
   
+      ctx.strokeStyle = "black"; // Set the border color
+      ctx.lineWidth = 0.5; // Set the border width
+      ctx.stroke(); // Apply the border
+
       // Draw the circle inside the rounded rectangle
       ctx.beginPath();
       ctx.arc(0, 0, circleRadius, 0, Math.PI * 2); // Circle at the center
