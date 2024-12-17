@@ -176,7 +176,6 @@ export class DashboardComponent implements AfterViewInit {
       );
       this.nodeGraphService.setsimMode(this.simMode);
       this.updateRoboClrs();
-      this.updateRoboClrs();
       this.redrawCanvas();
     }
     // this.simMode.splice(index, 1);  // Remove robot from the list
@@ -184,13 +183,14 @@ export class DashboardComponent implements AfterViewInit {
 
   updateRoboClrs(){
     // this.simMode = this.nodeGraphService.getsimMode();
-    let colors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A6","#FFC300", "#1f6600", "#fc5661", "#a438ba", "#00aabd", "#472a2a"];
+    let colors = ["#3357FF", "#33FF57", "#FF5733", "#FF33A6","#FFC300", "#1f6600", "#fc5661", "#a438ba", "#00aabd", "#472a2a"];
     // clear an roboIdColor
     this.roboIDColor.clear();
     let i = 0;
     for(let robo of this.simMode){
       this.roboIDColor.set(robo.amrId, colors[i]);
       i++;
+      if(i > 9) i -= 10;
     }
     this.nodeGraphService.setRoboIdClr(this.roboIDColor);
   }
@@ -783,6 +783,7 @@ export class DashboardComponent implements AfterViewInit {
         );
       }
     });
+
     this.zones.forEach((zone) => {
       this.plottedPoints = zone.pos;
       this.zoneType = zone.type;
@@ -793,6 +794,7 @@ export class DashboardComponent implements AfterViewInit {
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
     );
+    
     if (!this.isFleet) {
       this.simMode.forEach((robo) => {
         // console.log(!this.isFleet, 'sim mode');
@@ -1575,10 +1577,6 @@ export class DashboardComponent implements AfterViewInit {
   
       ctx.fillStyle = rectangleColor ; // Set the rectangle color
       ctx.fill();
-  
-      ctx.strokeStyle = "black"; // Set the border color
-      ctx.lineWidth = 0.5; // Set the border width
-      ctx.stroke(); // Apply the border
 
       // Draw the circle inside the rounded rectangle
       ctx.beginPath();
@@ -1678,45 +1676,7 @@ export class DashboardComponent implements AfterViewInit {
         const { posX, posY, yaw, state } = robotsData[robotId];
         let imgState = 'robot0';
         // console.log("hey",state);
-        if (state === 'INITSTATE') {
-          imgState = 'init';
-        }
-        if (state === 'MOVESTATE') {
-          imgState = 'move';
-        }
-        if (state === 'NORMALSTATE') {
-          imgState = 'normal';
-        }
-        if (state === 'PAUSESTATE') {
-          imgState = 'pause';
-        }
-        if (state === 'ERRORSTATE') {
-          imgState = 'error';
-        }
-        if (state === 'IDLESTATE') {
-          imgState = 'idle';
-        }
-        if (state === 'WAITSTATE') {
-          imgState = 'wait';
-        }
-        if (state === 'DOCKSTATE') {
-          imgState = 'dock';
-        }
-        if (state === 'UNDOCKSTATE') {
-          imgState = 'undock';
-        }
-        if (state === 'LOADSTATE') {
-          imgState = 'load';
-        }
-        if (state === 'UNLOADSTATE') {
-          imgState = 'unload';
-        }
-        if (state === 'CHARGESTATE') {
-          imgState = 'charge';
-        }
-        if (state === 'FAILEDSTATE') {
-          imgState = 'failed';
-        }
+
         // Define the spacing between each robot
         const spacing = 60; // 60px when applySpacing is true, 0px when false
         const offsetX = (index % 6) * spacing;
@@ -1740,7 +1700,7 @@ export class DashboardComponent implements AfterViewInit {
               robo.pos.x = robotCanvasX;
               robo.pos.y = robotCanvasY;
               robo.pos.orientation = -yaw;
-              robo.imgState = imgState;
+              robo.imgState = state;
             }
             return robo;
           });
@@ -1757,7 +1717,7 @@ export class DashboardComponent implements AfterViewInit {
             robo.pos.x = robotCanvasX;
             robo.pos.y = robotCanvasY;
             robo.pos.orientation = -yaw;
-            robo.imgState = imgState;
+            robo.imgState = state;
             if (state !== 'INITSTATE') {
               robo.isActive = true;
               // this.cdRef.detectChanges();//yet to review and remove
@@ -1775,7 +1735,8 @@ export class DashboardComponent implements AfterViewInit {
           const yaw = robo.pos.orientation;
 
           // Draw the robot on the canvas with updated positions and orientation
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState,'black');
+          let clr = this.roboIDColor.get(robo.amrId) || 'white';
+          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
         });
       if (this.isFleet)
         this.robos.forEach((robo) => {
@@ -1784,7 +1745,8 @@ export class DashboardComponent implements AfterViewInit {
           const yaw = robo.pos.orientation;
 
           // Draw the robot on the canvas with updated positions and orientation
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState,'black');
+          let clr = this.roboIDColor.get(robo.amrId) || 'white';
+          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
         });
     }
   }
@@ -2007,6 +1969,29 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
+  private drawPathLine(
+    ctx: CanvasRenderingContext2D,
+    startPos: { x: number; y: number },
+    endPos: { x: number; y: number },
+    color: string
+  ): void {
+    const dx = endPos.x - startPos.x;
+    const dy = endPos.y - startPos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    const startX = startPos.x + dx / distance;
+    const startY = startPos.y + dy / distance;
+    const endX = endPos.x - dx / distance;
+    const endY = endPos.y - dy / distance;
+
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.strokeStyle = color; 
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
   private drawArrowhead(
     ctx: CanvasRenderingContext2D,
     from: { x: number; y: number },
@@ -2053,6 +2038,14 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillStyle = '#000'; // Black text color
     ctx.font = '12px Arial';
     ctx.fillText(label, x + 12, y); // Place label slightly right to the node
+  }
+
+  drawPathNode(ctx: CanvasRenderingContext2D, x: number, y: number, color: string) {
+    // Set node style (for example, circle)
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, 2 * Math.PI); // Draw circle with radius 10
+    ctx.fillStyle = color;
+    ctx.fill();
   }
 
   getFloorMap(floor: string): string {
