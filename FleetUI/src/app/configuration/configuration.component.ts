@@ -647,7 +647,6 @@ export class ConfigurationComponent implements AfterViewInit {
         console.error('Error while fetching map data : ', response.status);
       let data = await response.json();
       // let { map } = data;
-      // console.log('line 656');
       await this.ngOnInit();
 
       // if (this.projectService.getIsMapSet()) return; // yet to uncomment..
