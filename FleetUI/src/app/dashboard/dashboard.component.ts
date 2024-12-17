@@ -726,7 +726,8 @@ export class DashboardComponent implements AfterViewInit {
           robo.pos.x,
           robo.pos.y,
           robo.pos.orientation,
-          robo.state
+          robo.state,
+          robo.roboID
         );
       });
     }
@@ -738,7 +739,8 @@ export class DashboardComponent implements AfterViewInit {
           robo.pos.x,
           robo.pos.y,
           robo.roboDet.selected,
-          robo.state
+          robo.state,
+          robo.roboID
         )
       );
     }
@@ -795,7 +797,8 @@ export class DashboardComponent implements AfterViewInit {
           robo.pos.x,
           robo.pos.y,
           robo.pos.orientation,
-          robo.imgState
+          robo.imgState,
+          robo.roboID
         );
       });
     }
@@ -807,7 +810,8 @@ export class DashboardComponent implements AfterViewInit {
           robo.pos.x,
           robo.pos.y,
           robo.roboDet.selected,
-          robo.imgState
+          robo.imgState,
+          robo.roboID
         )
       );
     }
@@ -1294,7 +1298,7 @@ export class DashboardComponent implements AfterViewInit {
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
       const transformedY = canvas.height - y;
       // console.log(amrPos[i].x, amrPos[i].y);
-      this.plotRobo(ctx, x, transformedY, yaw, 'robot0');
+      this.plotRobo(ctx, x, transformedY, yaw, 'robot0',0);
     }
   }
 
@@ -1498,18 +1502,49 @@ export class DashboardComponent implements AfterViewInit {
       this.posEventSource.close();
     };
   }
+  stateColorMap: { [key: string]: string } = {
+    INITSTATE: "#8f910d", // Dark yellow
+    NORMALSTATE: "#eaed39",
+    PAUSESTATE: "#ffa500",
+    ERRORSTATE: "#ff0800",
+    WAITSTATE: "#0b663c", // Dark green
+    IDLESTATE: "#065baa",
+    MOVESTATE: "#08ad66",
+    DOCKSTATE: "#a3cfe8",
+    UNDOCKSTATE: "#a3cfe8",
+    LOADSTATE: "#f5adae",
+    UNLOADSTATE: "#533621",
+    CHARGESTATE: "#9900cc",
+    FAILEDSTATE: "#ff0800",
+  };
+  roboIDColorMap: { [key: number]: string } = {
+    0: "#FF5733", // Example color for roboID 0
+    1: "#33FF57",
+    2: "#3357FF",
+    3: "#FF33A6",
+    4: "#FFC300",
+    5: "#DAF7A6",
+    6: "#581845",
+    7: "#900C3F",
+    8: "#C70039",
+    9: "#900C3F",
+    10: "#1C2833",
+  };
+  
   plotRobo(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
     orientation: number,
-    state: string
+    state: string,
+    roboID:number
   ) {
     const width = 25 * this.zoomLevel * 1.3; // Define the width of the square
     const height = 25 * this.zoomLevel; // Define the height of the square
-    const borderRadius = 2; // Border radius for the square
-    const circleRadius = height / 3; // Circle radius
-  
+    const borderRadius = 3; // Border radius for the square
+    const circleRadius = height / 3.5; // Circle radius
+    const rectangleColor = this.stateColorMap[state] || "#f0453f";
+    const circleColor = this.roboIDColorMap[roboID] || "#ffffff";
     if (ctx) {
       ctx.save();
       ctx.translate(x, y);
@@ -1528,20 +1563,19 @@ export class DashboardComponent implements AfterViewInit {
       ctx.quadraticCurveTo(-width / 2, -height / 2, -width / 2 + borderRadius, -height / 2);
       ctx.closePath();
   
-      ctx.fillStyle = '#3498db'; // Set the rectangle color
+      ctx.fillStyle = rectangleColor ; // Set the rectangle color
       ctx.fill();
   
       // Draw the circle inside the rounded rectangle
       ctx.beginPath();
       ctx.arc(0, 0, circleRadius, 0, Math.PI * 2); // Circle at the center
-      ctx.fillStyle = '#ffffff'; // Set the circle color
+      ctx.fillStyle = circleColor; // Set the circle color
       ctx.fill();
-      ctx.closePath();
-  
+      ctx.closePath();  
       ctx.restore();
     }
   }
-  
+ 
   // plotRobo(
   //   ctx: CanvasRenderingContext2D,
   //   x: number,
@@ -1727,7 +1761,7 @@ export class DashboardComponent implements AfterViewInit {
           const yaw = robo.pos.orientation;
 
           // Draw the robot on the canvas with updated positions and orientation
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState);
+          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState,robo.roboID);
         });
       if (this.isFleet)
         this.robos.forEach((robo) => {
@@ -1736,7 +1770,7 @@ export class DashboardComponent implements AfterViewInit {
           const yaw = robo.pos.orientation;
 
           // Draw the robot on the canvas with updated positions and orientation
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState);
+          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState,robo.roboID);
         });
     }
   }
