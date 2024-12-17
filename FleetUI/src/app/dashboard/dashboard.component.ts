@@ -1505,24 +1505,53 @@ export class DashboardComponent implements AfterViewInit {
     orientation: number,
     state: string
   ) {
-    const roboType = state || 'robot0'; // Default to 'robotB' if no type is specified
-    const image = this.robotImages[roboType];
-    const imageSize = 25 * this.zoomLevel;
-
-    if (image && ctx) {
+    const size = 25 * this.zoomLevel; // Define the size of the square
+  
+    if (ctx) {
       ctx.save(); // Save the current context before rotation
       ctx.translate(x, y); // Move the rotation point to the robot's center
       ctx.rotate((orientation * Math.PI) / 180); // Rotate by the given orientation angle (converted to radians)
-      ctx.drawImage(
-        image,
-        -imageSize / 2,
-        -imageSize / 2,
-        imageSize * 1.3,
-        imageSize
-      );
+  
+      // Draw the square
+      
+      ctx.fillStyle = '#3498db'; // Set the square color
+      ctx.fillRect(-size / 2, -size / 2, size * 1.4, size);
+  
+      // Draw the circle inside the square
+      ctx.beginPath();
+      ctx.arc(size/4, 0, size / 3.7, 0, Math.PI * 2); // Circle radius is one-third of the square size
+      ctx.fillStyle = '#ffffff'; // Set the circle color
+      ctx.fill();
+      ctx.closePath();
+  
       ctx.restore(); // Restore the context after rotation
     }
   }
+  // plotRobo(
+  //   ctx: CanvasRenderingContext2D,
+  //   x: number,
+  //   y: number,
+  //   orientation: number,
+  //   state: string
+  // ) {
+  //   const roboType = state || 'robot0'; // Default to 'robotB' if no type is specified
+  //   const image = this.robotImages[roboType];
+  //   const imageSize = 25 * this.zoomLevel;
+
+  //   if (image && ctx) {
+  //     ctx.save(); // Save the current context before rotation
+  //     ctx.translate(x, y); // Move the rotation point to the robot's center
+  //     ctx.rotate((orientation * Math.PI) / 180); // Rotate by the given orientation angle (converted to radians)
+  //     ctx.drawImage(
+  //       image,
+  //       -imageSize / 2,
+  //       -imageSize / 2,
+  //       imageSize * 1.3,
+  //       imageSize
+  //     ); 
+  //     ctx.restore(); // Restore the context after rotation
+  //   }
+  // }
 
   isOptionsExpanded: boolean = false;
 
