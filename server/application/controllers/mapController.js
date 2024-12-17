@@ -158,19 +158,16 @@ const getFleetNodes = (nodes) => {
     let undockAction = node.actions.filter(
       (action) => action.actionType === "Undock"
     );
-    
+
     let preDockPos = node.pre_dockNodeId !== null ? getNodePos(node.pre_dockNodeId, nodes) : getPosition(node, moveAction);
     let UnDockPos = node.Un_dockNodeId !== null ? getNodePos(node.Un_dockNodeId, nodes) : getPosition(node, undockAction); // moveAction
-    let dockPos = getPosition(node, dockAction);
-    // let dockPos = (node.dockNodeId !== null ) ? getNodePos(node.dockNodeId, nodes) : getPosition(node, dockAction);
-    
+    let dockPos = node.dockNodeId !== null ? getNodePos(node.dockNodeId, nodes) : getPosition(node, dockAction);
+
     let locationType = 0;
     if (node.intermediate_node) locationType = 3;
     else if (node.Waiting_node) locationType = 2;
     else if (node.charge_node) locationType = 1;
 
-    // let undockPos = getPosition(node, undockAction);
-    // UnDockPos = (node.dock_NodeId !== null) getNodePos(node.Un_dockNodeId, nodes); // check with later..
     let x = 0;
     let y = 0;
     let z = node.nodePosition.orientation; // angle of rotation in that certain axis..
@@ -517,13 +514,11 @@ const deleteSimModeRobo = async (req, res) => {
       .json({ error: null, isRoboDeleted: true, msg: "Virtual robo deleted!" });
   } catch (error) {
     console.log("err occs : ", error);
-    res
-      .status(500)
-      .json({
-        error: error,
-        isRoboDeleted: false,
-        msg: "error occured while inserting!",
-      });
+    res.status(500).json({
+      error: error,
+      isRoboDeleted: false,
+      msg: "error occured while inserting!",
+    });
   }
 };
 

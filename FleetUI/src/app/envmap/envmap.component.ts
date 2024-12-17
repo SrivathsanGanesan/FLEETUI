@@ -38,6 +38,7 @@ interface Node {
   dock_node: boolean;
   pre_dockNodeId: number | null;
   Un_dockNodeId: number | null;
+  dockNodeId: number | null;
 }
 interface Edge {
   edgeId: string; //Unique edge identification
@@ -741,18 +742,22 @@ export class EnvmapComponent implements AfterViewInit {
         this.nodeDetails.dock_node = true;
         break;
     }
+
     if (
       (this.selectedNodeType === 'Dock' ||
         this.selectedNodeType === 'Charge') &&
       this.selectedNode
-    ) {
-      this.fetchConnectedNodes(this.selectedNode.nodeId);
-    } else {
-      this.connectedNodes = []; // Clear connected nodes if not a Dock node
-    }
+    )
+      this.fetchConnectedNodes(this.selectedNode.nodeId, false);
+    else if (
+      ['Intermediate', 'Waiting'].includes(this.selectedNodeType) &&
+      this.selectedNode
+    )
+      this.fetchConnectedNodes(this.selectedNode.nodeId, true);
+    else this.connectedNodes = []; // Clear connected nodes if not a Dock node
   }
 
-  fetchConnectedNodes(nodeId: string): void {
+  fetchConnectedNodes(nodeId: string, filterPreDocks: boolean): void {
     // Use the edges array to find connected nodes
     const connectedNodeIds = this.edges
       .filter(
@@ -765,6 +770,11 @@ export class EnvmapComponent implements AfterViewInit {
     // Fetch node details for the connected node IDs
     this.connectedNodes = this.nodes.filter((node) =>
       connectedNodeIds.includes(node.nodeId)
+    );
+
+    if (!filterPreDocks) return;
+    this.connectedNodes = this.connectedNodes.filter(
+      (node) => node.charge_node || node.dock_node
     );
   }
 
@@ -789,6 +799,8 @@ export class EnvmapComponent implements AfterViewInit {
           node.pre_dockNodeId = parseInt(this.selectedPredockPose);
         if (this.selectedUndockPose)
           node.Un_dockNodeId = parseInt(this.selectedUndockPose);
+        if (this.selectedDockPose)
+          node.dockNodeId = parseInt(this.selectedDockPose);
       }
       return node;
     });
@@ -1949,10 +1961,14 @@ export class EnvmapComponent implements AfterViewInit {
         else if (node.dock_node) this.selectedNodeType = 'Dock';
         else this.selectedNodeType = 'Intermediate'; // default..
 
-        this.fetchConnectedNodes(this.selectedNode.nodeId); // check if it's work..
+        this.fetchConnectedNodes(
+          this.selectedNode.nodeId,
+          ['Intermediate', 'Waiting'].includes(this.selectedNodeType)
+        ); // check if it's work..
 
         this.selectedPredockPose = node.pre_dockNodeId?.toString() || '';
         this.selectedUndockPose = node.Un_dockNodeId?.toString() || '';
+        this.selectedDockPose = node.dockNodeId?.toString() || '';
 
         this.currentQuaternion = node.quaternion;
         this.nodeDetails.description = this.selectedNode.nodeDescription;
@@ -1966,7 +1982,6 @@ export class EnvmapComponent implements AfterViewInit {
           if (action.actionType === 'Move') {
             this.moveParameters = action.parameters;
             continue;
-            // break;
           }
           if (action.actionType === 'Dock') {
             this.dockParameters = action.parameters;
@@ -2458,6 +2473,7 @@ export class EnvmapComponent implements AfterViewInit {
         dock_node: false,
         pre_dockNodeId: null,
         Un_dockNodeId: null,
+        dockNodeId: null,
         actions: [],
       },
       color,
@@ -2495,6 +2511,7 @@ export class EnvmapComponent implements AfterViewInit {
       dock_node: false,
       pre_dockNodeId: null,
       Un_dockNodeId: null,
+      dockNodeId: null,
     };
 
     //{ id: this.nodeCounter.toString(), x, y: transformedY,type: 'single' }
@@ -2564,6 +2581,7 @@ export class EnvmapComponent implements AfterViewInit {
         dock_node: false,
         pre_dockNodeId: null,
         Un_dockNodeId: null,
+        dockNodeId: null,
       },
       color,
       false
@@ -2585,6 +2603,7 @@ export class EnvmapComponent implements AfterViewInit {
         dock_node: false,
         pre_dockNodeId: null,
         Un_dockNodeId: null,
+        dockNodeId: null,
       };
       this.firstNode = firstnode;
       this.nodes.push(firstnode);
@@ -2605,6 +2624,7 @@ export class EnvmapComponent implements AfterViewInit {
         dock_node: false,
         pre_dockNodeId: null,
         Un_dockNodeId: null,
+        dockNodeId: null,
       };
       this.secondNode = secondnode;
       this.currMulNode.push(this.firstNode);
@@ -2733,6 +2753,7 @@ export class EnvmapComponent implements AfterViewInit {
             dock_node: false,
             pre_dockNodeId: null,
             Un_dockNodeId: null,
+            dockNodeId: null,
           };
 
           this.nodes.push(node);
@@ -3505,6 +3526,7 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   connectedNodes: any[] = []; // Array to store connected nodes
+  selectedDockPose: string | null = null;
   selectedPredockPose: string | null = null; // Holds the selected Predock Pose
   selectedUndockPose: string | null = null;
   originalRoboPosition: { x: number; y: number } | null = null;

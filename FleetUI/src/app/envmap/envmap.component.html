@@ -379,10 +379,10 @@
                   <div>
                     <div class="node2-sub" *ngIf="selectedNodeType === 'Intermediate' || selectedNodeType === 'Waiting'">
                       <label for="predockPoseDropdown" class="label">Dock Pose:</label>
-                      <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedPredockPose">
-                        <!-- <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
+                      <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedDockPose">
+                        <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                           {{ node.nodeId }}
-                        </option> -->
+                        </option>
                       </select>
                     </div>
                   <div class="node1-sub" *ngIf="selectedNodeType === 'Dock' || selectedNodeType === 'Charge'">
