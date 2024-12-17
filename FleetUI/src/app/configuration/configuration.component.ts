@@ -1175,6 +1175,7 @@ export class ConfigurationComponent implements AfterViewInit {
         // Check if the image URL is accessible
         this.checkImageLoading(mapImgUrl)
           .then(() => {
+
             // Proceed only if the image loads successfully
             this.currEditMapDet = {
               mapName: map.mapName,

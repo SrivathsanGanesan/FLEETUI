@@ -272,24 +272,25 @@ export class DashboardComponent implements AfterViewInit {
       this.canvasNoImage = true;
     }
     // console.log(this.selectedMap,"selected map")
-    if (!this.selectedMap) {
-      await this.onInitMapImg();
-      this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
-      if (this.projectService.getInitializeMapSelected() == 'true')
-        if (!this.isInLive) this.initSimRoboPos();
-      await this.getMapDetails();
-      if (this.projectService.getInitializeMapSelected() == 'true') {
-        this.loadCanvas();
-      }
-      if (this.projectService.getInitializeMapSelected() == 'true')
-        if (!this.isInLive) this.initSimRoboPos();
-      await this.getMapDetails();
-      if (this.projectService.getInitializeMapSelected() == 'true') {
-        this.loadCanvas();
-      }
-      this.isMapLoaded = false;
-      return;
-    }
+    // if (!this.selectedMap) {
+    //   // await this.onInitMapImg();
+    //   this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
+    //   if (this.projectService.getInitializeMapSelected() == 'true')
+    //     if (!this.isInLive) this.initSimRoboPos();
+    //   await this.getMapDetails();
+    //   if (this.projectService.getInitializeMapSelected() == 'true') {
+    //     this.loadCanvas();
+    //   }
+    //   if (this.projectService.getInitializeMapSelected() == 'true')
+    //     if (!this.isInLive) this.initSimRoboPos();
+    //   await this.getMapDetails();
+    //   if (this.projectService.getInitializeMapSelected() == 'true') {
+    //     this.loadCanvas();
+    //   }
+    //   this.isMapLoaded = false;
+    //   return;
+    // }
+    if(!this.projectService.getMapData()) return;
     const img = new Image();
     img.src = `http://${this.selectedMap.imgUrl}`;
 
