@@ -486,6 +486,7 @@
           <img
             src="../../assets/CanvasOptions/Showpath.svg"
             class="ModelCanvas"
+            (click)="showPath()"
           />
           <span class="tooltiptext">Show Path</span>
         </div>
@@ -557,6 +558,6 @@
   <button (click)="initializeRobo()">
     {{ updatedrobo?.isInitialized ? "Release Robot" : "Initialize Robot" }}
   </button>
-  <button>Show Path</button>
+  <button (click)="showRoboPath()">Show Path</button>
   <button (click)="cancelAction()">Cancel</button>
 </div>

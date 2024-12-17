@@ -597,6 +597,12 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
+  showRoboPath(){
+    console.log("nan tha da leo");    
+  }
+  showPath(){
+    console.log("I am Batman");  
+  }
   cancelAction() {
     this.hidePopup();
   }
