@@ -367,7 +367,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   ngOnInit() {
     this.selectedMap = this.projectService.getMapData();
-    if (!this.selectedMap) return;
+    if (!this.selectedMap && !this.currEditMap) return; // yet to uncomment..
     if (this.currEditMap) {
       this.showImage = true;
       this.mapName = this.currEditMapDet.mapName;
