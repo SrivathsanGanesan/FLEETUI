@@ -1540,10 +1540,11 @@ export class DashboardComponent implements AfterViewInit {
               yaw: yaw,
               state: robot.robot_state,
               speed: robot.speed,
+              path: robot.agentPath
             }; // here we go...
 
-            // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
-            console.log(robot.agentPath)
+            console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
+            // console.log(robot.agentPath)
 
             this.simMode = this.nodeGraphService.getsimMode();
             this.roboIDColor = this.nodeGraphService.getRoboIdClr();
@@ -1730,7 +1731,7 @@ export class DashboardComponent implements AfterViewInit {
         this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
       }
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
-        const { posX, posY, yaw, state } = robotsData[robotId];
+        const { posX, posY, yaw, state, path } = robotsData[robotId];
         let imgState = 'robot0';
 
         // Define the spacing between each robot
