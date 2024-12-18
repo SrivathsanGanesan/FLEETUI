@@ -17,7 +17,9 @@ app.use(
 );
 
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 app.use(
   "/dashboard", // virtual path, (just the placeholder for original path)
   express.static(path.join("proj_assets", "dashboardMap")) // "/dashboard/map_1.jpg"

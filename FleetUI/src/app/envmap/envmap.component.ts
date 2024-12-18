@@ -2124,13 +2124,13 @@ export class EnvmapComponent implements AfterViewInit {
     if (ctx) {
       const transformedY = canvas.height - node.nodePosition.y; // Flip the Y-axis
       ctx.beginPath();
-      ctx.arc(node.nodePosition.x, transformedY, 7, 0, 2 * Math.PI);
+      ctx.arc(node.nodePosition.x, transformedY, 5, 0, 2 * Math.PI);
       ctx.fillStyle = selected ? color : 'blue';
       ctx.lineWidth = selected ? 3 : 1;
       ctx.fill();
 
       // Draw the node ID below the node
-      ctx.font = '12px Arial'; // Font size and type
+      ctx.font = '10px Arial'; // Font size and type
       ctx.fillStyle = 'black'; // Text color
       ctx.textAlign = 'center'; // Center align text
       ctx.textBaseline = 'top'; // Position text below the node
@@ -2196,11 +2196,11 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.moveTo(startX, startY);
       ctx.lineTo(endX, canvasHeight - transformedEndY); // Use transformedEndY for correct rendering
       ctx.strokeStyle = 'red';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1;
       ctx.stroke();
 
       // Draw arrowhead
-      const arrowLength = 10;
+      const arrowLength = 1;
       ctx.beginPath();
       ctx.moveTo(endX, canvasHeight - transformedEndY); // Arrow at the adjusted end point
       ctx.lineTo(
@@ -3113,7 +3113,7 @@ export class EnvmapComponent implements AfterViewInit {
     to: { x: number; y: number },
     direction: string
   ): void {
-    const headLength = 15; // Length of the arrowhead
+    const headLength = 8; // Length of the arrowhead
     const offset = 0; // Distance to move the arrowhead away from the node
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
 

@@ -2015,7 +2015,7 @@ export class DashboardComponent implements AfterViewInit {
     } else if (direction === 'BI_DIRECTIONAL') {
       ctx.strokeStyle = 'green'; // Bi-directional in green
     }
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     this.drawArrowhead(
@@ -2064,7 +2064,7 @@ export class DashboardComponent implements AfterViewInit {
     to: { x: number; y: number },
     direction: string
   ): void {
-    const headLength = 15; // Length of the arrowhead
+    const headLength = 10; // Length of the arrowhead
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
 
     // Calculate the arrowhead points
@@ -2096,14 +2096,14 @@ export class DashboardComponent implements AfterViewInit {
   drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) {
     // Set node style (for example, circle)
     ctx.beginPath();
-    ctx.arc(x, y, 6, 0, 2 * Math.PI); // Draw circle with radius 10
+    ctx.arc(x, y, 4, 0, 2 * Math.PI); // Draw circle with radius 10
     ctx.fillStyle = '#00f'; // Blue color
     ctx.fill();
 
     // Add a label to the node
-    ctx.fillStyle = '#000'; // Black text color
-    ctx.font = '12px Arial';
-    ctx.fillText(label, x + 12, y); // Place label slightly right to the node
+    // ctx.fillStyle = '#000'; // Black text color
+    // ctx.font = '12px Arial';
+    // ctx.fillText(label, x + 12, y); // Place label slightly right to the node
   }
 
   drawPathNode(
