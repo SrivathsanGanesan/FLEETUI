@@ -92,10 +92,10 @@ const fetchFleetInfo = async ({ endpoint, bodyData, method = "GET" }) => {
         body: JSON.stringify(bodyData),
       }
     );
-    /* if (!response.ok) {
-      console.log("failed while fetching fleet data.. might tasks!");
+    if (!response.ok) {
+      // console.log("failed while splining..");
       return null;
-    } */
+    }
     return await response.json();
   } catch (error) {
     if (error.cause) return error.cause?.code;
@@ -232,25 +232,37 @@ const getLiveRobos = async (req, res) => {
 };
 
 const showSpline = async (req, res) => {
-  const { mapId } = req.body;
-  let splineData = {
-    robotId: 0,
-    enable: true,
-  };
-  let splineRes = await fetchFleetInfo("showSpline", splineData);
-  if (splineRes.errorCode !== 1000) {
-    res.status(500).json({ isShowSplined: false, msg: "not attained" });
-  }
+  const { mapId, roboId } = req.body;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res
         .status(400)
         .json({ isShowSplined: false, msg: "Map not found!", map: null });
+
+    let splineData = {
+      robotId: roboId,
+      enable: true,
+    };
+
+    let splineRes = await fetchFleetInfo({
+      endpoint: "showSpline",
+      bodyData: splineData,
+      method: "POST",
+    });
+
+    if (!splineRes || splineRes.errorCode !== 1000) {
+      return res
+        .status(500)
+        .json({ isShowSplined: false, msg: "not attained" });
+    }
+
     return res.status(200).json({ isShowSplined: true, msg: "path set!" });
   } catch (error) {
-    console.error("Error in show_spline  :", err);
-    res.status(500).json({ error: err.message, msg: "Internal Server Error" });
+    console.error("Error in show_spline  :", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
 

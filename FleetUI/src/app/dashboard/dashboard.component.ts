@@ -49,7 +49,8 @@ enum ZoneType {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit {
-  @ViewChild('dashboardContainer', { static: false }) dashboardContainer!: ElementRef;
+  @ViewChild('dashboardContainer', { static: false })
+  dashboardContainer!: ElementRef;
   @ViewChild('robot0', { static: false }) robot0Path!: ElementRef;
   @ViewChild('robotTooltip', { static: true }) robotTooltip!: ElementRef;
   @ViewChild(UptimeComponent) UptimeComponent!: UptimeComponent;
@@ -181,16 +182,27 @@ export class DashboardComponent implements AfterViewInit {
     // this.simMode.splice(index, 1);  // Remove robot from the list
   }
 
-  updateRoboClrs(){
+  updateRoboClrs() {
     // this.simMode = this.nodeGraphService.getsimMode();
-    let colors = ["#3357FF", "#33FF57", "#FF5733", "#FF33A6","#FFC300", "#1f6600", "#fc5661", "#a438ba", "#00aabd", "#472a2a"];
+    let colors = [
+      '#3357FF',
+      '#33FF57',
+      '#FF5733',
+      '#FF33A6',
+      '#FFC300',
+      '#1f6600',
+      '#fc5661',
+      '#a438ba',
+      '#00aabd',
+      '#472a2a',
+    ];
     // clear an roboIdColor
     this.roboIDColor.clear();
     let i = 0;
-    for(let robo of this.simMode){
+    for (let robo of this.simMode) {
       this.roboIDColor.set(robo.amrId, colors[i]);
       i++;
-      if(i > 9) i -= 10;
+      if (i > 9) i -= 10;
     }
     this.nodeGraphService.setRoboIdClr(this.roboIDColor);
   }
@@ -304,7 +316,7 @@ export class DashboardComponent implements AfterViewInit {
     //   this.isMapLoaded = false;
     //   return;
     // }
-    if(!this.projectService.getMapData()) return;
+    if (!this.projectService.getMapData()) return;
     const img = new Image();
     img.src = `http://${this.selectedMap.imgUrl}`;
 
@@ -597,11 +609,11 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  showRoboPath(){
-    console.log("nan tha da leo");    
+  showRoboPath() {
+    console.log('nan tha da leo');
   }
-  showPath(){
-    console.log("I am Batman");  
+  showPath() {
+    console.log('I am Batman');
   }
   cancelAction() {
     this.hidePopup();
@@ -739,7 +751,14 @@ export class DashboardComponent implements AfterViewInit {
         // const transformedY = img.height - robo.pos.y;
         // console.log(!this.isFleet,"sim mode")
         let clr = this.roboIDColor.get(robo.amrId) || 'white';
-        this.plotRobo( ctx, robo.pos.x, robo.pos.y, robo.pos.orientation, robo.state, clr );
+        this.plotRobo(
+          ctx,
+          robo.pos.x,
+          robo.pos.y,
+          robo.pos.orientation,
+          robo.state,
+          clr
+        );
       });
     }
 
@@ -800,13 +819,20 @@ export class DashboardComponent implements AfterViewInit {
     this.assets.forEach((asset) =>
       this.plotAsset(ctx, asset.x, asset.y, asset.type)
     );
-    
+
     if (!this.isFleet) {
       this.simMode.forEach((robo) => {
         // console.log(!this.isFleet, 'sim mode');
         // const transformedY = img.height - robo.pos.y;
         let clr = this.roboIDColor.get(robo.amrId) || 'white';
-        this.plotRobo( ctx, robo.pos.x, robo.pos.y, robo.pos.orientation, robo.imgState, clr );
+        this.plotRobo(
+          ctx,
+          robo.pos.x,
+          robo.pos.y,
+          robo.pos.orientation,
+          robo.imgState,
+          clr
+        );
       });
     }
 
@@ -831,17 +857,17 @@ export class DashboardComponent implements AfterViewInit {
   //   const imgHeight = this.mapImageHeight;
   //   const mapX = this.mapImageX; // Top-left corner X of the map image
   //   const mapY = this.mapImageY; // Top-left corner Y of the map image
-  
+
   //   // Generate and plot racks within the map image boundaries
   //   for (let i = 0; i < rackCount; i++) {
   //     // Generate random positions within the map image bounds
   //     const randomX = Math.random() * imgWidth;
   //     const randomY = Math.random() * imgHeight;
-  
+
   //     // Translate the random coordinates into the map image space
   //     const adjustedX = mapX + randomX;
   //     const adjustedY = mapY + randomY;
-  
+
   //     // Ensure the rack is drawn entirely within the image bounds
   //     if (
   //       adjustedX + this.rackSize <= mapX + imgWidth &&
@@ -851,7 +877,6 @@ export class DashboardComponent implements AfterViewInit {
   //     }
   //   }
   // }
-  
 
   isRobotClicked(robo: any, x: number, y: number): boolean {
     const imageSize = 25;
@@ -1060,63 +1085,64 @@ export class DashboardComponent implements AfterViewInit {
       }
       let isOverRobot = false;
       let robotId = null;
-      if(!this.isFleet){
-      for (let robo of this.simMode) {
-        const roboX = robo.pos.x;
-        const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
-        const imageSize = 25; // Adjust to the size of the robot image
+      if (!this.isFleet) {
+        for (let robo of this.simMode) {
+          const roboX = robo.pos.x;
+          const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
+          const imageSize = 25; // Adjust to the size of the robot image
 
-        if (
-          imgX >= roboX - imageSize &&
-          imgX <= roboX + imageSize &&
-          imgY >= roboY - imageSize &&
-          imgY <= roboY + imageSize
-        ) {
-          isOverRobot = true;
-          robotId = robo.amrId;
+          if (
+            imgX >= roboX - imageSize &&
+            imgX <= roboX + imageSize &&
+            imgY >= roboY - imageSize &&
+            imgY <= roboY + imageSize
+          ) {
+            isOverRobot = true;
+            robotId = robo.amrId;
 
-          // Position the robot tooltip above the robot
-          const robotScreenX = roboX * this.zoomLevel + this.mapImageX; // X position on the canvas
-          const robotScreenY =
-            (this.mapImageHeight / this.zoomLevel - roboY) * this.zoomLevel +
-            this.mapImageY; // Y position on the canvas
+            // Position the robot tooltip above the robot
+            const robotScreenX = roboX * this.zoomLevel + this.mapImageX; // X position on the canvas
+            const robotScreenY =
+              (this.mapImageHeight / this.zoomLevel - roboY) * this.zoomLevel +
+              this.mapImageY; // Y position on the canvas
 
-          robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
-          robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position
-          robottooltip.innerHTML = `Robot ID: ${robotId}`;
-          robottooltip.style.display = 'block';
-          break; // Exit the loop after finding the first robot
+            robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
+            robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position
+            robottooltip.innerHTML = `Robot ID: ${robotId}`;
+            robottooltip.style.display = 'block';
+            break; // Exit the loop after finding the first robot
+          }
         }
-      }}
-      if(this.isFleet){
-      for (let robo of this.robos) {
-        
-        const roboX = robo.pos.x;
-        const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
-        const imageSize = 25; // Adjust to the size of the robot image
+      }
+      if (this.isFleet) {
+        for (let robo of this.robos) {
+          const roboX = robo.pos.x;
+          const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
+          const imageSize = 25; // Adjust to the size of the robot image
 
-        if (
-          imgX >= roboX - imageSize &&
-          imgX <= roboX + imageSize &&
-          imgY >= roboY - imageSize &&
-          imgY <= roboY + imageSize
-        ) {
-          isOverRobot = true;
-          robotId = robo.roboDet.id;
+          if (
+            imgX >= roboX - imageSize &&
+            imgX <= roboX + imageSize &&
+            imgY >= roboY - imageSize &&
+            imgY <= roboY + imageSize
+          ) {
+            isOverRobot = true;
+            robotId = robo.roboDet.id;
 
-          // Position the robot tooltip above the robot
-          const robotScreenX = roboX * this.zoomLevel + this.mapImageX; // X position on the canvas
-          const robotScreenY =
-            (this.mapImageHeight / this.zoomLevel - roboY) * this.zoomLevel +
-            this.mapImageY; // Y position on the canvas
+            // Position the robot tooltip above the robot
+            const robotScreenX = roboX * this.zoomLevel + this.mapImageX; // X position on the canvas
+            const robotScreenY =
+              (this.mapImageHeight / this.zoomLevel - roboY) * this.zoomLevel +
+              this.mapImageY; // Y position on the canvas
 
-          robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
-          robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position
-          robottooltip.innerHTML = `Robot ID: ${robotId}`;
-          robottooltip.style.display = 'block';
-          break; // Exit the loop after finding the first robot
+            robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
+            robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position
+            robottooltip.innerHTML = `Robot ID: ${robotId}`;
+            robottooltip.style.display = 'block';
+            break; // Exit the loop after finding the first robot
+          }
         }
-      }}
+      }
       if (!isOverRobot || robotId === null) {
         robottooltip.style.display = 'none'; // Hide tooltip when not over a robot
       }
@@ -1182,7 +1208,6 @@ export class DashboardComponent implements AfterViewInit {
     robot.enabled = true;
     let data = await this.enable_robot(robot);
 
-    // Update robot state and persist to sessionStorage
     this.simMode = this.simMode.map((robo) => {
       if (robo.amrId === robot.amrId && data.isRoboEnabled) {
         robo.isActive = true;
@@ -1192,7 +1217,7 @@ export class DashboardComponent implements AfterViewInit {
       return robo;
     });
 
-    if (data.isRoboEnabled)
+    if (data.isRoboEnabled) {
       this.messageService.add({
         severity: 'info',
         summary: `${
@@ -1201,7 +1226,8 @@ export class DashboardComponent implements AfterViewInit {
         detail: 'Robot has been Enabled',
         life: 4000,
       });
-    else {
+      await this.showSpline(robot.amrId);
+    } else {
       this.messageService.add({
         severity: 'error',
         summary: `${
@@ -1334,7 +1360,7 @@ export class DashboardComponent implements AfterViewInit {
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
       const transformedY = canvas.height - y;
       // console.log(amrPos[i].x, amrPos[i].y);
-      this.plotRobo(ctx, x, transformedY, yaw, 'robot0','black');
+      this.plotRobo(ctx, x, transformedY, yaw, 'robot0', 'black');
     }
   }
 
@@ -1516,11 +1542,9 @@ export class DashboardComponent implements AfterViewInit {
               speed: robot.speed,
             }; // here we go...
 
-            console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
+            // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
+            console.log(robot.agentPath)
 
-            // yet to remove if cond..
-            // if (robot.pose.position.x && robot.pose.position.y)
-            // Re-plot all robots
             this.simMode = this.nodeGraphService.getsimMode();
             this.roboIDColor = this.nodeGraphService.getRoboIdClr();
             await this.plotAllRobots(robotsData);
@@ -1540,48 +1564,75 @@ export class DashboardComponent implements AfterViewInit {
     };
   }
   stateColorMap: { [key: string]: string } = {
-    INITSTATE: "#8f910d", // Dark yellow
-    NORMALSTATE: "#eaed39",
-    PAUSESTATE: "#ffa500",
-    ERRORSTATE: "#ff0800",
-    WAITSTATE: "#0b663c", // Dark green
-    IDLESTATE: "#065baa",
-    MOVESTATE: "#08ad66",
-    DOCKSTATE: "#a3cfe8",
-    UNDOCKSTATE: "#a3cfe8",
-    LOADSTATE: "#f5adae",
-    UNLOADSTATE: "#533621",
-    CHARGESTATE: "#9900cc",
-    FAILEDSTATE: "#ff0800",
+    INITSTATE: '#8f910d', // Dark yellow
+    NORMALSTATE: '#eaed39',
+    PAUSESTATE: '#ffa500',
+    ERRORSTATE: '#ff0800',
+    WAITSTATE: '#0b663c', // Dark green
+    IDLESTATE: '#065baa',
+    MOVESTATE: '#08ad66',
+    DOCKSTATE: '#a3cfe8',
+    UNDOCKSTATE: '#a3cfe8',
+    LOADSTATE: '#f5adae',
+    UNLOADSTATE: '#533621',
+    CHARGESTATE: '#9900cc',
+    FAILEDSTATE: '#ff0800',
   };
   // roboIDColor: { [key: number]: string } = {};
   roboIDColor = new Map<number, string>();
-  
-  plotRobo( ctx: CanvasRenderingContext2D, x: number, y: number, orientation: number, state: string, circleColor: string ) {
+
+  plotRobo(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    orientation: number,
+    state: string,
+    circleColor: string
+  ) {
     const width = 25 * this.zoomLevel * 1.3; // Define the width of the square
     const height = 25 * this.zoomLevel; // Define the height of the square
     const borderRadius = 3; // Border radius for the square
     const circleRadius = height / 3.5; // Circle radius
-    const rectangleColor = this.stateColorMap[state] || "#ff7373";
+    const rectangleColor = this.stateColorMap[state] || '#ff7373';
     if (ctx) {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate((orientation * Math.PI) / 180);
-  
+
       // Draw the rounded rectangle (manually if roundRect is unsupported)
       ctx.beginPath();
       ctx.moveTo(-width / 2 + borderRadius, -height / 2);
       ctx.lineTo(width / 2 - borderRadius, -height / 2);
-      ctx.quadraticCurveTo(width / 2, -height / 2, width / 2, -height / 2 + borderRadius);
+      ctx.quadraticCurveTo(
+        width / 2,
+        -height / 2,
+        width / 2,
+        -height / 2 + borderRadius
+      );
       ctx.lineTo(width / 2, height / 2 - borderRadius);
-      ctx.quadraticCurveTo(width / 2, height / 2, width / 2 - borderRadius, height / 2);
+      ctx.quadraticCurveTo(
+        width / 2,
+        height / 2,
+        width / 2 - borderRadius,
+        height / 2
+      );
       ctx.lineTo(-width / 2 + borderRadius, height / 2);
-      ctx.quadraticCurveTo(-width / 2, height / 2, -width / 2, height / 2 - borderRadius);
+      ctx.quadraticCurveTo(
+        -width / 2,
+        height / 2,
+        -width / 2,
+        height / 2 - borderRadius
+      );
       ctx.lineTo(-width / 2, -height / 2 + borderRadius);
-      ctx.quadraticCurveTo(-width / 2, -height / 2, -width / 2 + borderRadius, -height / 2);
+      ctx.quadraticCurveTo(
+        -width / 2,
+        -height / 2,
+        -width / 2 + borderRadius,
+        -height / 2
+      );
       ctx.closePath();
-  
-      ctx.fillStyle = rectangleColor ; // Set the rectangle color
+
+      ctx.fillStyle = rectangleColor; // Set the rectangle color
       ctx.fill();
 
       // Draw the circle inside the rounded rectangle
@@ -1589,11 +1640,11 @@ export class DashboardComponent implements AfterViewInit {
       ctx.arc(0, 0, circleRadius, 0, Math.PI * 2); // Circle at the center
       ctx.fillStyle = circleColor; // Set the circle color
       ctx.fill();
-      ctx.closePath();  
+      ctx.closePath();
       ctx.restore();
     }
   }
- 
+
   // plotRobo(
   //   ctx: CanvasRenderingContext2D,
   //   x: number,
@@ -1615,7 +1666,7 @@ export class DashboardComponent implements AfterViewInit {
   //       -imageSize / 2,
   //       imageSize * 1.3,
   //       imageSize
-  //     ); 
+  //     );
   //     ctx.restore(); // Restore the context after rotation
   //   }
   // }
@@ -1681,7 +1732,6 @@ export class DashboardComponent implements AfterViewInit {
       for (let [index, robotId] of Object.keys(robotsData).entries()) {
         const { posX, posY, yaw, state } = robotsData[robotId];
         let imgState = 'robot0';
-        // console.log("hey",state);
 
         // Define the spacing between each robot
         const spacing = 60; // 60px when applySpacing is true, 0px when false
@@ -1756,20 +1806,26 @@ export class DashboardComponent implements AfterViewInit {
         });
     }
   }
-  plotRack(ctx: CanvasRenderingContext2D, x: number, y: number, size: number = this.rackSize, color: string = "#4C61C2") { 
+  plotRack(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    size: number = this.rackSize,
+    color: string = '#4C61C2'
+  ) {
     // Set the transparency (0 is fully transparent, 1 is fully opaque)
     ctx.globalAlpha = 0.7;
-  
+
     // Set the fill color for the square
     ctx.fillStyle = color;
-  
+
     // Draw the square at the given x, y position with the given size
     ctx.fillRect(x, y, size, size);
-  
+
     // Reset globalAlpha to 1 to avoid affecting subsequent drawings
     ctx.globalAlpha = 1;
   }
-  
+
   drawNodesAndEdges(
     ctx: CanvasRenderingContext2D,
     img: HTMLImageElement,
@@ -1829,8 +1885,8 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
-  async showSpline() {
-    if (!this.selectedMap.id) return;
+  async showSpline(roboId: number) : Promise<boolean> {
+    if (!this.selectedMap.id) return false;
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/show-spline`,
       {
@@ -1839,11 +1895,14 @@ export class DashboardComponent implements AfterViewInit {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mapId: this.selectedMap.id,
+          roboId: roboId,
         }),
       }
     );
     let data = await response.json();
-    if (data.isShowSplined) this.getLivePos();
+
+    return data.isShowSplined;
+    // if (data.isShowSplined) this.getLivePos();
   }
 
   // start-stop the operation!
@@ -1993,7 +2052,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
-    ctx.strokeStyle = color; 
+    ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     ctx.stroke();
   }
@@ -2046,7 +2105,12 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillText(label, x + 12, y); // Place label slightly right to the node
   }
 
-  drawPathNode(ctx: CanvasRenderingContext2D, x: number, y: number, color: string) {
+  drawPathNode(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    color: string
+  ) {
     // Set node style (for example, circle)
     ctx.beginPath();
     ctx.arc(x, y, 3, 0, 2 * Math.PI); // Draw circle with radius 10
