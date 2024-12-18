@@ -114,6 +114,7 @@ export class DashboardComponent implements AfterViewInit {
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
   showModelCanvas: boolean = false; // Initially hide the modelCanvas
+  isShowPath: boolean = false;
   selectedMap: any | null = null;
   mapImg: any | null = null;
   mapImageWidth: number = 0; // To store the width of the map image
@@ -143,6 +144,8 @@ export class DashboardComponent implements AfterViewInit {
   shouldAnimate: boolean = true; // Control the animation
   svgFillColor: string = '#FFA3A3'; // Default color
   rackSize: number = 25;
+  paths: Map<number, any[]> = new Map<number, any[]>();
+
   get statusColor(): string {
     if (this.isMoving) {
       return 'green';
@@ -371,6 +374,7 @@ export class DashboardComponent implements AfterViewInit {
         : 'Simulation Mode Active';
     }
   }
+
   ngAfterViewInit(): void {
     if (this.myCanvas) {
       const canvas = this.myCanvas.nativeElement;
@@ -445,6 +449,7 @@ export class DashboardComponent implements AfterViewInit {
     this.robotImages['charge'].src = 'assets/Roboimg/charge.svg';
     this.robotImages['failed'].src = 'assets/Roboimg/failed.svg';
   }
+  
   isStateDivVisible: boolean = false;
 
   toggleStateDiv(): void {
@@ -609,12 +614,33 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
+  toggleShowPath(){
+    this.isShowPath = !this.isShowPath;
+  }
+
   showRoboPath() {
     console.log('nan tha da leo');
   }
+
   showPath() {
-    console.log('I am Batman');
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+
+    let keyItr = this.paths.keys();
+    for(let roboId of keyItr){
+     let path = this.paths.get(roboId);
+     if(path){
+       let clr = this.roboIDColor.get(roboId) || 'black';
+        path.forEach(path => {
+          if(ctx) this.drawPathNode(ctx, path.x, path.y, clr);
+        });
+        for(let i = 0; i < path.length - 1; i += 1){
+          if(ctx && path[i+1]) this.drawPathLine(ctx, {x: path[i].x, y: path[i].y}, {x: path[i+1].x, y: path[i+1].y}, clr);
+        }
+      }
+    }
   }
+
   cancelAction() {
     this.hidePopup();
   }
@@ -1009,7 +1035,6 @@ export class DashboardComponent implements AfterViewInit {
         imgY <= this.mapImageHeight / this.zoomLevel;
 
       if (!isInsideMap) {
-        // console.log("hey");
         return; // Exit if the click is outside the map image
       }
       if (!this.isFleet)
@@ -1030,7 +1055,7 @@ export class DashboardComponent implements AfterViewInit {
           ) {
             // Set applySpacing to false when a robot is clicked
             this.applySpacing = false;
-            console.log(`Robot clicked: ${robo.roboDet.id}`);
+            // console.log(`Robot clicked: ${robo.roboDet.id}`);
 
             break;
           } else {
@@ -1539,13 +1564,13 @@ export class DashboardComponent implements AfterViewInit {
               posY,
               yaw: yaw,
               state: robot.robot_state,
-              speed: robot.speed,
               path: robot.agentPath
             }; // here we go...
 
-            console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
+            // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
             // console.log(robot.agentPath)
 
+            // this.paths.clear();
             this.simMode = this.nodeGraphService.getsimMode();
             this.roboIDColor = this.nodeGraphService.getRoboIdClr();
             await this.plotAllRobots(robotsData);
@@ -1692,8 +1717,6 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   async plotAllRobots(robotsData: any) {
-    // console.log(robotsDatplotAllRobotsa.speed);
-
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
 
@@ -1764,13 +1787,8 @@ export class DashboardComponent implements AfterViewInit {
         }
 
         this.simMode = this.simMode.map((robo) => {
-          let draggingRoboId = this.draggingRobo
-            ? this.draggingRobo.amrId
-            : null;
-          if (
-            robo.amrId === parseInt(robotId) &&
-            robo.amrId !== draggingRoboId
-          ) {
+          let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
+          if ( robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId ) {
             robo.pos.x = robotCanvasX;
             robo.pos.y = robotCanvasY;
             robo.pos.orientation = -yaw;
@@ -1782,9 +1800,14 @@ export class DashboardComponent implements AfterViewInit {
           }
           return robo;
         });
+
+        //..
+        this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId))
+        //..
       }
 
       // After updating positions, use the adjusted positions to draw the robots
+      
       if (!this.isFleet)
         this.simMode.forEach((robo) => {
           const robotPosX = centerX + robo.pos.x * this.zoomLevel;
@@ -1795,6 +1818,7 @@ export class DashboardComponent implements AfterViewInit {
           let clr = this.roboIDColor.get(robo.amrId) || 'white';
           this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
         });
+
       if (this.isFleet)
         this.robos.forEach((robo) => {
           const robotPosX = centerX + robo.pos.x * this.zoomLevel;
@@ -1805,8 +1829,28 @@ export class DashboardComponent implements AfterViewInit {
           let clr = this.roboIDColor.get(robo.amrId) || 'white';
           this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
         });
+
+      if(this.isShowPath) this.showPath();
     }
   }
+
+  async setPaths(path:any[], imgHeight: number, centerX: number, centerY: number, robotId: number){
+    let roboPath: any[] = [];
+
+    path.forEach((path : any) => {
+      let pathX = (path.x + (this.origin.x || 0)) / (this.ratio || 1);
+      let pathY = (path.y + (this.origin.y || 0)) / (this.ratio || 1);
+      // Non-simulation mode
+      const transformedPathY = !this.simMode
+        ? this.mapImageHeight - pathX
+        : imgHeight / this.zoomLevel - pathY;
+      const pathCanvasX = pathX;
+      const pathCanvasY = transformedPathY;
+      roboPath.push({x: centerX + pathCanvasX * this.zoomLevel, y:centerY + pathCanvasY * this.zoomLevel})
+    })
+    this.paths.set(robotId, roboPath);
+  }
+  
   plotRack(
     ctx: CanvasRenderingContext2D,
     x: number,
