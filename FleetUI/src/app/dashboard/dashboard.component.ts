@@ -780,7 +780,6 @@ export class DashboardComponent implements AfterViewInit {
 
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
-      // this.plotRack(ctx, node.nodePosition.x - (this.rackSize/2), transformedY - (this.rackSize/2), this.rackSize);
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
     });
 
