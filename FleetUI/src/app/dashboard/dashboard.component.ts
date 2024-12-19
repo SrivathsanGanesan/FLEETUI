@@ -1220,7 +1220,7 @@ export class DashboardComponent implements AfterViewInit {
     if (!data.map) return;
     mapData = data.map;
     this.ratio = data.map.mpp;
-    this.rackSize = 1 / this.ratio; // to get the size in pixels.. to plot rack!
+    this.rackSize = 0.9 / this.ratio; // to get the size in pixels.. to plot rack!
     this.origin = {
       x: mapData.origin.x,
       y: mapData.origin.y,
@@ -1712,7 +1712,7 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     // After updating positions, use the adjusted positions to draw the robots
-    
+
     if (!this.isFleet)
       this.simMode.forEach((robo) => {
         const robotPosX = centerX + robo.pos.x * this.zoomLevel;
@@ -1804,21 +1804,18 @@ export class DashboardComponent implements AfterViewInit {
     this.paths.set(robotId, roboPath);
   }
   
-  plotRack(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    size: number = this.rackSize,
-    color: string = '#0000cc'
-  ) {
-    // Set the transparency (0 is fully transparent, 1 is fully opaque)
+  plotRack( ctx: CanvasRenderingContext2D, x: number, y: number, size: number = this.rackSize, color: string = '#0000cc' ) {
     ctx.globalAlpha = 0.7;
 
     // Set the fill color for the square
     ctx.fillStyle = color;
-
-    // Draw the square at the given x, y position with the given size
     ctx.fillRect(x, y, size, size);
+
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(x, y, size/3, size);
+
+    ctx.fillStyle = 'red';
+    ctx.fillRect(((size/3)*2)+x, y, size/3, size);
 
     // Reset globalAlpha to 1 to avoid affecting subsequent drawings
     ctx.globalAlpha = 1;
