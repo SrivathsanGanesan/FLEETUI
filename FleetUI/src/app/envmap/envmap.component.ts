@@ -1913,6 +1913,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
+    if(this.isNodeDetailsPopupVisible){return}
     if (this.isMultiNodePlotting) {
       event.preventDefault(); // Block right-click interaction
       this.messageService.add({
@@ -3534,6 +3535,7 @@ export class EnvmapComponent implements AfterViewInit {
   originalNodePosition: { x: number; y: number } | null = null;
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
+    if(this.isNodeDetailsPopupVisible){return}
     if (event.button !== 0) {
       return; // Do nothing if it's not a left mouse button click
     }
@@ -3753,6 +3755,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
+    if(this.isNodeDetailsPopupVisible){return}
     const tooltip = this.pixTooltip.nativeElement;
     if (!tooltip) {
       console.warn('Tooltip element not found');
@@ -3852,6 +3855,7 @@ export class EnvmapComponent implements AfterViewInit {
 
   @HostListener('mouseup', ['$event'])
   onMouseUp(event: MouseEvent): void {
+    if(this.isNodeDetailsPopupVisible){return}
     const canvas = this.overlayCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) * (canvas.width / rect.width);

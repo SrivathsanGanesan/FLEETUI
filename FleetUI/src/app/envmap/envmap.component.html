@@ -1,8 +1,8 @@
-<div class="popup-overlay">
+<div class="popup-overlay" [ngStyle]="{ 'pointer-events': isNodeDetailsPopupVisible ? 'none' : 'auto' }">
   <div
     class="popup-content"
     [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }"
-    [ngStyle]="{ 'pointer-events': showImage ? 'none' : 'auto' }"
+    [ngStyle]="{ 'pointer-events': isNodeDetailsPopupVisible ? 'auto' : 'auto' }"
   >
 
     <h3 *ngIf="!showImage">Select and insert Map file</h3>
@@ -219,15 +219,14 @@
         </svg>
       </button>
 
-      <canvas class="plottinglayer" #overlayCanvas *ngIf="showImage"></canvas>
+      <canvas class="plottinglayer" #overlayCanvas *ngIf="showImage" ></canvas>
       <div
         *ngIf="isNodeDetailsPopupVisible"
         class="nodepopup-overlay"
       >
       <div
         #nodeDetailsPopup
-        class="node-details-popup"
-        [style.display]="isNodeDetailsPopupVisible ? 'block' : 'none'"
+        class="node-details-popup"        
       >
 
       <div class="sampleCSS">
@@ -541,7 +540,7 @@
       </div>
     </div>
       <!-- Transparent canvas/ for plotting points -->
-      <canvas class="maplayer" #imageCanvas></canvas>
+      <canvas class="maplayer" #imageCanvas ></canvas>
 
       <!-- <div
         class="options-container"
