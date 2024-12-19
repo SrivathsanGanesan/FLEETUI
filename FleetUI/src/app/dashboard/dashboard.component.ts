@@ -848,33 +848,6 @@ export class DashboardComponent implements AfterViewInit {
     ctx.restore(); // Reset transformation after drawing
   }
 
-  // plotRandomRacks(ctx: CanvasRenderingContext2D, rackCount: number) {
-  //   // Map image boundaries in the canvas coordinate system
-  //   const imgWidth = this.mapImageWidth;
-  //   const imgHeight = this.mapImageHeight;
-  //   const mapX = this.mapImageX; // Top-left corner X of the map image
-  //   const mapY = this.mapImageY; // Top-left corner Y of the map image
-
-  //   // Generate and plot racks within the map image boundaries
-  //   for (let i = 0; i < rackCount; i++) {
-  //     // Generate random positions within the map image bounds
-  //     const randomX = Math.random() * imgWidth;
-  //     const randomY = Math.random() * imgHeight;
-
-  //     // Translate the random coordinates into the map image space
-  //     const adjustedX = mapX + randomX;
-  //     const adjustedY = mapY + randomY;
-
-  //     // Ensure the rack is drawn entirely within the image bounds
-  //     if (
-  //       adjustedX + this.rackSize <= mapX + imgWidth &&
-  //       adjustedY + this.rackSize <= mapY + imgHeight
-  //     ) {
-  //       this.plotRack(ctx, adjustedX, adjustedY);
-  //     }
-  //   }
-  // }
-
   isRobotClicked(robo: any, x: number, y: number): boolean {
     const imageSize = 25;
     const roboX = robo.pos.x;
@@ -1495,7 +1468,7 @@ export class DashboardComponent implements AfterViewInit {
     if (this.posEventSource) this.posEventSource.close();
 
     this.posEventSource = new EventSource(URL);
-    this.posEventSource.onmessage = (event) => {
+    this.posEventSource.onmessage = async (event) => {
       if (!this.isFleetUp) return;
       this.projectService.setInLive(true);
       this.isInLive = true;
@@ -1503,50 +1476,51 @@ export class DashboardComponent implements AfterViewInit {
 
       try {
         const data = JSON.parse(event.data);
-        // console.log(data.robots); // here it is..
+        const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+        const ctx = canvas.getContext('2d');
 
-        if (ctx && data.robots.length) {
-          // Loop through each robot to update their pose and position
-          data.robots.forEach(async (robot: any) => {
-            let complexVal = {
-              w: robot.pose.orientation.w,
-              x: robot.pose.orientation.x,
-              y: robot.pose.orientation.y,
-              z: robot.pose.orientation.z,
-            };
+        const mapImage = new Image();
+        let map = this.projectService.getMapData();
+        mapImage.src = `http://${map.imgUrl}`;
+        await mapImage.decode(); // Wait for the image to load
 
-            let posX =
-              (robot.pose.position.x + (this.origin.x || 0)) /
-              (this.ratio || 1);
-            let posY =
-              (robot.pose.position.y + (this.origin.y || 0)) /
-              (this.ratio || 1);
+        if(!ctx || !data.robots.length) return;
+        
+        // Loop through each robot to update their pose and position
+        data.robots.forEach(async (robot: any) => {
+          let posX =
+            (robot.pose.position.x + (this.origin.x || 0)) /
+            (this.ratio || 1);
+          let posY =
+            (robot.pose.position.y + (this.origin.y || 0)) /
+            (this.ratio || 1);
 
-            let yaw = this.quaternionToYaw(
-              robot.pose.orientation.w,
-              robot.pose.orientation.x,
-              robot.pose.orientation.y,
-              robot.pose.orientation.z
-            );
+          let yaw = this.quaternionToYaw(
+            robot.pose.orientation.w,
+            robot.pose.orientation.x,
+            robot.pose.orientation.y,
+            robot.pose.orientation.z
+          );
 
-            // Store each robot's position and orientation using the robot ID
-            robotsData[robot.id] = {
-              posX,
-              posY,
-              yaw: yaw,
-              state: robot.robot_state,
-              path: robot.agentPath
-            }; // here we go...
+          // Store each robot's position and orientation using the robot ID
+          robotsData[robot.id] = {
+            posX,
+            posY,
+            yaw: yaw,
+            state: robot.robot_state,
+            path: robot.agentPath
+          }; // here we go...
 
-            // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
-            // console.log(robot.agentPath)
+          // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
+          this.simMode = this.nodeGraphService.getsimMode();
+          this.roboIDColor = this.nodeGraphService.getRoboIdClr();
+          await this.plotAllRobots(robotsData, ctx, canvas, mapImage);
+        });
 
-            // this.paths.clear();
-            this.simMode = this.nodeGraphService.getsimMode();
-            this.roboIDColor = this.nodeGraphService.getRoboIdClr();
-            await this.plotAllRobots(robotsData);
-          });
-        }
+        if(!data.assets?.length) return;
+        console.log(data.assets);
+        
+
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
@@ -1575,7 +1549,7 @@ export class DashboardComponent implements AfterViewInit {
     CHARGESTATE: '#9900cc',
     FAILEDSTATE: '#ff0800',
   };
-  // roboIDColor: { [key: number]: string } = {};
+
   roboIDColor = new Map<number, string>();
 
   plotRobo(
@@ -1642,32 +1616,6 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  // plotRobo(
-  //   ctx: CanvasRenderingContext2D,
-  //   x: number,
-  //   y: number,
-  //   orientation: number,
-  //   state: string
-  // ) {
-  //   const roboType = state || 'robot0'; // Default to 'robotB' if no type is specified
-  //   const image = this.robotImages[roboType];
-  //   const imageSize = 25 * this.zoomLevel;
-
-  //   if (image && ctx) {
-  //     ctx.save(); // Save the current context before rotation
-  //     ctx.translate(x, y); // Move the rotation point to the robot's center
-  //     ctx.rotate((orientation * Math.PI) / 180); // Rotate by the given orientation angle (converted to radians)
-  //     ctx.drawImage(
-  //       image,
-  //       -imageSize / 2,
-  //       -imageSize / 2,
-  //       imageSize * 1.3,
-  //       imageSize
-  //     );
-  //     ctx.restore(); // Restore the context after rotation
-  //   }
-  // }
-
   isOptionsExpanded: boolean = false;
 
   toggleOptions() {
@@ -1687,124 +1635,111 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  async plotAllRobots(robotsData: any) {
-    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
+  async plotAllRobots(robotsData: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement) {
 
-    const mapImage = new Image();
-    let map = this.projectService.getMapData();
-    mapImage.src = `http://${map.imgUrl}`;
-    await mapImage.decode(); // Wait for the image to load
+    if(!ctx) return
+    // Clear the whole canvas before redrawing the map and all robots
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.zoomLevel = this.nodeGraphService.getZoomLevel();
+    this.offsetX = this.nodeGraphService.getOffsetX();
+    this.offsetY = this.nodeGraphService.getOffsetY();
+    // Calculate the scaled image dimensions and center the image on the canvas
+    const imgWidth = mapImage.width * this.zoomLevel;
+    const imgHeight = mapImage.height * this.zoomLevel;
 
-    if (ctx) {
-      // Clear the whole canvas before redrawing the map and all robots
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      this.zoomLevel = this.nodeGraphService.getZoomLevel();
-      this.offsetX = this.nodeGraphService.getOffsetX();
-      this.offsetY = this.nodeGraphService.getOffsetY();
-      // Calculate the scaled image dimensions and center the image on the canvas
-      const imgWidth = mapImage.width * this.zoomLevel;
-      const imgHeight = mapImage.height * this.zoomLevel;
-      // console.log("hey",canvas.height,canvas.width,imgHeight,imgWidth);
+    const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+    const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
 
-      const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
-      const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.scale(this.zoomLevel, this.zoomLevel);
+    ctx.drawImage(mapImage, 0, 0);
+    ctx.restore(); // Reset transformation after drawing the map
 
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.scale(this.zoomLevel, this.zoomLevel);
-      ctx.drawImage(mapImage, 0, 0);
-      ctx.restore(); // Reset transformation after drawing the map
+    if (this.nodeGraphService.getShowModelCanvas()) {
+      this.nodes = this.nodeGraphService.getNodes();
+      this.edges = this.nodeGraphService.getEdges();
+      this.zones = this.nodeGraphService.getZones();
+      this.assets = this.nodeGraphService.getAssets();
+      this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
+    }
 
-      if (this.nodeGraphService.getShowModelCanvas()) {
-        // this.showModelCanvas
-        this.nodes = this.nodeGraphService.getNodes();
-        this.edges = this.nodeGraphService.getEdges();
-        this.zones = this.nodeGraphService.getZones();
-        this.assets = this.nodeGraphService.getAssets();
-        this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
-      }
-      for (let [index, robotId] of Object.keys(robotsData).entries()) {
-        const { posX, posY, yaw, state, path } = robotsData[robotId];
-        let imgState = 'robot0';
+    for (let [index, robotId] of Object.keys(robotsData).entries()) {
+      const { posX, posY, yaw, state, path } = robotsData[robotId];
 
-        // Define the spacing between each robot
-        const spacing = 60; // 60px when applySpacing is true, 0px when false
-        const offsetX = (index % 6) * spacing;
-        const offsetY = Math.floor(index / 6) * spacing;
+      // Scale position and apply spacing offset
+      const scaledPosX = posX;
+      const scaledPosY = posY;
 
-        // Scale position and apply spacing offset
-        const scaledPosX = posX;
-        const scaledPosY = posY;
+      // Flip Y-axis for canvas and calculate actual canvas positions
+      const transformedPosY = !this.simMode
+        ? this.mapImageHeight - scaledPosY // Non-simulation mode
+        : imgHeight / this.zoomLevel - scaledPosY;
+      const robotCanvasX = scaledPosX;
+      const robotCanvasY = transformedPosY;
 
-        // Flip Y-axis for canvas and calculate actual canvas positions
-        const transformedPosY = !this.simMode
-          ? this.mapImageHeight - scaledPosY // Non-simulation mode
-          : imgHeight / this.zoomLevel - scaledPosY;
-        const robotCanvasX = scaledPosX;
-        const robotCanvasY = transformedPosY;
-
-        // Update `simMode` data with the new scaled positions if the robot is not being dragged
-        if (this.isFleet) {
-          this.robos = this.robos.map((robo) => {
-            if (robo.roboDet.id === parseInt(robotId)) {
-              robo.pos.x = robotCanvasX;
-              robo.pos.y = robotCanvasY;
-              robo.pos.orientation = -yaw;
-              robo.imgState = state;
-            }
-            return robo;
-          });
-        }
-
-        this.simMode = this.simMode.map((robo) => {
-          let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
-          if ( robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId ) {
+      // Update `simMode` data with the new scaled positions if the robot is not being dragged
+      if (this.isFleet) {
+        this.robos = this.robos.map((robo) => {
+          if (robo.roboDet.id === parseInt(robotId)) {
             robo.pos.x = robotCanvasX;
             robo.pos.y = robotCanvasY;
             robo.pos.orientation = -yaw;
             robo.imgState = state;
-            if (state !== 'INITSTATE') {
-              robo.isActive = true;
-              // this.cdRef.detectChanges();//yet to review and remove
-            }
           }
           return robo;
         });
-
-        //..
-        this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId))
-        //..
       }
 
-      // After updating positions, use the adjusted positions to draw the robots
-      
-      if (!this.isFleet)
-        this.simMode.forEach((robo) => {
-          const robotPosX = centerX + robo.pos.x * this.zoomLevel;
-          const robotPosY = centerY + robo.pos.y * this.zoomLevel;
-          const yaw = robo.pos.orientation;
+      this.simMode = this.simMode.map((robo) => {
+        let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
+        if ( robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId ) {
+          robo.pos.x = robotCanvasX;
+          robo.pos.y = robotCanvasY;
+          robo.pos.orientation = -yaw;
+          robo.imgState = state;
+          if (state !== 'INITSTATE') {
+            robo.isActive = true;
+            // this.cdRef.detectChanges();//yet to review and remove
+          }
+        }
+        return robo;
+      });
 
-          // Draw the robot on the canvas with updated positions and orientation
-          let clr = this.roboIDColor.get(robo.amrId) || 'white';
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
-        });
-
-      if (this.isFleet)
-        this.robos.forEach((robo) => {
-          const robotPosX = centerX + robo.pos.x * this.zoomLevel;
-          const robotPosY = centerY + robo.pos.y * this.zoomLevel;
-          const yaw = robo.pos.orientation;
-
-          // Draw the robot on the canvas with updated positions and orientation
-          let clr = this.roboIDColor.get(robo.amrId) || 'white';
-          this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
-        });
-
-        if(this.nodeGraphService.getIsShowPath()) this.showPath();
-        if(this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
+      //..
+      this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId))
+      //..
     }
+
+    // After updating positions, use the adjusted positions to draw the robots
+    
+    if (!this.isFleet)
+      this.simMode.forEach((robo) => {
+        const robotPosX = centerX + robo.pos.x * this.zoomLevel;
+        const robotPosY = centerY + robo.pos.y * this.zoomLevel;
+        const yaw = robo.pos.orientation;
+
+        // Draw the robot on the canvas with updated positions and orientation
+        let clr = this.roboIDColor.get(robo.amrId) || 'white';
+        this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
+      });
+
+    if (this.isFleet)
+      this.robos.forEach((robo) => {
+        const robotPosX = centerX + robo.pos.x * this.zoomLevel;
+        const robotPosY = centerY + robo.pos.y * this.zoomLevel;
+        const yaw = robo.pos.orientation;
+
+        // Draw the robot on the canvas with updated positions and orientation
+        let clr = this.roboIDColor.get(robo.amrId) || 'white';
+        this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
+      });
+
+    if(this.nodeGraphService.getIsShowPath()) this.showPath();
+    if(this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
   }
+
+
 
   async setPaths(path:any[], imgHeight: number, centerX: number, centerY: number, robotId: number){
     let roboPath: any[] = [];
