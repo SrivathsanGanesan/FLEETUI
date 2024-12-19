@@ -1485,6 +1485,11 @@ export class DashboardComponent implements AfterViewInit {
         await mapImage.decode(); // Wait for the image to load
 
         if(!ctx || !data.robots.length) return;
+
+        // Clear the whole canvas before redrawing the map and all robots
+        this.zoomLevel = this.nodeGraphService.getZoomLevel();
+        this.offsetX = this.nodeGraphService.getOffsetX();
+        this.offsetY = this.nodeGraphService.getOffsetY();
         
         // Loop through each robot to update their pose and position
         data.robots.forEach(async (robot: any) => {
@@ -1514,12 +1519,12 @@ export class DashboardComponent implements AfterViewInit {
           // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
           this.simMode = this.nodeGraphService.getsimMode();
           this.roboIDColor = this.nodeGraphService.getRoboIdClr();
-          await this.plotAllRobots(robotsData, ctx, canvas, mapImage);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          this.plotAllRobots(robotsData, ctx, canvas, mapImage);
         });
 
         if(!data.assets?.length) return;
-        console.log(data.assets);
-        
+        this.plotAllAssets(data.assets, ctx, canvas, mapImage);
 
       } catch (error) {
         console.error('Error parsing SSE data:', error);
@@ -1534,6 +1539,7 @@ export class DashboardComponent implements AfterViewInit {
       this.posEventSource.close();
     };
   }
+
   stateColorMap: { [key: string]: string } = {
     INITSTATE: '#8f910d', // Dark yellow
     NORMALSTATE: '#eaed39',
@@ -1635,14 +1641,8 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  async plotAllRobots(robotsData: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement) {
+  plotAllRobots(robotsData: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement) {
 
-    if(!ctx) return
-    // Clear the whole canvas before redrawing the map and all robots
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.zoomLevel = this.nodeGraphService.getZoomLevel();
-    this.offsetX = this.nodeGraphService.getOffsetX();
-    this.offsetY = this.nodeGraphService.getOffsetY();
     // Calculate the scaled image dimensions and center the image on the canvas
     const imgWidth = mapImage.width * this.zoomLevel;
     const imgHeight = mapImage.height * this.zoomLevel;
@@ -1739,7 +1739,52 @@ export class DashboardComponent implements AfterViewInit {
     if(this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
   }
 
+  plotAllAssets(assets: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement){
 
+    const imgWidth = mapImage.width * this.zoomLevel;
+    const imgHeight = mapImage.height * this.zoomLevel;
+
+    const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
+    const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
+
+    // ctx.save(); // yet to uncomment this seq lines..
+    // ctx.translate(centerX, centerY);
+    // ctx.scale(this.zoomLevel, this.zoomLevel);
+    // ctx.drawImage(mapImage, 0, 0);
+    // ctx.restore(); // Reset transformation after drawing the map
+
+    let assetsToPlot = [];
+
+    for(let rack of assets){
+
+      let posX = (rack.x + (this.origin.x || 0)) / (this.ratio || 1);
+      let posY = (rack.y + (this.origin.y || 0)) / (this.ratio || 1);
+
+      const scaledPosX = posX;
+      const scaledPosY = posY;
+
+      const transformedPosY = !this.simMode
+        ? this.mapImageHeight - scaledPosY // Non-simulation mode
+        : imgHeight / this.zoomLevel - scaledPosY;
+      const robotCanvasX = scaledPosX;
+      const robotCanvasY = transformedPosY;
+
+      // let yaw = this.quaternionToYaw();
+
+      rack.x = robotCanvasX;
+      rack.y = robotCanvasY;
+      // rack.orientation = -yaw;
+
+      assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
+    }
+
+    assetsToPlot.forEach((rack)=>{
+      const robotPosX = centerX + rack.x * this.zoomLevel;
+      const robotPosY = centerY + rack.y * this.zoomLevel;
+      // const yaw = robo.pos.orientation;
+      this.plotRack(ctx, robotPosX - (this.rackSize/2), robotPosY - (this.rackSize/2), this.rackSize);
+    })
+  }
 
   async setPaths(path:any[], imgHeight: number, centerX: number, centerY: number, robotId: number){
     let roboPath: any[] = [];
@@ -1764,7 +1809,7 @@ export class DashboardComponent implements AfterViewInit {
     x: number,
     y: number,
     size: number = this.rackSize,
-    color: string = '#4C61C2'
+    color: string = '#0000cc'
   ) {
     // Set the transparency (0 is fully transparent, 1 is fully opaque)
     ctx.globalAlpha = 0.7;
