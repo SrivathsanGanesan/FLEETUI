@@ -2200,7 +2200,7 @@ export class EnvmapComponent implements AfterViewInit {
       ctx.stroke();
 
       // Draw arrowhead
-      const arrowLength = 1;
+      const arrowLength = 2;
       ctx.beginPath();
       ctx.moveTo(endX, canvasHeight - transformedEndY); // Arrow at the adjusted end point
       ctx.lineTo(

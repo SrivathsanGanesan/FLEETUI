@@ -115,6 +115,7 @@ export class DashboardComponent implements AfterViewInit {
   private stream: MediaStream | null = null; // Store the MediaStream here
   showModelCanvas: boolean = false; // Initially hide the modelCanvas
   isShowPath: boolean = false;
+  isShowRoboPath: boolean = false;
   selectedMap: any | null = null;
   mapImg: any | null = null;
   mapImageWidth: number = 0; // To store the width of the map image
@@ -616,11 +617,40 @@ export class DashboardComponent implements AfterViewInit {
 
   toggleShowPath(){
     this.isShowPath = !this.isShowPath;
+    if(this.isShowRoboPath) this.isShowRoboPath = !this.isShowRoboPath;
   }
 
   showRoboPath() {
-    console.log('nan tha da leo');
+    // if (!this.updatedrobo || !this.paths) return;
+  
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+  
+    if (!ctx) return;
+  
+    // Clear the canvas to show only the selected robot's path
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+    const roboId = this.updatedrobo.amrId;
+    const path = this.paths.get(roboId);
+  
+    if (path) {
+      const clr = this.roboIDColor.get(roboId) || 'black';
+  
+      // Draw the robot's path
+      path.forEach(node => {
+        this.drawPathNode(ctx, node.x, node.y, clr);
+      });
+  
+      for (let i = 0; i < path.length - 1; i++) {
+        if (path[i + 1]) {
+          this.drawPathLine(ctx, { x: path[i].x, y: path[i].y }, { x: path[i + 1].x, y: path[i + 1].y }, clr);
+        }
+      }
+    }
+    this.hidePopup();
   }
+  
 
   showPath() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -1830,7 +1860,8 @@ export class DashboardComponent implements AfterViewInit {
           this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
         });
 
-      if(this.isShowPath) this.showPath();
+        if(this.isShowPath) this.showPath();
+        if(this.isShowRoboPath) this.showRoboPath();
     }
   }
 
