@@ -146,6 +146,7 @@ export class DashboardComponent implements AfterViewInit {
   svgFillColor: string = '#FFA3A3'; // Default color
   rackSize: number = 25;
   paths: Map<number, any[]> = new Map<number, any[]>();
+  roboPathIds: Set<number> = new Set<number>();
 
   get statusColor(): string {
     if (this.isMoving) {
@@ -301,25 +302,7 @@ export class DashboardComponent implements AfterViewInit {
       this.canvasloader = false;
       this.canvasNoImage = true;
     }
-    // console.log(this.selectedMap,"selected map")
-    // if (!this.selectedMap) {
-    //   // await this.onInitMapImg();
-    //   this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
-    //   if (this.projectService.getInitializeMapSelected() == 'true')
-    //     if (!this.isInLive) this.initSimRoboPos();
-    //   await this.getMapDetails();
-    //   if (this.projectService.getInitializeMapSelected() == 'true') {
-    //     this.loadCanvas();
-    //   }
-    //   if (this.projectService.getInitializeMapSelected() == 'true')
-    //     if (!this.isInLive) this.initSimRoboPos();
-    //   await this.getMapDetails();
-    //   if (this.projectService.getInitializeMapSelected() == 'true') {
-    //     this.loadCanvas();
-    //   }
-    //   this.isMapLoaded = false;
-    //   return;
-    // }
+  
     if (!this.projectService.getMapData()) return;
     const img = new Image();
     img.src = `http://${this.selectedMap.imgUrl}`;
@@ -334,6 +317,9 @@ export class DashboardComponent implements AfterViewInit {
     this.nodeGraphService.setZoomLevel(this.zoomLevel);
     this.nodeGraphService.setOffsetX(this.offsetX); //defaultvalue
     this.nodeGraphService.setOffsetY(this.offsetY); //defaultvalue
+    this.nodeGraphService.setIsShowPath(this.isShowPath);
+    this.nodeGraphService.setIsShowRoboPath(this.roboPathIds.size);
+    // this.roboPathIds.clear();
 
     await this.getMapDetails();
     // this.showModelCanvas = false;
@@ -617,10 +603,20 @@ export class DashboardComponent implements AfterViewInit {
 
   toggleShowPath(){
     this.isShowPath = !this.isShowPath;
+    this.nodeGraphService.setIsShowPath(this.isShowPath);
   }
 
   toggleShowRoboPath(){
-    this.isShowRoboPath = !this.isShowRoboPath;
+    this.hidePopup();
+    console.log(this.roboPathIds.size);
+    
+    if(this.roboPathIds.has(this.updatedrobo.amrId)){
+      this.roboPathIds.delete(this.updatedrobo.amrId);
+      return;
+    }
+    this.roboPathIds.add(this.updatedrobo.amrId);
+    // this.isShowRoboPath = !this.isShowRoboPath;
+    this.nodeGraphService.setIsShowRoboPath(this.roboPathIds.size);
   }
 
   showRoboPath() {
@@ -631,25 +627,23 @@ export class DashboardComponent implements AfterViewInit {
   
     if (!ctx) return;
   
-    const roboId = this.updatedrobo.amrId;
-    const path = this.paths.get(roboId);
-  
-    if (path) {
-      const clr = this.roboIDColor.get(roboId) || 'black';
-  
-      // Draw the robot's path
-      path.forEach(node => {
-        this.drawPathNode(ctx, node.x, node.y, clr);
-      });
-  
-      for (let i = 0; i < path.length - 1; i++) {
-        if (path[i + 1]) {
-          this.drawPathLine(ctx, { x: path[i].x, y: path[i].y }, { x: path[i + 1].x, y: path[i + 1].y }, clr);
+    // const roboId = this.updatedrobo.amrId;
+    
+    for(let roboId of Array.from(this.roboPathIds)){
+      const path = this.paths.get(roboId);
+      if (path) {
+        const clr = this.roboIDColor.get(roboId) || 'black'; 
+        // Draw the robot's path
+        path.forEach(node => {
+          this.drawPathNode(ctx, node.x, node.y, clr);
+        });
+        for (let i = 0; i < path.length - 1; i++) {
+          if (path[i + 1]) {
+            this.drawPathLine(ctx, { x: path[i].x, y: path[i].y }, { x: path[i + 1].x, y: path[i + 1].y }, clr);
+          }
         }
       }
     }
-
-    this.hidePopup();
   }
 
   showPath() {
@@ -1860,14 +1854,19 @@ export class DashboardComponent implements AfterViewInit {
           this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
         });
 
-        if(this.isShowPath) this.showPath();
-        if(this.isShowRoboPath) this.showRoboPath();
+        if(this.nodeGraphService.getIsShowPath()) this.showPath();
+        if(!this.nodeGraphService.getIsShowRoboPath()){ 
+          // this.roboPathIds.clear();
+          return; 
+        }
+        this.showRoboPath();  
     }
   }
 
   async setPaths(path:any[], imgHeight: number, centerX: number, centerY: number, robotId: number){
     let roboPath: any[] = [];
 
+    if(!path) return;
     path.forEach((path : any) => {
       let pathX = (path.x + (this.origin.x || 0)) / (this.ratio || 1);
       let pathY = (path.y + (this.origin.y || 0)) / (this.ratio || 1);

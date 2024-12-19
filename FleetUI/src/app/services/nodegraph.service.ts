@@ -13,7 +13,8 @@ export class NodeGraphService {
   private zoomLevel:number=1.0;
   private offsetX:number=0;
   private offsetY:number=0;
-
+  private isShowPath: boolean = false;
+  private isShowRoboPath: number = 0;
   roboIDColor: Map<number, string> = new Map<number, string>(); // check...
 
   showModelCanvas: boolean = false;
@@ -108,5 +109,18 @@ export class NodeGraphService {
 
   getOffsetY(){
     return this.offsetY;
+  }
+
+  setIsShowPath(isShowPath: boolean){
+    this.isShowPath = isShowPath;
+  }
+  getIsShowPath(){
+    return this.isShowPath;
+  }
+  setIsShowRoboPath(isShowRoboPath: number){
+    this.isShowRoboPath = isShowRoboPath;
+  }
+  getIsShowRoboPath(): number{
+    return this.isShowRoboPath;
   }
 }
