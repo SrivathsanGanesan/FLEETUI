@@ -87,7 +87,6 @@ export class DashboardComponent implements AfterViewInit {
   startY = 0;
   showChart2 = true; // Controls blur effect for Chart2
   showChart3 = true;
-  robotImages: { [key: string]: HTMLImageElement } = {};
   assetImages: { [key: string]: HTMLImageElement } = {};
   zoneColors: { [key in ZoneType]: string } = {
     [ZoneType.HIGH_SPEED_ZONE]: 'rgba(255, 0, 0, 0.3)', // Red with 30% opacity
@@ -374,33 +373,7 @@ export class DashboardComponent implements AfterViewInit {
       console.error('myCanvas is undefined');
     }
 
-    this.robotImages = {
-      robot0: new Image(),
-      robot1: new Image(),
-      robot2: new Image(),
-      robot3: new Image(),
-      robot4: new Image(),
-      robot5: new Image(),
-      robot6: new Image(),
-      robot7: new Image(),
-      robot8: new Image(),
-      robot9: new Image(),
-      robot10: new Image(),
 
-      init: new Image(),
-      move: new Image(),
-      normal: new Image(),
-      pause: new Image(),
-      error: new Image(),
-      wait: new Image(),
-      idle: new Image(),
-      dock: new Image(),
-      undock: new Image(),
-      load: new Image(),
-      unload: new Image(),
-      charge: new Image(),
-      failed: new Image(),
-    };
     this.assetImages = {
       docking: new Image(),
       charging: new Image(),
@@ -409,32 +382,6 @@ export class DashboardComponent implements AfterViewInit {
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
 
-    // Load the external SVG
-    this.robotImages['robot0'].src = 'assets/Roboimg/Robot/Robo0.svg';
-    this.robotImages['robot1'].src = 'assets/Roboimg/Robot/Robo1.svg';
-    this.robotImages['robot2'].src = 'assets/Roboimg/Robot/Robo2.svg';
-    this.robotImages['robot3'].src = 'assets/Roboimg/Robot/Robo3.svg';
-    this.robotImages['robot4'].src = 'assets/Roboimg/Robot/Robo4.svg';
-    this.robotImages['robot5'].src = 'assets/Roboimg/Robot/Robo5.svg';
-    this.robotImages['robot6'].src = 'assets/Roboimg/Robot/Robo6.svg';
-    this.robotImages['robot7'].src = 'assets/Roboimg/Robot/Robo7.svg';
-    this.robotImages['robot8'].src = 'assets/Roboimg/Robot/Robo8.svg';
-    this.robotImages['robot9'].src = 'assets/Roboimg/Robot/Robo9.svg';
-    this.robotImages['robot10'].src = 'assets/Roboimg/Robot/Robo10.svg';
-
-    this.robotImages['init'].src = 'assets/Roboimg/init.svg';
-    this.robotImages['move'].src = 'assets/Roboimg/move.svg';
-    this.robotImages['normal'].src = 'assets/Roboimg/normal.svg';
-    this.robotImages['pause'].src = 'assets/Roboimg/pause.svg';
-    this.robotImages['error'].src = 'assets/Roboimg/error.svg';
-    this.robotImages['wait'].src = 'assets/Roboimg/wait.svg';
-    this.robotImages['idle'].src = 'assets/Roboimg/idle.svg';
-    this.robotImages['dock'].src = 'assets/Roboimg/dock.svg';
-    this.robotImages['undock'].src = 'assets/Roboimg/undock.svg';
-    this.robotImages['load'].src = 'assets/Roboimg/load.svg';
-    this.robotImages['unload'].src = 'assets/Roboimg/unload.svg';
-    this.robotImages['charge'].src = 'assets/Roboimg/charge.svg';
-    this.robotImages['failed'].src = 'assets/Roboimg/failed.svg';
   }
   
   isStateDivVisible: boolean = false;
@@ -608,7 +555,7 @@ export class DashboardComponent implements AfterViewInit {
 
   toggleShowRoboPath(){
     this.hidePopup();
-    console.log(this.roboPathIds.size);
+    // console.log(this.roboPathIds.size);
     
     if(this.roboPathIds.has(this.updatedrobo.amrId)){
       this.roboPathIds.delete(this.updatedrobo.amrId);
@@ -1855,11 +1802,7 @@ export class DashboardComponent implements AfterViewInit {
         });
 
         if(this.nodeGraphService.getIsShowPath()) this.showPath();
-        if(!this.nodeGraphService.getIsShowRoboPath()){ 
-          // this.roboPathIds.clear();
-          return; 
-        }
-        this.showRoboPath();  
+        if(this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
     }
   }
 
