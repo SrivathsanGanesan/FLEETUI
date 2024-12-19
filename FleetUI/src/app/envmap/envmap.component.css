@@ -724,8 +724,8 @@ canvas {
   color: #ffffff;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px ;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
   padding: 8px;
 }
 
@@ -737,18 +737,24 @@ canvas {
 }
 
 .delete-icon{
-  background-color: transparent;
+  background-color: white;
   font-size: 13px;
+  font-weight: bold;
   font-family: "graphik", Arial,  sans-serif;
   color: rgba(255, 0, 0, 0.493);
   font-weight: light;
   border: 0.5px solid rgba(255, 0, 0, 0.493);
-  border-top-right-radius: 5px;
+  padding: 6px;
+  position: relative;
+  top: -15px;
+  left: -10px;
+  border-radius: 100px;
+  /* border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 11.5px;
-  padding-bottom: 11.5px;
+  padding-bottom: 11.5px; */
   margin-left: -3px;
 }
 

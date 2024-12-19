@@ -562,7 +562,7 @@ export class DashboardComponent implements AfterViewInit {
       return;
     }
     this.roboPathIds.add(this.updatedrobo.amrId);
-    // this.isShowRoboPath = !this.isShowRoboPath;
+    this.isShowRoboPath = !this.isShowRoboPath;
     this.nodeGraphService.setIsShowRoboPath(this.roboPathIds.size);
   }
 
