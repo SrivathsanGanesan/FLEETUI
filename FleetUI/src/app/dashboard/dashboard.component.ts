@@ -617,7 +617,10 @@ export class DashboardComponent implements AfterViewInit {
 
   toggleShowPath(){
     this.isShowPath = !this.isShowPath;
-    if(this.isShowRoboPath) this.isShowRoboPath = !this.isShowRoboPath;
+  }
+
+  toggleShowRoboPath(){
+    this.isShowRoboPath = !this.isShowRoboPath;
   }
 
   showRoboPath() {
@@ -627,9 +630,6 @@ export class DashboardComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
   
     if (!ctx) return;
-  
-    // Clear the canvas to show only the selected robot's path
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
   
     const roboId = this.updatedrobo.amrId;
     const path = this.paths.get(roboId);
@@ -648,9 +648,9 @@ export class DashboardComponent implements AfterViewInit {
         }
       }
     }
+
     this.hidePopup();
   }
-  
 
   showPath() {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
