@@ -1475,7 +1475,8 @@ export class DashboardComponent implements AfterViewInit {
 
       try {
         const data = JSON.parse(event.data);
-
+        console.log(data);
+        
         const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
 
@@ -1779,12 +1780,12 @@ export class DashboardComponent implements AfterViewInit {
 
       assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
     }
-    
+
     assetsToPlot.forEach((rack)=>{
       const robotPosX = centerX + rack.x * this.zoomLevel;
       const robotPosY = centerY + rack.y * this.zoomLevel;
       // const yaw = Math.round(Math.random()*360);
-      this.plotRack(ctx, robotPosX - (this.rackSize/2), robotPosY - (this.rackSize/2), this.rackSize, 0);
+      this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, 0);
     })
   }
 
@@ -1829,7 +1830,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillRect(x, y, Math.round(size/3)/3, size);
 
     ctx.fillStyle = '#ff1f1f';
-    ctx.fillRect(Math.round((((size/3)/3)*8)+x), y, Math.round(size/3) / 3, size);
+    ctx.fillRect(Math.round((((size/3)/3)*8)+x), y, Math.round(size/3)/3, size);
 
     // Reset globalAlpha to 1 to avoid affecting subsequent drawings
     ctx.globalAlpha = 1;
@@ -1940,7 +1941,7 @@ export class DashboardComponent implements AfterViewInit {
     this.eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // console.log(data);
+        console.log(data);
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
