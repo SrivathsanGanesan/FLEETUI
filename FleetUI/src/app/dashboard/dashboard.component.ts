@@ -1502,7 +1502,7 @@ export class DashboardComponent implements AfterViewInit {
         this.offsetY = this.nodeGraphService.getOffsetY();
 
         // Loop through each robot to update their pose and position
-        if(data.robots?.length)
+        if(data.robots?.length){
           data.robots.forEach(async (robot: any) => {
             let posX =
               (robot.pose.position.x + (this.origin.x || 0)) /
@@ -1533,6 +1533,7 @@ export class DashboardComponent implements AfterViewInit {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             this.plotAllRobots(robotsData, ctx, canvas, mapImage);
           });
+        }
 
         if(!data.assets?.length) return;
         this.plotAllAssets(data.assets, ctx, canvas, mapImage);
@@ -1758,6 +1759,12 @@ export class DashboardComponent implements AfterViewInit {
     const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
     const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
 
+    // ctx.save();
+    // ctx.translate(centerX, centerY);
+    // ctx.scale(this.zoomLevel, this.zoomLevel);
+    // ctx.drawImage(mapImage, 0, 0);
+    // ctx.restore(); // Reset transformation after drawing the map
+
     // let assetsToPlot = [];
 
     // for(let rack of assets){
@@ -1785,12 +1792,14 @@ export class DashboardComponent implements AfterViewInit {
       // assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
     })
 
-    this.racks.forEach((rack)=>{
-      const robotPosX = centerX + rack.x * this.zoomLevel;
-      const robotPosY = centerY + rack.y * this.zoomLevel;
-      // const yaw = Math.round(Math.random()*360);
-      this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, 0);
-    })
+    this.redrawCanvas();
+
+    // this.racks.forEach((rack)=>{
+    //   const robotPosX = centerX + rack.x * this.zoomLevel;
+    //   const robotPosY = centerY + rack.y * this.zoomLevel;
+    //   // const yaw = Math.round(Math.random()*360);
+    //   this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, 0);
+    // })
   }
 
   async setPaths(path:any[], imgHeight: number, centerX: number, centerY: number, robotId: number){
