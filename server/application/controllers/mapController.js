@@ -159,8 +159,8 @@ const getFleetNodes = (nodes) => {
       (action) => action.actionType === "Undock"
     );
 
-    let preDockPos = node.pre_dockNodeId !== null ? getNodePos(node.pre_dockNodeId, nodes) : getPosition(node, moveAction);
-    let UnDockPos = node.Un_dockNodeId !== null ? getNodePos(node.Un_dockNodeId, nodes) : getPosition(node, undockAction); // moveAction
+    let preDockPos = node.pre_dockNodeId !== null ? getNodePos(node.pre_dockNodeId, nodes) : getPosition(node, [0]); // : getPosition(node, moveAction);
+    let UnDockPos = node.Un_dockNodeId !== null ? getNodePos(node.Un_dockNodeId, nodes) : getPosition(node, undockAction);
     let dockPos = node.dockNodeId !== null ? getNodePos(node.dockNodeId, nodes) : getPosition(node, dockAction);
 
     let locationType = 0;
