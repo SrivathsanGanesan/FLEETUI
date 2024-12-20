@@ -1476,14 +1476,13 @@ export class DashboardComponent implements AfterViewInit {
 
     this.posEventSource = new EventSource(URL);
     this.posEventSource.onmessage = async (event) => {
-      // if (!this.isFleetUp) return;
       this.projectService.setInLive(true);
       this.isInLive = true;
       const robotsData: any = {};
 
       try {
         const data = JSON.parse(event.data);
-        console.log(data);
+        // console.log(data);
         
         const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
@@ -1493,7 +1492,6 @@ export class DashboardComponent implements AfterViewInit {
         mapImage.src = `http://${map.imgUrl}`;
         await mapImage.decode(); // Wait for the image to load
 
-        // if(!ctx || !data.robots.length) return;
         if(!ctx) return;
 
         // Clear the whole canvas before redrawing the map and all robots
@@ -1533,10 +1531,12 @@ export class DashboardComponent implements AfterViewInit {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             this.plotAllRobots(robotsData, ctx, canvas, mapImage);
           });
+          this.plotAllAssets(data.assets, ctx, canvas, mapImage);
+          return;
         }
 
         if(!data.assets?.length) return;
-        this.plotAllAssets(data.assets, ctx, canvas, mapImage);
+        // this.plotAllAssets(data.assets, ctx, canvas, mapImage);
 
       } catch (error) {
         console.error('Error parsing SSE data:', error);
@@ -1690,7 +1690,6 @@ export class DashboardComponent implements AfterViewInit {
       const robotCanvasX = scaledPosX;
       const robotCanvasY = transformedPosY;
 
-      // Update `simMode` data with the new scaled positions if the robot is not being dragged
       if (this.isFleet) {
         this.robos = this.robos.map((robo) => {
           if (robo.roboDet.id === parseInt(robotId)) {
@@ -1724,7 +1723,6 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     // After updating positions, use the adjusted positions to draw the robots
-
     if (!this.isFleet)
       this.simMode.forEach((robo) => {
         const robotPosX = centerX + robo.pos.x * this.zoomLevel;
@@ -1792,14 +1790,12 @@ export class DashboardComponent implements AfterViewInit {
       // assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
     })
 
-    this.redrawCanvas();
-
-    // this.racks.forEach((rack)=>{
-    //   const robotPosX = centerX + rack.x * this.zoomLevel;
-    //   const robotPosY = centerY + rack.y * this.zoomLevel;
-    //   // const yaw = Math.round(Math.random()*360);
-    //   this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, 0);
-    // })
+    this.racks.forEach((rack)=>{
+      const robotPosX = centerX + rack.x * this.zoomLevel;
+      const robotPosY = centerY + rack.y * this.zoomLevel;
+      // const yaw = Math.round(Math.random()*360);
+      this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, 0);
+    })
   }
 
   async setPaths(path:any[], imgHeight: number, centerX: number, centerY: number, robotId: number){
