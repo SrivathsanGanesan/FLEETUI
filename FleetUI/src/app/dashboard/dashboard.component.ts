@@ -1468,13 +1468,15 @@ export class DashboardComponent implements AfterViewInit {
 
     this.posEventSource = new EventSource(URL);
     this.posEventSource.onmessage = async (event) => {
-      if (!this.isFleetUp) return;
+      // if (!this.isFleetUp) return;
       this.projectService.setInLive(true);
       this.isInLive = true;
       const robotsData: any = {};
 
       try {
         const data = JSON.parse(event.data);
+        console.log(data);
+        
         const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
 
