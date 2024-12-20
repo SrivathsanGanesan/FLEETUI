@@ -1806,8 +1806,8 @@ export class DashboardComponent implements AfterViewInit {
     })
     this.paths.set(robotId, roboPath);
   }
-  
-  plotRack( ctx: CanvasRenderingContext2D, x: number, y: number, size: number = this.rackSize, angle: number, color: string = '#03fc90' ) {
+
+  plotRack( ctx: CanvasRenderingContext2D, x: number, y: number, size: number = this.rackSize, angle: number, color: string = '#f2a2a2' ) {
     ctx.save(); // Save the current context state
 
     // Translate to the center of the square
@@ -1820,16 +1820,16 @@ export class DashboardComponent implements AfterViewInit {
 
     // Translate back to the top-left corner of the square
     ctx.translate(-centerX, -centerY);
-    ctx.globalAlpha = 0.5;
+    ctx.globalAlpha = 0.7;
 
     // Set the fill color for the square
     ctx.fillStyle = color;
     ctx.fillRect(x, y, size, size);
 
-    ctx.fillStyle = 'orange';
+    ctx.fillStyle = '#faacac';
     ctx.fillRect(x, y, Math.round(size/3), size);
 
-    ctx.fillStyle = '#107500';
+    ctx.fillStyle = '#ff1f1f';
     ctx.fillRect(Math.round(((size/3)*2)+x), y, Math.round(size/3), size);
 
     // Reset globalAlpha to 1 to avoid affecting subsequent drawings
