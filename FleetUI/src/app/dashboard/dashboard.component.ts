@@ -79,6 +79,7 @@ export class DashboardComponent implements AfterViewInit {
   assets: any[] = [];
   simMode: any[] = [];
   robos: any[] = [];
+  racks: any[] = [];
   ratio: number = 1;
   origin: { x: number; y: number; w: number } = { x: 0, y: 0, w: 0 };
   plottedPoints: { id: number; x: number; y: number }[] = [];
@@ -772,6 +773,13 @@ export class DashboardComponent implements AfterViewInit {
       );
     }
 
+    this.racks.forEach((rack) => {
+      const robotPosX = rack.x;
+      const robotPosY = rack.y;
+      // const yaw = Math.round(Math.random()*360);
+      this.plotRack(ctx, robotPosX - (this.rackSize/2), robotPosY - (this.rackSize/2), this.rackSize, 0);
+    });
+
     if (!this.nodeGraphService.getShowModelCanvas()) {
       // this.showModelCanvas use instead..
       ctx.restore();
@@ -1219,7 +1227,7 @@ export class DashboardComponent implements AfterViewInit {
     if (!data.map) return;
     mapData = data.map;
     this.ratio = data.map.mpp;
-    this.rackSize = 0.6 / this.ratio; // change to 0.9
+    this.rackSize = 0.9 / this.ratio; // change to 0.9
     this.origin = {
       x: mapData.origin.x,
       y: mapData.origin.y,
@@ -1321,10 +1329,10 @@ export class DashboardComponent implements AfterViewInit {
       ctx.drawImage(mapImage, 0, 0);
 
       // If showModelCanvas is true, draw additional elements
-      if (this.nodeGraphService.getShowModelCanvas()) {
-        // this.showModelCanvas
-        this.redrawOtherElements(ctx, mapImage);
-      }
+      // if (this.nodeGraphService.getShowModelCanvas()) { // yet to uncomment in case..
+      //   // this.showModelCanvas
+      //   this.redrawOtherElements(ctx, mapImage);
+      // }
       // if (i > 0) clearPreviousImage(amrPos[i - 1].x, amrPos[i - 1].y);
       const transformedY = canvas.height - y;
       // console.log(amrPos[i].x, amrPos[i].y);
@@ -1389,7 +1397,7 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     let data = await response.json();
-    console.log(data, 'oninit map');
+    // console.log(data, 'oninit map');
     let projectSites = data.project.sites;
 
     mapArr = projectSites.flatMap((sites: any) => {
@@ -1492,9 +1500,9 @@ export class DashboardComponent implements AfterViewInit {
         this.zoomLevel = this.nodeGraphService.getZoomLevel();
         this.offsetX = this.nodeGraphService.getOffsetX();
         this.offsetY = this.nodeGraphService.getOffsetY();
-        
+
         // Loop through each robot to update their pose and position
-        if(data.length)
+        if(data.robots?.length)
           data.robots.forEach(async (robot: any) => {
             let posX =
               (robot.pose.position.x + (this.origin.x || 0)) /
@@ -1750,16 +1758,11 @@ export class DashboardComponent implements AfterViewInit {
     const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
     const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
 
-    // ctx.save(); // yet to uncomment this seq lines..
-    // ctx.translate(centerX, centerY);
-    // ctx.scale(this.zoomLevel, this.zoomLevel);
-    // ctx.drawImage(mapImage, 0, 0);
-    // ctx.restore(); // Reset transformation after drawing the map
+    // let assetsToPlot = [];
 
-    let assetsToPlot = [];
-
-    for(let rack of assets){
-
+    // for(let rack of assets){
+    this.racks = assets.map((rack: any)=>{
+      
       let posX = (rack.x + (this.origin.x || 0)) / (this.ratio || 1);
       let posY = (rack.y + (this.origin.y || 0)) / (this.ratio || 1);
 
@@ -1777,11 +1780,12 @@ export class DashboardComponent implements AfterViewInit {
       rack.x = robotCanvasX;
       rack.y = robotCanvasY;
       // rack.orientation = -yaw;
+      return {x: robotCanvasX, y: robotCanvasY};
 
-      assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
-    }
+      // assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
+    })
 
-    assetsToPlot.forEach((rack)=>{
+    this.racks.forEach((rack)=>{
       const robotPosX = centerX + rack.x * this.zoomLevel;
       const robotPosY = centerY + rack.y * this.zoomLevel;
       // const yaw = Math.round(Math.random()*360);
