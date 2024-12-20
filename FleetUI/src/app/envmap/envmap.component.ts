@@ -4329,17 +4329,17 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   updateEdge() {
-    if (
-      !this.currentEdge.edgeId ||
-      !this.currentEdge.sequenceId ||
-      !this.currentEdge.minHeight ||
-      !this.currentEdge.orientation ||
-      !this.currentEdge.orientationType ||
-      !this.currentEdge.maxRotationSpeed
-    ) {
-      this.showEdgeError = true; // Show error message
-      return; // Stop saving if validation fails
-    }
+    // if (
+    //   !this.currentEdge.edgeId ||
+    //   !this.currentEdge.sequenceId ||
+    //   !this.currentEdge.minHeight ||
+    //   !this.currentEdge.orientation ||
+    //   !this.currentEdge.orientationType ||
+    //   !this.currentEdge.maxRotationSpeed
+    // ) {
+    //   this.showEdgeError = true; // Show error message
+    //   return; // Stop saving if validation fails
+    // }
 
     // If validation passes, hide the error message
     this.showEdgeError = false;
