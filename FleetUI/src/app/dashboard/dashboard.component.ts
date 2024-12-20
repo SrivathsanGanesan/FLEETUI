@@ -1219,7 +1219,7 @@ export class DashboardComponent implements AfterViewInit {
     if (!data.map) return;
     mapData = data.map;
     this.ratio = data.map.mpp;
-    this.rackSize = 0.8 / this.ratio; // change to 0.9
+    this.rackSize = 0.6 / this.ratio; // change to 0.9
     this.origin = {
       x: mapData.origin.x,
       y: mapData.origin.y,
@@ -1807,7 +1807,7 @@ export class DashboardComponent implements AfterViewInit {
     this.paths.set(robotId, roboPath);
   }
 
-  plotRack( ctx: CanvasRenderingContext2D, x: number, y: number, size: number = this.rackSize, angle: number, color: string = '#f2a2a2' ) {
+  plotRack( ctx: CanvasRenderingContext2D, x: number, y: number, size: number = this.rackSize, angle: number, color: string = '#7393B3' ) {
     ctx.save(); // Save the current context state
 
     // Translate to the center of the square
@@ -1826,11 +1826,11 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, size, size);
 
-    ctx.fillStyle = '#faacac';
-    ctx.fillRect(x, y, Math.round(size/3), size);
+    ctx.fillStyle = '#420D09';
+    ctx.fillRect(x, y, Math.round(size/3)/4, size);
 
     ctx.fillStyle = '#ff1f1f';
-    ctx.fillRect(Math.round(((size/3)*2)+x), y, Math.round(size/3), size);
+    ctx.fillRect(Math.round(((size/3)+18)+x), y, Math.round(size/3)/4, size);
 
     // Reset globalAlpha to 1 to avoid affecting subsequent drawings
     ctx.globalAlpha = 1;
