@@ -1536,7 +1536,7 @@ export class DashboardComponent implements AfterViewInit {
         }
 
         if(!data.assets?.length) return;
-        // this.plotAllAssets(data.assets, ctx, canvas, mapImage);
+        this.plotAllAssets(data.assets, ctx, canvas, mapImage);
 
       } catch (error) {
         console.error('Error parsing SSE data:', error);
@@ -1782,10 +1782,10 @@ export class DashboardComponent implements AfterViewInit {
 
       // let yaw = this.quaternionToYaw();
 
-      rack.x = robotCanvasX;
-      rack.y = robotCanvasY;
-      // rack.orientation = -yaw;
-      return {x: robotCanvasX, y: robotCanvasY};
+      // rack.x = robotCanvasX;
+      // rack.y = robotCanvasY;
+      // rack.orientation = -rack.yaw;
+      return {x: robotCanvasX, y: robotCanvasY, yaw: -rack.yaw};
 
       // assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
     })
@@ -1793,8 +1793,8 @@ export class DashboardComponent implements AfterViewInit {
     this.racks.forEach((rack)=>{
       const robotPosX = centerX + rack.x * this.zoomLevel;
       const robotPosY = centerY + rack.y * this.zoomLevel;
-      // const yaw = Math.round(Math.random()*360);
-      this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, 0);
+      const yaw = rack.yaw;
+      this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
     })
   }
 
