@@ -1475,8 +1475,7 @@ export class DashboardComponent implements AfterViewInit {
 
       try {
         const data = JSON.parse(event.data);
-        console.log(data);
-        
+
         const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
 
@@ -1780,7 +1779,7 @@ export class DashboardComponent implements AfterViewInit {
 
       assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
     }
-
+    
     assetsToPlot.forEach((rack)=>{
       const robotPosX = centerX + rack.x * this.zoomLevel;
       const robotPosY = centerY + rack.y * this.zoomLevel;
