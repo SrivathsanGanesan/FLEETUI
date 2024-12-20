@@ -1483,7 +1483,8 @@ export class DashboardComponent implements AfterViewInit {
         mapImage.src = `http://${map.imgUrl}`;
         await mapImage.decode(); // Wait for the image to load
 
-        if(!ctx || !data.robots.length) return;
+        // if(!ctx || !data.robots.length) return;
+        if(!ctx) return;
 
         // Clear the whole canvas before redrawing the map and all robots
         this.zoomLevel = this.nodeGraphService.getZoomLevel();
@@ -1491,36 +1492,37 @@ export class DashboardComponent implements AfterViewInit {
         this.offsetY = this.nodeGraphService.getOffsetY();
         
         // Loop through each robot to update their pose and position
-        data.robots.forEach(async (robot: any) => {
-          let posX =
-            (robot.pose.position.x + (this.origin.x || 0)) /
-            (this.ratio || 1);
-          let posY =
-            (robot.pose.position.y + (this.origin.y || 0)) /
-            (this.ratio || 1);
+        if(data.length)
+          data.robots.forEach(async (robot: any) => {
+            let posX =
+              (robot.pose.position.x + (this.origin.x || 0)) /
+              (this.ratio || 1);
+            let posY =
+              (robot.pose.position.y + (this.origin.y || 0)) /
+              (this.ratio || 1);
 
-          let yaw = this.quaternionToYaw(
-            robot.pose.orientation.w,
-            robot.pose.orientation.x,
-            robot.pose.orientation.y,
-            robot.pose.orientation.z
-          );
+            let yaw = this.quaternionToYaw(
+              robot.pose.orientation.w,
+              robot.pose.orientation.x,
+              robot.pose.orientation.y,
+              robot.pose.orientation.z
+            );
 
-          // Store each robot's position and orientation using the robot ID
-          robotsData[robot.id] = {
-            posX,
-            posY,
-            yaw: yaw,
-            state: robot.robot_state,
-            path: robot.agentPath
-          }; // here we go...
+            // Store each robot's position and orientation using the robot ID
+            robotsData[robot.id] = {
+              posX,
+              posY,
+              yaw: yaw,
+              state: robot.robot_state,
+              path: robot.agentPath
+            }; // here we go...
 
-          // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
-          this.simMode = this.nodeGraphService.getsimMode();
-          this.roboIDColor = this.nodeGraphService.getRoboIdClr();
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          this.plotAllRobots(robotsData, ctx, canvas, mapImage);
-        });
+            // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
+            this.simMode = this.nodeGraphService.getsimMode();
+            this.roboIDColor = this.nodeGraphService.getRoboIdClr();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            this.plotAllRobots(robotsData, ctx, canvas, mapImage);
+          });
 
         if(!data.assets?.length) return;
         this.plotAllAssets(data.assets, ctx, canvas, mapImage);

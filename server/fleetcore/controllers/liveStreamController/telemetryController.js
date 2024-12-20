@@ -120,14 +120,6 @@ const initializeRobo = async (req, res) => {
       method: "POST",
     });
 
-    /* let showsplinePos = null;
-    if (initRoboPos.errorCode === 1000)
-      showsplinePos = await fetchFleetInfo({
-        endpoint: "showSpline",
-        bodyData: { robotId: initializeRobo.id, enable: true },
-        method: "POST",
-      }); */
-
     if (initRoboPos.errorCode === 1000)
       //&& showsplinePos.errorCode === 1000
       return res.status(200).json({
