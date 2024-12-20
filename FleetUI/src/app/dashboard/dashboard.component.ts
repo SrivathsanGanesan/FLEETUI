@@ -1826,10 +1826,10 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillRect(x, y, size, size);
 
     ctx.fillStyle = '#420D09';
-    ctx.fillRect(x, y, Math.round(size/3)/4, size);
+    ctx.fillRect(x, y, Math.round(size/3)/3, size);
 
     ctx.fillStyle = '#ff1f1f';
-    ctx.fillRect(Math.round(((size/3)+18)+x), y, Math.round(size/3)/4, size);
+    ctx.fillRect(Math.round((((size/3)/3)*8)+x), y, Math.round(size/3) / 3, size);
 
     // Reset globalAlpha to 1 to avoid affecting subsequent drawings
     ctx.globalAlpha = 1;
@@ -1940,7 +1940,7 @@ export class DashboardComponent implements AfterViewInit {
     this.eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
