@@ -1077,10 +1077,8 @@ export class DashboardComponent implements AfterViewInit {
             robotId = robo.amrId;
 
             // Position the robot tooltip above the robot
-            const robotScreenX = roboX * this.zoomLevel + this.mapImageX; // X position on the canvas
-            const robotScreenY =
-              (this.mapImageHeight / this.zoomLevel - roboY) * this.zoomLevel +
-              this.mapImageY; // Y position on the canvas
+            const robotScreenX = roboX * this.zoomLevel + this.mapImageX + this.zoomLevel; // X position on the canvas
+            const robotScreenY = (this.mapImageHeight / this.zoomLevel - this.offsetY - roboY) * this.zoomLevel +this.offsetY + this.mapImageY; // Y position on the canvas
 
             robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
             robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position
@@ -1592,33 +1590,13 @@ export class DashboardComponent implements AfterViewInit {
       ctx.beginPath();
       ctx.moveTo(-width / 2 + borderRadius, -height / 2);
       ctx.lineTo(width / 2 - borderRadius, -height / 2);
-      ctx.quadraticCurveTo(
-        width / 2,
-        -height / 2,
-        width / 2,
-        -height / 2 + borderRadius
-      );
+      ctx.quadraticCurveTo( width / 2, -height / 2, width / 2, -height / 2 + borderRadius );
       ctx.lineTo(width / 2, height / 2 - borderRadius);
-      ctx.quadraticCurveTo(
-        width / 2,
-        height / 2,
-        width / 2 - borderRadius,
-        height / 2
-      );
+      ctx.quadraticCurveTo( width / 2, height / 2, width / 2 - borderRadius, height / 2 );
       ctx.lineTo(-width / 2 + borderRadius, height / 2);
-      ctx.quadraticCurveTo(
-        -width / 2,
-        height / 2,
-        -width / 2,
-        height / 2 - borderRadius
-      );
+      ctx.quadraticCurveTo( -width / 2, height / 2, -width / 2, height / 2 - borderRadius );
       ctx.lineTo(-width / 2, -height / 2 + borderRadius);
-      ctx.quadraticCurveTo(
-        -width / 2,
-        -height / 2,
-        -width / 2 + borderRadius,
-        -height / 2
-      );
+      ctx.quadraticCurveTo( -width / 2, -height / 2, -width / 2 + borderRadius, -height / 2 );
       ctx.closePath();
 
       ctx.fillStyle = rectangleColor; // Set the rectangle color
@@ -1732,6 +1710,9 @@ export class DashboardComponent implements AfterViewInit {
         // Draw the robot on the canvas with updated positions and orientation
         let clr = this.roboIDColor.get(robo.amrId) || 'white';
         this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
+        if (robo.imgState === 'LOADSTATE' || robo.imgState === 'UNLOADSTATE') {
+          this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw, '#7393B3');
+        }
       });
 
     if (this.isFleet)
@@ -2133,7 +2114,7 @@ export class DashboardComponent implements AfterViewInit {
   ) {
     // Set node style (for example, circle)
     ctx.beginPath();
-    ctx.arc(x, y, 3, 0, 2 * Math.PI); // Draw circle with radius 10
+    ctx.arc(x, y, 2, 0, 2 * Math.PI); // Draw circle with radius 10
     ctx.fillStyle = color;
     ctx.fill();
   }
