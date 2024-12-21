@@ -14,15 +14,11 @@ import { environment } from '../../environments/environment.development';
 import { UptimeComponent } from '../uptime/uptime.component';
 import { ThroughputComponent } from '../throughput/throughput.component';
 import { MessageService, PrimeIcons } from 'primeng/api';
-import { state } from '@angular/animations';
-import { log } from 'console';
 import { IsFleetService } from '../services/shared/is-fleet.service';
 import { ModeService } from './mode.service';
 import { Subscription } from 'rxjs';
 import { NodeGraphService } from '../services/nodegraph.service';
-import html2canvas from 'html2canvas';
-import * as domtoimage from 'dom-to-image-more';
-import { saveAs } from 'file-saver';
+
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
   MEDIUM_SPEED_ZONE = 'Medium Speed Zone',
@@ -60,6 +56,7 @@ export class DashboardComponent implements AfterViewInit {
   @Output() modeChange = new EventEmitter<string>(); // Create an event emitter
   eventSource!: EventSource;
   posEventSource!: EventSource;
+  assetEventSource!: EventSource;
   ONBtn = false;
   showDashboard = false;
   isDropdownOpen = false;
@@ -147,18 +144,6 @@ export class DashboardComponent implements AfterViewInit {
   rackSize: number = 25;
   paths: Map<number, any[]> = new Map<number, any[]>();
   roboPathIds: Set<number> = new Set<number>();
-
-  get statusColor(): string {
-    if (this.isMoving) {
-      return 'green';
-    } else if (this.isDocking) {
-      return 'blue';
-    } else if (this.isCharging) {
-      return 'yellow';
-    } else {
-      return 'grey'; // Default/fallback
-    }
-  }
 
   async deleteRobot(robot: any, index: number) {
     // console.log(robot);
@@ -328,20 +313,18 @@ export class DashboardComponent implements AfterViewInit {
     this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
     if (!this.isInLive) this.initSimRoboPos();
     this.loadCanvas();
+    if (this.posEventSource || this.assetEventSource) {
+      this.posEventSource.close();
+      this.assetEventSource.close();
+    }
     if (this.isInLive) {
       this.initSimRoboPos();
       await this.getLivePos();
-      if (this.posEventSource) {
-        this.posEventSource.close();
-      }
     } else if (!this.isInLive) {
-      // yet to look at it..
-      if (this.posEventSource) this.posEventSource.close();
       await this.getLivePos();
       this.projectService.setInLive(true);
       this.isInLive = true;
     }
-    // console.log(this.simMode);
   }
   updateUI() {
     // Example of adding a simple fade-in/out effect to a specific element
@@ -1468,11 +1451,16 @@ export class DashboardComponent implements AfterViewInit {
     }
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    // posEventSource
+
     const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`;
+    const ASSET_URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-assets/${this.selectedMap.id}`;
+    
     if (this.posEventSource) this.posEventSource.close();
+    if(this.assetEventSource) this.assetEventSource.close();
 
     this.posEventSource = new EventSource(URL);
+    this.assetEventSource = new EventSource(ASSET_URL);
+
     this.posEventSource.onmessage = async (event) => {
       this.projectService.setInLive(true);
       this.isInLive = true;
@@ -1539,13 +1527,51 @@ export class DashboardComponent implements AfterViewInit {
       }
     };
 
+    this.assetEventSource.onmessage = async (event) => {
+      this.projectService.setInLive(true);
+      this.isInLive = true;
+
+      try {
+        const data = JSON.parse(event.data);
+        // console.log(data);
+        
+        const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+        const ctx = canvas.getContext('2d');
+
+        const mapImage = new Image();
+        let map = this.projectService.getMapData();
+        mapImage.src = `http://${map.imgUrl}`;
+        await mapImage.decode(); // Wait for the image to load
+
+        if(!ctx) return;
+
+        // Clear the whole canvas before redrawing the map and all robots
+        this.zoomLevel = this.nodeGraphService.getZoomLevel();
+        this.offsetX = this.nodeGraphService.getOffsetX();
+        this.offsetY = this.nodeGraphService.getOffsetY();
+
+        if(data.assets?.length) this.plotAllAssets(data.assets, ctx, canvas, mapImage);
+
+      } catch (error) {
+        console.error('Error parsing SSE data:', error);
+      }
+    }
+
     this.posEventSource.onerror = (error) => {
       this.projectService.setInLive(false);
       this.isInLive = false;
       this.getOnBtnImage();
-      console.error('SSE error:', error);
       this.posEventSource.close();
+      console.error('SSE error:', error);
     };
+
+    this.assetEventSource.onerror = (error) => {
+      this.projectService.setInLive(false);
+      this.isInLive = false;
+      this.getOnBtnImage();
+      this.assetEventSource.close();
+      console.error('Asset SSE error:', error);
+    }
   }
 
   stateColorMap: { [key: string]: string } = {
@@ -1737,16 +1763,6 @@ export class DashboardComponent implements AfterViewInit {
 
   plotAllAssets(assets: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement){
 
-    // if(!data.hasOwnProperty('assets')){
-    //   this.racks.forEach((rack)=>{
-    //     const robotPosX = centerX + rack.x * this.zoomLevel;
-    //     const robotPosY = centerY + rack.y * this.zoomLevel;
-    //     const yaw = rack.yaw;
-    //     this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
-    //   })
-    //   return;
-    // }
-    // let { assets } = data;
     const imgWidth = mapImage.width * this.zoomLevel;
     const imgHeight = mapImage.height * this.zoomLevel;
 
@@ -1759,9 +1775,6 @@ export class DashboardComponent implements AfterViewInit {
     // ctx.drawImage(mapImage, 0, 0);
     // ctx.restore(); // Reset transformation after drawing the map
 
-    // let assetsToPlot = [];
-
-    // for(let rack of assets){
     this.racks = assets.map((rack: any)=>{
       
       let posX = (rack.x + (this.origin.x || 0)) / (this.ratio || 1);
@@ -1777,13 +1790,7 @@ export class DashboardComponent implements AfterViewInit {
       const robotCanvasY = transformedPosY;
 
       // let yaw = this.quaternionToYaw();
-
-      // rack.x = robotCanvasX;
-      // rack.y = robotCanvasY;
-      // rack.orientation = -rack.yaw;
       return {x: robotCanvasX, y: robotCanvasY, yaw: -rack.yaw};
-
-      // assetsToPlot.push({x: robotCanvasX, y: robotCanvasY}); // yet to add yaw..
     })
 
     this.racks.forEach((rack)=>{
