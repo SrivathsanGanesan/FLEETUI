@@ -754,7 +754,7 @@ export class DashboardComponent implements AfterViewInit {
           robo.pos.x,
           robo.pos.y,
           robo.pos.orientation,
-          robo.state,
+          robo.imgState,
           clr
         );
       });
@@ -1529,12 +1529,10 @@ export class DashboardComponent implements AfterViewInit {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             this.plotAllRobots(robotsData, ctx, canvas, mapImage);
           });
-          this.plotAllAssets(data.assets, ctx, canvas, mapImage);
-          return;
+         if(!data.hasOwnProperty('assets')) return;
         }
 
-        if(!data.assets?.length) return;
-        this.plotAllAssets(data.assets, ctx, canvas, mapImage);
+        if(data.assets?.length) this.plotAllAssets(data.assets, ctx, canvas, mapImage);
 
       } catch (error) {
         console.error('Error parsing SSE data:', error);
@@ -1695,6 +1693,13 @@ export class DashboardComponent implements AfterViewInit {
         return robo;
       });
 
+      this.racks.forEach((rack)=>{
+        const robotPosX = centerX + rack.x * this.zoomLevel;
+        const robotPosY = centerY + rack.y * this.zoomLevel;
+        const yaw = rack.yaw;
+        this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
+      })
+
       //..
       this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId))
       //..
@@ -1732,6 +1737,16 @@ export class DashboardComponent implements AfterViewInit {
 
   plotAllAssets(assets: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement){
 
+    // if(!data.hasOwnProperty('assets')){
+    //   this.racks.forEach((rack)=>{
+    //     const robotPosX = centerX + rack.x * this.zoomLevel;
+    //     const robotPosY = centerY + rack.y * this.zoomLevel;
+    //     const yaw = rack.yaw;
+    //     this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
+    //   })
+    //   return;
+    // }
+    // let { assets } = data;
     const imgWidth = mapImage.width * this.zoomLevel;
     const imgHeight = mapImage.height * this.zoomLevel;
 
@@ -1810,7 +1825,7 @@ export class DashboardComponent implements AfterViewInit {
 
     // Translate back to the top-left corner of the square
     ctx.translate(-centerX, -centerY);
-    ctx.globalAlpha = 0.7;
+    ctx.globalAlpha = 1;
 
     // Set the fill color for the square
     ctx.fillStyle = color;
