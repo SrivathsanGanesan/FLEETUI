@@ -1517,11 +1517,9 @@ export class DashboardComponent implements AfterViewInit {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             this.plotAllRobots(robotsData, ctx, canvas, mapImage);
           });
-         if(!data.hasOwnProperty('assets')) return;
         }
 
-        if(data.assets?.length) this.plotAllAssets(data.assets, ctx, canvas, mapImage);
-
+        // if(data.assets?.length) this.plotAllAssets(data.assets, ctx, canvas, mapImage);
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
@@ -1832,7 +1830,7 @@ export class DashboardComponent implements AfterViewInit {
 
     // Translate back to the top-left corner of the square
     ctx.translate(-centerX, -centerY);
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha = 0.8;
 
     // Set the fill color for the square
     ctx.fillStyle = color;
