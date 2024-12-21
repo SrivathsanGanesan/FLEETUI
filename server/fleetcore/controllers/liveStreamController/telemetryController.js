@@ -7,13 +7,19 @@ let rabbitMqClient = null;
 let rabbitMQChannel = null;
 
 const consumeAMQP = new EventEmitter();
+const consumeRabbitqpAsset = new EventEmitter();
 
 let currentRobos = [];
 let rabbitmqConsumerTag = null;
+let assertConsumerTag = null;
 
 const noLiveRoboPos = {
   count: 0,
   robots: [],
+};
+
+const noAssets = {
+  assets: [],
 };
 
 const eventStreamHeader = {
@@ -24,7 +30,6 @@ const eventStreamHeader = {
 
 const initRabbitMQConnection = async () => {
   try {
-    // "http://13.202.100.211:15672/"
     rabbitMqClient = await amqp.connect(
       `amqp://${process.env.RABBITMQ_SERVER}:${process.env.RABBITMQ_PORT}`
     );
@@ -36,6 +41,7 @@ const initRabbitMQConnection = async () => {
     // });
     rabbitMQChannel = await rabbitMqClient.createChannel();
     await consumeMessage();
+    await consumeAssets();
   } catch (error) {
     console.error("Error while connecting rabbitmq :", error);
   }
@@ -78,6 +84,46 @@ const consumeMessage = async () => {
   }
 };
 
+const consumeAssets = async () => {
+  if (!rabbitMQChannel) return;
+  const exchange = "amq.topic";
+  const queueName = "AMS.TASK"; // queue name...
+  const routingKey = "AMS";
+  try {
+    // topic or direct or fanout, which describes what type of exchange it is..
+    let assertExchangeInfo = await rabbitMQChannel.assertExchange(
+      exchange,
+      "topic",
+      {
+        durable: true,
+      }
+    );
+
+    let assertQueueInfo = await rabbitMQChannel.assertQueue(queueName, {
+      durable: true, // queue remains even rabbitmq server restarts..
+    });
+
+    await rabbitMQChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
+
+    assertConsumerTag = await rabbitMQChannel.consume(queueName, (msg) => {
+      if (msg) {
+        const messageContent = msg.content.toString();
+        let assets = JSON.parse(messageContent);
+
+        // res.write(`data: ${JSON.stringify(robos)}\n\n`);
+        consumeRabbitqpAsset.emit("amqp-assets", assets);
+
+        rabbitMQChannel.ack(msg);
+      }
+    });
+  } catch (error) {
+    console.error("Error connection messages :", error);
+    if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {
+      console.error("Queue properties mismatch. Please verify queue settings.");
+    }
+  }
+};
+
 const fetchFleetInfo = async ({ endpoint, bodyData, method = "GET" }) => {
   try {
     let response = await fetch(
@@ -103,7 +149,6 @@ const fetchFleetInfo = async ({ endpoint, bodyData, method = "GET" }) => {
   }
 };
 
-// initMqttConnection();
 initRabbitMQConnection();
 
 const initializeRobo = async (req, res) => {
@@ -144,8 +189,7 @@ const getRoboPos = async (req, res) => {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
-    // const map = await Map.findOne({ _id: mapId });
-    // return res.status(200).json({ roboPos: null, data: "msg sent" });
+
     if (!rabbitmqConsumerTag) return res.end();
 
     res.writeHead(200, eventStreamHeader);
@@ -162,6 +206,37 @@ const getRoboPos = async (req, res) => {
 
     // take a look.. just to initiate the live on client by sending empty robo pose.
     res.write(`data: ${JSON.stringify(noLiveRoboPos)}\n\n`); // wanna exucute only once...
+  } catch (error) {
+    console.error("Error in getAgvTelemetry:", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
+  }
+};
+
+const getAsserts = async (req, res) => {
+  const mapId = req.params.mapId;
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(400).json({ msg: "Map not found!", map: null });
+
+    if (!assertConsumerTag) return res.end();
+
+    res.writeHead(200, eventStreamHeader);
+
+    const listenerCallback = (assets) => {
+      res.write(`data: ${JSON.stringify(assets)}\n\n`);
+    };
+    req.on("close", () => {
+      consumeRabbitqpAsset.removeListener("amqp-assets", listenerCallback); // to prevent the memory leak, which the listeners stacked..
+      return res.end();
+    });
+
+    consumeRabbitqpAsset.on("amqp-assets", listenerCallback);
+
+    // take a look.. just to initiate the live on client by sending empty robo pose.
+    res.write(`data: ${JSON.stringify(noAssets)}\n\n`); // wanna exucute only once...
   } catch (error) {
     console.error("Error in getAgvTelemetry:", error);
     res
@@ -356,6 +431,7 @@ module.exports = {
   getRoboStateCount,
   getRoboDetails,
   getRoboPos,
+  getAsserts,
   showSpline,
   enableRobo,
   getLiveRobos,
