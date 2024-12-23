@@ -262,7 +262,7 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 11;
   pointer-events: none;
   overflow:auto;
 }
@@ -622,7 +622,9 @@ canvas {
   display: inline;
   margin: 5px;
 }
-
+.originBTN{
+  margin: 10px;
+}
 .nodepopup-overlay {
   position: fixed;
   top: 0;

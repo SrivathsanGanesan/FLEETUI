@@ -132,6 +132,7 @@ export class EnvmapComponent implements AfterViewInit {
   projData: any;
   form: FormData | null = null;
   selectedImage: File | null = null;
+  originFilename: string | null = null;
   fileName: string | null = null;
   public mapName: string = '';
   public siteName: string = '';
@@ -324,7 +325,7 @@ export class EnvmapComponent implements AfterViewInit {
   public selectedNodeId: string | null = null;
 
   isFullScreen: boolean = false;
-
+  showOriginCanvas = false; // New property
   toggleFullScreen() {
     this.isFullScreen = !this.isFullScreen;
   }
@@ -706,13 +707,14 @@ export class EnvmapComponent implements AfterViewInit {
   closeImagePopup(): void {
     if ((this.showOriginPopup = true)) {
       this.showOriginPopup = false;
+      this.showOriginCanvas = false;
     }
     this.showImagePopup = false;
     this.points = [];
     this.showDistanceDialog = false;
     this.distanceBetweenPoints = null; // Reset distance if applicable
     this.isDistanceConfirmed = false;
-    if (this.resolutionInput) {
+    if (this.resolutionInput && this.showOriginPopup) {
       this.resolutionInput.nativeElement.value = ''; // Reset the input field
     }
     this.validationError = null;
@@ -1083,7 +1085,16 @@ export class EnvmapComponent implements AfterViewInit {
       reader.readAsDataURL(file);
     }
   }
-
+  onOriginFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.originFilename = input.files[0].name; // Get the file name
+    }
+  }
+  openOrigin(){
+    this.showOriginCanvas=!this.showOriginCanvas;
+    this.openOriginPopup();
+  }
   private startPoint: { x: number; y: number } | null = null; // Store the initial point
 
   openOriginPopup(): void {
@@ -1240,6 +1251,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.isDrawing = false;
     this.startPoint = null;
     this.showOriginPopup = false;
+    this.showOriginCanvas = false;
   }
 
   // Helper function to draw a line with an arrow

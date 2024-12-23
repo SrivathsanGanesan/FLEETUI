@@ -103,7 +103,7 @@
         (keyup.enter)="open()"
       /> -->
     <!-- Intermediate Nodes Dialog -->
-    <div *ngIf="showImagePopup" class="image-popup-overlay">
+    <div *ngIf="showImagePopup" class="image-popup-overlay" >
       <div class="image-popup-content">
         <canvas class="imagePopupCanvas" #imagePopupCanvas></canvas>
         <button class="close-btn" (click)="closeImagePopup()"> <svg
@@ -147,10 +147,32 @@
         </div>
       </div>
     </div>
-    <div *ngIf="showOriginPopup && this.ratio" class="image-popup-overlay">
+
+    <div *ngIf="showOriginPopup && this.ratio" class="image-popup-overlay" [ngStyle]="{ 'pointer-events': this.showOriginCanvas ? 'none' : 'auto' }">
       <div class="image-popup-content">
-        <div class="tooltip" #tooltip>(x: 0, y: 0)</div>
-        <canvas class="OriginPopupCanvas" #OriginPopupCanvas></canvas>
+
+        <div class="origin-fileupload" *ngIf="!this.showOriginCanvas">
+        <h3 *ngIf="showOriginPopup && this.ratio">Select Rviz image</h3>
+        <!-- Image for file upload -->
+        <label for="fileInput" class="upload-image" *ngIf="showOriginPopup && this.ratio">
+          <img src="../../assets/icons/arrow-down-circle.svg" alt="Upload" />
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/png, image/jpeg"    
+            (change)="onOriginFileSelected($event)"        
+            hidden
+          />
+        </label>
+        <!-- Display selected file name -->
+        <div *ngIf="fileName && showOriginPopup && this.ratio" class="file-name">{{ originFilename }}</div>
+        <button (click)="openOrigin()" class="originBTN">Open</button>
+        </div>
+
+        <div class="originCanvas">
+        <div class="tooltip" #tooltip *ngIf="this.showOriginCanvas">(x: 0, y: 0)</div>
+        <canvas class="OriginPopupCanvas" #OriginPopupCanvas *ngIf="this.showOriginCanvas"></canvas>
+        </div>
         <button class="close-btn" (click)="closeImagePopup()"> <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -586,7 +608,6 @@
         <!-- <button (click)="toggleOptionsMenu()">Back</button> -->
       </div>
     </div>
-
     <!-- <button class="close-button" (click)="close()">
       <svg
         xmlns="http://www.w3.org/2000/svg"

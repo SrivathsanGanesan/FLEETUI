@@ -1518,8 +1518,6 @@ export class DashboardComponent implements AfterViewInit {
             this.plotAllRobots(robotsData, ctx, canvas, mapImage);
           });
         }
-
-        // if(data.assets?.length) this.plotAllAssets(data.assets, ctx, canvas, mapImage);
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
@@ -1531,8 +1529,7 @@ export class DashboardComponent implements AfterViewInit {
 
       try {
         const data = JSON.parse(event.data);
-        // console.log(data);
-        
+
         const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
 
@@ -1668,13 +1665,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.drawImage(mapImage, 0, 0);
     ctx.restore(); // Reset transformation after drawing the map
 
-    if (this.nodeGraphService.getShowModelCanvas()) {
-      this.nodes = this.nodeGraphService.getNodes();
-      this.edges = this.nodeGraphService.getEdges();
-      this.zones = this.nodeGraphService.getZones();
-      this.assets = this.nodeGraphService.getAssets();
-      this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
-    }
+
 
     for (let [index, robotId] of Object.keys(robotsData).entries()) {
       const { posX, posY, yaw, state, path } = robotsData[robotId];
@@ -1690,6 +1681,13 @@ export class DashboardComponent implements AfterViewInit {
       const robotCanvasX = scaledPosX;
       const robotCanvasY = transformedPosY;
 
+      if (this.nodeGraphService.getShowModelCanvas()) {
+        this.nodes = this.nodeGraphService.getNodes();
+        this.edges = this.nodeGraphService.getEdges();
+        this.zones = this.nodeGraphService.getZones();
+        this.assets = this.nodeGraphService.getAssets();
+        this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
+      }
       if (this.isFleet) {
         this.robos = this.robos.map((robo) => {
           if (robo.roboDet.id === parseInt(robotId)) {
@@ -1716,13 +1714,6 @@ export class DashboardComponent implements AfterViewInit {
         }
         return robo;
       });
-
-      this.racks.forEach((rack)=>{
-        const robotPosX = centerX + rack.x * this.zoomLevel;
-        const robotPosY = centerY + rack.y * this.zoomLevel;
-        const yaw = rack.yaw;
-        this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
-      })
 
       //..
       this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId))
@@ -1757,6 +1748,14 @@ export class DashboardComponent implements AfterViewInit {
 
     if(this.nodeGraphService.getIsShowPath()) this.showPath();
     if(this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
+    
+
+    this.racks.forEach((rack)=>{
+      const robotPosX = centerX + rack.x * this.zoomLevel;
+      const robotPosY = centerY + rack.y * this.zoomLevel;
+      const yaw = rack.yaw;
+      this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
+    })
   }
 
   plotAllAssets(assets: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement){
@@ -1767,14 +1766,16 @@ export class DashboardComponent implements AfterViewInit {
     const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
     const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
 
-    // ctx.save();
-    // ctx.translate(centerX, centerY);
-    // ctx.scale(this.zoomLevel, this.zoomLevel);
-    // ctx.drawImage(mapImage, 0, 0);
-    // ctx.restore(); // Reset transformation after drawing the map
+    // if (this.nodeGraphService.getShowModelCanvas()) {
+    //   this.nodes = this.nodeGraphService.getNodes();
+    //   this.edges = this.nodeGraphService.getEdges();
+    //   this.zones = this.nodeGraphService.getZones();
+    //   this.assets = this.nodeGraphService.getAssets();
+    //   this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
+    // }
 
     this.racks = assets.map((rack: any)=>{
-      
+ 
       let posX = (rack.x + (this.origin.x || 0)) / (this.ratio || 1);
       let posY = (rack.y + (this.origin.y || 0)) / (this.ratio || 1);
 
@@ -1788,15 +1789,15 @@ export class DashboardComponent implements AfterViewInit {
       const robotCanvasY = transformedPosY;
 
       // let yaw = this.quaternionToYaw();
-      return {x: robotCanvasX, y: robotCanvasY, yaw: -rack.yaw};
-    })
+      return {x: robotCanvasX, y: robotCanvasY, yaw: -(rack.yaw) +90};
+    });
 
-    this.racks.forEach((rack)=>{
-      const robotPosX = centerX + rack.x * this.zoomLevel;
-      const robotPosY = centerY + rack.y * this.zoomLevel;
-      const yaw = rack.yaw;
-      this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
-    })
+    // this.racks.forEach((rack)=>{
+    //   const robotPosX = centerX + rack.x * this.zoomLevel;
+    //   const robotPosY = centerY + rack.y * this.zoomLevel;
+    //   const yaw = rack.yaw;
+    //   this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
+    // })
   }
 
   async setPaths(path:any[], imgHeight: number, centerX: number, centerY: number, robotId: number){
