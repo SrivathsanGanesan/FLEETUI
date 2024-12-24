@@ -33,6 +33,16 @@
   font-family: "graphik", Arial,  sans-serif;
   margin-top: 5px;
 }
+.custom-file-upload{
+  display: grid;
+  justify-items: center;
+}
+.coordinate-inputs input{
+  width: 60px;
+  height: 30px;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
 .XY-coor{
   display: flex;
   align-items: center;

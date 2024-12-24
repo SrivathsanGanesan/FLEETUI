@@ -1731,7 +1731,7 @@ export class DashboardComponent implements AfterViewInit {
         let clr = this.roboIDColor.get(robo.amrId) || 'white';
         this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
         if (robo.imgState === 'LOADSTATE' || robo.imgState === 'UNLOADSTATE') {
-          this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw, '#7393B3');
+          this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, 90-yaw, '#7393B3');
         }
       });
 

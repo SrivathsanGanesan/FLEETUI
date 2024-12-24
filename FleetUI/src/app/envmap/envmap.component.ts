@@ -121,18 +121,19 @@ export class EnvmapComponent implements AfterViewInit {
   @ViewChild('imagePopupCanvas', { static: false })
   imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('OriginPopupCanvas', { static: false })
-  OriginPopupCanvas!: ElementRef<HTMLCanvasElement>;
+  OriginPopupCanvas!: ElementRef<HTMLCanvasElement>;  
+  @ViewChild('OriginOverlayCanvas', { static: false })
+  OriginOverlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
   @ViewChild('xInput') xInput!: ElementRef<HTMLInputElement>;
   @ViewChild('yInput') yInput!: ElementRef<HTMLInputElement>;
   @ViewChild('nodeDetailsPopup', { static: false })
   nodeDetailsPopup!: ElementRef<HTMLDivElement>;
   @ViewChild('tooltip') tooltip!: ElementRef<HTMLDivElement>;
-
   projData: any;
   form: FormData | null = null;
   selectedImage: File | null = null;
-  originFilename: string | null = null;
+  anotherFileName : string | null = null;
   fileName: string | null = null;
   public mapName: string = '';
   public siteName: string = '';
@@ -140,6 +141,7 @@ export class EnvmapComponent implements AfterViewInit {
   width: number | null = null;
   showImage: boolean = false;
   public imageSrc: string | null = null;
+  public anotherImageSrc : string | null = null;
   showOptionsLayer: boolean = false;
   orientationAngle: number = 0;
   public nodes: Node[] = []; // Org_nodes
@@ -708,6 +710,7 @@ export class EnvmapComponent implements AfterViewInit {
     if ((this.showOriginPopup = true)) {
       this.showOriginPopup = false;
       this.showOriginCanvas = false;
+      this.anotherFileName = '';
     }
     this.showImagePopup = false;
     this.points = [];
@@ -1080,21 +1083,51 @@ export class EnvmapComponent implements AfterViewInit {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.imageSrc = e.target!.result as string;
+        this.loadImageToCanvas(this.imageSrc, this.imagePopupCanvas);
         // console.log(this.imageSrc);
       };
       reader.readAsDataURL(file);
     }
   }
-  onOriginFileSelected(event: Event): void {
+  handleAnotherFileUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.originFilename = input.files[0].name; // Get the file name
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.anotherFileName = file.name; // Store file name separately
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        this.anotherImageSrc = e.target!.result as string; // Handle the new file source
+        // Perform other operations here if required
+      };
+      reader.readAsDataURL(file);
     }
   }
+  
   openOrigin(){
+    if (this.anotherImageSrc) {
+      this.loadImageToCanvas(this.anotherImageSrc, this.OriginOverlayCanvas);
+      this.loadImageToCanvas(this.imageSrc, this.OriginPopupCanvas);
+      this.showOriginCanvas = true; // Show the canvases
+    }
     this.showOriginCanvas=!this.showOriginCanvas;
     this.openOriginPopup();
   }
+  loadImageToCanvas(imageSrc: string | null, canvasRef: ElementRef<HTMLCanvasElement>): void {
+    if (imageSrc && canvasRef) {
+      const canvas = canvasRef.nativeElement;
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+  
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+  
+      img.src = imageSrc;
+    }
+  }
+  
   private startPoint: { x: number; y: number } | null = null; // Store the initial point
 
   openOriginPopup(): void {
@@ -1106,39 +1139,51 @@ export class EnvmapComponent implements AfterViewInit {
       });
       return;
     }
+  
     if (this.imageSrc) {
       this.showOriginPopup = true;
       this.cdRef.detectChanges();
-
-      const canvas = this.OriginPopupCanvas?.nativeElement;
-      if (!canvas) {
-        console.error('Canvas element not found');
+  
+      const originCanvas = this.OriginPopupCanvas?.nativeElement;
+      const overlayCanvas = this.OriginOverlayCanvas?.nativeElement;
+  
+      if (!originCanvas || !overlayCanvas) {
+        console.error('Canvas elements not found');
         return;
       }
-
-      const ctx = canvas.getContext('2d');
+  
+      const ctx = originCanvas.getContext('2d');
+      const overlayCtx = overlayCanvas.getContext('2d');
       const img = new Image();
       img.src = this.imageSrc;
-
+  
       img.onload = () => {
         this.Originpoints = []; // Clear previous points
-
-        // Clear the canvas and draw the image
-        ctx!.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        // Add event listeners for click, mousemove, and mouseup
-        canvas.addEventListener('mousedown', (event) =>
-          this.onCanvasMouseDown(event)
-        );
-        canvas.addEventListener('mousemove', (event) =>
-          this.onCanvasMouseMove(event)
-        );
-        canvas.addEventListener('mouseup', (event) =>
-          this.onCanvasMouseUp(event)
-        );
+  
+        // Clear both canvases
+        ctx!.clearRect(0, 0, originCanvas.width, originCanvas.height);
+        overlayCtx!.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+  
+        // Set canvas sizes to match the image dimensions
+        originCanvas.width = img.width;
+        originCanvas.height = img.height;
+        overlayCanvas.width = img.width;
+        overlayCanvas.height = img.height;
+  
+        // Draw the image on the origin canvas (interactive)
+        ctx!.drawImage(img, 0, 0, originCanvas.width, originCanvas.height);
+  
+        // Draw the image on the overlay canvas with 50% opacity (non-interactive layer)
+        ctx!.globalAlpha = 0.5; // Set opacity to 50%
+        ctx!.drawImage(img, 0, 0, overlayCanvas.width, overlayCanvas.height);
+  
+        // Disable interactions on overlay canvas
+        overlayCanvas.style.pointerEvents = 'none';
+  
+        // Add event listeners for interaction on the origin canvas
+        originCanvas.addEventListener('mousedown', (event) => this.onCanvasMouseDown(event));
+        originCanvas.addEventListener('mousemove', (event) => this.onCanvasMouseMove(event));
+        originCanvas.addEventListener('mouseup', (event) => this.onCanvasMouseUp(event));
       };
     } else {
       this.messageService.add({
@@ -1148,7 +1193,6 @@ export class EnvmapComponent implements AfterViewInit {
       });
     }
   }
-
   private onCanvasMouseDown(event: MouseEvent): void {
     const canvas = this.OriginPopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
