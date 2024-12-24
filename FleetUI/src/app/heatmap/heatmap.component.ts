@@ -49,7 +49,6 @@ export class HeatmapComponent {
   //   opacity: 0.5,
   //   visible: true,
   // });
-  // // Set random data
   // this.heatmapInstance =
   //   this.heatmapService.getHeatmapInstance('mainHeatmap');
   // }
@@ -62,9 +61,10 @@ export class HeatmapComponent {
     const data = [];
     while (len--) {
       data.push({
-        x: Math.floor(Math.random() * maxX),
-        y: Math.floor(Math.random() * maxY),
-        value: 5,
+        x: (Math.random() * maxX) >> 0,
+        y: (Math.random() * maxY) >> 0,
+        value: (Math.random() * max + min) >> 0,
+        radius: (Math.random() * 50 + min) >> 0,
       });
     }
     return { max, min, data };
