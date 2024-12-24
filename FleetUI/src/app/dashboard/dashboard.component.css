@@ -24,7 +24,6 @@ app-sidenavbar{
   position: relative;
   margin-left: 65px; /* Matches the width of the sidebar */
   margin-top: 50px; 
-
   /* border: 10px solid black  ;     Matches the height of the topbar */
 }
 #robo-popup {
@@ -501,7 +500,8 @@ canvas {
 
 /* enable dropdown */
 .dropdown {
-  position: relative;
+  position: absolute;
+  top: 0;
   display: inline-block;
   width: 180px;
   margin: 5px;

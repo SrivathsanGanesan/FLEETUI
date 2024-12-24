@@ -126,6 +126,7 @@ export class DashboardComponent implements AfterViewInit {
   isInLive: boolean = false;
   isMoveModeActive: boolean = false; // Track if move mode is enabled
   isDragging: boolean = false;
+  showHeatMap: boolean = false;
   isMapLoaded = false;
   isImage: boolean = false;
   // genMapImg: any | null = null;
@@ -227,6 +228,10 @@ export class DashboardComponent implements AfterViewInit {
     this.redrawCanvas();
   }
 
+  toggleHeatmap() {
+    this.showHeatMap = !this.showHeatMap;
+  }
+
   // Get the appropriate icon based on the state
   get iconUrl(): string {
     return this.isFleet ? this.fleetIconUrl : this.simulationIconUrl;
@@ -287,7 +292,7 @@ export class DashboardComponent implements AfterViewInit {
       this.canvasloader = false;
       this.canvasNoImage = true;
     }
-  
+
     if (!this.projectService.getMapData()) return;
     const img = new Image();
     img.src = `http://${this.selectedMap.imgUrl}`;
@@ -357,7 +362,6 @@ export class DashboardComponent implements AfterViewInit {
       console.error('myCanvas is undefined');
     }
 
-
     this.assetImages = {
       docking: new Image(),
       charging: new Image(),
@@ -365,9 +369,8 @@ export class DashboardComponent implements AfterViewInit {
 
     this.assetImages['docking'].src = 'assets/Asseticon/docking-station.svg';
     this.assetImages['charging'].src = 'assets/Asseticon/charging-station.svg';
-
   }
-  
+
   isStateDivVisible: boolean = false;
 
   toggleStateDiv(): void {
@@ -532,16 +535,16 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  toggleShowPath(){
+  toggleShowPath() {
     this.isShowPath = !this.isShowPath;
     this.nodeGraphService.setIsShowPath(this.isShowPath);
   }
 
-  toggleShowRoboPath(){
+  toggleShowRoboPath() {
     this.hidePopup();
     // console.log(this.roboPathIds.size);
-    
-    if(this.roboPathIds.has(this.updatedrobo.amrId)){
+
+    if (this.roboPathIds.has(this.updatedrobo.amrId)) {
       this.roboPathIds.delete(this.updatedrobo.amrId);
       return;
     }
@@ -552,25 +555,30 @@ export class DashboardComponent implements AfterViewInit {
 
   showRoboPath() {
     // if (!this.updatedrobo || !this.paths) return;
-  
+
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-  
+
     if (!ctx) return;
-  
+
     // const roboId = this.updatedrobo.amrId;
-    
-    for(let roboId of Array.from(this.roboPathIds)){
+
+    for (let roboId of Array.from(this.roboPathIds)) {
       const path = this.paths.get(roboId);
       if (path) {
-        const clr = this.roboIDColor.get(roboId) || 'black'; 
+        const clr = this.roboIDColor.get(roboId) || 'black';
         // Draw the robot's path
-        path.forEach(node => {
+        path.forEach((node) => {
           this.drawPathNode(ctx, node.x, node.y, clr);
         });
         for (let i = 0; i < path.length - 1; i++) {
           if (path[i + 1]) {
-            this.drawPathLine(ctx, { x: path[i].x, y: path[i].y }, { x: path[i + 1].x, y: path[i + 1].y }, clr);
+            this.drawPathLine(
+              ctx,
+              { x: path[i].x, y: path[i].y },
+              { x: path[i + 1].x, y: path[i + 1].y },
+              clr
+            );
           }
         }
       }
@@ -582,15 +590,21 @@ export class DashboardComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
 
     let keyItr = this.paths.keys();
-    for(let roboId of keyItr){
-     let path = this.paths.get(roboId);
-     if(path){
-       let clr = this.roboIDColor.get(roboId) || 'black';
-        path.forEach(path => {
-          if(ctx) this.drawPathNode(ctx, path.x, path.y, clr);
+    for (let roboId of keyItr) {
+      let path = this.paths.get(roboId);
+      if (path) {
+        let clr = this.roboIDColor.get(roboId) || 'black';
+        path.forEach((path) => {
+          if (ctx) this.drawPathNode(ctx, path.x, path.y, clr);
         });
-        for(let i = 0; i < path.length - 1; i += 1){
-          if(ctx && path[i+1]) this.drawPathLine(ctx, {x: path[i].x, y: path[i].y}, {x: path[i+1].x, y: path[i+1].y}, clr);
+        for (let i = 0; i < path.length - 1; i += 1) {
+          if (ctx && path[i + 1])
+            this.drawPathLine(
+              ctx,
+              { x: path[i].x, y: path[i].y },
+              { x: path[i + 1].x, y: path[i + 1].y },
+              clr
+            );
         }
       }
     }
@@ -760,7 +774,13 @@ export class DashboardComponent implements AfterViewInit {
       const robotPosX = rack.x;
       const robotPosY = rack.y;
       // const yaw = Math.round(Math.random()*360);
-      this.plotRack(ctx, robotPosX - (this.rackSize/2), robotPosY - (this.rackSize/2), this.rackSize, 0);
+      this.plotRack(
+        ctx,
+        robotPosX - this.rackSize / 2,
+        robotPosY - this.rackSize / 2,
+        this.rackSize,
+        0
+      );
     });
 
     if (!this.nodeGraphService.getShowModelCanvas()) {
@@ -1060,8 +1080,13 @@ export class DashboardComponent implements AfterViewInit {
             robotId = robo.amrId;
 
             // Position the robot tooltip above the robot
-            const robotScreenX = roboX * this.zoomLevel + this.mapImageX + this.zoomLevel; // X position on the canvas
-            const robotScreenY = (this.mapImageHeight / this.zoomLevel - this.offsetY - roboY) * this.zoomLevel +this.offsetY + this.mapImageY; // Y position on the canvas
+            const robotScreenX =
+              roboX * this.zoomLevel + this.mapImageX + this.zoomLevel; // X position on the canvas
+            const robotScreenY =
+              (this.mapImageHeight / this.zoomLevel - this.offsetY - roboY) *
+                this.zoomLevel +
+              this.offsetY +
+              this.mapImageY; // Y position on the canvas
 
             robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
             robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position
@@ -1454,9 +1479,9 @@ export class DashboardComponent implements AfterViewInit {
 
     const URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-AMR-pos/${this.selectedMap.id}`;
     const ASSET_URL = `http://${environment.API_URL}:${environment.PORT}/stream-data/live-assets/${this.selectedMap.id}`;
-    
+
     if (this.posEventSource) this.posEventSource.close();
-    if(this.assetEventSource) this.assetEventSource.close();
+    if (this.assetEventSource) this.assetEventSource.close();
 
     this.posEventSource = new EventSource(URL);
     this.assetEventSource = new EventSource(ASSET_URL);
@@ -1469,7 +1494,7 @@ export class DashboardComponent implements AfterViewInit {
       try {
         const data = JSON.parse(event.data);
         // console.log(data);
-        
+
         const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
 
@@ -1478,7 +1503,7 @@ export class DashboardComponent implements AfterViewInit {
         mapImage.src = `http://${map.imgUrl}`;
         await mapImage.decode(); // Wait for the image to load
 
-        if(!ctx) return;
+        if (!ctx) return;
 
         // Clear the whole canvas before redrawing the map and all robots
         this.zoomLevel = this.nodeGraphService.getZoomLevel();
@@ -1486,7 +1511,7 @@ export class DashboardComponent implements AfterViewInit {
         this.offsetY = this.nodeGraphService.getOffsetY();
 
         // Loop through each robot to update their pose and position
-        if(data.robots?.length){
+        if (data.robots?.length) {
           data.robots.forEach(async (robot: any) => {
             let posX =
               (robot.pose.position.x + (this.origin.x || 0)) /
@@ -1508,7 +1533,7 @@ export class DashboardComponent implements AfterViewInit {
               posY,
               yaw: yaw,
               state: robot.robot_state,
-              path: robot.agentPath
+              path: robot.agentPath,
             }; // here we go...
 
             // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
@@ -1538,19 +1563,19 @@ export class DashboardComponent implements AfterViewInit {
         mapImage.src = `http://${map.imgUrl}`;
         await mapImage.decode(); // Wait for the image to load
 
-        if(!ctx) return;
+        if (!ctx) return;
 
         // Clear the whole canvas before redrawing the map and all robots
         this.zoomLevel = this.nodeGraphService.getZoomLevel();
         this.offsetX = this.nodeGraphService.getOffsetX();
         this.offsetY = this.nodeGraphService.getOffsetY();
 
-        if(data.assets?.length) this.plotAllAssets(data.assets, ctx, canvas, mapImage);
-
+        if (data.assets?.length)
+          this.plotAllAssets(data.assets, ctx, canvas, mapImage);
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
-    }
+    };
 
     this.posEventSource.onerror = (error) => {
       this.projectService.setInLive(false);
@@ -1566,7 +1591,7 @@ export class DashboardComponent implements AfterViewInit {
       this.getOnBtnImage();
       this.assetEventSource.close();
       console.error('Asset SSE error:', error);
-    }
+    };
   }
 
   stateColorMap: { [key: string]: string } = {
@@ -1609,13 +1634,33 @@ export class DashboardComponent implements AfterViewInit {
       ctx.beginPath();
       ctx.moveTo(-width / 2 + borderRadius, -height / 2);
       ctx.lineTo(width / 2 - borderRadius, -height / 2);
-      ctx.quadraticCurveTo( width / 2, -height / 2, width / 2, -height / 2 + borderRadius );
+      ctx.quadraticCurveTo(
+        width / 2,
+        -height / 2,
+        width / 2,
+        -height / 2 + borderRadius
+      );
       ctx.lineTo(width / 2, height / 2 - borderRadius);
-      ctx.quadraticCurveTo( width / 2, height / 2, width / 2 - borderRadius, height / 2 );
+      ctx.quadraticCurveTo(
+        width / 2,
+        height / 2,
+        width / 2 - borderRadius,
+        height / 2
+      );
       ctx.lineTo(-width / 2 + borderRadius, height / 2);
-      ctx.quadraticCurveTo( -width / 2, height / 2, -width / 2, height / 2 - borderRadius );
+      ctx.quadraticCurveTo(
+        -width / 2,
+        height / 2,
+        -width / 2,
+        height / 2 - borderRadius
+      );
       ctx.lineTo(-width / 2, -height / 2 + borderRadius);
-      ctx.quadraticCurveTo( -width / 2, -height / 2, -width / 2 + borderRadius, -height / 2 );
+      ctx.quadraticCurveTo(
+        -width / 2,
+        -height / 2,
+        -width / 2 + borderRadius,
+        -height / 2
+      );
       ctx.closePath();
 
       ctx.fillStyle = rectangleColor; // Set the rectangle color
@@ -1650,8 +1695,12 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  plotAllRobots(robotsData: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement) {
-
+  plotAllRobots(
+    robotsData: any,
+    ctx: CanvasRenderingContext2D,
+    canvas: HTMLCanvasElement,
+    mapImage: HTMLImageElement
+  ) {
     // Calculate the scaled image dimensions and center the image on the canvas
     const imgWidth = mapImage.width * this.zoomLevel;
     const imgHeight = mapImage.height * this.zoomLevel;
@@ -1664,8 +1713,6 @@ export class DashboardComponent implements AfterViewInit {
     ctx.scale(this.zoomLevel, this.zoomLevel);
     ctx.drawImage(mapImage, 0, 0);
     ctx.restore(); // Reset transformation after drawing the map
-
-
 
     for (let [index, robotId] of Object.keys(robotsData).entries()) {
       const { posX, posY, yaw, state, path } = robotsData[robotId];
@@ -1702,7 +1749,7 @@ export class DashboardComponent implements AfterViewInit {
 
       this.simMode = this.simMode.map((robo) => {
         let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
-        if ( robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId ) {
+        if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
           robo.pos.x = robotCanvasX;
           robo.pos.y = robotCanvasY;
           robo.pos.orientation = -yaw;
@@ -1716,7 +1763,7 @@ export class DashboardComponent implements AfterViewInit {
       });
 
       //..
-      this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId))
+      this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId));
       //..
     }
 
@@ -1731,7 +1778,14 @@ export class DashboardComponent implements AfterViewInit {
         let clr = this.roboIDColor.get(robo.amrId) || 'white';
         this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
         if (robo.imgState === 'LOADSTATE' || robo.imgState === 'UNLOADSTATE') {
-          this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw, '#7393B3');
+          this.plotRack(
+            ctx,
+            robotPosX - (this.rackSize * this.zoomLevel) / 2,
+            robotPosY - (this.rackSize * this.zoomLevel) / 2,
+            this.rackSize * this.zoomLevel,
+            yaw,
+            '#7393B3'
+          );
         }
       });
 
@@ -1746,20 +1800,29 @@ export class DashboardComponent implements AfterViewInit {
         this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
       });
 
-    if(this.nodeGraphService.getIsShowPath()) this.showPath();
-    if(this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
-    
+    if (this.nodeGraphService.getIsShowPath()) this.showPath();
+    if (this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
 
-    this.racks.forEach((rack)=>{
+    this.racks.forEach((rack) => {
       const robotPosX = centerX + rack.x * this.zoomLevel;
       const robotPosY = centerY + rack.y * this.zoomLevel;
       const yaw = rack.yaw;
-      this.plotRack(ctx, robotPosX - (this.rackSize* this.zoomLevel/2), robotPosY - (this.rackSize* this.zoomLevel/2), this.rackSize* this.zoomLevel, yaw);
-    })
+      this.plotRack(
+        ctx,
+        robotPosX - (this.rackSize * this.zoomLevel) / 2,
+        robotPosY - (this.rackSize * this.zoomLevel) / 2,
+        this.rackSize * this.zoomLevel,
+        yaw
+      );
+    });
   }
 
-  plotAllAssets(assets: any, ctx: CanvasRenderingContext2D,canvas: HTMLCanvasElement, mapImage: HTMLImageElement){
-
+  plotAllAssets(
+    assets: any,
+    ctx: CanvasRenderingContext2D,
+    canvas: HTMLCanvasElement,
+    mapImage: HTMLImageElement
+  ) {
     const imgWidth = mapImage.width * this.zoomLevel;
     const imgHeight = mapImage.height * this.zoomLevel;
 
@@ -1774,8 +1837,7 @@ export class DashboardComponent implements AfterViewInit {
     //   this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
     // }
 
-    this.racks = assets.map((rack: any)=>{
- 
+    this.racks = assets.map((rack: any) => {
       let posX = (rack.x + (this.origin.x || 0)) / (this.ratio || 1);
       let posY = (rack.y + (this.origin.y || 0)) / (this.ratio || 1);
 
@@ -1789,7 +1851,7 @@ export class DashboardComponent implements AfterViewInit {
       const robotCanvasY = transformedPosY;
 
       // let yaw = this.quaternionToYaw();
-      return {x: robotCanvasX, y: robotCanvasY, yaw: -(rack.yaw) +90};
+      return { x: robotCanvasX, y: robotCanvasY, yaw: -rack.yaw + 90 };
     });
 
     // this.racks.forEach((rack)=>{
@@ -1800,11 +1862,17 @@ export class DashboardComponent implements AfterViewInit {
     // })
   }
 
-  async setPaths(path:any[], imgHeight: number, centerX: number, centerY: number, robotId: number){
+  async setPaths(
+    path: any[],
+    imgHeight: number,
+    centerX: number,
+    centerY: number,
+    robotId: number
+  ) {
     let roboPath: any[] = [];
 
-    if(!path) return;
-    path.forEach((path : any) => {
+    if (!path) return;
+    path.forEach((path: any) => {
       let pathX = (path.x + (this.origin.x || 0)) / (this.ratio || 1);
       let pathY = (path.y + (this.origin.y || 0)) / (this.ratio || 1);
       // Non-simulation mode
@@ -1813,12 +1881,22 @@ export class DashboardComponent implements AfterViewInit {
         : imgHeight / this.zoomLevel - pathY;
       const pathCanvasX = pathX;
       const pathCanvasY = transformedPathY;
-      roboPath.push({x: centerX + pathCanvasX * this.zoomLevel, y:centerY + pathCanvasY * this.zoomLevel})
-    })
+      roboPath.push({
+        x: centerX + pathCanvasX * this.zoomLevel,
+        y: centerY + pathCanvasY * this.zoomLevel,
+      });
+    });
     this.paths.set(robotId, roboPath);
   }
 
-  plotRack( ctx: CanvasRenderingContext2D, x: number, y: number, size: number = this.rackSize, angle: number, color: string = '#7393B3' ) {
+  plotRack(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    size: number = this.rackSize,
+    angle: number,
+    color: string = '#7393B3'
+  ) {
     ctx.save(); // Save the current context state
 
     // Translate to the center of the square
@@ -1838,14 +1916,19 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillRect(x, y, size, size);
 
     ctx.fillStyle = '#420D09';
-    ctx.fillRect(x, y, Math.round(size/3)/3, size);
+    ctx.fillRect(x, y, Math.round(size / 3) / 3, size);
 
     ctx.fillStyle = '#ff1f1f';
-    ctx.fillRect(Math.round((((size/3)/3)*8)+x), y, Math.round(size/3)/3, size);
+    ctx.fillRect(
+      Math.round((size / 3 / 3) * 8 + x),
+      y,
+      Math.round(size / 3) / 3,
+      size
+    );
 
     // Reset globalAlpha to 1 to avoid affecting subsequent drawings
     ctx.globalAlpha = 1;
-    ctx.restore(); 
+    ctx.restore();
   }
 
   drawNodesAndEdges(
@@ -1907,7 +1990,7 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
-  async showSpline(roboId: number) : Promise<boolean> {
+  async showSpline(roboId: number): Promise<boolean> {
     if (!this.selectedMap.id) return false;
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/show-spline`,
