@@ -12,7 +12,7 @@
       <input
         type="file"
         id="fileInput"
-        accept="image/png, image/jpeg"
+        accept="image/png, image/jpeg, image/pgm"
         (change)="onFileSelected($event)"
         hidden
       />
@@ -152,26 +152,46 @@
       <div class="image-popup-content">
 
         <div class="origin-fileupload" *ngIf="!this.showOriginCanvas">
-        <h3 *ngIf="showOriginPopup && this.ratio">Select Rviz image</h3>
-        <!-- Image for file upload -->
-        <label for="fileInput" class="upload-image" *ngIf="showOriginPopup && this.ratio">
-          <img src="../../assets/icons/arrow-down-circle.svg" alt="Upload" />
-          <input
-            type="file"
-            id="fileInput"
-            accept="image/png, image/jpeg"    
-            (change)="onOriginFileSelected($event)"        
-            hidden
-          />
-        </label>
-        <!-- Display selected file name -->
-        <div *ngIf="fileName && showOriginPopup && this.ratio" class="file-name">{{ originFilename }}</div>
-        <button (click)="openOrigin()" class="originBTN">Open</button>
+          <h3 *ngIf="showOriginPopup && this.ratio">Select Nav image</h3>
+          
+          <label for="anotherFileInput" class="upload-image">
+            <img src="../../assets/icons/arrow-down-circle.svg" alt="Upload" />
+            <input
+              type="file"
+              id="anotherFileInput"
+              accept="image/png, image/jpeg, image/pgm"
+              (change)="handleAnotherFileUpload($event)"
+              hidden
+            />
+          </label>
+          <div>
+            
+          </div>
+          
+          <p *ngIf="anotherFileName" class="file-name">{{ anotherFileName }}</p>
+
+          <div *ngIf="anotherFileName" class="coordinate-inputs">
+            <label for="xCoordinate">X:</label>
+            <input
+              id="xCoordinate"
+              type="number"
+              placeholder="Enter X"
+            />
+            <label for="yCoordinate">Y:</label>
+            <input
+              id="yCoordinate"
+              type="number"
+              placeholder="Enter Y"
+            />
+          </div>
+          <button (click)="openOrigin()" class="originBTN" *ngIf="anotherFileName">Open</button>
         </div>
+        
 
         <div class="originCanvas">
         <div class="tooltip" #tooltip *ngIf="this.showOriginCanvas">(x: 0, y: 0)</div>
         <canvas class="OriginPopupCanvas" #OriginPopupCanvas *ngIf="this.showOriginCanvas"></canvas>
+        <canvas class="OriginOverlayCanvas" #OriginOverlayCanvas *ngIf="this.showOriginCanvas" style="position: absolute;top: 0;z-index: -1;background-color: rgb(0, 0, 0);"></canvas>
         </div>
         <button class="close-btn" (click)="closeImagePopup()"> <svg
           xmlns="http://www.w3.org/2000/svg"
