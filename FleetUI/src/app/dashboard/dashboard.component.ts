@@ -718,7 +718,11 @@ export class DashboardComponent implements AfterViewInit {
       }
     }
   }
-
+  heatmapX: number = 0;
+  heatmapY: number = 0;
+  heatmapWidth: number = 0;
+  heatmapHeight: number = 0;
+  
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -729,12 +733,14 @@ export class DashboardComponent implements AfterViewInit {
     // Calculate the position to center the image
     const centerX = (canvas.width - imgWidth) / 2 + this.offsetX;
     const centerY = (canvas.height - imgHeight) / 2 + this.offsetY;
-
     // Apply transformation for panning and zooming
     ctx.save();
     ctx.translate(centerX, centerY);
     ctx.scale(this.zoomLevel, this.zoomLevel);
-
+    this.heatmapX = centerX;
+    this.heatmapY = centerY;
+    this.heatmapWidth = imgWidth;
+    this.heatmapHeight = imgHeight;
     // Draw the image
     ctx.drawImage(img, 0, 0);
     this.canvasNoImage = false;

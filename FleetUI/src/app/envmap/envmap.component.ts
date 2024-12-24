@@ -1083,7 +1083,6 @@ export class EnvmapComponent implements AfterViewInit {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.imageSrc = e.target!.result as string;
-        this.loadImageToCanvas(this.imageSrc, this.imagePopupCanvas);
         // console.log(this.imageSrc);
       };
       reader.readAsDataURL(file);
@@ -1104,30 +1103,10 @@ export class EnvmapComponent implements AfterViewInit {
   }
   
   openOrigin(){
-    if (this.anotherImageSrc) {
-      this.loadImageToCanvas(this.anotherImageSrc, this.OriginOverlayCanvas);
-      this.loadImageToCanvas(this.imageSrc, this.OriginPopupCanvas);
-      this.showOriginCanvas = true; // Show the canvases
-    }
     this.showOriginCanvas=!this.showOriginCanvas;
     this.openOriginPopup();
   }
-  loadImageToCanvas(imageSrc: string | null, canvasRef: ElementRef<HTMLCanvasElement>): void {
-    if (imageSrc && canvasRef) {
-      const canvas = canvasRef.nativeElement;
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-  
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-      };
-  
-      img.src = imageSrc;
-    }
-  }
-  
+
   private startPoint: { x: number; y: number } | null = null; // Store the initial point
 
   openOriginPopup(): void {

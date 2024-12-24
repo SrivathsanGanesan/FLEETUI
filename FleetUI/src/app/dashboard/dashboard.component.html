@@ -272,11 +272,15 @@
       (mousedown)="panStart($event)"
       (mouseleave)="onMouseLeave()"
     ></canvas>
-    <app-heatmap 
-      *ngIf="showHeatMap"
-      [height]="mapImageHeight"
-      [width]="mapImageWidth"
-    ></app-heatmap>
+    <app-heatmap
+    *ngIf="showHeatMap"
+    [height]="mapImageHeight"
+    [width]="mapImageWidth"     
+    [style.top.px]="heatmapY"
+    [style.left.px]="heatmapX"
+    [style.position]="'relative'"
+  ></app-heatmap>
+  
     <!-- <canvas *ngIf="showModelCanvas" #modelCanvas id="modelCanvas" ></canvas> -->
 
     <!-- enable robots dropdown -->
