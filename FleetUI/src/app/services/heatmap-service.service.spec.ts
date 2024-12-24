@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { HeatmapServiceService } from './heatmap-service.service';
+import { HeatmapService } from './heatmap-service.service';
 
 describe('HeatmapServiceService', () => {
-  let service: HeatmapServiceService;
+  let service: HeatmapService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(HeatmapServiceService);
+    service = TestBed.inject(HeatmapService);
   });
 
   it('should be created', () => {

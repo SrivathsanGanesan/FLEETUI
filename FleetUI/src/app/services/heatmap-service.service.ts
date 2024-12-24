@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import HeatMap from 'heatmap-ts';
-import h337 from 'heatmap.js';
 
 @Injectable({
   providedIn: 'root',
