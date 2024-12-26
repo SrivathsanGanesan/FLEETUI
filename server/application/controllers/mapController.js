@@ -42,7 +42,7 @@ const insertMapId = async ({ MapId, mapName, projectName, siteName }) => {
 // send node graph..
 const saveNodeGraph = async (mapData) => {
   const { nodes, edges, roboPos } = mapData;
-  // console.log(roboPos); // yet to uncomment..
+
   let fleetEdges = [];
   edges.forEach((edge) => {
     fleetEdges.push({
@@ -159,9 +159,18 @@ const getFleetNodes = (nodes) => {
       (action) => action.actionType === "Undock"
     );
 
-    let preDockPos = node.pre_dockNodeId !== null ? getNodePos(node.pre_dockNodeId, nodes) : getPosition(node, [0]); // : getPosition(node, moveAction);
-    let UnDockPos = node.Un_dockNodeId !== null ? getNodePos(node.Un_dockNodeId, nodes) : getPosition(node, undockAction);
-    let dockPos = node.dockNodeId !== null ? getNodePos(node.dockNodeId, nodes) : getPosition(node, dockAction);
+    let preDockPos =
+      node.pre_dockNodeId !== null
+        ? getNodePos(node.pre_dockNodeId, nodes)
+        : getPosition(node, [0]); // : getPosition(node, moveAction);
+    let UnDockPos =
+      node.Un_dockNodeId !== null
+        ? getNodePos(node.Un_dockNodeId, nodes)
+        : getPosition(node, undockAction);
+    let dockPos =
+      node.dockNodeId !== null
+        ? getNodePos(node.dockNodeId, nodes)
+        : getPosition(node, dockAction);
 
     let locationType = 0;
     if (node.intermediate_node) locationType = 3;

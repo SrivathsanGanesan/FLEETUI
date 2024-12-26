@@ -18,12 +18,17 @@ export class HeatmapComponent {
   @Input() height: number | undefined;
   @Input() width: number | undefined;
 
+  origin: any | null = null;
+  ratio: number | null = null;
   heatmapInstance: any | null = null;
   private heatmapId = 'heatMap';
+  heatmap: any[] | null = null;
 
   constructor(private heatmapService: HeatmapService) {}
 
   ngOnInit() {
+    this.origin = this.heatmapService.getOrigin();
+    this.ratio = this.heatmapService.getRatio();
     const container = this.containerRef.nativeElement;
 
     this.heatmapService.createHeatmap(this.heatmapId, container, {
@@ -36,22 +41,33 @@ export class HeatmapComponent {
       // height: container.offsetHeight,
     });
 
+    this.heatmap = this.heatmapService.getHeatmap();
+
     this.heatmapService.addHeatmapData(
       this.heatmapId,
-      this.generateRandomData(500)
+      this.getHeatmapData(this.heatmap)
     );
+    console.log(this.getHeatmapData(this.heatmap));
   }
 
-  // ngAfterViewInit(): void {
-  // const container = this.containerRef.nativeElement;
-  // this.heatmapService.createHeatmap('mainHeatmap', container, {
-  //   blur: 0.9,
-  //   opacity: 0.5,
-  //   visible: true,
-  // });
-  // this.heatmapInstance =
-  //   this.heatmapService.getHeatmapInstance('mainHeatmap');
-  // }
+  ngAfterViewInit(): void {
+    const container = this.containerRef.nativeElement;
+
+    this.heatmapService.createHeatmap(this.heatmapId, container, {
+      maxOpacity: 0.6,
+      radius: 20,
+      blur: 0.9,
+      width: this.width,
+      height: this.height,
+      // width: container.offsetWidth,
+      // height: container.offsetHeight,
+    });
+
+    // this.heatmapService.addHeatmapData(
+    //   this.heatmapId,
+    //   this.generateRandomData(500)
+    // );
+  }
 
   private generateRandomData(len: number): any {
     const max = 10;
@@ -65,6 +81,22 @@ export class HeatmapComponent {
         y: (Math.random() * maxY) >> 0,
         value: (Math.random() * max + min) >> 0,
         radius: (Math.random() * 50 + min) >> 0,
+      });
+    }
+    return { max, min, data };
+  }
+
+  private getHeatmapData(heatmap: any[]): any {
+    const max = 7;
+    const min = 0;
+    const data = [];
+    let len = heatmap.length;
+    while (len--) {
+      data.push({
+        x: ((heatmap[len].x + (this.origin.x || 0)) / (this.ratio || 1)) >> 0,
+        y: ((heatmap[len].y + (this.origin.x || 0)) / (this.ratio || 1)) >> 0,
+        value: heatmap[len].intensity >> 0,
+        // radius: (10) >> 0,
       });
     }
     return { max, min, data };
