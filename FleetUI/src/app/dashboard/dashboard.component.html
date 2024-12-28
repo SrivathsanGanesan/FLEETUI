@@ -274,11 +274,11 @@
     ></canvas>
     <app-heatmap
     *ngIf="showHeatMap"
-    [height]="mapImageHeight"
-    [width]="mapImageWidth"     
+    [mapImageHeight]="mapImageHeight"
+    [mapImageWidth]="mapImageWidth"     
+    [style.position]="'relative'"
     [style.top.px]="heatmapY"
     [style.left.px]="heatmapX"
-    [style.position]="'relative'"
   ></app-heatmap>
   
     <!-- <canvas *ngIf="showModelCanvas" #modelCanvas id="modelCanvas" ></canvas> -->

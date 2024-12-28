@@ -250,13 +250,9 @@ export class DashboardComponent implements AfterViewInit {
     return this.isFleet ? 'fleet-background' : 'simulation-background';
   }
   async ngOnInit() {
-    for (let i = 0; i < 5; i++)
-      this.heatmapService.accumulateCoors({ x: i, y: 5 });
-
     this.isInLive = this.projectService.getInLive();
     const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
       this.isFleet = status;
-      // console.log(status,'oijdrgioerj')
       this.updateUI(); // Update UI based on the current state
     });
 
@@ -336,6 +332,7 @@ export class DashboardComponent implements AfterViewInit {
       this.isInLive = true;
     }
   }
+
   updateUI() {
     // Example of adding a simple fade-in/out effect to a specific element
     const modeElement = document.querySelector('.mode-indicator');
@@ -723,6 +720,7 @@ export class DashboardComponent implements AfterViewInit {
       }
     }
   }
+
   heatmapX: number = 0;
   heatmapY: number = 0;
   heatmapWidth: number = 0;
@@ -1545,8 +1543,8 @@ export class DashboardComponent implements AfterViewInit {
 
             // use Number constructor or (+) unary operator to perform with single operand
             this.heatmapService.accumulateCoors({
-              x: Number(robot.pose.orientation.x?.toFixed(0)),
-              y: Number(robot.pose.orientation.y?.toFixed(0)),
+              x: Number(robot.pose.position.x?.toFixed(0)),
+              y: Number(robot.pose.position.y?.toFixed(0)),
             });
 
             // Store each robot's position and orientation using the robot ID

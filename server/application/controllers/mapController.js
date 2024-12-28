@@ -127,7 +127,7 @@ const getPosition = (node, poseArr) => {
     ? {
         x: node.nodePosition.x,
         y: node.nodePosition.y,
-        z: node.nodePosition.orientation,
+        z: 0, // node.nodePosition.orientation
       }
     : { x: 0, y: 0, z: 0 };
 };
@@ -142,7 +142,7 @@ const getNodePos = (nodeId, nodes) => {
     ? {
         x: node.nodePosition.x,
         y: node.nodePosition.y,
-        z: node.nodePosition.orientation,
+        z: 0, // node.nodePosition.orientation
       }
     : { x: 0, y: 0, z: 0 };
 };

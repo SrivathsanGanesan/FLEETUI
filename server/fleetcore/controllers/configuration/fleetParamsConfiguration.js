@@ -45,7 +45,7 @@ const setGeneralParam = async (req, res) => {
       updatedProj['fleetParams']['General']['databaseName'],
       "FMS_Data"
       );
-    console.log(fleetGeneral)
+      
     return res.status(200).json({
       isSet: true,
       msg: "data sent",

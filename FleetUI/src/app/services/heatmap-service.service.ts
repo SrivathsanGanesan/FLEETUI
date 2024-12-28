@@ -20,6 +20,8 @@ export class HeatmapService {
   accumulatedData: Coor[] = [];
   accumulatedSet: { x: number; y: number; intensity: number }[] = [];
 
+  offHeatmapId: string | null = null;
+
   constructor(private projectService: ProjectService) {}
 
   createHeatmap(id: string, container: HTMLElement, config: any): void {
@@ -48,10 +50,13 @@ export class HeatmapService {
   resizeHeatmap(id: string, width: number, height: number): void {
     const heatmapInstance = this.heatmapInstances.get(id);
     if (heatmapInstance) {
-      const canvas = heatmapInstance.getCanvas();
-      canvas.width = width;
-      canvas.height = height;
-      heatmapInstance.repaint();
+      const container = heatmapInstance.config.container;
+      const canvas = container.querySelector('canvas');
+      if (canvas) {
+        canvas.width = width;
+        canvas.height = height;
+        heatmapInstance.repaint();
+      }
     }
   }
 
@@ -62,6 +67,14 @@ export class HeatmapService {
 
   getHeatmap() {
     return this.accumulatedSet;
+  }
+
+  setHeatmapId(heatmapId: string) {
+    this.offHeatmapId = heatmapId;
+  }
+
+  getHeatmapId() {
+    return this.offHeatmapId;
   }
 
   setOriginAndRatio(origin: any, ratio: number) {
@@ -96,6 +109,8 @@ export class HeatmapService {
   }
 
   accumulateCoors(coors: Coor) {
+    // console.log(coors);
+
     this.accumulatedData.push(coors);
 
     if (this.accumulatedData.length >= 5) {
