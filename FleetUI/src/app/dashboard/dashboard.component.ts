@@ -707,10 +707,8 @@ export class DashboardComponent implements AfterViewInit {
           this.offsetY = this.nodeGraphService.getOffsetY();
 
           // Center the image on the canvas
-          this.mapImageX =
-            (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
-          this.mapImageY =
-            (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
+          this.mapImageX = (canvas.width - this.mapImageWidth) / 2 + this.offsetX;
+          this.mapImageY = (canvas.height - this.mapImageHeight) / 2 + this.offsetY;
 
           // Draw the image and other elements
           this.draw(ctx, img);
@@ -739,13 +737,12 @@ export class DashboardComponent implements AfterViewInit {
     ctx.scale(this.zoomLevel, this.zoomLevel);
     this.heatmapX = centerX;
     this.heatmapY = centerY;
-    this.heatmapWidth = imgWidth;
-    this.heatmapHeight = imgHeight;
-    // Draw the image
+    this.heatmapWidth= imgWidth;
+    this.heatmapHeight= imgHeight;
+
     ctx.drawImage(img, 0, 0);
     this.canvasNoImage = false;
     this.canvasloader = false;
-    // this.plotRandomRacks(ctx, 70);
 
     if (!this.isFleet) {
       this.simMode.forEach((robo) => {
@@ -1037,18 +1034,9 @@ export class DashboardComponent implements AfterViewInit {
       this.offsetY = this.nodeGraphService.getOffsetY();
       this.zoomLevel = this.nodeGraphService.getZoomLevel();
       // Adjust for zoom and pan
-      const imgX =
-        (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel -
-        this.offsetX;
-      const imgY =
-        (transY - this.mapImageY + this.offsetY) / this.zoomLevel +
-        this.offsetY;
-
-      if (
-        this.draggingRobo &&
-        this.isDragging &&
-        !this.draggingRobo.isInitialized
-      ) {
+      const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
+      const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
+      if ( this.draggingRobo && this.isDragging && !this.draggingRobo.isInitialized ) {
         // this.draggingRobo.pos.x = this.draggingRobo.pos.x;
         // this.draggingRobo.pos.y = (this.mapImageHeight/ this.zoomLevel ) - this.draggingRobo.pos.y;
         let newX = (mouseX - this.mapImageX) / this.zoomLevel;
@@ -1086,13 +1074,8 @@ export class DashboardComponent implements AfterViewInit {
             robotId = robo.amrId;
 
             // Position the robot tooltip above the robot
-            const robotScreenX =
-              roboX * this.zoomLevel + this.mapImageX + this.zoomLevel; // X position on the canvas
-            const robotScreenY =
-              (this.mapImageHeight / this.zoomLevel - this.offsetY - roboY) *
-                this.zoomLevel +
-              this.offsetY +
-              this.mapImageY; // Y position on the canvas
+            const robotScreenX = roboX * this.zoomLevel + this.mapImageX + this.zoomLevel; // X position on the canvas
+            const robotScreenY = (this.mapImageHeight / this.zoomLevel - this.offsetY - roboY) * this.zoomLevel + this.offsetY + this.mapImageY; // Y position on the canvas
 
             robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
             robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position

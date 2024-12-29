@@ -120,10 +120,8 @@ export class EnvmapComponent implements AfterViewInit {
   overlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('imagePopupCanvas', { static: false })
   imagePopupCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('OriginPopupCanvas', { static: false })
-  OriginPopupCanvas!: ElementRef<HTMLCanvasElement>;  
-  @ViewChild('OriginOverlayCanvas', { static: false })
-  OriginOverlayCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('OriginPopupCanvas', { static: false }) OriginPopupCanvas!: ElementRef<HTMLCanvasElement>;  
+  @ViewChild('OriginOverlayCanvas', { static: false }) OriginOverlayCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('resolutionInput') resolutionInput!: ElementRef<HTMLInputElement>;
   @ViewChild('xInput') xInput!: ElementRef<HTMLInputElement>;
   @ViewChild('yInput') yInput!: ElementRef<HTMLInputElement>;
@@ -305,6 +303,7 @@ export class EnvmapComponent implements AfterViewInit {
   };
   selectedMap: any | null = null;
   showPopup = false;
+  plotOrigin: boolean = false;
   zoneTypeList = Object.values(ZoneType); // Converts the enum to an array
   DockPopup: boolean = false; // To control the popup visibility
   popupPosition = { x: 0, y: 0 }; // To store the popup position
@@ -327,7 +326,7 @@ export class EnvmapComponent implements AfterViewInit {
   public selectedNodeId: string | null = null;
 
   isFullScreen: boolean = false;
-  showOriginCanvas = false; // New property
+  // New property
   toggleFullScreen() {
     this.isFullScreen = !this.isFullScreen;
   }
@@ -721,6 +720,7 @@ export class EnvmapComponent implements AfterViewInit {
       this.resolutionInput.nativeElement.value = ''; // Reset the input field
     }
     this.validationError = null;
+    this.resetZoom();
   }
 
   selectedNodeType: string = '';
@@ -1070,6 +1070,18 @@ export class EnvmapComponent implements AfterViewInit {
   isOptionDisabled(option: string): boolean {
     return this.actions.some((action) => action.actionType === option);
   }
+  //---------------------------------------------origin-------------------------------------------------
+  private zoomLevel: number = 1;
+  private panOffset: { x: number; y: number } = { x: 0, y: 0 };
+  isPanning: boolean = false;
+  private panStart: { x: number; y: number } | null = null;
+  isRotating: boolean = false; // State to track rotation mode
+  private rotationAngle: number = 0; // Current rotation angle
+  private rotationStart: number | null = null; // Track initial rotation angle
+  inputX: number | null = 0;
+  inputY: number | null = 0;
+  private startPoint: { x: number; y: number } | null = null; // Store the initial point
+  showOriginCanvas = false; 
   // imageBase64: string | null = null;
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -1093,22 +1105,126 @@ export class EnvmapComponent implements AfterViewInit {
     if (input.files && input.files[0]) {
       const file = input.files[0];
       this.anotherFileName = file.name; // Store file name separately
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.anotherImageSrc = e.target!.result as string; // Handle the new file source
-        // Perform other operations here if required
-      };
-      reader.readAsDataURL(file);
+  
+      if (file.type === 'image/x-portable-graymap' || file.name.endsWith('.pgm')) {
+        const reader = new FileReader();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          const buffer = e.target!.result as ArrayBuffer;
+          this.anotherImageSrc = this.parsePGM(buffer); // Parse and get a base64 string
+          this.renderOverlayCanvas(); // Call render logic here
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        // Fallback for other formats
+        const reader = new FileReader();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          this.anotherImageSrc = e.target!.result as string;
+          this.renderOverlayCanvas();
+        };
+        reader.readAsDataURL(file);
+      }
     }
   }
+  parsePGM(buffer: ArrayBuffer): string {
+    const dataView = new DataView(buffer);
+    const decoder = new TextDecoder('ascii');
+    const header = decoder.decode(buffer.slice(0, 100)); // Read first 100 bytes (to get the header)
+    const lines = header.split('\n').map(line => line.trim()).filter(line => line.length > 0);
   
-  openOrigin(){
-    this.showOriginCanvas=!this.showOriginCanvas;
+    const format = lines[0];
+    if (format !== 'P5') {
+      console.log('Invalid PGM format. Expected P5, but got', format);
+      return '';
+    }
+  
+    let width = 0, height = 0, maxVal = 0;
+    let offset = header.length + 1; // Skip header to find image data
+  
+    // Parse header lines for width, height, and maxVal
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.startsWith('#')) continue; // Skip comments
+  
+      const parts = line.split(' ');
+      if (parts.length === 2) {
+        // Width and height
+        width = parseInt(parts[0], 10);
+        height = parseInt(parts[1], 10);
+      } else {
+        // Max pixel value
+        maxVal = parseInt(parts[0], 10);
+        break;
+      }
+    }
+  
+    if (width === 0 || height === 0 || maxVal === 0) {
+      console.log('Invalid PGM header: missing width, height, or max pixel value');
+      return '';
+    }
+  
+    // Read pixel data
+    const imageData = new Uint8Array(buffer, offset);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d')!;
+  
+    canvas.width = width;
+    canvas.height = height;
+  
+    const imgData = ctx.createImageData(width, height);
+    for (let i = 0; i < imageData.length; i++) {
+      const value = imageData[i];
+      imgData.data[i * 4] = value;     // Red
+      imgData.data[i * 4 + 1] = value; // Green
+      imgData.data[i * 4 + 2] = value; // Blue
+      imgData.data[i * 4 + 3] = 255;   // Alpha
+    }
+    ctx.putImageData(imgData, 0, 0);
+  
+    return canvas.toDataURL(); // Return the base64 string
+  }
+  renderOverlayCanvas(): void {
+    const overlayCanvas = this.OriginOverlayCanvas.nativeElement;
+    const ctx = overlayCanvas.getContext('2d');
+  
+    if (!ctx || !this.anotherImageSrc) return;
+  
+    const img = new Image();
+    img.src = this.anotherImageSrc;
+  
+    img.onload = () => {
+      overlayCanvas.width = img.width;
+      overlayCanvas.height = img.height;
+      ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      ctx.drawImage(img, 0, 0, overlayCanvas.width, overlayCanvas.height);
+    };
+  }
+  togglePanMode(): void {
+    this.isPanning = !this.isPanning;
+  }
+  toggleRotateMode(): void {
+    this.isRotating = !this.isRotating;
+    this.isPanning = false; // Disable panning while rotating
+    // this.plotOrigin = false;
+    const canvas = this.OriginPopupCanvas.nativeElement;
+    canvas.style.cursor = this.isRotating ? 'grab' : 'default';
+  }
+  zoomIn(): void {
+    this.zoomLevel *= 1.1; // Increase zoom by 20%
+    this.renderCanvas();
+  }
+  zoomOut(): void {
+    this.zoomLevel /= 1.1; // Decrease zoom by 20%
+    this.renderCanvas();
+  }
+  resetZoom(): void {
+    this.zoomLevel = 1;
+    this.panOffset = { x: 0, y: 0 };
+    this.renderCanvas();
+  }
+  openOrigin() {
+    this.showOriginCanvas = !this.showOriginCanvas;
     this.openOriginPopup();
   }
-
-  private startPoint: { x: number; y: number } | null = null; // Store the initial point
-
   openOriginPopup(): void {
     if (!this.ratio) {
       this.messageService.add({
@@ -1131,39 +1247,44 @@ export class EnvmapComponent implements AfterViewInit {
         return;
       }
   
-      const ctx = originCanvas.getContext('2d');
+      const originCtx = originCanvas.getContext('2d');
       const overlayCtx = overlayCanvas.getContext('2d');
-      const img = new Image();
-      img.src = this.imageSrc;
+      const originImg = new Image();
+      const overlayImg = new Image();
   
-      img.onload = () => {
-        this.Originpoints = []; // Clear previous points
+      originImg.src = this.imageSrc; // Use the original file input's image
+      if (this.anotherImageSrc) {
+        overlayImg.src = this.anotherImageSrc;
+      } 
   
-        // Clear both canvases
-        ctx!.clearRect(0, 0, originCanvas.width, originCanvas.height);
-        overlayCtx!.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-  
+      originImg.onload = () => {
         // Set canvas sizes to match the image dimensions
-        originCanvas.width = img.width;
-        originCanvas.height = img.height;
-        overlayCanvas.width = img.width;
-        overlayCanvas.height = img.height;
+        originCanvas.width = originImg.width;
+        originCanvas.height = originImg.height;
   
-        // Draw the image on the origin canvas (interactive)
-        ctx!.drawImage(img, 0, 0, originCanvas.width, originCanvas.height);
+        // Clear the origin canvas and draw the image
+        originCtx!.globalAlpha = 0.5;
+        originCtx!.clearRect(0, 0, originCanvas.width, originCanvas.height);
+        originCtx!.drawImage(originImg, 0, 0, originCanvas.width, originCanvas.height);
   
-        // Draw the image on the overlay canvas with 50% opacity (non-interactive layer)
-        ctx!.globalAlpha = 0.5; // Set opacity to 50%
-        ctx!.drawImage(img, 0, 0, overlayCanvas.width, overlayCanvas.height);
+        overlayImg.onload = () => {
+          // Set overlay canvas sizes to match the image dimensions
+          overlayCanvas.width = originImg.width;
+          overlayCanvas.height = originImg.height;
   
-        // Disable interactions on overlay canvas
-        overlayCanvas.style.pointerEvents = 'none';
+          // Clear the overlay canvas and draw the image with 50% opacity
+          overlayCtx!.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);          
+          overlayCtx!.drawImage(overlayImg, 0, 0, overlayCanvas.width, overlayCanvas.height);
   
-        // Add event listeners for interaction on the origin canvas
-        originCanvas.addEventListener('mousedown', (event) => this.onCanvasMouseDown(event));
-        originCanvas.addEventListener('mousemove', (event) => this.onCanvasMouseMove(event));
-        originCanvas.addEventListener('mouseup', (event) => this.onCanvasMouseUp(event));
+          // Disable interactions on overlay canvas
+          overlayCanvas.style.pointerEvents = 'none';
+        };
       };
+  
+      // Add event listeners for interaction on the origin canvas
+      originCanvas.addEventListener('mousedown', (event) => this.onCanvasMouseDown(event));
+      originCanvas.addEventListener('mousemove', (event) => this.onCanvasMouseMove(event));
+      originCanvas.addEventListener('mouseup', (event) => this.onCanvasMouseUp(event));
     } else {
       this.messageService.add({
         severity: 'error',
@@ -1172,118 +1293,222 @@ export class EnvmapComponent implements AfterViewInit {
       });
     }
   }
+  enablePlotOrigin(){
+    this.plotOrigin = !this.plotOrigin;
+  }
+  private getMapImageBounds(ctx: CanvasRenderingContext2D): { x: number; y: number; width: number; height: number } {
+    const img = new Image();
+    img.src = this.imageSrc!;
+  
+    const scaleX = this.zoomLevel;
+    const scaleY = this.zoomLevel;
+  
+    const canvasWidth = ctx.canvas.width;
+    const canvasHeight = ctx.canvas.height;
+  
+    // Calculate image width and height based on zoom level
+    const imageWidth = img.width * scaleX;
+    const imageHeight = img.height * scaleY;
+  
+    // Calculate the image's position on the canvas considering pan offsets
+    const x = (canvasWidth - imageWidth) / 2 + this.panOffset.x;  // Adjust by pan offset
+    const y = (canvasHeight - imageHeight) / 2 + this.panOffset.y; // Adjust by pan offset
+  
+    return { x, y, width: imageWidth, height: imageHeight };
+  }   
   private onCanvasMouseDown(event: MouseEvent): void {
     const canvas = this.OriginPopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
-
-    // Calculate the click coordinates relative to the canvas
-    const x = (event.clientX - rect.left) * (canvas.width / rect.width);
-    const y = (event.clientY - rect.top) * (canvas.height / rect.height);
-    const transy = canvas.height - y;
-    // Store the initial point
-    this.startPoint = { x, y };
-    this.isDrawing = true;
-
-    // Draw the initial point
-    const ctx = canvas.getContext('2d');
-    ctx!.beginPath();
-    ctx!.arc(x, y, 5, 0, 2 * Math.PI); // Circle of radius 5
-    ctx!.fillStyle = 'red';
-    ctx!.fill();
-  }
-
+    if (this.isRotating) {
+      this.rotationStart = Math.atan2(event.clientY - rect.top - rect.height / 2, event.clientX - rect.left - rect.width / 2);
+      return;
+    }
+    if (this.isPanning) {
+      this.panStart = { x: event.clientX, y: event.clientY };
+    } else { // if(this.plotOrigin)
+      let x = (event.clientX - rect.left) * (canvas.width / rect.width);
+      let y = (event.clientY - rect.top) * (canvas.height / rect.height);
+      const ctx = canvas.getContext('2d');
+      const mapImageBounds = this.getMapImageBounds(ctx!);
+      if (
+        x >= mapImageBounds.x &&
+        x <= mapImageBounds.x + mapImageBounds.width &&
+        y >= mapImageBounds.y &&
+        y <= mapImageBounds.y + mapImageBounds.height
+      ) {
+        // Transform coordinates relative to the `mapimage`
+        const relativeX = (x - mapImageBounds.x) / this.zoomLevel;
+        const relativeY = (mapImageBounds.height - (y - mapImageBounds.y)) / this.zoomLevel;
+    
+        // Update the tooltip
+        const transY = mapImageBounds.height - relativeY; // Flip Y-axis
+        const tooltip = this.tooltip.nativeElement;
+        this.origin.x = parseFloat((relativeX * this.ratio!).toFixed(2));
+        this.origin.y = parseFloat((relativeY * this.ratio!).toFixed(2));
+        tooltip.textContent = `(x: ${(relativeX * this.ratio!).toFixed(2)}, y: ${(relativeY * this.ratio!).toFixed(2)})`;
+      } 
+      this.startPoint = { x, y };
+      this.isDrawing = true;
+  
+      // const ctx = canvas.getContext('2d');
+      ctx!.beginPath();
+      ctx!.arc(x, y, 5, 0, 2 * Math.PI);
+      ctx!.fillStyle = 'red';
+      ctx!.fill();
+    }
+  }  
   private onCanvasMouseMove(event: MouseEvent): void {
     const canvas = this.OriginPopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
-
-    // Calculate mouse coordinates relative to the canvas
-    const mouseX = Math.round(
-      (event.clientX - rect.left) * (canvas.width / rect.width)
-    );
-    const mouseY = Math.round(
-      (event.clientY - rect.top) * (canvas.height / rect.height)
-    );
-    const TransY = canvas.height - mouseY;
-    // Update tooltip content and position (if needed)
-    const tooltip = this.tooltip.nativeElement;
-    tooltip.textContent = `(x: ${mouseX * this.ratio!}, y: ${
-      TransY * this.ratio!
-    })`;
-    if (!this.isDrawing || !this.startPoint) return;
-
-    // const canvas = this.OriginPopupCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
-    // const rect = canvas.getBoundingClientRect();
+    if (!ctx) return;
+    // Calculate mouse coordinates relative to the canvas
+    // const mouseX = (event.clientX - rect.left - this.panOffset.x) / this.zoomLevel * (canvas.width / rect.width); // use in ploting origin node
+    // const mouseY = (event.clientY - rect.top - this.panOffset.y) / this.zoomLevel * (canvas.height / rect.height);
 
-    // Calculate current mouse coordinates relative to the canvas
-    const currentX = (event.clientX - rect.left) * (canvas.width / rect.width);
-    const currentY = (event.clientY - rect.top) * (canvas.height / rect.height);
+    const mouseX = (event.clientX - rect.left) * (canvas.width / rect.width);
+    const mouseY = (event.clientY - rect.top) * (canvas.height / rect.height);
+    const mapImageBounds = this.getMapImageBounds(ctx);
+    if (
+      mouseX >= mapImageBounds.x &&
+      mouseX <= mapImageBounds.x + mapImageBounds.width &&
+      mouseY >= mapImageBounds.y &&
+      mouseY <= mapImageBounds.y + mapImageBounds.height
+    ) {
+      // Transform coordinates relative to the `mapimage`
+      const relativeX = (mouseX - mapImageBounds.x) / this.zoomLevel;
+      const relativeY = (mapImageBounds.height - (mouseY - mapImageBounds.y)) / this.zoomLevel;
+  
+      // Update the tooltip
+      const transY = mapImageBounds.height - relativeY; // Flip Y-axis
+      const tooltip = this.tooltip.nativeElement;
+      tooltip.textContent = `(x: ${(relativeX * this.ratio!).toFixed(2)}, y: ${(relativeY * this.ratio!).toFixed(2)})`;
+    } 
+    // else {
+    //   // Hide the tooltip if outside `mapimage`
+    //   const tooltip = this.tooltip.nativeElement;
+    //   tooltip.style.display = "none";
+    // }
+  
+    
+    if (this.isRotating && this.rotationStart !== null) {
+      const currentAngle = Math.atan2(event.clientY - rect.top - rect.height / 2, event.clientX - rect.left - rect.width / 2);
+      const deltaAngle = currentAngle - this.rotationStart;
+      this.rotationAngle += deltaAngle * (180 / Math.PI);
+      this.rotationStart = currentAngle;
+      
+      this.renderCanvas();
+      return;
+    }
+    if (this.isPanning && this.panStart) {
+      const deltaX = event.clientX - this.panStart.x;
+      const deltaY = event.clientY - this.panStart.y;
+      this.panOffset.x += deltaX;
+      this.panOffset.y += deltaY;
+      this.panStart = { x: event.clientX, y: event.clientY };
+      this.renderCanvas();
+      return; // Skip other interactions while panning
+    }
 
-    // Redraw the image and point to clear previous lines
+    if (!this.startPoint) return;
+    // const currentX = ((event.clientX - rect.left - this.panOffset.x) / this.zoomLevel) * (canvas.width / rect.width);
+    // const currentY = ((event.clientY - rect.top - this.panOffset.y) / this.zoomLevel) * (canvas.height / rect.height);
+
+    this.renderCanvas();
     const img = new Image();
     img.src = this.imageSrc!;
-
     img.onload = () => {
-      ctx!.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-      ctx!.drawImage(img, 0, 0, canvas.width, canvas.height); // Redraw image
-
-      // Redraw the initial point
+      // ctx!.clearRect(0, 0, canvas.width, canvas.height);
+      // ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      
       ctx!.beginPath();
       ctx!.arc(this.startPoint!.x, this.startPoint!.y, 6, 0, 2 * Math.PI);
       ctx!.fillStyle = 'red';
       ctx!.fill();
-
-      // Draw the line with an arrow
-      this.drawArrow(
-        ctx!,
-        this.startPoint!.x,
-        this.startPoint!.y,
-        currentX,
-        currentY
-      );
+      this.drawArrow(ctx!, this.startPoint!.x, this.startPoint!.y, mouseX, mouseY);
     };
   }
-
   private onCanvasMouseUp(event: MouseEvent): void {
+    if (this.isPanning) {
+      this.panStart = null;
+      return;
+    }
+    if (this.isRotating) {
+      this.rotationStart = null;
+      return;
+    }
+    // if(this.plotOrigin){
+    //   this.plotOrigin = false;
+    //   return;
+    // }
     if (!this.isDrawing || !this.startPoint) return;
-
+  
     const canvas = this.OriginPopupCanvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
-
-    // Get the final mouse position
-    const finalX = (event.clientX - rect.left) * (canvas.width / rect.width);
-    const finalY = (event.clientY - rect.top) * (canvas.height / rect.height);
-    const toX = finalX * this.ratio!;
-    const toY = (canvas.height - finalY) * this.ratio! || 1;
-    // Calculate the angle relative to the canvas X-axis
-    const dx = this.startPoint.x - finalX; // X difference
-    const dy = this.startPoint.y - finalY; // Y difference (inverted)
-    const transY = canvas.height - dy;
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI); // Angle in degrees
-
-    console.log('hey', 'X:', finalX, 'Y:', transY, 'W (Angle):', angle);
-
-    // Update the origin object with the calculated values
-    this.origin = {
-      x: this.startPoint.x * this.ratio!,
-      y: (canvas.height - this.startPoint.y) * this.ratio!,
-      w: angle,
-    };
-
-    // Reset the drawing state
+    
+    const finalX = ((event.clientX - rect.left - this.panOffset.x) / this.zoomLevel) * (canvas.width / rect.width);
+    const finalY = ((event.clientY - rect.top - this.panOffset.y) / this.zoomLevel) * (canvas.height / rect.height);
+    const dx = this.startPoint.x - finalX;
+    const dy = this.startPoint.y - finalY;
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+  
+    console.log('X:', finalX, 'Y:', canvas.height - finalY, 'Angle:', angle);
+  
+    this.origin.w = angle;
+    // this.origin = {
+    //   x: this.startPoint.x * this.ratio!,
+    //   y: (canvas.height - this.startPoint.y) * this.ratio!,
+    //   w: angle,
+    // };
     this.isDrawing = false;
     this.startPoint = null;
     this.showOriginPopup = false;
     this.showOriginCanvas = false;
+    this.isPanning = false;
+    // this.plotOrigin = false; // yet to note..
+    this.panStart = null;
+    this.resetZoom();
+    this.rotationAngle=0;
   }
-
-  // Helper function to draw a line with an arrow
-  private drawArrow(
-    ctx: CanvasRenderingContext2D,
-    fromX: number,
-    fromY: number,
-    toX: number,
-    toY: number
+  private renderCanvas(): void {
+    const originCanvas = this.OriginPopupCanvas.nativeElement;
+    const ctx = originCanvas.getContext('2d');
+  
+    if (!ctx || !this.imageSrc) return;
+  
+    const img = new Image();
+    img.src = this.imageSrc;
+  
+    img.onload = () => {
+      ctx.clearRect(0, 0, originCanvas.width, originCanvas.height);
+      ctx.save();
+  
+      const centerX = originCanvas.width / 2;
+      const centerY = originCanvas.height / 2;
+  
+      // Apply transformations
+      ctx.translate(this.panOffset.x, this.panOffset.y);
+      ctx.translate(centerX, centerY);
+      ctx.scale(this.zoomLevel, this.zoomLevel);
+      ctx.rotate((this.rotationAngle * Math.PI) / 180);
+      ctx.translate(-centerX, -centerY);
+  
+      // Draw image and overlay content
+      ctx.drawImage(img, 0, 0, originCanvas.width, originCanvas.height);
+      this.redrawCanvasContent(ctx);
+  
+      ctx.restore();
+    };
+  }
+  private redrawCanvasContent(ctx: CanvasRenderingContext2D): void {
+    this.Originpoints.forEach(point => {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+    });
+  }
+  private drawArrow( ctx: CanvasRenderingContext2D, fromX: number, fromY: number, toX: number, toY: number
   ): void {
     const headLength = 10; // Length of the arrowhead
     const maxLength = 50; // Maximum length of the arrow
@@ -1325,6 +1550,7 @@ export class EnvmapComponent implements AfterViewInit {
     ctx.fillStyle = 'red';
     ctx.fill();
   }
+  //---------------------------------------------origin-------------------------------------------------
 
   openImagePopup(): void {
     if (this.imageSrc) {
