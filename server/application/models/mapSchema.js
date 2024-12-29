@@ -32,7 +32,7 @@ const nodeSchema = new Schema(
   }
 );
 
-const Node = dashboardConnection.model("nodes", nodeSchema, "nodes");
+// const Node = dashboardConnection.model("nodes", nodeSchema, "nodes");
 
 const stationSchema = new Schema(
   {
@@ -125,6 +125,17 @@ const mapSchema = new Schema(
     robots: { type: [roboProjSchema], default: [] },
     simMode: { type: Schema.Types.Mixed, default: [] }, // yet to look..
     logTime: { type: [logTimeSchema], default: [] },
+    heatMap: {
+      type: [
+        {
+          x: Number,
+          y: Number,
+          intensity: Number,
+        },
+      ],
+      default: [],
+      _id: false,
+    },
     throughPut: {
       type: throughPutSchema,
       default: { Stat: [], inProg: [] },

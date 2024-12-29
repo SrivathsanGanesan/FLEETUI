@@ -18,6 +18,7 @@ import { IsFleetService } from '../services/shared/is-fleet.service';
 import { ModeService } from './mode.service';
 import { Subscription } from 'rxjs';
 import { NodeGraphService } from '../services/nodegraph.service';
+import { HeatmapService } from '../services/heatmap-service.service';
 
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -204,7 +205,8 @@ export class DashboardComponent implements AfterViewInit {
     private messageService: MessageService,
     private isFleetService: IsFleetService,
     private modeService: ModeService,
-    private nodeGraphService: NodeGraphService
+    private nodeGraphService: NodeGraphService,
+    private heatmapService: HeatmapService
   ) {
     if (this.projectService.getIsMapSet()) return;
     // this.onInitMapImg(); // yet to remove..
@@ -251,7 +253,6 @@ export class DashboardComponent implements AfterViewInit {
     this.isInLive = this.projectService.getInLive();
     const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
       this.isFleet = status;
-      // console.log(status,'oijdrgioerj')
       this.updateUI(); // Update UI based on the current state
     });
 
@@ -331,6 +332,7 @@ export class DashboardComponent implements AfterViewInit {
       this.isInLive = true;
     }
   }
+
   updateUI() {
     // Example of adding a simple fade-in/out effect to a specific element
     const modeElement = document.querySelector('.mode-indicator');
@@ -716,11 +718,12 @@ export class DashboardComponent implements AfterViewInit {
       }
     }
   }
+
   heatmapX: number = 0;
   heatmapY: number = 0;
   heatmapWidth: number = 0;
   heatmapHeight: number = 0;
-  
+
   draw(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
     const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1221,6 +1224,9 @@ export class DashboardComponent implements AfterViewInit {
     let data = await response.json();
     if (!data.map) return;
     mapData = data.map;
+
+    this.heatmapService.setHeatmap(mapData.heatMap);
+
     this.ratio = data.map.mpp;
     this.rackSize = 0.9 / this.ratio; // change to 0.9
     this.origin = {
@@ -1228,6 +1234,8 @@ export class DashboardComponent implements AfterViewInit {
       y: mapData.origin.y,
       w: mapData.origin.w,
     };
+
+    this.heatmapService.setOriginAndRatio(this.origin, this.ratio);
     this.nodes = mapData.nodes.map((node: any) => {
       // yet to interface in this component..
       node.nodePosition.x =
@@ -1515,6 +1523,12 @@ export class DashboardComponent implements AfterViewInit {
               robot.pose.orientation.y,
               robot.pose.orientation.z
             );
+
+            // use Number constructor or (+) unary operator to perform with single operand
+            this.heatmapService.accumulateCoors({
+              x: Number(robot.pose.position.x?.toFixed(0)),
+              y: Number(robot.pose.position.y?.toFixed(0)),
+            });
 
             // Store each robot's position and orientation using the robot ID
             robotsData[robot.id] = {

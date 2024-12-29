@@ -66,17 +66,17 @@ export class SidenavbarComponent implements OnInit {
     }
     this.cookieValue = JSON.parse(this.cookieService.get('_user'));
     this.selectedMap = this.projectService.getMapData();
-    if(!this.selectedMap) return;
     await this.getFleetStatus();
+    setInterval(async () => {
+      await this.getFleetStatus();
+    }, 1000 * 2); // max to 30 or 60 sec
+    if(!this.selectedMap) return;
     await this.getRoboStatus();
     await this.getTaskErrs();
     setInterval(async () => {
       await this.getRoboStatus();
       await this.getTaskErrs(); // or run in indivdual..
     }, 1000 * 5); // max to 30 or 60 sec
-    setInterval(async () => {
-      await this.getFleetStatus();
-    }, 1000 * 2); // max to 30 or 60 sec
   }
   
 
