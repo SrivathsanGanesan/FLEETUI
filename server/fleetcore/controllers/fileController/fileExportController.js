@@ -73,7 +73,7 @@ const parseImgUrl = ({ maps }) => {
   // });
   // return arr;
   return maps.flatMap((map) =>
-    map.map((element) => element.mapId.imgUrl.split("/")[2])
+    map.map((element) => element.mapId.imgUrl.split("/")[1])
   );
 };
 
