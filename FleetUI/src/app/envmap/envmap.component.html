@@ -198,8 +198,8 @@
         <div class="toolbar" *ngIf="this.showOriginCanvas">
           <button (click)="zoomIn()">Zoom In</button>
           <button (click)="zoomOut()">Zoom Out</button>
-          <button (click)="togglePanMode()">{{ isPanning ? 'Disable Pan' : 'Enable Pan' }}</button>
-          <button (click)="toggleRotateMode()">{{ isRotating ? 'Disable Rotate' : 'Enable Rotate' }}</button>
+          <button (click)="togglePanMode()" *ngIf="!isRotating">{{ isPanning ? 'Disable Pan' : 'Enable Pan' }}</button>
+          <button (click)="toggleRotateMode()" *ngIf="!isPanning">{{ isRotating ? 'Disable Rotate' : 'Enable Rotate' }}</button>
           <!-- <button (click)="enablePlotOrigin()">{{ plotOrigin ? 'Disable Plot Origin' : 'Plot Origin' }}</button> -->
         </div>
         <button class="close-btn" (click)="closeImagePopup()"> <svg
