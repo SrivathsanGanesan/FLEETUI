@@ -704,25 +704,6 @@ export class EnvmapComponent implements AfterViewInit {
     // Hide confirmation dialog without deleting
     // this.isDeleteModeEnabled = false;
   }
-
-  closeImagePopup(): void {
-    if ((this.showOriginPopup = true)) {
-      this.showOriginPopup = false;
-      this.showOriginCanvas = false;
-      this.anotherFileName = '';
-    }
-    this.showImagePopup = false;
-    this.points = [];
-    this.showDistanceDialog = false;
-    this.distanceBetweenPoints = null; // Reset distance if applicable
-    this.isDistanceConfirmed = false;
-    if (this.resolutionInput && this.showOriginPopup) {
-      this.resolutionInput.nativeElement.value = ''; // Reset the input field
-    }
-    this.validationError = null;
-    this.resetZoom();
-  }
-
   selectedNodeType: string = '';
 
   updateNodeType(): void {
@@ -1237,6 +1218,8 @@ export class EnvmapComponent implements AfterViewInit {
   
     if (this.imageSrc) {
       this.showOriginPopup = true;
+      this.isPanning=!this.isPanning;
+      this.isRotating=!this.isRotating;
       this.cdRef.detectChanges();
   
       const originCanvas = this.OriginPopupCanvas?.nativeElement;
@@ -1341,11 +1324,9 @@ export class EnvmapComponent implements AfterViewInit {
         const relativeY = (mapImageBounds.height - (y - mapImageBounds.y)) / this.zoomLevel;
     
         // Update the tooltip
-        const transY = mapImageBounds.height - relativeY; // Flip Y-axis
-        const tooltip = this.tooltip.nativeElement;
+
         this.origin.x = parseFloat((relativeX * this.ratio!).toFixed(2));
         this.origin.y = parseFloat((relativeY * this.ratio!).toFixed(2));
-        tooltip.textContent = `(x: ${(relativeX * this.ratio!).toFixed(2)}, y: ${(relativeY * this.ratio!).toFixed(2)})`;
       } 
       this.startPoint = { x, y };
       this.isDrawing = true;
@@ -1434,7 +1415,7 @@ export class EnvmapComponent implements AfterViewInit {
       return;
     }
     if (this.isRotating) {
-      this.rotationStart = null;
+      this.rotationStart = null;      
       return;
     }
     // if(this.plotOrigin){
@@ -1467,8 +1448,32 @@ export class EnvmapComponent implements AfterViewInit {
     this.isPanning = false;
     // this.plotOrigin = false; // yet to note..
     this.panStart = null;
+    this.rotationStart = null;
     this.resetZoom();
     this.rotationAngle=0;
+  }
+  
+  closeImagePopup(): void {
+    if ((this.showOriginPopup = true)) {
+      this.showOriginPopup = false;
+      this.showOriginCanvas = false;
+      this.anotherFileName = '';
+      this.rotationAngle=0;  
+      this.panStart = null;
+      this.rotationStart = null;
+      this.isPanning=false;
+      this.isRotating=false;
+    }
+    this.showImagePopup = false;
+    this.points = [];
+    this.showDistanceDialog = false;
+    this.distanceBetweenPoints = null; // Reset distance if applicable
+    this.isDistanceConfirmed = false;
+    if (this.resolutionInput && this.showOriginPopup) {
+      this.resolutionInput.nativeElement.value = ''; // Reset the input field
+    }
+    this.validationError = null;
+    this.resetZoom();
   }
   private renderCanvas(): void {
     const originCanvas = this.OriginPopupCanvas.nativeElement;
