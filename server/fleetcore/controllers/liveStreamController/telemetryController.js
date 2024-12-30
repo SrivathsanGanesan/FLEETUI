@@ -33,15 +33,16 @@ const initRabbitMQConnection = async () => {
     rabbitMqClient = await amqp.connect(
       `amqp://${process.env.RABBITMQ_SERVER}:${process.env.RABBITMQ_PORT}`
     );
-    rabbitMqClient.on('error', (err) => {
-        console.log('rabbitmq connection error:', err.message);
+    rabbitMqClient.on("error", (err) => {
+      console.log("rabbitmq connection error:", err.message);
     });
-    rabbitMqClient.on('close', () => {
-        console.log('rabbitmq connection closed');
+    rabbitMqClient.on("close", () => {
+      console.log("rabbitmq connection closed");
     });
     rabbitMQChannel = await rabbitMqClient.createChannel();
     await consumeMessage();
     await consumeAssets();
+    // await sendTaks();
   } catch (error) {
     console.error("Error while connecting rabbitmq :", error);
   }
@@ -121,6 +122,46 @@ const consumeAssets = async () => {
     if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {
       console.error("Queue properties mismatch. Please verify queue settings.");
     }
+  }
+};
+
+const publishTasks = async (bodyData) => {
+  if (!rabbitMQChannel) return false;
+  const exchange = "amq.topic";
+  const queueName = "FMS.RECEIVE-TASK"; // queue name...
+  const routingKey = "FMS";
+  try {
+    // topic or direct or fanout, which describes what type of exchange it is..
+    let assertExchangeInfo = await rabbitMQChannel.assertExchange(
+      exchange,
+      "topic",
+      {
+        durable: true,
+      }
+    );
+
+    let assertQueueInfo = await rabbitMQChannel.assertQueue(queueName, {
+      durable: true, // queue remains even rabbitmq server restarts..
+    });
+
+    await rabbitMQChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
+
+    const isPublished = await rabbitMQChannel.publish(
+      exchange,
+      routingKey,
+      Buffer.from(JSON.stringify(bodyData)), // only in Buffer (Binary) which rabbit accepts..
+      {
+        persistent: true, // message saved to disk not in memory / RAM(ig), cz even if server crash / restarts it retrieves
+      }
+    );
+
+    return isPublished;
+  } catch (error) {
+    console.error("Error connection messages :", error);
+    if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {
+      console.error("Queue properties mismatch. Please verify queue settings.");
+    }
+    return false;
   }
 };
 
@@ -239,6 +280,32 @@ const getAsserts = async (req, res) => {
     res.write(`data: ${JSON.stringify(noAssets)}\n\n`); // wanna exucute only once...
   } catch (error) {
     console.error("Error in getAgvTelemetry:", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
+  }
+};
+
+const sendTasks = async (req, res) => {
+  const mapId = req.params.mapId;
+  const { taskId, Priority, sourceLocation, taskType } = req.body;
+  try {
+    let isMapExists = await Map.exists({ _id: mapId });
+    if (!isMapExists)
+      return res.status(400).json({ msg: "Map not found!", map: null });
+
+    let isTaskSent = publishTasks({
+      taskId,
+      Priority,
+      sourceLocation,
+      taskType,
+    });
+
+    if (isTaskSent)
+      return res.status(200).json({ msg: "Task sent", isTaskSent: true });
+    return res.status(417).json({ msg: "Task not sent", isTaskSent: false }); // 417 - expectation falied
+  } catch (error) {
+    console.error("Error in sending tasks :", error);
     res
       .status(500)
       .json({ error: error.message, msg: "Internal Server Error" });
@@ -432,6 +499,7 @@ module.exports = {
   getRoboDetails,
   getRoboPos,
   getAsserts,
+  sendTasks,
   showSpline,
   enableRobo,
   getLiveRobos,
