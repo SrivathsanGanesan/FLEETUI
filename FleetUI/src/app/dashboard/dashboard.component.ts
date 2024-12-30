@@ -296,7 +296,7 @@ export class DashboardComponent implements AfterViewInit {
 
     if (!this.projectService.getMapData()) return;
     const img = new Image();
-    img.src = `http://${this.selectedMap.imgUrl}`;
+    img.src = `http://${environment.API_URL}:${environment.PORT}/${this.selectedMap.imgUrl}`;
 
     img.onload = () => {
       // Calculate zoom level only once during initialization
@@ -481,7 +481,7 @@ export class DashboardComponent implements AfterViewInit {
   async initializeRobot(): Promise<void> {
     // console.log(this.robotToInitialize, this.ratio);
     let mapImg = new Image();
-    mapImg.src = `http://${this.projectService.getMapData().imgUrl}`;
+    mapImg.src = `http://${environment.API_URL}:${environment.PORT}/${this.projectService.getMapData().imgUrl}`;
 
     let ratio = this.ratio ? this.ratio : 1;
     let quaternion = { x: 0, y: 0, z: 0, w: 1 };
@@ -675,7 +675,7 @@ export class DashboardComponent implements AfterViewInit {
         // Load the background image
         this.isImage = true;
         const img = new Image();
-        img.src = `http://${this.projectService.getMapData().imgUrl}`;
+        img.src = `http://${environment.API_URL}:${environment.PORT}/${this.projectService.getMapData().imgUrl}`;
 
         img.onload = () => {
           // Draw the image and other elements
@@ -693,7 +693,7 @@ export class DashboardComponent implements AfterViewInit {
       if (ctx) {
         const img = new Image();
         let imgName = this.projectService.getMapData();
-        img.src = `http://${imgName.imgUrl}`;
+        img.src = `http://${environment.API_URL}:${environment.PORT}/${imgName.imgUrl}`;
 
         img.onload = () => {
           // Set canvas dimensions based on its container
@@ -1290,7 +1290,7 @@ export class DashboardComponent implements AfterViewInit {
 
     this.mapImg = new Image();
     let imgName = this.projectService.getMapData();
-    this.mapImg.src = `http://${imgName.imgUrl}`;
+    this.mapImg.src = `http://${environment.API_URL}:${environment.PORT}/${imgName.imgUrl}`;
   }
 
   async fetchRoboPos(x: number, y: number, yaw: number) {
@@ -1303,7 +1303,7 @@ export class DashboardComponent implements AfterViewInit {
 
     const mapImage = new Image();
     let map = this.projectService.getMapData();
-    mapImage.src = `http://${map.imgUrl}`;
+    mapImage.src = `http://${environment.API_URL}:${environment.PORT}/${map.imgUrl}`;
     await mapImage.decode(); // Wait for the image to load
 
     if (ctx) {
@@ -1444,7 +1444,7 @@ export class DashboardComponent implements AfterViewInit {
 
     // Set the zoomLevel after fetching the map data
     const img = new Image();
-    img.src = `http://${mapData.map.imgUrl}`;
+    img.src = `http://${environment.API_URL}:${environment.PORT}/${mapData.map.imgUrl}`;
 
     // Ensure the zoom level is calculated after the image is loaded
     img.onload = () => {
@@ -1497,7 +1497,7 @@ export class DashboardComponent implements AfterViewInit {
 
         const mapImage = new Image();
         let map = this.projectService.getMapData();
-        mapImage.src = `http://${map.imgUrl}`;
+        mapImage.src = `http://${environment.API_URL}:${environment.PORT}/${map.imgUrl}`;
         await mapImage.decode(); // Wait for the image to load
 
         if (!ctx) return;
@@ -1563,7 +1563,7 @@ export class DashboardComponent implements AfterViewInit {
 
         const mapImage = new Image();
         let map = this.projectService.getMapData();
-        mapImage.src = `http://${map.imgUrl}`;
+        mapImage.src = `http://${environment.API_URL}:${environment.PORT}/${map.imgUrl}`;
         await mapImage.decode(); // Wait for the image to load
 
         if (!ctx) return;

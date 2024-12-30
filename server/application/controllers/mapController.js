@@ -300,7 +300,7 @@ const mapInsert = async (req, res) => {
 
     if (req.file === undefined)
       return res.status(400).json({ msg: "file missing", isFileExist: false });
-    mapData.imgUrl = `${process.env.BASE_URL}:${process.env.PORT}/dashboard/${req.file.filename}`;
+    mapData.imgUrl = `dashboard/${req.file.filename}`; // ${process.env.BASE_URL}:${process.env.PORT}/dash..
 
     const newMap = await new Map({
       mapName,
@@ -476,7 +476,7 @@ const deleteMap = async (req, res) => {
     let mapDet = await Map.findOne({ mapName: mapName });
     let robots = mapDet.robots;
     for (let robo of robots) await Robo.deleteOne({ _id: robo.roboId });
-    let imgToDelete = mapDet.imgUrl.split("/")[2]; // [localhost:3000, dashboard, samp.png]
+    let imgToDelete = mapDet.imgUrl.split("/")[1]; // [localhost:3000, dashboard, samp.png]
     let isImgDeleted = deleteImage(imgToDelete);
     if (!isImgDeleted)
       return res.status(500).json({

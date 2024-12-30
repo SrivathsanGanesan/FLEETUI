@@ -93,7 +93,7 @@ export class HeatmapComponent implements OnChanges {
     const data = [];
     let len = heatmap.length;
     while (len--) {
-      if (this.mapImageHeight && heatmap[len].x !== 0 && heatmap[len].x !== 0) {
+      // if (this.mapImageHeight && heatmap[len].x !== 0 && heatmap[len].x !== 0) {
         let posX =
           (((heatmap[len].x + (this.origin.x || 0)) * this.zoomLevel) /
             (this.ratio || 1)) >>
@@ -114,7 +114,7 @@ export class HeatmapComponent implements OnChanges {
           value: val,
           // radius: (10) >> 0,
         });
-      }
+      // }
     }
     return { max, min, data };
   }

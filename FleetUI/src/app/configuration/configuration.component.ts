@@ -1169,7 +1169,7 @@ export class ConfigurationComponent implements AfterViewInit {
         }
 
         const { map } = data;
-        const mapImgUrl = `http://${map.imgUrl}`;
+        const mapImgUrl = `http://${environment.API_URL}:${environment.PORT}/${map.imgUrl}`;
 
         // Check if the image URL is accessible
         this.checkImageLoading(mapImgUrl)
@@ -1288,7 +1288,7 @@ export class ConfigurationComponent implements AfterViewInit {
     this.deleteMap(item).then((result) => {
       isDeleted = result;
       if (isDeleted) {
-        if (item.id === this.projectService.getMapData().id) {
+        if (this.projectService.getMapData() && item.id === this.projectService.getMapData().id) {
           this.projectService.setIsMapSet(false);
           this.projectService.clearMapData();
           this.projectService.setInitializeMapSelected(false); // confirm it.
