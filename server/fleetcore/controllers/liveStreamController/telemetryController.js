@@ -5,6 +5,7 @@ require("dotenv").config();
 
 let rabbitMqClient = null;
 let rabbitMQChannel = null;
+let rabbitMQConfirmChannel = null; // return acknowledgement for published message ( channel for publishing )
 
 const consumeAMQP = new EventEmitter();
 const consumeRabbitqpAsset = new EventEmitter();
@@ -40,6 +41,7 @@ const initRabbitMQConnection = async () => {
       console.log("rabbitmq connection closed");
     });
     rabbitMQChannel = await rabbitMqClient.createChannel();
+    rabbitMQConfirmChannel = await rabbitMqClient.createConfirmChannel();
     await consumeMessage();
     await consumeAssets();
     // await sendTaks();
@@ -126,36 +128,41 @@ const consumeAssets = async () => {
 };
 
 const publishTasks = async (bodyData) => {
-  if (!rabbitMQChannel) return false;
+  if (!rabbitMQConfirmChannel) return false;
   const exchange = "amq.topic";
   const queueName = "FMS.RECEIVE-TASK"; // queue name...
   const routingKey = "FMS";
   try {
     // topic or direct or fanout, which describes what type of exchange it is..
-    let assertExchangeInfo = await rabbitMQChannel.assertExchange(
+    let assertExchangeInfo = await rabbitMQConfirmChannel.assertExchange(
       exchange,
       "topic",
       {
-        durable: true,
+        durable: true, // exchange will survive, even server restarts..
       }
     );
 
-    let assertQueueInfo = await rabbitMQChannel.assertQueue(queueName, {
+    let assertQueueInfo = await rabbitMQConfirmChannel.assertQueue(queueName, {
       durable: true, // queue remains even rabbitmq server restarts..
     });
 
-    await rabbitMQChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
+    await rabbitMQConfirmChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
 
-    const isPublished = await rabbitMQChannel.publish(
+    // if normal channel / without confirmChannel, only returns boolean immediately (not reliable status)
+    rabbitMQConfirmChannel.publish(
       exchange,
       routingKey,
       Buffer.from(JSON.stringify(bodyData)), // only in Buffer (Binary) which rabbit accepts..
       {
-        persistent: true, // message saved to disk not in memory / RAM(ig), cz even if server crash / restarts it retrieves
+        persistent: true, // message saved to disk not in memory/RAM(ig), cz even if server crash/restarts it retrieves
+      },
+      (err) => {
+        if (err) {
+          console.log(err);
+          return false;
+        } else return true;
       }
     );
-
-    return isPublished;
   } catch (error) {
     console.error("Error connection messages :", error);
     if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {
