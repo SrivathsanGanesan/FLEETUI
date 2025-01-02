@@ -948,6 +948,7 @@ export class DashboardComponent implements AfterViewInit {
             return; // Do not allow dragging if the robot is initialized
           }
           this.draggingRobo = robo; // Store the robot being dragged
+          this.nodeGraphService.setDraggingRobo(robo);
           this.isDragging = true;
           this.hidePopup();
           break;
@@ -958,6 +959,7 @@ export class DashboardComponent implements AfterViewInit {
 
   addMouseUpListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mouseup', async (event) => {
+      this.draggingRobo = this.nodeGraphService.getDraggingRobo();
       if (this.draggingRobo && this.isInLive && !event.button) {
         // event.button ( look at it..! )
         await this.initializeWhileInLive(canvas, event);
@@ -965,6 +967,7 @@ export class DashboardComponent implements AfterViewInit {
       if (this.isDragging) {
         this.isDragging = false;
         this.draggingRobo = null;
+        this.nodeGraphService.setDraggingRobo(null);
         this.redrawCanvas();
       }
     });
@@ -1039,6 +1042,7 @@ export class DashboardComponent implements AfterViewInit {
       // Adjust for zoom and pan
       const imgX = (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel - this.offsetX;
       const imgY = (transY - this.mapImageY + this.offsetY) / this.zoomLevel + this.offsetY;
+      this.draggingRobo = this.nodeGraphService.getDraggingRobo();
       if ( this.draggingRobo && this.isDragging && !this.draggingRobo.isInitialized ) {
         // this.draggingRobo.pos.x = this.draggingRobo.pos.x;
         // this.draggingRobo.pos.y = (this.mapImageHeight/ this.zoomLevel ) - this.draggingRobo.pos.y;
@@ -1056,6 +1060,7 @@ export class DashboardComponent implements AfterViewInit {
         this.draggingRobo.pos.x = newX;
         this.draggingRobo.pos.y = newY;
 
+        this.nodeGraphService.setDraggingRobo(this.draggingRobo);
         // Redraw the canvas with the updated robot position
         this.redrawCanvas();
       }
@@ -1751,6 +1756,7 @@ export class DashboardComponent implements AfterViewInit {
       }
 
       this.simMode = this.simMode.map((robo) => {
+        this.draggingRobo = this.nodeGraphService.getDraggingRobo();
         let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
         if (robo.amrId === parseInt(robotId) && robo.amrId !== draggingRoboId) {
           robo.pos.x = robotCanvasX;

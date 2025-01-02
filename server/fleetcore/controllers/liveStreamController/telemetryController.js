@@ -130,7 +130,7 @@ const consumeAssets = async () => {
 const publishTasks = async (bodyData) => {
   if (!rabbitMQConfirmChannel) return false;
   const exchange = "amq.topic";
-  const queueName = "FMS.RECEIVE-TASK"; // queue name...
+  const queueName = "FMS.CONFIRM-TASK"; // queue name...
   const routingKey = "FMS";
   try {
     // topic or direct or fanout, which describes what type of exchange it is..
@@ -301,11 +301,12 @@ const sendTasks = async (req, res) => {
     if (!isMapExists)
       return res.status(400).json({ msg: "Map not found!", map: null });
 
-    let isTaskSent = publishTasks({
+    let isTaskSent = await publishTasks({
       taskId,
       Priority,
       sourceLocation,
       taskType,
+      robotType: "RTP",
     });
 
     if (isTaskSent)
