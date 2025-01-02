@@ -1628,6 +1628,8 @@ export class DashboardComponent implements AfterViewInit {
     const borderRadius = 3; // Border radius for the square
     const circleRadius = height / 3.5; // Circle radius
     const rectangleColor = this.stateColorMap[state] || '#ff7373';
+    const borderColor = '#525354'; // Define the border color
+    const borderThickness = 0.6; // Define the border thickness
     if (ctx) {
       ctx.save();
       ctx.translate(x, y);
@@ -1668,7 +1670,9 @@ export class DashboardComponent implements AfterViewInit {
 
       ctx.fillStyle = rectangleColor; // Set the rectangle color
       ctx.fill();
-
+      ctx.lineWidth = borderThickness;
+      ctx.strokeStyle = borderColor;
+      ctx.stroke();
       // Draw the circle inside the rounded rectangle
       ctx.beginPath();
       ctx.arc(0, 0, circleRadius, 0, Math.PI * 2); // Circle at the center
