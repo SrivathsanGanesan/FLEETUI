@@ -95,11 +95,11 @@ export class SidenavbarComponent implements OnInit {
 
       let rabbitData = await rabbitResponse.json();
 
-      this.isAmqpUp = data.rabbitmqStatus ? true : false;
+      this.isAmqpUp = rabbitData.rabbitmqStatus ? true : false;
     }
 
     let prevFleetStatus = this.projectService.getIsFleetUp();
-    if (prevFleetStatus === this.isFleetUp) return;
+    if (prevFleetStatus === (this.isFleetUp && this.isAmqpUp)) return;
     this.projectService.setIsFleetUp(this.isFleetUp && this.isAmqpUp);
   }
 
