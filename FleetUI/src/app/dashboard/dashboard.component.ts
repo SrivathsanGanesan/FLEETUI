@@ -893,7 +893,6 @@ export class DashboardComponent implements AfterViewInit {
       const imgY =
         (transY - this.mapImageY + this.offsetY) / this.zoomLevel +
         this.offsetY;
-
       for (let robo of this.simMode) {
         const roboX = robo.pos.x;
         const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
@@ -910,6 +909,7 @@ export class DashboardComponent implements AfterViewInit {
           return;
         }
       }
+      
     });
   }
 
@@ -2161,7 +2161,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
     ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 4;
     ctx.stroke();
   }
 

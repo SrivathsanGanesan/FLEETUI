@@ -3,7 +3,23 @@
 
 /* styles.css or styles.scss */
 
-
+.status-dot {
+  width: 12px; /* Size of the dot */
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px; /* Space between the dot and the text */
+}
+.dot-green {
+  background-color: green;
+}
+.fleet-status {
+  display: flex;
+  align-items: center;
+  font-size: 18px; /* Adjust as per your design */
+}
+.dot-red {
+  background-color: red;
+}
 .sidebar {
     position: fixed; /* or relative based on your layout */
     height: 100%;
