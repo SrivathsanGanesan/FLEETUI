@@ -402,14 +402,16 @@
     </button>
     <!-- ON Button -->
 
-    <div class="ONBtn" (click)="startStopOpt()">
+    <!-- <div class="ONBtn" (click)="startStopOpt()">
       <img
         [src]="getOnBtnImage()"
         alt="Toggle Button"
         [ngClass]="{ 'blinking-svg': isInLive }"
       />
+    </div> -->
+    <div class="ONBtn">
+      <button class="AT-btn">Assign Task</button>
     </div>
-
     <!-- Floor Selector -->
     <div class="FloorSelector" *ngIf="ONBtn"></div>
 

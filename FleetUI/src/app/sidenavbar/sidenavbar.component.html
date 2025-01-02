@@ -7,8 +7,8 @@
 
     <!-- Fleet Status Indicator -->
     <div class="fleet-status" [ngClass]="{'fleet-up': isFleetUp, 'fleet-down': !isFleetUp}">
-      <i class="wifi-icon" [ngClass]="{'wifi-up': isFleetUp, 'wifi-down': !isFleetUp}"></i>
-      {{ isFleetUp ? 'Fleet Engaged' : 'Fleet Halted' }}
+      <img [src]="isFleetUp ? '../../assets/Liveoff.svg' : '../../assets/Liveon.svg'">
+      {{ isFleetUp ? 'LIVE' : 'LIVE' }}
     </div>
     
     <app-fullscreen-button></app-fullscreen-button>
