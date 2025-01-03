@@ -1836,14 +1836,15 @@ export class DashboardComponent implements AfterViewInit {
       // Scale position and apply spacing offset
       const scaledPosX = posX;
       const scaledPosY = posY;
-
+      
       // Flip Y-axis for canvas and calculate actual canvas positions
       const transformedPosY = !this.simMode
-        ? this.mapImageHeight - scaledPosY // Non-simulation mode
-        : imgHeight / this.zoomLevel - scaledPosY;
+      ? this.mapImageHeight - scaledPosY // Non-simulation mode
+      : imgHeight / this.zoomLevel - scaledPosY;
       const robotCanvasX = scaledPosX;
       const robotCanvasY = transformedPosY;
-
+      this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId));
+      
       if (this.nodeGraphService.getShowModelCanvas() || this.nodeGraphService.getAssignTask()) {
         this.nodes = this.nodeGraphService.getNodes();
         this.edges = this.nodeGraphService.getEdges();
@@ -1863,7 +1864,7 @@ export class DashboardComponent implements AfterViewInit {
           return robo;
         });
       }
-
+      
       this.simMode = this.simMode.map((robo) => {
         this.draggingRobo = this.nodeGraphService.getDraggingRobo();
         let draggingRoboId = this.draggingRobo ? this.draggingRobo.amrId : null;
@@ -1880,12 +1881,13 @@ export class DashboardComponent implements AfterViewInit {
         }
         return robo;
       });
-
+      
       //..
-      this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId));
       //..
     }
 
+    if (this.nodeGraphService.getIsShowPath()) this.showPath();
+    if (this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
     // After updating positions, use the adjusted positions to draw the robots
     if (!this.isFleet)
       this.simMode.forEach((robo) => {
@@ -1919,8 +1921,6 @@ export class DashboardComponent implements AfterViewInit {
         this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
       });
 
-    if (this.nodeGraphService.getIsShowPath()) this.showPath();
-    if (this.nodeGraphService.getIsShowRoboPath()) this.showRoboPath();
 
     this.racks.forEach((rack) => {
       const robotPosX = centerX + rack.x * this.zoomLevel;
@@ -2277,14 +2277,14 @@ export class DashboardComponent implements AfterViewInit {
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 10;
+    ctx.lineWidth = 6;
     ctx.stroke();
 
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
     ctx.strokeStyle = color;
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 3;
     ctx.stroke();
   }
 
@@ -2356,6 +2356,10 @@ export class DashboardComponent implements AfterViewInit {
     y: number,
     color: string
   ) {
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, 2 * Math.PI); // Draw circle with radius 10
+    ctx.fillStyle = 'black';
+    ctx.fill();
     // Set node style (for example, circle)
     ctx.beginPath();
     ctx.arc(x, y, 2, 0, 2 * Math.PI); // Draw circle with radius 10
