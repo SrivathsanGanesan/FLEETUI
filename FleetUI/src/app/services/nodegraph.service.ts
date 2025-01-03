@@ -17,8 +17,8 @@ export class NodeGraphService {
   private isShowRoboPath: number = 0;
   private draggingRobo: any = null;
   roboIDColor: Map<number, string> = new Map<number, string>(); // check...
-
   showModelCanvas: boolean = false;
+  assignTask:boolean=false;
 
   constructor() {}
 
@@ -61,6 +61,14 @@ export class NodeGraphService {
 
   getShowModelCanvas(): boolean {
     return this.showModelCanvas;
+  }
+
+  setAssignTask(state: boolean) {
+    this.assignTask = state;
+  }
+
+  getAssignTask(): boolean {
+    return this.assignTask;
   }
 
   setsimMode(simMode: any[]) {
