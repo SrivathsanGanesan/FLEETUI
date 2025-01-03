@@ -7,6 +7,7 @@ import {
   EventEmitter,
   Output,
   OnDestroy,
+  HostListener
 } from '@angular/core';
 import RecordRTC from 'recordrtc';
 import { ProjectService } from '../services/project.service';
@@ -19,6 +20,7 @@ import { ModeService } from './mode.service';
 import { Subscription } from 'rxjs';
 import { NodeGraphService } from '../services/nodegraph.service';
 import { HeatmapService } from '../services/heatmap-service.service';
+import { log } from 'node:console';
 
 enum ZoneType {
   HIGH_SPEED_ZONE = 'High Speed Zone',
@@ -112,6 +114,7 @@ export class DashboardComponent implements AfterViewInit {
   private recorder: any;
   private stream: MediaStream | null = null; // Store the MediaStream here
   showModelCanvas: boolean = false; // Initially hide the modelCanvas
+  assignTask: boolean = false;
   isShowPath: boolean = false;
   isShowRoboPath: boolean = false;
   selectedMap: any | null = null;
@@ -315,6 +318,7 @@ export class DashboardComponent implements AfterViewInit {
     await this.getMapDetails();
     // this.showModelCanvas = false;
     this.nodeGraphService.setShowModelCanvas(false);
+    this.nodeGraphService.setAssignTask(false);
     this.cdRef.detectChanges();
     this.redrawCanvas(); // yet to look at it... and stay above initSimRoboPos()
     if (!this.isInLive) this.initSimRoboPos();
@@ -643,8 +647,27 @@ export class DashboardComponent implements AfterViewInit {
       console.error('Error updating map:', error);
     }
   }
+  async toggleAssignTask(){
+    this.nodeGraphService.setShowModelCanvas(false);
+    this.nodeGraphService.setAssignTask(
+      !this.nodeGraphService.getAssignTask()
+    );
+    if (this.isInLive) {
+      await this.getLivePos();
+    }
+    if (this.nodeGraphService.getAssignTask()) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Enabled Task Assigning',
+        detail: 'Task Assigning Option has been Enabled',
+        life: 2000,
+      });
+    }
 
+    this.loadCanvas(); // Redraw the canvas based on the updated state
+  }
   async toggleModelCanvas() {
+    this.nodeGraphService.setAssignTask(false);
     this.nodeGraphService.setShowModelCanvas(
       !this.nodeGraphService.getShowModelCanvas()
     );
@@ -789,12 +812,40 @@ export class DashboardComponent implements AfterViewInit {
       );
     });
 
-    if (!this.nodeGraphService.getShowModelCanvas()) {
-      // this.showModelCanvas use instead..
+    if (this.nodeGraphService.getAssignTask() ) {        
+    this.nodes.forEach((node) => {
+      const transformedY = img.height - node.nodePosition.y;
+      this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
+    });
+
+    // this.edges.forEach((edge) => {
+    //   const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
+    //   const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
+    //   if (startNode && endNode) {
+    //     const startPos = {
+    //       x: startNode.nodePosition.x,
+    //       y: startNode.nodePosition.y,
+    //     };
+    //     const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
+    //     const transformedStartY = img.height - startPos.y;
+    //     const transformedEndY = img.height - endPos.y;
+    //     this.drawEdge(
+    //       ctx,
+    //       { x: startPos.x, y: transformedStartY },
+    //       { x: endPos.x, y: transformedEndY },
+    //       edge.direction,
+    //       edge.startNodeId,
+    //       edge.endNodeId
+    //     );
+    //   }
+    // });
+      ctx.restore();
+      // return;
+    }
+    if (!this.nodeGraphService.getShowModelCanvas() ) {  
       ctx.restore();
       return;
     }
-
     this.nodes.forEach((node) => {
       const transformedY = img.height - node.nodePosition.y;
       this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
@@ -876,10 +927,10 @@ export class DashboardComponent implements AfterViewInit {
     // console.log(distance, imageSize*1.5);
     return distance <= imageSize * 1.5; // Adjust this based on the robot's size
   }
-
   addRightClickListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('contextmenu', (event) => {
       event.preventDefault(); // Prevent the default context menu
+      const assignTask = this.nodeGraphService.getAssignTask();
       this.offsetX = this.nodeGraphService.getOffsetX();
       this.offsetY = this.nodeGraphService.getOffsetY();
       this.zoomLevel = this.nodeGraphService.getZoomLevel();
@@ -893,6 +944,26 @@ export class DashboardComponent implements AfterViewInit {
       const imgY =
         (transY - this.mapImageY + this.offsetY) / this.zoomLevel +
         this.offsetY;
+        if (assignTask) {
+          for (let node of this.nodes) {
+            const nodeX = node.nodePosition.x;
+            const nodeY =  node.nodePosition.y;
+            const nodeRadius = 15; // Define a radius to detect clicks near the node (adjust as needed)
+            console.log("nodepos",nodeX,nodeY);
+            console.log("mousepos",imgX,imgY);
+            
+            
+            if (
+              imgX >= nodeX - nodeRadius &&
+              imgX <= nodeX + nodeRadius &&
+              imgY >= nodeY - nodeRadius &&
+              imgY <= nodeY + nodeRadius
+            ) {
+              this.showATPopup(event.clientX, event.clientY);
+              return;
+            }
+          }
+        }
       for (let robo of this.simMode) {
         const roboX = robo.pos.x;
         const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
@@ -913,6 +984,36 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
+  showATPopup(x: number, y: number) {
+    const popup = document.getElementById('assignTask-popup');
+    if (popup) {
+      popup.style.display = 'block';
+      popup.style.left = `${x}px`;
+      popup.style.top = `${y}px`;
+    }
+  }
+  sendAction() {
+    const selectedRobotId = (document.getElementById('robot-select') as HTMLSelectElement).value;
+    console.log('Send action for robot ID:', selectedRobotId);
+    this.hidePopup();
+  }
+
+  cancelATAction() {
+    this.hideATPopup();
+  }
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const popup = document.getElementById('assignTask-popup');
+    if (popup && !popup.contains(event.target as Node)) {
+      this.hideATPopup();
+    }
+  }
+  hideATPopup() {
+    const popup = document.getElementById('assignTask-popup');
+    if (popup) {
+      popup.style.display = 'none';
+    }
+  }
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -1329,8 +1430,8 @@ export class DashboardComponent implements AfterViewInit {
       ctx.scale(this.zoomLevel, this.zoomLevel);
       ctx.restore(); // Reset transformation after drawing
 
-      if (this.nodeGraphService.getShowModelCanvas()) {
-        // this.showModelCanvas
+      if (this.nodeGraphService.getShowModelCanvas() || !this.nodeGraphService.getAssignTask()) {
+        // this.showModelCanvas        
         this.redrawOtherElements(ctx, mapImage); // Pass the mapImage for transformations
       }
       // Draw the map image
@@ -1742,7 +1843,7 @@ export class DashboardComponent implements AfterViewInit {
       const robotCanvasX = scaledPosX;
       const robotCanvasY = transformedPosY;
 
-      if (this.nodeGraphService.getShowModelCanvas()) {
+      if (this.nodeGraphService.getShowModelCanvas() || this.nodeGraphService.getAssignTask()) {
         this.nodes = this.nodeGraphService.getNodes();
         this.edges = this.nodeGraphService.getEdges();
         this.zones = this.nodeGraphService.getZones();
@@ -2213,16 +2314,30 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   drawNode(ctx: CanvasRenderingContext2D, x: number, y: number, label: string) {
-    // Set node style (for example, circle)
+    const isAssignTask = this.nodeGraphService.getAssignTask();
+  
+    // Set node size and color conditionally
+    const nodeColor = isAssignTask ? '#f00' : '#00f'; // Red for Assign Task, Blue otherwise
+    const nodeRadius = isAssignTask ? 6 : 4; // Larger radius for Assign Task, default otherwise
+    if (isAssignTask) {
+      const outerCircleRadius = nodeRadius + 4; // Outer circle is slightly larger than the node
+      ctx.beginPath();
+      ctx.arc(x, y, outerCircleRadius, 0, 2 * Math.PI); // Outer circle
+      ctx.strokeStyle = '#ff7373'; // Color for the outer circle (can be customized)
+      ctx.lineWidth = 2; // Thickness of the outer circle's border
+      ctx.stroke();
+  }
     ctx.beginPath();
-    ctx.arc(x, y, 4, 0, 2 * Math.PI); // Draw circle with radius 10
-    ctx.fillStyle = '#00f'; // Blue color
+    ctx.arc(x, y, nodeRadius, 0, 2 * Math.PI); // Draw circle with the specified radius
+    ctx.fillStyle = nodeColor; // Use the determined color
     ctx.fill();
 
     // Add a label to the node
+    // if(isAssignTask){
     // ctx.fillStyle = '#000'; // Black text color
-    // ctx.font = '12px Arial';
-    // ctx.fillText(label, x + 12, y); // Place label slightly right to the node
+    // ctx.font = '14px Arial';
+    // ctx.fillText(label, x + 5, y+20); // Place label slightly right to the node
+    // }
   }
 
   drawPathNode(
