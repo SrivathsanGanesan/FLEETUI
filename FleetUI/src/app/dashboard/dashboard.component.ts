@@ -1643,6 +1643,7 @@ export class DashboardComponent implements AfterViewInit {
               yaw: yaw,
               state: robot.robot_state,
               path: robot.agentPath,
+              payload:robot.payload_status,
             }; // here we go...
 
             // console.log(robot.id, robot.pose.position.x, robot.pose.position.y);
@@ -1830,7 +1831,7 @@ export class DashboardComponent implements AfterViewInit {
     ctx.restore(); // Reset transformation after drawing the map
 
     for (let [index, robotId] of Object.keys(robotsData).entries()) {
-      const { posX, posY, yaw, state, path } = robotsData[robotId];
+      const { posX, posY, yaw, state, path,payload } = robotsData[robotId];
 
       // Scale position and apply spacing offset
       const scaledPosX = posX;
@@ -1857,6 +1858,7 @@ export class DashboardComponent implements AfterViewInit {
             robo.pos.y = robotCanvasY;
             robo.pos.orientation = -yaw;
             robo.imgState = state;
+            robo.payload=payload;
           }
           return robo;
         });
@@ -1870,6 +1872,7 @@ export class DashboardComponent implements AfterViewInit {
           robo.pos.y = robotCanvasY;
           robo.pos.orientation = -yaw;
           robo.imgState = state;
+          robo.payload=payload;
           if (state !== 'INITSTATE') {
             robo.isActive = true;
             // this.cdRef.detectChanges();//yet to review and remove
@@ -1893,7 +1896,7 @@ export class DashboardComponent implements AfterViewInit {
         // Draw the robot on the canvas with updated positions and orientation
         let clr = this.roboIDColor.get(robo.amrId) || 'white';
         this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
-        if (robo.imgState === 'LOADSTATE' || robo.imgState === 'UNLOADSTATE') {
+        if (robo.imgState === 'LOADSTATE' || robo.imgState === 'UNLOADSTATE'||robo.payload) {
           this.plotRack(
             ctx,
             robotPosX - (this.rackSize * this.zoomLevel) / 2,
