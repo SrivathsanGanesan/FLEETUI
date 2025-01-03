@@ -1898,7 +1898,7 @@ export class DashboardComponent implements AfterViewInit {
         // Draw the robot on the canvas with updated positions and orientation
         let clr = this.roboIDColor.get(robo.amrId) || 'white';
         this.plotRobo(ctx, robotPosX, robotPosY, yaw, robo.imgState, clr);
-        if (robo.imgState === 'LOADSTATE' || robo.imgState === 'UNLOADSTATE'||robo.payload) {
+        if (robo.imgState === 'LOADSTATE' || robo.imgState === 'UNLOADSTATE' ||robo.payload) {
           this.plotRack(
             ctx,
             robotPosX - (this.rackSize * this.zoomLevel) / 2,
@@ -2035,14 +2035,14 @@ export class DashboardComponent implements AfterViewInit {
     ctx.fillRect(x, y, size, size);
 
     ctx.fillStyle = '#420D09';
-    ctx.fillRect(x, y, Math.round(size / 3) / 3, size);
+    ctx.fillRect(x, y,size, Math.round(size / 3) / 3);
 
     ctx.fillStyle = '#ff1f1f';
     ctx.fillRect(
-      Math.round((size / 3 / 3) * 8 + x),
-      y,
-      Math.round(size / 3) / 3,
-      size
+      x,
+      y + size - Math.round(size / 3 / 3),
+      size,
+      Math.round(size / 3) / 3
     );
 
     // Reset globalAlpha to 1 to avoid affecting subsequent drawings
