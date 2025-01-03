@@ -296,7 +296,7 @@ const getAsserts = async (req, res) => {
 
 const sendTasks = async (req, res) => {
   const mapId = req.params.mapId;
-  const { taskId, Priority, sourceLocation, taskType } = req.body;
+  const { taskId, agentId, Priority, sourceLocation, taskType } = req.body;
   try {
     let isMapExists = await Map.exists({ _id: mapId });
     if (!isMapExists)
@@ -304,6 +304,7 @@ const sendTasks = async (req, res) => {
 
     let isTaskSent = await publishTasks({
       taskId,
+      agentId,
       Priority,
       sourceLocation,
       taskType,
