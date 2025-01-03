@@ -2276,6 +2276,13 @@ export class DashboardComponent implements AfterViewInit {
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 10;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
     ctx.strokeStyle = color;
     ctx.lineWidth = 4;
     ctx.stroke();
