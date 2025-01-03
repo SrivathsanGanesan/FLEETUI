@@ -67,7 +67,7 @@ canvas {
   margin: 0px 5px;
   background-color: #f0453f;
   border-radius: 8px;
-  padding:5px ;
+  padding:7px ;
   color: #ffffff;
 }
 .idDD{
@@ -87,7 +87,7 @@ canvas {
   margin: 5px;
 }
 .ATbtn-set{
-  margin: 5px;
+  margin:7px 5px;
   display: flex;
   justify-content: center;
   align-items: center;

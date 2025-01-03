@@ -521,7 +521,7 @@ export class AreaChartComponent implements OnInit {
 
       if (data.throughput) {
         this.pickAccuracyArr = data.throughput.Stat.map(
-          (stat: any) => stat.pickAccuracy
+          (stat: any) => Math.round(stat.pickAccuracy)
         );
         this.pickAccXaxisSeries = data.throughput.Stat.map(
           (stat: any, index: any) => ++index
@@ -548,7 +548,7 @@ export class AreaChartComponent implements OnInit {
     );
     if (data.throughput) {
       this.pickAccuracyArr = data.throughput.Stat.map(
-        (stat: any) => stat.pickAccuracy
+        (stat: any) => Math.round(stat.pickAccuracy)
       );
       this.pickAccXaxisSeries = data.throughput.Stat.map(
         (stat: any, index: any) => ++index
