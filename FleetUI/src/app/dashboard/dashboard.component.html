@@ -578,11 +578,21 @@
 </div>
 
 <div id="assignTask-popup" style="position: absolute; display: none; padding: 10px; background: #72a9eb62;backdrop-filter: blur(5px); border: 1px solid #ccc; border-radius: 8px;filter: drop-shadow(5px 2px 2px rgba(130, 126, 126, 0.404)); z-index: 1000;">
-  <label class="idlabel" for="robot-select">Select Robot ID:</label>
+  <label class="idlabel" for="robot-select">Robot ID:</label>
   <select class="idDD" id="robot-select">
     <option></option>
   </select>
+  
+  <label class="idlabel" for="robot-select">Action:</label>
+  <select class="idDD" id="robot-select">
+    <option>Pick</option>
+    <option>Drop</option>
+    <option>Move</option>
+  </select>
+  <br>
+  <div class="ATbtn-set">
   <button class="sendATbtn" (click)="sendAction()">Send</button>
   <button class="cancelATbtn" (click)="cancelATAction()">Cancel</button>
+  </div>
 </div>
 
