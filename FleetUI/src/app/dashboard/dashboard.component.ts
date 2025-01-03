@@ -830,28 +830,6 @@ export class DashboardComponent implements AfterViewInit {
         const transformedY = img.height - node.nodePosition.y;
         this.drawNode(ctx, node.nodePosition.x, transformedY, node.nodeId);
       });
-
-      // this.edges.forEach((edge) => {
-      //   const startNode = this.nodes.find((n) => n.nodeId === edge.startNodeId);
-      //   const endNode = this.nodes.find((n) => n.nodeId === edge.endNodeId);
-      //   if (startNode && endNode) {
-      //     const startPos = {
-      //       x: startNode.nodePosition.x,
-      //       y: startNode.nodePosition.y,
-      //     };
-      //     const endPos = { x: endNode.nodePosition.x, y: endNode.nodePosition.y };
-      //     const transformedStartY = img.height - startPos.y;
-      //     const transformedEndY = img.height - endPos.y;
-      //     this.drawEdge(
-      //       ctx,
-      //       { x: startPos.x, y: transformedStartY },
-      //       { x: endPos.x, y: transformedEndY },
-      //       edge.direction,
-      //       edge.startNodeId,
-      //       edge.endNodeId
-      //     );
-      //   }
-      // });
       ctx.restore();
       // return;
     }
@@ -951,19 +929,16 @@ export class DashboardComponent implements AfterViewInit {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
       const transY = canvas.height - mouseY;
-      const imgX =
-        (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel -
-        this.offsetX;
-      const imgY =
-        (transY - this.mapImageY + this.offsetY) / this.zoomLevel +
-        this.offsetY;
+      const imgX = ((mouseX - this.mapImageX + this.offsetX) - this.offsetX)/ this.zoomLevel;
+      const imgY = ((transY - this.mapImageY + this.offsetY)+ this.offsetY) / this.zoomLevel;
       if (assignTask) {
         for (let node of this.nodes) {
           const nodeX = node.nodePosition.x;
           const nodeY = node.nodePosition.y;
           const nodeRadius = 15; // Define a radius to detect clicks near the node (adjust as needed)
-          // console.log('nodepos', nodeX, nodeY);
-          // console.log('mousepos', imgX, imgY);
+          console.log('offset', this.offsetX, this.offsetY);
+          console.log('nodepos', nodeX, nodeY);
+          console.log('mousepos', imgX, imgY);
 
           if (
             imgX >= nodeX - nodeRadius &&
@@ -1060,13 +1035,14 @@ export class DashboardComponent implements AfterViewInit {
       this.offsetY = this.nodeGraphService.getOffsetY();
       this.zoomLevel = this.nodeGraphService.getZoomLevel();
       // Adjust for zoom and pan
-      const imgX =
-        (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel -
-        this.offsetX;
-      const imgY =
-        (transY - this.mapImageY + this.offsetY) / this.zoomLevel +
-        this.offsetY;
-
+      // const imgX =
+      //   (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel -
+      //   this.offsetX;
+      // const imgY =
+      //   (transY - this.mapImageY + this.offsetY) / this.zoomLevel +
+      //   this.offsetY;
+      const imgX = ((mouseX - this.mapImageX + this.offsetX) - this.offsetX)/ this.zoomLevel;
+      const imgY = ((transY - this.mapImageY + this.offsetY)+ this.offsetY) / this.zoomLevel;
       for (let robo of this.simMode) {
         // console.log(this.zoomLevel);
         const roboX = robo.pos.x;
@@ -1177,12 +1153,8 @@ export class DashboardComponent implements AfterViewInit {
       this.offsetY = this.nodeGraphService.getOffsetY();
       this.zoomLevel = this.nodeGraphService.getZoomLevel();
       // Adjust for zoom and pan
-      const imgX =
-        (mouseX - this.mapImageX + this.offsetX) / this.zoomLevel -
-        this.offsetX;
-      const imgY =
-        (transY - this.mapImageY + this.offsetY) / this.zoomLevel +
-        this.offsetY;
+      const imgX = ((mouseX - this.mapImageX + this.offsetX) - this.offsetX)/ this.zoomLevel;
+      const imgY = ((transY - this.mapImageY + this.offsetY)+ this.offsetY) / this.zoomLevel;
       this.draggingRobo = this.nodeGraphService.getDraggingRobo();
       if (
         this.draggingRobo &&
@@ -1230,10 +1202,7 @@ export class DashboardComponent implements AfterViewInit {
             const robotScreenX =
               roboX * this.zoomLevel + this.mapImageX + this.zoomLevel; // X position on the canvas
             const robotScreenY =
-              (this.mapImageHeight / this.zoomLevel - this.offsetY - roboY) *
-                this.zoomLevel +
-              this.offsetY +
-              this.mapImageY; // Y position on the canvas
+              (this.mapImageHeight / this.zoomLevel - this.offsetY - roboY) * this.zoomLevel + this.offsetY + this.mapImageY; // Y position on the canvas
 
             robottooltip.style.left = `${robotScreenX - 30}px`; // Slightly to the left of the robot's X position
             robottooltip.style.top = `${robotScreenY - 45}px`; // Above the robot's Y position
@@ -1899,14 +1868,17 @@ export class DashboardComponent implements AfterViewInit {
       this.setPaths(path, imgHeight, centerX, centerY, parseInt(robotId));
 
       if (
-        this.nodeGraphService.getShowModelCanvas() ||
-        this.nodeGraphService.getAssignTask()
+        this.nodeGraphService.getShowModelCanvas()
       ) {
         this.nodes = this.nodeGraphService.getNodes();
         this.edges = this.nodeGraphService.getEdges();
         this.zones = this.nodeGraphService.getZones();
         this.assets = this.nodeGraphService.getAssets();
         this.drawNodesAndEdges(ctx, mapImage, centerX, centerY, this.zoomLevel);
+      }
+      if(this.nodeGraphService.getAssignTask()){
+        this.nodes = this.nodeGraphService.getNodes();
+        this.drawnodesonAT(ctx, mapImage, centerX, centerY, this.zoomLevel);
       }
       if (this.isFleet) {
         this.robos = this.robos.map((robo) => {
@@ -2108,7 +2080,23 @@ export class DashboardComponent implements AfterViewInit {
     ctx.globalAlpha = 1;
     ctx.restore();
   }
-
+  drawnodesonAT(    
+    ctx: CanvasRenderingContext2D,
+    img: HTMLImageElement,
+    centerX: number,
+    centerY: number,
+    zoomLevel: number){
+      
+    this.offsetX = this.nodeGraphService.getOffsetX();
+    this.offsetY = this.nodeGraphService.getOffsetY();
+    this.zoomLevel = this.nodeGraphService.getZoomLevel();
+    // Plot nodes with scaling and centering
+    this.nodes.forEach((node) => {
+      const scaledX = node.nodePosition.x * zoomLevel;
+      const scaledY = (img.height - node.nodePosition.y) * zoomLevel; // Flip Y-axis and scale
+      this.drawNode(ctx, centerX + scaledX, centerY + scaledY, node.nodeId);
+    });
+    }
   drawNodesAndEdges(
     ctx: CanvasRenderingContext2D,
     img: HTMLImageElement,
