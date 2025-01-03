@@ -1,5 +1,6 @@
 const amqp = require("amqplib");
 const { Map, Robo } = require("../../../application/models/mapSchema");
+const { projectModel } = require("../../models/projectSchema");
 const EventEmitter = require("events");
 require("dotenv").config();
 
@@ -373,6 +374,29 @@ const getLiveRobos = async (req, res) => {
   }
 };
 
+const getRabbitmqStatus = async (req, res) => {
+  const projId = req.params.projId;
+  try {
+    let isProjExist = await projectModel.exists({ _id: projId });
+    if (!isProjExist)
+      return res.status(400).json({ msg: "Project not found!", project: null });
+
+    if (!rabbitmqConsumerTag)
+      return res
+        .status(417)
+        .json({ rabbitmqStatus: false, msg: "RabbitMq in down" });
+
+    return res
+      .status(200)
+      .json({ rabbitmqStatus: true, msg: "RabbitMq is in Up" });
+  } catch (error) {
+    console.error("Error in getting rabbitMq status  :", error);
+    res
+      .status(500)
+      .json({ error: error.message, msg: "Internal Server Error" });
+  }
+};
+
 const showSpline = async (req, res) => {
   const { mapId, roboId } = req.body;
   try {
@@ -496,7 +520,7 @@ const getFleetStatus = async (req, res) => {
   } catch (error) {
     console.error("Error, while checking status of fleet :", error.message);
     res
-      .status(404)
+      .status(200)
       .json({ fleetUp: false, msg: "fleet in down", error: error.message });
   }
 };
@@ -508,6 +532,7 @@ module.exports = {
   getRoboPos,
   getAsserts,
   sendTasks,
+  getRabbitmqStatus,
   showSpline,
   enableRobo,
   getLiveRobos,

@@ -6,6 +6,7 @@ const {
   getRoboPos,
   getAsserts,
   sendTasks,
+  getRabbitmqStatus,
   showSpline,
   enableRobo,
   getLiveRobos,
@@ -21,8 +22,9 @@ liveStreamRouter.get("/get-live-robos/:mapId", getLiveRobos);
 liveStreamRouter.get("/live-AMR-pos/:mapId", getRoboPos);
 liveStreamRouter.get("/live-assets/:mapId", getAsserts);
 liveStreamRouter.post("/send-task/:mapId", sendTasks);
-liveStreamRouter.post("/get-robos-state/:mapId", getRoboStateCount);
+liveStreamRouter.get("/rabbitmq-status/:projId", getRabbitmqStatus);
 liveStreamRouter.post("/show-spline", showSpline);
+liveStreamRouter.post("/get-robos-state/:mapId", getRoboStateCount);
 liveStreamRouter.get("/get-fleet-status", getFleetStatus);
 
 module.exports = liveStreamRouter;
