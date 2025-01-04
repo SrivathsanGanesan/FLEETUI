@@ -582,6 +582,7 @@
   <div>
   <label class="idlabel" for="robot-select">Robot ID:</label>
   <select class="idDD" id="robot-select" [(ngModel)]="roboToAssign">
+    <option [value]="'-99'" disabled>-99</option>
     <option *ngFor="let robo of currentRoboList" [value]="robo">
       {{robo}}
     </option>

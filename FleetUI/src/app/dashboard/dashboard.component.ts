@@ -126,7 +126,7 @@ export class DashboardComponent implements AfterViewInit {
   draggingRobo: any = null; // Holds the robot being dragged
   selectedRobo: any = null;
   taskAction: string = 'MOVE';
-  roboToAssign: any | null = null;
+  roboToAssign: string | null = '-99';
   sourceLocation: any | null = null;
   currentRoboList: any[] | null = null;
   placeOffset: number = 50;
@@ -927,8 +927,13 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
   async sendAction() {
-    if (!this.taskAction || !this.roboToAssign || !this.sourceLocation) {
-      alert('data not sufficient!');
+    if (!this.taskAction || !this.roboToAssign || !this.sourceLocation || this.roboToAssign === '-99') {
+      this.messageService.add({
+        severity: 'error',
+        summary: `Data not sent`,
+        detail: 'data not sufficient!',
+        life: 4000,
+      });
       return;
     }
 
@@ -951,12 +956,18 @@ export class DashboardComponent implements AfterViewInit {
     );
 
     let data = await response.json();
-    console.log(data);
     this.hideATPopup();
-    alert(data.msg);
+    this.messageService.add({
+      severity: 'info',
+      summary: `${data.msg}`,
+      detail: 'Task has been assigned',
+      life: 4000,
+    });
   }
 
   cancelATAction() {
+    this.roboToAssign = '-99'; // Reset the dropdown to default value
+    this.taskAction = 'MOVE';
     this.hideATPopup();
   }
 
