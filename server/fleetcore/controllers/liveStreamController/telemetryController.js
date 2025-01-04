@@ -158,10 +158,9 @@ const publishTasks = async (bodyData) => {
         persistent: true, // message saved to disk not in memory/RAM(ig), cz even if server crash/restarts it retrieves
       },
       (err) => {
-        if (err) {
-          console.log(err);
-          return false;
-        } else return true;
+        if (!err) return true;
+        console.log(err);
+        return false;
       }
     );
   } catch (error) {
@@ -304,7 +303,7 @@ const sendTasks = async (req, res) => {
 
     let isTaskSent = await publishTasks({
       taskId,
-      agentId,
+      agentId: parseInt(agentId),
       Priority,
       sourceLocation,
       taskType,
