@@ -71,7 +71,7 @@ canvas {
   color: #ffffff;
 }
 .idDD{
-  width: 80px;
+  width: 65px;
   border-bottom: 1px solid rgb(255, 255, 255);
   border-radius: 5px;
   margin: 0px 5px;
@@ -83,7 +83,6 @@ canvas {
 }
 .idlabel{
   color: #ffffff;
-  font-weight: bold;
   margin: 5px;
 }
 .ATbtn-set{
@@ -91,6 +90,10 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.ATactions{
+  display: grid;
+  row-gap: 10px;
 }
 .ONBtn {
   position: absolute;

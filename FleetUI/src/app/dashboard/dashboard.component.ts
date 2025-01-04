@@ -918,59 +918,6 @@ export class DashboardComponent implements AfterViewInit {
     // console.log(distance, imageSize*1.5);
     return distance <= imageSize * 1.5; // Adjust this based on the robot's size
   }
-  addRightClickListener(canvas: HTMLCanvasElement) {
-    canvas.addEventListener('contextmenu', (event) => {
-      event.preventDefault(); // Prevent the default context menu
-      const assignTask = this.nodeGraphService.getAssignTask();
-      this.offsetX = this.nodeGraphService.getOffsetX();
-      this.offsetY = this.nodeGraphService.getOffsetY();
-      this.zoomLevel = this.nodeGraphService.getZoomLevel();
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-      const transY = canvas.height - mouseY;
-      const imgX = ((mouseX - this.mapImageX + this.offsetX) - this.offsetX)/ this.zoomLevel;
-      const imgY = ((transY - this.mapImageY + this.offsetY)+ this.offsetY) / this.zoomLevel;
-      if (assignTask) {
-        for (let node of this.nodes) {
-          const nodeX = node.nodePosition.x;
-          const nodeY = node.nodePosition.y;
-          const nodeRadius = 15; // Define a radius to detect clicks near the node (adjust as needed)
-          console.log('offset', this.offsetX, this.offsetY);
-          console.log('nodepos', nodeX, nodeY);
-          console.log('mousepos', imgX, imgY);
-
-          if (
-            imgX >= nodeX - nodeRadius &&
-            imgX <= nodeX + nodeRadius &&
-            imgY >= nodeY - nodeRadius &&
-            imgY <= nodeY + nodeRadius
-          ) {
-            this.showATPopup(event.clientX, event.clientY);
-            this.sourceLocation = node.nodeId;
-            return;
-          }
-        }
-      }
-      for (let robo of this.simMode) {
-        const roboX = robo.pos.x;
-        const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
-        const imageSize = 25; // Adjust size based on robot image dimensions
-        if (
-          imgX >= roboX - imageSize &&
-          imgX <= roboX + imageSize &&
-          imgY >= roboY - imageSize &&
-          imgY <= roboY + imageSize
-        ) {
-          // Show the popup at the clicked position
-          this.showPopup(event.clientX, event.clientY);
-          this.updatedrobo = robo;
-          return;
-        }
-      }
-    });
-  }
-
   showATPopup(x: number, y: number) {
     const popup = document.getElementById('assignTask-popup');
     if (popup) {
@@ -1005,28 +952,60 @@ export class DashboardComponent implements AfterViewInit {
 
     let data = await response.json();
     console.log(data);
-    this.hidePopup();
+    this.hideATPopup();
     alert(data.msg);
   }
 
   cancelATAction() {
     this.hideATPopup();
   }
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    const popup = document.getElementById('assignTask-popup');
-    if (popup && !popup.contains(event.target as Node)) {
-      this.hideATPopup();
-    }
-  }
+
   hideATPopup() {
     const popup = document.getElementById('assignTask-popup');
     if (popup) {
       popup.style.display = 'none';
     }
   }
+  
+  addRightClickListener(canvas: HTMLCanvasElement) {
+    canvas.addEventListener('contextmenu', (event) => {
+      event.preventDefault(); // Prevent the default context menu
+      const assignTask = this.nodeGraphService.getAssignTask();
+      this.offsetX = this.nodeGraphService.getOffsetX();
+      this.offsetY = this.nodeGraphService.getOffsetY();
+      this.zoomLevel = this.nodeGraphService.getZoomLevel();
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+      const transY = canvas.height - mouseY;
+      const imgX = ((mouseX - this.mapImageX + this.offsetX) - this.offsetX)/ this.zoomLevel;
+      const imgY = ((transY - this.mapImageY + this.offsetY)+ this.offsetY) / this.zoomLevel;
+
+      for (let robo of this.simMode) {
+        const roboX = robo.pos.x;
+        const roboY = this.mapImageHeight / this.zoomLevel - robo.pos.y;
+        const imageSize = 25; // Adjust size based on robot image dimensions
+        if (
+          imgX >= roboX - imageSize &&
+          imgX <= roboX + imageSize &&
+          imgY >= roboY - imageSize &&
+          imgY <= roboY + imageSize
+        ) {
+          // Show the popup at the clicked position
+          this.showPopup(event.clientX, event.clientY);
+          this.updatedrobo = robo;
+          return;
+        }
+      }
+    });
+  }
   addMouseDownListener(canvas: HTMLCanvasElement) {
     canvas.addEventListener('mousedown', (event) => {
+      if (event.button === 2) {
+        return;
+      }
+  
+      const assignTask = this.nodeGraphService.getAssignTask();
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -1043,6 +1022,27 @@ export class DashboardComponent implements AfterViewInit {
       //   this.offsetY;
       const imgX = ((mouseX - this.mapImageX + this.offsetX) - this.offsetX)/ this.zoomLevel;
       const imgY = ((transY - this.mapImageY + this.offsetY)+ this.offsetY) / this.zoomLevel;
+      if (assignTask) {
+        for (let node of this.nodes) {
+          const nodeX = node.nodePosition.x;
+          const nodeY = node.nodePosition.y;
+          const nodeRadius = 15; // Define a radius to detect clicks near the node (adjust as needed)
+          console.log('offset', this.offsetX, this.offsetY);
+          console.log('nodepos', nodeX, nodeY);
+          console.log('mousepos', imgX, imgY);
+
+          if (
+            imgX >= nodeX - nodeRadius &&
+            imgX <= nodeX + nodeRadius &&
+            imgY >= nodeY - nodeRadius &&
+            imgY <= nodeY + nodeRadius
+          ) {
+            this.showATPopup(event.clientX, event.clientY);
+            this.sourceLocation = node.nodeId;
+            return;
+          }
+        }
+      }
       for (let robo of this.simMode) {
         // console.log(this.zoomLevel);
         const roboX = robo.pos.x;
