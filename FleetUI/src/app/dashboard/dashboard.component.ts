@@ -937,8 +937,11 @@ export class DashboardComponent implements AfterViewInit {
       return;
     }
 
+    let genId: any = Date.now();
+    genId = genId.toStrng(16); // convert timestamp to hex.. by base 16
+
     let taskData = {
-      taskId: `t${this.sourceLocation}`,
+      taskId: 't' + genId,
       agentId: this.roboToAssign,
       Priority: 1,
       sourceLocation: this.sourceLocation,
