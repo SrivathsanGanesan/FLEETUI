@@ -47,23 +47,29 @@
 
 
 
-    <div class="Profile">
+    <div class="Profile" (click)="toggleProfilePopup()">
       <img
         src="../../assets/icons/profile.png"
         alt="profile pic"
         routerLink="/profile"
-        class="PPicon"
-        (click)="toggleProfilePopup()"
+        class="PPicon"        
       />
       <div class="profile-info">
         <p class="username">{{ username }}</p>
         <p class="userrole">{{ userrole }}</p>
       </div>
     </div>
-
   </div>
 </div>
-
+<div class="Profile-popup" *ngIf="showProfilePopup" > 
+  <div>
+  <p class="msg">Hello, {{ username }}</p>
+  </div>
+  <div class="logoutIcon" (click)="showLogoutConfirmation = true">
+    <img src="../../assets/icons/Logout.svg " alt="" class="Outlogo" />
+    <span class="logoutlabel">Logout</span>
+  </div>
+</div>
 <!-- side bar -->
 <div class="sidebar">
   <div class="sidebar">
@@ -126,10 +132,10 @@
       />
       <span class="label">User Management</span>
     </div> -->
-    <div class="icons logout-icon" (click)="showLogoutConfirmation = true">
+    <!-- <div class="icons logout-icon" (click)="showLogoutConfirmation = true">
       <img src="../../assets/icons/Logout_icon.svg " alt="" class="Outlogo" />
       <span class="label">Logout</span>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -236,12 +242,6 @@
       <span>No notifications to show</span>
     </div>
   </ng-template>
-</div>
-
-
-
-<div class="Profile-popup" *ngIf="showProfilePopup"> 
-  <p>Hi,{{ username }}</p>
 </div>
 
 <div *ngIf="showLogoutConfirmation" class="confirmation-popup-overlay">

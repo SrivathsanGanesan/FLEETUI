@@ -29,9 +29,9 @@
     top: 0;
     transition: width 0.2s ease-in-out;
     overflow: hidden; /* To hide the labels when not hovered */
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; */
     z-index: 10000;
   }
 /* CSS for the active tab */
@@ -373,6 +373,8 @@
     display: flex;
     align-items: center;
     padding-right: 40px;
+    cursor: pointer;
+    width: 160px;
   }
 
   .Profile img {
@@ -503,7 +505,7 @@ app-fullscreen-button{
   }
 
   .logout-icon:hover {
-    background-color: #9115154e;
+    border: 1px solid #ff3333;
     border-radius: 30px;
   }
   .follow {
@@ -562,18 +564,42 @@ app-fullscreen-button{
 }
 
 /* Profile Popup Styling */
-.profile-popup {
+.Profile-popup {
   position: absolute;
-  top: 60px;
+  top: 50px;
   right: 0px;
   width: 200px;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  background: white;
+  box-shadow: 0px 6px 6px -5px #FF7373, -6px 0px 6px -5px #FF7373, 6px 0px 6px -3px #FF7373;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   padding: 10px;
   z-index: 10;
+  justify-items: center;
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
-
+.logoutlabel{
+  color: #ff3333;
+  font-family: 'graphik', Arial, sans-serif;
+  cursor: pointer;
+}
+.msg{
+  font-family: 'graphik', Arial, sans-serif;
+  color: #ff3333;
+  font-weight: bold;
+}
+.logoutIcon{
+  display: flex;
+  gap: 10px;
+  padding: 5px;
+  border-radius: 10px;  
+  width: fit-content;
+}
+.logoutIcon:hover{
+  border: 1px solid #ff3333;
+  border-radius: 30px;
+  padding: 5px 10px;
+}
 .profile-header {
   display: flex;
   align-items: center;
