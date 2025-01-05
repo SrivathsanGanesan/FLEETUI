@@ -365,6 +365,8 @@ export class EnvmapComponent implements AfterViewInit {
     private sessionService: SessionService // private nodeGraphService:NodeGraphService
   ) {
     if (this.currEditMap) this.showImage = true;
+    this.robotImages['robotB'] = new Image();
+    this.robotImages['robotB'].src = 'assets/CanvasRobo/robotB.svg';
   }
 
   ngOnInit() {
