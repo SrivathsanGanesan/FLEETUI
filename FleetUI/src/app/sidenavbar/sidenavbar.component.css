@@ -565,7 +565,7 @@ app-fullscreen-button{
 .profile-popup {
   position: absolute;
   top: 60px;
-  right: 0;
+  right: 0px;
   width: 200px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
