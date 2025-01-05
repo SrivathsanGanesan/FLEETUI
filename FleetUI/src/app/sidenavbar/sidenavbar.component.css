@@ -719,6 +719,7 @@ app-fullscreen-button{
   justify-content: center;
   align-items: center;
   z-index: 10000;
+  backdrop-filter: blur 5px;
 }
 
 .confirmation-popup {
@@ -735,9 +736,27 @@ app-fullscreen-button{
   justify-content: space-evenly;
   margin-top: 20px;
 }
-
+.WarningImg{
+  height: 50px;
+  width: 150px;
+}
+.Img{
+  display: flex;
+  justify-content: center;
+}
+.P1{
+  font-family:'graphik', Arial, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+}
+.P2{
+  font-family:'graphik', Arial, sans-serif;
+  /* font-weight: bold; */
+  font-size: 10px;
+  color: #5e5b5bab;
+}
 .confirm-btn {
-  background-color: #ff7373;
+  background-color: #ff3333;
   color: white;
   border: none;
   padding: 8px 15px;

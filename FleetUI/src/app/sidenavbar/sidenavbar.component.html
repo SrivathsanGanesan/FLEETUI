@@ -246,10 +246,15 @@
 <!-- </div> -->
 <div *ngIf="showLogoutConfirmation" class="confirmation-popup-overlay">
   <div class="confirmation-popup">
-    <p>Are you sure you want to log out?</p>
+    <div class="Img">
+    <img class="WarningImg" src="../../assets/Warning.svg">
+    <!-- <img class="SWImg" src="../../assets/shared image.jpeg"> -->
+   </div>
+    <p class="P1">Are you sure?</p>
+    <p class="P2">Are you sure do you want to logout?</p>
     <div class="button-container">
-      <button class="confirm-btn" (click)="logout()">Yes</button>
-      <button class="cancel-btn" (click)="showLogoutConfirmation = false">No</button>
+      <button class="confirm-btn" (click)="logout()">Confirm</button>
+      <button class="cancel-btn" (click)="showLogoutConfirmation = false">Cancel</button>
     </div>
   </div>
 </div>
