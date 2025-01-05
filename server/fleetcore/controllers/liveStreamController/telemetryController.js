@@ -53,9 +53,9 @@ const initRabbitMQConnection = async () => {
 
 const consumeMessage = async () => {
   if (!rabbitMQChannel) return;
-  const exchange = "amq.topic";
-  const queueName = "FMS.CONFIRM-TASK"; // queue name...
-  const routingKey = "FMS";
+  const exchange = "FMS.UI-Data";
+  const queueName = "FMS.UI-Data"; // queue name...
+  const routingKey = "UI";
   try {
     // topic or direct or fanout, which describes what type of exchange it is..
     let exchangeInfo = await rabbitMQChannel.assertExchange(exchange, "topic", {
