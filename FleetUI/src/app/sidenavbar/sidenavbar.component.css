@@ -29,9 +29,9 @@
     top: 0;
     transition: width 0.2s ease-in-out;
     overflow: hidden; /* To hide the labels when not hovered */
-    /* display: flex;
+    display: flex;
     flex-direction: column;
-    justify-content: space-between; */
+    justify-content: space-between; 
     z-index: 10000;
   }
 /* CSS for the active tab */
@@ -505,7 +505,7 @@ app-fullscreen-button{
   }
 
   .logout-icon:hover {
-    border: 1px solid #ff3333;
+    border: 1px solid white;
     border-radius: 30px;
   }
   .follow {
