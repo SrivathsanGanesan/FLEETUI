@@ -383,8 +383,11 @@ const getRabbitmqStatus = async (req, res) => {
 
     if (!rabbitmqConsumerTag)
       return res
-        .status(417)
-        .json({ rabbitmqStatus: false, msg: "RabbitMq in down" });
+        .status(503) // 503 - Service Unavailable
+        .json({
+          rabbitmqStatus: false,
+          msg: "RabbitMq is currently unavailabe",
+        });
 
     return res
       .status(200)
