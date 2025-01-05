@@ -126,7 +126,7 @@
       />
       <span class="label">User Management</span>
     </div> -->
-    <div class="icons logout-icon" (click)="logout()">
+    <div class="icons logout-icon" (click)="showLogoutConfirmation = true">
       <img src="../../assets/icons/Logout_icon.svg " alt="" class="Outlogo" />
       <span class="label">Logout</span>
     </div>
@@ -244,3 +244,12 @@
 
   <!-- <p>Hi,{{ username }}</p> -->
 <!-- </div> -->
+<div *ngIf="showLogoutConfirmation" class="confirmation-popup-overlay">
+  <div class="confirmation-popup">
+    <p>Are you sure you want to log out?</p>
+    <div class="button-container">
+      <button class="confirm-btn" (click)="logout()">Yes</button>
+      <button class="cancel-btn" (click)="showLogoutConfirmation = false">No</button>
+    </div>
+  </div>
+</div>

@@ -369,7 +369,7 @@ export class SidenavbarComponent implements OnInit {
   toggleSidebar(isEnlarged: boolean) {
     this.isSidebarEnlarged = isEnlarged;
   }
-
+  showLogoutConfirmation = false;
   logout() {
     fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`, {
       credentials: 'include',
