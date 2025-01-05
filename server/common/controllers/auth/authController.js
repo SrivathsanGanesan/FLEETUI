@@ -57,9 +57,9 @@ const login = async (req, res) => {
       );
       return res
         .cookie("_token", token, {
-          httpOnly: true, //cookie cannot be accessed via JavaScript
+          httpOnly: true, // cookie cannot be accessed via JavaScript
           sameSite: "Strict", //..Strict None => Strict when prod
-          secure: false, //.. 0 | 1
+          secure: false, //.. true (only sent over https) | false (sent over both http and https)
         }) //sameSite: "Strict" only from the originated site..
         .status(200)
         .json({
@@ -110,8 +110,8 @@ const register = async (req, res) => {
       return res
         .status(409) // 409 - already exists!
         .json({ isExist: true, msg: "person already exists" });
-    let permissions  = {}
-    if(role === "Administrator"){
+    let permissions = {};
+    if (role === "Administrator") {
       permissions = {
         generalPermissions: {
           dashboard: true,
@@ -121,40 +121,38 @@ const register = async (req, res) => {
           tasks: true,
           userManagement: true,
         },
-    
+
         configurationPermissions: {
           environment: {
             enabled: true,
             create: true,
             edit: true,
             delete: true,
-            view: true
+            view: true,
           },
           robot: {
             enabled: true,
             create: true,
             edit: true,
             delete: true,
-            view: true
-    
+            view: true,
           },
           fleet: {
             enabled: true,
             create: true,
             edit: true,
             delete: true,
-            view: true
-          }
-        }
-      }
-
+            view: true,
+          },
+        },
+      };
     }
     const newData = new authRegisterModel({
       name: name,
       password: hashhedPassword,
       role: role,
       priority: role === "Administrator" ? 1 : role === "Maintainer" ? 2 : 3,
-      permissions : permissions,
+      permissions: permissions,
       projects: [{ projectId: projectId, projectName: projectName }],
       createdBy: createdBy,
     });

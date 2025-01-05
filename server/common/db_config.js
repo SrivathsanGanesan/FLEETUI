@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
+
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session); // creates an class and pass the session method as/to constructor..
+
 require("dotenv").config();
+
+const sessionStore = new MongoDBStore({
+  uri: process.env.MONGO_SESSION_URI,
+  // collection: "userSessions", // default -> "sessions"
+});
 
 const dashboardConnection = mongoose.createConnection(
   process.env.MONGO_DASHBOARD_URI
@@ -25,6 +34,22 @@ const isConnect = (dbConnection) => {
   });
 };
 
+const isSessionConnect = (session) => {
+  session.on("connected", () => {
+    console.log(`${session.collection.dbName} connected..`);
+  });
+
+  session.on("error", (err) => {
+    console.log(`${session.collection.dbName} connection err : `, err);
+  });
+
+  session.on("disconnected", () => {
+    console.log(`${session.collection.dbName} disconnected`);
+  });
+};
+
+isSessionConnect(sessionStore);
+
 isConnect(dashboardConnection);
 isConnect(userManagementConnection);
 isConnect(projectConnection);
@@ -33,4 +58,5 @@ module.exports = {
   dashboardConnection,
   userManagementConnection,
   projectConnection,
+  sessionStore,
 };

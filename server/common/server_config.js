@@ -2,10 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+
+const session = require("express-session");
+
 require("dotenv").config();
+const { sessionStore } = require("./db_config");
 
 const app = express();
 
+// cors
 app.use(
   cors({
     origin: [
@@ -17,9 +22,26 @@ app.use(
 );
 
 app.use(cookieParser());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+// session
+app.use(
+  session({
+    store: sessionStore,
+    resave: false, // check with true.. on both
+    saveUninitialized: false,
+    secret: process.env.JWT_SECRET_KEY,
+    // name: "", // default -> connect.sid
+    cookie: {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: false,
+    },
+  })
+);
+
+// static hosting content
 app.use(
   "/dashboard", // virtual path, (just the placeholder for original path)
   express.static(path.join("proj_assets", "dashboardMap")) // "/dashboard/map_1.jpg"
