@@ -22,7 +22,17 @@ export class GeneralComponent {
   selectedProject: any | null = null;
 
   formData: any ;
+  disableOtherFields: boolean = true;
 
+  fleetModes = [
+    { name: 'Fleet Mode', value: 0 },
+    { name: 'Simulation Mode', value: 1 },
+  ];
+
+  onFleetModeChange() {
+    // If Fleet Server Mode is selected, enable fields, otherwise disable them
+    this.disableOtherFields = this.formData.fleetServerMode !== 0; // Assuming 0 is Fleet Server Mode
+  }
   selectedDb: any = { name: '', code: '' };
   selectedIp: any = { name: '', code: '' };
   selectedRoboManagerType: any = { name: '', code: '' };
@@ -84,7 +94,8 @@ export class GeneralComponent {
       databaseIp: '',
       databaseName: '',
     }
-  }
+  }  
+
 
   async ngOnInit() {
     this.selectedProject = this.projectService.getSelectedProject();
@@ -184,9 +195,6 @@ export class GeneralComponent {
 
 
 }
-
-
-
 
 // import { ChangeDetectorRef, Component, OnInit, ViewChild  } from '@angular/core';
 // import { InputTextModule } from 'primeng/inputtext';
