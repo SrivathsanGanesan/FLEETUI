@@ -430,6 +430,7 @@
                     <div class="node2-sub" *ngIf="selectedNodeType === 'Intermediate' || selectedNodeType === 'Waiting'">
                       <label for="predockPoseDropdown" class="label">Dock Pose:</label>
                       <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedDockPose">
+                        <option *ngIf="!connectedNodes.length" disabled selected value="">Nill</option>
                         <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                           {{ node.nodeId }}
                         </option>
@@ -438,6 +439,7 @@
                   <div class="node1-sub" *ngIf="selectedNodeType === 'Dock' || selectedNodeType === 'Charge'">
                     <label for="predockPoseDropdown" class="label">Predock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedPredockPose">
+                      <option *ngIf="!connectedNodes.length" disabled selected value="">Nill</option>
                       <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                         {{ node.nodeId }}
                       </option>
@@ -446,6 +448,7 @@
                   <div class="node1-sub" *ngIf="selectedNodeType === 'Dock' || selectedNodeType === 'Charge'">
                     <label for="predockPoseDropdown" class="label">Undock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedUndockPose">
+                      <option *ngIf="!connectedNodes.length" disabled selected value="">Nill</option>
                       <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                         {{ node.nodeId }}
                       </option>

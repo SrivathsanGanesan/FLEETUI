@@ -226,14 +226,23 @@ export class DashboardComponent implements AfterViewInit {
   simulationIconUrl: string = '../assets/simulation_icon.png';
 
   toggleMode() {
-    const newState = !this.isFleet; // Calculate the new state
-    this.isFleet = newState; // Update the local value of isFleet
-    this.isFleetService.setIsFleet(newState); // Update the service state
-    sessionStorage.setItem('isFleet', String(newState)); // Save the updated value to session storage
-    if (!this.isFleet) {
-      this.initSimRoboPos();
-    }
-    // Trigger any additional actions needed
+    return;
+    this.isFleet = !this.isFleet;
+    this.isFleetService.setIsFleet(this.isFleet);
+    sessionStorage.setItem('isFleet', String(this.isFleet));
+    if (!this.isFleet) this.initSimRoboPos();
+
+    this.redrawCanvas();
+  }
+
+  toggleFleetMode(fleetMode: number){
+    let currentMode = (sessionStorage.getItem('isFleet') == 'true') ? 0 : 1;
+    if(currentMode == fleetMode) return;
+    this.isFleet = !fleetMode ? true : false;
+    this.isFleetService.setIsFleet(this.isFleet);
+    sessionStorage.setItem('isFleet', String(this.isFleet));
+    if (!this.isFleet) this.initSimRoboPos();
+
     this.redrawCanvas();
   }
 
@@ -1632,6 +1641,7 @@ export class DashboardComponent implements AfterViewInit {
 
       try {
         const data = JSON.parse(event.data);
+        if(data.fleet) this.toggleFleetMode(data.fleet.FleetMode)
         // console.log(data);
 
         const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
