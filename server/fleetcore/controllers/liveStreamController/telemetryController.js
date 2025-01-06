@@ -135,21 +135,18 @@ const publishTasks = async (bodyData) => {
   const routingKey = "FMS";
   try {
     // topic or direct or fanout, which describes what type of exchange it is..
-    let assertExchangeInfo = await rabbitMQConfirmChannel.assertExchange(
-      exchange,
-      "topic",
-      {
-        durable: true, // exchange will survive, even server restarts..
-      }
-    );
+    await rabbitMQConfirmChannel.assertExchange(exchange, "topic", {
+      durable: true, // exchange will survive, even server restarts..
+    });
 
-    let assertQueueInfo = await rabbitMQConfirmChannel.assertQueue(queueName, {
+    await rabbitMQConfirmChannel.assertQueue(queueName, {
       durable: true, // queue remains even rabbitmq server restarts..
     });
 
     await rabbitMQConfirmChannel.bindQueue(queueName, exchange, routingKey); // bind queue with exchange with routing key..
 
     // if normal channel / without confirmChannel, only returns boolean immediately (not reliable status)
+    // publish mehtod only indicates( return ) that the RabbitMQ accepted the message, not verify that the message was successfully routed to a queue.
     rabbitMQConfirmChannel.publish(
       exchange,
       routingKey,
@@ -158,11 +155,12 @@ const publishTasks = async (bodyData) => {
         persistent: true, // message saved to disk not in memory/RAM(ig), cz even if server crash/restarts it retrieves
       },
       (err) => {
-        if (!err) return true;
-        console.log(err);
+        // if (!err) return true;
+        if (err) console.log(err);
         return false;
       }
     );
+    return true;
   } catch (error) {
     console.error("Error connection messages :", error);
     if (error.code === 406 && error.message.includes("PRECONDITION_FAILED")) {

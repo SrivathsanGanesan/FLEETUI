@@ -26,20 +26,21 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // session
-app.use(
-  session({
-    store: sessionStore,
-    resave: false, // check with true.. on both
-    saveUninitialized: false,
-    secret: process.env.JWT_SECRET_KEY,
-    // name: "", // default -> connect.sid
-    cookie: {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: false,
-    },
-  })
-);
+// app.use(
+//   session({
+//     store: sessionStore,
+//     resave: false,
+//     saveUninitialized: false,
+//     secret: process.env.JWT_SECRET_KEY,
+//     // name: "", // default -> connect.sid
+//     cookie: {
+//       httpOnly: true,
+//       sameSite: "strict",
+//       secure: false,
+//       maxAge: 1000,
+//     },
+//   })
+// );
 
 // static hosting content
 app.use(
