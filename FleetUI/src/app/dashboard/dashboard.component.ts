@@ -225,16 +225,6 @@ export class DashboardComponent implements AfterViewInit {
   fleetIconUrl: string = '../assets/fleet_icon.png';
   simulationIconUrl: string = '../assets/simulation_icon.png';
 
-  toggleMode() {
-    return;
-    this.isFleet = !this.isFleet;
-    this.isFleetService.setIsFleet(this.isFleet);
-    sessionStorage.setItem('isFleet', String(this.isFleet));
-    if (!this.isFleet) this.initSimRoboPos();
-
-    this.redrawCanvas();
-  }
-
   toggleFleetMode(fleetMode: number){
     let currentMode = (sessionStorage.getItem('isFleet') == 'true') ? 0 : 1;
     if(currentMode == fleetMode) return;
@@ -937,7 +927,12 @@ export class DashboardComponent implements AfterViewInit {
   }
   async sendAction() {
     if(!this.isFleetUp) {
-      alert('Fleet not engaged!');
+      this.messageService.add({
+        severity: 'error',
+        summary: `Fleet not engaged!`,
+        detail: 'Fleet Server has not been engaged!',
+        life: 4000,
+      });
       return;
     }
     if (!this.taskAction || !this.roboToAssign || !this.sourceLocation ) {
@@ -973,17 +968,17 @@ export class DashboardComponent implements AfterViewInit {
     );
 
     let data = await response.json();
-    this.hideATPopup();
+    this.hideATPopup(); // Reset to default value
     this.messageService.add({
       severity: 'info',
       summary: `${data.msg}`,
-      detail: 'Task has been assigned',
+      detail: `${data.msg}`,
       life: 4000,
     });
   }
 
   cancelATAction() {
-    this.roboToAssign = 'Select'; // Reset the dropdown to default value
+    this.roboToAssign = 'Default'; // Reset the dropdown to default value
     this.taskAction = 'MOVE';
     this.hideATPopup();
   }
@@ -992,6 +987,12 @@ export class DashboardComponent implements AfterViewInit {
     const popup = document.getElementById('assignTask-popup');
     if (popup) {
       popup.style.display = 'none';
+    }
+    if (this.roboToAssign = `DEFAULT_AGENT_ID`){
+      this.roboToAssign = 'Default';
+    }
+    else{
+      this.roboToAssign = this.roboToAssign;
     }
   }
   

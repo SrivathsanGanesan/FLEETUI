@@ -11,15 +11,13 @@
       {{ isFleetUp ? 'LIVE' : 'LIVE' }}
     </div>
     
+    <button class="indication-button" [ngClass]="buttonClass" >
+      <!-- <img [src]="iconUrl" class="icon" alt="Icon" /> -->
+      <span>{{ buttonLabel }}</span>
+    </button>
+
     <app-fullscreen-button></app-fullscreen-button>
-    <img alt=""
-      src="../../assets/icons/Notification_icon.svg"
-      routerLink="/notification"
-      (click)="showNotification()"
-
-
-      class="Nlogo"
-    />
+    <img alt="" src="../../assets/icons/Notification_icon.svg" routerLink="/notification" (click)="showNotification()" class="Nlogo" />
 
     <!-- <div class="language-selector">
       <div class="language-toggle" (click)="languageChange()">
@@ -43,9 +41,6 @@
         </div>
       </div> -->
     <!-- </div>  -->
-
-
-
 
     <div class="Profile" (click)="toggleProfilePopup()">
       <img

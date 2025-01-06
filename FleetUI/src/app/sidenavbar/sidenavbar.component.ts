@@ -14,7 +14,7 @@ import { ProjectService } from '../services/project.service';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../environments/environment.development';
 import { UserPermissionService } from '../services/user-permission.service';
-
+import { IsFleetService } from '../services/shared/is-fleet.service';
 @Component({
   selector: 'app-sidenavbar',
   templateUrl: './sidenavbar.component.html',
@@ -51,6 +51,7 @@ export class SidenavbarComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private isFleetService: IsFleetService,
     private router: Router,
     private projectService: ProjectService,
     private userPermissionService: UserPermissionService,
@@ -63,6 +64,10 @@ export class SidenavbarComponent implements OnInit {
   }
 
   async ngOnInit() {
+    const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
+      this.isFleet = status;
+      this.updateUI(); // Update UI based on the current state
+    });
     // this.userManagementData= this.userPermissionService.getPermissions();
     const user = this.authService.getUser();
     if (user) {
@@ -83,7 +88,33 @@ export class SidenavbarComponent implements OnInit {
       await this.getTaskErrs(); // or run in indivdual..
     }, 1000 * 5); // max to 30 or 60 sec
   }
-
+  get iconUrl(): string {
+    return this.isFleet ? this.fleetIconUrl : this.simulationIconUrl;
+  }
+  fleetIconUrl: string = '../assets/fleet_icon.png';
+  simulationIconUrl: string = '../assets/simulation_icon.png';
+  get buttonLabel(): string {
+    // console.log("button lable")
+    return this.isFleet ? 'Fleet mode' : 'Sim mode';
+  }
+  updateUI() {
+    // Example of adding a simple fade-in/out effect to a specific element
+    const modeElement = document.querySelector('.mode-indicator');
+    if (modeElement) {
+      modeElement.classList.add('fade-out');
+      setTimeout(() => {
+        modeElement.classList.remove('fade-out');
+        modeElement.classList.add('fade-in');
+      }, 300); // Adjust timing for the effect
+    }
+    // Example of updating a dynamic title based on mode
+    const titleElement = document.querySelector('.mode-title');
+    if (titleElement) {
+      titleElement.textContent = this.isFleet
+        ? 'Fleet Mode Active'
+        : 'Simulation Mode Active';
+    }
+  }
   async getFleetStatus() {
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fleet-status`
@@ -170,7 +201,11 @@ export class SidenavbarComponent implements OnInit {
       }
     });
   }
-
+  isImage: boolean = false;
+  isFleet: boolean = false;
+  get buttonClass(): string {
+    return this.isFleet ? 'fleet-background' : 'simulation-background';
+  }
   async getRoboStatus(): Promise<void> {
     const response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-live-robos/${this.selectedMap.id}`,

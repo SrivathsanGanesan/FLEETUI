@@ -83,13 +83,13 @@
         </select>
       </div>
       
-      <div class="robot-filter">
+      <!-- <div class="robot-filter">
         <label for="robot-filter">Robot:</label>
         <select id="robot-filter" (change)="onRobotFilter($event)">
           <option value="">All</option>
           <option *ngFor="let robot of uniqueRobotNames" [value]="robot">{{ robot }}</option>
         </select>
-      </div>
+      </div> -->
       
       <!-- Clear Filters Button -->
       <button (click)="clearFilters()" class="clr-btn">Clear</button>
