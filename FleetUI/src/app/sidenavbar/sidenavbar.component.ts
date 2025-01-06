@@ -15,6 +15,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../environments/environment.development';
 import { UserPermissionService } from '../services/user-permission.service';
 import { IsFleetService } from '../services/shared/is-fleet.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-sidenavbar',
   templateUrl: './sidenavbar.component.html',
@@ -39,6 +40,7 @@ export class SidenavbarComponent implements OnInit {
 
   private autoCloseTimeout: any;
   notifications: any[] = [];
+  private subscriptions: Subscription[] = [];
 
   processedErrors: Set<string>; // To track processed errors
 
@@ -68,6 +70,12 @@ export class SidenavbarComponent implements OnInit {
       this.isFleet = status;
       this.updateUI(); // Update UI based on the current state
     });
+    this.subscriptions.push(fleetSub);
+    const savedIsFleet = sessionStorage.getItem('isFleet');
+    if (savedIsFleet !== null) {
+      this.isFleet = savedIsFleet === 'true'; // Convert string to boolean
+      this.isFleetService.setIsFleet(this.isFleet); // Sync the state with the service
+    }
     // this.userManagementData= this.userPermissionService.getPermissions();
     const user = this.authService.getUser();
     if (user) {

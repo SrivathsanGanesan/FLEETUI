@@ -145,7 +145,12 @@ export class GeneralComponent {
     }
     let isFleetUp = this.projectService.getIsFleetUp();
     if (!isFleetUp) {
-      alert('Fleet not engaged!');
+      this.messageService.add({
+        severity: 'error',
+        summary: `Fleet not engaged!`,
+        detail: 'Fleet Server has not been engaged!',
+        life: 4000,
+      });
       return;
     }
 
