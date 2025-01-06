@@ -21,7 +21,7 @@ export class GeneralComponent {
 
   selectedProject: any | null = null;
 
-  formData: any ;
+  formData: any;
   disableOtherFields: boolean = true;
 
   fleetModes = [
@@ -67,7 +67,7 @@ export class GeneralComponent {
     private projectService: ProjectService,
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
-    private messageService:MessageService,
+    private messageService: MessageService
   ) {
     this.formData = {
       selectedDb: '',
@@ -79,10 +79,10 @@ export class GeneralComponent {
       serverPort: '',
       databaseIp: '',
       databaseName: '',
-    }
+    };
   }
 
-  reset(){
+  reset() {
     this.formData = {
       selectedDb: '',
       selectedIp: '',
@@ -93,9 +93,8 @@ export class GeneralComponent {
       serverPort: '',
       databaseIp: '',
       databaseName: '',
-    }
-  }  
-
+    };
+  }
 
   async ngOnInit() {
     this.selectedProject = this.projectService.getSelectedProject();
@@ -136,6 +135,7 @@ export class GeneralComponent {
       databaseIp: General.databaseIp,
       databaseName: General.databaseName,
     };
+    this.cdRef.detectChanges();
   }
 
   async saveParams() {
@@ -143,12 +143,19 @@ export class GeneralComponent {
       console.log('no map selected');
       return;
     }
+    let isFleetUp = this.projectService.getIsFleetUp();
+    if (!isFleetUp) {
+      alert('Fleet not engaged!');
+      return;
+    }
 
     // Ensure only the relevant values are passed to formData
     this.formData.selectedDb = this.selectedDb?.name || '';
     this.formData.selectedIp = this.selectedIp?.name || '';
-    this.formData.selectedRoboManagerType = this.selectedRoboManagerType?.name || '';
-    this.formData.selectedTaskManagerType = this.selectedTaskManagerType?.name || '';
+    this.formData.selectedRoboManagerType =
+      this.selectedRoboManagerType?.name || '';
+    this.formData.selectedTaskManagerType =
+      this.selectedTaskManagerType?.name || '';
 
     console.log(this.formData); // Now formData should be safe for handling
 
@@ -161,7 +168,7 @@ export class GeneralComponent {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             projectId: this.selectedProject._id,
-            generalParams: this.formData,  // Send the plain object without circular references
+            generalParams: this.formData, // Send the plain object without circular references
           }),
         }
       );
@@ -192,8 +199,6 @@ export class GeneralComponent {
       console.log('Error occurred:', error);
     }
   }
-
-
 }
 
 // import { ChangeDetectorRef, Component, OnInit, ViewChild  } from '@angular/core';
@@ -272,9 +277,6 @@ export class GeneralComponent {
 //     };
 //   }
 
-
-
-
 //   async ngOnInit() {
 //     this.selectedProject = this.projectService.getSelectedProject();
 //     let response = await fetch(
@@ -340,6 +342,5 @@ export class GeneralComponent {
 //       console.log('Error occurred:', error);
 //     }
 //   }
-
 
 // }

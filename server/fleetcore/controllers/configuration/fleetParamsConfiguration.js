@@ -1,24 +1,27 @@
 const { Map, Robo } = require("../../../application/models/mapSchema");
 const { projectModel, siteModel } = require("../../models/projectSchema");
-const convert = require("xml-js");
- 
-const getFleetSeriesData = async (FleetMode, ServerIP, ServerPort, MongodbIP, MongoDatabaseName, endpoint) => {
-  console.log("fleet data",FleetMode, ServerIP, ServerPort, MongodbIP, MongoDatabaseName, endpoint)
-  let response = await fetch(
-    `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic cm9vdDp0b29y",
-      },
-      body: JSON.stringify({FleetMode:FleetMode, ServerIP:ServerIP, ServerPort:ServerPort, MongodbIP:MongodbIP, MongoDatabaseName:MongoDatabaseName}),
-    }
-  );
-  return await response.json();
+
+const getFleetSeriesData = async (bodyData, endpoint) => {
+  try {
+    let response = await fetch(
+      `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Basic cm9vdDp0b29y",
+        },
+        body: JSON.stringify(bodyData),
+      }
+    );
+    return await response.json();
+  } catch (error) {
+    console.log("Error while configuring mode : ", error);
+    return 0;
+  }
 };
- 
+
 const setGeneralParam = async (req, res) => {
   const { projectId, generalParams } = req.body;
   try {
@@ -36,19 +39,22 @@ const setGeneralParam = async (req, res) => {
       return res
         .status(500)
         .json({ isSet: false, project: null, msg: "project not updated..!" });
-   
-    let fleetGeneral = await getFleetSeriesData(
-      updatedProj['fleetParams']['General']['fleetServerMode'],
-      updatedProj['fleetParams']['General']['serverIP'],
-      updatedProj['fleetParams']['General']['serverPort'],
-      updatedProj['fleetParams']['General']['databaseIp'],
-      updatedProj['fleetParams']['General']['databaseName'],
-      "FMS_Data"
-      );
-      
+
+    let bodyData = {
+      FleetMode: generalParams.fleetServerMode.value,
+    };
+
+    let fleetGeneral = await getFleetSeriesData(bodyData, "FMS_Data");
+
+    if (fleetGeneral.errorCode == 1000)
+      return res.status(200).json({
+        isSet: true,
+        msg: "data sent to fleet",
+        project: updatedProj,
+      });
     return res.status(200).json({
-      isSet: true,
-      msg: "data sent",
+      isSet: false,
+      msg: "data not sent to fleet",
       project: updatedProj,
     });
   } catch (error) {
@@ -60,7 +66,7 @@ const setGeneralParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
- 
+
 const setPlannerParam = async (req, res) => {
   const { projectId, plannerParams } = req.body;
   try {
@@ -92,7 +98,7 @@ const setPlannerParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
- 
+
 const setTaskParam = async (req, res) => {
   const { projectId, taskParams } = req.body;
   try {
@@ -124,7 +130,7 @@ const setTaskParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
- 
+
 const setBatteryParam = async (req, res) => {
   const { projectId, batteryParams } = req.body;
   try {
@@ -156,7 +162,7 @@ const setBatteryParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
- 
+
 const setCommunicationParam = async (req, res) => {
   const { projectId, communicationParams } = req.body;
   try {
@@ -188,17 +194,7 @@ const setCommunicationParam = async (req, res) => {
       .json({ error: error.message, msg: "Internal Server Error" });
   }
 };
- 
-/* let json = {
-  root: { serverIp: "127.0.0.1", serverPort: 3300 },
-};
-let xmlData = convert.json2xml(json, {
-  compact: true,
-  ignoreComment: true,
-  spaces: 4,
-});
-console.log(xmlData); */
- 
+
 module.exports = {
   setGeneralParam,
   setPlannerParam,

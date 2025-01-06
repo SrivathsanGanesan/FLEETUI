@@ -936,6 +936,10 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
   async sendAction() {
+    if(!this.isFleetUp) {
+      alert('Fleet not engaged!');
+      return;
+    }
     if (!this.taskAction || !this.roboToAssign || !this.sourceLocation ) {
       this.messageService.add({
         severity: 'error',
