@@ -70,6 +70,7 @@
         </div> -->
       </div>
       <div class="filter">
+        <img src="../../assets/filter.svg" class="filter-img">
       <div class="status-filter">
         <label for="status-filter">Status:</label>
         <select id="status-filter" (change)="onStatusFilter($event)">
@@ -78,6 +79,7 @@
           <option value="IN_PROGRESS">In Progress</option>
           <option value="CANCELLED">Cancelled</option>
           <option value="FAILED">Failed</option>
+          <option value="NOTASSIGNED">Not Assigned</option>
         </select>
       </div>
       
@@ -90,8 +92,9 @@
       </div>
       
       <!-- Clear Filters Button -->
-      <button (click)="clearFilters()">Clear</button>
+      <button (click)="clearFilters()" class="clr-btn">Clear</button>
       </div>
+
       <!-- Table -->
       <div class="table-container">
         <div class="table-wrapper">

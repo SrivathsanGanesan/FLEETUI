@@ -41,8 +41,17 @@ export class TasksComponent implements OnInit, AfterViewInit {
   clearFilters() {
     this.selectedStatus = '';
     this.selectedRobot = '';
+  
+    // Reset the value of the select elements
+    const statusFilterElement = document.getElementById('status-filter') as HTMLSelectElement;
+    const robotFilterElement = document.getElementById('robot-filter') as HTMLSelectElement;
+  
+    if (statusFilterElement) statusFilterElement.value = '';
+    if (robotFilterElement) robotFilterElement.value = '';
+  
+    // Reapply filters to display all data
     this.applyFilters();
-  }
+  }  
   trackByTaskId(index: number, item: any): number {
     return item.taskId; // or any unique identifier like taskId
   }
