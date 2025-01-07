@@ -1,12 +1,11 @@
 const express = require("express");
 const authRouter = express.Router();
-const {checkPermission} = require("../middleware/permissionMiddleware")
-
 
 const {
   login,
   logout,
   register,
+  destroyUserSession,
 } = require("../controllers/auth/authController");
 const {
   getUsers,
@@ -19,6 +18,7 @@ const {
 authRouter.post("/login", login);
 authRouter.get("/logout", logout);
 authRouter.post("/register", register);
+authRouter.delete("/delete-user-session", destroyUserSession);
 
 // fetch users..
 authRouter.get("/fetch-users", getUsers);
