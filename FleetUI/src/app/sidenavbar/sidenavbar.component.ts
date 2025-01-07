@@ -103,7 +103,7 @@ export class SidenavbarComponent implements OnInit {
   simulationIconUrl: string = '../assets/simulation_icon.png';
   get buttonLabel(): string {
     // console.log("button lable")
-    return this.isFleet ? 'Fleet mode' : 'Sim mode';
+    return this.isFleet ? 'Real Time' : 'Simulation';
   }
   updateUI() {
     // Example of adding a simple fade-in/out effect to a specific element
