@@ -84,10 +84,11 @@ export class SidenavbarComponent implements OnInit {
     }
     this.cookieValue = JSON.parse(this.cookieService.get('_user'));
     this.selectedMap = this.projectService.getMapData();
-    await this.getFleetStatus();
-    this.fleetStatusInterval = setInterval(async () => {
-      await this.getFleetStatus();
-    }, 1000 * 4); // max to 30 or 60 sec
+    // await this.getFleetStatus();
+    this.startGetFleetStatus();
+    // this.fleetStatusInterval = setInterval(async () => {
+    //   await this.getFleetStatus();
+    // }, 1000 * 4); // max to 30 or 60 sec
     if (!this.selectedMap) return;
     await this.getRoboStatus();
     await this.getTaskErrs();
@@ -99,15 +100,19 @@ export class SidenavbarComponent implements OnInit {
       }
     }, 1000 * 5); // max to 30 or 60 sec
   }
+
   get iconUrl(): string {
     return this.isFleet ? this.fleetIconUrl : this.simulationIconUrl;
   }
+
   fleetIconUrl: string = '../assets/fleet_icon.png';
   simulationIconUrl: string = '../assets/simulation_icon.png';
+
   get buttonLabel(): string {
     // console.log("button lable")
     return this.isFleet ? 'Real Time' : 'Simulation';
   }
+
   updateUI() {
     // Example of adding a simple fade-in/out effect to a specific element
     const modeElement = document.querySelector('.mode-indicator');
@@ -126,6 +131,12 @@ export class SidenavbarComponent implements OnInit {
         : 'Simulation Mode Active';
     }
   }
+
+  async startGetFleetStatus() {
+    await this.getFleetStatus();
+    setTimeout(() => this.startGetFleetStatus(), 1000 * 4);
+  }
+
   async getFleetStatus() {
     let response = await fetch(
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fleet-status`

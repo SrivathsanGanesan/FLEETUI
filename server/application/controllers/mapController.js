@@ -93,11 +93,11 @@ const saveNodeGraph = async (mapData) => {
     // console.log(fleetRobos[i]);
   }
 
-  if (
-    sentNodeGraphRes?.errorCode !== 100 ||
-    sentNodeGraphRes?.error === "UND_ERR_CONNECT_TIMEOUT"
-  )
-    return false;
+  // if (
+  //   sentNodeGraphRes?.errorCode !== 100 ||
+  //   sentNodeGraphRes?.error === "UND_ERR_CONNECT_TIMEOUT"
+  // )
+  if (!sentNodeGraphRes) return false;
   return true;
 };
 
@@ -232,8 +232,10 @@ const postFleetData = async ({ endpoint, bodyData }) => {
       return null;
     }
     let data = await response.json();
-    return data;
+    if (data) return true;
+    else return false;
   } catch (error) {
+    return false;
     if (error.cause) return error.cause?.code;
     console.log("Err while sending data to fleet : ", error);
   }
