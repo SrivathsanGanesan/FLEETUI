@@ -42,6 +42,8 @@ export class SidenavbarComponent implements OnInit {
   notifications: any[] = [];
   private subscriptions: Subscription[] = [];
 
+  fleetStatusController: AbortController | null = null;
+
   processedErrors: Set<string>; // To track processed errors
 
   filteredRobotActivities = this.robotActivities;
@@ -133,13 +135,22 @@ export class SidenavbarComponent implements OnInit {
   }
 
   async startGetFleetStatus() {
-    await this.getFleetStatus();
+    this.fleetStatusController?.abort(); // make globally which can accessed within multiple components..
+    this.fleetStatusController = new AbortController();
+    try {
+      await this.getFleetStatus();
+    } catch (error) {
+      console.log(error);
+    }
     setTimeout(() => this.startGetFleetStatus(), 1000 * 4);
   }
 
   async getFleetStatus() {
     let response = await fetch(
-      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fleet-status`
+      `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fleet-status`,
+      {
+        signal: this.fleetStatusController?.signal,
+      }
     );
     let data = await response.json();
 
