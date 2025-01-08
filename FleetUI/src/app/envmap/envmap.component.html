@@ -445,7 +445,7 @@
                     <div class="node2-sub" *ngIf="selectedNodeType === 'Intermediate' || selectedNodeType === 'Waiting'">
                       <label for="predockPoseDropdown" class="Label">Dock Pose:</label>
                       <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedDockPose">
-                        <option *ngIf="!connectedNodes.length" disabled selected value="">Nill</option>
+                        <option *ngIf="!connectedNodes.length" disabled selected value="">Select</option>
                         <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                           {{ node.nodeId }}
                         </option>
@@ -454,7 +454,7 @@
                   <div class="node1-sub" *ngIf="selectedNodeType === 'Dock' || selectedNodeType === 'Charge'">
                     <label for="predockPoseDropdown" class="Label">Predock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedPredockPose">
-                      <option *ngIf="!connectedNodes.length" disabled selected value="">Nill</option>
+                      <option *ngIf="!connectedNodes.length" disabled selected value="">Select</option>
                       <option *ngIf="connectedNodes.length" disabled selected value="" style="font-size: 10px;" class="select-text">Select</option>                      <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                         {{ node.nodeId }}
                       </option>
@@ -463,7 +463,7 @@
                   <div class="node1-sub" *ngIf="selectedNodeType === 'Dock' || selectedNodeType === 'Charge'">
                     <label for="predockPoseDropdown" class="Label">Undock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedUndockPose">
-                      <option *ngIf="!connectedNodes.length" disabled selected value="">Nill</option>
+                      <option *ngIf="!connectedNodes.length" disabled selected value="">Select</option>
                       <option *ngIf="connectedNodes.length" disabled selected value="" class="select-text">Select</option>
                       <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                         {{ node.nodeId }}
