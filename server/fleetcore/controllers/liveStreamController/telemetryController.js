@@ -372,6 +372,7 @@ const getLiveRobos = async (req, res) => {
   }
 };
 
+// middleware no longer in use... ig
 const getRabbitmqStatus = async (req, res) => {
   const projId = req.params.projId;
   try {
@@ -515,11 +516,15 @@ const getFleetStatus = async (req, res) => {
     await fetch(
       `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/${endpoint}`
     );
+    const isFleetAmqpUp = rabbitmqConsumerTag ? true : false;
     return res
       .status(200)
-      .json({ fleetUp: true, msg: "fleet in up", error: null });
+      .json({ fleetUp: isFleetAmqpUp, msg: "fleet in up", error: null });
   } catch (error) {
-    console.error("Error, while checking status of fleet :", error.message);
+    console.error(
+      "Error, while checking status of fleet and rabbitMq : ",
+      error.message
+    );
     res
       .status(200)
       .json({ fleetUp: false, msg: "fleet in down", error: error.message });

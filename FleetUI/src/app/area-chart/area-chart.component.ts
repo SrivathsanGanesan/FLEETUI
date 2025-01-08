@@ -276,6 +276,7 @@ export class AreaChartComponent implements OnInit {
       '',
       ''
     );
+    if(!data.throughput) return;
     let { Stat } = data.throughput;
     // console.log(Stat);
     // console.log(data,'data from line 256')
@@ -303,6 +304,7 @@ export class AreaChartComponent implements OnInit {
         '',
         ''
       );
+      if(!data.throughput) return;
       let { Stat } = data.throughput;
 
       if (data.throughput) {

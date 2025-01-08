@@ -6,8 +6,8 @@
     </div> -->
 
     <!-- Fleet Status Indicator -->
-    <div class="fleet-status" [ngClass]="{'fleet-up': (isFleetUp && isAmqpUp), 'fleet-down': !(isFleetUp && isAmqpUp)}">
-      <img [src]="(isFleetUp && isAmqpUp) ? '../../assets/Liveoff.svg' : '../../assets/Liveon.svg'">
+    <div class="fleet-status" [ngClass]="{'fleet-up': isFleetUp, 'fleet-down': !isFleetUp}">
+      <img [src]="isFleetUp ? '../../assets/Liveoff.svg' : '../../assets/Liveon.svg'">
       {{ isFleetUp ? 'LIVE' : 'LIVE' }}
     </div>
     

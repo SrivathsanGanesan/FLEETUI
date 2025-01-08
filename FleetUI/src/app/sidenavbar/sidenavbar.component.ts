@@ -36,7 +36,7 @@ export class SidenavbarComponent implements OnInit {
   isNotificationVisible = false;
   languageArrowState = false;
   isFleetUp: boolean = false; // Set to true or false based on your logic
-  isAmqpUp: boolean = false;
+  // isAmqpUp: boolean = false;
 
   private autoCloseTimeout: any;
   notifications: any[] = [];
@@ -87,13 +87,16 @@ export class SidenavbarComponent implements OnInit {
     await this.getFleetStatus();
     this.fleetStatusInterval = setInterval(async () => {
       await this.getFleetStatus();
-    }, 1000 * 2); // max to 30 or 60 sec
+    }, 1000 * 4); // max to 30 or 60 sec
     if (!this.selectedMap) return;
     await this.getRoboStatus();
     await this.getTaskErrs();
     this.notificationInterval = setInterval(async () => {
-      await this.getRoboStatus();
-      await this.getTaskErrs(); // or run in indivdual..
+      // only allowed to check if fleet is up
+      if (this.isFleet == true) {
+        await this.getRoboStatus();
+        await this.getTaskErrs(); // or run in indivdual..
+      }
     }, 1000 * 5); // max to 30 or 60 sec
   }
   get iconUrl(): string {
@@ -128,22 +131,20 @@ export class SidenavbarComponent implements OnInit {
       `http://${environment.API_URL}:${environment.PORT}/stream-data/get-fleet-status`
     );
     let data = await response.json();
-    // console.log(data.fleetUp);
+
     this.isFleetUp = data.fleetUp ? true : false;
-    let project = this.projectService.getSelectedProject();
-    if (project && project._id) {
-      let rabbitResponse = await fetch(
-        `http://${environment.API_URL}:${environment.PORT}/stream-data/rabbitmq-status/${project._id}`
-      );
-
-      let rabbitData = await rabbitResponse.json();
-
-      this.isAmqpUp = rabbitData.rabbitmqStatus ? true : false;
-    }
+    // let project = this.projectService.getSelectedProject();
+    // if (project && project._id) {
+    // let rabbitResponse = await fetch(
+    //   `http://${environment.API_URL}:${environment.PORT}/stream-data/rabbitmq-status/${project._id}`
+    // );
+    // let rabbitData = await rabbitResponse.json();
+    // this.isAmqpUp = rabbitData.rabbitmqStatus ? true : false;
+    // }
 
     let prevFleetStatus = this.projectService.getIsFleetUp();
-    if (prevFleetStatus === (this.isFleetUp && this.isAmqpUp)) return;
-    this.projectService.setIsFleetUp(this.isFleetUp && this.isAmqpUp);
+    if (prevFleetStatus === this.isFleetUp) return; // && this.isAmqpUp
+    this.projectService.setIsFleetUp(this.isFleetUp); // && this.isAmqpUp
   }
 
   // not called anywhere..
