@@ -110,7 +110,7 @@ export class SidenavbarComponent implements OnInit {
 
   get buttonLabel(): string {
     // console.log("button lable")
-    return this.isFleet ? 'Real Time' : 'Simulation';
+    return this.isFleet ? 'Fleet Mode' : 'Simulation';
   }
 
   updateUI() {

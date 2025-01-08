@@ -22,6 +22,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 import { SessionService } from '../services/session.service';
 import { map } from 'rxjs';
+import { Dropdown } from 'primeng/dropdown';
 // import { NodeGraphService } from '../services/nodegraph.service';
 
 interface Node {
