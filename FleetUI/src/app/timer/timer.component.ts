@@ -22,6 +22,8 @@ export class TimerComponent {
 
   trackSessionAge: any;
 
+  isLogoutTriggered: boolean = false;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -44,6 +46,8 @@ export class TimerComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe(); // Clean up the subscription
+    clearInterval(this.logoutTimeout); // optional..
+    clearInterval(this.fiveMinuteTimeout);
   }
 
   async recordFleetStatus(status: boolean): Promise<void> {
@@ -94,9 +98,9 @@ export class TimerComponent {
     this.logoutTimeout = setInterval(() => {
       let sessionId = this.cookieService.get('_token');
       if (this.remainingTime > 0) this.remainingTime--;
-      if (!sessionId || this.remainingTime < 0) {
-        alert('sry! your session time gonna over now');
+      if (!sessionId || this.remainingTime <= 0) {
         this.logout();
+        return;
       } else {
         // this.logout(); // notify this is in case..
       }
@@ -147,8 +151,11 @@ export class TimerComponent {
   triggerFiveMinuteAction() {}
 
   logout() {
+    if (this.isLogoutTriggered) return;
     clearInterval(this.logoutTimeout);
     clearInterval(this.fiveMinuteTimeout);
+    this.isLogoutTriggered = true; // yet to commnent in case of not workin..
+    alert('sry! your session time gonna over now');
     // clearInterval(this.trackSessionAge);
     this.projectService.clearProjectData();
     this.projectService.clearMapData();
