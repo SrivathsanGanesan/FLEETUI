@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { SessionService } from '../services/session.service';
 import { CookieService } from 'ngx-cookie-service';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-timer',
   templateUrl: './timer.component.html',
@@ -84,10 +84,8 @@ export class TimerComponent {
       );
       this.remainingTime = this.totalDuration - elapsedTime;
 
-      // if (this.remainingTime < 0 || !this.cookieService.get('_token')) { // yet to uncomment..
-      //   alert('sry! your session time gonna over now');
-      //   this.logout();
-      // }
+      // yet to uncomment..
+      if (!this.cookieService.get('_token')) this.logout();
     } else {
       this.resetTimer();
     }
@@ -156,12 +154,12 @@ export class TimerComponent {
     clearInterval(this.fiveMinuteTimeout);
     this.isLogoutTriggered = true; // yet to commnent in case of not workin..
     // alert('sry! your session time gonna over now');
-      Swal.fire({
-        position: "center",
-        icon: "warning",
-        html: `<span style="font-size: 20px;">Heads up! Your session is almost over.</span>`,
-        showConfirmButton: true,
-      });
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      html: `<span style="font-size: 20px;">Heads up! Your session is almost over.</span>`,
+      showConfirmButton: true,
+    });
     // clearInterval(this.trackSessionAge);
     this.projectService.clearProjectData();
     this.projectService.clearMapData();

@@ -344,8 +344,8 @@ export class StatisticsComponent {
       let completedTasks = tasksStatus[0];
       let errorTasks = tasksStatus[4];
       let cancelledTasks = tasksStatus[5];
+      let inProgressTasks = tasksStatus[2];
       if (
-        completedTasks === 0 ||
         isNaN(completedTasks) ||
         isNaN(errorTasks) ||
         isNaN(cancelledTasks)
@@ -353,7 +353,7 @@ export class StatisticsComponent {
         this.statisticsData.successRate = 'Loading...';
       } else {
         this.statisticsData.successRate = (
-          (completedTasks / (completedTasks + errorTasks)) * 100 || 0
+          ((completedTasks - inProgressTasks) / (completedTasks + errorTasks )) * 100 || 0
         ).toFixed(2);
       }
       return tasksStatus;
