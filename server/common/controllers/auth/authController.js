@@ -51,7 +51,7 @@ const login = async (req, res) => {
 
       if (existingUser.length)
         return res.json({
-          msg: "usr already logged in! Try after some time",
+          msg: "The user is already logged in! Please try again later.",
           isUserInSession: true,
           existingUser: existingUser[0].session.user,
         });
