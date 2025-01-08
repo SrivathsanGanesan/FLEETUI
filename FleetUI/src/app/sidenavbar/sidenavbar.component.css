@@ -575,8 +575,8 @@
     /* background-color: rgb(160, 160, 160);  */
     color: #ff3333; /* White font color */
     font-family: "graphik", Arial,  sans-serif;
-    font-size: small;
-    padding: 5px 10px;
+    font-size: 20px;
+    /* padding: 5px 10px; */
     border-radius: 5px;
     margin-right: -0.5rem;
     display: flex;
