@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { SessionService } from '../services/session.service';
 import { CookieService } from 'ngx-cookie-service';
-
+import Swal from 'sweetalert2'
 @Component({
   selector: 'app-timer',
   templateUrl: './timer.component.html',
@@ -155,7 +155,13 @@ export class TimerComponent {
     clearInterval(this.logoutTimeout);
     clearInterval(this.fiveMinuteTimeout);
     this.isLogoutTriggered = true; // yet to commnent in case of not workin..
-    alert('sry! your session time gonna over now');
+    // alert('sry! your session time gonna over now');
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        html: `<span style="font-size: 20px;">Heads up! Your session is almost over.</span>`,
+        showConfirmButton: true,
+      });
     // clearInterval(this.trackSessionAge);
     this.projectService.clearProjectData();
     this.projectService.clearMapData();
