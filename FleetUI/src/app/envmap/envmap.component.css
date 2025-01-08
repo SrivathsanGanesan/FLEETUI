@@ -247,8 +247,15 @@ h2 {
   font-size: 14px;
   font-family: "graphik", Arial,  sans-serif;
   color: #333;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
+.fileText{
+  display: flex;
+  justify-content: center;
+}
 .form-wrapper {
   display: flex;
   align-items: flex-start;
@@ -461,6 +468,28 @@ canvas {
   position: absolute;
   top: -35px;
   right: -40px;
+  background-color: white;
+  border: 2px solid red;
+  border-radius: 50%;
+  color: red;
+  font-size: 20px;
+  font-family: "graphik", Arial,  sans-serif;
+  font-weight: bolder;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: none; */
+  /* border-radius: 5px; */
+  cursor: pointer;
+  z-index: 10;
+}
+.close-btn1 {
+  position: absolute;
+  top: -20px;
+  right: -20px;
   background-color: white;
   border: 2px solid red;
   border-radius: 50%;
@@ -1073,17 +1102,17 @@ button {
     fill: white; /* Change color on hover */
   }
 
-  .close-btn svg {
+  .close-btn svg,.close-btn1 svg {
     width: 20px;
     height: 20px;
     fill: red; /* Color for the close icon */
   }
 
-  .close-btn:hover {
+  .close-btn:hover,.close-btn1:hover {
     background-color: #da2127;
   }
 
-  .close-btn:hover svg {
+  .close-btn:hover svg,.close-btn1:hover svg {
     fill: white; /* Change color on hover */
   }
   .input-groupg {

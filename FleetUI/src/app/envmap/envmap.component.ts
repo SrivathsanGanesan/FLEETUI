@@ -1092,7 +1092,7 @@ export class EnvmapComponent implements AfterViewInit {
       const file = input.files[0];
       this.anotherFileName = file.name; // Store file name separately
   
-      if (file.type === 'image/x-portable-graymap' || file.name.endsWith('.pgm')) {
+      if (file.type === '.x-portable-graymap' || file.name.endsWith('.pgm')) {
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
           const buffer = e.target!.result as ArrayBuffer;
@@ -1101,13 +1101,23 @@ export class EnvmapComponent implements AfterViewInit {
         };
         reader.readAsArrayBuffer(file);
       } else {
-        // Fallback for other formats
-        const reader = new FileReader();
-        reader.onload = (e: ProgressEvent<FileReader>) => {
-          this.anotherImageSrc = e.target!.result as string;
-          this.renderOverlayCanvas();
-        };
-        reader.readAsDataURL(file);
+        // // Fallback for other formats
+        // const reader = new FileReader();
+        // reader.onload = (e: ProgressEvent<FileReader>) => {
+        //   this.anotherImageSrc = e.target!.result as string;
+        //   this.renderOverlayCanvas();
+        // };
+        // reader.readAsDataURL(file);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Invalid File Type',
+          detail: 'Please upload a valid PGM file.',
+        });
+  
+        // Reset the input field and file name
+        input.value = '';
+        this.anotherFileName = '';
+        return;
       }
     }
   }
@@ -1212,6 +1222,7 @@ export class EnvmapComponent implements AfterViewInit {
     this.openOriginPopup();
   }
   openOriginPopup(): void {
+    
     if (!this.ratio) {
       this.messageService.add({
         severity: 'error',
@@ -1220,7 +1231,19 @@ export class EnvmapComponent implements AfterViewInit {
       });
       return;
     }
-  
+
+    if (this.anotherFileName) {
+      const isPgmFile = this.anotherFileName.toLowerCase().endsWith('.pgm');
+      if (!isPgmFile) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Invalid File',
+          detail: 'Only PGM files are allowed. Please upload a valid PGM file.',
+        });
+        return;
+      }
+    }
+
     if (this.imageSrc) {
       this.showOriginPopup = true;
       this.isPanning=!this.isPanning;
