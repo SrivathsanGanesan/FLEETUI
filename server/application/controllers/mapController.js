@@ -75,8 +75,10 @@ const saveNodeGraph = async (mapData) => {
   );
 
   fs.writeFile(filePath, JSON.stringify(nodeGraph, null, 2), (err) => {});
-  // console.log(fleetRobos);
-  if (mapData.isFleetup === false) return true;
+
+  let isFleetup = await fleetStatus();
+
+  if (isFleetup === false) return true; // issue here.. // mapData.isFleetup === false
 
   let sentNodeGraphRes = await postFleetData({
     endpoint: "save_graph",
@@ -234,6 +236,17 @@ const postFleetData = async ({ endpoint, bodyData }) => {
   } catch (error) {
     if (error.cause) return error.cause?.code;
     console.log("Err while sending data to fleet : ", error);
+  }
+};
+
+const fleetStatus = async () => {
+  try {
+    await fetch(
+      `http://${process.env.FLEET_SERVER}:${process.env.FLEET_PORT}/fms/amr/notifications`
+    );
+    return true;
+  } catch (error) {
+    return false;
   }
 };
 
