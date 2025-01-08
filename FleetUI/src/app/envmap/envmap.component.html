@@ -168,8 +168,11 @@
             
           </div>
           <div class="fileText">
-          <p *ngIf="anotherFileName" class="file-name">{{ anotherFileName }}</p>
+            <p *ngIf="anotherFileName" class="file-name" [title]="anotherFileName">
+              {{ anotherFileName }}
+            </p>
           </div>
+          
           <button class="close-btn1" *ngIf="!this.showOriginCanvas" (click)="closeImagePopup()"> <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -393,6 +396,7 @@
               [autoDisplayFirst]="false"
               class="small-dropdown"
               [style]="{'width':'12.5rem !important'}"
+              #dropdown
           ></p-dropdown>            
             </div>
             <!-- <div *ngIf="validationError" class="validation-error">{{ validationError }}</div> -->
@@ -417,7 +421,7 @@
               id="nodeDescription"
               placeholder="Enter Node Description"
               [(ngModel)]="nodeDetails.description"
-              [style]="{'height':'30px','width':'12.5rem','position': 'relative','left': '62px'}"
+              [style]="{'height':'30px','width':'12.5rem','position': 'relative','left': '29px'}"
             />
           </div>
             <div class="input-group">
@@ -451,7 +455,7 @@
                     <label for="predockPoseDropdown" class="Label">Predock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedPredockPose">
                       <option *ngIf="!connectedNodes.length" disabled selected value="">Nill</option>
-                      <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
+                      <option *ngIf="connectedNodes.length" disabled selected value="" style="font-size: 10px;" class="select-text">Select</option>                      <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                         {{ node.nodeId }}
                       </option>
                     </select>
@@ -460,6 +464,7 @@
                     <label for="predockPoseDropdown" class="Label">Undock Pose:</label>
                     <select id="predockPoseDropdown" class="form-control" [(ngModel)]="selectedUndockPose">
                       <option *ngIf="!connectedNodes.length" disabled selected value="">Nill</option>
+                      <option *ngIf="connectedNodes.length" disabled selected value="" class="select-text">Select</option>
                       <option *ngFor="let node of connectedNodes" [value]="node.nodeId">
                         {{ node.nodeId }}
                       </option>
