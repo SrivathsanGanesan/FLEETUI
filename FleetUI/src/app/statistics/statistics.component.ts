@@ -80,8 +80,8 @@ export class StatisticsComponent {
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) return;
     await this.getGrossStatus();
-    this.operationPie = await this.fetchTasksStatus();
-    await this.getTaskNotifications();
+    if (this.isFleet) this.operationPie = await this.fetchTasksStatus();
+    if (this.isFleet) await this.getTaskNotifications();
     this.taskStatus_interval = setInterval(async () => {
       if (this.isFleet) this.operationPie = await this.fetchTasksStatus();
     }, 1000 * 10);
@@ -345,15 +345,12 @@ export class StatisticsComponent {
       let errorTasks = tasksStatus[4];
       let cancelledTasks = tasksStatus[5];
       let inProgressTasks = tasksStatus[2];
-      if (
-        isNaN(completedTasks) ||
-        isNaN(errorTasks) ||
-        isNaN(cancelledTasks)
-      ) {
+      if (isNaN(completedTasks) || isNaN(errorTasks) || isNaN(cancelledTasks)) {
         this.statisticsData.successRate = 'Loading...';
       } else {
         this.statisticsData.successRate = (
-          ((completedTasks - inProgressTasks) / (completedTasks + errorTasks )) * 100 || 0
+          ((completedTasks - inProgressTasks) / (completedTasks + errorTasks)) *
+            100 || 0
         ).toFixed(2);
       }
       return tasksStatus;
