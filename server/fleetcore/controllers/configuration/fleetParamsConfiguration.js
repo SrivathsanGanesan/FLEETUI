@@ -58,7 +58,7 @@ const setGeneralParam = async (req, res) => {
       project: updatedProj,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error);
+    console.error("Error in general params :", error);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -90,7 +90,7 @@ const setPlannerParam = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error);
+    console.error("Error in planner params:", error);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -122,7 +122,7 @@ const setTaskParam = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error);
+    console.error("Error in task params :", error);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -154,7 +154,7 @@ const setBatteryParam = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error);
+    console.error("Error in battery params :", error);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -186,7 +186,7 @@ const setCommunicationParam = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error);
+    console.error("Error in communication params :", error);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res

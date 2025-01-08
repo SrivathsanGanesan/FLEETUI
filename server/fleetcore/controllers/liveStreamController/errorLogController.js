@@ -47,7 +47,7 @@ const getTaskErrLogs = async (req, res) => {
       msg: "data sent, no tasks are found!",
     });
   } catch (err) {
-    console.error("Error in taskLogs:", err.cause);
+    console.error("Error in task err logs :", err.message);
     if (err.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
@@ -65,7 +65,7 @@ const getRoboErrLogs = async (req, res) => {
       .status(200)
       .json({ roboLogs: errRoboLogs.stats, msg: "data sent" });
   } catch (err) {
-    console.error("Error in taskLogs:", err);
+    console.error("Error in robo err logs : ", err);
     if (err.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });
@@ -83,7 +83,7 @@ const getFleetErrLogs = async (req, res) => {
       .status(200)
       .json({ fleetLogs: errFleetLogs.fleetStats, msg: "data sent" });
   } catch (err) {
-    console.error("Error in taskLogs:", err);
+    console.error("Error in fleet err logs : ", err);
     if (err.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res.status(500).json({ error: err.message, msg: "Internal Server Error" });

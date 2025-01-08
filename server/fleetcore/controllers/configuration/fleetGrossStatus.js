@@ -29,7 +29,7 @@ const systemThroughput = async (req, res) => {
       // map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error.message);
+    console.error("Error in Sys-throughput:", error.message);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -44,7 +44,7 @@ const systemUptime = async (req, res) => {
     const project = await projectModel.findOne({ _id: projectId });
     if (!project)
       return res.status(422).json({ project: null, msg: "project not found" });
-    
+
     let { fleetRecords, createdAt } = project;
     let uptimeRecord = getUptime(fleetRecords);
     createdAt = Math.floor(new Date(createdAt).getTime() / 1000);
@@ -55,21 +55,24 @@ const systemUptime = async (req, res) => {
     //   return total + (log.endTime - log.startTime);
     // }, 0); // 0 => initial value!
     let totalActiveTime = 0;
-    for (let i = 0; i < uptimeRecord.length; i++){
+    for (let i = 0; i < uptimeRecord.length; i++) {
       if (uptimeRecord !== null)
-        totalActiveTime += Math.abs(uptimeRecord[i].endTime - uptimeRecord[i].startTime);
+        totalActiveTime += Math.abs(
+          uptimeRecord[i].endTime - uptimeRecord[i].startTime
+        );
     }
     // console.log(totalActiveTime, uptimeRecord);
-    
-    const uptimePercentage = (totalActiveTime / (currentTime - createdAt)) * 100;
-    
+
+    const uptimePercentage =
+      (totalActiveTime / (currentTime - createdAt)) * 100;
+
     return res.status(200).json({
       systemUptime: uptimePercentage.toFixed(2),
       msg: "data sent",
       project: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error);
+    console.error("Error in Sys-uptime:", error);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -90,7 +93,7 @@ const successRate = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error.message);
+    console.error("Error in success-rate:", error.message);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -111,7 +114,7 @@ const systemResponsiveness = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error.message);
+    console.error("Error in sys-responsiveness:", error.message);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -133,7 +136,7 @@ const getAverageSpeed = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error.message);
+    console.error("Error in avg-speed:", error.message);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -154,7 +157,7 @@ const getTotalDistance = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error.message);
+    console.error("Error in getting total distance :", error.message);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -175,7 +178,7 @@ const getRoboUtilization = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error.message);
+    console.error("Error in getting robo-utilization:", error.message);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
@@ -196,7 +199,7 @@ const getNetworkConnection = async (req, res) => {
       map: true,
     });
   } catch (error) {
-    console.error("Error in taskLogs:", error.message);
+    console.error("Error in getting network-connection:", error.message);
     if (error.name === "CastError")
       return res.status(400).json({ msg: "not valid map Id" });
     res
