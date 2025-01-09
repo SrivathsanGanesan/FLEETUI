@@ -22,6 +22,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./sidenavbar.component.css'],
 })
 export class SidenavbarComponent implements OnInit {
+  private subscription: Subscription = new Subscription();
+
   username: string | null = null;
   userrole: string | null = null;
   robotActivities: any[] = [];
@@ -66,6 +68,12 @@ export class SidenavbarComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.subscription = this.projectService.isFleetUp$.subscribe(
+      async (status) => {
+        console.log('Fleet status changed:', status);
+        await this.recordFleetStatus(status); // change the method by storing it in cookie, later for sure!!!
+      }
+    );
     const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
       this.isFleet = status;
       this.updateUI(); // Update UI based on the current state
@@ -132,6 +140,30 @@ export class SidenavbarComponent implements OnInit {
     }
   }
 
+  async recordFleetStatus(status: boolean): Promise<void> {
+    let projectId = this.projectService.getSelectedProject();
+    let response = await fetch(
+      `http://${environment.API_URL}:${environment.PORT}/fleet-project/track-fleet-status`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId: projectId._id,
+          isFleetOn: status,
+          timeStamp: Date.now(),
+        }),
+      }
+    );
+    // if (!response.ok) {
+    //   console.log('Err with status code of ', response.status);
+    // }
+    let data = await response.json();
+    if (data.error) return;
+    const { fleetRecords } = data;
+    // console.log(fleetRecords);
+  }
+
   async startGetFleetStatus() {
     try {
       // this.isFleetService.abortFleetStatusSignal(); // yet to uncomment..
@@ -139,7 +171,7 @@ export class SidenavbarComponent implements OnInit {
     } catch (error) {
       console.log(error);
     }
-    setTimeout(() => this.startGetFleetStatus(), 1000 * 4);
+    setTimeout(() => this.startGetFleetStatus(), 1000 * 3);
   }
 
   async getFleetStatus() {

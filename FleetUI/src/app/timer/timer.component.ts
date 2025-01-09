@@ -36,12 +36,12 @@ export class TimerComponent {
     this.initializeTimer();
     this.totalDuration = this.sessionService.getMaxAge();
     // this.initializeFiveMinuteTimer();
-    this.subscription = this.projectService.isFleetUp$.subscribe(
-      async (status) => {
-        console.log('Fleet status changed:', status);
-        await this.recordFleetStatus(status); // change the method by storing it in cookie, later for sure!!!
-      }
-    );
+    // this.subscription = this.projectService.isFleetUp$.subscribe( // uncomment if in case..
+    //   async (status) => {
+    //     console.log('Fleet status changed:', status);
+    //     await this.recordFleetStatus(status); // change the method by storing it in cookie, later for sure!!!
+    //   }
+    // );
   }
 
   ngOnDestroy(): void {
