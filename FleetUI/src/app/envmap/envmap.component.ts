@@ -23,6 +23,7 @@ import { MessageService } from 'primeng/api';
 import { SessionService } from '../services/session.service';
 import { map } from 'rxjs';
 import { Dropdown } from 'primeng/dropdown';
+import { IsFleetService } from '../services/shared/is-fleet.service';
 // import { NodeGraphService } from '../services/nodegraph.service';
 
 interface Node {
@@ -363,6 +364,7 @@ export class EnvmapComponent implements AfterViewInit {
     private renderer: Renderer2,
     private projectService: ProjectService,
     private messageService: MessageService,
+    private isFleetService: IsFleetService,
     private sessionService: SessionService // private nodeGraphService:NodeGraphService
   ) {
     if (this.currEditMap) this.showImage = true;
@@ -1619,6 +1621,9 @@ export class EnvmapComponent implements AfterViewInit {
   }
 
   updateEditedMap() {
+
+    this.isFleetService.abortFleetStatusSignal();
+
     this.nodes = this.nodes.map((node) => {
       node.nodePosition.x =
         node.nodePosition.x * (this.ratio || 1) - (this.origin.x || 0);
@@ -1793,6 +1798,9 @@ export class EnvmapComponent implements AfterViewInit {
     });
 
     let orientation = { x: 0, y: 0, z: 0, w: 0 };
+
+    this.isFleetService.abortFleetStatusSignal();
+
     if (this.nodes.length)
       orientation = this.ToQuaternion_(
         0,
