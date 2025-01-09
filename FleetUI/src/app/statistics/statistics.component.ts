@@ -73,15 +73,16 @@ export class StatisticsComponent {
   }
 
   async ngOnInit() {
-    const fleetSub = this.isFleetService.isFleet$.subscribe((status) => {
+    const fleetSub = this.projectService.isFleetUp$.subscribe((status) => {
       this.isFleet = status;
-      this.cdRef.detectChanges(); // yet to comment if no longer needed..
+      this.cdRef.detectChanges();
+      // console.log(status);
     });
     this.subscriptions.push(fleetSub);
     this.router.navigate(['/statistics/operation']); // Default to operation view
-    this.isFleetService.abortFleetStatusSignal();
     this.selectedMap = this.projectService.getMapData();
     if (!this.selectedMap) return;
+    // this.isFleetService.abortFleetStatusSignal(); // yet to notify..
     await this.getGrossStatus();
     if (this.isFleet) this.operationPie = await this.fetchTasksStatus();
     if (this.isFleet) await this.getTaskNotifications();
