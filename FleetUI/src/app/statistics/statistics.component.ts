@@ -377,7 +377,8 @@ export class StatisticsComponent {
         this.statisticsData.successRate = 'Loading...';
       } else {
         this.statisticsData.successRate = (
-          ((completedTasks - inProgressTasks) / (completedTasks + errorTasks)) *
+          ((completedTasks + errorTasks + cancelledTasks) /
+            (completedTasks + errorTasks + cancelledTasks + inProgressTasks)) *
             100 || 0
         ).toFixed(2);
       }
