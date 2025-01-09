@@ -16,6 +16,9 @@ import { environment } from '../../environments/environment.development';
 import { UserPermissionService } from '../services/user-permission.service';
 import { IsFleetService } from '../services/shared/is-fleet.service';
 import { Subscription } from 'rxjs';
+import { SessionService } from '../services/session.service';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-sidenavbar',
   templateUrl: './sidenavbar.component.html',
@@ -52,6 +55,7 @@ export class SidenavbarComponent implements OnInit {
 
   fleetStatusInterval: ReturnType<typeof setInterval> | null = null;
   notificationInterval: ReturnType<typeof setInterval> | null = null;
+  sessionCheck: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     private authService: AuthService,
@@ -61,6 +65,7 @@ export class SidenavbarComponent implements OnInit {
     private userPermissionService: UserPermissionService,
     private eRef: ElementRef,
     private cookieService: CookieService,
+    private sessionService: SessionService,
     private cdRef: ChangeDetectorRef
   ) {
     this.userManagementData = this.userPermissionService.getPermissions();
@@ -92,11 +97,18 @@ export class SidenavbarComponent implements OnInit {
     }
     this.cookieValue = JSON.parse(this.cookieService.get('_user'));
     this.selectedMap = this.projectService.getMapData();
-    // await this.getFleetStatus();
+
     this.startGetFleetStatus();
-    // this.fleetStatusInterval = setInterval(async () => {
-    //   await this.getFleetStatus();
-    // }, 1000 * 4); // max to 30 or 60 sec
+
+    this.sessionCheck = setInterval(() => {
+      let sessionId = this.cookieService.get('_token');
+      let timeRemaining = this.sessionService.getRemainingTime();
+      if (!sessionId || (timeRemaining && timeRemaining <= 0)) {
+        this.logout();
+        return;
+      }
+    }, 1000 * 5);
+
     if (!this.selectedMap) return;
     await this.getRoboStatus();
     await this.getTaskErrs();
@@ -465,8 +477,17 @@ export class SidenavbarComponent implements OnInit {
   toggleSidebar(isEnlarged: boolean) {
     this.isSidebarEnlarged = isEnlarged;
   }
+
   showLogoutConfirmation = false;
+
   logout() {
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      html: `<span style="font-size: 20px;">Heads up! Your session is almost over.</span>`,
+      showConfirmButton: true,
+    });
+
     fetch(`http://${environment.API_URL}:${environment.PORT}/auth/logout`, {
       credentials: 'include',
     })
@@ -522,5 +543,6 @@ export class SidenavbarComponent implements OnInit {
   ngOnDestroy() {
     if (this.notificationInterval) clearInterval(this.notificationInterval);
     if (this.fleetStatusInterval) clearInterval(this.fleetStatusInterval);
+    if (this.sessionCheck) clearInterval(this.sessionCheck);
   }
 }

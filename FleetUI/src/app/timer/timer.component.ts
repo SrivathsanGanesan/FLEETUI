@@ -96,13 +96,12 @@ export class TimerComponent {
     this.logoutTimeout = setInterval(() => {
       let sessionId = this.cookieService.get('_token');
       if (this.remainingTime > 0) this.remainingTime--;
-      if (!sessionId || this.remainingTime <= 0) {
-        this.logout();
-        return;
-      } else {
-        // this.logout(); // notify this is in case..
-      }
-    }, 1000);
+      this.sessionService.setRemainingTime(this.remainingTime);
+      // if (!sessionId || this.remainingTime <= 0) {
+      //   this.logout();
+      //   return;
+      // }
+    }, 1000 * 5);
   }
 
   resetTimer() {
