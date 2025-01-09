@@ -23,6 +23,7 @@ import { MessageService } from 'primeng/api';
 import { SessionService } from '../services/session.service';
 import { map } from 'rxjs';
 import { Dropdown } from 'primeng/dropdown';
+import { NgxSpinnerService } from 'ngx-spinner';
 // import { NodeGraphService } from '../services/nodegraph.service';
 
 interface Node {
@@ -363,6 +364,7 @@ export class EnvmapComponent implements AfterViewInit {
     private renderer: Renderer2,
     private projectService: ProjectService,
     private messageService: MessageService,
+    private spinner: NgxSpinnerService,
     private sessionService: SessionService // private nodeGraphService:NodeGraphService
   ) {
     if (this.currEditMap) this.showImage = true;

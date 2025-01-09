@@ -117,11 +117,7 @@
             d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"
           />
         </svg></button>
-        <button
-          *ngIf="isDistanceConfirmed"
-          class="save-btn"
-          (click)="saveCanvas()"
-        >
+        <button *ngIf="isDistanceConfirmed" class="save-btn" (click)="saveCanvas()" >
           Save
         </button>
         <button class="clear-btn" (click)="clearCanvas()" style="margin-right: 2.5rem;">Clear</button>

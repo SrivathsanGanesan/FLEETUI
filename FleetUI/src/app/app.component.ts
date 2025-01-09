@@ -28,7 +28,6 @@ export class AppComponent {
     };
     // this.startRouteAlternation();
   }
-  
   private intervalId: any;
   private startRouteAlternation(): void {
     let toggle = false; // Keeps track of the current route
