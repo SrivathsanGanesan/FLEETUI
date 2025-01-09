@@ -1,9 +1,11 @@
 <div class="popup-overlay" [ngStyle]="{ 'pointer-events': isNodeDetailsPopupVisible ? 'none' : 'auto' }">
+
   <div
-    class="popup-content"
-    [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }"
-    [ngStyle]="{ 'pointer-events': isNodeDetailsPopupVisible ? 'auto' : 'auto' }"
+  class="popup-content"
+  [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }"
+  [ngStyle]="{ 'pointer-events': isNodeDetailsPopupVisible ? 'auto' : 'auto' }"
   >
+  <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type ="ball-grid-pulse" [fullScreen] = "true"><p style="color: white" > Saving... </p></ngx-spinner>
 
     <h3 *ngIf="!showImage">Select and insert Map file</h3>
     <!-- Image for file upload -->
@@ -677,7 +679,6 @@
     </div>
   </div>
 </div>
-
 <app-robot-popup
   [isVisible]="isRobotPopupVisible"
   [mapName]="this.mapName"
@@ -685,6 +686,7 @@
   (close)="closeRobotPopup()"
   (addRobot)="placeRobots($event)"
 ></app-robot-popup>
+
 
 <div *ngIf="isPopupVisible" class="zonepopup-overlay1">
   <div class="zonepopup-content1">

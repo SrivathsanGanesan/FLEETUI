@@ -356,8 +356,6 @@ export class EnvmapComponent implements AfterViewInit {
     this.toggleOptionsMenu();
     this.selectedAssetType = assetType;
     this.isPlottingAsset = true;
-
-    // console.log("hey");
   }
 
   constructor(
@@ -1686,6 +1684,8 @@ export class EnvmapComponent implements AfterViewInit {
         this.zones = updatedData.zones;
         this.robos = Array.isArray(updatedData.robos) ? updatedData.robos : [];
 
+        this.spinner.hide();
+
         // Success Toast
         this.messageService.add({
           severity: 'success',
@@ -1756,6 +1756,9 @@ export class EnvmapComponent implements AfterViewInit {
       });
       return;
     }
+
+    this.spinner.show();
+
     if (this.currEditMap) {
       this.updateEditedMap();
       return;
@@ -1836,6 +1839,9 @@ export class EnvmapComponent implements AfterViewInit {
     })
       .then((response) => response.json())
       .then((data) => {
+
+        this.spinner.hide();
+
         if (data.exists === true || data.isFileExist === false) {
           this.messageService.add({
             severity: 'warn',
@@ -1857,27 +1863,6 @@ export class EnvmapComponent implements AfterViewInit {
             second: 'numeric',
           });
 
-          // if (!this.EnvData.length) {
-          //   this.projectService.setMapData({
-          //     id: data.map._id,
-          //     mapName: data.map.mapName,
-          //     siteName: this.siteName,
-          //     date: createdAt,
-          //     createdAt: data.map.createdAt,
-          //     imgUrl: data.map.imgUrl,
-          //   });
-          //   this.projectService.setIsMapSet(true);
-          //   this.selectedMap = {
-          //     id: data.map._id,
-          //     mapName: data.map.mapName,
-          //     siteName: this.siteName,
-          //     date: createdAt,
-          //     createdAt: data.map.createdAt,
-          //     imgUrl: data.map.imgUrl,
-          //   };
-          //   // return;
-          // }
-
           this.EnvData.push({
             id: data.map._id,
             mapName: data.map.mapName,
@@ -1894,6 +1879,7 @@ export class EnvmapComponent implements AfterViewInit {
           this.cdRef.detectChanges();
           this.refreshTable.emit(); // Emit the event to refresh the table
           this.sessionService.grossDelete();
+
           // window.location.reload();
         }
 
