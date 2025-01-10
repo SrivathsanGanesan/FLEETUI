@@ -1,12 +1,16 @@
 <div class="popup-overlay" [ngStyle]="{ 'pointer-events': isNodeDetailsPopupVisible ? 'none' : 'auto' }">
-
   <div
   class="popup-content"
   [ngClass]="{ 'fixed-size': showImage, 'dynamic-size': !showImage }"
   [ngStyle]="{ 'pointer-events': isNodeDetailsPopupVisible ? 'auto' : 'auto' }"
   >
-  <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type ="ball-grid-pulse" [fullScreen] = "true"><p style="color: white" > Saving... </p></ngx-spinner>
-
+  <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="white" [fullScreen]="true">
+    <div class="custom-spinner">
+      <img src="../../assets/loading-loading-forever.gif" alt="Loading..." class="loading"/>
+      <p style="color: white">Saving...</p>
+    </div>
+  </ngx-spinner>
+  
     <h3 *ngIf="!showImage">Select and insert Map file</h3>
     <!-- Image for file upload -->
     <label for="fileInput" class="upload-image" *ngIf="!showImage">

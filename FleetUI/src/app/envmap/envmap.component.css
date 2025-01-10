@@ -241,7 +241,10 @@ h2 {
   height: auto;
   cursor: pointer;
 }
-
+.loading{
+  height: 100px;
+  width: 100px;
+}
 .file-name {
   margin-top: 10px;
   font-size: 14px;

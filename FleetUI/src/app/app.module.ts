@@ -75,7 +75,7 @@ import { PlannerComponent } from './configuration/Addons/planner/planner.compone
 import { CommunicationComponent } from './configuration/Addons/communication/communication.component';
 import { TaskComponent } from './configuration/Addons/task/task.component';
 import { HeatmapComponent } from './heatmap/heatmap.component';
-import { NgxSpinner, NgxSpinnerModule } from 'ngx-spinner';
+import { NgxSpinnerModule } from "ngx-spinner";
 // import { NotAuthorizedComponent } from './guards/not-authorized/not-authorized.component';
 
 
@@ -157,8 +157,9 @@ import { NgxSpinner, NgxSpinnerModule } from 'ngx-spinner';
     InputMaskModule,
     InputGroupAddonModule,
     TableModule,
-    NgxSpinnerModule.forRoot({type:"ball-grid-pulse"}),
     PaginatorModule,
+    BrowserAnimationsModule,
+    NgxSpinnerModule,
     // TableModule
   ],
   providers: [
